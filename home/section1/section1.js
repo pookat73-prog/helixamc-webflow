@@ -65,3 +65,4 @@
         setTimeout(startSection1, 100); 
     });
 })();
+
