@@ -30,11 +30,11 @@ jobs:
           console.log(JSON.stringify(headCode));
           EOF
           node /tmp/build-code.js > /tmp/head_code.json
-      - name: Update Webflow Page Custom Code
+      - name: Update Webflow Site Custom Code
         run: |
           head_code=$(cat /tmp/head_code.json)
           curl -X PATCH \
-            "https://api.webflow.com/v1/pages/${{ secrets.WEBFLOW_PAGE_ID }}" \
+            "https://api.webflow.com/v1/sites/${{ secrets.WEBFLOW_SITE_ID }}" \
             -H "Authorization: Bearer ${{ secrets.WEBFLOW_API_TOKEN }}" \
             -H "accept-version: 1.0.0" \
             -H "Content-Type: application/json" \
@@ -54,4 +54,19 @@ jobs:
         run: |
           cat > /tmp/site-head.json << 'EOF'
           {
-            "head_code": "<!-- Global Button Glow -->\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.css\">\n<script src=\"https://cdn.jsdelivr.net/gh/pook
+            "head_code": "<!-- Global Button Glow -->\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.css\">\n<script src=\"https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.js\"><\/script>"
+          }
+          EOF
+      - name: Update Webflow Site Custom Code
+        run: |
+          curl -X PATCH \
+            "https://api.webflow.com/v1/sites/${{ secrets.WEBFLOW_SITE_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.WEBFLOW_API_TOKEN }}" \
+            -H "accept-version: 1.0.0" \
+            -H "Content-Type: application/json" \
+            -d @/tmp/site-head.json \
+            --fail
+      - name: Notify Success
+        if: success()
+        run: |
+          echo "✅ Webflow site-wide head updated: Global Buttons"
