@@ -33,17 +33,17 @@
             ease: "power2.out" 
         }, 0);
 
-        /* 2. 배경 알맹이: 1.0s 등장 (헤드가 선명해진 후 후발대 입장) */
-        tl.to(".div-block-150", { 
-            autoAlpha: 1, 
-            duration: 1.0, 
-            ease: "none" 
-        }, 1.0);
+        /* 2. 배경 알맹이: 1.8s 등장 (슬로건 완전 등장 후 0.6s 공백 뒤 입장) */
+        tl.to(".div-block-150", {
+            autoAlpha: 1,
+            duration: 1.0,
+            ease: "none"
+        }, 1.8);
 
-        /* 3. 버튼: 1.4s 등장 시작 -> 2.0s 종료 (배경과 칼같이 합류) */
-        tl.to([".discover-helix_button", ".flex-block-23"], { 
-            autoAlpha: 1, 
-            duration: 0.6, 
+        /* 3. 버튼: 3.0s 등장 시작 -> 3.6s 종료 (배경 완전 등장 후 합류) */
+        tl.to([".discover-helix_button", ".flex-block-23"], {
+            autoAlpha: 1,
+            duration: 0.6,
             ease: "power2.out",
             onStart: () => {
                 if (b1) b1.classList.add('is-holding');
@@ -56,7 +56,7 @@
                     if (b4) b4.classList.add('is-looping');
                 }, 1500);
             }
-        }, 1.4);
+        }, 3.0);
     }
 
     // Webflow와 호환되는 초기화
