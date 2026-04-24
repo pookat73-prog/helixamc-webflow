@@ -74,29 +74,34 @@
 
     if (box1) box1.setAttribute('data-s1-init', '');
 
-    /* Drive opacity via dummy tween so we can keep !important on every frame */
-    function fadeIn(el, duration, ease, at, onStart, onComplete) {
+    var t0 = performance.now();
+    function elapsed() { return ((performance.now() - t0) / 1000).toFixed(2); }
+
+    /* Independent tweens with explicit delay (no shared timeline) */
+    function fadeIn(el, name, duration, ease, delay, onStart, onComplete) {
       if (!el) return;
       var state = { v: 0 };
-      tl.to(state, {
+      gsap.to(state, {
         v: 1,
         duration: duration,
+        delay: delay,
         ease: ease,
-        onStart: onStart,
+        onStart: function () {
+          console.log('[Section1] ' + name + ' fade start at t=' + elapsed() + 's');
+          if (onStart) onStart();
+        },
         onUpdate: function () { forceOpacity(el, state.v); },
         onComplete: onComplete
-      }, at);
+      });
     }
 
-    var tl = gsap.timeline();
-
-    fadeIn(slogan, 1.2, easeSlogan, 0.3);
-    fadeIn(box1, 0.8, 'expo.out', 1.3,
+    fadeIn(slogan, 'slogan', 1.2, easeSlogan, 0.3);
+    fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
       function () { if (box1) box1.classList.add('is-holding'); },
       function () {
         setTimeout(function () { if (box1) box1.classList.add('is-looping'); }, 1500);
       });
-    fadeIn(bg, 1.5, easeBg, 1.45);
+    fadeIn(bg, 'bg', 1.5, easeBg, 1.45);
 
     console.log('[Section1] timeline started');
     return true;
