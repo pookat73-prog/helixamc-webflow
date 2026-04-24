@@ -23,10 +23,18 @@
         var el = entry.target;
         observer.unobserve(el);
         /* Skip section1.js ghost placeholders and managed elements */
-        if (el.hasAttribute('data-s1-ghost')) return;
-        if (el.hasAttribute('data-s1-init'))  return;
+        if (el.hasAttribute('data-s1-ghost')) {
+          console.log('[ButtonGlow] skipped ghost:', el.className);
+          return;
+        }
+        if (el.hasAttribute('data-s1-init')) {
+          console.log('[ButtonGlow] skipped s1-init:', el.className);
+          return;
+        }
+        console.log('[ButtonGlow] adding is-holding to:', el.className);
         el.classList.add('is-holding');
         setTimeout(function () {
+          console.log('[ButtonGlow] adding is-looping to:', el.className);
           el.classList.add('is-looping');
         }, 1500);
       });
