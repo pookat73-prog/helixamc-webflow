@@ -1,12 +1,13 @@
 /* ================================================================
-   SECTION CONNECTOR LINE (SVG Helix): Button1 bottom-center -> Section2 heading top
+   SECTION CONNECTOR LINE (SVG): Button1 bottom-center -> Section2 heading top
    ScrollTrigger + stroke-dashoffset animation (draw then erase).
 
-   SVG path: sinusoidal helix (amplitude 14px, 5 cycles)
+   SVG path: simple vertical line (1px)
    Animation: Phase 1 draw, Phase 2+3 erase (scroll-linked via ScrollTrigger)
+   End point: section2 heading reaches 75% of viewport (complete erase)
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 10 (ScrollTrigger + stroke-dashoffset)
+   Version: 11 (straight line, fixed pathLength)
    ================================================================ */
 
 (function () {
@@ -46,14 +47,8 @@
   }
 
   function buildPath(cx, height) {
-    var d = '';
-    for (var i = 0; i <= STEPS; i++) {
-      var t  = i / STEPS;
-      var px = cx + AMPLITUDE * Math.sin(t * NUM_WAVES * 2 * Math.PI);
-      var py = t * height;
-      d += (i === 0 ? 'M ' : ' L ') + px.toFixed(2) + ' ' + py.toFixed(2);
-    }
-    return d;
+    /* Simple vertical line (not sinusoidal) */
+    return 'M ' + cx.toFixed(2) + ' 0 L ' + cx.toFixed(2) + ' ' + height.toFixed(2);
   }
 
   function createSVGLine() {
@@ -112,10 +107,11 @@
     svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
     svgEl.setAttribute('height', Math.ceil(lineH));
 
-    /* Build path from button-center to bottom of SVG */
+    /* Build path: vertical line from button-center to bottom of SVG */
     var relCx = AMPLITUDE + 2;
     pathEl.setAttribute('d', buildPath(relCx, lineH));
-    pathEl.setAttribute('stroke-dasharray', Math.ceil(lineH * 1.2)); /* ~path length */
+    var pathLength = lineH;  /* For vertical line, length = height */
+    pathEl.setAttribute('stroke-dasharray', pathLength);
 
     /* Create ScrollTrigger timeline */
     var tl = gsap.timeline({
@@ -123,7 +119,7 @@
         trigger: btn1,
         start: 'bottom center',
         endTrigger: sec2Head,
-        end: 'center center',
+        end: 'top 75%',  /* Erase completes when sec2 heading reaches 75% of viewport */
         scrub: true,
         markers: DEBUG
       }
@@ -138,7 +134,7 @@
 
     /* Phase 2+3: Erase from top, start overlapping 20% before phase 1 ends */
     tl.to(pathEl, {
-      strokeDashoffset: -Math.ceil(lineH * 1.2),
+      strokeDashoffset: -lineH,
       ease: 'power1.inOut',
       duration: 1
     }, '>-0.2');
