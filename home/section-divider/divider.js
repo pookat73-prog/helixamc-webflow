@@ -1,25 +1,22 @@
 /* ================================================================
-   SECTION CONNECTOR LINE (SVG Helix): Button1 bottom-center -> Section2 heading top
-   Structure: outer div handles position + clip-path (v6-proven),
-              inner SVG draws the sinusoidal helix path.
+   SECTION CONNECTOR LINE (SVG): Button1 bottom-center -> Section2 heading top
+   ScrollTrigger + stroke-dashoffset animation (draw then erase).
 
-   Phase 1 (scroll start -> button bottom exits): line grows downward
-   Phase 2 (button fully gone -> sec2 at 50vh):   erase from top, slow
-   Phase 3 (sec2 at 50vh -> 15vh):                fast convergence
+   SVG path: simple vertical line (1px)
+   Animation: Phase 1 draw, Phase 2+3 erase (scroll-linked via ScrollTrigger)
+   End point: section2 heading reaches 75% of viewport (complete erase)
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 9 (div wrapper + SVG helix inside)
+   Version: 12 (straight line, fixed pathLength, hidden on page load)
    ================================================================ */
 
 (function () {
   'use strict';
 
   var BTN1_CLASS = '.discover-helix_button';
-  var AMPLITUDE  = 14;   /* px - horizontal sine deviation */
-  var NUM_WAVES  = 5;    /* complete sine cycles over connector height */
-  var STEPS      = 120;  /* polyline point density */
-  var SVG_W      = AMPLITUDE * 2 + 4;   /* 32px total width */
-  var REL_CX     = AMPLITUDE + 2;       /* 16px center-x within SVG */
+  var AMPLITUDE  = 14;
+  var NUM_WAVES  = 5;
+  var STEPS      = 120;
 
   var DEBUG = window.DEBUG_SECTION_LINE ||
               /[?&]debug-line=1/.test(location.search);
@@ -27,19 +24,11 @@
     console.log.apply(console, ['[SectionLine]'].concat([].slice.call(arguments)));
   } : function () {};
 
-  var wrapEl  = null;   /* outer div: position + clip-path */
-  var svgEl   = null;   /* inner SVG: visual sine wave */
-  var pathEl  = null;   /* SVG <path> element */
-  var btn1    = null;
+  var svgEl    = null;
+  var pathEl   = null;
+  var btn1     = null;
   var sec2Head = null;
   var initialized = false;
-  var rafId   = null;
-
-  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
-  function easeInOut(t) {
-    t = clamp(t, 0, 1);
-    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-  }
 
   function findSec2Head(btn) {
     var el = document.querySelector('.section2-heading');
@@ -49,184 +38,129 @@
       var sib = node.nextElementSibling;
       if (sib) {
         var h = sib.querySelector('h1,h2,h3,h4,[class*="heading"],[class*="Heading"]');
-        if (h) { log('sec2: auto-detected ->', h.tagName, h.className.slice(0, 30)); return h; }
+        if (h) { log('sec2: auto-detected ->', h.tagName); return h; }
       }
       node = node.parentElement;
     }
-    log('sec2: not found - add .section2-heading to the section 2 heading');
+    log('sec2: not found');
     return null;
   }
 
-  /* Build sinusoidal polyline: center cx, y from 0 to lineH (SVG coords). */
-  function buildPath(lineH) {
-    var d = '';
-    for (var i = 0; i <= STEPS; i++) {
-      var t  = i / STEPS;
-      var px = REL_CX + AMPLITUDE * Math.sin(t * NUM_WAVES * 2 * Math.PI);
-      var py = t * lineH;
-      d += (i === 0 ? 'M ' : ' L ') + px.toFixed(2) + ' ' + py.toFixed(2);
-    }
-    return d;
+  function buildPath(cx, height) {
+    /* Simple vertical line (not sinusoidal) */
+    return 'M ' + cx.toFixed(2) + ' 0 L ' + cx.toFixed(2) + ' ' + height.toFixed(2);
   }
 
-  function ensureElements() {
-    if (wrapEl) return;
+  function createSVGLine() {
+    if (svgEl) return;
 
-    /* Outer div: same role as the div in v6 — handles position + clip-path */
-    wrapEl = document.createElement('div');
-    wrapEl.setAttribute('class', 'section-connector-line');
-
-    /* Inner SVG: draws the helix sine wave path */
+    /* Create inline SVG wrapper */
     svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    svgEl.style.cssText = 'display:block;overflow:visible;';
+    svgEl.setAttribute('class', 'helix-line-svg');
+    svgEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:9999;';
 
     pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    pathEl.setAttribute('fill',           'none');
-    pathEl.setAttribute('stroke',         '#0075d6');
-    pathEl.setAttribute('stroke-width',   '1');
+    pathEl.setAttribute('class', 'helix-line-path');
+    pathEl.setAttribute('fill', 'none');
+    pathEl.setAttribute('stroke', '#0075d6');
+    pathEl.setAttribute('stroke-width', '1');
     pathEl.setAttribute('stroke-linecap', 'round');
-    pathEl.setAttribute('vector-effect',  'non-scaling-stroke');
     svgEl.appendChild(pathEl);
-    wrapEl.appendChild(svgEl);
 
     if (getComputedStyle(document.body).position === 'static') {
       document.body.style.position = 'relative';
     }
-    document.body.appendChild(wrapEl);
-    wrapEl.style.clipPath = 'inset(0% 0 100% 0)';
-    log('elements created');
+    document.body.appendChild(svgEl);
+    log('SVG created');
   }
 
-  function update() {
-    rafId = null;
-    if (!btn1 || !sec2Head || !wrapEl) return;
-
-    var sy  = window.scrollY || window.pageYOffset;
-    var vh  = window.innerHeight;
-    var vw  = window.innerWidth;
-    var bR  = btn1.getBoundingClientRect();
-    var s2R = sec2Head.getBoundingClientRect();
-
-    var btnBot_abs = bR.bottom + sy;
-    var s2Top_abs  = s2R.top   + sy;
-    var lineH = Math.max(0, s2Top_abs - btnBot_abs - 0.005 * vw);
-    var lineX = bR.left + bR.width / 2;
-
-    /* Position the wrapper div at button-bottom, width = SVG_W, centered on lineX */
-    wrapEl.style.left   = (lineX - REL_CX) + 'px';
-    wrapEl.style.top    = btnBot_abs + 'px';
-    wrapEl.style.width  = SVG_W + 'px';
-    wrapEl.style.height = Math.max(1, lineH) + 'px';
-
-    /* Keep SVG coordinate space in sync with the div's CSS dimensions */
-    svgEl.setAttribute('width',  SVG_W);
-    svgEl.setAttribute('height', Math.max(1, lineH));
-    svgEl.style.width  = SVG_W + 'px';
-    svgEl.style.height = Math.max(1, lineH) + 'px';
-
-    if (lineH < 1) {
-      wrapEl.style.clipPath = 'inset(0% 0 100% 0)';
+  function initAnimationOnce() {
+    if (initialized || !window.gsap || !window.gsap.timeline) {
+      if (!window.gsap) log('waiting for GSAP...');
       return;
     }
 
-    pathEl.setAttribute('d', buildPath(lineH));
+    btn1 = document.querySelector(BTN1_CLASS);
+    if (!btn1) { log('button not found'); return; }
 
-    /* ── Phase milestones (identical to v6) ── */
-    var M1 = Math.max(1, btnBot_abs);
-    var M2 = Math.max(M1 + 1, s2Top_abs - vh * 0.5);
-    var M3 = Math.max(M2 + 1, s2Top_abs - vh * 0.15);
+    sec2Head = findSec2Head(btn1);
+    if (!sec2Head) { log('section2 heading not found'); return; }
 
-    var cTop, cBot;
+    createSVGLine();
 
-    if (sy <= 0) {
-      cTop = 0; cBot = 1;
+    /* Measure dimensions on init */
+    var bR = btn1.getBoundingClientRect();
+    var s2R = sec2Head.getBoundingClientRect();
+    var btnBot_abs = bR.bottom + (window.scrollY || window.pageYOffset);
+    var s2Top_abs = s2R.top + (window.scrollY || window.pageYOffset);
+    var lineH = Math.max(1, s2Top_abs - btnBot_abs);
+    var lineX = bR.left + bR.width / 2;
 
-    } else if (sy <= M1) {
-      cTop = 0;
-      cBot = 1 - easeInOut(sy / M1);
+    /* Position SVG to cover button-to-sec2 span */
+    svgEl.style.left = (lineX - AMPLITUDE - 2) + 'px';
+    svgEl.style.top = btnBot_abs + 'px';
+    svgEl.style.width = (AMPLITUDE * 2 + 4) + 'px';
+    svgEl.style.height = lineH + 'px';
 
-    } else if (sy <= M2) {
-      cTop = easeInOut((sy - M1) / (M2 - M1)) * 0.65;
-      cBot = 0;
+    /* Set SVG coordinate space */
+    svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
+    svgEl.setAttribute('height', Math.ceil(lineH));
 
-    } else if (sy <= M3) {
-      var t = clamp((sy - M2) / (M3 - M2), 0, 1);
-      cTop = 0.65 + t * t * 0.35;
-      cBot = 0;
+    /* Build path: vertical line from button-center to bottom of SVG */
+    var relCx = AMPLITUDE + 2;
+    pathEl.setAttribute('d', buildPath(relCx, lineH));
+    var pathLength = lineH;  /* For vertical line, length = height */
+    pathEl.setAttribute('stroke-dasharray', pathLength);
+    pathEl.setAttribute('stroke-dashoffset', pathLength);  /* Hide line at page load */
 
-    } else {
-      cTop = 1; cBot = 0;
-    }
+    /* Create ScrollTrigger timeline */
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: btn1,
+        start: 'bottom center',
+        endTrigger: sec2Head,
+        end: 'top 75%',  /* Erase completes when sec2 heading reaches 75% of viewport */
+        scrub: true,
+        markers: DEBUG
+      }
+    });
 
-    if (cTop + cBot > 1) cBot = Math.max(0, 1 - cTop);
+    /* Phase 1: Draw from top to bottom */
+    tl.to(pathEl, {
+      strokeDashoffset: 0,
+      ease: 'none',
+      duration: 1
+    });
 
-    /* Apply clip-path to the outer div (same as v6 applied to its div) */
-    wrapEl.style.clipPath =
-      'inset(' + (cTop * 100).toFixed(2) + '% 0 '
-               + (cBot * 100).toFixed(2) + '% 0)';
+    /* Phase 2+3: Erase from top, start overlapping 20% before phase 1 ends */
+    tl.to(pathEl, {
+      strokeDashoffset: -lineH,
+      ease: 'power1.inOut',
+      duration: 1
+    }, '>-0.2');
 
-    log('sy', sy | 0,
-        '| M1', M1 | 0, 'M2', M2 | 0, 'M3', M3 | 0,
-        '| cTop', (cTop * 100).toFixed(1) + '%',
-        'cBot', (cBot * 100).toFixed(1) + '%');
-  }
-
-  function schedule() {
-    if (!rafId) rafId = requestAnimationFrame(update);
-  }
-
-  function setup() {
-    if (initialized) return true;
-
-    btn1     = btn1     || document.querySelector(BTN1_CLASS);
-    if (!btn1) { log('setup waiting - .discover-helix_button not found'); return false; }
-
-    sec2Head = sec2Head || findSec2Head(btn1);
-    if (!sec2Head) { log('setup waiting - section 2 heading not found'); return false; }
-
-    var r = btn1.getBoundingClientRect();
-    if (r.width === 0 && r.height === 0) { log('setup waiting - button layout not ready'); return false; }
-
-    ensureElements();
-
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule, { passive: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
-    window.addEventListener('load', function () { setTimeout(schedule, 100); });
-
+    log('animation initialized');
     initialized = true;
-    schedule();
-    log('setup complete');
-    return true;
   }
 
-  function retryInit(source) {
-    if (initialized) return;
-    log('retryInit from:', source);
+  /* Retry init until ready */
+  function retryInit() {
     var n = 0;
     var iv = setInterval(function () {
-      if (setup() || ++n >= 33) {
-        clearInterval(iv);
-        if (!initialized) log('retry giving up after ' + n + ' attempts');
-      }
-    }, 300);
+      initAnimationOnce();
+      if (initialized || ++n >= 50) clearInterval(iv);
+    }, 100);
+  }
+
+  /* Wait for GSAP + ScrollTrigger + DOM ready */
+  window.addEventListener('load', retryInit);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', retryInit);
+  } else {
+    setTimeout(retryInit, 300);
   }
 
   window.Webflow = window.Webflow || [];
-  window.Webflow.push(function () { setTimeout(function () { retryInit('Webflow.push'); }, 100); });
-
-  if (document.readyState === 'complete') {
-    setTimeout(function () { retryInit('immediate'); }, 100);
-  } else {
-    window.addEventListener('load', function () { setTimeout(function () { retryInit('load'); }, 100); });
-  }
-
-  if (document.readyState !== 'loading') {
-    setTimeout(function () { retryInit('not-loading'); }, 200);
-  } else {
-    document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () { retryInit('DOMContentLoaded'); }, 200);
-    });
-  }
+  window.Webflow.push(retryInit);
 })();
