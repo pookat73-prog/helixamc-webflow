@@ -21,25 +21,26 @@ jobs:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
         run: |
-          node -e "
-            const fs = require('fs');
-            const s1css  = fs.readFileSync('home/section1/section1.css', 'utf-8');
-            const s1js   = fs.readFileSync('home/section1/section1.js',  'utf-8');
-            const divCss = fs.readFileSync('home/section-divider/divider.css', 'utf-8');
-            const divJs  = fs.readFileSync('home/section-divider/divider.js',  'utf-8');
-            const head =
-              '<!-- Section 1 Hero Animation -->\n' +
-              '<script src=\"https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js\"><\/script>\n' +
-              '<style>\n' + s1css + '\n<\/style>\n' +
-              '<script>\n' + s1js + '\n<\/script>\n\n' +
-              '<!-- Section Divider (S1 → S2) -->\n' +
-              '<style>\n' + divCss + '\n<\/style>\n' +
-              '<script>\n' + divJs + '\n<\/script>\n\n' +
-              '<!-- Global Button Glow -->\n' +
-              '<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.css\">\n' +
-              '<script src=\"https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.js\"><\/script>';
-            process.stdout.write(JSON.stringify(head));
-          " > /tmp/head_code.json
+          cat > /tmp/build-head.js << 'JSEOF'
+          const fs = require('fs');
+          const s1css  = fs.readFileSync('home/section1/section1.css', 'utf-8');
+          const s1js   = fs.readFileSync('home/section1/section1.js',  'utf-8');
+          const divCss = fs.readFileSync('home/section-divider/divider.css', 'utf-8');
+          const divJs  = fs.readFileSync('home/section-divider/divider.js',  'utf-8');
+          const head =
+            '<!-- Section 1 Hero Animation -->\n' +
+            '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"><\/script>\n' +
+            '<style>\n' + s1css + '\n<\/style>\n' +
+            '<script>\n' + s1js + '\n<\/script>\n\n' +
+            '<!-- Section Divider (S1 → S2) -->\n' +
+            '<style>\n' + divCss + '\n<\/style>\n' +
+            '<script>\n' + divJs + '\n<\/script>\n\n' +
+            '<!-- Global Button Glow -->\n' +
+            '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.css">\n' +
+            '<script src="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.js"><\/script>';
+          process.stdout.write(JSON.stringify(head));
+          JSEOF
+          node /tmp/build-head.js > /tmp/head_code.json
 
           curl -X PATCH \
             "https://api.webflow.com/v1/sites/${SITE_ID}" \
