@@ -11,12 +11,12 @@
   var style = document.createElement('style');
   style.textContent = [
     '@keyframes helixGlowBlue {',
-    '  0%,100% { box-shadow: 0 0 1.2vw 0.4vw rgba(0,117,214,0.95); }',
-    '  50%      { box-shadow: 0 0 0.1vw 0.05vw rgba(0,117,214,0.05); }',
+    '  0%,100% { box-shadow: 0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5); }',
+    '  50%      { box-shadow: 0 0 0.1vw 0.02vw rgba(0,117,214,0.02); }',
     '}',
     '@keyframes helixGlowPurple {',
-    '  0%,100% { box-shadow: 0 0 1.2vw 0.4vw rgba(85,40,170,0.95); }',
-    '  50%      { box-shadow: 0 0 0.1vw 0.05vw rgba(85,40,170,0.05); }',
+    '  0%,100% { box-shadow: 0 0 1.6vw 0.6vw rgba(85,40,170,1), 0 0 3vw 1vw rgba(85,40,170,0.5); }',
+    '  50%      { box-shadow: 0 0 0.1vw 0.02vw rgba(85,40,170,0.02); }',
     '}'
   ].join('\n');
   document.head.appendChild(style);
@@ -27,8 +27,8 @@
 
   function startGlow(el) {
     var shadow = isPurple(el)
-      ? '0 0 1.2vw 0.4vw rgba(85,40,170,0.95)'
-      : '0 0 1.2vw 0.4vw rgba(0,117,214,0.95)';
+      ? '0 0 1.6vw 0.6vw rgba(85,40,170,1), 0 0 3vw 1vw rgba(85,40,170,0.5)'
+      : '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)';
 
     /* Phase 1: fade-in to full glow */
     el.style.transition = 'box-shadow 0.6s ease';

@@ -30,8 +30,8 @@
     style.id = 'helix-glow-keyframes';
     style.textContent = [
       '@keyframes helixGlowBlue {',
-      '  0%,100% { box-shadow: 0 0 1.2vw 0.4vw rgba(0,117,214,0.95); }',
-      '  50%      { box-shadow: 0 0 0.1vw 0.05vw rgba(0,117,214,0.05); }',
+      '  0%,100% { box-shadow: 0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5); }',
+      '  50%      { box-shadow: 0 0 0.1vw 0.02vw rgba(0,117,214,0.02); }',
       '}'
     ].join('\n');
     document.head.appendChild(style);
@@ -184,7 +184,7 @@
         if (box1) {
           box1.classList.add('is-holding');
           box1.style.transition = 'box-shadow 0.6s ease';
-          box1.style.boxShadow = '0 0 1.2vw 0.4vw rgba(0,117,214,0.95)';
+          box1.style.boxShadow = '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)';
         }
       },
       function () {
