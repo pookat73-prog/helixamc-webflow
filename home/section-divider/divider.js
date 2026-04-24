@@ -98,10 +98,12 @@
     var lineX = bR.left + bR.width / 2;
 
     /* Position SVG to cover button-to-sec2 span */
-    svgEl.style.left = (lineX - AMPLITUDE - 2) + 'px';
+    var svgW = AMPLITUDE * 2 + 4;
+    svgEl.style.left = (lineX - svgW / 2) + 'px';
     svgEl.style.top = btnBot_abs + 'px';
-    svgEl.style.width = (AMPLITUDE * 2 + 4) + 'px';
+    svgEl.style.width = svgW + 'px';
     svgEl.style.height = lineH + 'px';
+    svgEl.style.overflow = 'hidden';
 
     /* Set SVG coordinate space */
     svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
