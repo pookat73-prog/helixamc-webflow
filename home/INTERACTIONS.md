@@ -97,27 +97,36 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 ## 3. Section 1 → Section 2 연결선 (Helix Connector)
 
 버튼 1(`.discover-helix_button`) 하단 중앙에서 섹션 2 헤딩 상단까지
-스크롤에 반응해 그려지다 지워지는 1px 파란 실선.
+스크롤 연동 **그려지다 지워지는** SVG 사인파 헬릭스 선 (ScrollTrigger 구동).
 
-### 3 페이즈
+### 구현 방식
 
-| 페이즈 | 범위                                    | 동작                                  |
-|--------|-----------------------------------------|---------------------------------------|
-| 1      | 스크롤 시작 → 버튼 하단 뷰포트 이탈     | 위→아래로 그려짐 (bottom clip 1→0)    |
-| 2      | 버튼 이탈 → 섹션 2 헤딩 50vh 도달       | 위에서부터 **느리게** 지워짐 (top 0→0.65) |
-| 3      | 섹션 2 50vh → 15vh                      | 시작점이 도착점까지 **가속하며 수렴** (top 0.65→1, bottom 고정) |
+- **요소**: `<svg class="helix-line-svg">` + `<path class="helix-line-path">`
+- **경로**: 진폭 14px, 5주기 사인파 (120포인트 폴리라인)
+- **애니메이션**: GSAP ScrollTrigger + `stroke-dashoffset`
+- **위치**: JS에서 동적 측정 (button 중앙 기준, height = button bottom → sec2 heading top)
 
-**도착점은 절대 튕기지 않음** — Phase 3에서 `cBot = 0` 고정, `cTop`만 이동.
+### ScrollTrigger Timeline
 
-### 마일스톤 (절대 y 좌표)
+```javascript
+gsap.timeline({
+  scrollTrigger: {
+    trigger: ".discover-helix_button",
+    start: "bottom center",
+    endTrigger: ".section2_heading", 
+    end: "center center",
+    scrub: true  // scroll-linked
+  }
+})
+```
 
-- `M1 = btnBot_abs` (버튼 하단 절대 위치)
-- `M2 = s2Top_abs - vh * 0.5`
-- `M3 = s2Top_abs - vh * 0.15`
+### 2단계 애니메이션
 
-### Clip 계산
-
-`clipPath: inset(<cTop>% 0 <cBot>% 0)` — 상단 cTop% + 하단 cBot%만 잘라냄.
+| 단계  | 구간                     | 동작                                            |
+|-------|--------------------------|------------------------------------------------|
+| Draw  | trigger → ~80% of 범위   | `strokeDashoffset: L → 0` (위에서 아래로 그려짐) |
+| Erase | ~60% of 범위 → end       | `strokeDashoffset: 0 → -L` (시작점 따라오며 지움) |
+| 겹침  | 20%                      | 두 단계가 겹쳐서 부드러운 전환                 |
 
 ### 섹션 2 헤딩 탐지
 
@@ -126,19 +135,24 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 
 ### 스타일
 
-- 색상: `#0075d6` (메인블루)
-- 두께: 1px
-- z-index: 9999
-- `will-change: clip-path` (GPU 합성)
+- **색상**: `#0075d6` (메인블루)
+- **두께**: 1px
+- **z-index**: 9999
+- **stroke 속성**: linecap=round, linejoin=round (부드러운 끝)
+
+### 의존성
+
+- GSAP 3.12.2 (이미 Webflow head에 로드됨)
+- **ScrollTrigger** (bootstrap.js에서 자동 로드)
 
 ### 옵션
 
-- URL `?debug-line=1` 또는 `window.DEBUG_SECTION_LINE = true` → 마일스톤·clip 로그
+- URL `?debug-line=1` 또는 `window.DEBUG_SECTION_LINE = true` → 상세 로그 + ScrollTrigger 마커
 
 ### 파일
 
-- `home/section-divider/divider.js` — 스크롤 연동 update 루프 (RAF throttle)
-- `home/section-divider/divider.css` — 라인 기본 스타일
+- `home/section-divider/divider.js` — SVG 생성, ScrollTrigger timeline, stroke-dashoffset 애니메이션
+- `home/section-divider/divider.css` — 스타일 기본값
 
 ---
 
