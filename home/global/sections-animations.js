@@ -50,7 +50,7 @@ console.log('[Sections] FILE LOADED - top of IIFE');
       });
     }
 
-    headings.forEach(function (h) {
+    headings.forEach(function (h, i) {
       gsap.fromTo(h,
         { opacity: 0, y: 20 },
         {
@@ -61,7 +61,14 @@ console.log('[Sections] FILE LOADED - top of IIFE');
           scrollTrigger: {
             trigger: h,
             start: 'top 80%',
-            toggleActions: 'play none none reverse'
+            toggleActions: 'play none none reverse',
+            onEnter:     function () { log('HEADING ' + i + ' onEnter — PLAY'); },
+            onLeave:     function () { log('HEADING ' + i + ' onLeave'); },
+            onEnterBack: function () { log('HEADING ' + i + ' onEnterBack'); },
+            onLeaveBack: function () { log('HEADING ' + i + ' onLeaveBack'); },
+            onRefresh:   function (st) {
+              log('HEADING ' + i + ' onRefresh — start=' + Math.round(st.start) + ', end=' + Math.round(st.end) + ', scroll=' + Math.round(st.scroll()));
+            }
           }
         }
       );
@@ -93,7 +100,11 @@ console.log('[Sections] FILE LOADED - top of IIFE');
         scrollTrigger: {
           trigger: cardContainer,
           start: 'top 70%',
-          toggleActions: 'play none none none'
+          toggleActions: 'play none none none',
+          onEnter:   function () { log('CARDS onEnter — PLAY'); },
+          onRefresh: function (st) {
+            log('CARDS onRefresh — start=' + Math.round(st.start) + ', end=' + Math.round(st.end) + ', scroll=' + Math.round(st.scroll()) + ', trigger=' + (st.trigger ? st.trigger.className : 'null'));
+          }
         }
       });
 
