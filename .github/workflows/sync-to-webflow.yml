@@ -3,8 +3,10 @@ on:
   push:
     branches:
       - main
+      - latest
     paths:
       - 'home/section1/**'
+      - 'home/section-divider/**'
       - 'home/global/**'
 jobs:
   sync-homepage:
@@ -17,13 +19,18 @@ jobs:
         run: |
           cat > /tmp/build-code.js << 'EOF'
           const fs = require('fs');
-          const cssFile = fs.readFileSync('home/section1/section1.css', 'utf-8');
-          const jsFile  = fs.readFileSync('home/section1/section1.js',  'utf-8');
+          const cssFile     = fs.readFileSync('home/section1/section1.css',         'utf-8');
+          const jsFile      = fs.readFileSync('home/section1/section1.js',          'utf-8');
+          const divCssFile  = fs.readFileSync('home/section-divider/divider.css',   'utf-8');
+          const divJsFile   = fs.readFileSync('home/section-divider/divider.js',    'utf-8');
           const headCode =
             `<!-- Section 1 Hero Animation -->\n` +
             `<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"><\/script>\n` +
             `<style>\n${cssFile}\n</style>\n` +
             `<script>\n${jsFile}\n<\/script>\n\n` +
+            `<!-- Section Divider (Section 1 → Section 2) -->\n` +
+            `<style>\n${divCssFile}\n</style>\n` +
+            `<script>\n${divJsFile}\n<\/script>\n\n` +
             `<!-- Global Button Glow -->\n` +
             `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.css">\n` +
             `<script src="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.js"><\/script>`;
