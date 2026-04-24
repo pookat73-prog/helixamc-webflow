@@ -8,6 +8,9 @@ on:
     paths:
       - 'home/**'
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,6 +18,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Create Release for jsDelivr @latest resolution
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="auto-$(date +%Y%m%d%H%M%S)"
+          echo "Creating release ${TAG}..."
+          gh release create "$TAG" \
+            --title "Auto deploy ${TAG}" \
+            --notes "Automated release to refresh jsDelivr @latest resolution" \
+            --target ${{ github.sha }}
+          echo "✅ Release ${TAG} created"
 
       - name: Publish to Webflow
         env:
@@ -52,6 +67,9 @@ jobs:
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/${FILE}")
             echo "Purged ${FILE} → HTTP ${STATUS}"
           done
+
+          # Also purge package-level resolution
+          curl -s -o /dev/null "https://purge.jsdelivr.net/package/gh/pookat73-prog/helixamc-webflow" || true
 
       - name: Summary
         if: success()
