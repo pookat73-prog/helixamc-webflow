@@ -2,9 +2,9 @@
    SECTION CONNECTOR LINE: Button 1 bottom-center → Section 2 head top (-0.5vw)
    JavaScript - scroll-animated draw/erase via clipPath
 
-   Phase 1 (scroll start → button top exits):  line grows downward
-   Phase 2 (button exits → sec2 at 50vh):      erase from top, slow
-   Phase 3 (sec2 at 50vh → 15vh):              fast convergence, line gone
+   Phase 1 (scroll start → button bottom exits): line grows downward
+   Phase 2 (button fully gone → sec2 at 50vh):  erase from top, slow
+   Phase 3 (sec2 at 50vh → 15vh):               fast convergence, line gone
 
    디버그: URL에 ?debug-line=1 추가 또는 window.DEBUG_SECTION_LINE = true
    Version: 5
@@ -93,8 +93,8 @@
     }
 
     /* ── 스크롤 마일스톤 ─────────────────────────────────────────── */
-    /* M1: 버튼 상단이 뷰포트 상단에 도달 → 라인 완전히 그려짐       */
-    var M1 = Math.max(1, btnTop_abs);
+    /* M1: 버튼 하단이 뷰포트 상단에 도달 = 버튼 완전 이탈 → 라인 완전히 그려짐 */
+    var M1 = Math.max(1, btnBot_abs);
     /* M2: sec2 상단이 뷰포트 50% 위치 → 빠른 수렴 시작              */
     var M2 = Math.max(M1 + 1, s2Top_abs - vh * 0.5);
     /* M3: 라인 완전 소멸                                             */
