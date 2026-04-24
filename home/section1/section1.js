@@ -17,12 +17,18 @@
           coordinates matching the ghost's position
        3. After bg's fade completes, restore the real el to its
           original DOM position and remove the ghost.
+
+   Debug: add ?debug-s1=1 to URL or set window.DEBUG_SECTION1 = true
    ================================================================ */
 
 (function () {
   'use strict';
 
-  console.log('[Section1] script loaded');
+  var DEBUG = window.DEBUG_SECTION1 ||
+              /[?&]debug-s1=1/.test(location.search);
+  var log = DEBUG ? function () {
+    console.log.apply(console, ['[Section1]'].concat([].slice.call(arguments)));
+  } : function () {};
 
   function asymInOut(inRatio, inPow) {
     inPow = inPow || 2;
@@ -52,7 +58,7 @@
     }
 
     var ghost = el.cloneNode(true);
-    ghost.style.visibility  = 'hidden';
+    ghost.style.visibility    = 'hidden';
     ghost.style.pointerEvents = 'none';
     ghost.removeAttribute('id');
     ghost.setAttribute('data-s1-ghost', '1');
@@ -92,7 +98,7 @@
     if (started) return true;
 
     if (typeof gsap === 'undefined') {
-      console.warn('[Section1] GSAP not loaded yet, retrying...');
+      log('GSAP not loaded yet, retrying...');
       return false;
     }
 
@@ -100,13 +106,13 @@
     var bg     = document.querySelector('.div-block-150');
     var box1   = document.querySelector('.bt-box-1');
 
-    console.log('[Section1] selectors found:',
-      'slogan=' + !!slogan,
-      'bg=' + !!bg,
-      'box1=' + !!box1);
+    log('selectors found:',
+        'slogan=' + !!slogan,
+        'bg=' + !!bg,
+        'box1=' + !!box1);
 
     if (!slogan && !bg && !box1) {
-      console.warn('[Section1] no selectors matched, retrying...');
+      log('no selectors matched, retrying...');
       return false;
     }
 
@@ -116,13 +122,17 @@
     var cleanups = [];
     if (bg && bg.parentElement) {
       var target = bg.parentElement;
-      if (slogan && bg.contains(slogan)) {
-        console.log('[Section1] detaching slogan from bg');
-        cleanups.push(detachWithGhost(slogan, target));
-      }
-      if (box1 && bg.contains(box1)) {
-        console.log('[Section1] detaching box1 from bg');
-        cleanups.push(detachWithGhost(box1, target));
+      try {
+        if (slogan && bg.contains(slogan)) {
+          log('detaching slogan from bg');
+          cleanups.push(detachWithGhost(slogan, target));
+        }
+        if (box1 && bg.contains(box1)) {
+          log('detaching box1 from bg');
+          cleanups.push(detachWithGhost(box1, target));
+        }
+      } catch (e) {
+        console.warn('[Section1] detach failed, continuing without:', e);
       }
     }
 
@@ -136,15 +146,7 @@
     forceOpacity(bg, 0);
     forceOpacity(box1, 0);
 
-    if (slogan) {
-      var cs = window.getComputedStyle(slogan);
-      console.log('[Section1] slogan after forceHide: opacity=' + cs.opacity + ' visibility=' + cs.visibility);
-    }
-
     if (box1) box1.setAttribute('data-s1-init', '');
-
-    var t0 = performance.now();
-    function elapsed() { return ((performance.now() - t0) / 1000).toFixed(2); }
 
     function fadeIn(el, name, duration, ease, delay, onStart, onComplete) {
       if (!el) return;
@@ -155,7 +157,7 @@
         delay: delay,
         ease: ease,
         onStart: function () {
-          console.log('[Section1] ' + name + ' fade start at t=' + elapsed() + 's');
+          log(name + ' fade start (delay=' + delay + 's)');
           if (onStart) onStart();
         },
         onUpdate: function () { forceOpacity(el, state.v); },
@@ -171,11 +173,13 @@
       });
     fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
       /* All fades done - restore DOM so responsive layout resumes */
-      console.log('[Section1] all fades done, restoring DOM');
-      cleanups.forEach(function (c) { c.cleanup(); });
+      log('all fades done, restoring DOM');
+      cleanups.forEach(function (c) {
+        try { c.cleanup(); } catch (e) { console.warn('[Section1] cleanup failed:', e); }
+      });
     });
 
-    console.log('[Section1] timeline started');
+    log('timeline started');
     return true;
   }
 

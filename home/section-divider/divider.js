@@ -74,7 +74,6 @@
     var bR  = btn1.getBoundingClientRect();
     var s2R = sec2Head.getBoundingClientRect();
 
-    var btnTop_abs = bR.top    + sy;
     var btnBot_abs = bR.bottom + sy;
     var s2Top_abs  = s2R.top   + sy;
 
@@ -151,7 +150,7 @@
     ensureLine();
 
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('resize', schedule, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
     window.addEventListener('load', function () { setTimeout(schedule, 100); });
 

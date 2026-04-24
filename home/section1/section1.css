@@ -1,19 +1,19 @@
-/* ═══════════════════════════════════════════════════════════════
+/* ================================================================
    SECTION 1: HOME PAGE HERO ANIMATION
    CSS only - no external dependencies
 
-   글로우 keyframes/클래스는 home/global/buttons.css에서 관리.
-   여기서는 Hero 고유 초기 상태만 선언.
-   ═══════════════════════════════════════════════════════════════ */
+   Glow keyframes/classes live in home/global/buttons.css.
+   This file only declares Hero-specific initial state.
+   ================================================================ */
 
-/* 1. 검은 도화지: 배경이 없어도 어두운 배경 보장 */
+/* 1. Dark canvas: ensure background is dark even if bg layer is hidden */
 .home_background {
   background-color: #0d1117 !important;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* 2. GSAP 제어 요소: FOUC 방지 초기 숨김 */
+/* 2. GSAP-controlled elements: FOUC-prevention initial hide */
 .home_slogan,
 .div-block-150,
 .bt-box-1 {

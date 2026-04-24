@@ -1,7 +1,7 @@
-/* ═══════════════════════════════════════════════════════════════
-   SECTION CONNECTOR LINE: Button 1 bottom-center → Section 2 head top (-0.5vw)
+/* ================================================================
+   SECTION CONNECTOR LINE: Button 1 bottom-center -> Section 2 head top
    CSS only - no external dependencies
-   ═══════════════════════════════════════════════════════════════ */
+   ================================================================ */
 
 .section-connector-line {
   position: absolute;
