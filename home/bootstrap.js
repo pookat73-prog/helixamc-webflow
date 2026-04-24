@@ -1,15 +1,12 @@
-/* ═══════════════════════════════════════════════════════════════
-   HELIX AMC — AUTO BOOTSTRAP LOADER
+/* ================================================================
+   HELIX AMC - AUTO BOOTSTRAP LOADER
    Pasted once in Webflow. Always serves the latest commit.
 
    Strategy:
-     1) Fetch latest commit SHA of main branch from GitHub API
-     2) Load all CSS/JS files via jsDelivr using that SHA
-        (immutable URL → never stale cache)
+     1) Fetch latest commit SHA from GitHub API
+     2) Load all CSS/JS via jsDelivr using that SHA (immutable URL)
      3) Fallback to @main if API fails
-
-   Dependencies: none (GSAP is loaded separately in head code)
-   ═══════════════════════════════════════════════════════════════ */
+   ================================================================ */
 
 (function () {
   'use strict';
@@ -27,8 +24,8 @@
     'home/global/buttons.js'
   ];
 
-  function cdnBase(sha) {
-    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + sha;
+  function cdnBase(ref) {
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref;
   }
 
   function injectAll(base) {
@@ -42,13 +39,12 @@
       } else if (ext === 'js') {
         var script = document.createElement('script');
         script.src   = base + '/' + path;
-        script.async = false; /* preserve execution order */
+        script.async = false;
         document.head.appendChild(script);
       }
     });
   }
 
-  /* GitHub API: get latest commit SHA (no auth needed, 60 req/h per IP) */
   var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
 
   fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
@@ -60,7 +56,7 @@
       injectAll(cdnBase(sha));
     })
     .catch(function (err) {
-      console.warn('[helix-bootstrap] SHA fetch failed → fallback to @' + BRANCH, err);
+      console.warn('[helix-bootstrap] fetch failed, fallback to @' + BRANCH, err);
       injectAll(cdnBase(BRANCH));
     });
 })();
