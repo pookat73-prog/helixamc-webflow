@@ -88,16 +88,31 @@ home/
 
 **커밋**: `828e698` (divider: BTN1_CLASS .discover-helix_button으로 복원)
 
-이 시점까지의 안정적 상태:
-- 섹션 1 Hero: 슬로건/버튼/배경 페이드인 애니메이션 완료
-- 버튼 1 글로우: LOCKED (절대 수정 금지)
-- 섹션 1-2 헬릭스 라인: 위치 조정 중
+**안정적 상태**:
+- ✅ 섹션 1 Hero: 슬로건/버튼/배경 페이드인 애니메이션
+- ✅ 버튼 1 글로우: LOCKED (절대 수정 금지)
+- ⚠️ 섹션 1-2 헬릭스 라인: 위치 조정 중
 
-**원본 코드 위치**:
-- `home/section1/section1.js`, `section1.css`
-- `home/section-divider/divider.js`, `divider.css`
+**복원 방법**: `git revert d94c9d4` (현재) → `828e698`로 돌아옴
 
-⚠️ 새 코드 적용 후 문제 시 이 커밋으로 `git revert`
+---
+
+## 📌 Version Current (섹션 2-4 러프 코드 적용)
+
+**커밋**: `d94c9d4` (섹션 2-4 전체 애니메이션 통합)
+
+**새로 추가된 기능**:
+- 📄 `home/global/sections-animations.js`: 섹션 2-4 전체 애니메이션
+  - 섹션 2 헤딩 fade-in
+  - 섹션 2-3 지그 라인 draw/erase
+  - 섹션 4 카드 스태거 + 그림자
+  - 복사/전화 기능 핸들러
+- 🎨 `home/global/sections-animations.css`: 초기 상태 스타일
+
+⚠️ **현재 상태**: 큰틀 적용, 디테일 조정 예정
+- Webflow 요소 클래스명 확인 필요 (`.section2_heading`, `.home_branch-card` 등)
+- 지그 라인 SVG 생성/위치 확인 필요
+- 복사/전화 버튼 실제 작동 테스트 필요
 
 ## 컨텍스트
 - Webflow Site ID: `69d090ea69d828e27d16ea29`
