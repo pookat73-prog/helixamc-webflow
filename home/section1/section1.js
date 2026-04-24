@@ -56,32 +56,57 @@
 
     started = true;
 
-    var targets = [];
-    if (slogan) targets.push(slogan);
-    if (bg)     targets.push(bg);
-    if (box1)   targets.push(box1);
-    gsap.set(targets, { autoAlpha: 0 });
+    /* Force initial hidden with !important to beat Webflow styles */
+    function forceHide(el) {
+      if (!el) return;
+      el.style.setProperty('opacity', '0', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+    }
+    function clearForced(el) {
+      if (!el) return;
+      el.style.removeProperty('opacity');
+      el.style.removeProperty('visibility');
+    }
+
+    forceHide(slogan);
+    forceHide(bg);
+    forceHide(box1);
+
+    /* Verify actually hidden */
+    if (slogan) {
+      var cs = window.getComputedStyle(slogan);
+      console.log('[Section1] slogan after forceHide: opacity=' + cs.opacity + ' visibility=' + cs.visibility);
+    }
 
     if (box1) box1.setAttribute('data-s1-init', '');
 
     var tl = gsap.timeline();
 
     if (slogan) {
-      tl.to(slogan, { autoAlpha: 1, duration: 1.2, ease: easeSlogan }, 0.3);
+      tl.call(function () { clearForced(slogan); }, null, 0.3)
+        .fromTo(slogan,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 1.2, ease: easeSlogan }, 0.3);
     }
     if (box1) {
-      tl.to(box1, {
-        autoAlpha: 1,
-        duration: 0.8,
-        ease: 'expo.out',
-        onStart:    function () { box1.classList.add('is-holding'); },
-        onComplete: function () {
-          setTimeout(function () { box1.classList.add('is-looping'); }, 1500);
-        }
-      }, 1.3);
+      tl.call(function () { clearForced(box1); }, null, 1.3)
+        .fromTo(box1,
+          { autoAlpha: 0 },
+          {
+            autoAlpha: 1,
+            duration: 0.8,
+            ease: 'expo.out',
+            onStart:    function () { box1.classList.add('is-holding'); },
+            onComplete: function () {
+              setTimeout(function () { box1.classList.add('is-looping'); }, 1500);
+            }
+          }, 1.3);
     }
     if (bg) {
-      tl.to(bg, { autoAlpha: 1, duration: 1.5, ease: easeBg }, 1.45);
+      tl.call(function () { clearForced(bg); }, null, 1.45)
+        .fromTo(bg,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 1.5, ease: easeBg }, 1.45);
     }
 
     console.log('[Section1] timeline started');
