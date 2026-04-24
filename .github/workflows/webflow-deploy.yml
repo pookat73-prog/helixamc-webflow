@@ -11,34 +11,66 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
+      - name: Update Webflow Head Code
+        env:
+          WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
+          SITE_ID: "69d090ea69d828e27d16ea29"
+        run: |
+          node -e "
+            const fs = require('fs');
+            const s1css  = fs.readFileSync('home/section1/section1.css', 'utf-8');
+            const s1js   = fs.readFileSync('home/section1/section1.js',  'utf-8');
+            const divCss = fs.readFileSync('home/section-divider/divider.css', 'utf-8');
+            const divJs  = fs.readFileSync('home/section-divider/divider.js',  'utf-8');
+            const head =
+              '<!-- Section 1 Hero Animation -->\n' +
+              '<script src=\"https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js\"><\/script>\n' +
+              '<style>\n' + s1css + '\n<\/style>\n' +
+              '<script>\n' + s1js + '\n<\/script>\n\n' +
+              '<!-- Section Divider (S1 → S2) -->\n' +
+              '<style>\n' + divCss + '\n<\/style>\n' +
+              '<script>\n' + divJs + '\n<\/script>\n\n' +
+              '<!-- Global Button Glow -->\n' +
+              '<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.css\">\n' +
+              '<script src=\"https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.js\"><\/script>';
+            process.stdout.write(JSON.stringify(head));
+          " > /tmp/head_code.json
+
+          curl -X PATCH \
+            "https://api.webflow.com/v1/sites/${SITE_ID}" \
+            -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
+            -H "accept-version: 1.0.0" \
+            -H "Content-Type: application/json" \
+            -d "{\"head_code\": $(cat /tmp/head_code.json)}" \
+            --fail
+          echo "✅ Head code 업데이트 완료"
+
       - name: Publish to Webflow
         env:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
         run: |
           echo "🚀 Publishing helix-amc to Webflow..."
-          
+
           RESPONSE=$(curl -X POST -s -o /dev/null -w "%{http_code}" \
             "https://api.webflow.com/v2/sites/${SITE_ID}/publish" \
             -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
             -H "accept: application/json" \
             -H "content-type: application/json" \
-            -d '{
-              "publishToWebflowSubdomain": true
-            }')
-          
+            -d '{"publishToWebflowSubdomain": true}')
+
           if [ "$RESPONSE" -eq 200 ] || [ "$RESPONSE" -eq 202 ]; then
             echo "✅ 배포 성공!"
           else
             echo "❌ 배포 실패 (HTTP $RESPONSE)"
             exit 1
           fi
-      
+
       - name: Purge jsDelivr CDN Cache
         run: |
           BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest"
@@ -57,9 +89,6 @@ jobs:
         if: success()
         run: |
           echo "## ✅ Webflow 배포 완료" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **사이트:** helix-amc" >> $GITHUB_STEP_SUMMARY
-          echo "- **도메인:** Webflow Subdomain (helixanimalmedicalcenter.webflow.io)" >> $GITHUB_STEP_SUMMARY
           echo "- **커밋:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **작성자:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
           echo "- **브랜치:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
