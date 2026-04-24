@@ -2,6 +2,7 @@
    SECTION 1: HOME PAGE HERO ANIMATION
    JavaScript - GSAP Timeline Logic
    Dependencies: GSAP 3.12.2+ (loaded via CDN)
+   Updated: 2026-04-24
    ═══════════════════════════════════════════════════════════════ */
 
 (function() {
