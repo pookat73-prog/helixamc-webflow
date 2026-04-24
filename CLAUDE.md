@@ -49,12 +49,35 @@ home/
 - SVIC 퍼플: `#5528aa`
 - 배경: `#0d1117`
 
+## ⚠️ bt-box-1 글로우 — 건드리지 말 것 (LOCKED)
+
+**현재 작동 중인 구현** (`commit 1f2f7b2`, 확정):
+
+| 파일 | 역할 |
+|---|---|
+| `home/section1/section1.js` | 페이드인 완료 후 GSAP으로 글로우 0.5s 페이드인, 완료 시 `clearProps` + `is-looping` 클래스 추가 |
+| `home/global/buttons.css` | `.bt-box-1.is-looping { animation: glowShimmerBlue 2.4s infinite ease-in-out }` |
+
+**글로우 동작 순서 (절대 바꾸지 말 것):**
+1. 버튼 opacity 0→1 페이드인 (GSAP, 0.8s)
+2. GSAP `boxShadow` 0→`2.6vw 0.9vw rgba(0,117,214,1)` 페이드인 (0.5s)
+3. `gsap.set(box1, { clearProps: 'boxShadow' })` → `box1.classList.add('is-looping')`
+4. CSS `glowShimmerBlue` 애니메이션 (78%~100% 밝기, 2.4s 주기) 아롱아롱 유지
+
+**이전에 시도했다가 실패한 방식들 (재시도 금지):**
+- `is-holding` CSS 클래스 (`box-shadow !important`) → CSS animation 충돌로 shimmer 불가
+- GSAP multi-shadow 트위닝 (`'... rgba(...), ... rgba(...)'`) → 파싱 오류로 툭 꺼짐
+- `is-looping`만 단독 추가 (GSAP 페이드인 없이) → 팟! 튀는 현상
+
+**bt-box-1에만 해당** — bt-box-2/3/4는 `buttons.js`의 IntersectionObserver + GSAP으로 별도 관리.
+
 ## 하면 안 되는 것
 - Webflow API로 head code 직접 수정 시도 ❌
   → Site API 토큰으로는 `PUT /v2/sites/{id}/custom_code`가 `invalid_auth_version` 403 반환. OAuth App 아니면 불가.
 - jsDelivr `@main` 직접 참조 (bootstrap.js는 예외) ❌
   → 캐시 꼬임. 항상 bootstrap 패턴 통해서 commit SHA로 로드.
 - `@latest` 사용 ❌ → GitHub Release에 바인딩되며 업데이트 안 됨.
+- bt-box-1 글로우 로직 수정 ❌ → 위 LOCKED 섹션 참조.
 
 ## 디버그 팁
 - 라인 애니메이션: URL에 `?debug-line=1` 추가 → 콘솔 로그
