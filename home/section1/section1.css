@@ -23,8 +23,11 @@
 }
 
 /* 3. 광채 수치 표준화 (#0075d6, #5528aa) */
-/* 버튼은 box-shadow도 변화하므로 will-change 추가 */
-.discover-helix_button,
+/* 버튼은 opacity + box-shadow 모두 변화하므로 두 힌트 모두 지정 */
+.discover-helix_button {
+  will-change: opacity, box-shadow;
+}
+
 .flex-block-23 .cta-style {
   will-change: box-shadow;
 }
