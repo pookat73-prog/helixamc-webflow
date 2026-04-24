@@ -11,15 +11,12 @@
   visibility: visible !important;
 }
 
-/* 2. 초기화: 모든 트랜지션 제거 및 강제 은닉 */
-.home_slogan, 
-.div-block-150, 
-.discover-helix_button, 
-.flex-block-23 {
+/* 2. 초기화: GSAP가 복원할 요소만 숨김 (.bt-box-1은 GSAP set으로 처리) */
+.home_slogan,
+.div-block-150 {
   opacity: 0;
   visibility: hidden;
   transition: none !important;
-  will-change: opacity, box-shadow;
 }
 
 /* 3. 광채 수치 표준화 (#0075d6, #5528aa) */
