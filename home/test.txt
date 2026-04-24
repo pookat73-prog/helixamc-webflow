@@ -1,6 +1,0 @@
-자동화 테스트 - HTTP 202 수정 후
-테스트 날짜: 2026-04-24
-테스트 목적: GitHub Actions 워크플로우 동작 확인
-- webflow-deploy 자동 배포 테스트 (HTTP 202 대응)
-- sync-to-webflow 동기화 테스트
-상태: 워크플로우 수정 후 최종 테스트
