@@ -8,44 +8,160 @@ on:
     paths:
       - 'home/**'
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
+      - name: Create Release
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="auto-$(date +%Y%m%d%H%M%S)"
+          gh release create "$TAG" \
+            --title "Auto deploy ${TAG}" \
+            --notes "Automated release" \
+            --target ${{ github.sha }}
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "✅ Release ${TAG} created"
+
+      - name: Update Webflow Site Custom Code (head)
+        id: api
+        continue-on-error: true
+        env:
+          WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
+          SITE_ID: "69d090ea69d828e27d16ea29"
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          CDN="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${TAG}"
+
+          cat > /tmp/build.js <<'JSEOF'
+          const CDN = process.env.CDN;
+          const head =
+            '<!-- Section 1 Hero Animation -->\n' +
+            '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></' + 'script>\n' +
+            '<link rel="stylesheet" href="' + CDN + '/home/section1/section1.css">\n' +
+            '<script src="' + CDN + '/home/section1/section1.js"></' + 'script>\n\n' +
+            '<!-- Section Divider (S1 → S2) -->\n' +
+            '<link rel="stylesheet" href="' + CDN + '/home/section-divider/divider.css">\n' +
+            '<script src="' + CDN + '/home/section-divider/divider.js"></' + 'script>\n\n' +
+            '<!-- Global Button Glow -->\n' +
+            '<link rel="stylesheet" href="' + CDN + '/home/global/buttons.css">\n' +
+            '<script src="' + CDN + '/home/global/buttons.js"></' + 'script>';
+          process.stdout.write(JSON.stringify({ headCode: head, footCode: '' }));
+          JSEOF
+
+          CDN="${CDN}" node /tmp/build.js > /tmp/payload.json
+
+          # 수동 확인용 head code 출력
+          CDN="${CDN}" node -e "
+            const CDN = process.env.CDN;
+            const head =
+              '<!-- Section 1 Hero Animation -->\n' +
+              '<script src=\"https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js\"><\/script>\n' +
+              '<link rel=\"stylesheet\" href=\"' + CDN + '/home/section1/section1.css\">\n' +
+              '<script src=\"' + CDN + '/home/section1/section1.js\"><\/script>\n\n' +
+              '<!-- Section Divider (S1 → S2) -->\n' +
+              '<link rel=\"stylesheet\" href=\"' + CDN + '/home/section-divider/divider.css\">\n' +
+              '<script src=\"' + CDN + '/home/section-divider/divider.js\"><\/script>\n\n' +
+              '<!-- Global Button Glow -->\n' +
+              '<link rel=\"stylesheet\" href=\"' + CDN + '/home/global/buttons.css\">\n' +
+              '<script src=\"' + CDN + '/home/global/buttons.js\"><\/script>';
+            console.log(head);
+          " > /tmp/head_manual.txt
+
+          RESPONSE=$(curl -s -o /tmp/api_response.txt -w "%{http_code}" -X PUT \
+            "https://api.webflow.com/v2/sites/${SITE_ID}/custom_code" \
+            -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d @/tmp/payload.json)
+
+          echo "API HTTP ${RESPONSE}:"
+          cat /tmp/api_response.txt
+          echo ""
+
+          echo "api_status=${RESPONSE}" >> $GITHUB_OUTPUT
+          echo "cdn_tag=${TAG}" >> $GITHUB_OUTPUT
+
+          if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -lt 300 ]; then
+            echo "✅ Site custom code 업데이트 성공 (tag: ${TAG})"
+            echo "api_ok=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ API 실패 (HTTP ${RESPONSE}) — Webflow 토큰에 custom_code:write 권한 필요"
+            echo "api_ok=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
       - name: Publish to Webflow
         env:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
         run: |
-          echo "🚀 Publishing helix-amc to Webflow..."
-          
           RESPONSE=$(curl -X POST -s -o /dev/null -w "%{http_code}" \
             "https://api.webflow.com/v2/sites/${SITE_ID}/publish" \
             -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
             -H "accept: application/json" \
             -H "content-type: application/json" \
-            -d '{
-              "publishToWebflowSubdomain": true
-            }')
-          
-          if [ "$RESPONSE" -eq 200 ]; then
-            echo "✅ 배포 성공!"
+            -d '{"publishToWebflowSubdomain": true}')
+
+          if [ "$RESPONSE" -eq 200 ] || [ "$RESPONSE" -eq 202 ]; then
+            echo "✅ Publish 성공"
           else
-            echo "❌ 배포 실패 (HTTP $RESPONSE)"
+            echo "❌ Publish 실패 (HTTP $RESPONSE)"
             exit 1
           fi
-      
-      - name: Summary
-        if: success()
+
+      - name: Purge jsDelivr CDN Cache
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
         run: |
-          echo "## ✅ Webflow 배포 완료" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **사이트:** helix-amc" >> $GITHUB_STEP_SUMMARY
-          echo "- **도메인:** Webflow Subdomain (helixanimalmedicalcenter.webflow.io)" >> $GITHUB_STEP_SUMMARY
+          BASE_TAG="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${TAG}"
+          BASE_LATEST="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest"
+          for FILE in home/section1/section1.css home/section1/section1.js home/global/buttons.css home/global/buttons.js home/section-divider/divider.css home/section-divider/divider.js; do
+            curl -s -o /dev/null "${BASE_TAG}/${FILE}" || true
+            curl -s -o /dev/null "${BASE_LATEST}/${FILE}" || true
+          done
+          # @latest 패키지 메타데이터 캐시 초기화
+          curl -s -o /dev/null "https://purge.jsdelivr.net/package/gh/pookat73-prog/helixamc-webflow" || true
+          echo "✅ CDN 캐시 퍼지 완료"
+
+      - name: Summary
+        if: always()
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+          API_OK: ${{ steps.api.outputs.api_ok }}
+        run: |
+          CDN="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${TAG}"
+          echo "## 배포 결과" >> $GITHUB_STEP_SUMMARY
+          echo "- **릴리스 태그:** \`${TAG}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **커밋:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **작성자:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **브랜치:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${API_OK}" = "true" ]; then
+            echo "✅ **Webflow head code 자동 업데이트 완료**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Webflow head code 자동 업데이트 실패** — 아래 코드를 Webflow > 홈 페이지 설정 > Head Code에 수동으로 붙여넣으세요:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```html' >> $GITHUB_STEP_SUMMARY
+            echo "<!-- Section 1 Hero Animation -->" >> $GITHUB_STEP_SUMMARY
+            echo "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js\"></script>" >> $GITHUB_STEP_SUMMARY
+            echo "<link rel=\"stylesheet\" href=\"${CDN}/home/section1/section1.css\">" >> $GITHUB_STEP_SUMMARY
+            echo "<script src=\"${CDN}/home/section1/section1.js\"></script>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "<!-- Section Divider (S1 → S2) -->" >> $GITHUB_STEP_SUMMARY
+            echo "<link rel=\"stylesheet\" href=\"${CDN}/home/section-divider/divider.css\">" >> $GITHUB_STEP_SUMMARY
+            echo "<script src=\"${CDN}/home/section-divider/divider.js\"></script>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "<!-- Global Button Glow -->" >> $GITHUB_STEP_SUMMARY
+            echo "<link rel=\"stylesheet\" href=\"${CDN}/home/global/buttons.css\">" >> $GITHUB_STEP_SUMMARY
+            echo "<script src=\"${CDN}/home/global/buttons.js\"></script>" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**API 자동화 영구 해결법:** Webflow > Project Settings > Integrations > API 토큰에 \`custom_code:write\` 권한 추가 후 GitHub secret \`WEBFLOW_API_TOKEN\` 업데이트" >> $GITHUB_STEP_SUMMARY
+          fi
