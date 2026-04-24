@@ -26,7 +26,9 @@
   ];
 
   function cdn(ref, path) {
-    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path;
+    /* Cache-busting: new timestamp every minute prevents stale browser caches */
+    var t = Math.floor(Date.now() / 60000);
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + '?t=' + t;
   }
 
   function injectCss(url, onerr) {
