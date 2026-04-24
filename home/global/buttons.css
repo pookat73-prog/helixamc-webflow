@@ -15,6 +15,7 @@
 .bt-box-2.is-holding,
 .bt-box-3.is-holding {
   box-shadow: 0 0 0.8vw 0.25vw rgba(0, 117, 214, 0.85) !important;
+  background-color: rgba(255, 0, 0, 0.2) !important;
 }
 
 .bt-box-4.is-holding {
