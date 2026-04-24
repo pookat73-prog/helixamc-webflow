@@ -174,9 +174,25 @@
 
     fadeIn(slogan, 'slogan', 1.2, easeSlogan, 0.3);
     fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
-      function () { if (box1) box1.classList.add('is-holding'); },
+      null,
       function () {
-        setTimeout(function () { if (box1) box1.classList.add('is-looping'); }, 1500);
+        if (!box1 || !window.gsap) return;
+        var maxGlow = '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)';
+        var minGlow = '0 0 1.0vw 0.35vw rgba(0,117,214,0.7), 0 0 2vw 0.6vw rgba(0,117,214,0.35)';
+        gsap.to(box1, {
+          boxShadow: maxGlow,
+          duration: 0.6,
+          ease: 'power2.out',
+          onComplete: function () {
+            gsap.to(box1, {
+              boxShadow: minGlow,
+              duration: 1.5,
+              ease: 'sine.inOut',
+              repeat: -1,
+              yoyo: true
+            });
+          }
+        });
       });
     fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
       /* All fades done - restore DOM so responsive layout resumes */

@@ -10,41 +10,7 @@
   will-change: box-shadow;
 }
 
-/* 2. is-holding: static full glow (must match keyframe 0% values) */
-.bt-box-1.is-holding,
-.bt-box-2.is-holding,
-.bt-box-3.is-holding {
-  box-shadow: 0 0 2.4vw 0.8vw rgba(0, 117, 214, 1) !important;
-}
-
-.bt-box-4.is-holding {
-  box-shadow: 0 0 2.4vw 0.8vw rgba(85, 40, 170, 1) !important;
-}
-
-/* 3. is-looping: breathing loop (bt-box-2/3/4) */
-.bt-box-2.is-looping,
-.bt-box-3.is-looping {
-  transition: none !important;
-  animation: glowLoopBlue 2.8s infinite ease-in-out !important;
-}
-
-.bt-box-4.is-looping {
-  transition: none !important;
-  animation: glowLoopPurple 2.8s infinite ease-in-out !important;
-}
-
-/* bt-box-1 전용: 항상 밝게 유지되는 아롱아롱 shimmer */
-.bt-box-1.is-looping {
-  transition: none !important;
-  animation: glowShimmerBlue 3s infinite ease-in-out !important;
-}
-
-/* 4. keyframes */
-@keyframes glowShimmerBlue {
-  0%, 100% { box-shadow: 0 0 2.6vw 0.9vw rgba(0, 117, 214, 1); }
-  50%       { box-shadow: 0 0 1.4vw 0.45vw rgba(0, 117, 214, 0.7); }
-}
-
+/* 2. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
 @keyframes glowLoopBlue {
   0%, 100% { box-shadow: 0 0 2.4vw 0.8vw rgba(0, 117, 214, 1); }
   50%       { box-shadow: 0 0 0.2vw 0.1vw rgba(0, 117, 214, 0.08); }
