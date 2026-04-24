@@ -38,16 +38,16 @@
     var headings = document.querySelectorAll('.section2-heading');
     headings.forEach(function (h) {
       gsap.fromTo(h,
-        { opacity: 0, y: 20 },
+        { opacity: 0 },
         {
           opacity: 1,
-          y: 0,
           duration: 1,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: h,
             start: 'top 80%',
-            toggleActions: 'play none none reverse'
+            toggleActions: 'play none none none',
+            once: true
           }
         }
       );
