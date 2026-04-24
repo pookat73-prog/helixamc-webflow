@@ -1,181 +1,91 @@
-name: Webflow Auto Deploy
+name: Webflow CDN Auto Deploy
 
 on:
   push:
     branches:
       - main
-      - latest
     paths:
       - 'home/**'
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create Release
-        id: release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build reference head code
         run: |
-          TAG="auto-$(date +%Y%m%d%H%M%S)"
-          gh release create "$TAG" \
-            --title "Auto deploy ${TAG}" \
-            --notes "Automated release" \
-            --target ${{ github.sha }}
-          echo "tag=${TAG}" >> $GITHUB_OUTPUT
-
-      - name: Build Inline Head Code
-        id: build
-        run: |
-          node << 'EOF'
-          const fs = require('fs');
-
-          const s1css  = fs.readFileSync('home/section1/section1.css',       'utf-8');
-          const s1js   = fs.readFileSync('home/section1/section1.js',        'utf-8');
-          const divCss = fs.readFileSync('home/section-divider/divider.css', 'utf-8');
-          const divJs  = fs.readFileSync('home/section-divider/divider.js',  'utf-8');
-          const btnCss = fs.readFileSync('home/global/buttons.css',          'utf-8');
-          const btnJs  = fs.readFileSync('home/global/buttons.js',           'utf-8');
-
-          function esc(js) { return js.replace(/<\/script>/gi, '<\\/script>'); }
-
-          const head = [
+          node <<'EOF' > /tmp/head_cdn.txt
+          const base = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main';
+          process.stdout.write([
             '<!-- GSAP -->',
             '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>',
             '',
             '<!-- Section 1 Hero Animation -->',
-            '<style>' + s1css + '</style>',
-            '<script>' + esc(s1js) + '</script>',
+            `<link rel="stylesheet" href="${base}/home/section1/section1.css">`,
+            `<script src="${base}/home/section1/section1.js"></script>`,
             '',
             '<!-- Section Divider (S1 → S2) -->',
-            '<style>' + divCss + '</style>',
-            '<script>' + esc(divJs) + '</script>',
+            `<link rel="stylesheet" href="${base}/home/section-divider/divider.css">`,
+            `<script src="${base}/home/section-divider/divider.js"></script>`,
             '',
             '<!-- Global Button Glow -->',
-            '<style>' + btnCss + '</style>',
-            '<script>' + esc(btnJs) + '</script>',
-          ].join('\n');
-
-          fs.writeFileSync('/tmp/head_inline.txt', head);
-          // v2 API expects footCode (not footerCode). Write both variants for fallback.
-          fs.writeFileSync('/tmp/payload_footCode.json',
-            JSON.stringify({ headCode: head, footCode: '' }));
-          fs.writeFileSync('/tmp/payload_footerCode.json',
-            JSON.stringify({ headCode: head, footerCode: '' }));
-          fs.writeFileSync('/tmp/payload_headOnly.json',
-            JSON.stringify({ headCode: head }));
-
-          console.log('빌드 완료 — head code 길이:', head.length, 'chars');
+            `<link rel="stylesheet" href="${base}/home/global/buttons.css">`,
+            `<script src="${base}/home/global/buttons.js"></script>`,
+          ].join('\n'));
           EOF
+          echo "--- Generated head code ---"
+          cat /tmp/head_cdn.txt
+          echo ""
+          echo "---"
 
-      - name: Update Webflow Head Code (v2 API)
-        id: api
-        continue-on-error: true
-        env:
-          WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
-          SITE_ID: "69d090ea69d828e27d16ea29"
+      - name: Purge jsDelivr cache
         run: |
-          # 로그는 stderr, HTTP code만 stdout (bash [ 비교용)
-          try_put() {
-            local payload=$1 label=$2
-            local resp
-            resp=$(curl -s -o /tmp/api_out.txt -w "%{http_code}" \
-              -X PUT "https://api.webflow.com/v2/sites/${SITE_ID}/custom_code" \
-              -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
-              -H "accept: application/json" \
-              -H "Content-Type: application/json" \
-              -d @"${payload}")
-            {
-              echo "[$label] HTTP $resp"
-              cat /tmp/api_out.txt
-              echo ""
-            } >&2
-            echo "$resp"
-          }
-
-          echo "=== Auth 확인: GET /v2/sites/${SITE_ID} ==="
-          auth=$(curl -s -o /tmp/auth_out.txt -w "%{http_code}" \
-            -X GET "https://api.webflow.com/v2/sites/${SITE_ID}" \
-            -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
-            -H "accept: application/json")
-          echo "HTTP $auth"
-          cat /tmp/auth_out.txt
-          echo ""
-
-          if [ "$auth" != "200" ]; then
-            echo "❌ 토큰 인증 실패 (HTTP $auth) — 토큰/SITE_ID 확인 필요"
-            echo "api_ok=false" >> $GITHUB_OUTPUT
-            exit 1
-          fi
-
-          echo "✅ 토큰 OK — custom_code 업데이트 시도"
-          echo ""
-
-          for attempt in \
-            "/tmp/payload_footCode.json|footCode" \
-            "/tmp/payload_footerCode.json|footerCode" \
-            "/tmp/payload_headOnly.json|headOnly"
-          do
-            IFS='|' read -r payload label <<< "$attempt"
-            code=$(try_put "$payload" "$label")
-            if [ "$code" -ge 200 ] && [ "$code" -lt 300 ]; then
-              echo "✅ 성공: $label"
-              echo "api_ok=true" >> $GITHUB_OUTPUT
-              echo "api_label=$label" >> $GITHUB_OUTPUT
-              exit 0
+          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main"
+          FILES=(
+            "home/section1/section1.css"
+            "home/section1/section1.js"
+            "home/section-divider/divider.css"
+            "home/section-divider/divider.js"
+            "home/global/buttons.css"
+            "home/global/buttons.js"
+          )
+          FAILED=0
+          for f in "${FILES[@]}"; do
+            printf "Purging /%s → " "$f"
+            code=$(curl -s -o /tmp/purge_out.txt -w "%{http_code}" "${BASE}/${f}")
+            echo "HTTP $code"
+            if [ "$code" != "200" ]; then
+              echo "  body: $(cat /tmp/purge_out.txt)"
+              FAILED=$((FAILED + 1))
             fi
           done
-
-          echo "❌ 모든 포맷 실패"
-          echo "api_ok=false" >> $GITHUB_OUTPUT
-          exit 1
-
-      - name: Publish to Webflow
-        if: steps.api.outputs.api_ok == 'true'
-        env:
-          WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
-          SITE_ID: "69d090ea69d828e27d16ea29"
-        run: |
-          RESP=$(curl -X POST -s -o /tmp/publish_out.txt -w "%{http_code}" \
-            "https://api.webflow.com/v2/sites/${SITE_ID}/publish" \
-            -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
-            -H "accept: application/json" \
-            -H "Content-Type: application/json" \
-            -d '{"publishToWebflowSubdomain": true}')
-          echo "HTTP $RESP"
-          cat /tmp/publish_out.txt
-          echo ""
-          if [ "$RESP" = "200" ] || [ "$RESP" = "202" ]; then
-            echo "✅ Publish 성공"
+          if [ $FAILED -gt 0 ]; then
+            echo "⚠️ $FAILED 개 파일 퍼지 실패 (수 분 후 재시도 가능)"
           else
-            echo "❌ Publish 실패 (HTTP $RESP)"
-            exit 1
+            echo "✅ 모든 파일 CDN 캐시 퍼지 완료"
           fi
 
       - name: Summary
         if: always()
-        env:
-          TAG: ${{ steps.release.outputs.tag }}
-          API_OK: ${{ steps.api.outputs.api_ok }}
-          API_LABEL: ${{ steps.api.outputs.api_label }}
         run: |
-          echo "## 배포 결과" >> $GITHUB_STEP_SUMMARY
-          echo "- 릴리스: \`${TAG}\`  커밋: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          if [ "${API_OK}" = "true" ]; then
-            echo "✅ **Webflow head code 자동 업데이트 완료** (${API_LABEL})" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "⚠️ **API 실패 — 아래 코드를 Webflow 홈 페이지 > Page Settings > Head Code에 붙여넣으세요**" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo '```html' >> $GITHUB_STEP_SUMMARY
-            cat /tmp/head_inline.txt >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          fi
+          {
+            echo "## ✅ CDN Auto Deploy"
+            echo ""
+            echo "커밋: \`${{ github.sha }}\`"
+            echo ""
+            echo "변경된 파일은 몇 초 내로 jsDelivr → Webflow 사이트에 자동 반영됩니다."
+            echo ""
+            echo "---"
+            echo ""
+            echo "### 📌 **최초 1회만** 아래 코드를 Webflow 홈 페이지 → Page Settings → Inside \`<head>\` tag 에 붙여넣으세요"
+            echo ""
+            echo '```html'
+            cat /tmp/head_cdn.txt
+            echo ""
+            echo '```'
+            echo ""
+            echo "붙여넣은 후 Webflow에서 **한 번만 Publish**. 이후 코드 수정은 이 워크플로우가 자동 반영."
+          } >> $GITHUB_STEP_SUMMARY
