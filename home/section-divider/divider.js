@@ -9,42 +9,39 @@
   var SEC2_HEAD_CLASS = '.section2-heading';
 
   function createConnectorLine() {
+    if (document.querySelector('.section-connector-line')) return;
+
     var btn1     = document.querySelector('.discover-helix_button');
     var sec2Head = document.querySelector(SEC2_HEAD_CLASS);
 
-    if (!btn1 || !sec2Head) {
-      console.warn('[SectionLine] 요소를 찾을 수 없습니다:', !btn1 ? '.discover-helix_button' : SEC2_HEAD_CLASS);
-      return;
-    }
+    if (!btn1 || !sec2Head) return;
 
     var line = document.createElement('div');
     line.className = 'section-connector-line';
-
-    if (document.body.style.position !== 'relative') {
-      document.body.style.position = 'relative';
-    }
+    document.body.style.position = 'relative';
     document.body.appendChild(line);
 
     function positionLine() {
-      var btn1Rect  = btn1.getBoundingClientRect();
-      var sec2Rect  = sec2Head.getBoundingClientRect();
-      var scrollY   = window.scrollY || window.pageYOffset;
-
-      var x      = btn1Rect.left + btn1Rect.width / 2;
-      var yStart = btn1Rect.bottom + scrollY;
-      var yEnd   = sec2Rect.top + scrollY - 0.005 * window.innerWidth;
-
-      line.style.left   = x + 'px';
-      line.style.top    = yStart + 'px';
-      line.style.height = Math.max(0, yEnd - yStart) + 'px';
+      var r1 = btn1.getBoundingClientRect();
+      var r2 = sec2Head.getBoundingClientRect();
+      var sy = window.scrollY || window.pageYOffset;
+      line.style.left   = (r1.left + r1.width / 2) + 'px';
+      line.style.top    = (r1.bottom + sy) + 'px';
+      line.style.height = Math.max(0, r2.top - r1.bottom - 0.005 * window.innerWidth) + 'px';
     }
 
     positionLine();
     window.addEventListener('resize', positionLine);
   }
 
+  // Webflow push (초기 로드 시)
   window.Webflow = window.Webflow || [];
-  window.Webflow.push(function () {
-    setTimeout(createConnectorLine, 200);
-  });
+  window.Webflow.push(function () { setTimeout(createConnectorLine, 200); });
+
+  // 폴백: Webflow가 이미 실행된 경우 load 이벤트로 처리
+  if (document.readyState === 'complete') {
+    setTimeout(createConnectorLine, 300);
+  } else {
+    window.addEventListener('load', function () { setTimeout(createConnectorLine, 300); });
+  }
 })();
