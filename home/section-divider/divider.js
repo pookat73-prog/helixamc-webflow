@@ -6,11 +6,10 @@
 (function () {
   'use strict';
 
-  // ⚠️ Webflow에서 섹션 2 헤드 요소에 이 클래스를 부여하세요.
   var SEC2_HEAD_CLASS = '.section2-heading';
 
   function createConnectorLine() {
-    var btn1    = document.querySelector('.discover-helix_button');
+    var btn1     = document.querySelector('.discover-helix_button');
     var sec2Head = document.querySelector(SEC2_HEAD_CLASS);
 
     if (!btn1 || !sec2Head) {
@@ -21,7 +20,6 @@
     var line = document.createElement('div');
     line.className = 'section-connector-line';
 
-    // body를 기준 컨테이너로 설정
     if (document.body.style.position !== 'relative') {
       document.body.style.position = 'relative';
     }
@@ -32,9 +30,9 @@
       var sec2Rect  = sec2Head.getBoundingClientRect();
       var scrollY   = window.scrollY || window.pageYOffset;
 
-      var x      = btn1Rect.left + btn1Rect.width / 2;          // Button 1 정중앙 x
-      var yStart = btn1Rect.bottom + scrollY;                    // Button 1 바텀
-      var yEnd   = sec2Rect.top + scrollY - 0.005 * window.innerWidth; // Section 2 헤드 탑 - 0.5vw
+      var x      = btn1Rect.left + btn1Rect.width / 2;
+      var yStart = btn1Rect.bottom + scrollY;
+      var yEnd   = sec2Rect.top + scrollY - 0.005 * window.innerWidth;
 
       line.style.left   = x + 'px';
       line.style.top    = yStart + 'px';
