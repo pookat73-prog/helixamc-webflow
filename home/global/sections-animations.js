@@ -60,7 +60,8 @@
        ============================================================ */
     var cards = document.querySelectorAll('.home_branch-card');
     var cardContainer = document.querySelector('.flex-block-23') ||
-                        document.querySelector('#animal-medical-center');
+                        document.querySelector('#animal-medical-center') ||
+                        (cards.length ? cards[0].parentElement : null);
 
     if (cards.length && cardContainer) {
       var cardTL = gsap.timeline({
