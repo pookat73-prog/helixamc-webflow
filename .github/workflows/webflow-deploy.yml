@@ -39,6 +39,20 @@ jobs:
             exit 1
           fi
       
+      - name: Purge jsDelivr CDN Cache
+        run: |
+          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest"
+          FILES=(
+            "home/section1/section1.css"
+            "home/section1/section1.js"
+            "home/global/buttons.css"
+            "home/global/buttons.js"
+          )
+          for FILE in "${FILES[@]}"; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/${FILE}")
+            echo "Purged ${FILE} → HTTP ${STATUS}"
+          done
+
       - name: Summary
         if: success()
         run: |
