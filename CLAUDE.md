@@ -49,25 +49,28 @@ home/
 - SVIC 퍼플: `#5528aa`
 - 배경: `#0d1117`
 
-## ⚠️ bt-box-1 글로우 — 건드리지 말 것 (LOCKED)
+## ⚠️ bt-box-1 글로우 — 건드리지 말 것 (LOCKED v2)
 
-**현재 작동 중인 구현** (`commit 1f2f7b2`, 확정):
+**현재 작동 중인 구현**:
 
 | 파일 | 역할 |
 |---|---|
-| `home/section1/section1.js` | 페이드인 완료 후 GSAP으로 글로우 0.5s 페이드인, 완료 시 `clearProps` + `is-looping` 클래스 추가 |
-| `home/global/buttons.css` | `.bt-box-1.is-looping { animation: glowShimmerBlue 2.4s infinite ease-in-out }` |
+| `home/section1/section1.js` | 버튼 페이드인 완료 후 `is-looping` 클래스 즉시 추가 (GSAP 글로우 페이드인 없음) |
+| `home/global/buttons.css` | `.bt-box-1.is-looping { animation: glowShimmerBlue 2.4s infinite; transition: none !important }` |
 
 **글로우 동작 순서 (절대 바꾸지 말 것):**
 1. 버튼 opacity 0→1 페이드인 (GSAP, 0.8s)
-2. GSAP `boxShadow` 0→`2.6vw 0.9vw rgba(0,117,214,1)` 페이드인 (0.5s)
-3. `gsap.set(box1, { clearProps: 'boxShadow' })` → `box1.classList.add('is-looping')`
-4. CSS `glowShimmerBlue` 애니메이션 (78%~100% 밝기, 2.4s 주기) 아롱아롱 유지
+2. `box1.classList.add('is-looping')` → **즉시 최고밝기**로 shimmer 시작
+3. CSS `glowShimmerBlue` 애니메이션 (78%~100% 밝기, 2.4s 주기) 아롱아롱 유지
+
+**핵심 포인트:**
+- `.bt-box-1` 베이스 룰의 `transition: box-shadow 0.6s`가 is-looping 전환 시 개입하면 덜 밝은 상태에서 시작하므로 `.is-looping`에 `transition: none !important` 필수
+- GSAP 글로우 페이드인 제거 → 버튼 페이드인 완료 직후 팟! 최고밝기
 
 **이전에 시도했다가 실패한 방식들 (재시도 금지):**
 - `is-holding` CSS 클래스 (`box-shadow !important`) → CSS animation 충돌로 shimmer 불가
 - GSAP multi-shadow 트위닝 (`'... rgba(...), ... rgba(...)'`) → 파싱 오류로 툭 꺼짐
-- `is-looping`만 단독 추가 (GSAP 페이드인 없이) → 팟! 튀는 현상
+- GSAP 0.5s 글로우 페이드인 → 덜 밝은 상태에서 밝아지는 느낌 (v1 방식)
 
 **bt-box-1에만 해당** — bt-box-2/3/4는 `buttons.js`의 IntersectionObserver + GSAP으로 별도 관리.
 

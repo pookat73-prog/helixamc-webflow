@@ -10,9 +10,11 @@
   will-change: box-shadow;
 }
 
-/* 2. bt-box-1: 페이드인 완료 후 CSS animation으로 아롱아롱 shimmer */
+/* 2. bt-box-1: 페이드인 완료 후 CSS animation으로 아롱아롱 shimmer
+   transition: none으로 box-shadow 페이드인 개입 차단 → 최고밝기로 즉시 시작 */
 .bt-box-1.is-looping {
   animation: glowShimmerBlue 2.4s infinite ease-in-out !important;
+  transition: none !important;
 }
 
 @keyframes glowShimmerBlue {
