@@ -7,17 +7,13 @@
      t=0.3   slogan  1.2s  asymmetric ease-in-out (in 60% / out 40%)
      t=1.3   button  0.8s  expo.out
      t=1.45  bg      1.5s  asymmetric ease-in-out (in 75% / out 25%)
-
-   Glow: applied to .bt-box-1 wrapper (consistent with buttons.css)
-   data-s1-init: marker to prevent buttons.js IntersectionObserver double-trigger
    ================================================================ */
 
 (function () {
   'use strict';
 
-  /* Asymmetric ease-in-out:
-     inRatio=0.6  -> first 60% is ease-in, last 40% ease-out
-     inRatio=0.75 -> first 75% is ease-in, last 25% ease-out (more extreme) */
+  console.log('[Section1] script loaded');
+
   function asymInOut(inRatio, inPow) {
     inPow = inPow || 2;
     var outRatio = 1 - inRatio;
@@ -34,48 +30,78 @@
   var easeSlogan = asymInOut(0.6, 2);
   var easeBg     = asymInOut(0.75, 3);
 
+  var started = false;
+
   function startSection1() {
+    if (started) return true;
+
     if (typeof gsap === 'undefined') {
-      console.warn('[Section1] GSAP not loaded.');
-      return;
+      console.warn('[Section1] GSAP not loaded yet, retrying...');
+      return false;
     }
 
-    var box1 = document.querySelector('.bt-box-1');
-    var tl = gsap.timeline();
+    var slogan = document.querySelector('.home_slogan');
+    var bg     = document.querySelector('.div-block-150');
+    var box1   = document.querySelector('.bt-box-1');
 
-    gsap.set(['.home_slogan', '.div-block-150', '.bt-box-1'], { autoAlpha: 0 });
+    console.log('[Section1] selectors found:',
+      'slogan=' + !!slogan,
+      'bg=' + !!bg,
+      'box1=' + !!box1);
+
+    if (!slogan && !bg && !box1) {
+      console.warn('[Section1] no selectors matched, retrying...');
+      return false;
+    }
+
+    started = true;
+
+    var targets = [];
+    if (slogan) targets.push(slogan);
+    if (bg)     targets.push(bg);
+    if (box1)   targets.push(box1);
+    gsap.set(targets, { autoAlpha: 0 });
 
     if (box1) box1.setAttribute('data-s1-init', '');
 
-    tl.to('.home_slogan', {
-      autoAlpha: 1,
-      duration: 1.2,
-      ease: easeSlogan
-    }, 0.3);
+    var tl = gsap.timeline();
 
-    tl.to('.bt-box-1', {
-      autoAlpha: 1,
-      duration: 0.8,
-      ease: 'expo.out',
-      onStart: function () {
-        if (box1) box1.classList.add('is-holding');
-      },
-      onComplete: function () {
-        setTimeout(function () {
-          if (box1) box1.classList.add('is-looping');
-        }, 1500);
-      }
-    }, 1.3);
+    if (slogan) {
+      tl.to(slogan, { autoAlpha: 1, duration: 1.2, ease: easeSlogan }, 0.3);
+    }
+    if (box1) {
+      tl.to(box1, {
+        autoAlpha: 1,
+        duration: 0.8,
+        ease: 'expo.out',
+        onStart:    function () { box1.classList.add('is-holding'); },
+        onComplete: function () {
+          setTimeout(function () { box1.classList.add('is-looping'); }, 1500);
+        }
+      }, 1.3);
+    }
+    if (bg) {
+      tl.to(bg, { autoAlpha: 1, duration: 1.5, ease: easeBg }, 1.45);
+    }
 
-    tl.to('.div-block-150', {
-      autoAlpha: 1,
-      duration: 1.5,
-      ease: easeBg
-    }, 1.45);
+    console.log('[Section1] timeline started');
+    return true;
   }
 
-  window.Webflow = window.Webflow || [];
-  window.Webflow.push(function () {
-    setTimeout(startSection1, 100);
-  });
+  function initWithRetry() {
+    if (startSection1()) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (startSection1() || ++tries >= 40) {
+        clearInterval(iv);
+        if (!started) console.warn('[Section1] init failed after ' + tries + ' retries');
+      }
+    }, 100);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWithRetry);
+  } else {
+    initWithRetry();
+  }
 })();
