@@ -1,44 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════
-   SECTION DIVIDER: Section 1 → Section 2 Crossing Line
+   SECTION CONNECTOR LINE: Button 1 bottom-center → Section 2 head top (-0.5vw)
    CSS only - no external dependencies
-   Synced from Webflow Custom Code
    ═══════════════════════════════════════════════════════════════ */
 
-/* 초기 상태: 숨김 */
-.section-divider {
-  position: relative;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    #0075d6 30%,
-    #5528aa 70%,
-    transparent 100%
-  );
-  opacity: 0;
-  box-shadow:
-    0 0 8px 2px rgba(0, 117, 214, 0.5),
-    0 0 20px 6px rgba(85, 40, 170, 0.3);
-  transition: opacity 0.8s ease;
-}
-
-/* 뷰포트 진입 시 등장 */
-.section-divider.is-visible {
-  opacity: 1;
-  animation: dividerGlow 3s infinite ease-in-out;
-}
-
-/* 광채 루프 */
-@keyframes dividerGlow {
-  0%, 100% {
-    box-shadow:
-      0 0 8px 2px rgba(0, 117, 214, 0.5),
-      0 0 20px 6px rgba(85, 40, 170, 0.3);
-  }
-  50% {
-    box-shadow:
-      0 0 3px 1px rgba(0, 117, 214, 0.25),
-      0 0 8px 2px rgba(85, 40, 170, 0.15);
-  }
+.section-connector-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  background-color: #0075d6;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 10;
 }
