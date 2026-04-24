@@ -180,23 +180,9 @@
 
     fadeIn(slogan, 'slogan', 1.2, easeSlogan, 0.3);
     fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
+      function () { if (box1) box1.classList.add('is-holding'); },
       function () {
-        if (box1) box1.classList.add('is-holding');
-      },
-      function () {
-        if (!box1) return;
-        console.log('[Section1] Starting box1 glow animation', box1);
-        var maxGlow = '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)';
-        var minGlow = '0 0 0.15vw 0.05vw rgba(0,117,214,0.05)';
-        gsap.to(box1, { boxShadow: maxGlow, duration: 0.6, ease: 'power2.out' });
-        gsap.to(box1, {
-          boxShadow: minGlow,
-          duration: 1.4,
-          ease: 'sine.inOut',
-          repeat: -1,
-          yoyo: true,
-          delay: 1.5
-        });
+        setTimeout(function () { if (box1) box1.classList.add('is-looping'); }, 1500);
       });
     fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
       /* All fades done - restore DOM so responsive layout resumes */
