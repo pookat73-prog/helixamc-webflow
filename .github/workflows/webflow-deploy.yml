@@ -44,7 +44,6 @@ jobs:
           const btnCss = fs.readFileSync('home/global/buttons.css',          'utf-8');
           const btnJs  = fs.readFileSync('home/global/buttons.js',           'utf-8');
 
-          // </script> 태그 이스케이프
           function esc(js) { return js.replace(/<\/script>/gi, '<\\/script>'); }
 
           const head = [
@@ -65,48 +64,67 @@ jobs:
           ].join('\n');
 
           fs.writeFileSync('/tmp/head_inline.txt', head);
-          fs.writeFileSync('/tmp/payload_v2.json',
+          // v2 API expects footCode (not footerCode). Write both variants for fallback.
+          fs.writeFileSync('/tmp/payload_footCode.json',
+            JSON.stringify({ headCode: head, footCode: '' }));
+          fs.writeFileSync('/tmp/payload_footerCode.json',
             JSON.stringify({ headCode: head, footerCode: '' }));
-          fs.writeFileSync('/tmp/payload_v1a.json',
+          fs.writeFileSync('/tmp/payload_headOnly.json',
             JSON.stringify({ headCode: head }));
-          fs.writeFileSync('/tmp/payload_v1b.json',
-            JSON.stringify({ head_code: head }));
-          fs.writeFileSync('/tmp/payload_v1c.json',
-            JSON.stringify({ customCode: { head: head, footer: '' } }));
 
           console.log('빌드 완료 — head code 길이:', head.length, 'chars');
           EOF
 
-      - name: Update Webflow Head Code (API 자동)
+      - name: Update Webflow Head Code (v2 API)
         id: api
         continue-on-error: true
         env:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
         run: |
-          try_api() {
-            local method=$1 url=$2 payload=$3 label=$4
+          # 로그는 stderr, HTTP code만 stdout (bash [ 비교용)
+          try_put() {
+            local payload=$1 label=$2
             local resp
-            resp=$(curl -s -o /tmp/api_out.txt -w "%{http_code}" -X "$method" "$url" \
+            resp=$(curl -s -o /tmp/api_out.txt -w "%{http_code}" \
+              -X PUT "https://api.webflow.com/v2/sites/${SITE_ID}/custom_code" \
               -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
-              -H "accept-version: 1.0.0" \
+              -H "accept: application/json" \
               -H "Content-Type: application/json" \
-              -d "@${payload}")
-            echo "[$label] HTTP $resp: $(cat /tmp/api_out.txt)"
+              -d @"${payload}")
+            {
+              echo "[$label] HTTP $resp"
+              cat /tmp/api_out.txt
+              echo ""
+            } >&2
             echo "$resp"
           }
 
-          BASE_V2="https://api.webflow.com/v2/sites/${SITE_ID}/custom_code"
-          BASE_V1="https://api.webflow.com/sites/${SITE_ID}"
+          echo "=== Auth 확인: GET /v2/sites/${SITE_ID} ==="
+          auth=$(curl -s -o /tmp/auth_out.txt -w "%{http_code}" \
+            -X GET "https://api.webflow.com/v2/sites/${SITE_ID}" \
+            -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
+            -H "accept: application/json")
+          echo "HTTP $auth"
+          cat /tmp/auth_out.txt
+          echo ""
+
+          if [ "$auth" != "200" ]; then
+            echo "❌ 토큰 인증 실패 (HTTP $auth) — 토큰/SITE_ID 확인 필요"
+            echo "api_ok=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "✅ 토큰 OK — custom_code 업데이트 시도"
+          echo ""
 
           for attempt in \
-            "PUT|${BASE_V2}|/tmp/payload_v2.json|v2 PUT headCode+footerCode" \
-            "PATCH|${BASE_V1}|/tmp/payload_v1a.json|v1 PATCH headCode" \
-            "PATCH|${BASE_V1}|/tmp/payload_v1b.json|v1 PATCH head_code" \
-            "PATCH|${BASE_V1}|/tmp/payload_v1c.json|v1 PATCH customCode.head"
+            "/tmp/payload_footCode.json|footCode" \
+            "/tmp/payload_footerCode.json|footerCode" \
+            "/tmp/payload_headOnly.json|headOnly"
           do
-            IFS='|' read -r method url payload label <<< "$attempt"
-            code=$(try_api "$method" "$url" "$payload" "$label")
+            IFS='|' read -r payload label <<< "$attempt"
+            code=$(try_put "$payload" "$label")
             if [ "$code" -ge 200 ] && [ "$code" -lt 300 ]; then
               echo "✅ 성공: $label"
               echo "api_ok=true" >> $GITHUB_OUTPUT
@@ -115,24 +133,30 @@ jobs:
             fi
           done
 
+          echo "❌ 모든 포맷 실패"
           echo "api_ok=false" >> $GITHUB_OUTPUT
           exit 1
 
       - name: Publish to Webflow
+        if: steps.api.outputs.api_ok == 'true'
         env:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
         run: |
-          RESP=$(curl -X POST -s -o /dev/null -w "%{http_code}" \
+          RESP=$(curl -X POST -s -o /tmp/publish_out.txt -w "%{http_code}" \
             "https://api.webflow.com/v2/sites/${SITE_ID}/publish" \
             -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
             -H "accept: application/json" \
-            -H "content-type: application/json" \
+            -H "Content-Type: application/json" \
             -d '{"publishToWebflowSubdomain": true}')
-          if [ "$RESP" -eq 200 ] || [ "$RESP" -eq 202 ]; then
+          echo "HTTP $RESP"
+          cat /tmp/publish_out.txt
+          echo ""
+          if [ "$RESP" = "200" ] || [ "$RESP" = "202" ]; then
             echo "✅ Publish 성공"
           else
-            echo "❌ Publish 실패 (HTTP $RESP)"; exit 1
+            echo "❌ Publish 실패 (HTTP $RESP)"
+            exit 1
           fi
 
       - name: Summary
