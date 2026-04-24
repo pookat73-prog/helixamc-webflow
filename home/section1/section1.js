@@ -58,8 +58,23 @@
     }, 1.1);
   }
 
+  // 🧪 CDN 자동 배포 테스트: "짠" 오버레이 (테스트 후 제거 예정)
+  function injectZanTest() {
+    if (document.getElementById('cdn-test-zan')) return;
+    var zan = document.createElement('div');
+    zan.id = 'cdn-test-zan';
+    zan.textContent = '짠';
+    zan.style.cssText =
+      'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);' +
+      'font-size:30vw;font-weight:900;color:#0075d6;' +
+      'text-shadow:0 0 60px rgba(0,117,214,0.8),0 0 20px rgba(0,117,214,1);' +
+      'z-index:99999;pointer-events:none;font-family:sans-serif;';
+    document.body.appendChild(zan);
+  }
+
   window.Webflow = window.Webflow || [];
   window.Webflow.push(function () {
+    injectZanTest();
     setTimeout(startSection1, 100);
   });
 })();
