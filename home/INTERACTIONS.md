@@ -97,27 +97,37 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 ## 3. Section 1 → Section 2 연결선 (Helix Connector)
 
 버튼 1(`.discover-helix_button`) 하단 중앙에서 섹션 2 헤딩 상단까지
-스크롤에 반응해 그려지다 지워지는 1px 파란 실선.
+스크롤에 반응해 **그려지다 지워지는** SVG 사인파 헬릭스 선.
+
+### 구현 방식
+
+- **요소**: `<svg class="section-connector-svg">` + `<path>` (사인파 폴리라인)
+- **경로**: 진폭 14px, 5주기 사인파 → 헬릭스 실루엣
+- **애니메이션**: `clip-path: inset(cTop% 0 cBot% 0)` — GPU 합성 레이어
+- **SVG 크기**: `width = amplitude×2+4`, `height = lineH` (매 프레임 갱신)
 
 ### 3 페이즈
 
-| 페이즈 | 범위                                    | 동작                                  |
-|--------|-----------------------------------------|---------------------------------------|
-| 1      | 스크롤 시작 → 버튼 하단 뷰포트 이탈     | 위→아래로 그려짐 (bottom clip 1→0)    |
-| 2      | 버튼 이탈 → 섹션 2 헤딩 50vh 도달       | 위에서부터 **느리게** 지워짐 (top 0→0.65) |
-| 3      | 섹션 2 50vh → 15vh                      | 시작점이 도착점까지 **가속하며 수렴** (top 0.65→1, bottom 고정) |
+| 페이즈 | 범위 (`scrollY` 기준)              | 동작 (`clip-path` 변화)                                     |
+|--------|-------------------------------------|-------------------------------------------------------------|
+| **1 등장** | `0 → M1` (버튼 하단 뷰포트 이탈) | `cBot 1→0` — 위→아래로 그려짐 (`easeInOut`)                |
+| **2 소멸** | `M1 → M2` (섹션2 헤딩 50vh 도달)  | `cTop 0→0.65` — 위에서부터 **느리게** 지워짐 (`easeInOut`) |
+| **3 수렴** | `M2 → M3` (섹션2 헤딩 15vh 도달)  | `cTop 0.65→1` — `t²` 가속으로 도착점까지 수렴              |
 
 **도착점은 절대 튕기지 않음** — Phase 3에서 `cBot = 0` 고정, `cTop`만 이동.
 
 ### 마일스톤 (절대 y 좌표)
 
-- `M1 = btnBot_abs` (버튼 하단 절대 위치)
-- `M2 = s2Top_abs - vh * 0.5`
-- `M3 = s2Top_abs - vh * 0.15`
+- `M1 = btnBot_abs` (버튼 하단 절대 위치 = Phase 1 종료 / 소멸 시작)
+- `M2 = s2Top_abs - vh × 0.5` (섹션2 헤딩이 화면 50% 지점)
+- `M3 = s2Top_abs - vh × 0.15` (섹션2 헤딩이 화면 15% 지점, 소멸 완료)
 
 ### Clip 계산
 
-`clipPath: inset(<cTop>% 0 <cBot>% 0)` — 상단 cTop% + 하단 cBot%만 잘라냄.
+```
+clip-path: inset(<cTop>% 0 <cBot>% 0)
+```
+SVG 요소 자체에 적용. 상단 cTop% + 하단 cBot% 잘라냄.
 
 ### 섹션 2 헤딩 탐지
 
@@ -126,8 +136,8 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 
 ### 스타일
 
-- 색상: `#0075d6` (메인블루)
-- 두께: 1px
+- 색상: `#0075d6` (메인블루), SVG `stroke` 속성으로 지정
+- 두께: 1px (`stroke-width`)
 - z-index: 9999
 - `will-change: clip-path` (GPU 합성)
 
@@ -137,8 +147,8 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 
 ### 파일
 
-- `home/section-divider/divider.js` — 스크롤 연동 update 루프 (RAF throttle)
-- `home/section-divider/divider.css` — 라인 기본 스타일
+- `home/section-divider/divider.js` — SVG 생성·사인파 경로·스크롤 update 루프 (RAF)
+- `home/section-divider/divider.css` — `.section-connector-svg` 베이스 스타일
 
 ---
 
