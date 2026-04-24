@@ -30,157 +30,128 @@ jobs:
             --notes "Automated release" \
             --target ${{ github.sha }}
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
-          echo "✅ Release ${TAG} created"
 
-      - name: Update Webflow Site Custom Code (head)
+      - name: Build Inline Head Code
+        id: build
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+
+          const s1css  = fs.readFileSync('home/section1/section1.css',       'utf-8');
+          const s1js   = fs.readFileSync('home/section1/section1.js',        'utf-8');
+          const divCss = fs.readFileSync('home/section-divider/divider.css', 'utf-8');
+          const divJs  = fs.readFileSync('home/section-divider/divider.js',  'utf-8');
+          const btnCss = fs.readFileSync('home/global/buttons.css',          'utf-8');
+          const btnJs  = fs.readFileSync('home/global/buttons.js',           'utf-8');
+
+          // </script> 태그 이스케이프
+          function esc(js) { return js.replace(/<\/script>/gi, '<\\/script>'); }
+
+          const head = [
+            '<!-- GSAP -->',
+            '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>',
+            '',
+            '<!-- Section 1 Hero Animation -->',
+            '<style>' + s1css + '</style>',
+            '<script>' + esc(s1js) + '</script>',
+            '',
+            '<!-- Section Divider (S1 → S2) -->',
+            '<style>' + divCss + '</style>',
+            '<script>' + esc(divJs) + '</script>',
+            '',
+            '<!-- Global Button Glow -->',
+            '<style>' + btnCss + '</style>',
+            '<script>' + esc(btnJs) + '</script>',
+          ].join('\n');
+
+          fs.writeFileSync('/tmp/head_inline.txt', head);
+          fs.writeFileSync('/tmp/payload_v2.json',
+            JSON.stringify({ headCode: head, footerCode: '' }));
+          fs.writeFileSync('/tmp/payload_v1a.json',
+            JSON.stringify({ headCode: head }));
+          fs.writeFileSync('/tmp/payload_v1b.json',
+            JSON.stringify({ head_code: head }));
+          fs.writeFileSync('/tmp/payload_v1c.json',
+            JSON.stringify({ customCode: { head: head, footer: '' } }));
+
+          console.log('빌드 완료 — head code 길이:', head.length, 'chars');
+          EOF
+
+      - name: Update Webflow Head Code (API 자동)
         id: api
         continue-on-error: true
         env:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
-          TAG: ${{ steps.release.outputs.tag }}
         run: |
-          CDN="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${TAG}"
-
-          cat > /tmp/build.js <<'JSEOF'
-          const CDN = process.env.CDN;
-          const head =
-            '<!-- Section 1 Hero Animation -->\n' +
-            '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></' + 'script>\n' +
-            '<link rel="stylesheet" href="' + CDN + '/home/section1/section1.css">\n' +
-            '<script src="' + CDN + '/home/section1/section1.js"></' + 'script>\n\n' +
-            '<!-- Section Divider (S1 → S2) -->\n' +
-            '<link rel="stylesheet" href="' + CDN + '/home/section-divider/divider.css">\n' +
-            '<script src="' + CDN + '/home/section-divider/divider.js"></' + 'script>\n\n' +
-            '<!-- Global Button Glow -->\n' +
-            '<link rel="stylesheet" href="' + CDN + '/home/global/buttons.css">\n' +
-            '<script src="' + CDN + '/home/global/buttons.js"></' + 'script>';
-          process.stdout.write(JSON.stringify({ headCode: head, footerCode: '' }));
-          JSEOF
-
-          CDN="${CDN}" node /tmp/build.js > /tmp/payload.json
-
-          # 수동 확인용 head code 출력
-          CDN="${CDN}" node -e "
-            const CDN = process.env.CDN;
-            const head =
-              '<!-- Section 1 Hero Animation -->\n' +
-              '<script src=\"https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js\"><\/script>\n' +
-              '<link rel=\"stylesheet\" href=\"' + CDN + '/home/section1/section1.css\">\n' +
-              '<script src=\"' + CDN + '/home/section1/section1.js\"><\/script>\n\n' +
-              '<!-- Section Divider (S1 → S2) -->\n' +
-              '<link rel=\"stylesheet\" href=\"' + CDN + '/home/section-divider/divider.css\">\n' +
-              '<script src=\"' + CDN + '/home/section-divider/divider.js\"><\/script>\n\n' +
-              '<!-- Global Button Glow -->\n' +
-              '<link rel=\"stylesheet\" href=\"' + CDN + '/home/global/buttons.css\">\n' +
-              '<script src=\"' + CDN + '/home/global/buttons.js\"><\/script>';
-            console.log(head);
-          " > /tmp/head_manual.txt
-
-          # ── 시도 1: v2 PUT ──
-          echo "=== v2 PUT 시도 ==="
-          V2_RESPONSE=$(curl -s -o /tmp/v2_response.txt -w "%{http_code}" -X PUT \
-            "https://api.webflow.com/v2/sites/${SITE_ID}/custom_code" \
-            -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
-            -H "Content-Type: application/json" \
-            -d @/tmp/payload.json)
-          echo "v2 HTTP ${V2_RESPONSE}:"; cat /tmp/v2_response.txt; echo ""
-
-          # ── 시도 2: v1 PATCH (v2 실패 시) ──
-          if [ "$V2_RESPONSE" -ge 200 ] && [ "$V2_RESPONSE" -lt 300 ]; then
-            echo "✅ v2 성공"
-            echo "api_ok=true" >> $GITHUB_OUTPUT
-          else
-            echo "=== v1 PATCH 시도 ==="
-            node -e "
-              const p = JSON.parse(require('fs').readFileSync('/tmp/payload.json','utf-8'));
-              process.stdout.write(JSON.stringify({ headCode: p.headCode }));
-            " > /tmp/v1_payload.json
-
-            V1_RESPONSE=$(curl -s -o /tmp/v1_response.txt -w "%{http_code}" -X PATCH \
-              "https://api.webflow.com/sites/${SITE_ID}" \
+          try_api() {
+            local method=$1 url=$2 payload=$3 label=$4
+            local resp
+            resp=$(curl -s -o /tmp/api_out.txt -w "%{http_code}" -X "$method" "$url" \
               -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
               -H "accept-version: 1.0.0" \
               -H "Content-Type: application/json" \
-              -d @/tmp/v1_payload.json)
-            echo "v1 HTTP ${V1_RESPONSE}:"; cat /tmp/v1_response.txt; echo ""
+              -d "@${payload}")
+            echo "[$label] HTTP $resp: $(cat /tmp/api_out.txt)"
+            echo "$resp"
+          }
 
-            if [ "$V1_RESPONSE" -ge 200 ] && [ "$V1_RESPONSE" -lt 300 ]; then
-              echo "✅ v1 성공"
+          BASE_V2="https://api.webflow.com/v2/sites/${SITE_ID}/custom_code"
+          BASE_V1="https://api.webflow.com/sites/${SITE_ID}"
+
+          for attempt in \
+            "PUT|${BASE_V2}|/tmp/payload_v2.json|v2 PUT headCode+footerCode" \
+            "PATCH|${BASE_V1}|/tmp/payload_v1a.json|v1 PATCH headCode" \
+            "PATCH|${BASE_V1}|/tmp/payload_v1b.json|v1 PATCH head_code" \
+            "PATCH|${BASE_V1}|/tmp/payload_v1c.json|v1 PATCH customCode.head"
+          do
+            IFS='|' read -r method url payload label <<< "$attempt"
+            code=$(try_api "$method" "$url" "$payload" "$label")
+            if [ "$code" -ge 200 ] && [ "$code" -lt 300 ]; then
+              echo "✅ 성공: $label"
               echo "api_ok=true" >> $GITHUB_OUTPUT
-            else
-              echo "⚠️ v2(${V2_RESPONSE}) v1(${V1_RESPONSE}) 모두 실패"
-              echo "api_ok=false" >> $GITHUB_OUTPUT
-              exit 1
+              echo "api_label=$label" >> $GITHUB_OUTPUT
+              exit 0
             fi
-          fi
+          done
 
-          echo "api_status=${V2_RESPONSE}" >> $GITHUB_OUTPUT
-          echo "cdn_tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "api_ok=false" >> $GITHUB_OUTPUT
+          exit 1
 
       - name: Publish to Webflow
         env:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
         run: |
-          RESPONSE=$(curl -X POST -s -o /dev/null -w "%{http_code}" \
+          RESP=$(curl -X POST -s -o /dev/null -w "%{http_code}" \
             "https://api.webflow.com/v2/sites/${SITE_ID}/publish" \
             -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
             -H "accept: application/json" \
             -H "content-type: application/json" \
             -d '{"publishToWebflowSubdomain": true}')
-
-          if [ "$RESPONSE" -eq 200 ] || [ "$RESPONSE" -eq 202 ]; then
+          if [ "$RESP" -eq 200 ] || [ "$RESP" -eq 202 ]; then
             echo "✅ Publish 성공"
           else
-            echo "❌ Publish 실패 (HTTP $RESPONSE)"
-            exit 1
+            echo "❌ Publish 실패 (HTTP $RESP)"; exit 1
           fi
-
-      - name: Purge jsDelivr CDN Cache
-        env:
-          TAG: ${{ steps.release.outputs.tag }}
-        run: |
-          BASE_TAG="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${TAG}"
-          BASE_LATEST="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest"
-          for FILE in home/section1/section1.css home/section1/section1.js home/global/buttons.css home/global/buttons.js home/section-divider/divider.css home/section-divider/divider.js; do
-            curl -s -o /dev/null "${BASE_TAG}/${FILE}" || true
-            curl -s -o /dev/null "${BASE_LATEST}/${FILE}" || true
-          done
-          # @latest 패키지 메타데이터 캐시 초기화
-          curl -s -o /dev/null "https://purge.jsdelivr.net/package/gh/pookat73-prog/helixamc-webflow" || true
-          echo "✅ CDN 캐시 퍼지 완료"
 
       - name: Summary
         if: always()
         env:
           TAG: ${{ steps.release.outputs.tag }}
           API_OK: ${{ steps.api.outputs.api_ok }}
+          API_LABEL: ${{ steps.api.outputs.api_label }}
         run: |
-          CDN="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${TAG}"
           echo "## 배포 결과" >> $GITHUB_STEP_SUMMARY
-          echo "- **릴리스 태그:** \`${TAG}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **커밋:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 릴리스: \`${TAG}\`  커밋: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           if [ "${API_OK}" = "true" ]; then
-            echo "✅ **Webflow head code 자동 업데이트 완료**" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **Webflow head code 자동 업데이트 완료** (${API_LABEL})" >> $GITHUB_STEP_SUMMARY
           else
-            echo "⚠️ **Webflow head code 자동 업데이트 실패** — 아래 코드를 Webflow > 홈 페이지 설정 > Head Code에 수동으로 붙여넣으세요:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **API 실패 — 아래 코드를 Webflow 홈 페이지 > Page Settings > Head Code에 붙여넣으세요**" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo '```html' >> $GITHUB_STEP_SUMMARY
-            echo "<!-- Section 1 Hero Animation -->" >> $GITHUB_STEP_SUMMARY
-            echo "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js\"></script>" >> $GITHUB_STEP_SUMMARY
-            echo "<link rel=\"stylesheet\" href=\"${CDN}/home/section1/section1.css\">" >> $GITHUB_STEP_SUMMARY
-            echo "<script src=\"${CDN}/home/section1/section1.js\"></script>" >> $GITHUB_STEP_SUMMARY
+            cat /tmp/head_inline.txt >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "<!-- Section Divider (S1 → S2) -->" >> $GITHUB_STEP_SUMMARY
-            echo "<link rel=\"stylesheet\" href=\"${CDN}/home/section-divider/divider.css\">" >> $GITHUB_STEP_SUMMARY
-            echo "<script src=\"${CDN}/home/section-divider/divider.js\"></script>" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "<!-- Global Button Glow -->" >> $GITHUB_STEP_SUMMARY
-            echo "<link rel=\"stylesheet\" href=\"${CDN}/home/global/buttons.css\">" >> $GITHUB_STEP_SUMMARY
-            echo "<script src=\"${CDN}/home/global/buttons.js\"></script>" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**API 자동화 영구 해결법:** Webflow > Project Settings > Integrations > API 토큰에 \`custom_code:write\` 권한 추가 후 GitHub secret \`WEBFLOW_API_TOKEN\` 업데이트" >> $GITHUB_STEP_SUMMARY
           fi
