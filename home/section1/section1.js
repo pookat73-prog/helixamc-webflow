@@ -191,10 +191,9 @@
           if (box1) {
             log('box1: adding is-looping');
             box1.classList.add('is-looping');
+            box1.style.boxShadow = '';  /* Remove inline shadow to let animation take over */
             box1.style.transition = 'none';
             box1.style.animation = 'helixGlowBlue 2.8s ease-in-out infinite';
-            console.log('[Section1] box1.classList:', box1.className);
-            console.log('[Section1] box1.style.animation:', box1.style.animation);
           }
         }, 1500);
       });
