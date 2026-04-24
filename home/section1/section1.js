@@ -5,8 +5,8 @@
 
    등장 순서: 슬로건 → 버튼 → 배경
    t=0.3  슬로건  1.2s  비대칭 ease-in-out (in 60% / out 40%)
-   t=0.5  버튼    0.8s  expo.out (확 등장 → 서서히 안착)
-   t=0.65 배경    1.5s  비대칭 ease-in-out (in 75% / out 25%, 더 극단적)
+   t=1.3  버튼    0.8s  expo.out (확 등장 → 서서히 안착)
+   t=1.45 배경    1.5s  비대칭 ease-in-out (in 75% / out 25%, 더 극단적)
 
    글로우: .bt-box-1 래퍼에 적용 (buttons.css와 일관성 유지)
    data-s1-init: buttons.js 중복 트리거 방지용 마킹
@@ -58,7 +58,7 @@
       ease: easeSlogan
     }, 0.3);
 
-    // 버튼: t=0.5, 0.8s — expo.out (팍 켜졌다 서서히 안착)
+    // 버튼: t=1.3, 0.8s — expo.out (팍 켜졌다 서서히 안착)
     tl.to('.bt-box-1', {
       autoAlpha: 1,
       duration: 0.8,
@@ -71,14 +71,14 @@
           if (box1) box1.classList.add('is-looping');
         }, 1500);
       }
-    }, 0.5);
+    }, 1.3);
 
-    // 배경: t=0.65, 1.5s — 비대칭 inOut (in75/out25, power3 in)
+    // 배경: t=1.45, 1.5s — 비대칭 inOut (in75/out25, power3 in)
     tl.to('.div-block-150', {
       autoAlpha: 1,
       duration: 1.5,
       ease: easeBg
-    }, 0.65);
+    }, 1.45);
   }
 
   window.Webflow = window.Webflow || [];
