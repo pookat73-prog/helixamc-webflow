@@ -92,14 +92,17 @@ jobs:
             echo "api_ok=true" >> $GITHUB_OUTPUT
           else
             echo "=== v1 PATCH 시도 ==="
-            HEAD_CODE=$(cat /tmp/head_manual.txt)
-            V1_PAYLOAD=$(node -e "process.stdout.write(JSON.stringify({headCode: $(cat /tmp/payload.json | node -e 'const d=require(\"fs\").readFileSync(\"/dev/stdin\",\"utf-8\"); const p=JSON.parse(d); process.stdout.write(JSON.stringify(p.headCode));')}))")
+            node -e "
+              const p = JSON.parse(require('fs').readFileSync('/tmp/payload.json','utf-8'));
+              process.stdout.write(JSON.stringify({ headCode: p.headCode }));
+            " > /tmp/v1_payload.json
+
             V1_RESPONSE=$(curl -s -o /tmp/v1_response.txt -w "%{http_code}" -X PATCH \
               "https://api.webflow.com/sites/${SITE_ID}" \
               -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
               -H "accept-version: 1.0.0" \
               -H "Content-Type: application/json" \
-              -d "${V1_PAYLOAD}")
+              -d @/tmp/v1_payload.json)
             echo "v1 HTTP ${V1_RESPONSE}:"; cat /tmp/v1_response.txt; echo ""
 
             if [ "$V1_RESPONSE" -ge 200 ] && [ "$V1_RESPONSE" -lt 300 ]; then
