@@ -10,7 +10,17 @@
   will-change: box-shadow;
 }
 
-/* 2. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
+/* 2. bt-box-1: 페이드인 완료 후 CSS animation으로 아롱아롱 shimmer */
+.bt-box-1.is-looping {
+  animation: glowShimmerBlue 3s infinite ease-in-out !important;
+}
+
+@keyframes glowShimmerBlue {
+  0%, 100% { box-shadow: 0 0 2.6vw 0.9vw rgba(0, 117, 214, 1); }
+  50%       { box-shadow: 0 0 1.4vw 0.45vw rgba(0, 117, 214, 0.7); }
+}
+
+/* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
 @keyframes glowLoopBlue {
   0%, 100% { box-shadow: 0 0 2.4vw 0.8vw rgba(0, 117, 214, 1); }
   50%       { box-shadow: 0 0 0.2vw 0.1vw rgba(0, 117, 214, 0.08); }
