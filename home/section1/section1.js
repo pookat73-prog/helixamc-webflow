@@ -24,7 +24,7 @@
     var tl = gsap.timeline();
 
     // FOUC 방지
-    gsap.set(['.home_slogan', '.div-block-150', '.flex-block-23'], { autoAlpha: 0 });
+    gsap.set(['.home_slogan', '.div-block-150', '.bt-box-1'], { autoAlpha: 0 });
 
     // 슬로건: t=0.2, 1.2s, ease-out
     tl.to('.home_slogan', {
@@ -40,8 +40,8 @@
       ease: 'power3.out'
     }, 1.0);
 
-    // 버튼: t=1.1, 0.8s, ease-out
-    tl.to('.flex-block-23', {
+    // 버튼 래퍼(bt-box-1): t=1.1, 0.8s, ease-out
+    tl.to('.bt-box-1', {
       autoAlpha: 1,
       duration: 0.8,
       ease: 'power2.out',
@@ -50,7 +50,6 @@
         if (b4) b4.classList.add('is-holding');
       },
       onComplete: function () {
-        // 1.5s 후 루프 전환
         setTimeout(function () {
           if (b1) b1.classList.add('is-looping');
           if (b4) b4.classList.add('is-looping');
