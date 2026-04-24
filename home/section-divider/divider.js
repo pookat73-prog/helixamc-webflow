@@ -92,8 +92,34 @@
     /* Measure dimensions on init */
     var bR = btn1.getBoundingClientRect();
     var s2R = sec2Head.getBoundingClientRect();
-    var btnBot_abs = bR.bottom + (window.scrollY || window.pageYOffset);
-    var s2Top_abs = s2R.top + (window.scrollY || window.pageYOffset);
+    var scrollY = window.scrollY || window.pageYOffset;
+
+    /* 버튼이 flex-stretch로 섹션 전체 높이로 늘어났는지 검사.
+       늘어난 경우 getBoundingClientRect().bottom이 섹션 바텀과 같아져서
+       라인 시작점이 섹션 경계에 찍힘 → top + 자연 콘텐츠 높이로 대체. */
+    var btn1Bot;
+    var cs = getComputedStyle(btn1);
+    var lineH_val = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2 || 20;
+    var padTop    = parseFloat(cs.paddingTop)    || 0;
+    var padBot    = parseFloat(cs.paddingBottom) || 0;
+    var naturalH  = lineH_val + padTop + padBot;
+
+    var section1  = document.querySelector('.home_background') ||
+                    btn1.closest('section') ||
+                    btn1.closest('[class*="section"]');
+    var s1Bot     = section1 ? section1.getBoundingClientRect().bottom : null;
+
+    /* 버튼 bottom이 섹션 바텀에서 20px 이내면 stretched로 판단 */
+    var isStretched = s1Bot !== null && (s1Bot - bR.bottom) < 20;
+    if (isStretched) {
+      log('btn stretched — using top + naturalH (' + naturalH.toFixed(1) + 'px)');
+      btn1Bot = bR.top + naturalH;
+    } else {
+      btn1Bot = bR.bottom;
+    }
+
+    var btnBot_abs = btn1Bot + scrollY;
+    var s2Top_abs = s2R.top + scrollY;
     var lineH = Math.max(1, s2Top_abs - btnBot_abs);
     var lineX = bR.left + bR.width / 2;
 
