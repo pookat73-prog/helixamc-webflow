@@ -1,19 +1,25 @@
 /* ================================================================
-   SECTION CONNECTOR LINE: Button1 bottom-center -> Section2 heading top
-   Scroll-animated draw/erase via clipPath.
+   SECTION CONNECTOR LINE (SVG Helix): Button1 bottom-center -> Section2 heading top
+   Structure: outer div handles position + clip-path (v6-proven),
+              inner SVG draws the sinusoidal helix path.
 
    Phase 1 (scroll start -> button bottom exits): line grows downward
    Phase 2 (button fully gone -> sec2 at 50vh):   erase from top, slow
    Phase 3 (sec2 at 50vh -> 15vh):                fast convergence
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 6
+   Version: 9 (div wrapper + SVG helix inside)
    ================================================================ */
 
 (function () {
   'use strict';
 
   var BTN1_CLASS = '.discover-helix_button';
+  var AMPLITUDE  = 14;   /* px - horizontal sine deviation */
+  var NUM_WAVES  = 5;    /* complete sine cycles over connector height */
+  var STEPS      = 120;  /* polyline point density */
+  var SVG_W      = AMPLITUDE * 2 + 4;   /* 32px total width */
+  var REL_CX     = AMPLITUDE + 2;       /* 16px center-x within SVG */
 
   var DEBUG = window.DEBUG_SECTION_LINE ||
               /[?&]debug-line=1/.test(location.search);
@@ -21,11 +27,13 @@
     console.log.apply(console, ['[SectionLine]'].concat([].slice.call(arguments)));
   } : function () {};
 
-  var line        = null;
-  var btn1        = null;
-  var sec2Head    = null;
+  var wrapEl  = null;   /* outer div: position + clip-path */
+  var svgEl   = null;   /* inner SVG: visual sine wave */
+  var pathEl  = null;   /* SVG <path> element */
+  var btn1    = null;
+  var sec2Head = null;
   var initialized = false;
-  var rafId       = null;
+  var rafId   = null;
 
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
   function easeInOut(t) {
@@ -33,9 +41,6 @@
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
   }
 
-  /* Find section 2 heading:
-     1) .section2-heading class first
-     2) Walk up from button, check siblings for first heading */
   function findSec2Head(btn) {
     var el = document.querySelector('.section2-heading');
     if (el) { log('sec2: found via .section2-heading class'); return el; }
@@ -44,29 +49,58 @@
       var sib = node.nextElementSibling;
       if (sib) {
         var h = sib.querySelector('h1,h2,h3,h4,[class*="heading"],[class*="Heading"]');
-        if (h) { log('sec2: auto-detected via DOM ->', h.tagName, h.className.slice(0, 30)); return h; }
+        if (h) { log('sec2: auto-detected ->', h.tagName, h.className.slice(0, 30)); return h; }
       }
       node = node.parentElement;
     }
-    log('sec2: not found - add .section2-heading class to the section 2 heading for accuracy');
+    log('sec2: not found - add .section2-heading to the section 2 heading');
     return null;
   }
 
-  function ensureLine() {
-    if (line) return;
-    line = document.createElement('div');
-    line.className = 'section-connector-line';
+  /* Build sinusoidal polyline: center REL_CX, y from 0 to lineH (SVG coords). */
+  function buildPath(lineH) {
+    var d = '';
+    for (var i = 0; i <= STEPS; i++) {
+      var t  = i / STEPS;
+      var px = REL_CX + AMPLITUDE * Math.sin(t * NUM_WAVES * 2 * Math.PI);
+      var py = t * lineH;
+      d += (i === 0 ? 'M ' : ' L ') + px.toFixed(2) + ' ' + py.toFixed(2);
+    }
+    return d;
+  }
+
+  function ensureElements() {
+    if (wrapEl) return;
+
+    /* Outer div: same role as the div in v6 - handles position + clip-path */
+    wrapEl = document.createElement('div');
+    wrapEl.setAttribute('class', 'section-connector-line');
+
+    /* Inner SVG: draws the helix sine wave path */
+    svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svgEl.style.cssText = 'display:block;overflow:visible;';
+
+    pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    pathEl.setAttribute('fill',           'none');
+    pathEl.setAttribute('stroke',         '#0075d6');
+    pathEl.setAttribute('stroke-width',   '1');
+    pathEl.setAttribute('stroke-linecap', 'round');
+    pathEl.setAttribute('vector-effect',  'non-scaling-stroke');
+    svgEl.appendChild(pathEl);
+    wrapEl.appendChild(svgEl);
+
     if (getComputedStyle(document.body).position === 'static') {
       document.body.style.position = 'relative';
     }
-    document.body.appendChild(line);
-    line.style.clipPath = 'inset(0% 0 100% 0)';
-    log('line created');
+    document.body.appendChild(wrapEl);
+    wrapEl.style.clipPath = 'inset(0% 0 100% 0)';
+    log('elements created');
   }
 
   function update() {
     rafId = null;
-    if (!btn1 || !sec2Head || !line) return;
+    if (!btn1 || !sec2Head || !wrapEl) return;
 
     var sy  = window.scrollY || window.pageYOffset;
     var vh  = window.innerHeight;
@@ -76,20 +110,29 @@
 
     var btnBot_abs = bR.bottom + sy;
     var s2Top_abs  = s2R.top   + sy;
-
     var lineH = Math.max(0, s2Top_abs - btnBot_abs - 0.005 * vw);
     var lineX = bR.left + bR.width / 2;
 
-    line.style.left   = lineX + 'px';
-    line.style.top    = btnBot_abs + 'px';
-    line.style.height = lineH + 'px';
+    /* Position the wrapper div, centered on lineX (same logic as v6) */
+    wrapEl.style.left   = (lineX - REL_CX) + 'px';
+    wrapEl.style.top    = btnBot_abs + 'px';
+    wrapEl.style.width  = SVG_W + 'px';
+    wrapEl.style.height = Math.max(1, lineH) + 'px';
+
+    /* Keep SVG coordinate space in sync with CSS dimensions */
+    svgEl.setAttribute('width',  SVG_W);
+    svgEl.setAttribute('height', Math.max(1, lineH));
+    svgEl.style.width  = SVG_W + 'px';
+    svgEl.style.height = Math.max(1, lineH) + 'px';
 
     if (lineH < 1) {
-      line.style.clipPath = 'inset(0% 0 100% 0)';
+      wrapEl.style.clipPath = 'inset(0% 0 100% 0)';
       return;
     }
 
-    /* Milestones */
+    pathEl.setAttribute('d', buildPath(lineH));
+
+    /* Phase milestones (identical to v6) */
     var M1 = Math.max(1, btnBot_abs);
     var M2 = Math.max(M1 + 1, s2Top_abs - vh * 0.5);
     var M3 = Math.max(M2 + 1, s2Top_abs - vh * 0.15);
@@ -100,17 +143,14 @@
       cTop = 0; cBot = 1;
 
     } else if (sy <= M1) {
-      /* Phase 1: draw downward (bottom clip 1 -> 0) */
       cTop = 0;
       cBot = 1 - easeInOut(sy / M1);
 
     } else if (sy <= M2) {
-      /* Phase 2: erase from top, slow (top clip 0 -> 0.65) */
       cTop = easeInOut((sy - M1) / (M2 - M1)) * 0.65;
       cBot = 0;
 
     } else if (sy <= M3) {
-      /* Phase 3: top catches up to fixed bottom (ease-in accelerating) */
       var t = clamp((sy - M2) / (M3 - M2), 0, 1);
       cTop = 0.65 + t * t * 0.35;
       cBot = 0;
@@ -121,7 +161,8 @@
 
     if (cTop + cBot > 1) cBot = Math.max(0, 1 - cTop);
 
-    line.style.clipPath =
+    /* Apply clip-path to the outer div (same as v6) */
+    wrapEl.style.clipPath =
       'inset(' + (cTop * 100).toFixed(2) + '% 0 '
                + (cBot * 100).toFixed(2) + '% 0)';
 
@@ -147,7 +188,7 @@
     var r = btn1.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) { log('setup waiting - button layout not ready'); return false; }
 
-    ensureLine();
+    ensureElements();
 
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule, { passive: true });
@@ -182,8 +223,10 @@
   }
 
   if (document.readyState !== 'loading') {
-    setTimeout(function () { retryInit('not-loading'); }, 200);
+    setTimeout(function () { retryInit('not-reading'); }, 200);
   } else {
-    document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { retryInit('DOMContentLoaded'); }, 200); });
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () { retryInit('DOMContentLoaded'); }, 200);
+    });
   }
 })();
