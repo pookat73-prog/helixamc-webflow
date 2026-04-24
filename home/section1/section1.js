@@ -56,23 +56,17 @@
 
     started = true;
 
-    /* Force initial hidden with !important to beat Webflow styles */
-    function forceHide(el) {
+    /* Force opacity + visibility with !important inline so we beat Webflow CSS */
+    function forceOpacity(el, v) {
       if (!el) return;
-      el.style.setProperty('opacity', '0', 'important');
-      el.style.setProperty('visibility', 'hidden', 'important');
-    }
-    function clearForced(el) {
-      if (!el) return;
-      el.style.removeProperty('opacity');
-      el.style.removeProperty('visibility');
+      el.style.setProperty('opacity', String(v), 'important');
+      el.style.setProperty('visibility', v > 0 ? 'visible' : 'hidden', 'important');
     }
 
-    forceHide(slogan);
-    forceHide(bg);
-    forceHide(box1);
+    forceOpacity(slogan, 0);
+    forceOpacity(bg, 0);
+    forceOpacity(box1, 0);
 
-    /* Verify actually hidden */
     if (slogan) {
       var cs = window.getComputedStyle(slogan);
       console.log('[Section1] slogan after forceHide: opacity=' + cs.opacity + ' visibility=' + cs.visibility);
@@ -80,34 +74,29 @@
 
     if (box1) box1.setAttribute('data-s1-init', '');
 
+    /* Drive opacity via dummy tween so we can keep !important on every frame */
+    function fadeIn(el, duration, ease, at, onStart, onComplete) {
+      if (!el) return;
+      var state = { v: 0 };
+      tl.to(state, {
+        v: 1,
+        duration: duration,
+        ease: ease,
+        onStart: onStart,
+        onUpdate: function () { forceOpacity(el, state.v); },
+        onComplete: onComplete
+      }, at);
+    }
+
     var tl = gsap.timeline();
 
-    if (slogan) {
-      tl.call(function () { clearForced(slogan); }, null, 0.3)
-        .fromTo(slogan,
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 1.2, ease: easeSlogan }, 0.3);
-    }
-    if (box1) {
-      tl.call(function () { clearForced(box1); }, null, 1.3)
-        .fromTo(box1,
-          { autoAlpha: 0 },
-          {
-            autoAlpha: 1,
-            duration: 0.8,
-            ease: 'expo.out',
-            onStart:    function () { box1.classList.add('is-holding'); },
-            onComplete: function () {
-              setTimeout(function () { box1.classList.add('is-looping'); }, 1500);
-            }
-          }, 1.3);
-    }
-    if (bg) {
-      tl.call(function () { clearForced(bg); }, null, 1.45)
-        .fromTo(bg,
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 1.5, ease: easeBg }, 1.45);
-    }
+    fadeIn(slogan, 1.2, easeSlogan, 0.3);
+    fadeIn(box1, 0.8, 'expo.out', 1.3,
+      function () { if (box1) box1.classList.add('is-holding'); },
+      function () {
+        setTimeout(function () { if (box1) box1.classList.add('is-looping'); }, 1500);
+      });
+    fadeIn(bg, 1.5, easeBg, 1.45);
 
     console.log('[Section1] timeline started');
     return true;
