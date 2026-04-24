@@ -118,34 +118,22 @@
 
     started = true;
 
-    /* Wait for fonts to load before detaching (fixes slogan layout jitter) */
-    function doDetach() {
-      var cleanups = [];
-      if (bg && bg.parentElement) {
-        var target = bg.parentElement;
-        try {
-          if (slogan && bg.contains(slogan)) {
-            log('detaching slogan from bg');
-            cleanups.push(detachWithGhost(slogan, target));
-          }
-          if (box1 && bg.contains(box1)) {
-            log('detaching box1 from bg');
-            cleanups.push(detachWithGhost(box1, target));
-          }
-        } catch (e) {
-          console.warn('[Section1] detach failed, continuing without:', e);
-        }
-      }
-      return cleanups;
-    }
-
+    /* Detach slogan and box1 if they're descendants of bg */
     var cleanups = [];
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () {
-        cleanups = doDetach();
-      });
-    } else {
-      cleanups = doDetach();
+    if (bg && bg.parentElement) {
+      var target = bg.parentElement;
+      try {
+        if (slogan && bg.contains(slogan)) {
+          log('detaching slogan from bg');
+          cleanups.push(detachWithGhost(slogan, target));
+        }
+        if (box1 && bg.contains(box1)) {
+          log('detaching box1 from bg');
+          cleanups.push(detachWithGhost(box1, target));
+        }
+      } catch (e) {
+        console.warn('[Section1] detach failed, continuing without:', e);
+      }
     }
 
     function forceOpacity(el, v) {
