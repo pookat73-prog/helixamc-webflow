@@ -18,7 +18,9 @@
     }
 
     var observer = new IntersectionObserver(function (entries) {
+      console.log('[ButtonGlow] intersection callback fired with', entries.length, 'entries');
       entries.forEach(function (entry) {
+        console.log('[ButtonGlow] entry:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
         if (!entry.isIntersecting) return;
         var el = entry.target;
         observer.unobserve(el);
@@ -40,10 +42,17 @@
       });
     }, { threshold: 0.3 });
 
+    var observeCount = 0;
     targets.forEach(function (el) {
-      if (el.hasAttribute('data-s1-ghost')) return;
+      if (el.hasAttribute('data-s1-ghost')) {
+        console.log('[ButtonGlow] skipping observe for ghost');
+        return;
+      }
+      console.log('[ButtonGlow] observing button:', el.className);
       observer.observe(el);
+      observeCount++;
     });
+    console.log('[ButtonGlow] started observing', observeCount, 'buttons');
   }
 
   window.Webflow = window.Webflow || [];
