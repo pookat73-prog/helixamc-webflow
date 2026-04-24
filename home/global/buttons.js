@@ -1,66 +1,67 @@
 /* ================================================================
    GLOBAL BUTTON GLOW ANIMATION
-   IntersectionObserver trigger
+   IntersectionObserver trigger + keyframes injected inline
    Dependencies: none
    ================================================================ */
 
 (function () {
   'use strict';
 
+  /* Inject keyframes into document head */
+  var style = document.createElement('style');
+  style.textContent = [
+    '@keyframes helixGlowBlue {',
+    '  0%,100% { box-shadow: 0 0 0.8vw 0.25vw rgba(0,117,214,0.85); }',
+    '  50%      { box-shadow: 0 0 0.4vw 0.1vw  rgba(0,117,214,0.08); }',
+    '}',
+    '@keyframes helixGlowPurple {',
+    '  0%,100% { box-shadow: 0 0 0.8vw 0.25vw rgba(85,40,170,0.85); }',
+    '  50%      { box-shadow: 0 0 0.4vw 0.1vw  rgba(85,40,170,0.08); }',
+    '}'
+  ].join('\n');
+  document.head.appendChild(style);
+
+  function isPurple(el) {
+    return el.classList.contains('bt-box-4');
+  }
+
+  function startGlow(el) {
+    var shadow = isPurple(el)
+      ? '0 0 0.8vw 0.25vw rgba(85,40,170,0.85)'
+      : '0 0 0.8vw 0.25vw rgba(0,117,214,0.85)';
+
+    /* Phase 1: fade-in to full glow */
+    el.style.transition = 'box-shadow 0.6s ease';
+    el.style.boxShadow  = shadow;
+
+    /* Phase 2: swap to pulsing loop after 1.5s */
+    setTimeout(function () {
+      el.style.transition = 'none';
+      el.style.animation  = isPurple(el)
+        ? 'helixGlowPurple 2.8s ease-in-out infinite'
+        : 'helixGlowBlue 2.8s ease-in-out infinite';
+    }, 1500);
+  }
+
   function initButtonGlow() {
-    var targets = document.querySelectorAll(
-      '.bt-box-1, .bt-box-2, .bt-box-3, .bt-box-4'
-    );
-    console.log('[ButtonGlow] found', targets.length, 'button targets');
-    if (!targets.length) {
-      console.warn('[ButtonGlow] no buttons found with selectors: .bt-box-1/2/3/4');
-      return;
-    }
+    var targets = document.querySelectorAll('.bt-box-1,.bt-box-2,.bt-box-3,.bt-box-4');
+    if (!targets.length) return;
 
     var observer = new IntersectionObserver(function (entries) {
-      console.log('[ButtonGlow] intersection callback fired with', entries.length, 'entries');
       entries.forEach(function (entry) {
-        console.log('[ButtonGlow] entry:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
         if (!entry.isIntersecting) return;
         var el = entry.target;
         observer.unobserve(el);
-        /* Skip section1.js ghost placeholders and managed elements */
-        if (el.hasAttribute('data-s1-ghost')) {
-          console.log('[ButtonGlow] skipped ghost:', el.className);
-          return;
-        }
-        if (el.hasAttribute('data-s1-init')) {
-          console.log('[ButtonGlow] skipped s1-init:', el.className);
-          return;
-        }
-        console.log('[ButtonGlow] adding is-holding to:', el.className);
-        var rect = el.getBoundingClientRect();
-        var cs = window.getComputedStyle(el);
-        console.log('[ButtonGlow] rect:', {x: rect.x, y: rect.y, width: rect.width, height: rect.height});
-        console.log('[ButtonGlow] computed:', {display: cs.display, opacity: cs.opacity, visibility: cs.visibility});
-        el.classList.add('is-holding');
-        el.style.boxShadow = '0 0 0.8vw 0.25vw rgba(0, 117, 214, 0.85)';
-        el.style.backgroundColor = 'red';
-        el.style.outline = '5px solid lime';
-        console.log('[ButtonGlow] styled element:', el);
-        setTimeout(function () {
-          console.log('[ButtonGlow] adding is-looping to:', el.className);
-          el.classList.add('is-looping');
-        }, 1500);
+        if (el.hasAttribute('data-s1-ghost')) return;
+        if (el.hasAttribute('data-s1-init'))  return;
+        startGlow(el);
       });
     }, { threshold: 0.3 });
 
-    var observeCount = 0;
     targets.forEach(function (el) {
-      if (el.hasAttribute('data-s1-ghost')) {
-        console.log('[ButtonGlow] skipping observe for ghost');
-        return;
-      }
-      console.log('[ButtonGlow] observing button:', el.className);
+      if (el.hasAttribute('data-s1-ghost')) return;
       observer.observe(el);
-      observeCount++;
     });
-    console.log('[ButtonGlow] started observing', observeCount, 'buttons');
   }
 
   window.Webflow = window.Webflow || [];
