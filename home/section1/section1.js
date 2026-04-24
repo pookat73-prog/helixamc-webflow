@@ -176,7 +176,18 @@
     fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
       null,
       function () {
-        if (box1) box1.classList.add('is-looping');
+        if (!box1 || !window.gsap) return;
+        /* 글로우 부드럽게 fade-in 후 CSS shimmer 애니메이션으로 인계 */
+        gsap.to(box1, {
+          boxShadow: '0 0 2.6vw 0.9vw rgba(0,117,214,1)',
+          duration: 0.5,
+          ease: 'power2.out',
+          onComplete: function () {
+            if (!box1) return;
+            gsap.set(box1, { clearProps: 'boxShadow' });
+            box1.classList.add('is-looping');
+          }
+        });
       });
     fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
       /* All fades done - restore DOM so responsive layout resumes */

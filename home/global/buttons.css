@@ -12,12 +12,12 @@
 
 /* 2. bt-box-1: 페이드인 완료 후 CSS animation으로 아롱아롱 shimmer */
 .bt-box-1.is-looping {
-  animation: glowShimmerBlue 3s infinite ease-in-out !important;
+  animation: glowShimmerBlue 2.4s infinite ease-in-out !important;
 }
 
 @keyframes glowShimmerBlue {
   0%, 100% { box-shadow: 0 0 2.6vw 0.9vw rgba(0, 117, 214, 1); }
-  50%       { box-shadow: 0 0 1.4vw 0.45vw rgba(0, 117, 214, 0.7); }
+  50%       { box-shadow: 0 0 1.8vw 0.62vw rgba(0, 117, 214, 0.78); }
 }
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
