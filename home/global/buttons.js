@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════════════════════════
+/* ================================================================
    GLOBAL BUTTON GLOW ANIMATION
-   JavaScript - IntersectionObserver trigger
-   Dependencies: none (no GSAP required)
-   ═══════════════════════════════════════════════════════════════ */
+   IntersectionObserver trigger
+   Dependencies: none
+   ================================================================ */
 
 (function () {
     'use strict';
@@ -19,7 +19,7 @@
                     if (!entry.isIntersecting) return;
                     var el = entry.target;
                     observer.unobserve(el);
-                    // section1.js가 관리하는 요소는 건너뜀 (중복 트리거 방지)
+                    // skip elements managed by section1.js (prevent double-trigger)
                     if (el.hasAttribute('data-s1-init')) return;
                     el.classList.add('is-holding');
                     setTimeout(function () {
