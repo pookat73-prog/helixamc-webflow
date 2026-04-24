@@ -10,15 +10,15 @@
   will-change: box-shadow;
 }
 
-/* 2. is-holding: 정적 풀 글로우 */
+/* 2. is-holding: 정적 풀 글로우 (keyframe 0%와 수치 일치 필수) */
 .bt-box-1.is-holding,
 .bt-box-2.is-holding,
 .bt-box-3.is-holding {
-  box-shadow: 0 0 2.5vw 0.8vw rgba(0, 117, 214, 0.6) !important;
+  box-shadow: 0 0 3.5vw 1.2vw rgba(0, 117, 214, 0.85) !important;
 }
 
 .bt-box-4.is-holding {
-  box-shadow: 0 0 2.5vw 0.8vw rgba(85, 40, 170, 0.6) !important;
+  box-shadow: 0 0 3.5vw 1.2vw rgba(85, 40, 170, 0.85) !important;
 }
 
 /* 3. is-looping: breathing 루프 */
@@ -34,13 +34,13 @@
   animation: glowLoopPurple 2.8s infinite ease-in-out !important;
 }
 
-/* 4. keyframes */
+/* 4. keyframes — 0%/100%는 is-holding 수치와 반드시 일치 */
 @keyframes glowLoopBlue {
-  0%, 100% { box-shadow: 0 0 2.5vw 0.8vw rgba(0, 117, 214, 0.6); }
-  50%       { box-shadow: 0 0 1.0vw 0.3vw rgba(0, 117, 214, 0.3); }
+  0%, 100% { box-shadow: 0 0 3.5vw 1.2vw rgba(0, 117, 214, 0.85); }
+  50%       { box-shadow: 0 0 0.4vw 0.1vw rgba(0, 117, 214, 0.08); }
 }
 
 @keyframes glowLoopPurple {
-  0%, 100% { box-shadow: 0 0 2.5vw 0.8vw rgba(85, 40, 170, 0.6); }
-  50%       { box-shadow: 0 0 1.0vw 0.3vw rgba(85, 40, 170, 0.3); }
+  0%, 100% { box-shadow: 0 0 3.5vw 1.2vw rgba(85, 40, 170, 0.85); }
+  50%       { box-shadow: 0 0 0.4vw 0.1vw rgba(85, 40, 170, 0.08); }
 }
