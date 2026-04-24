@@ -112,34 +112,49 @@
     var relCx = AMPLITUDE + 2;
     pathEl.setAttribute('d', buildPath(relCx, lineH));
     var pathLength = pathEl.getTotalLength() || lineH;
-    pathEl.setAttribute('stroke-dasharray', pathLength);
-    pathEl.setAttribute('stroke-dashoffset', pathLength);  /* Fully hidden at page load */
 
-    /* Create ScrollTrigger timeline */
-    var tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: btn1,
-        start: 'bottom center',
-        endTrigger: sec2Head,
-        end: 'top 75%',
-        scrub: true,
-        markers: DEBUG
+    /* Initially fully hidden */
+    pathEl.setAttribute('stroke-dasharray', pathLength + ' ' + pathLength);
+    pathEl.setAttribute('stroke-dashoffset', 0);
+
+    var headProgress = 0;  /* 0~1: how far the head has drawn */
+    var tailProgress = 0;  /* 0~1: how far the tail has erased */
+
+    function applyDash() {
+      var tail = Math.min(tailProgress, headProgress);
+      var visibleLen = (headProgress - tail) * pathLength;
+      var dashOffset  = -tail * pathLength;
+      pathEl.setAttribute('stroke-dasharray', visibleLen + ' ' + pathLength);
+      pathEl.setAttribute('stroke-dashoffset', dashOffset);
+    }
+
+    /* Draw: button bottom reaches viewport center → sec2 heading reaches 75% */
+    ScrollTrigger.create({
+      trigger: btn1,
+      start: 'bottom center',
+      endTrigger: sec2Head,
+      end: 'top 75%',
+      scrub: true,
+      markers: DEBUG,
+      onUpdate: function (self) {
+        headProgress = self.progress;
+        applyDash();
       }
     });
 
-    /* Phase 1: Draw from top to bottom */
-    tl.to(pathEl, {
-      strokeDashoffset: 0,
-      ease: 'none',
-      duration: 1
+    /* Erase: button fully leaves viewport → sec2 heading reaches 50% */
+    ScrollTrigger.create({
+      trigger: btn1,
+      start: 'top bottom',
+      endTrigger: sec2Head,
+      end: 'top 50%',
+      scrub: true,
+      markers: DEBUG,
+      onUpdate: function (self) {
+        tailProgress = self.progress;
+        applyDash();
+      }
     });
-
-    /* Phase 2+3: Erase from top, start overlapping 20% before phase 1 ends */
-    tl.to(pathEl, {
-      strokeDashoffset: -lineH,
-      ease: 'power1.inOut',
-      duration: 1
-    }, '>-0.2');
 
     log('animation initialized');
     initialized = true;
