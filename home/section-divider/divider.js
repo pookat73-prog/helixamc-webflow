@@ -1,13 +1,13 @@
 /* ================================================================
-   SECTION CONNECTOR LINE (SVG): Button1 bottom-center -> Section2 heading top
-   SVG stroke-dashoffset scroll animation with sinusoidal helix path.
+   SECTION CONNECTOR LINE (SVG Helix): Button1 bottom-center -> Section2 heading top
+   SVG sized exactly to match the connector span; clip-path drives animation.
 
    Phase 1 (scroll start -> button bottom exits): line grows downward
    Phase 2 (button fully gone -> sec2 at 50vh):   erase from top, slow
    Phase 3 (sec2 at 50vh -> 15vh):                fast convergence
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 7 (SVG)
+   Version: 8 (SVG helix + clip-path)
    ================================================================ */
 
 (function () {
@@ -15,8 +15,8 @@
 
   var BTN1_CLASS = '.discover-helix_button';
   var AMPLITUDE  = 14;   /* px - horizontal sine deviation */
-  var NUM_WAVES  = 5;    /* complete sine cycles over the full connector height */
-  var STEPS      = 120;  /* polyline point count - higher = smoother */
+  var NUM_WAVES  = 5;    /* complete sine cycles over connector height */
+  var STEPS      = 120;  /* polyline density */
 
   var DEBUG = window.DEBUG_SECTION_LINE ||
               /[?&]debug-line=1/.test(location.search);
@@ -37,9 +37,6 @@
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
   }
 
-  /* Find section 2 heading:
-     1) .section2-heading class first
-     2) Walk up from button, check siblings for first heading */
   function findSec2Head(btn) {
     var el = document.querySelector('.section2-heading');
     if (el) { log('sec2: found via .section2-heading class'); return el; }
@@ -56,14 +53,14 @@
     return null;
   }
 
-  /* Build sinusoidal polyline from (cx, y0) to (cx, y1) */
-  function buildPath(cx, y0, y1) {
-    var height = y1 - y0;
+  /* Build sinusoidal polyline within the SVG coordinate space.
+     cx = horizontal center, y runs 0 -> height. */
+  function buildPath(cx, height) {
     var d = '';
     for (var i = 0; i <= STEPS; i++) {
       var t  = i / STEPS;
       var px = cx + AMPLITUDE * Math.sin(t * NUM_WAVES * 2 * Math.PI);
-      var py = y0 + t * height;
+      var py = t * height;
       d += (i === 0 ? 'M ' : ' L ') + px.toFixed(2) + ' ' + py.toFixed(2);
     }
     return d;
@@ -74,11 +71,8 @@
 
     svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEl.setAttribute('class', 'section-connector-svg');
-    /* height:1px + overflow:visible lets the path render at any y without
-       the SVG element itself expanding the page scroll height */
     svgEl.style.cssText =
-      'position:absolute;top:0;left:0;width:100%;height:1px;' +
-      'overflow:visible;pointer-events:none;z-index:9999;';
+      'position:absolute;pointer-events:none;z-index:9999;will-change:clip-path;overflow:visible;';
 
     pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     pathEl.setAttribute('fill', 'none');
@@ -92,6 +86,7 @@
       document.body.style.position = 'relative';
     }
     document.body.appendChild(svgEl);
+    svgEl.style.clipPath = 'inset(0% 0 100% 0)';
     log('SVG created');
   }
 
@@ -101,64 +96,74 @@
 
     var sy  = window.scrollY || window.pageYOffset;
     var vh  = window.innerHeight;
+    var vw  = window.innerWidth;
     var bR  = btn1.getBoundingClientRect();
     var s2R = sec2Head.getBoundingClientRect();
 
-    var cx = bR.left + bR.width / 2;
-    var y0 = bR.bottom + sy;   /* absolute: button bottom */
-    var y1 = s2R.top   + sy;   /* absolute: sec2 heading top */
+    var btnBot_abs = bR.bottom + sy;
+    var s2Top_abs  = s2R.top   + sy;
+    var lineH = Math.max(0, s2Top_abs - btnBot_abs - 0.005 * vw);
+    var lineX = bR.left + bR.width / 2;
 
-    if (y1 - y0 < 1) {
-      pathEl.setAttribute('d', '');
+    /* SVG is sized exactly to contain the sine wave path.
+       Width = amplitude*2 + 4px padding; center = amplitude+2. */
+    var SVG_W = AMPLITUDE * 2 + 4;
+    var relCx = AMPLITUDE + 2;
+
+    svgEl.style.left   = (lineX - relCx) + 'px';
+    svgEl.style.top    = btnBot_abs + 'px';
+    svgEl.style.width  = SVG_W + 'px';
+    svgEl.style.height = Math.max(1, lineH) + 'px';
+    svgEl.setAttribute('width',  SVG_W);
+    svgEl.setAttribute('height', Math.max(1, lineH));
+
+    if (lineH < 1) {
+      svgEl.style.clipPath = 'inset(0% 0 100% 0)';
       return;
     }
 
-    pathEl.setAttribute('d', buildPath(cx, y0, y1));
-    var L = pathEl.getTotalLength();
-    if (L < 1) return;
+    pathEl.setAttribute('d', buildPath(relCx, lineH));
 
-    /* Milestones (same logic as clip-path version) */
-    var M1 = Math.max(1,      y0);
-    var M2 = Math.max(M1 + 1, y1 - vh * 0.5);
-    var M3 = Math.max(M2 + 1, y1 - vh * 0.15);
+    /* ── Milestones (unchanged from v6) ── */
+    var M1 = Math.max(1, btnBot_abs);
+    var M2 = Math.max(M1 + 1, s2Top_abs - vh * 0.5);
+    var M3 = Math.max(M2 + 1, s2Top_abs - vh * 0.15);
 
-    var da; /* stroke-dasharray string */
+    var cTop, cBot;
 
     if (sy <= 0) {
-      /* Hidden before scrolling */
-      da = '0 ' + L;
+      cTop = 0; cBot = 1;
 
     } else if (sy <= M1) {
-      /* Phase 1: draw from top (button) downward */
-      var drawn = (easeInOut(sy / M1) * L).toFixed(2);
-      da = drawn + ' ' + L;
+      /* Phase 1: draw downward */
+      cTop = 0;
+      cBot = 1 - easeInOut(sy / M1);
+
+    } else if (sy <= M2) {
+      /* Phase 2: erase from top, slow */
+      cTop = easeInOut((sy - M1) / (M2 - M1)) * 0.65;
+      cBot = 0;
 
     } else if (sy <= M3) {
-      /* Phase 2+3: erase from top
-         dasharray: "0 <erased> <visible>" hides the first <erased> pixels */
-      var eraseRatio;
-      if (sy <= M2) {
-        eraseRatio = easeInOut((sy - M1) / (M2 - M1)) * 0.65;
-      } else {
-        var t = clamp((sy - M2) / (M3 - M2), 0, 1);
-        eraseRatio = 0.65 + t * t * 0.35;
-      }
-      var erased  = eraseRatio * L;
-      var visible = Math.max(0, L - erased);
-      da = '0 ' + erased.toFixed(2) + ' ' + visible.toFixed(2) + ' ' + L;
+      /* Phase 3: fast convergence */
+      var t = clamp((sy - M2) / (M3 - M2), 0, 1);
+      cTop = 0.65 + t * t * 0.35;
+      cBot = 0;
 
     } else {
-      /* Fully erased */
-      da = '0 ' + L;
+      cTop = 1; cBot = 0;
     }
 
-    pathEl.setAttribute('stroke-dasharray',  da);
-    pathEl.setAttribute('stroke-dashoffset', '0');
+    if (cTop + cBot > 1) cBot = Math.max(0, 1 - cTop);
+
+    svgEl.style.clipPath =
+      'inset(' + (cTop * 100).toFixed(2) + '% 0 '
+               + (cBot * 100).toFixed(2) + '% 0)';
 
     log('sy', sy | 0,
         '| M1', M1 | 0, 'M2', M2 | 0, 'M3', M3 | 0,
-        '| L', L.toFixed(0),
-        '| da', da);
+        '| cTop', (cTop * 100).toFixed(1) + '%',
+        'cBot', (cBot * 100).toFixed(1) + '%');
   }
 
   function schedule() {

@@ -1,15 +1,12 @@
 /* ================================================================
    SECTION CONNECTOR SVG: Button 1 bottom-center -> Section 2 head top
-   Stroke styled inline; this class exists for DevTools identification.
+   Sized/positioned via JS each frame; clip-path controls draw/erase.
    ================================================================ */
 
 .section-connector-svg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;         /* overflow:visible lets path render outside this box */
-  overflow: visible;
   pointer-events: none;
   z-index: 9999;
+  will-change: clip-path;
+  overflow: visible;
 }
