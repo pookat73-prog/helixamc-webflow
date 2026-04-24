@@ -22,7 +22,9 @@
     'home/section-divider/divider.css',
     'home/section-divider/divider.js',
     'home/global/buttons.css',
-    'home/global/buttons.js'
+    'home/global/buttons.js',
+    'home/global/sections-animations.css',
+    'home/global/sections-animations.js'
   ];
 
   function cdn(ref, path) {

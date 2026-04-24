@@ -84,6 +84,21 @@ home/
 - 배포 확인: 시크릿 창으로 사이트 열고 DevTools Network에서 파일이 `cdn.jsdelivr.net/gh/.../@<sha>/...` 형태로 로드되는지 확인
 - Actions Summary에서 붙여넣을 head code 다시 볼 수 있음
 
+## 📌 Version Backup 1 (섹션 1 버튼까지 확정)
+
+**커밋**: `828e698` (divider: BTN1_CLASS .discover-helix_button으로 복원)
+
+이 시점까지의 안정적 상태:
+- 섹션 1 Hero: 슬로건/버튼/배경 페이드인 애니메이션 완료
+- 버튼 1 글로우: LOCKED (절대 수정 금지)
+- 섹션 1-2 헬릭스 라인: 위치 조정 중
+
+**원본 코드 위치**:
+- `home/section1/section1.js`, `section1.css`
+- `home/section-divider/divider.js`, `divider.css`
+
+⚠️ 새 코드 적용 후 문제 시 이 커밋으로 `git revert`
+
 ## 컨텍스트
 - Webflow Site ID: `69d090ea69d828e27d16ea29`
 - GitHub 리포: `pookat73-prog/helixamc-webflow`
