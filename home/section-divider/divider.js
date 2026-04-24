@@ -3,7 +3,7 @@
    JavaScript - DOM injection + dynamic positioning
 
    디버그: URL에 ?debug-line=1 추가 또는 window.DEBUG_SECTION_LINE = true
-   Version: 2
+   Version: 3
    ═══════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -48,6 +48,13 @@
       return false;
     }
 
+    // 레이아웃이 아직 안 됐으면 getBoundingClientRect가 0 반환 → 조기 종료 방지
+    var r1check = btn1.getBoundingClientRect();
+    if (r1check.width === 0 && r1check.height === 0) {
+      log('setup waiting — 버튼 레이아웃 미완료 (width/height=0)');
+      return false;
+    }
+
     ensureLine();
 
     positionLine = function () {
@@ -65,6 +72,7 @@
 
     positionLine();
     window.addEventListener('resize', positionLine);
+    window.addEventListener('scroll', positionLine, { passive: true });
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(positionLine);
