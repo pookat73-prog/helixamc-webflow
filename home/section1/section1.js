@@ -153,7 +153,12 @@
     forceOpacity(bg, 0);
     forceOpacity(box1, 0);
 
-    if (box1) box1.setAttribute('data-s1-init', '');
+    /* box1에 최고밝기 box-shadow를 초기 상태로 설정
+       → opacity 0→1 페이드인하면서 글로우도 자연스럽게 같이 등장 */
+    if (box1) {
+      box1.style.setProperty('box-shadow', '0 0 2.6vw 0.9vw rgba(0,117,214,1)', 'important');
+      box1.setAttribute('data-s1-init', '');
+    }
 
     function fadeIn(el, name, duration, ease, delay, onStart, onComplete) {
       if (!el) return;
@@ -177,8 +182,12 @@
       null,
       function () {
         if (!box1) return;
-        /* 버튼 페이드인 완료 직후 최고밝기로 바로 shimmer 시작 */
-        box1.classList.add('is-looping');
+        /* 버튼 페이드인 완료 후 최고밝기로 1.5초 홀드 → shimmer 핸드오프 */
+        setTimeout(function () {
+          if (!box1) return;
+          box1.style.removeProperty('box-shadow');
+          box1.classList.add('is-looping');
+        }, 1500);
       });
     fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
       log('all fades done, restoring DOM');

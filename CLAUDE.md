@@ -49,30 +49,39 @@ home/
 - SVIC 퍼플: `#5528aa`
 - 배경: `#0d1117`
 
-## ⚠️ bt-box-1 글로우 — 건드리지 말 것 (LOCKED v2)
+## ⚠️ 버튼 글로우 — 건드리지 말 것 (LOCKED v3)
 
-**현재 작동 중인 구현**:
+**모든 버튼 통일 동작**: 최고밝기 초기 설정 → 버튼 opacity 페이드인하면서 글로우도 같이 등장 → 1.5s 홀드 → shimmer/pulse
+
+### bt-box-1 (section1.js + buttons.css)
 
 | 파일 | 역할 |
 |---|---|
-| `home/section1/section1.js` | 버튼 페이드인 완료 후 `is-looping` 클래스 즉시 추가 (GSAP 글로우 페이드인 없음) |
+| `home/section1/section1.js` | 초기화 시 box-shadow 최고밝기 inline !important 설정 → opacity 페이드인 → 완료 후 1.5s setTimeout → inline 제거 + `is-looping` 추가 |
 | `home/global/buttons.css` | `.bt-box-1.is-looping { animation: glowShimmerBlue 2.4s infinite; transition: none !important }` |
 
-**글로우 동작 순서 (절대 바꾸지 말 것):**
-1. 버튼 opacity 0→1 페이드인 (GSAP, 0.8s)
-2. `box1.classList.add('is-looping')` → **즉시 최고밝기**로 shimmer 시작
-3. CSS `glowShimmerBlue` 애니메이션 (78%~100% 밝기, 2.4s 주기) 아롱아롱 유지
+**동작 순서:**
+1. 초기화 시 `box-shadow: 0 0 2.6vw 0.9vw rgba(0,117,214,1) !important` inline 설정
+2. 버튼 opacity 0→1 페이드인 (GSAP, 0.8s) — opacity가 box-shadow에도 적용되므로 글로우도 같이 페이드인
+3. 페이드인 완료 후 1.5초 홀드 (최고밝기 유지)
+4. inline box-shadow 제거 + `is-looping` 클래스 추가 → CSS shimmer (78%~100%, 2.4s 주기)
+
+### bt-box-2/3/4 (buttons.js)
+
+| 역할 |
+|---|
+| IntersectionObserver가 버튼 viewport 진입 감지 → `gsap.set`으로 maxGlow 즉시 설정 → 1.5s 홀드 후 pulse loop (yoyo minGlow ↔ maxGlow) |
 
 **핵심 포인트:**
-- `.bt-box-1` 베이스 룰의 `transition: box-shadow 0.6s`가 is-looping 전환 시 개입하면 덜 밝은 상태에서 시작하므로 `.is-looping`에 `transition: none !important` 필수
-- GSAP 글로우 페이드인 제거 → 버튼 페이드인 완료 직후 팟! 최고밝기
+- `.bt-box-1` 베이스 `transition: box-shadow 0.6s`가 is-looping 전환 시 개입하지 않도록 `.is-looping`에 `transition: none !important` 필수
+- 글로우 페이드인은 **별도 GSAP 트윈을 하지 않고**, 버튼 자체의 opacity 페이드인에 편승
+- bt-box-2/3/4는 opacity 페이드인이 없으면 Webflow 기본 reveal 타이밍에 맞춰 IntersectionObserver가 발사
 
 **이전에 시도했다가 실패한 방식들 (재시도 금지):**
 - `is-holding` CSS 클래스 (`box-shadow !important`) → CSS animation 충돌로 shimmer 불가
-- GSAP multi-shadow 트위닝 (`'... rgba(...), ... rgba(...)'`) → 파싱 오류로 툭 꺼짐
-- GSAP 0.5s 글로우 페이드인 → 덜 밝은 상태에서 밝아지는 느낌 (v1 방식)
-
-**bt-box-1에만 해당** — bt-box-2/3/4는 `buttons.js`의 IntersectionObserver + GSAP으로 별도 관리.
+- GSAP multi-shadow 트위닝 fromVars → 파싱 오류로 툭 꺼짐
+- GSAP 0.5~0.6s 글로우 페이드인 트윈 → 덜 밝은 상태에서 밝아지는 느낌 (v1, v2)
+- `is-looping`만 단독 추가 → 툭! 튀는 현상 (글로우가 nothing → max로 점프)
 
 ## 하면 안 되는 것
 - Webflow API로 head code 직접 수정 시도 ❌

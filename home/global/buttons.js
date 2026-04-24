@@ -21,10 +21,10 @@
       ? '0 0 0.15vw 0.05vw rgba(85,40,170,0.05)'
       : '0 0 0.15vw 0.05vw rgba(0,117,214,0.05)';
 
-    /* Phase 1: fade in to max glow over 0.6s */
-    gsap.to(el, { boxShadow: maxGlow, duration: 0.6, ease: 'power2.out' });
+    /* Phase 1: 최고밝기 즉시 설정 (페이드인은 버튼의 opacity가 담당) */
+    gsap.set(el, { boxShadow: maxGlow });
 
-    /* Phase 2: pulse loop starting after 1.5s */
+    /* Phase 2: 1.5초 홀드 후 pulse loop 시작 */
     gsap.to(el, {
       boxShadow: minGlow,
       duration: 1.4,
