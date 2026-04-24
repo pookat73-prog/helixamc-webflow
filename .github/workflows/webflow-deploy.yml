@@ -55,7 +55,7 @@ jobs:
             '<!-- Global Button Glow -->\n' +
             '<link rel="stylesheet" href="' + CDN + '/home/global/buttons.css">\n' +
             '<script src="' + CDN + '/home/global/buttons.js"></' + 'script>';
-          process.stdout.write(JSON.stringify({ headCode: head, footCode: '' }));
+          process.stdout.write(JSON.stringify({ headCode: head, footerCode: '' }));
           JSEOF
 
           CDN="${CDN}" node /tmp/build.js > /tmp/payload.json
