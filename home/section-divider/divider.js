@@ -38,10 +38,17 @@
   window.Webflow = window.Webflow || [];
   window.Webflow.push(function () { setTimeout(createConnectorLine, 200); });
 
-  // 폴백: Webflow가 이미 실행된 경우 load 이벤트로 처리
+  // 폴백1: document.readyState 체크
   if (document.readyState === 'complete') {
     setTimeout(createConnectorLine, 300);
   } else {
     window.addEventListener('load', function () { setTimeout(createConnectorLine, 300); });
+  }
+
+  // 폴백2: DOMContentLoaded
+  if (document.readyState !== 'loading') {
+    setTimeout(createConnectorLine, 500);
+  } else {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(createConnectorLine, 500); });
   }
 })();
