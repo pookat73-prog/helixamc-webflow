@@ -12,6 +12,7 @@
    의존성: GSAP 3.12.2 + ScrollTrigger
    ================================================================ */
 
+console.log('[Sections] FILE LOADED - top of IIFE');
 (function () {
   'use strict';
 
@@ -19,6 +20,8 @@
   var log = function () {
     console.log.apply(console, ['[Sections]'].concat([].slice.call(arguments)));
   };
+
+  log('IIFE started. readyState=' + document.readyState);
 
   var initialized = false;
 
@@ -232,9 +235,13 @@
 
   /* 초기화 재시도 */
   function retryInit() {
+    log('retryInit called');
     var n = 0;
     var iv = setInterval(function () {
-      if (initSectionsOnce() || ++n >= 50) clearInterval(iv);
+      if (initSectionsOnce() || ++n >= 50) {
+        if (n >= 50) log('retryInit GAVE UP after 50 tries');
+        clearInterval(iv);
+      }
     }, 100);
   }
 
