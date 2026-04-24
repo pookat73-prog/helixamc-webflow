@@ -185,6 +185,7 @@
       },
       function () {
         if (!box1) return;
+        console.log('[Section1] Starting box1 glow animation', box1);
         var maxGlow = '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)';
         var minGlow = '0 0 0.15vw 0.05vw rgba(0,117,214,0.05)';
         gsap.to(box1, { boxShadow: maxGlow, duration: 0.6, ease: 'power2.out' });
