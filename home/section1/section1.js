@@ -30,38 +30,35 @@
             ".flex-block-23"
         ], { autoAlpha: 0 });
 
-        /* 1. 헤드(슬로건): 0s 즉시 등장 (검은 바닥 덕분에 바로 보임) */
-        tl.to(".home_slogan", { 
-            autoAlpha: 1, 
-            duration: 1.2, 
-            ease: "power2.out" 
-        }, 0);
+        /* 1. 슬로건: t=0.3s, 1.2s, power2.out → 종료 t=1.5s */
+        tl.to(".home_slogan", {
+            autoAlpha: 1,
+            duration: 1.2,
+            ease: "power2.out"
+        }, 0.3);
 
-        /* 2. 배경 알맹이: 1.8s 등장 (슬로건 완전 등장 후 0.6s 공백 뒤 입장) */
+        /* 2. 배경: t=0.8s, 2.0s, power3.out → 종료 t=2.8s */
         tl.to(".div-block-150", {
             autoAlpha: 1,
-            duration: 1.0,
-            ease: "none"
-        }, 1.8);
+            duration: 2.0,
+            ease: "power3.out"
+        }, 0.8);
 
-        /* 3. 버튼: 3.0s 등장 시작 -> 3.6s 종료 (배경 완전 등장 후 합류) */
+        /* 3. 버튼: t=0.9s(배경+0.1), 1.9s, power2.out → 종료 t=2.8s (배경과 동일) */
         tl.to([".discover-helix_button", ".flex-block-23"], {
             autoAlpha: 1,
-            duration: 0.6,
+            duration: 1.9,
             ease: "power2.out",
             onStart: () => {
                 if (b1) b1.classList.add('is-holding');
                 if (b4) b4.classList.add('is-holding');
-            },
-            onComplete: () => {
-                // 등장 완료 후 1.5초 정지 후 루프로 매끄럽게 연결
-                // is-holding 제거 후 is-looping 추가: !important 충돌로 애니메이션이 차단되는 것을 방지
+                // 버튼 등장 시점 기준 1.5s 후 루프 전환 (onComplete 기준 아님)
                 setTimeout(() => {
                     if (b1) { b1.classList.remove('is-holding'); b1.classList.add('is-looping'); }
                     if (b4) { b4.classList.remove('is-holding'); b4.classList.add('is-looping'); }
                 }, 1500);
             }
-        }, 3.0);
+        }, 0.9);
     }
 
     // Webflow와 호환되는 초기화
