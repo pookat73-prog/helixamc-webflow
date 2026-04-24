@@ -118,6 +118,7 @@
     var bg     = document.querySelector('.div-block-150');
     var box1   = document.querySelector('.bt-box-1');
 
+    console.log('[Section1] box1 element:', box1);
     log('selectors found:',
         'slogan=' + !!slogan,
         'bg=' + !!bg,
