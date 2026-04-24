@@ -7,7 +7,7 @@
    End point: section2 heading reaches 75% of viewport (complete erase)
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 11 (straight line, fixed pathLength)
+   Version: 12 (straight line, fixed pathLength, hidden on page load)
    ================================================================ */
 
 (function () {
@@ -98,10 +98,12 @@
     var lineX = bR.left + bR.width / 2;
 
     /* Position SVG to cover button-to-sec2 span */
-    svgEl.style.left = (lineX - AMPLITUDE - 2) + 'px';
+    var svgW = AMPLITUDE * 2 + 4;
+    svgEl.style.left = (lineX - svgW / 2) + 'px';
     svgEl.style.top = btnBot_abs + 'px';
-    svgEl.style.width = (AMPLITUDE * 2 + 4) + 'px';
+    svgEl.style.width = svgW + 'px';
     svgEl.style.height = lineH + 'px';
+    svgEl.style.overflow = 'hidden';
 
     /* Set SVG coordinate space */
     svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
@@ -112,6 +114,8 @@
     pathEl.setAttribute('d', buildPath(relCx, lineH));
     var pathLength = lineH;  /* For vertical line, length = height */
     pathEl.setAttribute('stroke-dasharray', pathLength);
+    pathEl.style.strokeDashoffset = pathLength;  /* Hide line at page load */
+    pathEl.style.visibility = 'hidden';  /* Initially hidden */
 
     /* Create ScrollTrigger timeline */
     var tl = gsap.timeline({
@@ -124,6 +128,9 @@
         markers: DEBUG
       }
     });
+
+    /* Show line and start drawing */
+    tl.set(pathEl, { visibility: 'visible' }, 0);
 
     /* Phase 1: Draw from top to bottom */
     tl.to(pathEl, {
