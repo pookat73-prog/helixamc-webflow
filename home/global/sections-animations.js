@@ -12,23 +12,20 @@
    의존성: GSAP 3.12.2 + ScrollTrigger
    ================================================================ */
 
-console.log('[Sections] FILE LOADED - top of IIFE');
 (function () {
   'use strict';
 
-  /* 진단 모드: 항상 콘솔 로그 출력 (어디서 막히는지 확인 후 나중에 끄기) */
-  var log = function () {
+  var DEBUG = /[?&]debug-sections=1/.test(location.search);
+  var log = DEBUG ? function () {
     console.log.apply(console, ['[Sections]'].concat([].slice.call(arguments)));
-  };
-
-  log('IIFE started. readyState=' + document.readyState);
+  } : function () {};
 
   var initialized = false;
 
   function initSectionsOnce() {
     if (initialized) return true;
     if (typeof gsap === 'undefined' || !window.ScrollTrigger) {
-      log('GSAP or ScrollTrigger not ready. gsap=' + (typeof gsap) + ', ScrollTrigger=' + !!window.ScrollTrigger);
+      log('GSAP or ScrollTrigger not ready');
       return false;
     }
 
@@ -39,18 +36,7 @@ console.log('[Sections] FILE LOADED - top of IIFE');
           (섹션 2·3 둘 다 .section2-heading 클래스 사용)
        ============================================================ */
     var headings = document.querySelectorAll('.section2-heading');
-    log('headings (.section2-heading) found:', headings.length);
-
-    /* 폴백: .section2-heading이 없으면 h2, h3 시도 */
-    if (!headings.length) {
-      var altHeadings = document.querySelectorAll('[class*="section2"], [class*="section-2"], [class*="section_2"], [class*="section3"], [class*="section-3"], [class*="section_3"]');
-      log('fallback heading candidates:', altHeadings.length);
-      altHeadings.forEach(function (el) {
-        log('  -', el.tagName, el.className);
-      });
-    }
-
-    headings.forEach(function (h, i) {
+    headings.forEach(function (h) {
       gsap.fromTo(h,
         { opacity: 0, y: 20 },
         {
@@ -61,50 +47,28 @@ console.log('[Sections] FILE LOADED - top of IIFE');
           scrollTrigger: {
             trigger: h,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
-            onEnter:     function () { log('HEADING ' + i + ' onEnter — PLAY'); },
-            onLeave:     function () { log('HEADING ' + i + ' onLeave'); },
-            onEnterBack: function () { log('HEADING ' + i + ' onEnterBack'); },
-            onLeaveBack: function () { log('HEADING ' + i + ' onLeaveBack'); },
-            onRefresh:   function (st) {
-              log('HEADING ' + i + ' onRefresh — start=' + Math.round(st.start) + ', end=' + Math.round(st.end) + ', scroll=' + Math.round(st.scroll()));
-            }
+            toggleActions: 'play none none reverse'
           }
         }
       );
     });
+    log('headings found:', headings.length);
 
     /* ============================================================
        2. 섹션 4 카드 스태거 애니메이션
           .home_branch-card 들이 순차 페이드인
        ============================================================ */
     var cards = document.querySelectorAll('.home_branch-card');
-    log('cards (.home_branch-card) found:', cards.length);
-
-    /* 폴백: 카드 대체 선택자 탐지 */
-    if (!cards.length) {
-      var altCards = document.querySelectorAll('[class*="branch-card"], [class*="branch_card"], [class*="home_branch"]');
-      log('fallback card candidates:', altCards.length);
-      altCards.forEach(function (el) {
-        log('  -', el.tagName, el.className);
-      });
-    }
-
     var cardContainer = document.querySelector('.flex-block-23') ||
                         document.querySelector('#animal-medical-center') ||
                         (cards.length ? cards[0].parentElement : null);
-    log('cardContainer:', cardContainer ? cardContainer.tagName + '.' + cardContainer.className : 'null');
 
     if (cards.length && cardContainer) {
       var cardTL = gsap.timeline({
         scrollTrigger: {
           trigger: cardContainer,
           start: 'top 70%',
-          toggleActions: 'play none none none',
-          onEnter:   function () { log('CARDS onEnter — PLAY'); },
-          onRefresh: function (st) {
-            log('CARDS onRefresh — start=' + Math.round(st.start) + ', end=' + Math.round(st.end) + ', scroll=' + Math.round(st.scroll()) + ', trigger=' + (st.trigger ? st.trigger.className : 'null'));
-          }
+          toggleActions: 'play none none none'
         }
       });
 
@@ -132,22 +96,13 @@ console.log('[Sections] FILE LOADED - top of IIFE');
         }, '-=0.5');
       }
       log('cards animation: ' + cards.length + ' cards, svicc=' + !!svicc);
-    } else {
-      log('cards animation SKIPPED - cards.length=' + cards.length + ', cardContainer=' + !!cardContainer);
     }
 
     /* ============================================================
        3. 복사 버튼 (.copy-text-button)
           같은 카드 내 .home_branch-card_address 요소들의 텍스트를 합쳐 복사
        ============================================================ */
-    var copyBtns = document.querySelectorAll('.copy-text-button');
-    log('copy buttons (.copy-text-button) found:', copyBtns.length);
-    if (!copyBtns.length) {
-      var altCopyBtns = document.querySelectorAll('[class*="copy"]');
-      log('fallback copy button candidates:', altCopyBtns.length);
-      altCopyBtns.forEach(function (el) { log('  -', el.tagName, el.className); });
-    }
-    copyBtns.forEach(function (btn) {
+    document.querySelectorAll('.copy-text-button').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -208,9 +163,7 @@ console.log('[Sections] FILE LOADED - top of IIFE');
        4. 전화 링크 (a[href^="tel:"])
           클릭 시 주소 자동 복사 + 전화 연결 확인
        ============================================================ */
-    var telLinks = document.querySelectorAll('a[href^="tel:"]');
-    log('tel links (a[href^="tel:"]) found:', telLinks.length);
-    telLinks.forEach(function (link) {
+    document.querySelectorAll('a[href^="tel:"]').forEach(function (link) {
       link.addEventListener('click', function (e) {
         var card = link.closest('.home_branch-card');
         if (!card) return; /* 카드 밖 링크는 기본 동작 유지 */
@@ -246,13 +199,9 @@ console.log('[Sections] FILE LOADED - top of IIFE');
 
   /* 초기화 재시도 */
   function retryInit() {
-    log('retryInit called');
     var n = 0;
     var iv = setInterval(function () {
-      if (initSectionsOnce() || ++n >= 50) {
-        if (n >= 50) log('retryInit GAVE UP after 50 tries');
-        clearInterval(iv);
-      }
+      if (initSectionsOnce() || ++n >= 50) clearInterval(iv);
     }, 100);
   }
 

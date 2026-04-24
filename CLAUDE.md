@@ -97,22 +97,24 @@ home/
 
 ---
 
-## 📌 Version Current (섹션 2-4 러프 코드 적용)
+## 📌 Version Current (섹션 2-4 애니메이션 작동 확인)
 
-**커밋**: `d94c9d4` (섹션 2-4 전체 애니메이션 통합)
+**주요 파일**:
+- 📄 `home/global/sections-animations.js`: 섹션 2-4 애니메이션
+  - 섹션 2, 3 헤딩 fade-in (`.section2-heading` × 2)
+  - 섹션 4 카드 스태거 + 그림자 + SVICC 슬라이드 인
+  - 복사 버튼 / 전화 링크 핸들러
+- 🎨 `home/global/sections-animations.css`: 초기 숨김 상태
 
-**새로 추가된 기능**:
-- 📄 `home/global/sections-animations.js`: 섹션 2-4 전체 애니메이션
-  - 섹션 2 헤딩 fade-in
-  - 섹션 2-3 지그 라인 draw/erase
-  - 섹션 4 카드 스태거 + 그림자
-  - 복사/전화 기능 핸들러
-- 🎨 `home/global/sections-animations.css`: 초기 상태 스타일
+**핵심 수정사항**:
+- 실제 Webflow DOM 클래스명으로 선택자 교체 (`.section2-heading`, `.home_branch-card`, `.home_background_svicc`, `.copy-text-button`)
+- `helix-s1-done` 이벤트 수신 → `ScrollTrigger.refresh()` 호출
+  - section1.js가 bt-box-1을 detach/restore하는 동안 측정된 위치는 stale
+  - refresh 없으면 트리거가 "이미 지나감"으로 잘못 판단하여 애니메이션 발사 안 됨
+- 1.5초 load 폴백 refresh 추가
+- 카드 컨테이너 폴백: `.flex-block-23` → `#animal-medical-center` → 첫 카드 부모
 
-⚠️ **현재 상태**: 큰틀 적용, 디테일 조정 예정
-- Webflow 요소 클래스명 확인 필요 (`.section2_heading`, `.home_branch-card` 등)
-- 지그 라인 SVG 생성/위치 확인 필요
-- 복사/전화 버튼 실제 작동 테스트 필요
+**디버그**: URL에 `?debug-sections=1` 추가하면 `[Sections]` 로그 출력
 
 ## 컨텍스트
 - Webflow Site ID: `69d090ea69d828e27d16ea29`
