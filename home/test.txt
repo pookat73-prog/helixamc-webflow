@@ -1,1 +1,5 @@
 자동화 테스트
+테스트 날짜: 2026-04-24
+테스트 목적: GitHub Actions 워크플로우 동작 확인
+- webflow-deploy 자동 배포 테스트
+- sync-to-webflow 동기화 테스트
