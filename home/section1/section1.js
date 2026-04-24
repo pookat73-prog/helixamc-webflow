@@ -49,6 +49,12 @@
       'bg=' + !!bg,
       'box1=' + !!box1);
 
+    if (bg && slogan) console.log('[Section1] bg contains slogan?', bg.contains(slogan));
+    if (bg && box1)   console.log('[Section1] bg contains box1?',   bg.contains(box1));
+    if (slogan) console.log('[Section1] slogan parent:', slogan.parentElement && slogan.parentElement.className);
+    if (box1)   console.log('[Section1] box1 parent:',   box1.parentElement   && box1.parentElement.className);
+    if (bg)     console.log('[Section1] bg parent:',     bg.parentElement     && bg.parentElement.className);
+
     if (!slogan && !bg && !box1) {
       console.warn('[Section1] no selectors matched, retrying...');
       return false;
