@@ -35,6 +35,8 @@
         }
         console.log('[ButtonGlow] adding is-holding to:', el.className);
         el.classList.add('is-holding');
+        el.style.boxShadow = '0 0 0.8vw 0.25vw rgba(0, 117, 214, 0.85)';
+        el.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
         setTimeout(function () {
           console.log('[ButtonGlow] adding is-looping to:', el.className);
           el.classList.add('is-looping');
