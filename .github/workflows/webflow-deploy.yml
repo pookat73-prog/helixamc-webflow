@@ -38,18 +38,25 @@ jobs:
             '<!-- Global Button Glow -->\n' +
             '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.css">\n' +
             '<script src="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest/home/global/buttons.js"><\/script>';
-          process.stdout.write(JSON.stringify(head));
+          process.stdout.write(JSON.stringify({ headCode: head, footerCode: '' }));
           JSEOF
-          node /tmp/build-head.js > /tmp/head_code.json
+          node /tmp/build-head.js > /tmp/payload.json
 
-          curl -X PATCH \
-            "https://api.webflow.com/v1/sites/${SITE_ID}" \
+          RESPONSE=$(curl -s -o /tmp/api_response.txt -w "%{http_code}" -X PUT \
+            "https://api.webflow.com/v2/sites/${SITE_ID}/custom_code" \
             -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
-            -H "accept-version: 1.0.0" \
             -H "Content-Type: application/json" \
-            -d "{\"head_code\": $(cat /tmp/head_code.json)}" \
-            --fail
-          echo "✅ Head code 업데이트 완료"
+            -d @/tmp/payload.json)
+
+          echo "API 응답 HTTP ${RESPONSE}:"
+          cat /tmp/api_response.txt
+
+          if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -lt 300 ]; then
+            echo "✅ Head code 업데이트 완료"
+          else
+            echo "❌ Head code 업데이트 실패"
+            exit 1
+          fi
 
       - name: Publish to Webflow
         env:
