@@ -1,11 +1,13 @@
 /* ================================================================
-   SECTIONS 2-4 ANIMATIONS (섹션 2~4 전체 애니메이션)
+   SECTIONS 2-4 ANIMATIONS (실제 Webflow DOM 매핑)
 
-   포함 사항:
-   - 섹션 2 헤딩 fade-in
-   - 섹션 2-3 지그 라인 (draw + erase)
-   - 섹션 4 카드 스태거 애니메이션
-   - 복사/전화 기능
+   포함:
+   - 섹션 2, 3 헤딩 fade-in (.section2-heading × 2)
+   - 섹션 4 카드 스태거 + SVICC 슬라이드 인
+   - 복사 버튼 (.copy-text-button)
+   - 전화 링크 (a[href^="tel:"]) + 주소 자동 복사
+
+   지그 라인(섹션 2→3)은 divider.js 패턴으로 별도 구현 예정
 
    의존성: GSAP 3.12.2 + ScrollTrigger
    ================================================================ */
@@ -18,193 +20,197 @@
     console.log.apply(console, ['[Sections]'].concat([].slice.call(arguments)));
   } : function () {};
 
+  var initialized = false;
+
   function initSectionsOnce() {
-    if (typeof gsap === 'undefined' || !window.gsap.timeline) {
+    if (initialized) return true;
+    if (typeof gsap === 'undefined' || !window.ScrollTrigger) {
       log('GSAP or ScrollTrigger not ready');
       return false;
     }
 
-    try {
-      gsap.registerPlugin(ScrollTrigger);
-    } catch (e) {
-      log('ScrollTrigger already registered');
-    }
+    try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
 
     /* ============================================================
-       섹션 2 헤딩 페이드인
+       1. 섹션 2, 3 헤딩 fade-in
+          (섹션 2·3 둘 다 .section2-heading 클래스 사용)
        ============================================================ */
-    var sec2Head = document.querySelector('.section2_heading') ||
-                   document.querySelector('[class*="section2"][class*="heading"]');
-    if (sec2Head) {
-      gsap.from(sec2Head, {
-        opacity: 0,
-        ease: 'power2.out',
-        duration: 0.8,
-        scrollTrigger: {
-          trigger: sec2Head,
-          start: 'top 80%',
-          toggleActions: 'play none none reverse'
-        }
-      });
-      log('sec2 heading animation added');
-    }
-
-    /* ============================================================
-       섹션 2-3 지그 라인 (strokeDashoffset)
-       ============================================================ */
-    var btn2 = document.querySelector('.bt-box-2');
-    var sec3Head = document.querySelector('.section3_heading') ||
-                   document.querySelector('[class*="section3"][class*="heading"]');
-
-    if (btn2 && sec3Head) {
-      var zigPath = document.querySelector('.zig-line-path');
-      if (zigPath) {
-        var pathLen = zigPath.getTotalLength() || 2000;
-        zigPath.setAttribute('stroke-dasharray', pathLen + ' ' + pathLen);
-        zigPath.setAttribute('stroke-dashoffset', pathLen);
-
-        var zigTL = gsap.timeline({
-          scrollTrigger: {
-            trigger: btn2,
-            start: 'bottom bottom',
-            endTrigger: sec3Head,
-            end: 'center center',
-            scrub: true
-          }
-        });
-
-        zigTL.to(zigPath, { strokeDashoffset: 0, ease: 'none' })
-             .to(zigPath, { strokeDashoffset: -pathLen, ease: 'power1.inOut' }, '>-30%');
-        log('zig line animation added');
-      }
-    }
-
-    /* ============================================================
-       섹션 4 카드 애니메이션 (fade-in + translateY + shadow)
-       ============================================================ */
-    var cardContainer = document.querySelector('.home_contents_3_qq') ||
-                        document.querySelector('[class*="section4"]') ||
-                        document.querySelector('[class*="branch"]');
-
-    if (cardContainer) {
-      var cards = cardContainer.querySelectorAll('.home_branch-card');
-      var bgSvicc = document.querySelector('.home_background_svicc');
-
-      if (cards.length > 0) {
-        var cardTL = gsap.timeline({
-          scrollTrigger: {
-            trigger: cardContainer,
-            start: 'top 70%'
-          }
-        });
-
-        cardTL.to(cards, {
+    var headings = document.querySelectorAll('.section2-heading');
+    headings.forEach(function (h) {
+      gsap.fromTo(h,
+        { opacity: 0, y: 20 },
+        {
           opacity: 1,
           y: 0,
-          stagger: 0.3,
-          duration: 0.8,
-          ease: 'power2.out'
-        })
-        .to(cards, {
-          boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-          stagger: 0.3
-        }, '<0.2');
-
-        if (bgSvicc) {
-          cardTL.to(bgSvicc, {
-            opacity: 1,
-            x: 0,
-            duration: 1,
-            ease: 'power2.out'
-          }, '-=0.5');
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: h,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
         }
+      );
+    });
+    log('headings found:', headings.length);
 
-        log('section4 card animation added');
+    /* ============================================================
+       2. 섹션 4 카드 스태거 애니메이션
+          .home_branch-card 들이 순차 페이드인
+       ============================================================ */
+    var cards = document.querySelectorAll('.home_branch-card');
+    var cardContainer = document.querySelector('.flex-block-23') ||
+                        document.querySelector('#animal-medical-center');
+
+    if (cards.length && cardContainer) {
+      var cardTL = gsap.timeline({
+        scrollTrigger: {
+          trigger: cardContainer,
+          start: 'top 70%',
+          toggleActions: 'play none none none'
+        }
+      });
+
+      cardTL.to(cards, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.25,
+        duration: 0.8,
+        ease: 'power2.out'
+      })
+      .to(cards, {
+        boxShadow: '0 10px 30px rgba(0, 117, 214, 0.15)',
+        stagger: 0.25,
+        duration: 0.6
+      }, '<0.3');
+
+      /* SVICC 배경 슬라이드 인 (카드와 동시에 시작) */
+      var svicc = document.querySelector('.home_background_svicc');
+      if (svicc) {
+        cardTL.to(svicc, {
+          opacity: 1,
+          x: 0,
+          duration: 1,
+          ease: 'power2.out'
+        }, '-=0.5');
       }
+      log('cards animation: ' + cards.length + ' cards, svicc=' + !!svicc);
     }
 
     /* ============================================================
-       복사 버튼 기능
+       3. 복사 버튼 (.copy-text-button)
+          같은 카드 내 .home_branch-card_address 요소들의 텍스트를 합쳐 복사
        ============================================================ */
-    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+    document.querySelectorAll('.copy-text-button').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.preventDefault();
-        var card = this.closest('.home_branch-card');
+        e.stopPropagation();
+
+        var card = btn.closest('.home_branch-card');
         if (!card) return;
 
-        var addrEl = card.querySelector('.address-text');
-        var addr = addrEl ? addrEl.innerText : '';
+        /* 카드 내 모든 .home_branch-card_address 및 _address_b 텍스트 합치기 */
+        var addrNodes = card.querySelectorAll('[class*="home_branch-card_address"]');
+        var addr = Array.from(addrNodes)
+          .map(function (n) { return (n.innerText || '').trim(); })
+          .filter(Boolean)
+          .join(' ');
 
         if (!addr) {
-          log('address-text not found in card');
+          log('address not found in card');
           return;
         }
 
-        navigator.clipboard.writeText(addr).then(function () {
-          var originalText = btn.innerText;
-          btn.innerText = '복사완료';
-          btn.classList.add('copy-success');
-
-          setTimeout(function () {
-            btn.innerText = originalText;
-            btn.classList.remove('copy-success');
-          }, 2000);
-
-          log('copied:', addr);
-        }).catch(function (err) {
-          console.warn('[Sections] clipboard write failed:', err);
-        });
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(addr).then(function () {
+            flashSuccess(btn, '복사완료');
+            log('copied:', addr);
+          }).catch(function (err) {
+            fallbackCopy(addr);
+            flashSuccess(btn, '복사완료');
+          });
+        } else {
+          fallbackCopy(addr);
+          flashSuccess(btn, '복사완료');
+        }
       });
+      btn.style.cursor = 'pointer';
     });
+
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    function flashSuccess(btn, successText) {
+      var original = btn.innerText;
+      btn.innerText = successText;
+      btn.classList.add('copy-success');
+      setTimeout(function () {
+        btn.innerText = original;
+        btn.classList.remove('copy-success');
+      }, 1800);
+    }
 
     /* ============================================================
-       전화 기능
+       4. 전화 링크 (a[href^="tel:"])
+          클릭 시 주소 자동 복사 + 전화 연결 확인
        ============================================================ */
-    document.querySelectorAll('.tel-link').forEach(function (link) {
+    document.querySelectorAll('a[href^="tel:"]').forEach(function (link) {
       link.addEventListener('click', function (e) {
-        e.preventDefault();
+        var card = link.closest('.home_branch-card');
+        if (!card) return; /* 카드 밖 링크는 기본 동작 유지 */
 
-        var telNum = this.innerText.replace(/-/g, '');
-        var card = this.closest('.home_branch-card');
-        var addr = card ? (card.querySelector('.address-text')?.innerText || '') : '';
+        var addrNodes = card.querySelectorAll('[class*="home_branch-card_address"]');
+        var addr = Array.from(addrNodes)
+          .map(function (n) { return (n.innerText || '').trim(); })
+          .filter(Boolean)
+          .join(' ');
 
-        if (!telNum) {
-          log('tel number not found');
-          return;
+        if (addr) {
+          e.preventDefault();
+          var confirmed = confirm('전화로 연결하시겠습니까?\n주소도 자동으로 복사됩니다.');
+          if (confirmed) {
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(addr).catch(function () {
+                fallbackCopy(addr);
+              });
+            } else {
+              fallbackCopy(addr);
+            }
+            window.location.href = link.href;
+          }
+          log('tel + copy:', link.href, addr);
         }
-
-        if (addr && confirm('전화로 연결하시겠습니까? 주소가 자동으로 복사됩니다.')) {
-          navigator.clipboard.writeText(addr);
-          window.location.href = 'tel:' + telNum;
-        } else if (!addr && confirm('전화로 연결하시겠습니까?')) {
-          window.location.href = 'tel:' + telNum;
-        }
-
-        log('tel clicked:', telNum);
       });
     });
 
+    initialized = true;
     log('all sections initialized');
     return true;
   }
 
-  /* 초기화 재시도 로직 */
+  /* 초기화 재시도 */
   function retryInit() {
     var n = 0;
     var iv = setInterval(function () {
-      if (initSectionsOnce() || ++n >= 50) {
-        clearInterval(iv);
-      }
+      if (initSectionsOnce() || ++n >= 50) clearInterval(iv);
     }, 100);
   }
 
-  /* DOMContentLoaded / load 이후 실행 */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', retryInit);
   } else {
     setTimeout(retryInit, 500);
   }
 
+  window.addEventListener('load', retryInit);
   window.Webflow = window.Webflow || [];
   window.Webflow.push(retryInit);
 })();

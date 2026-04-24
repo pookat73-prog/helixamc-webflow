@@ -1,83 +1,62 @@
 /* ================================================================
-   SECTIONS 2-4 ANIMATIONS CSS
+   SECTIONS 2-4 ANIMATIONS CSS (실제 Webflow DOM 매핑)
 
-   섹션별 초기 상태 + 스타일
+   초기 상태 + 스타일만 여기서 정의
+   모든 트리거·진행은 sections-animations.js가 담당
    ================================================================ */
 
-/* 섹션 2 헤딩 — 페이드인 전 숨김 */
-.section2_heading,
-[class*="section2"][class*="heading"] {
+/* ============================================================
+   섹션 2, 3 헤딩 — JS fadeIn 대상 (둘 다 .section2-heading)
+   ============================================================ */
+.section2-heading {
   opacity: 0;
+  will-change: opacity, transform;
 }
 
-/* 섹션 3 헤딩 */
-.section3_heading,
-[class*="section3"][class*="heading"] {
-  opacity: 1;
-}
-
-/* 섹션 4 카드 — 초기 상태: 숨김 + 위로 20px */
-.home_branch-card,
-[class*="branch-card"],
-[class*="card"] {
+/* ============================================================
+   섹션 4 카드 — 초기 상태: 보이지 않고 아래로 30px
+   ============================================================ */
+.home_branch-card {
   opacity: 0;
   transform: translateY(30px);
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  transition: box-shadow 0.8s ease-out;
+  transition: box-shadow 0.6s ease-out;
+  will-change: opacity, transform, box-shadow;
 }
 
-/* 섹션 4 배경 요소 (SVICC) — 초기 상태 */
-.home_background_svicc,
-[class*="svicc"],
-[class*="background"] {
+/* SVICC 배경 (우측) — 초기: 오른쪽에서 슬라이드 인 대기 */
+.home_background_svicc {
   opacity: 0;
   transform: translateX(50px);
+  will-change: opacity, transform;
 }
 
-/* 지그/헬릭스 라인 기본 설정 */
-.helix-line-path,
-.zig-line-path,
-[class*="line-path"] {
-  stroke-dasharray: 2000;
-  stroke-dashoffset: 2000;
-  transition: stroke-dashoffset 0.05s linear;
-}
-
-/* 복사 버튼 활성 상태 피드백 */
-.copy-btn {
+/* ============================================================
+   복사 버튼 (.copy-text-button)
+   ============================================================ */
+.copy-text-button {
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: color 0.25s ease, opacity 0.25s ease;
+  user-select: none;
 }
 
-.copy-btn:hover {
-  opacity: 0.8;
+.copy-text-button:hover {
+  opacity: 0.75;
 }
 
-.copy-success {
+/* 복사 성공 시 피드백 */
+.copy-text-button.copy-success {
   color: #0075d6 !important;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-/* 전화 링크 */
-.tel-link {
-  cursor: pointer;
-  text-decoration: none;
+/* ============================================================
+   전화 링크 (a[href^="tel:"])
+   ============================================================ */
+a[href^="tel:"] {
   transition: color 0.2s ease;
 }
 
-.tel-link:hover {
-  text-decoration: underline;
-}
-
-/* 섹션 2-3 구분선 SVG */
-.zig-line-svg,
-.section-connector-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-  z-index: 9998;
+a[href^="tel:"]:hover .home_branch-card_call-number {
+  color: #0075d6;
 }
