@@ -11,12 +11,12 @@
   var style = document.createElement('style');
   style.textContent = [
     '@keyframes helixGlowBlue {',
-    '  0%,100% { box-shadow: 0 0 0.8vw 0.25vw rgba(0,117,214,0.85); }',
-    '  50%      { box-shadow: 0 0 0.4vw 0.1vw  rgba(0,117,214,0.08); }',
+    '  0%,100% { box-shadow: 0 0 1.2vw 0.4vw rgba(0,117,214,0.95); }',
+    '  50%      { box-shadow: 0 0 0.1vw 0.05vw rgba(0,117,214,0.05); }',
     '}',
     '@keyframes helixGlowPurple {',
-    '  0%,100% { box-shadow: 0 0 0.8vw 0.25vw rgba(85,40,170,0.85); }',
-    '  50%      { box-shadow: 0 0 0.4vw 0.1vw  rgba(85,40,170,0.08); }',
+    '  0%,100% { box-shadow: 0 0 1.2vw 0.4vw rgba(85,40,170,0.95); }',
+    '  50%      { box-shadow: 0 0 0.1vw 0.05vw rgba(85,40,170,0.05); }',
     '}'
   ].join('\n');
   document.head.appendChild(style);
@@ -27,8 +27,8 @@
 
   function startGlow(el) {
     var shadow = isPurple(el)
-      ? '0 0 0.8vw 0.25vw rgba(85,40,170,0.85)'
-      : '0 0 0.8vw 0.25vw rgba(0,117,214,0.85)';
+      ? '0 0 1.2vw 0.4vw rgba(85,40,170,0.95)'
+      : '0 0 1.2vw 0.4vw rgba(0,117,214,0.95)';
 
     /* Phase 1: fade-in to full glow */
     el.style.transition = 'box-shadow 0.6s ease';

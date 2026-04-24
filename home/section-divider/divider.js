@@ -103,7 +103,6 @@
     svgEl.style.top = btnBot_abs + 'px';
     svgEl.style.width = svgW + 'px';
     svgEl.style.height = lineH + 'px';
-    svgEl.style.overflow = 'hidden';
 
     /* Set SVG coordinate space */
     svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
@@ -112,10 +111,9 @@
     /* Build path: vertical line from button-center to bottom of SVG */
     var relCx = AMPLITUDE + 2;
     pathEl.setAttribute('d', buildPath(relCx, lineH));
-    var pathLength = lineH;  /* For vertical line, length = height */
+    var pathLength = pathEl.getTotalLength() || lineH;
     pathEl.setAttribute('stroke-dasharray', pathLength);
-    pathEl.style.strokeDashoffset = pathLength;  /* Hide line at page load */
-    pathEl.style.visibility = 'hidden';  /* Initially hidden */
+    pathEl.setAttribute('stroke-dashoffset', pathLength);  /* Fully hidden at page load */
 
     /* Create ScrollTrigger timeline */
     var tl = gsap.timeline({
@@ -123,14 +121,11 @@
         trigger: btn1,
         start: 'bottom center',
         endTrigger: sec2Head,
-        end: 'top 75%',  /* Erase completes when sec2 heading reaches 75% of viewport */
+        end: 'top 75%',
         scrub: true,
         markers: DEBUG
       }
     });
-
-    /* Show line and start drawing */
-    tl.set(pathEl, { visibility: 'visible' }, 0);
 
     /* Phase 1: Draw from top to bottom */
     tl.to(pathEl, {
