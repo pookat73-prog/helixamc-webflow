@@ -11,5 +11,5 @@
   background-color: #0075d6;
   transform: translateX(-50%);
   pointer-events: none;
-  z-index: 10;
+  z-index: 9999;
 }
