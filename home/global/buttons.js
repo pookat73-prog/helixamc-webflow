@@ -11,7 +11,11 @@
     var targets = document.querySelectorAll(
       '.bt-box-1, .bt-box-2, .bt-box-3, .bt-box-4'
     );
-    if (!targets.length) return;
+    console.log('[ButtonGlow] found', targets.length, 'button targets');
+    if (!targets.length) {
+      console.warn('[ButtonGlow] no buttons found with selectors: .bt-box-1/2/3/4');
+      return;
+    }
 
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
