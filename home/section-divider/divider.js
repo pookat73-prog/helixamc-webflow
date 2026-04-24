@@ -3,6 +3,7 @@
    JavaScript - DOM injection + dynamic positioning
 
    디버그: URL에 ?debug-line=1 추가 또는 window.DEBUG_SECTION_LINE = true
+   Version: 2
    ═══════════════════════════════════════════════════════════════ */
 
 (function () {
