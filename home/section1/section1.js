@@ -5,8 +5,8 @@
 
    타임라인 (슬로건 시작 t=0.2 기준)
    t=0.2  슬로건    1.2s ease-out  → 끝 t=1.4
-   t=1.3  배경      0.9s power3.out (슬로건 끝 직전)
-   t=1.9  버튼      0.8s ease-out  → 끝 t=2.7
+   t=1.3  배경      1.4s power3.out → 끝 t=2.7  (버튼과 동시 종료)
+   t=1.9  버튼      0.8s ease-out  → 끝 t=2.7  (배경과 동시 종료)
    t=2.7~ 버튼 후광  1.5s 최대 → 펄스 루프
 
    글로우: .bt-box-1 래퍼에 적용 (buttons.css와 일관성 유지)
@@ -38,10 +38,10 @@
       ease: 'power2.out'
     }, 0.2);
 
-    // 배경: t=1.3, 0.9s, power3.out (슬로건 끝 직전 시작 — 간격 1.1s)
+    // 배경: t=1.3, 1.4s, power3.out → t=2.7 종료 (버튼과 동시)
     tl.to('.div-block-150', {
       autoAlpha: 1,
-      duration: 0.9,
+      duration: 1.4,
       ease: 'power3.out'
     }, 1.3);
 
