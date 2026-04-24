@@ -19,25 +19,70 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create Release for jsDelivr @latest resolution
+      - name: Create Release
+        id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="auto-$(date +%Y%m%d%H%M%S)"
-          echo "Creating release ${TAG}..."
           gh release create "$TAG" \
             --title "Auto deploy ${TAG}" \
-            --notes "Automated release to refresh jsDelivr @latest resolution" \
+            --notes "Automated release" \
             --target ${{ github.sha }}
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "✅ Release ${TAG} created"
+
+      - name: Update Webflow Site Custom Code (head)
+        env:
+          WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
+          SITE_ID: "69d090ea69d828e27d16ea29"
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          CDN="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${TAG}"
+          cat > /tmp/build.js <<JSEOF
+          const fs = require('fs');
+          const CDN = process.env.CDN;
+          const head =
+            '<!-- Section 1 Hero Animation -->\n' +
+            '<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></' + 'script>\n' +
+            '<link rel="stylesheet" href="' + CDN + '/home/section1/section1.css">\n' +
+            '<script src="' + CDN + '/home/section1/section1.js"></' + 'script>\n\n' +
+            '<!-- Section Divider (S1 → S2) -->\n' +
+            '<link rel="stylesheet" href="' + CDN + '/home/section-divider/divider.css">\n' +
+            '<script src="' + CDN + '/home/section-divider/divider.js"></' + 'script>\n\n' +
+            '<!-- Global Button Glow -->\n' +
+            '<link rel="stylesheet" href="' + CDN + '/home/global/buttons.css">\n' +
+            '<script src="' + CDN + '/home/global/buttons.js"></' + 'script>';
+          process.stdout.write(JSON.stringify({ headCode: head, footerCode: '' }));
+          JSEOF
+          CDN="${CDN}" node /tmp/build.js > /tmp/payload.json
+
+          echo "--- Payload preview (first 500 chars) ---"
+          head -c 500 /tmp/payload.json
+          echo ""
+          echo "---"
+
+          RESPONSE=$(curl -s -o /tmp/api_response.txt -w "%{http_code}" -X PUT \
+            "https://api.webflow.com/v2/sites/${SITE_ID}/custom_code" \
+            -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d @/tmp/payload.json)
+
+          echo "API 응답 HTTP ${RESPONSE}:"
+          cat /tmp/api_response.txt
+          echo ""
+
+          if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -lt 300 ]; then
+            echo "✅ Site custom code 업데이트 성공 (tag: ${TAG})"
+          else
+            echo "⚠️ Site custom code 업데이트 실패 (HTTP ${RESPONSE}) — publish는 계속 진행"
+          fi
 
       - name: Publish to Webflow
         env:
           WEBFLOW_API_TOKEN: ${{ secrets.WEBFLOW_API_TOKEN }}
           SITE_ID: "69d090ea69d828e27d16ea29"
         run: |
-          echo "🚀 Publishing helix-amc to Webflow..."
-
           RESPONSE=$(curl -X POST -s -o /dev/null -w "%{http_code}" \
             "https://api.webflow.com/v2/sites/${SITE_ID}/publish" \
             -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
@@ -46,35 +91,23 @@ jobs:
             -d '{"publishToWebflowSubdomain": true}')
 
           if [ "$RESPONSE" -eq 200 ] || [ "$RESPONSE" -eq 202 ]; then
-            echo "✅ 배포 성공!"
+            echo "✅ Publish 성공"
           else
-            echo "❌ 배포 실패 (HTTP $RESPONSE)"
+            echo "❌ Publish 실패 (HTTP $RESPONSE)"
             exit 1
           fi
 
       - name: Purge jsDelivr CDN Cache
         run: |
           BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@latest"
-          FILES=(
-            "home/section1/section1.css"
-            "home/section1/section1.js"
-            "home/global/buttons.css"
-            "home/global/buttons.js"
-            "home/section-divider/divider.css"
-            "home/section-divider/divider.js"
-          )
-          for FILE in "${FILES[@]}"; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/${FILE}")
-            echo "Purged ${FILE} → HTTP ${STATUS}"
+          for FILE in home/section1/section1.css home/section1/section1.js home/global/buttons.css home/global/buttons.js home/section-divider/divider.css home/section-divider/divider.js; do
+            curl -s -o /dev/null "${BASE}/${FILE}" || true
           done
-
-          # Also purge package-level resolution
           curl -s -o /dev/null "https://purge.jsdelivr.net/package/gh/pookat73-prog/helixamc-webflow" || true
 
       - name: Summary
         if: success()
         run: |
-          echo "## ✅ Webflow 배포 완료" >> $GITHUB_STEP_SUMMARY
-          echo "- **사이트:** helix-amc" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ 배포 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- **릴리스:** \`${{ steps.release.outputs.tag }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **커밋:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **브랜치:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
