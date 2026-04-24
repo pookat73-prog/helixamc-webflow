@@ -19,10 +19,19 @@
   opacity: 0;
   visibility: hidden;
   transition: none !important;
-  will-change: opacity, box-shadow;
+  will-change: opacity;
 }
 
 /* 3. 광채 수치 표준화 (#0075d6, #5528aa) */
+/* 버튼은 opacity + box-shadow 모두 변화하므로 두 힌트 모두 지정 */
+.discover-helix_button {
+  will-change: opacity, box-shadow;
+}
+
+.flex-block-23 .cta-style {
+  will-change: box-shadow;
+}
+
 /* 등장 시 및 대기 상태의 고정 수치 */
 .discover-helix_button.is-holding {
   box-shadow: 0 0 2.5vw 0.8vw rgba(0, 117, 214, 0.6) !important;

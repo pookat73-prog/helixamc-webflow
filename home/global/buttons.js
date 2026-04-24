@@ -21,6 +21,7 @@
                     observer.unobserve(el);
                     el.classList.add('is-holding');
                     setTimeout(function () {
+                        el.classList.remove('is-holding');
                         el.classList.add('is-looping');
                     }, 1500);
                 });
