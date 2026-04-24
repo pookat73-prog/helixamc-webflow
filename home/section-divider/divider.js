@@ -13,7 +13,7 @@
 (function () {
   'use strict';
 
-  var BTN1_CLASS = '.discover-helix_button';
+  var BTN1_CLASS = '.bt-box-1';
   var AMPLITUDE  = 14;
   var NUM_WAVES  = 5;
   var STEPS      = 120;
@@ -160,23 +160,23 @@
     initialized = true;
   }
 
-  /* Retry init until ready */
   function retryInit() {
     var n = 0;
     var iv = setInterval(function () {
       initAnimationOnce();
-      if (initialized || ++n >= 50) clearInterval(iv);
+      if (initialized || ++n >= 30) clearInterval(iv);
     }, 100);
   }
 
-  /* Wait for GSAP + ScrollTrigger + DOM ready */
-  window.addEventListener('load', retryInit);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', retryInit);
-  } else {
-    setTimeout(retryInit, 300);
-  }
+  /* section1.js DOM 복원 완료 신호 수신 후 측정 */
+  window.addEventListener('helix-s1-done', function () {
+    setTimeout(retryInit, 50);
+  });
 
-  window.Webflow = window.Webflow || [];
-  window.Webflow.push(retryInit);
+  /* 폴백: section1이 없는 페이지거나 이미 로드된 경우 (5s 후) */
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      if (!initialized) retryInit();
+    }, 5000);
+  });
 })();

@@ -190,11 +190,15 @@
         });
       });
     fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
-      /* All fades done - restore DOM so responsive layout resumes */
       log('all fades done, restoring DOM');
       cleanups.forEach(function (c) {
         try { c.cleanup(); } catch (e) { console.warn('[Section1] cleanup failed:', e); }
       });
+      /* DOM이 최종 위치로 복원된 후 divider.js에 신호 */
+      setTimeout(function () {
+        try { window.dispatchEvent(new CustomEvent('helix-s1-done')); } catch (e) {}
+        log('helix-s1-done dispatched');
+      }, 50);
     });
 
     log('timeline started');
