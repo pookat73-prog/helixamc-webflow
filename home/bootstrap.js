@@ -4,8 +4,9 @@
 
    Strategy:
      1) Fetch latest commit SHA from GitHub API
-     2) Load all CSS/JS via jsDelivr using that SHA (immutable URL)
-     3) Fallback to @main if API fails
+     2) Load CSS/JS via jsDelivr using that SHA (immutable URL)
+     3) If any file 404s (jsDelivr indexing delay), fall back to @main
+     4) If GitHub API fails entirely, fall back to @main for everything
    ================================================================ */
 
 (function () {
@@ -24,25 +25,49 @@
     'home/global/buttons.js'
   ];
 
-  function cdnBase(ref) {
-    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref;
+  function cdn(ref, path) {
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path;
   }
 
-  function injectAll(base) {
-    FILES.forEach(function (path) {
-      var ext = path.split('.').pop();
-      if (ext === 'css') {
-        var link = document.createElement('link');
-        link.rel  = 'stylesheet';
-        link.href = base + '/' + path;
-        document.head.appendChild(link);
-      } else if (ext === 'js') {
-        var script = document.createElement('script');
-        script.src   = base + '/' + path;
-        script.async = false;
-        document.head.appendChild(script);
+  function injectCss(url, onerr) {
+    var link = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.href = url;
+    if (onerr) link.onerror = onerr;
+    document.head.appendChild(link);
+    return link;
+  }
+
+  function injectJs(url, onload, onerr) {
+    var s = document.createElement('script');
+    s.src   = url;
+    s.async = false;
+    if (onload) s.onload = onload;
+    if (onerr)  s.onerror = onerr;
+    document.head.appendChild(s);
+    return s;
+  }
+
+  function loadFile(path, ref) {
+    var url = cdn(ref, path);
+    var ext = path.split('.').pop();
+    var fallback = function () {
+      if (ref === BRANCH) {
+        console.warn('[helix-bootstrap] failed even from @' + BRANCH + ':', path);
+        return;
       }
-    });
+      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
+      loadFile(path, BRANCH);
+    };
+    if (ext === 'css') {
+      injectCss(url, fallback);
+    } else if (ext === 'js') {
+      injectJs(url, null, fallback);
+    }
+  }
+
+  function injectAll(ref) {
+    FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
   var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
@@ -53,10 +78,10 @@
       var sha = (data.sha || '').substring(0, 10);
       if (!sha) throw new Error('no sha in response');
       console.log('[helix-bootstrap] loading commit', sha);
-      injectAll(cdnBase(sha));
+      injectAll(sha);
     })
     .catch(function (err) {
-      console.warn('[helix-bootstrap] fetch failed, fallback to @' + BRANCH, err);
-      injectAll(cdnBase(BRANCH));
+      console.warn('[helix-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
+      injectAll(BRANCH);
     });
 })();
