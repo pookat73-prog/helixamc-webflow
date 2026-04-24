@@ -247,4 +247,25 @@
   window.addEventListener('load', retryInit);
   window.Webflow = window.Webflow || [];
   window.Webflow.push(retryInit);
+
+  /* section1.js가 DOM 복원을 마치면 ScrollTrigger 위치 재측정
+     (bt-box-1 detach/restore 동안 측정된 위치는 stale) */
+  window.addEventListener('helix-s1-done', function () {
+    setTimeout(function () {
+      if (window.ScrollTrigger && ScrollTrigger.refresh) {
+        ScrollTrigger.refresh();
+        log('ScrollTrigger refreshed after helix-s1-done');
+      }
+    }, 100);
+  });
+
+  /* 폴백: section1이 없어도 load 후 1.5초 뒤에 강제 refresh */
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      if (window.ScrollTrigger && ScrollTrigger.refresh) {
+        ScrollTrigger.refresh();
+        log('ScrollTrigger refreshed (fallback)');
+      }
+    }, 1500);
+  });
 })();
