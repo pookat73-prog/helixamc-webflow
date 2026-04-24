@@ -8,15 +8,19 @@
     'use strict';
 
     function startSection1() {
-        // GSAP이 로드되지 않으면 조기 종료
+        // GSAP이 로드되지 않으면 폴백으로 요소 가시화 후 종료
         if (typeof gsap === 'undefined') {
-            console.warn('[Section1] GSAP not loaded. Skipping animation.');
+            console.warn('[Section1] GSAP not loaded. Applying fallback visibility.');
+            document.querySelectorAll('.home_slogan, .div-block-150, .discover-helix_button, .flex-block-23')
+                .forEach(function(el) { el.style.opacity = '1'; el.style.visibility = 'visible'; });
             return;
         }
 
         const tl = gsap.timeline();
         const b1 = document.querySelector('.discover-helix_button');
         const b4 = document.querySelector('.flex-block-23 .cta-style');
+
+        if (!b4) console.warn('[Section1] .flex-block-23 .cta-style not found. Purple button glow skipped.');
 
         /* 0. 즉시 가시성 확보 준비 (FOUC 방지) */
         gsap.set([
@@ -51,9 +55,10 @@
             },
             onComplete: () => {
                 // 등장 완료 후 1.5초 정지 후 루프로 매끄럽게 연결
+                // is-holding 제거 후 is-looping 추가: !important 충돌로 애니메이션이 차단되는 것을 방지
                 setTimeout(() => {
-                    if (b1) b1.classList.add('is-looping');
-                    if (b4) b4.classList.add('is-looping');
+                    if (b1) { b1.classList.remove('is-holding'); b1.classList.add('is-looping'); }
+                    if (b4) { b4.classList.remove('is-holding'); b4.classList.add('is-looping'); }
                 }, 1500);
             }
         }, 3.0);
