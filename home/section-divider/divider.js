@@ -1,13 +1,14 @@
 /* ================================================================
    SECTION CONNECTOR LINE (SVG Helix): Button1 bottom-center -> Section2 heading top
-   SVG sized exactly to match the connector span; clip-path drives animation.
+   Structure: outer div handles position + clip-path (v6-proven),
+              inner SVG draws the sinusoidal helix path.
 
    Phase 1 (scroll start -> button bottom exits): line grows downward
    Phase 2 (button fully gone -> sec2 at 50vh):   erase from top, slow
    Phase 3 (sec2 at 50vh -> 15vh):                fast convergence
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 8 (SVG helix + clip-path)
+   Version: 9 (div wrapper + SVG helix inside)
    ================================================================ */
 
 (function () {
@@ -16,7 +17,9 @@
   var BTN1_CLASS = '.discover-helix_button';
   var AMPLITUDE  = 14;   /* px - horizontal sine deviation */
   var NUM_WAVES  = 5;    /* complete sine cycles over connector height */
-  var STEPS      = 120;  /* polyline density */
+  var STEPS      = 120;  /* polyline point density */
+  var SVG_W      = AMPLITUDE * 2 + 4;   /* 32px total width */
+  var REL_CX     = AMPLITUDE + 2;       /* 16px center-x within SVG */
 
   var DEBUG = window.DEBUG_SECTION_LINE ||
               /[?&]debug-line=1/.test(location.search);
@@ -24,12 +27,13 @@
     console.log.apply(console, ['[SectionLine]'].concat([].slice.call(arguments)));
   } : function () {};
 
-  var svgEl    = null;
-  var pathEl   = null;
-  var btn1     = null;
+  var wrapEl  = null;   /* outer div: position + clip-path */
+  var svgEl   = null;   /* inner SVG: visual sine wave */
+  var pathEl  = null;   /* SVG <path> element */
+  var btn1    = null;
   var sec2Head = null;
   var initialized = false;
-  var rafId    = null;
+  var rafId   = null;
 
   function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
   function easeInOut(t) {
@@ -53,46 +57,50 @@
     return null;
   }
 
-  /* Build sinusoidal polyline within the SVG coordinate space.
-     cx = horizontal center, y runs 0 -> height. */
-  function buildPath(cx, height) {
+  /* Build sinusoidal polyline: center cx, y from 0 to lineH (SVG coords). */
+  function buildPath(lineH) {
     var d = '';
     for (var i = 0; i <= STEPS; i++) {
       var t  = i / STEPS;
-      var px = cx + AMPLITUDE * Math.sin(t * NUM_WAVES * 2 * Math.PI);
-      var py = t * height;
+      var px = REL_CX + AMPLITUDE * Math.sin(t * NUM_WAVES * 2 * Math.PI);
+      var py = t * lineH;
       d += (i === 0 ? 'M ' : ' L ') + px.toFixed(2) + ' ' + py.toFixed(2);
     }
     return d;
   }
 
-  function ensureSVG() {
-    if (svgEl) return;
+  function ensureElements() {
+    if (wrapEl) return;
 
+    /* Outer div: same role as the div in v6 — handles position + clip-path */
+    wrapEl = document.createElement('div');
+    wrapEl.setAttribute('class', 'section-connector-line');
+
+    /* Inner SVG: draws the helix sine wave path */
     svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svgEl.setAttribute('class', 'section-connector-svg');
-    svgEl.style.cssText =
-      'position:absolute;pointer-events:none;z-index:9999;will-change:clip-path;overflow:visible;';
+    svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svgEl.style.cssText = 'display:block;overflow:visible;';
 
     pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    pathEl.setAttribute('fill', 'none');
-    pathEl.setAttribute('stroke', '#0075d6');
-    pathEl.setAttribute('stroke-width', '1');
+    pathEl.setAttribute('fill',           'none');
+    pathEl.setAttribute('stroke',         '#0075d6');
+    pathEl.setAttribute('stroke-width',   '1');
     pathEl.setAttribute('stroke-linecap', 'round');
-    pathEl.setAttribute('stroke-linejoin', 'round');
+    pathEl.setAttribute('vector-effect',  'non-scaling-stroke');
     svgEl.appendChild(pathEl);
+    wrapEl.appendChild(svgEl);
 
     if (getComputedStyle(document.body).position === 'static') {
       document.body.style.position = 'relative';
     }
-    document.body.appendChild(svgEl);
-    svgEl.style.clipPath = 'inset(0% 0 100% 0)';
-    log('SVG created');
+    document.body.appendChild(wrapEl);
+    wrapEl.style.clipPath = 'inset(0% 0 100% 0)';
+    log('elements created');
   }
 
   function update() {
     rafId = null;
-    if (!btn1 || !sec2Head || !svgEl) return;
+    if (!btn1 || !sec2Head || !wrapEl) return;
 
     var sy  = window.scrollY || window.pageYOffset;
     var vh  = window.innerHeight;
@@ -105,26 +113,26 @@
     var lineH = Math.max(0, s2Top_abs - btnBot_abs - 0.005 * vw);
     var lineX = bR.left + bR.width / 2;
 
-    /* SVG is sized exactly to contain the sine wave path.
-       Width = amplitude*2 + 4px padding; center = amplitude+2. */
-    var SVG_W = AMPLITUDE * 2 + 4;
-    var relCx = AMPLITUDE + 2;
+    /* Position the wrapper div at button-bottom, width = SVG_W, centered on lineX */
+    wrapEl.style.left   = (lineX - REL_CX) + 'px';
+    wrapEl.style.top    = btnBot_abs + 'px';
+    wrapEl.style.width  = SVG_W + 'px';
+    wrapEl.style.height = Math.max(1, lineH) + 'px';
 
-    svgEl.style.left   = (lineX - relCx) + 'px';
-    svgEl.style.top    = btnBot_abs + 'px';
-    svgEl.style.width  = SVG_W + 'px';
-    svgEl.style.height = Math.max(1, lineH) + 'px';
+    /* Keep SVG coordinate space in sync with the div's CSS dimensions */
     svgEl.setAttribute('width',  SVG_W);
     svgEl.setAttribute('height', Math.max(1, lineH));
+    svgEl.style.width  = SVG_W + 'px';
+    svgEl.style.height = Math.max(1, lineH) + 'px';
 
     if (lineH < 1) {
-      svgEl.style.clipPath = 'inset(0% 0 100% 0)';
+      wrapEl.style.clipPath = 'inset(0% 0 100% 0)';
       return;
     }
 
-    pathEl.setAttribute('d', buildPath(relCx, lineH));
+    pathEl.setAttribute('d', buildPath(lineH));
 
-    /* ── Milestones (unchanged from v6) ── */
+    /* ── Phase milestones (identical to v6) ── */
     var M1 = Math.max(1, btnBot_abs);
     var M2 = Math.max(M1 + 1, s2Top_abs - vh * 0.5);
     var M3 = Math.max(M2 + 1, s2Top_abs - vh * 0.15);
@@ -135,17 +143,14 @@
       cTop = 0; cBot = 1;
 
     } else if (sy <= M1) {
-      /* Phase 1: draw downward */
       cTop = 0;
       cBot = 1 - easeInOut(sy / M1);
 
     } else if (sy <= M2) {
-      /* Phase 2: erase from top, slow */
       cTop = easeInOut((sy - M1) / (M2 - M1)) * 0.65;
       cBot = 0;
 
     } else if (sy <= M3) {
-      /* Phase 3: fast convergence */
       var t = clamp((sy - M2) / (M3 - M2), 0, 1);
       cTop = 0.65 + t * t * 0.35;
       cBot = 0;
@@ -156,7 +161,8 @@
 
     if (cTop + cBot > 1) cBot = Math.max(0, 1 - cTop);
 
-    svgEl.style.clipPath =
+    /* Apply clip-path to the outer div (same as v6 applied to its div) */
+    wrapEl.style.clipPath =
       'inset(' + (cTop * 100).toFixed(2) + '% 0 '
                + (cBot * 100).toFixed(2) + '% 0)';
 
@@ -182,7 +188,7 @@
     var r = btn1.getBoundingClientRect();
     if (r.width === 0 && r.height === 0) { log('setup waiting - button layout not ready'); return false; }
 
-    ensureSVG();
+    ensureElements();
 
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule, { passive: true });

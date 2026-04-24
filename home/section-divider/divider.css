@@ -1,10 +1,12 @@
 /* ================================================================
-   SECTION CONNECTOR SVG: Button 1 bottom-center -> Section 2 head top
-   Sized/positioned via JS each frame; clip-path controls draw/erase.
+   SECTION CONNECTOR LINE: outer div positions + clips the helix SVG.
+   Width/height/left/top overridden by JS. clip-path animation via JS.
    ================================================================ */
 
-.section-connector-svg {
+.section-connector-line {
   position: absolute;
+  top: 0;
+  left: 0;
   pointer-events: none;
   z-index: 9999;
   will-change: clip-path;
