@@ -8,6 +8,9 @@
    t=1.0  배경      0.9s power3.out
    t=1.1  버튼      0.8s ease-out  →  끝 t=1.9
    t=1.9~ 버튼 후광  1.5s 최대 → 펄스 루프
+
+   글로우: .bt-box-1 래퍼에 적용 (buttons.css와 일관성 유지)
+   data-s1-init: buttons.js 중복 트리거 방지용 마킹
    ═══════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -19,12 +22,14 @@
       return;
     }
 
-    var b1 = document.querySelector('.discover-helix_button');
-    var b4 = document.querySelector('.flex-block-23 .cta-style');
+    var box1 = document.querySelector('.bt-box-1');
     var tl = gsap.timeline();
 
-    // FOUC 방지
+    // FOUC 방지: 등장 전 완전 숨김
     gsap.set(['.home_slogan', '.div-block-150', '.bt-box-1'], { autoAlpha: 0 });
+
+    // buttons.js IntersectionObserver 중복 방지
+    if (box1) box1.setAttribute('data-s1-init', '');
 
     // 슬로건: t=0.2, 1.2s, ease-out
     tl.to('.home_slogan', {
@@ -40,19 +45,17 @@
       ease: 'power3.out'
     }, 1.0);
 
-    // 버튼 래퍼(bt-box-1): t=1.1, 0.8s, ease-out
+    // 버튼 래퍼: t=1.1, 0.8s → 등장 시작 시 holding 글로우
     tl.to('.bt-box-1', {
       autoAlpha: 1,
       duration: 0.8,
       ease: 'power2.out',
       onStart: function () {
-        if (b1) b1.classList.add('is-holding');
-        if (b4) b4.classList.add('is-holding');
+        if (box1) box1.classList.add('is-holding');
       },
       onComplete: function () {
         setTimeout(function () {
-          if (b1) b1.classList.add('is-looping');
-          if (b4) b4.classList.add('is-looping');
+          if (box1) box1.classList.add('is-looping');
         }, 1500);
       }
     }, 1.1);

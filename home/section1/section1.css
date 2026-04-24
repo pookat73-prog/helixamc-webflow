@@ -1,52 +1,23 @@
 /* ═══════════════════════════════════════════════════════════════
    SECTION 1: HOME PAGE HERO ANIMATION
    CSS only - no external dependencies
-   Synced from Webflow Custom Code
-   Build: v10 (CDN purge retry)
+
+   글로우 keyframes/클래스는 home/global/buttons.css에서 관리.
+   여기서는 Hero 고유 초기 상태만 선언.
    ═══════════════════════════════════════════════════════════════ */
 
-/* 1. 검은 도화지 강제: 배경 이미지가 없어도 흰 글씨가 보이도록 설정 */
+/* 1. 검은 도화지: 배경이 없어도 어두운 배경 보장 */
 .home_background {
   background-color: #0d1117 !important;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* 2. 초기화: GSAP가 복원할 요소만 숨김 (.bt-box-1은 GSAP set으로 처리) */
+/* 2. GSAP 제어 요소: FOUC 방지 초기 숨김 */
 .home_slogan,
-.div-block-150 {
+.div-block-150,
+.bt-box-1 {
   opacity: 0;
   visibility: hidden;
   transition: none !important;
 }
-
-/* 3. 광채 수치 표준화 (#0075d6, #5528aa) */
-/* 등장 시 및 대기 상태의 고정 수치 */
-.discover-helix_button.is-holding {
-  box-shadow: 0 0 2.5vw 0.8vw rgba(0, 117, 214, 0.6) !important;
-}
-
-.flex-block-23 .cta-style.is-holding {
-  box-shadow: 0 0 2.5vw 0.8vw rgba(85, 40, 170, 0.6) !important;
-}
-
-/* 4. 루프 애니메이션: 0%를 위 수치와 100% 일치시켜 튕김 박멸 */
-@keyframes glowLoopBlue {
-  0%, 100% { box-shadow: 0 0 2.5vw 0.8vw rgba(0, 117, 214, 0.6); }
-  50% { box-shadow: 0 0 1.0vw 0.3vw rgba(0, 117, 214, 0.3); }
-}
-
-@keyframes glowLoopPurple {
-  0%, 100% { box-shadow: 0 0 2.5vw 0.8vw rgba(85, 40, 170, 0.6); }
-  50% { box-shadow: 0 0 1.0vw 0.3vw rgba(85, 40, 170, 0.3); }
-}
-
-/* 루프 클래스 */
-.is-looping.discover-helix_button { 
-  animation: glowLoopBlue 2.8s infinite ease-in-out !important; 
-}
-
-.flex-block-23 .cta-style.is-looping { 
-  animation: glowLoopPurple 2.8s infinite ease-in-out !important; 
-}
-
