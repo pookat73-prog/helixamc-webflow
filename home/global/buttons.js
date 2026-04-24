@@ -1,46 +1,38 @@
 /* ================================================================
    GLOBAL BUTTON GLOW ANIMATION
-   IntersectionObserver trigger + keyframes injected inline
-   Dependencies: none
+   GSAP tween으로 box-shadow 직접 제어 (인라인 스타일 우선순위 보장)
+   Dependencies: GSAP (already loaded via bootstrap)
    ================================================================ */
 
 (function () {
   'use strict';
-
-  /* Inject keyframes into document head */
-  var style = document.createElement('style');
-  style.textContent = [
-    '@keyframes helixGlowBlue {',
-    '  0%,100% { box-shadow: 0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5); }',
-    '  50%      { box-shadow: 0 0 0.1vw 0.02vw rgba(0,117,214,0.02); }',
-    '}',
-    '@keyframes helixGlowPurple {',
-    '  0%,100% { box-shadow: 0 0 1.6vw 0.6vw rgba(85,40,170,1), 0 0 3vw 1vw rgba(85,40,170,0.5); }',
-    '  50%      { box-shadow: 0 0 0.1vw 0.02vw rgba(85,40,170,0.02); }',
-    '}'
-  ].join('\n');
-  document.head.appendChild(style);
 
   function isPurple(el) {
     return el.classList.contains('bt-box-4');
   }
 
   function startGlow(el) {
-    var shadow = isPurple(el)
+    if (!window.gsap) return;
+
+    var maxGlow = isPurple(el)
       ? '0 0 1.6vw 0.6vw rgba(85,40,170,1), 0 0 3vw 1vw rgba(85,40,170,0.5)'
       : '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)';
+    var minGlow = isPurple(el)
+      ? '0 0 0.15vw 0.05vw rgba(85,40,170,0.05)'
+      : '0 0 0.15vw 0.05vw rgba(0,117,214,0.05)';
 
-    /* Phase 1: fade-in to full glow */
-    el.style.transition = 'box-shadow 0.6s ease';
-    el.style.boxShadow  = shadow;
+    /* Phase 1: fade in to max glow over 0.6s */
+    gsap.to(el, { boxShadow: maxGlow, duration: 0.6, ease: 'power2.out' });
 
-    /* Phase 2: swap to pulsing loop after 1.5s */
-    setTimeout(function () {
-      el.style.transition = 'none';
-      el.style.animation  = isPurple(el)
-        ? 'helixGlowPurple 2.8s ease-in-out infinite'
-        : 'helixGlowBlue 2.8s ease-in-out infinite';
-    }, 1500);
+    /* Phase 2: pulse loop starting after 1.5s */
+    gsap.to(el, {
+      boxShadow: minGlow,
+      duration: 1.4,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      delay: 1.5
+    });
   }
 
   function initButtonGlow() {
