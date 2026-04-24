@@ -14,11 +14,11 @@
 .bt-box-1.is-holding,
 .bt-box-2.is-holding,
 .bt-box-3.is-holding {
-  box-shadow: 0 0 0.8vw 0.25vw rgba(0, 117, 214, 0.85) !important;
+  box-shadow: 0 0 2.4vw 0.8vw rgba(0, 117, 214, 1) !important;
 }
 
 .bt-box-4.is-holding {
-  box-shadow: 0 0 0.8vw 0.25vw rgba(85, 40, 170, 0.85) !important;
+  box-shadow: 0 0 2.4vw 0.8vw rgba(85, 40, 170, 1) !important;
 }
 
 /* 3. is-looping: breathing loop */
@@ -36,11 +36,11 @@
 
 /* 4. keyframes - 0%/100% must match is-holding values */
 @keyframes glowLoopBlue {
-  0%, 100% { box-shadow: 0 0 0.8vw 0.25vw rgba(0, 117, 214, 0.85); }
-  50%       { box-shadow: 0 0 0.4vw 0.1vw rgba(0, 117, 214, 0.08); }
+  0%, 100% { box-shadow: 0 0 2.4vw 0.8vw rgba(0, 117, 214, 1); }
+  50%       { box-shadow: 0 0 0.2vw 0.1vw rgba(0, 117, 214, 0.08); }
 }
 
 @keyframes glowLoopPurple {
-  0%, 100% { box-shadow: 0 0 0.8vw 0.25vw rgba(85, 40, 170, 0.85); }
-  50%       { box-shadow: 0 0 0.4vw 0.1vw rgba(85, 40, 170, 0.08); }
+  0%, 100% { box-shadow: 0 0 2.4vw 0.8vw rgba(85, 40, 170, 1); }
+  50%       { box-shadow: 0 0 0.2vw 0.1vw rgba(85, 40, 170, 0.08); }
 }
