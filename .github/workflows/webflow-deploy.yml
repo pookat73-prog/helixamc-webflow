@@ -1,0 +1,78 @@
+name: Webflow CDN Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'home/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build reference head code (bootstrap loader)
+        run: |
+          # Bootstrap pattern: head code references bootstrap.js at @main.
+          # Bootstrap fetches the latest commit SHA from GitHub API at runtime
+          # and loads all content files from commit-specific URLs (immutable).
+          cat > /tmp/head_cdn.txt <<'EOF'
+          <!-- GSAP -->
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+          <!-- Helix Auto-Loader (loads latest commit dynamically) -->
+          <script src="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/home/bootstrap.js"></script>
+          EOF
+          echo "--- Generated head code ---"
+          cat /tmp/head_cdn.txt
+          echo "---"
+
+      - name: Purge jsDelivr cache for bootstrap.js
+        run: |
+          # Only bootstrap.js references @main (everything else loads via commit SHA).
+          # So this is the only file that actually needs cache purging.
+          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main"
+          FILES=(
+            "home/bootstrap.js"
+          )
+          FAILED=0
+          for f in "${FILES[@]}"; do
+            printf "Purging /%s → " "$f"
+            code=$(curl -s -o /tmp/purge_out.txt -w "%{http_code}" "${BASE}/${f}")
+            echo "HTTP $code"
+            if [ "$code" != "200" ]; then
+              echo "  body: $(cat /tmp/purge_out.txt)"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+          if [ $FAILED -gt 0 ]; then
+            echo "⚠️ 퍼지 실패 — bootstrap.js는 드물게 변경되므로 보통 괜찮음"
+          else
+            echo "✅ bootstrap.js 캐시 퍼지 완료"
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## ✅ CDN Auto Deploy (Bootstrap Mode)"
+            echo ""
+            echo "커밋: \`${{ github.sha }}\`"
+            echo ""
+            echo "bootstrap.js가 런타임에 GitHub API로 최신 커밋 SHA를 조회 → immutable commit URL로 파일 로드."
+            echo "브라우저에서 새로고침만 하면 항상 최신 버전이 뜹니다."
+            echo ""
+            echo "---"
+            echo ""
+            echo "### 📌 **최초 1회만** 아래 두 줄을 Webflow 홈 페이지 → Page Settings → Inside \`<head>\` tag 에 붙여넣으세요"
+            echo ""
+            echo '```html'
+            cat /tmp/head_cdn.txt
+            echo '```'
+            echo ""
+            echo "붙여넣은 후 Webflow에서 **한 번만 Publish**. 이후 코드 수정은 푸시만 하면 자동 반영."
+          } >> $GITHUB_STEP_SUMMARY
