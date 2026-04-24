@@ -1,16 +1,40 @@
 /* ================================================================
-   SECTION CONNECTOR LINE: Button 1 bottom-center -> Section 2 head top
-   CSS only - no external dependencies
+   SECTION CONNECTOR HELIX: Button 1 bottom-center -> Section 2 head top
+   Double-helix SVG (two intertwining strands + base-pair rungs)
    ================================================================ */
 
 .section-connector-line {
   position: absolute;
   top: 0;
   left: 0;
-  width: 1px;
-  background-color: #0075d6;
+  width: 28px;
+  height: 0;
   transform: translateX(-50%);
   pointer-events: none;
   z-index: 9999;
   will-change: clip-path;
+  overflow: visible;
+}
+
+.section-connector-line svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.section-connector-line .helix-strand {
+  fill: none;
+  stroke: #0075d6;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.section-connector-line .helix-rungs {
+  fill: none;
+  stroke: #0075d6;
+  stroke-width: 0.75;
+  stroke-linecap: round;
+  opacity: 0.45;
 }

@@ -1,19 +1,25 @@
 /* ================================================================
-   SECTION CONNECTOR LINE: Button1 bottom-center -> Section2 heading top
-   Scroll-animated draw/erase via clipPath.
+   SECTION CONNECTOR HELIX: Button1 bottom-center -> Section2 heading top
+   Double-helix SVG, scroll-animated draw/erase via clipPath.
 
-   Phase 1 (scroll start -> button bottom exits): line grows downward
+   Phase 1 (scroll start -> button bottom exits): helix grows downward
    Phase 2 (button fully gone -> sec2 at 50vh):   erase from top, slow
    Phase 3 (sec2 at 50vh -> 15vh):                fast convergence
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 6
+   Version: 7
    ================================================================ */
 
 (function () {
   'use strict';
 
   var BTN1_CLASS = '.discover-helix_button';
+
+  var HELIX_WIDTH    = 28;
+  var HELIX_AMP      = 10;
+  var HELIX_CX       = 14;
+  var TWIST_PER_PX   = 1 / 220;  /* ~1 full twist per 220px */
+  var SVG_NS         = 'http://www.w3.org/2000/svg';
 
   var DEBUG = window.DEBUG_SECTION_LINE ||
               /[?&]debug-line=1/.test(location.search);
@@ -52,16 +58,87 @@
     return null;
   }
 
+  /* Build a sine-strand path. Both strands meet at y=0 and y=h
+     when twists is integer (sin(0)=sin(2π·n)=0). */
+  function buildStrandPath(h, twists, phase) {
+    if (h <= 0) return 'M ' + HELIX_CX + ' 0';
+    var wl = h / twists;
+    var k  = (2 * Math.PI) / wl;
+    var step = 2;
+    var d = 'M ' + (HELIX_CX + HELIX_AMP * Math.sin(phase)).toFixed(2) + ' 0';
+    for (var y = step; y < h; y += step) {
+      var x = HELIX_CX + HELIX_AMP * Math.sin(phase + y * k);
+      d += ' L ' + x.toFixed(2) + ' ' + y.toFixed(2);
+    }
+    var xEnd = HELIX_CX + HELIX_AMP * Math.sin(phase + h * k);
+    d += ' L ' + xEnd.toFixed(2) + ' ' + h.toFixed(2);
+    return d;
+  }
+
+  /* Build base-pair rungs at quarter-wavelength offsets
+     (where strands reach maximum separation). */
+  function buildRungsPath(h, twists) {
+    if (h <= 0 || twists <= 0) return 'M 0 0';
+    var wl = h / twists;
+    var k  = (2 * Math.PI) / wl;
+    var d = '';
+    var y = wl / 4;
+    while (y < h) {
+      var s1x = HELIX_CX + HELIX_AMP * Math.sin(y * k);
+      var s2x = HELIX_CX + HELIX_AMP * Math.sin(Math.PI + y * k);
+      d += ' M ' + s1x.toFixed(2) + ' ' + y.toFixed(2) +
+           ' L ' + s2x.toFixed(2) + ' ' + y.toFixed(2);
+      y += wl / 2;
+    }
+    return d.length ? d.slice(1) : 'M 0 0';
+  }
+
+  function updateHelixGeometry(h) {
+    if (!line) return;
+    if (Math.abs(h - line._lastH) < 0.5) return;
+    line._lastH = h;
+    var twists = Math.max(2, Math.round(h * TWIST_PER_PX));
+    line._svg.setAttribute('width',  String(HELIX_WIDTH));
+    line._svg.setAttribute('height', String(h));
+    line._strand1.setAttribute('d', buildStrandPath(h, twists, 0));
+    line._strand2.setAttribute('d', buildStrandPath(h, twists, Math.PI));
+    line._rungs.setAttribute('d',   buildRungsPath(h, twists));
+    log('helix rebuilt: h=' + h.toFixed(0) + ' twists=' + twists);
+  }
+
   function ensureLine() {
     if (line) return;
     line = document.createElement('div');
     line.className = 'section-connector-line';
+
+    var svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('xmlns', SVG_NS);
+
+    var strand1 = document.createElementNS(SVG_NS, 'path');
+    strand1.setAttribute('class', 'helix-strand');
+    var strand2 = document.createElementNS(SVG_NS, 'path');
+    strand2.setAttribute('class', 'helix-strand');
+    var rungs   = document.createElementNS(SVG_NS, 'path');
+    rungs.setAttribute('class', 'helix-rungs');
+
+    /* Rungs first so strands paint on top */
+    svg.appendChild(rungs);
+    svg.appendChild(strand1);
+    svg.appendChild(strand2);
+    line.appendChild(svg);
+
+    line._svg     = svg;
+    line._strand1 = strand1;
+    line._strand2 = strand2;
+    line._rungs   = rungs;
+    line._lastH   = -1;
+
     if (getComputedStyle(document.body).position === 'static') {
       document.body.style.position = 'relative';
     }
     document.body.appendChild(line);
     line.style.clipPath = 'inset(0% 0 100% 0)';
-    log('line created');
+    log('helix line created');
   }
 
   function update() {
@@ -88,6 +165,8 @@
       line.style.clipPath = 'inset(0% 0 100% 0)';
       return;
     }
+
+    updateHelixGeometry(lineH);
 
     /* Milestones */
     var M1 = Math.max(1, btnBot_abs);

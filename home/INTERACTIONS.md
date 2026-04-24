@@ -94,12 +94,14 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 
 ---
 
-## 3. Section 1 → Section 2 연결선 (Helix Connector)
+## 3. Section 1 → Section 2 헬릭스 라인 (Double-Helix Connector)
 
 버튼 1(`.discover-helix_button`) 하단 중앙에서 섹션 2 헤딩 상단까지
-스크롤에 반응해 그려지다 지워지는 1px 파란 실선.
+스크롤에 반응해 그려지다 지워지는 **DNA 이중나선** SVG.
+두 사인 곡선(strand)이 서로 180° 위상차로 꼬이고, 사이에 base-pair
+rungs가 일정 간격으로 그려져 헬릭스 모티브를 형성.
 
-### 3 페이즈
+### 3 페이즈 (clipPath 마스킹)
 
 | 페이즈 | 범위                                    | 동작                                  |
 |--------|-----------------------------------------|---------------------------------------|
@@ -118,6 +120,19 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 ### Clip 계산
 
 `clipPath: inset(<cTop>% 0 <cBot>% 0)` — 상단 cTop% + 하단 cBot%만 잘라냄.
+SVG 컨테이너(`<div>`)에 적용되어 내부 strand·rungs까지 함께 마스킹.
+
+### 헬릭스 지오메트리
+
+- 컨테이너 폭: **28px**, `transform: translateX(-50%)`로 버튼 중앙 정렬
+- Strand 진폭: ±10px (중심축 cx=14)
+- 꼬임 수: `Math.max(2, round(lineH / 220))` — 대략 220px 당 1회 꼬임
+  - lineH가 정수배 wavelength가 되도록 강제하여 양 끝(y=0, y=lineH)에서
+    두 strand가 정확히 중앙(x=14)에 수렴
+- Strand 보간: 2px 단위 선분으로 사인 근사 (1px stroke 기준 충분히 매끄러움)
+- Rungs: 각 quarter-wavelength 위치(strand 최대 분리점)에 수평 1쌍 선분
+- 높이 변경 시에만 path `d` 재생성 (캐시 `_lastH`, 스크롤 시 매 프레임
+  재계산하지 않음 → 성능 보호)
 
 ### 섹션 2 헤딩 탐지
 
@@ -127,18 +142,20 @@ CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fa
 ### 스타일
 
 - 색상: `#0075d6` (메인블루)
-- 두께: 1px
+- Strand stroke: 1px (round cap·join)
+- Rungs stroke: 0.75px, opacity 0.45 (보조 모티브 — 시각 노이즈 최소화)
 - z-index: 9999
 - `will-change: clip-path` (GPU 합성)
 
 ### 옵션
 
-- URL `?debug-line=1` 또는 `window.DEBUG_SECTION_LINE = true` → 마일스톤·clip 로그
+- URL `?debug-line=1` 또는 `window.DEBUG_SECTION_LINE = true`
+  → 마일스톤·clip·헬릭스 재빌드 로그
 
 ### 파일
 
-- `home/section-divider/divider.js` — 스크롤 연동 update 루프 (RAF throttle)
-- `home/section-divider/divider.css` — 라인 기본 스타일
+- `home/section-divider/divider.js` — SVG 생성·헬릭스 path 빌더·스크롤 update 루프 (RAF throttle)
+- `home/section-divider/divider.css` — 컨테이너·strand·rungs 스타일
 
 ---
 
