@@ -89,64 +89,12 @@
 
     createSVGLine();
 
-    /* Measure dimensions on init */
-    var bR = btn1.getBoundingClientRect();
-    var s2R = sec2Head.getBoundingClientRect();
-    var scrollY = window.scrollY || window.pageYOffset;
-
-    /* 버튼이 flex-stretch로 섹션 전체 높이로 늘어났는지 검사.
-       늘어난 경우 getBoundingClientRect().bottom이 섹션 바텀과 같아져서
-       라인 시작점이 섹션 경계에 찍힘 → top + 자연 콘텐츠 높이로 대체. */
-    var btn1Bot;
-    var cs = getComputedStyle(btn1);
-    var lineH_val = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2 || 20;
-    var padTop    = parseFloat(cs.paddingTop)    || 0;
-    var padBot    = parseFloat(cs.paddingBottom) || 0;
-    var naturalH  = lineH_val + padTop + padBot;
-
-    var section1  = document.querySelector('.home_background') ||
-                    btn1.closest('section') ||
-                    btn1.closest('[class*="section"]');
-    var s1Bot     = section1 ? section1.getBoundingClientRect().bottom : null;
-
-    /* 버튼 bottom이 섹션 바텀에서 20px 이내면 stretched로 판단 */
-    var isStretched = s1Bot !== null && (s1Bot - bR.bottom) < 20;
-    if (isStretched) {
-      log('btn stretched — using top + naturalH (' + naturalH.toFixed(1) + 'px)');
-      btn1Bot = bR.top + naturalH;
-    } else {
-      btn1Bot = bR.bottom;
-    }
-
-    var btnBot_abs = btn1Bot + scrollY;
-    var s2Top_abs = s2R.top + scrollY;
-    var lineH = Math.max(1, s2Top_abs - btnBot_abs);
-    var lineX = bR.left + bR.width / 2;
-
-    /* Position SVG to cover button-to-sec2 span */
-    var svgW = AMPLITUDE * 2 + 4;
-    svgEl.style.left = (lineX - svgW / 2) + 'px';
-    svgEl.style.top = btnBot_abs + 'px';
-    svgEl.style.width = svgW + 'px';
-    svgEl.style.height = lineH + 'px';
-
-    /* Set SVG coordinate space */
-    svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
-    svgEl.setAttribute('height', Math.ceil(lineH));
-
-    /* Build path: vertical line from button-center to bottom of SVG */
-    var relCx = AMPLITUDE + 2;
-    pathEl.setAttribute('d', buildPath(relCx, lineH));
-    var pathLength = pathEl.getTotalLength() || lineH;
-
-    /* Initially fully hidden */
-    pathEl.setAttribute('stroke-dasharray', pathLength + ' ' + pathLength);
-    pathEl.setAttribute('stroke-dashoffset', 0);
-
-    var headProgress = 0;  /* 0~1: how far the head has drawn */
-    var tailProgress = 0;  /* 0~1: how far the tail has erased */
+    var headProgress = 0;
+    var tailProgress = 0;
+    var pathLength   = 0;
 
     function applyDash() {
+      if (!pathLength) return;
       var tail = Math.min(tailProgress, headProgress);
       var visibleLen = (headProgress - tail) * pathLength;
       var dashOffset  = -tail * pathLength;
@@ -154,8 +102,14 @@
       pathEl.setAttribute('stroke-dashoffset', dashOffset);
     }
 
+    /* 트리거를 먼저 생성 — start 값으로 버튼 바텀 절대좌표를 역산함.
+       drawTrigger.start = scrollY at which btn1.bottom == innerHeight/2
+       → btn1 document-absolute bottom = drawTrigger.start + innerHeight/2
+       getBoundingClientRect().bottom 대신 이 방식을 쓰면
+       flex-stretch로 늘어난 요소도 정확히 측정됨. */
+
     /* Draw: button bottom reaches viewport center → sec2 heading reaches 75% */
-    ScrollTrigger.create({
+    var drawTrigger = ScrollTrigger.create({
       trigger: btn1,
       start: 'bottom center',
       endTrigger: sec2Head,
@@ -181,6 +135,36 @@
         applyDash();
       }
     });
+
+    /* 트리거 start에서 정확한 버튼 바텀 위치 계산 */
+    var btnBot_abs = drawTrigger.start + window.innerHeight / 2;
+
+    var s2R        = sec2Head.getBoundingClientRect();
+    var s2Top_abs  = s2R.top + (window.scrollY || window.pageYOffset);
+    var lineH      = Math.max(1, s2Top_abs - btnBot_abs);
+    var bR         = btn1.getBoundingClientRect();
+    var lineX      = bR.left + bR.width / 2;
+
+    log('btnBot_abs=' + btnBot_abs.toFixed(0) + ' s2Top_abs=' + s2Top_abs.toFixed(0) + ' lineH=' + lineH.toFixed(0));
+
+    /* Position SVG to cover button-to-sec2 span */
+    var svgW = AMPLITUDE * 2 + 4;
+    svgEl.style.left = (lineX - svgW / 2) + 'px';
+    svgEl.style.top  = btnBot_abs + 'px';
+    svgEl.style.width  = svgW + 'px';
+    svgEl.style.height = lineH + 'px';
+
+    /* Set SVG coordinate space */
+    svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
+    svgEl.setAttribute('height', Math.ceil(lineH));
+
+    /* Build path and set initial hidden state */
+    var relCx = AMPLITUDE + 2;
+    pathEl.setAttribute('d', buildPath(relCx, lineH));
+    pathLength = pathEl.getTotalLength() || lineH;
+
+    pathEl.setAttribute('stroke-dasharray', '0 ' + pathLength);
+    pathEl.setAttribute('stroke-dashoffset', '0');
 
     log('animation initialized');
     initialized = true;
