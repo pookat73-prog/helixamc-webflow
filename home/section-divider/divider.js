@@ -114,7 +114,7 @@
     pathEl.setAttribute('d', buildPath(relCx, lineH));
     var pathLength = lineH;  /* For vertical line, length = height */
     pathEl.setAttribute('stroke-dasharray', pathLength);
-    pathEl.setAttribute('stroke-dashoffset', pathLength);  /* Hide line at page load */
+    pathEl.style.strokeDashoffset = pathLength;  /* Hide line at page load (inline style for GSAP) */
 
     /* Create ScrollTrigger timeline */
     var tl = gsap.timeline({
