@@ -24,17 +24,11 @@
 (function () {
   'use strict';
 
-  /* Inject glow keyframes */
-  var style = document.createElement('style');
-  style.id = 'helix-glow-keyframes-s1-' + Date.now();
-  style.textContent = [
-    '@keyframes helixGlowBlue {',
-    '  0%,100% { box-shadow: 0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5) !important; }',
-    '  50%      { box-shadow: 0 0 0.1vw 0.02vw rgba(0,117,214,0.02) !important; }',
-    '}'
-  ].join('\n');
-  document.head.appendChild(style);
-  console.log('[Section1] keyframes injected');
+  /* bt-box-1을 가능한 빨리 표시해 buttons.js와의 레이스 컨디션 방지 */
+  (function earlyProtect() {
+    var b1 = document.querySelector('.bt-box-1');
+    if (b1) b1.setAttribute('data-s1-init', '');
+  }());
 
   var DEBUG = window.DEBUG_SECTION1 ||
               /[?&]debug-s1=1/.test(location.search);
