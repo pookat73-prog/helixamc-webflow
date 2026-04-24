@@ -24,6 +24,19 @@
 (function () {
   'use strict';
 
+  /* Inject glow keyframes */
+  if (!document.getElementById('helix-glow-keyframes')) {
+    var style = document.createElement('style');
+    style.id = 'helix-glow-keyframes';
+    style.textContent = [
+      '@keyframes helixGlowBlue {',
+      '  0%,100% { box-shadow: 0 0 1.2vw 0.4vw rgba(0,117,214,0.95); }',
+      '  50%      { box-shadow: 0 0 0.1vw 0.05vw rgba(0,117,214,0.05); }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(style);
+  }
+
   var DEBUG = window.DEBUG_SECTION1 ||
               /[?&]debug-s1=1/.test(location.search);
   var log = DEBUG ? function () {
@@ -167,9 +180,21 @@
 
     fadeIn(slogan, 'slogan', 1.2, easeSlogan, 0.3);
     fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
-      function () { if (box1) box1.classList.add('is-holding'); },
       function () {
-        setTimeout(function () { if (box1) box1.classList.add('is-looping'); }, 1500);
+        if (box1) {
+          box1.classList.add('is-holding');
+          box1.style.transition = 'box-shadow 0.6s ease';
+          box1.style.boxShadow = '0 0 1.2vw 0.4vw rgba(0,117,214,0.95)';
+        }
+      },
+      function () {
+        setTimeout(function () {
+          if (box1) {
+            box1.classList.add('is-looping');
+            box1.style.transition = 'none';
+            box1.style.animation = 'helixGlowBlue 2.8s ease-in-out infinite';
+          }
+        }, 1500);
       });
     fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
       /* All fades done - restore DOM so responsive layout resumes */
