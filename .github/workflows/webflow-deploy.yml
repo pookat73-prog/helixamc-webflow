@@ -32,7 +32,7 @@ jobs:
               "publishToWebflowSubdomain": true
             }')
           
-          if [ "$RESPONSE" -eq 200 ]; then
+          if [ "$RESPONSE" -eq 200 ] || [ "$RESPONSE" -eq 202 ]; then
             echo "✅ 배포 성공!"
           else
             echo "❌ 배포 실패 (HTTP $RESPONSE)"
