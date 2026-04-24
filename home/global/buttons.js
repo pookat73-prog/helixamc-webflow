@@ -7,7 +7,12 @@
 (function () {
     'use strict';
 
+    var started = false;
+
     function initButtonGlow() {
+        if (started) return;
+        started = true;
+
         const targets = document.querySelectorAll(
             '.bt-box-1, .bt-box-2, .bt-box-3, .bt-box-4'
         );
@@ -32,6 +37,14 @@
         targets.forEach(function (el) { observer.observe(el); });
     }
 
+    // Webflow push (초기 로드 시)
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () { setTimeout(initButtonGlow, 100); });
+
+    // 폴백: Webflow가 이미 실행된 경우 load 이벤트로 처리
+    if (document.readyState === 'complete') {
+        setTimeout(initButtonGlow, 100);
+    } else {
+        window.addEventListener('load', function () { setTimeout(initButtonGlow, 100); });
+    }
 })();
