@@ -77,27 +77,43 @@ jobs:
             console.log(head);
           " > /tmp/head_manual.txt
 
-          RESPONSE=$(curl -s -o /tmp/api_response.txt -w "%{http_code}" -X PUT \
+          # ── 시도 1: v2 PUT ──
+          echo "=== v2 PUT 시도 ==="
+          V2_RESPONSE=$(curl -s -o /tmp/v2_response.txt -w "%{http_code}" -X PUT \
             "https://api.webflow.com/v2/sites/${SITE_ID}/custom_code" \
             -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
             -H "Content-Type: application/json" \
             -d @/tmp/payload.json)
+          echo "v2 HTTP ${V2_RESPONSE}:"; cat /tmp/v2_response.txt; echo ""
 
-          echo "API HTTP ${RESPONSE}:"
-          cat /tmp/api_response.txt
-          echo ""
-
-          echo "api_status=${RESPONSE}" >> $GITHUB_OUTPUT
-          echo "cdn_tag=${TAG}" >> $GITHUB_OUTPUT
-
-          if [ "$RESPONSE" -ge 200 ] && [ "$RESPONSE" -lt 300 ]; then
-            echo "✅ Site custom code 업데이트 성공 (tag: ${TAG})"
+          # ── 시도 2: v1 PATCH (v2 실패 시) ──
+          if [ "$V2_RESPONSE" -ge 200 ] && [ "$V2_RESPONSE" -lt 300 ]; then
+            echo "✅ v2 성공"
             echo "api_ok=true" >> $GITHUB_OUTPUT
           else
-            echo "⚠️ API 실패 (HTTP ${RESPONSE}) — Webflow 토큰에 custom_code:write 권한 필요"
-            echo "api_ok=false" >> $GITHUB_OUTPUT
-            exit 1
+            echo "=== v1 PATCH 시도 ==="
+            HEAD_CODE=$(cat /tmp/head_manual.txt)
+            V1_PAYLOAD=$(node -e "process.stdout.write(JSON.stringify({headCode: $(cat /tmp/payload.json | node -e 'const d=require(\"fs\").readFileSync(\"/dev/stdin\",\"utf-8\"); const p=JSON.parse(d); process.stdout.write(JSON.stringify(p.headCode));')}))")
+            V1_RESPONSE=$(curl -s -o /tmp/v1_response.txt -w "%{http_code}" -X PATCH \
+              "https://api.webflow.com/sites/${SITE_ID}" \
+              -H "Authorization: Bearer ${WEBFLOW_API_TOKEN}" \
+              -H "accept-version: 1.0.0" \
+              -H "Content-Type: application/json" \
+              -d "${V1_PAYLOAD}")
+            echo "v1 HTTP ${V1_RESPONSE}:"; cat /tmp/v1_response.txt; echo ""
+
+            if [ "$V1_RESPONSE" -ge 200 ] && [ "$V1_RESPONSE" -lt 300 ]; then
+              echo "✅ v1 성공"
+              echo "api_ok=true" >> $GITHUB_OUTPUT
+            else
+              echo "⚠️ v2(${V2_RESPONSE}) v1(${V1_RESPONSE}) 모두 실패"
+              echo "api_ok=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
           fi
+
+          echo "api_status=${V2_RESPONSE}" >> $GITHUB_OUTPUT
+          echo "cdn_tag=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Publish to Webflow
         env:
