@@ -72,6 +72,14 @@
 
   var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
 
+  /* Load ScrollTrigger plugin for GSAP animations */
+  var scrollTriggerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
+  injectJs(scrollTriggerUrl, function () {
+    if (window.gsap && window.gsap.registerPlugin) {
+      window.gsap.registerPlugin(ScrollTrigger);
+    }
+  });
+
   fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {

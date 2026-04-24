@@ -1,14 +1,16 @@
 /* ================================================================
-   SECTION CONNECTOR LINE: outer div positions + clips the helix SVG.
-   Width/height/left/top overridden by JS. clip-path animation via JS.
+   SECTION CONNECTOR SVG: Helix line powered by ScrollTrigger.
+   All positioning and stroke animation handled via JS.
    ================================================================ */
 
-.section-connector-line {
+.helix-line-svg {
   position: absolute;
-  top: 0;
-  left: 0;
   pointer-events: none;
-  z-index: 9999;
-  will-change: clip-path;
   overflow: visible;
+  z-index: 9999;
+}
+
+.helix-line-path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
