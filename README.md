@@ -17,7 +17,7 @@ home/
 ## Webflow 임베드 방법
 
 ### 섹션 1 히어로 애니메이션
-Webflow 홈페이지 **Head Custom Code**에 추가:
+Webflow **Site Settings > Custom Code > Head Code**에 추가:
 
 ```html
 <!-- Section 1 Hero Animation -->
