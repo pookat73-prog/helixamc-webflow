@@ -114,7 +114,8 @@
     pathEl.setAttribute('d', buildPath(relCx, lineH));
     var pathLength = lineH;  /* For vertical line, length = height */
     pathEl.setAttribute('stroke-dasharray', pathLength);
-    pathEl.style.strokeDashoffset = pathLength;  /* Hide line at page load (inline style for GSAP) */
+    pathEl.style.strokeDashoffset = pathLength;  /* Hide line at page load */
+    pathEl.style.visibility = 'hidden';  /* Initially hidden */
 
     /* Create ScrollTrigger timeline */
     var tl = gsap.timeline({
@@ -127,6 +128,9 @@
         markers: DEBUG
       }
     });
+
+    /* Show line and start drawing */
+    tl.set(pathEl, { visibility: 'visible' }, 0);
 
     /* Phase 1: Draw from top to bottom */
     tl.to(pathEl, {
