@@ -13,7 +13,7 @@
 (function () {
   'use strict';
 
-  var BTN1_CLASS = '.bt-box-1';
+  var BTN1_CLASS = '.discover-helix_button';
   var AMPLITUDE  = 14;
   var NUM_WAVES  = 5;
   var STEPS      = 120;
