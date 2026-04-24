@@ -8,7 +8,12 @@
 (function() {
     'use strict';
 
+    var started = false;
+
     function startSection1() {
+        if (started) return;
+        started = true;
+
         // GSAP이 로드되지 않으면 폴백으로 요소 가시화 후 종료
         if (typeof gsap === 'undefined') {
             console.warn('[Section1] GSAP not loaded. Applying fallback visibility.');
@@ -62,10 +67,14 @@
         }, 0.9);
     }
 
-    // Webflow와 호환되는 초기화
+    // Webflow push (초기 로드 시)
     window.Webflow = window.Webflow || [];
-    window.Webflow.push(() => { 
-        setTimeout(startSection1, 100); 
-    });
-})();
+    window.Webflow.push(function() { setTimeout(startSection1, 100); });
 
+    // 폴백: Webflow가 이미 실행된 경우 load 이벤트로 처리
+    if (document.readyState === 'complete') {
+        setTimeout(startSection1, 100);
+    } else {
+        window.addEventListener('load', function() { setTimeout(startSection1, 100); });
+    }
+})();
