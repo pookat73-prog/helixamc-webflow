@@ -4,10 +4,15 @@
 
    SVG path: simple vertical line (1px)
    Animation: Phase 1 draw, Phase 2+3 erase (scroll-linked via ScrollTrigger)
-   End point: section2 heading reaches 75% of viewport (complete erase)
+
+   Bug fix: erase trigger was 'top bottom' → fired at scrollY < 0 (before page
+   loads), so erase was already 45%+ complete when drawing started. Line only
+   became visible ~200px into scroll, appearing to start at section boundary.
+   Fix: erase start changed to 'top top' (marker exits viewport top = scrollY
+   equals marker page-y), so draw completes before erase begins.
 
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 12 (straight line, fixed pathLength, hidden on page load)
+   Version: 13 (erase trigger timing fix)
    ================================================================ */
 
 (function () {
@@ -15,8 +20,6 @@
 
   var BTN1_CLASS = '.discover-helix_button';
   var AMPLITUDE  = 14;
-  var NUM_WAVES  = 5;
-  var STEPS      = 120;
 
   var DEBUG = window.DEBUG_SECTION_LINE ||
               /[?&]debug-line=1/.test(location.search);
@@ -47,14 +50,12 @@
   }
 
   function buildPath(cx, height) {
-    /* Simple vertical line (not sinusoidal) */
     return 'M ' + cx.toFixed(2) + ' 0 L ' + cx.toFixed(2) + ' ' + height.toFixed(2);
   }
 
   function createSVGLine() {
     if (svgEl) return;
 
-    /* Create inline SVG wrapper */
     svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svgEl.setAttribute('class', 'helix-line-svg');
@@ -73,47 +74,6 @@
     }
     document.body.appendChild(svgEl);
     log('SVG created');
-  }
-
-  /* btn1의 실제 바텀 절대좌표 반환.
-     flex-stretch 감지 시 position:fixed 로 일시 전환해 자연 높이 측정 후 복원.
-     (화면 갱신 없이 동기 강제 reflow만 발생 — 시각적 플래시 없음) */
-  function findBtnBottom(btn) {
-    var scrollY = window.scrollY || window.pageYOffset;
-    var bR      = btn.getBoundingClientRect();
-    var vH      = window.innerHeight;
-
-    /* 높이가 뷰포트의 25% 미만 → stretch 아님, 직접 사용 */
-    if (bR.height < vH * 0.25) {
-      log('findBtnBottom: direct h=' + bR.height.toFixed(0));
-      return bR.bottom + scrollY;
-    }
-    log('findBtnBottom: stretched h=' + bR.height.toFixed(0) + ', measuring via fixed...');
-
-    /* position:fixed + height:auto 로 자연 높이 강제 측정 */
-    var ps   = btn.style;
-    var props = ['position', 'top', 'left', 'width', 'height', 'margin'];
-    var saved = props.map(function (p) {
-      return { v: ps.getPropertyValue(p), pri: ps.getPropertyPriority(p) };
-    });
-
-    ps.setProperty('position', 'fixed',            'important');
-    ps.setProperty('top',      bR.top  + 'px',     'important');
-    ps.setProperty('left',     bR.left + 'px',      'important');
-    ps.setProperty('width',    bR.width + 'px',     'important');
-    ps.setProperty('height',   'auto',              'important');
-    ps.setProperty('margin',   '0',                 'important');
-
-    var natBR = btn.getBoundingClientRect(); /* forced reflow */
-
-    props.forEach(function (p, i) {
-      if (saved[i].v) { ps.setProperty(p, saved[i].v, saved[i].pri); }
-      else            { ps.removeProperty(p); }
-    });
-
-    var result = natBR.bottom + scrollY;
-    log('findBtnBottom: fixed measure ->', result.toFixed(0), '(h=' + natBR.height.toFixed(0) + ')');
-    return result;
   }
 
   function initAnimationOnce() {
@@ -143,19 +103,18 @@
       pathEl.setAttribute('stroke-dashoffset', dashOffset);
     }
 
-    /* ── 위치 먼저 측정 (트리거 생성 전) ───────────────────────── */
+    /* ── 위치 측정 ────────────────────────────────────────────── */
     var scrollY    = window.scrollY || window.pageYOffset;
-    var btnBot_abs = findBtnBottom(btn1);           /* flex-stretch 보정 포함 */
+    var bR         = btn1.getBoundingClientRect();
+    var btnBot_abs = bR.bottom + scrollY;   /* 버튼 바텀 절대 좌표 */
+    var lineX      = bR.left + bR.width / 2;
     var s2R        = sec2Head.getBoundingClientRect();
     var s2Top_abs  = s2R.top + scrollY;
-    var bR         = btn1.getBoundingClientRect();
-    var lineX      = bR.left + bR.width / 2;
 
     log('btnBot_abs=' + btnBot_abs.toFixed(0) +
         ' s2Top_abs=' + s2Top_abs.toFixed(0));
 
-    /* ── 마커 요소: 실제 버튼 바텀 위치에 1px div ────────────────
-       ScrollTrigger 트리거로 사용해 stretched btn1 측정을 우회함 */
+    /* ── 마커: 버튼 바텀 위치에 1px div (ScrollTrigger 기준점) ── */
     var marker = document.createElement('div');
     marker.setAttribute('data-helix-divider-marker', '1');
     marker.style.cssText =
@@ -163,7 +122,7 @@
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
 
-    /* Draw: 마커(= 실제 버튼 바텀)가 뷰포트 중앙 → sec2 헤딩 75% */
+    /* Draw: marker top이 뷰포트 center → sec2 헤딩 top 75% */
     ScrollTrigger.create({
       trigger: marker,
       start: 'top center',
@@ -177,12 +136,14 @@
       }
     });
 
-    /* Erase: 마커가 뷰포트 아래로 사라짐 → sec2 헤딩 50% */
+    /* Erase: marker top이 뷰포트 TOP (버튼이 화면 위로 사라진 후) → sec2 헤딩 top 25%
+       이전 'top bottom'은 scrollY < 0에서 발사 → 페이지 로드 시 이미 45% 진행됨.
+       'top top'으로 변경하면 draw 완료 후에 erase 시작 → 버튼 바텀에서 라인 정상 출발. */
     ScrollTrigger.create({
       trigger: marker,
-      start: 'top bottom',
+      start: 'top top',
       endTrigger: sec2Head,
-      end: 'top 50%',
+      end: 'top 25%',
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
@@ -191,7 +152,7 @@
       }
     });
 
-    /* ── SVG 위치 및 경로 설정 ───────────────────────────────── */
+    /* ── SVG 위치 및 경로 설정 ─────────────────────────────────── */
     var lineH = Math.max(1, s2Top_abs - btnBot_abs);
     var svgW  = AMPLITUDE * 2 + 4;
 
