@@ -4,6 +4,19 @@
    TODO: font-family 확정 후 .hx-menu-thin에 추가
    =================================================== */
 
+/* --- Backdrop (패널 바깥 클릭 감지) --- */
+.hx-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  cursor: pointer;
+  visibility: hidden;
+}
+
+.hx-menu-backdrop.is-open {
+  visibility: visible;
+}
+
 /* --- Panel (우측, 헤더 아래) --- */
 .hx-menu-overlay {
   position: fixed;
@@ -22,6 +35,7 @@
 .hx-menu-overlay.is-open {
   visibility: visible;
 }
+
 
 /* 헤더 경계 분리용 상단 그라데이션 */
 .hx-menu-overlay::before {

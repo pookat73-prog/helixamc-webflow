@@ -85,6 +85,11 @@
   }
 
   function init() {
+    /* 백드롭 주입 */
+    var backdrop = document.createElement('div');
+    backdrop.className = 'hx-menu-backdrop';
+    document.body.appendChild(backdrop);
+
     /* 오버레이 DOM 주입 */
     var tmp = document.createElement('div');
     tmp.innerHTML = buildOverlayHTML();
@@ -112,6 +117,7 @@
       positionOverlay(overlay);
       overlay.classList.add('is-open');
       overlay.setAttribute('aria-hidden', 'false');
+      backdrop.classList.add('is-open');
       document.body.classList.add('hx-menu-open');
 
       /* 이전에 클릭한 링크 활성 복원 */
@@ -140,6 +146,7 @@
         onComplete: function () {
           overlay.classList.remove('is-open');
           overlay.setAttribute('aria-hidden', 'true');
+          backdrop.classList.remove('is-open');
           gsap.set(staggerItems, { y: 20, opacity: 0 });
         }
       });
@@ -155,6 +162,9 @@
     } else {
       console.warn('[hx-menu] .image-18 not found');
     }
+
+    /* 백드롭 클릭 → 닫기 */
+    backdrop.addEventListener('click', closeMenu);
 
     /* ESC 키로 닫기 */
     document.addEventListener('keydown', function (e) {
