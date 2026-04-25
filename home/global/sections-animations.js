@@ -397,6 +397,28 @@
 
     zigPath.setAttribute('d', pathD);
 
+    /* SVG glow filter */
+    var glowDefs  = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    var glowF     = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    glowF.setAttribute('id',          'zig-line-glow');
+    glowF.setAttribute('filterUnits', 'userSpaceOnUse');
+    glowF.setAttribute('x',      '-8');
+    glowF.setAttribute('y',      '-4');
+    glowF.setAttribute('width',  String(svgWidth + 16));
+    glowF.setAttribute('height', String(lineH + 8));
+    var gBlur  = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
+    gBlur.setAttribute('in', 'SourceGraphic'); gBlur.setAttribute('stdDeviation', '2.5'); gBlur.setAttribute('result', 'blur');
+    var gFlood = document.createElementNS('http://www.w3.org/2000/svg', 'feFlood');
+    gFlood.setAttribute('flood-color', '#329ad6'); gFlood.setAttribute('flood-opacity', '0.65'); gFlood.setAttribute('result', 'color');
+    var gComp  = document.createElementNS('http://www.w3.org/2000/svg', 'feComposite');
+    gComp.setAttribute('in', 'color'); gComp.setAttribute('in2', 'blur'); gComp.setAttribute('operator', 'in'); gComp.setAttribute('result', 'glow');
+    var gMerge = document.createElementNS('http://www.w3.org/2000/svg', 'feMerge');
+    ['glow', 'SourceGraphic'].forEach(function (s) { var mn = document.createElementNS('http://www.w3.org/2000/svg', 'feMergeNode'); mn.setAttribute('in', s); gMerge.appendChild(mn); });
+    glowF.appendChild(gBlur); glowF.appendChild(gFlood); glowF.appendChild(gComp); glowF.appendChild(gMerge);
+    glowDefs.appendChild(glowF);
+    zigSvg.insertBefore(glowDefs, zigSvg.firstChild);
+    zigPath.setAttribute('filter', 'url(#zig-line-glow)');
+
     var pathLength = zigPath.getTotalLength() || lineH;
     zigPath.setAttribute('stroke-dasharray',  '0 ' + pathLength);
     zigPath.setAttribute('stroke-dashoffset', '0');
