@@ -58,6 +58,22 @@
     var top = getHeaderBottom();
     overlay.style.top    = top + 'px';
     overlay.style.height = (window.innerHeight - top) + 'px';
+
+    /* 진료과목 링크 왼쪽 끝에 패널 좌측 정렬 */
+    var links = document.querySelectorAll('a');
+    var anchor = null;
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].textContent.trim().indexOf('진료과목') !== -1) {
+        anchor = links[i];
+        break;
+      }
+    }
+    if (anchor) {
+      var left = anchor.getBoundingClientRect().left;
+      overlay.style.left  = left + 'px';
+      overlay.style.right = '0';
+      overlay.style.width = 'auto';
+    }
   }
 
   function init() {

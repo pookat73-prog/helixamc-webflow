@@ -7,7 +7,7 @@
   position: fixed;
   right: 0;
   top: 0;       /* JS가 헤더 높이에 맞게 재설정 */
-  width: 50%;
+  width: auto;  /* JS가 진료과목 기준으로 설정 */
   height: 100vh; /* JS가 헤더 높이 뺀 값으로 재설정 */
   background: #000000;
   z-index: 10000;
