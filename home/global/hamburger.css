@@ -1,17 +1,20 @@
 /* ===================================================
-   HELIX AMC — Hamburger Menu Overlay
+   HELIX AMC — Hamburger Menu Panel (half-screen)
    =================================================== */
 
-/* --- Overlay --- */
+/* --- Panel (right half, below header) --- */
 .hx-menu-overlay {
   position: fixed;
-  inset: 0;
+  right: 0;
+  top: 0;       /* JS가 헤더 높이에 맞게 재설정 */
+  width: 50%;
+  height: 100vh; /* JS가 헤더 높이 뺀 값으로 재설정 */
   background: #000000;
   z-index: 10000;
   display: flex;
   flex-direction: column;
   visibility: hidden;
-  opacity: 0;
+  transform: translateX(100%);
 }
 
 .hx-menu-overlay.is-open {
@@ -27,7 +30,7 @@ body.hx-menu-open {
 .hx-menu-body {
   flex: 1;
   overflow-y: auto;
-  padding: 110px 80px 60px;
+  padding: 60px 48px 48px;
   display: flex;
   flex-direction: column;
 }
@@ -36,12 +39,12 @@ body.hx-menu-open {
 .hx-menu-branches {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  margin-bottom: 48px;
+  gap: 16px;
+  margin-bottom: 40px;
 }
 
 .hx-menu-branch {
-  font-size: 44px;
+  font-size: 36px;
   font-weight: 800;
   color: #ffffff;
   text-decoration: none;
@@ -57,10 +60,10 @@ body.hx-menu-open {
 
 /* --- Divider line --- */
 .hx-menu-divider {
-  width: 75%;
+  width: 80%;
   height: 1px;
   background: rgba(255, 255, 255, 0.25);
-  margin-bottom: 44px;
+  margin-bottom: 36px;
   flex-shrink: 0;
 }
 
@@ -68,11 +71,11 @@ body.hx-menu-open {
 .hx-menu-nav {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
 }
 
 .hx-menu-nav-link {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: #ffffff;
   text-decoration: none;
@@ -89,18 +92,18 @@ body.hx-menu-open {
 /* --- Footer CTA (navy) --- */
 .hx-menu-footer {
   background: #0a1e3d;
-  padding: 32px 80px;
+  padding: 28px 48px;
   flex-shrink: 0;
 }
 
 .hx-menu-footer-link {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   letter-spacing: -0.01em;
   transition: color 0.2s ease;
 }
@@ -110,26 +113,29 @@ body.hx-menu-open {
 }
 
 .hx-menu-footer-link__arrow {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
   opacity: 0.8;
 }
 
-/* --- Mobile --- */
+/* --- Mobile: 85% width --- */
 @media (max-width: 768px) {
+  .hx-menu-overlay {
+    width: 85%;
+  }
   .hx-menu-body {
-    padding: 90px 40px 48px;
+    padding: 48px 32px 40px;
   }
   .hx-menu-footer {
-    padding: 28px 40px;
+    padding: 24px 32px;
   }
   .hx-menu-branch {
-    font-size: 32px;
+    font-size: 28px;
   }
   .hx-menu-nav-link {
-    font-size: 18px;
+    font-size: 16px;
   }
   .hx-menu-footer-link {
-    font-size: 20px;
+    font-size: 18px;
   }
 }

@@ -45,6 +45,21 @@
     );
   }
 
+  /* ── 헤더 하단 위치 감지 ── */
+  function getHeaderBottom() {
+    var header = document.querySelector('.navbar1_component') ||
+                 document.querySelector('[class*="navbar"]') ||
+                 document.querySelector('header') ||
+                 document.querySelector('nav');
+    return header ? header.getBoundingClientRect().bottom : 0;
+  }
+
+  function positionOverlay(overlay) {
+    var top = getHeaderBottom();
+    overlay.style.top    = top + 'px';
+    overlay.style.height = (window.innerHeight - top) + 'px';
+  }
+
   function init() {
     /* 오버레이 DOM 주입 */
     var tmp = document.createElement('div');
@@ -57,44 +72,48 @@
     var staggerItems = overlay.querySelectorAll(
       '.hx-menu-branch, .hx-menu-divider, .hx-menu-nav-link, .hx-menu-footer-link'
     );
-    gsap.set(staggerItems, { y: 24, opacity: 0 });
+    gsap.set(staggerItems, { y: 20, opacity: 0 });
 
     function openMenu() {
       isOpen = true;
+      positionOverlay(overlay);
       overlay.classList.add('is-open');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.classList.add('hx-menu-open');
 
       var tl = gsap.timeline();
-      tl.to(overlay, { opacity: 1, duration: 0.28, ease: 'power2.out' });
+      tl.fromTo(overlay,
+        { x: '100%' },
+        { x: '0%', duration: 0.35, ease: 'power3.out' }
+      );
       tl.to(staggerItems, {
         y: 0, opacity: 1,
-        duration: 0.4,
-        stagger: 0.055,
+        duration: 0.35,
+        stagger: 0.05,
         ease: 'power3.out'
-      }, '-=0.12');
+      }, '-=0.2');
     }
 
     function closeMenu() {
       isOpen = false;
+      document.body.classList.remove('hx-menu-open');
       gsap.to(overlay, {
-        opacity: 0,
-        duration: 0.22,
-        ease: 'power2.in',
+        x: '100%',
+        duration: 0.28,
+        ease: 'power3.in',
         onComplete: function () {
           overlay.classList.remove('is-open');
           overlay.setAttribute('aria-hidden', 'true');
-          document.body.classList.remove('hx-menu-open');
-          gsap.set(staggerItems, { y: 24, opacity: 0 });
+          gsap.set(staggerItems, { y: 20, opacity: 0 });
         }
       });
     }
 
-    /* ── 햄버거 이미지 버튼에 클릭 이벤트 연결 ── */
-    var wfBtn = document.querySelector('.image-18');
-    if (wfBtn) {
-      wfBtn.style.cursor = 'pointer';
-      wfBtn.addEventListener('click', function () {
+    /* ── .image-18 클릭 이벤트 연결 ── */
+    var btn = document.querySelector('.image-18');
+    if (btn) {
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', function () {
         if (isOpen) closeMenu(); else openMenu();
       });
     } else {
@@ -109,6 +128,11 @@
     /* 메뉴 링크 클릭 시 닫기 */
     overlay.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', closeMenu);
+    });
+
+    /* 리사이즈 시 패널 위치 재조정 */
+    window.addEventListener('resize', function () {
+      if (isOpen) positionOverlay(overlay);
     });
   }
 
