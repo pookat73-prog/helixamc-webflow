@@ -109,6 +109,24 @@ home/
 
 ---
 
+---
+
+## ⚠️ 헬릭스 라인 — 건드리지 말 것 (LOCKED v14)
+
+**커밋**: `9f83866` (divider: erase end 25%→40%)
+
+**확정 동작**:
+- Draw: 버튼 바텀이 뷰포트 center 도달 시 그리기 시작 → 섹션2 헤딩 top 75% 도달 시 완성
+- Hold: 버튼이 헤더에 완전히 가려질 때까지 풀 라인 유지
+- Erase: 버튼 바텀이 헤더 하단에 닿는 순간 꼬리 출발 → 섹션2 헤딩 top 40% 도달 시 소멸
+- SVG z-index: 헤더 z-index -1 (런타임 감지) → 헤더 아래에 위치
+
+**핵심 교훈 (재시도 금지)**:
+- erase `start: 'top bottom'` → scrollY<0 발사, 페이지 로드 시 44% 진행 → 라인 섹션 경계에서 출현
+- navbar 변수 스코프 오류 (createSVGLine 지역변수를 initAnimationOnce에서 참조) → ReferenceError → 라인 미생성
+
+---
+
 ## 📌 Version Current (섹션 2-4 애니메이션 작동 확인)
 
 **주요 파일**:
