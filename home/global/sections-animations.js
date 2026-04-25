@@ -334,12 +334,13 @@
 
     zigSvg.style.cssText =
       'position:absolute;pointer-events:none;overflow:visible;z-index:' + svgZ + ';';
-    zigPath.setAttribute('fill',            'none');
-    zigPath.setAttribute('stroke',          '#0075d6');
-    zigPath.setAttribute('stroke-width',    '1');
-    zigPath.setAttribute('stroke-linecap',  'round');
-    zigPath.setAttribute('stroke-linejoin', 'round');
-    zigPath.setAttribute('class',           'helix-line-path');
+    zigPath.setAttribute('fill',             'none');
+    zigPath.setAttribute('stroke',           '#0075d6');
+    zigPath.setAttribute('stroke-width',     '1.5');
+    zigPath.setAttribute('stroke-linecap',   'round');
+    zigPath.setAttribute('stroke-linejoin',  'round');
+    zigPath.setAttribute('shape-rendering',  'geometricPrecision');
+    zigPath.setAttribute('class',            'helix-line-path');
     zigSvg.appendChild(zigPath);
 
     if (getComputedStyle(document.body).position === 'static') {

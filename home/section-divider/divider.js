@@ -72,7 +72,7 @@
     pathEl.setAttribute('class', 'helix-line-path');
     pathEl.setAttribute('fill', 'none');
     pathEl.setAttribute('stroke', '#0075d6');
-    pathEl.setAttribute('stroke-width', '1');
+    pathEl.setAttribute('stroke-width', '1.5');
     pathEl.setAttribute('stroke-linecap', 'round');
     svgEl.appendChild(pathEl);
 
