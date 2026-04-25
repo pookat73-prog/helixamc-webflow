@@ -142,6 +142,7 @@
     function closeMenu() {
       isOpen = false;
       document.body.classList.remove('hx-menu-open');
+      closeBtn.classList.remove('is-visible');
       gsap.to(overlay, {
         x: '100%',
         duration: 0.28,
@@ -150,7 +151,6 @@
           overlay.classList.remove('is-open');
           overlay.setAttribute('aria-hidden', 'true');
           backdrop.classList.remove('is-open');
-          closeBtn.classList.remove('is-visible');
           gsap.set(staggerItems, { y: 20, opacity: 0 });
         }
       });
