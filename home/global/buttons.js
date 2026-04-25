@@ -36,7 +36,7 @@
   }
 
   function initButtonGlow() {
-    var targets = document.querySelectorAll('.bt-box-1,.bt-box-2,.bt-box-3,.bt-box-4');
+    var targets = document.querySelectorAll('.bt-box-1,.bt-box-3,.bt-box-4');
     if (!targets.length) return;
 
     var observer = new IntersectionObserver(function (entries) {
