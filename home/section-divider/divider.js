@@ -75,45 +75,34 @@
     log('SVG created');
   }
 
-  /* btn1의 실제 바텀 절대좌표 반환.
-     flex-stretch 감지 시 position:fixed 로 일시 전환해 자연 높이 측정 후 복원.
-     (화면 갱신 없이 동기 강제 reflow만 발생 — 시각적 플래시 없음) */
-  function findBtnBottom(btn) {
+  /* 섹션 1 바텀 절대좌표 반환.
+     btn1의 가장 가까운 <section> 조상 엘리먼트의 bottom을 사용.
+     Webflow 레이아웃에서 버튼이 flex-stretch로 늘어나도 영향 없음. */
+  function findSec1Bottom(btn) {
     var scrollY = window.scrollY || window.pageYOffset;
-    var bR      = btn.getBoundingClientRect();
-    var vH      = window.innerHeight;
 
-    /* 높이가 뷰포트의 25% 미만 → stretch 아님, 직접 사용 */
-    if (bR.height < vH * 0.25) {
-      log('findBtnBottom: direct h=' + bR.height.toFixed(0));
-      return bR.bottom + scrollY;
+    /* closest <section> 우선 */
+    var sec = btn.closest('section');
+
+    /* <section> 없으면 className에 'section' 포함하는 조상 탐색 */
+    if (!sec) {
+      var node = btn.parentElement;
+      while (node && node !== document.body) {
+        if (/section/i.test(node.className)) { sec = node; break; }
+        node = node.parentElement;
+      }
     }
-    log('findBtnBottom: stretched h=' + bR.height.toFixed(0) + ', measuring via fixed...');
 
-    /* position:fixed + height:auto 로 자연 높이 강제 측정 */
-    var ps   = btn.style;
-    var props = ['position', 'top', 'left', 'width', 'height', 'margin'];
-    var saved = props.map(function (p) {
-      return { v: ps.getPropertyValue(p), pri: ps.getPropertyPriority(p) };
-    });
+    if (sec) {
+      var r = sec.getBoundingClientRect();
+      log('sec1 bottom via <' + sec.tagName.toLowerCase() + '> .' +
+          (sec.className.split(' ')[0] || '') + ' h=' + r.height.toFixed(0));
+      return r.bottom + scrollY;
+    }
 
-    ps.setProperty('position', 'fixed',            'important');
-    ps.setProperty('top',      bR.top  + 'px',     'important');
-    ps.setProperty('left',     bR.left + 'px',      'important');
-    ps.setProperty('width',    bR.width + 'px',     'important');
-    ps.setProperty('height',   'auto',              'important');
-    ps.setProperty('margin',   '0',                 'important');
-
-    var natBR = btn.getBoundingClientRect(); /* forced reflow */
-
-    props.forEach(function (p, i) {
-      if (saved[i].v) { ps.setProperty(p, saved[i].v, saved[i].pri); }
-      else            { ps.removeProperty(p); }
-    });
-
-    var result = natBR.bottom + scrollY;
-    log('findBtnBottom: fixed measure ->', result.toFixed(0), '(h=' + natBR.height.toFixed(0) + ')');
-    return result;
+    /* 폴백: section을 못 찾으면 btn 바텀 직접 사용 */
+    log('sec1: section ancestor not found, using btn.bottom');
+    return btn.getBoundingClientRect().bottom + scrollY;
   }
 
   function initAnimationOnce() {
@@ -145,13 +134,13 @@
 
     /* ── 위치 먼저 측정 (트리거 생성 전) ───────────────────────── */
     var scrollY    = window.scrollY || window.pageYOffset;
-    var btnBot_abs = findBtnBottom(btn1);           /* flex-stretch 보정 포함 */
+    var btnBot_abs = findSec1Bottom(btn1);          /* 섹션 1 바텀 기준 */
     var s2R        = sec2Head.getBoundingClientRect();
     var s2Top_abs  = s2R.top + scrollY;
     var bR         = btn1.getBoundingClientRect();
     var lineX      = bR.left + bR.width / 2;
 
-    log('btnBot_abs=' + btnBot_abs.toFixed(0) +
+    log('sec1Bot_abs=' + btnBot_abs.toFixed(0) +
         ' s2Top_abs=' + s2Top_abs.toFixed(0));
 
     /* ── 마커 요소: 실제 버튼 바텀 위치에 1px div ────────────────
