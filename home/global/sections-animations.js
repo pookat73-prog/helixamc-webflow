@@ -81,7 +81,7 @@
     if (sec2Head) {
       ScrollTrigger.create({
         trigger: sec2Head,
-        start: 'top 15%',
+        start: 'top 85%',
         once: true,
         onEnter: function () {
           /* 헤딩 페이드인 */
@@ -278,36 +278,39 @@
       return;
     }
 
-    /* ── 시작 / 끝 좌표 계산 ─────────────────────────────────── */
+    /* ── 시작 / 끝 Y 좌표 계산 ──────────────────────────────── */
     var scrollY    = window.scrollY || window.pageYOffset;
 
     var btn1R      = btn1.getBoundingClientRect();
     var btn2R      = btn2.getBoundingClientRect();
-    var startX     = btn1R.left + btn1R.width / 2;           /* 헬릭스 라인과 동일 X */
-    var startY_abs = btn2R.bottom + scrollY;                  /* bt-box-2 바텀 */
+    var startX     = btn1R.left + btn1R.width / 2;  /* 헬릭스 라인과 동일 X */
+    var startY_abs = btn2R.bottom + scrollY;         /* bt-box-2 바텀 */
 
-    var halfVW  = window.innerWidth * 0.005;                  /* 0.5vw */
-    var endX    = charRect.left;                              /* 첫 글자 X */
-    var endY_abs = charRect.top + scrollY - halfVW;           /* 첫 글자 탑 - 0.5vw */
+    /* 끝점 Y: 첫 글자 탑 - 0.5vw (없으면 sec3Head 탑 사용) */
+    var halfVW   = window.innerWidth * 0.005;
+    var endY_abs = charRect
+      ? charRect.top + scrollY - halfVW
+      : sec3Head.getBoundingClientRect().top + scrollY - halfVW;
 
-    var H  = endY_abs - startY_abs;
-    var Dx = endX - startX;
+    var H = endY_abs - startY_abs;
+    if (H < 40) { log('zigLine: H too small → skip'); return; }
 
-    log('zigLine startX=' + startX.toFixed(0) + ' startY=' + startY_abs.toFixed(0) +
-        ' endX=' + endX.toFixed(0) + ' endY=' + endY_abs.toFixed(0) +
-        ' H=' + H.toFixed(0) + ' Dx=' + Dx.toFixed(0));
-
-    if (H <= 20) { log('zigLine: H too small → skip'); return; }
-
-    /* ── Z형 경로 기하학 계산 ────────────────────────────────── */
-    var ang  = 20 * Math.PI / 180;
+    /* ── Z형 기하학 (20° 오른쪽 하강, 구간1:구간3 = 1.5:1) ── */
+    /*   끝점 X는 geometry에서 산출 (firstCharX 미사용)         */
+    var ang   = 20 * Math.PI / 180;
     var sin20 = Math.sin(ang);   /* ≈ 0.342 */
     var cos20 = Math.cos(ang);   /* ≈ 0.940 */
     var tan20 = Math.tan(ang);   /* ≈ 0.364 */
 
-    /* 대각선 구간의 수직 성분 (Dx가 만드는 20° 기울기의 높이) */
-    var diag_y   = Math.abs(Dx) / tan20;
-    var validZ   = (Math.abs(Dx) > 1 && diag_y < H - 20);
+    var k      = H * 0.30;           /* seg3 = 30%H */
+    var seg1   = 1.5 * k;            /* 구간1 = 45%H */
+    var seg3   = k;                  /* 구간3 = 30%H */
+    var diag_y = H - seg1 - seg3;    /* 구간2 수직 성분 = 25%H */
+    var Dx     = diag_y * tan20;     /* 수평 변위 (항상 오른쪽) */
+    var endX   = startX + Dx;
+
+    log('zigLine H=' + H.toFixed(0) + ' Dx=' + Dx.toFixed(0) +
+        ' seg1=' + seg1.toFixed(0) + ' seg3=' + seg3.toFixed(0));
 
     /* ── SVG 컨테이너 설정 ───────────────────────────────────── */
     var zigSvg  = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -334,10 +337,10 @@
     }
     document.body.appendChild(zigSvg);
 
-    /* SVG는 경로 전체를 포함하도록 크기 설정 */
-    var pad      = 32;
-    var svgLeft  = Math.min(startX, endX) - pad;
-    var svgWidth = Math.abs(Dx) + pad * 2;
+    /* SVG: startX 기준 오른쪽으로 Dx만큼 확장 */
+    var pad      = 20;
+    var svgLeft  = startX - pad;
+    var svgWidth = Dx + pad * 2;
     var lineH    = H;
 
     zigSvg.style.left   = svgLeft + 'px';
@@ -347,55 +350,40 @@
     zigSvg.setAttribute('width',  svgWidth);
     zigSvg.setAttribute('height', Math.ceil(lineH));
 
-    /* SVG 내부 좌표 (SVG 뷰포트 기준) */
-    var relSX = startX - svgLeft;   /* 시작점 X (상대) */
-    var relEX = endX   - svgLeft;   /* 끝점 X (상대) */
+    /* SVG 내부 좌표 */
+    var relSX = pad;          /* 시작 X (SVG 기준) */
+    var relEX = Dx + pad;     /* 끝 X (SVG 기준) */
 
-    /* ── Z형 경로 빌드 ───────────────────────────────────────── */
-    var pathD;
-    if (validZ) {
-      var k    = (H - diag_y) / 2.5;
-      var seg1 = 1.5 * k;            /* 구간1 길이 */
-      var seg3 = k;                  /* 구간3 길이 */
+    /* ── Z형 경로 빌드 (항상 실행) ─────────────────────────── */
+    var diagLen = Math.sqrt(Dx * Dx + diag_y * diag_y);
+    var r = Math.min(seg1 * 0.35, seg3 * 0.35, diagLen * 0.30);
+    r = Math.max(r, 6);
 
-      /* 곡률 반경: 작은 구간의 35%, 최소 6px, 대각선 30% 이하 */
-      var diagLen = Math.sqrt(Dx * Dx + diag_y * diag_y);
-      var r = Math.min(seg1 * 0.35, seg3 * 0.35, diagLen * 0.30);
-      r = Math.max(r, 6);
+    var bend1Y = seg1;
+    var bend2Y = seg1 + diag_y;
 
-      var dir  = Dx >= 0 ? 1 : -1;   /* 수평 방향 */
-      var sx20 = dir * sin20;
-
-      /* SVG 내부 꼭지점 Y */
-      var bend1Y = seg1;
-      var bend2Y = seg1 + diag_y;
-
-      /*
-         M  relSX, 0                          ← 시작
-         L  relSX, (bend1Y - r)               ← 구간1 직선
-         Q  relSX, bend1Y,                    ← 꼭지점1 곡선 제어점
-            (relSX + r*sx20), (bend1Y + r*cos20)
-         L  (relEX - r*sx20), (bend2Y - r*cos20)  ← 구간2 직선
-         Q  relEX, bend2Y,                    ← 꼭지점2 곡선 제어점
-            relEX, (bend2Y + r)
-         L  relEX, lineH                      ← 구간3 직선
-      */
-      pathD = [
-        'M',  f(relSX),              '0',
-        'L',  f(relSX),              f(bend1Y - r),
-        'Q',  f(relSX),              f(bend1Y),
-              f(relSX + r * sx20),   f(bend1Y + r * cos20),
-        'L',  f(relEX - r * sx20),   f(bend2Y - r * cos20),
-        'Q',  f(relEX),              f(bend2Y),
-              f(relEX),              f(bend2Y + r),
-        'L',  f(relEX),              f(lineH)
-      ].join(' ');
-    } else {
-      /* 폴백: 직선 (Dx≈0 또는 대각선이 너무 길 때) */
-      pathD = 'M ' + f(relSX) + ' 0 L ' + f(relEX) + ' ' + f(lineH);
-    }
-
+    /*
+       M  relSX, 0                        ← 시작 (bt-box-2 바텀)
+       L  relSX, (bend1Y - r)             ← 구간1 직선
+       Q  relSX, bend1Y,                  ← 꼭지점1 곡선
+          (relSX + r*sin20), (bend1Y + r*cos20)
+       L  (relEX - r*sin20), (bend2Y - r*cos20)  ← 구간2 대각선
+       Q  relEX, bend2Y,                  ← 꼭지점2 곡선
+          relEX, (bend2Y + r)
+       L  relEX, lineH                    ← 구간3 직선
+    */
     function f(n) { return n.toFixed(2); }
+
+    var pathD = [
+      'M',  f(relSX),                 '0',
+      'L',  f(relSX),                 f(bend1Y - r),
+      'Q',  f(relSX),                 f(bend1Y),
+            f(relSX + r * sin20),     f(bend1Y + r * cos20),
+      'L',  f(relEX - r * sin20),     f(bend2Y - r * cos20),
+      'Q',  f(relEX),                 f(bend2Y),
+            f(relEX),                 f(bend2Y + r),
+      'L',  f(relEX),                 f(lineH)
+    ].join(' ');
 
     zigPath.setAttribute('d', pathD);
 
@@ -453,8 +441,7 @@
       }
     });
 
-    log('zigLine Z-shape, H=' + H.toFixed(0) +
-        ' Dx=' + Dx.toFixed(0) + (validZ ? ' seg1=' + seg1.toFixed(0) : ' fallback'));
+    log('zigLine done, endX=' + endX.toFixed(0));
     zigInitialized = true;
   }
 
