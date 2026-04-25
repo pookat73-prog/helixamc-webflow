@@ -19,8 +19,8 @@
 }
 
 @keyframes glowShimmerBlue {
-  0%, 100% { box-shadow: 0 0 0.4vw 0.12vw rgba(0, 117, 214, 0.90), 0 0 3.5vw 0.4vw rgba(0, 117, 214, 0.22); }
-  50%       { box-shadow: 0 0 0.25vw 0.06vw rgba(0, 117, 214, 0.55), 0 0 2.0vw 0.2vw rgba(0, 117, 214, 0.12); }
+  0%, 100% { box-shadow: 0 0 0.8vw 0.25vw rgba(0, 117, 214, 0.85), 0 0 2.5vw 0.7vw rgba(0, 117, 214, 0.20); }
+  50%       { box-shadow: 0 0 0.35vw 0.08vw rgba(0, 117, 214, 0.55), 0 0 1.2vw 0.3vw rgba(0, 117, 214, 0.12); }
 }
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
