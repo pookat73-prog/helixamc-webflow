@@ -89,7 +89,7 @@
 
           /* 버튼2: 최고밝기 즉시 준비 → 0.15s 후 페이드인 → 1.5s 홀드 → is-looping */
           if (btn2) {
-            btn2.style.setProperty('box-shadow', '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 7.0vw 0.15vw rgba(0,117,214,0.22)', 'important');
+            btn2.style.setProperty('box-shadow', '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 7.0vw 0.15vw rgba(0,117,214,0.30)', 'important');
             gsap.to(btn2, {
               opacity: 1,
               duration: 0.4,
