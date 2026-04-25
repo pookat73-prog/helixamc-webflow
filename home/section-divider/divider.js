@@ -153,7 +153,7 @@
       trigger: btn1,
       start: eraseStart,
       endTrigger: sec2Head,
-      end: 'top 25%',
+      end: 'top 40%',
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
