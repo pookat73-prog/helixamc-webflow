@@ -156,7 +156,7 @@
     /* box1에 최고밝기 box-shadow를 초기 상태로 설정
        → opacity 0→1 페이드인하면서 글로우도 자연스럽게 같이 등장 */
     if (box1) {
-      box1.style.setProperty('box-shadow', '0 0 2.6vw 0.9vw rgba(0,117,214,1)', 'important');
+      box1.style.setProperty('box-shadow', '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)', 'important');
       box1.setAttribute('data-s1-init', '');
     }
 
