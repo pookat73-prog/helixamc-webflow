@@ -17,7 +17,7 @@
   visibility: visible;
 }
 
-/* --- Panel (우측, 헤더 아래) --- */
+/* --- Panel --- */
 .hx-menu-overlay {
   position: fixed;
   right: 0;
@@ -35,6 +35,46 @@
 .hx-menu-overlay.is-open {
   visibility: visible;
 }
+
+/* --- 닫기 X (뷰포트 우측 상단 3vw) --- */
+.hx-menu-close {
+  position: fixed;
+  top: 3vw;
+  right: 3vw;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.hx-menu-close.is-visible {
+  opacity: 0.55;
+  pointer-events: auto;
+}
+
+.hx-menu-close:hover { opacity: 1; }
+
+.hx-menu-close::before,
+.hx-menu-close::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 1px;
+  background: #ffffff;
+  border-radius: 1px;
+  transform-origin: center;
+}
+
+.hx-menu-close::before { transform: translate(-50%, -50%) rotate(45deg); }
+.hx-menu-close::after  { transform: translate(-50%, -50%) rotate(-45deg); }
 
 
 /* 헤더 경계 분리용 상단 그라데이션 */

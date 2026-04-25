@@ -63,10 +63,6 @@
   }
 
   function positionOverlay(overlay) {
-    var top = getHeaderBottom();
-    overlay.style.top    = top + 'px';
-    overlay.style.height = (window.innerHeight - top) + 'px';
-
     /* 진료과목 링크 왼쪽 끝에 패널 좌측 정렬 */
     var links = document.querySelectorAll('a');
     var anchor = null;
@@ -89,6 +85,12 @@
     var backdrop = document.createElement('div');
     backdrop.className = 'hx-menu-backdrop';
     document.body.appendChild(backdrop);
+
+    /* X 버튼 주입 */
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'hx-menu-close';
+    closeBtn.setAttribute('aria-label', '메뉴 닫기');
+    document.body.appendChild(closeBtn);
 
     /* 오버레이 DOM 주입 */
     var tmp = document.createElement('div');
@@ -118,6 +120,7 @@
       overlay.classList.add('is-open');
       overlay.setAttribute('aria-hidden', 'false');
       backdrop.classList.add('is-open');
+      closeBtn.classList.add('is-visible');
       document.body.classList.add('hx-menu-open');
 
       /* 이전에 클릭한 링크 활성 복원 */
@@ -147,6 +150,7 @@
           overlay.classList.remove('is-open');
           overlay.setAttribute('aria-hidden', 'true');
           backdrop.classList.remove('is-open');
+          closeBtn.classList.remove('is-visible');
           gsap.set(staggerItems, { y: 20, opacity: 0 });
         }
       });
@@ -163,8 +167,9 @@
       console.warn('[hx-menu] .image-18 not found');
     }
 
-    /* 백드롭 클릭 → 닫기 */
+    /* 백드롭 / X 버튼 클릭 → 닫기 */
     backdrop.addEventListener('click', closeMenu);
+    closeBtn.addEventListener('click', closeMenu);
 
     /* ESC 키로 닫기 */
     document.addEventListener('keydown', function (e) {
