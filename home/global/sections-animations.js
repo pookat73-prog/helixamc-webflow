@@ -81,7 +81,7 @@
     if (sec2Head) {
       ScrollTrigger.create({
         trigger: sec2Head,
-        start: 'top 85%',
+        start: 'top 65%',
         once: true,
         onEnter: function () {
           /* 헤딩 페이드인 */
@@ -302,7 +302,10 @@
     var cos20 = Math.cos(ang);
     var tan20 = Math.tan(ang);
 
-    var endX  = charRect ? charRect.left : sec3Head.getBoundingClientRect().left;
+    /* endX: 첫 글자('우')의 가로 중앙 → 구간3가 '우' 중앙에 위치 */
+    var endX  = charRect
+      ? charRect.left + charRect.width / 2
+      : sec3Head.getBoundingClientRect().left;
     var Dx    = endX - startX;
     var absDx = Math.abs(Dx);
     var dir   = Dx >= 0 ? 1 : -1;
