@@ -16,7 +16,7 @@
 
     var maxGlow = isPurple(el)
       ? '0 0 1.6vw 0.6vw rgba(85,40,170,1), 0 0 3vw 1vw rgba(85,40,170,0.5)'
-      : '0 0 1.6vw 0.6vw rgba(0,117,214,1), 0 0 3vw 1vw rgba(0,117,214,0.5)';
+      : '0 0 0.8vw 0.25vw rgba(0,117,214,1)';
     var minGlow = isPurple(el)
       ? '0 0 0.15vw 0.05vw rgba(85,40,170,0.05)'
       : '0 0 0.15vw 0.05vw rgba(0,117,214,0.05)';
