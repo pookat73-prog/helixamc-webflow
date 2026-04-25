@@ -35,22 +35,18 @@
        1. 섹션 2, 3 헤딩 fade-in
           (섹션 2·3 둘 다 .section2-heading 클래스 사용)
        ============================================================ */
+    /* 헤딩은 GSAP/ScrollTrigger 없이 IntersectionObserver로 fade-in.
+       ScrollTrigger 사용 시 refresh 타이밍에 따라 텍스트 줄바꿈 발생하던 문제 해결. */
     var headings = document.querySelectorAll('.section2-heading');
     headings.forEach(function (h) {
-      gsap.fromTo(h,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          duration: 1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: h,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-            once: true
-          }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          h.style.transition = 'opacity 0.9s ease';
+          h.style.opacity = '1';
+          io.disconnect();
         }
-      );
+      }, { threshold: 0.15 });
+      io.observe(h);
     });
     log('headings found:', headings.length);
 
