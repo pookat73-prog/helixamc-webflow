@@ -8,14 +8,12 @@
     { text: '서울동물영상종양센터', href: '#' }
   ];
 
-  /* 진료과목・특화진료, FAQ・뉴스룸 → 각각 분리 */
+  /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크 */
   var NAV_LINKS = [
     { text: 'about HELIX',  href: '#' },
-    { text: '진료과목',      href: '#' },
-    { text: '특화진료',      href: '#' },
+    { group: [ { text: '진료과목', href: '#' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
-    { text: 'FAQ',          href: '#' },
-    { text: '뉴스룸',        href: '#' },
+    { group: [ { text: 'FAQ', href: '#' }, { text: '뉴스룸', href: '#' } ] },
     { text: '응급증상안내',  href: '#' }
   ];
 
@@ -28,6 +26,13 @@
     }).join('');
 
     var navHTML = NAV_LINKS.map(function (n) {
+      if (n.group) {
+        var inner = n.group.map(function (g, i) {
+          return (i > 0 ? '<span class="hx-menu-nav-sep">・</span>' : '') +
+            '<a href="' + g.href + '" class="hx-menu-nav-link">' + g.text + '</a>';
+        }).join('');
+        return '<div class="hx-menu-nav-group">' + inner + '</div>';
+      }
       return '<a href="' + n.href + '" class="hx-menu-nav-link">' + n.text + '</a>';
     }).join('');
 
@@ -89,8 +94,9 @@
     var isOpen   = false;
     var activeEl = null; /* 클릭된 링크 기억 */
 
+    /* 그룹 내부 링크는 그룹 div 단위로 stagger */
     var staggerItems = overlay.querySelectorAll(
-      '.hx-menu-branch, .hx-menu-divider, .hx-menu-nav-link, .hx-menu-footer-link'
+      '.hx-menu-branch, .hx-menu-divider, .hx-menu-nav > *, .hx-menu-footer-link'
     );
     gsap.set(staggerItems, { y: 20, opacity: 0 });
 
