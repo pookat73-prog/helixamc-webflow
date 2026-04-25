@@ -2,47 +2,6 @@
    HELIX AMC — Hamburger Menu Overlay
    =================================================== */
 
-/* --- Toggle Button --- */
-.hx-menu-btn {
-  position: fixed;
-  top: 22px;
-  right: 24px;
-  z-index: 10001;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-.hx-menu-btn__bar {
-  display: block;
-  width: 28px;
-  height: 2px;
-  background: #ffffff;
-  border-radius: 1px;
-  transform-origin: center;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.25s ease;
-}
-
-.hx-menu-btn.is-open .hx-menu-btn__bar:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
-.hx-menu-btn.is-open .hx-menu-btn__bar:nth-child(2) {
-  opacity: 0;
-  transform: scaleX(0);
-}
-.hx-menu-btn.is-open .hx-menu-btn__bar:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
-}
-
 /* --- Overlay --- */
 .hx-menu-overlay {
   position: fixed;
