@@ -84,7 +84,7 @@
   }
 
   function initAnimationOnce() {
-    if (initialized || !window.gsap || !window.gsap.timeline) {
+    if (initialized || !window.gsap || !window.gsap.timeline || !window.ScrollTrigger) {
       if (!window.gsap) log('waiting for GSAP...');
       return;
     }
