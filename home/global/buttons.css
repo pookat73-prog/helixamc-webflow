@@ -10,17 +10,28 @@
   will-change: box-shadow;
 }
 
-/* 2. bt-box-1/2: 페이드인 완료 후 CSS animation으로 shimmer
+/* 2. bt-box-1/2/3: 페이드인 완료 후 CSS animation으로 shimmer
    transition: none으로 box-shadow 페이드인 개입 차단 → 최고밝기로 즉시 시작 */
 .bt-box-1.is-looping,
-.bt-box-2.is-looping {
-  animation: glowShimmerBlue 5.0s infinite ease-in-out !important;
+.bt-box-2.is-looping,
+.bt-box-3.is-looping {
+  animation: glowShimmerBlue 5.0s infinite cubic-bezier(0.37, 0, 0.63, 1) !important;
+  transition: none !important;
+}
+
+.bt-box-4.is-looping {
+  animation: glowShimmerPurple 5.0s infinite cubic-bezier(0.37, 0, 0.63, 1) !important;
   transition: none !important;
 }
 
 @keyframes glowShimmerBlue {
   0%, 100% { box-shadow: 0 0 0.6vw 0.18vw rgba(0, 117, 214, 0.90), 0 0 8.0vw 0.15vw rgba(0, 117, 214, 0.30); }
   50%       { box-shadow: 0 0 0.45vw 0.12vw rgba(0, 117, 214, 0.88), 0 0 4.5vw 0.2vw rgba(0, 117, 214, 0.20); }
+}
+
+@keyframes glowShimmerPurple {
+  0%, 100% { box-shadow: 0 0 0.6vw 0.18vw rgba(85, 40, 170, 0.90), 0 0 8.0vw 0.15vw rgba(85, 40, 170, 0.30); }
+  50%       { box-shadow: 0 0 0.45vw 0.12vw rgba(85, 40, 170, 0.88), 0 0 4.5vw 0.2vw rgba(85, 40, 170, 0.20); }
 }
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */

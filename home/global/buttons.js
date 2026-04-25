@@ -17,22 +17,15 @@
     var maxGlow = isPurple(el)
       ? '0 0 0.6vw 0.18vw rgba(85,40,170,0.90), 0 0 8.0vw 0.15vw rgba(85,40,170,0.30)'
       : '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 8.0vw 0.15vw rgba(0,117,214,0.30)';
-    var minGlow = isPurple(el)
-      ? '0 0 0.45vw 0.12vw rgba(85,40,170,0.88), 0 0 4.5vw 0.2vw rgba(85,40,170,0.20)'
-      : '0 0 0.45vw 0.12vw rgba(0,117,214,0.88), 0 0 4.5vw 0.2vw rgba(0,117,214,0.20)';
 
-    /* Phase 1: 최고밝기 즉시 설정 (페이드인은 버튼의 opacity가 담당) */
-    gsap.set(el, { boxShadow: maxGlow });
+    /* Phase 1: 최고밝기 즉시 설정 */
+    el.style.setProperty('box-shadow', maxGlow, 'important');
 
-    /* Phase 2: 1.5초 홀드 후 pulse loop 시작 */
-    gsap.to(el, {
-      boxShadow: minGlow,
-      duration: 2.5,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      delay: 1.5
-    });
+    /* Phase 2: 1.5초 홀드 후 CSS is-looping으로 핸드오프 */
+    setTimeout(function () {
+      el.style.removeProperty('box-shadow');
+      el.classList.add('is-looping');
+    }, 1500);
   }
 
   function initButtonGlow() {
