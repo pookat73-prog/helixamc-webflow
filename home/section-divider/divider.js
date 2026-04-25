@@ -5,14 +5,8 @@
    SVG path: simple vertical line (1px)
    Animation: Phase 1 draw, Phase 2+3 erase (scroll-linked via ScrollTrigger)
 
-   Bug fix: erase trigger was 'top bottom' → fired at scrollY < 0 (before page
-   loads), so erase was already 45%+ complete when drawing started. Line only
-   became visible ~200px into scroll, appearing to start at section boundary.
-   Fix: erase start changed to 'top top' (marker exits viewport top = scrollY
-   equals marker page-y), so draw completes before erase begins.
-
    Debug: add ?debug-line=1 to URL or set window.DEBUG_SECTION_LINE = true
-   Version: 13 (erase trigger timing fix)
+   Version: 14 (header z-index + erase trigger based on header height)
    ================================================================ */
 
 (function () {
@@ -32,6 +26,14 @@
   var btn1     = null;
   var sec2Head = null;
   var initialized = false;
+
+  /* 고정 헤더/네비바 엘리먼트 탐색 */
+  function findNavbar() {
+    return document.querySelector('.w-nav') ||
+           document.querySelector('nav')    ||
+           document.querySelector('header') ||
+           null;
+  }
 
   function findSec2Head(btn) {
     var el = document.querySelector('.section2-heading');
@@ -59,7 +61,12 @@
     svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svgEl.setAttribute('class', 'helix-line-svg');
-    svgEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:9999;';
+    /* z-index: 헤더보다 아래에 위치하도록 헤더 z-index 감지 후 -1 설정 */
+    var navbar  = findNavbar();
+    var navZ    = navbar ? parseInt(getComputedStyle(navbar).zIndex, 10) : NaN;
+    var svgZ    = (!isNaN(navZ) && navZ > 0) ? navZ - 1 : 999;
+    log('navbar z-index=' + navZ + ' → SVG z-index=' + svgZ);
+    svgEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:' + svgZ + ';';
 
     pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     pathEl.setAttribute('class', 'helix-line-path');
@@ -136,10 +143,14 @@
       }
     });
 
-    /* Erase: 버튼 바텀이 뷰포트 TOP을 통과하는 순간 (버튼 완전히 사라진 시점) 꼬리 출발 */
+    /* Erase: 버튼 바텀이 헤더 하단에 가려지는 순간 꼬리 출발
+       헤더 높이만큼 아래에서 트리거 → 버튼이 헤더에 완전히 가려진 시점 */
+    var navbarH   = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
+    log('navbarH=' + navbarH + ' eraseStart="' + eraseStart + '"');
     ScrollTrigger.create({
       trigger: btn1,
-      start: 'bottom top',
+      start: eraseStart,
       endTrigger: sec2Head,
       end: 'top 25%',
       scrub: true,
