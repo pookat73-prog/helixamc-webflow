@@ -14,13 +14,13 @@
    transition: none으로 box-shadow 페이드인 개입 차단 → 최고밝기로 즉시 시작 */
 .bt-box-1.is-looping,
 .bt-box-2.is-looping {
-  animation: glowShimmerBlue 2.4s infinite ease-in-out !important;
+  animation: glowShimmerBlue 3.2s infinite ease-in-out !important;
   transition: none !important;
 }
 
 @keyframes glowShimmerBlue {
-  0%, 100% { box-shadow: 0 0 0.45vw 0.12vw rgba(0, 117, 214, 0.90), 0 0 3.0vw 0.25vw rgba(0, 117, 214, 0.18); }
-  50%       { box-shadow: 0 0 0.25vw 0.06vw rgba(0, 117, 214, 0.55), 0 0 1.8vw 0.10vw rgba(0, 117, 214, 0.12); }
+  0%, 100% { box-shadow: 0 0 0.45vw 0.12vw rgba(0, 117, 214, 0.88), 0 0 4.5vw 0.2vw rgba(0, 117, 214, 0.20); }
+  50%       { box-shadow: 0 0 0.3vw 0.08vw rgba(0, 117, 214, 0.50), 0 0 2.8vw 0.1vw rgba(0, 117, 214, 0.14); }
 }
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */

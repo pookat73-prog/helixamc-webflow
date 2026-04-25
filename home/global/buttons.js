@@ -16,10 +16,10 @@
 
     var maxGlow = isPurple(el)
       ? '0 0 1.6vw 0.6vw rgba(85,40,170,1), 0 0 3vw 1vw rgba(85,40,170,0.5)'
-      : '0 0 0.45vw 0.12vw rgba(0,117,214,0.90), 0 0 3.0vw 0.25vw rgba(0,117,214,0.18)';
+      : '0 0 0.45vw 0.12vw rgba(0,117,214,0.88), 0 0 4.5vw 0.2vw rgba(0,117,214,0.20)';
     var minGlow = isPurple(el)
       ? '0 0 0.15vw 0.05vw rgba(85,40,170,0.05)'
-      : '0 0 0.25vw 0.06vw rgba(0,117,214,0.55), 0 0 1.8vw 0.10vw rgba(0,117,214,0.12)';
+      : '0 0 0.3vw 0.08vw rgba(0,117,214,0.50), 0 0 2.8vw 0.1vw rgba(0,117,214,0.14)';
 
     /* Phase 1: 최고밝기 즉시 설정 (페이드인은 버튼의 opacity가 담당) */
     gsap.set(el, { boxShadow: maxGlow });
@@ -27,7 +27,7 @@
     /* Phase 2: 1.5초 홀드 후 pulse loop 시작 */
     gsap.to(el, {
       boxShadow: minGlow,
-      duration: 1.4,
+      duration: 1.8,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
