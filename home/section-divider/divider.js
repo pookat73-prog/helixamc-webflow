@@ -145,6 +145,7 @@
 
     /* Erase: 버튼 바텀이 헤더 하단에 가려지는 순간 꼬리 출발
        헤더 높이만큼 아래에서 트리거 → 버튼이 헤더에 완전히 가려진 시점 */
+    var navbar    = findNavbar();
     var navbarH   = (navbar && navbar.getBoundingClientRect().height) || 0;
     var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
     log('navbarH=' + navbarH + ' eraseStart="' + eraseStart + '"');
