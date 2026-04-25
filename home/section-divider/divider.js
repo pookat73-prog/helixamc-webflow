@@ -75,6 +75,65 @@
     log('SVG created');
   }
 
+  /* btn1의 실제 바텀 절대좌표 반환.
+     flex-stretch로 섹션 높이까지 늘어난 경우:
+       A) Range API → 실제 콘텐츠 바텀
+       B) .home_slogan 바텀 + 갭 + 자연 높이 추정
+       C) 섹션 높이의 65% 폴백 */
+  function findBtnBottom(btn) {
+    var bR      = btn.getBoundingClientRect();
+    var scrollY = window.scrollY || window.pageYOffset;
+    var s1El    = document.querySelector('.home_background') ||
+                  btn.closest('section') ||
+                  btn.parentElement;
+    var s1R     = s1El ? s1El.getBoundingClientRect() : null;
+
+    /* stretch 아니면 직접 사용 */
+    if (!s1R || (s1R.bottom - bR.bottom) > 20) {
+      log('findBtnBottom: direct', bR.bottom + scrollY);
+      return bR.bottom + scrollY;
+    }
+    log('findBtnBottom: stretched, trying Range API...');
+
+    /* A. Range API */
+    try {
+      var range = document.createRange();
+      range.selectNodeContents(btn);
+      var rBR    = range.getBoundingClientRect();
+      var relPos = s1R.height > 0 ? (rBR.bottom - s1R.top) / s1R.height : 0;
+      if (rBR.height > 0 && rBR.height < 200 && relPos > 0.15 && relPos < 0.96) {
+        log('findBtnBottom: Range API ->', (rBR.bottom + scrollY).toFixed(0));
+        return rBR.bottom + scrollY;
+      }
+      log('findBtnBottom: Range out of range relPos=' + relPos.toFixed(2));
+    } catch (e) { log('findBtnBottom: Range err', e); }
+
+    /* B. .home_slogan 기반 추정 */
+    var slogan = document.querySelector('.home_slogan');
+    if (slogan) {
+      var sR   = slogan.getBoundingClientRect();
+      var cs   = getComputedStyle(btn);
+      var natH = (parseFloat(cs.lineHeight) || 20) +
+                 (parseFloat(cs.paddingTop) || 0) +
+                 (parseFloat(cs.paddingBottom) || 0);
+      var gap  = parseFloat(getComputedStyle(slogan).marginBottom) || 0;
+      var btBox = document.querySelector('.bt-box-1');
+      if (btBox) gap += parseFloat(getComputedStyle(btBox).marginTop) || 0;
+      var est    = sR.bottom + gap + natH;
+      var estRel = s1R.height > 0 ? (est - s1R.top) / s1R.height : 0;
+      if (estRel > 0.15 && estRel < 0.96) {
+        log('findBtnBottom: slogan estimate ->', (est + scrollY).toFixed(0));
+        return est + scrollY;
+      }
+      log('findBtnBottom: slogan out of range estRel=' + estRel.toFixed(2));
+    }
+
+    /* C. 섹션 65% 폴백 */
+    var fb = s1R.top + s1R.height * 0.65;
+    log('findBtnBottom: 65% fallback ->', (fb + scrollY).toFixed(0));
+    return fb + scrollY;
+  }
+
   function initAnimationOnce() {
     if (initialized || !window.gsap || !window.gsap.timeline) {
       if (!window.gsap) log('waiting for GSAP...');
@@ -101,12 +160,6 @@
       pathEl.setAttribute('stroke-dasharray', visibleLen + ' ' + pathLength);
       pathEl.setAttribute('stroke-dashoffset', dashOffset);
     }
-
-    /* 트리거를 먼저 생성 — start 값으로 버튼 바텀 절대좌표를 역산함.
-       drawTrigger.start = scrollY at which btn1.bottom == innerHeight/2
-       → btn1 document-absolute bottom = drawTrigger.start + innerHeight/2
-       getBoundingClientRect().bottom 대신 이 방식을 쓰면
-       flex-stretch로 늘어난 요소도 정확히 측정됨. */
 
     /* Draw: button bottom reaches viewport center → sec2 heading reaches 75% */
     var drawTrigger = ScrollTrigger.create({
@@ -136,8 +189,8 @@
       }
     });
 
-    /* 트리거 start에서 정확한 버튼 바텀 위치 계산 */
-    var btnBot_abs = drawTrigger.start + window.innerHeight / 2;
+    /* 버튼 바텀 절대좌표 — flex-stretch 보정 포함 */
+    var btnBot_abs = findBtnBottom(btn1);
 
     var s2R        = sec2Head.getBoundingClientRect();
     var s2Top_abs  = s2R.top + (window.scrollY || window.pageYOffset);
