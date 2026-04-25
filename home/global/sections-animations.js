@@ -83,7 +83,7 @@
         start: 'top 58%',
         once: true,
         onEnter: function () {
-          gsap.to(sec2Head, { opacity: 1, duration: 0.9, ease: 'power2.out' });
+          gsap.to(sec2Head, { opacity: 1, duration: 0.7, ease: 'power2.out' });
           log('sec2 heading fade-in');
         }
       });
@@ -104,7 +104,8 @@
     }
 
     /* ──────────────────────────────────────────────────────────
-       3. 버튼 2 fade-in (글로우 없음, opacity만)
+       3. 버튼 2 fade-in + 후광 (bt-box-1 패턴 동일)
+          최고밝기 즉시 설정 → opacity 페이드인 → 1.5s 홀드 → is-looping
     ────────────────────────────────────────────────────────── */
     var btn2 = document.querySelector('.bt-box-2');
     if (btn2) {
@@ -113,8 +114,19 @@
         start: 'top 75%',
         once: true,
         onEnter: function () {
-          gsap.to(btn2, { opacity: 1, duration: 0.8, ease: 'expo.out' });
-          log('btn2 fade-in');
+          btn2.style.setProperty('box-shadow', '0 0 2.6vw 0.9vw rgba(0,117,214,1)', 'important');
+          gsap.to(btn2, {
+            opacity: 1,
+            duration: 0.4,
+            ease: 'expo.out',
+            onComplete: function () {
+              setTimeout(function () {
+                btn2.style.removeProperty('box-shadow');
+                btn2.classList.add('is-looping');
+              }, 1500);
+            }
+          });
+          log('btn2 fade-in + glow');
         }
       });
     }
@@ -232,41 +244,97 @@
   }
 
   /* ============================================================
-     initZigLine: 지그 라인 (bt-box-2 바텀 → 섹션 3 헤딩 탑)
-     divider.js 동일 패턴, stroke-dashoffset 스크롤 연동
+     initZigLine: 지그 라인 (헬릭스 X + bt-box-2 바텀 → 섹션 3 헤딩 첫 글자 탑)
+     Z형 2꺾임 곡선 SVG path + stroke-dashoffset 스크롤 연동
+
+     경로 형태:
+       구간1(수직 하강) → 꼭지점1(곡선) → 구간2(오른쪽 20° 대각선)
+                        → 꼭지점2(곡선) → 구간3(수직 하강)
+       구간1 : 구간3 = 1.5 : 1
   ============================================================ */
   function initZigLine() {
     if (zigInitialized) return;
     if (!window.gsap || !window.ScrollTrigger) return;
 
-    var btn2 = document.querySelector('.bt-box-2');
-    var headings  = document.querySelectorAll('.section2-heading');
-    var sec3Head  = headings[1] || null;
+    /* 필요 요소 탐색 */
+    var btn1     = document.querySelector('.discover-helix_button');
+    var btn2     = document.querySelector('.bt-box-2');
+    var headings = document.querySelectorAll('.section2-heading');
+    var sec3Head = headings[1] || null;
 
-    if (!btn2 || !sec3Head) {
-      log('zigLine: btn2=' + !!btn2 + ' sec3Head=' + !!sec3Head + ' → skip');
+    if (!btn1 || !btn2 || !sec3Head) {
+      log('zigLine: btn1=' + !!btn1 + ' btn2=' + !!btn2 + ' sec3Head=' + !!sec3Head + ' → skip');
       return;
     }
 
-    /* SVG 생성 */
+    /* 섹션3 헤딩 첫 글자 위치 측정 */
+    function getFirstCharRect(el) {
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      var node;
+      while ((node = walker.nextNode())) {
+        if (node.textContent.trim()) break;
+      }
+      if (!node) return null;
+      var range = document.createRange();
+      range.setStart(node, 0);
+      range.setEnd(node, 1);
+      return range.getBoundingClientRect();
+    }
+
+    var charRect = getFirstCharRect(sec3Head);
+    if (!charRect) {
+      log('zigLine: sec3Head first char not found → skip');
+      return;
+    }
+
+    /* ── 시작 / 끝 좌표 계산 ─────────────────────────────────── */
+    var scrollY    = window.scrollY || window.pageYOffset;
+
+    var btn1R      = btn1.getBoundingClientRect();
+    var btn2R      = btn2.getBoundingClientRect();
+    var startX     = btn1R.left + btn1R.width / 2;           /* 헬릭스 라인과 동일 X */
+    var startY_abs = btn2R.bottom + scrollY;                  /* bt-box-2 바텀 */
+
+    var halfVW  = window.innerWidth * 0.005;                  /* 0.5vw */
+    var endX    = charRect.left;                              /* 첫 글자 X */
+    var endY_abs = charRect.top + scrollY - halfVW;           /* 첫 글자 탑 - 0.5vw */
+
+    var H  = endY_abs - startY_abs;
+    var Dx = endX - startX;
+
+    log('zigLine startX=' + startX.toFixed(0) + ' startY=' + startY_abs.toFixed(0) +
+        ' endX=' + endX.toFixed(0) + ' endY=' + endY_abs.toFixed(0) +
+        ' H=' + H.toFixed(0) + ' Dx=' + Dx.toFixed(0));
+
+    if (H <= 20) { log('zigLine: H too small → skip'); return; }
+
+    /* ── Z형 경로 기하학 계산 ────────────────────────────────── */
+    var ang  = 20 * Math.PI / 180;
+    var sin20 = Math.sin(ang);   /* ≈ 0.342 */
+    var cos20 = Math.cos(ang);   /* ≈ 0.940 */
+    var tan20 = Math.tan(ang);   /* ≈ 0.364 */
+
+    /* 대각선 구간의 수직 성분 (Dx가 만드는 20° 기울기의 높이) */
+    var diag_y   = Math.abs(Dx) / tan20;
+    var validZ   = (diag_y > 0 && diag_y < H * 0.85);
+
+    /* ── SVG 컨테이너 설정 ───────────────────────────────────── */
     var zigSvg  = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     var zigPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
     var navbar = document.querySelector('.w-nav') ||
                  document.querySelector('nav')    ||
-                 document.querySelector('header') ||
-                 null;
+                 document.querySelector('header') || null;
     var navZ = navbar ? parseInt(getComputedStyle(navbar).zIndex, 10) : NaN;
     var svgZ = (!isNaN(navZ) && navZ > 0) ? navZ - 1 : 999;
 
     zigSvg.style.cssText =
-      'position:absolute;top:0;left:0;width:100%;height:100%;' +
-      'pointer-events:none;overflow:visible;z-index:' + svgZ + ';';
-
+      'position:absolute;pointer-events:none;overflow:visible;z-index:' + svgZ + ';';
     zigPath.setAttribute('fill',            'none');
     zigPath.setAttribute('stroke',          '#0075d6');
     zigPath.setAttribute('stroke-width',    '1');
     zigPath.setAttribute('stroke-linecap',  'round');
+    zigPath.setAttribute('stroke-linejoin', 'round');
     zigPath.setAttribute('class',           'helix-line-path');
     zigSvg.appendChild(zigPath);
 
@@ -275,39 +343,76 @@
     }
     document.body.appendChild(zigSvg);
 
-    /* 위치 측정 */
-    var scrollY      = window.scrollY || window.pageYOffset;
-    var bR           = btn2.getBoundingClientRect();
-    var btn2Bot_abs  = bR.bottom + scrollY;
-    var lineX        = bR.left + bR.width / 2;
+    /* SVG는 경로 전체를 포함하도록 크기 설정 */
+    var pad      = 32;
+    var svgLeft  = Math.min(startX, endX) - pad;
+    var svgWidth = Math.abs(Dx) + pad * 2;
+    var lineH    = H;
 
-    var s3R          = sec3Head.getBoundingClientRect();
-    var s3Top_abs    = s3R.top + scrollY;
-
-    log('zigLine btn2Bot_abs=' + btn2Bot_abs.toFixed(0) +
-        ' s3Top_abs=' + s3Top_abs.toFixed(0));
-
-    /* SVG 크기 / 경로 설정 */
-    var lineH     = Math.max(1, s3Top_abs - btn2Bot_abs);
-    var AMPLITUDE = 14;
-    var svgW      = AMPLITUDE * 2 + 4;
-    var relCx     = AMPLITUDE + 2;
-
-    zigSvg.style.left   = (lineX - svgW / 2) + 'px';
-    zigSvg.style.top    = btn2Bot_abs + 'px';
-    zigSvg.style.width  = svgW + 'px';
+    zigSvg.style.left   = svgLeft + 'px';
+    zigSvg.style.top    = startY_abs + 'px';
+    zigSvg.style.width  = svgWidth + 'px';
     zigSvg.style.height = lineH + 'px';
-    zigSvg.setAttribute('width',  svgW);
+    zigSvg.setAttribute('width',  svgWidth);
     zigSvg.setAttribute('height', Math.ceil(lineH));
 
-    zigPath.setAttribute('d',
-      'M ' + relCx.toFixed(2) + ' 0 L ' + relCx.toFixed(2) + ' ' + lineH.toFixed(2));
+    /* SVG 내부 좌표 (SVG 뷰포트 기준) */
+    var relSX = startX - svgLeft;   /* 시작점 X (상대) */
+    var relEX = endX   - svgLeft;   /* 끝점 X (상대) */
+
+    /* ── Z형 경로 빌드 ───────────────────────────────────────── */
+    var pathD;
+    if (validZ) {
+      var k    = (H - diag_y) / 2.5;
+      var seg1 = 1.5 * k;            /* 구간1 길이 */
+      var seg3 = k;                  /* 구간3 길이 */
+
+      /* 곡률 반경: 작은 구간의 35%, 최소 6px, 대각선 30% 이하 */
+      var diagLen = Math.sqrt(Dx * Dx + diag_y * diag_y);
+      var r = Math.min(seg1 * 0.35, seg3 * 0.35, diagLen * 0.30);
+      r = Math.max(r, 6);
+
+      var dir  = Dx >= 0 ? 1 : -1;   /* 수평 방향 */
+      var sx20 = dir * sin20;
+
+      /* SVG 내부 꼭지점 Y */
+      var bend1Y = seg1;
+      var bend2Y = seg1 + diag_y;
+
+      /*
+         M  relSX, 0                          ← 시작
+         L  relSX, (bend1Y - r)               ← 구간1 직선
+         Q  relSX, bend1Y,                    ← 꼭지점1 곡선 제어점
+            (relSX + r*sx20), (bend1Y + r*cos20)
+         L  (relEX - r*sx20), (bend2Y - r*cos20)  ← 구간2 직선
+         Q  relEX, bend2Y,                    ← 꼭지점2 곡선 제어점
+            relEX, (bend2Y + r)
+         L  relEX, lineH                      ← 구간3 직선
+      */
+      pathD = [
+        'M',  f(relSX),              '0',
+        'L',  f(relSX),              f(bend1Y - r),
+        'Q',  f(relSX),              f(bend1Y),
+              f(relSX + r * sx20),   f(bend1Y + r * cos20),
+        'L',  f(relEX - r * sx20),   f(bend2Y - r * cos20),
+        'Q',  f(relEX),              f(bend2Y),
+              f(relEX),              f(bend2Y + r),
+        'L',  f(relEX),              f(lineH)
+      ].join(' ');
+    } else {
+      /* 폴백: 직선 (Dx≈0 또는 대각선이 너무 길 때) */
+      pathD = 'M ' + f(relSX) + ' 0 L ' + f(relEX) + ' ' + f(lineH);
+    }
+
+    function f(n) { return n.toFixed(2); }
+
+    zigPath.setAttribute('d', pathD);
 
     var pathLength = zigPath.getTotalLength() || lineH;
     zigPath.setAttribute('stroke-dasharray',  '0 ' + pathLength);
     zigPath.setAttribute('stroke-dashoffset', '0');
 
-    /* head / tail progress */
+    /* ── head / tail progress ───────────────────────────────── */
     var headProgress = 0;
     var tailProgress = 0;
 
@@ -320,15 +425,15 @@
       zigPath.setAttribute('stroke-dashoffset', dashOffset);
     }
 
-    /* 마커: btn2 바텀 절대 좌표 (Draw 기준점) */
+    /* 마커: bt-box-2 바텀 절대 좌표 (Draw 기준점) */
     var marker = document.createElement('div');
     marker.setAttribute('data-zig-marker', '1');
     marker.style.cssText =
-      'position:absolute;top:' + btn2Bot_abs + 'px;left:0;' +
+      'position:absolute;top:' + startY_abs + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
 
-    /* Draw: marker top이 뷰포트 center → sec3 헤딩 top 75% */
+    /* Draw: marker top → 뷰포트 center → sec3 헤딩 top 75% */
     ScrollTrigger.create({
       trigger: marker,
       start: 'top center',
@@ -342,8 +447,8 @@
       }
     });
 
-    /* Erase: btn2 bottom이 뷰포트 top 도달 → sec3 헤딩 top center
-       scrub:2 = 2초 지연으로 꼬리가 머리를 느리게 따라잡는 효과 */
+    /* Erase: btn2 bottom → 뷰포트 top → sec3 헤딩 top center
+       scrub:2 = 꼬리가 머리를 느리게 따라잡는 효과 */
     ScrollTrigger.create({
       trigger: btn2,
       start: 'bottom top',
@@ -357,7 +462,8 @@
       }
     });
 
-    log('zigLine initialized, lineH=' + lineH.toFixed(0));
+    log('zigLine Z-shape, H=' + H.toFixed(0) +
+        ' Dx=' + Dx.toFixed(0) + (validZ ? ' seg1=' + seg1.toFixed(0) : ' fallback'));
     zigInitialized = true;
   }
 
