@@ -27,7 +27,7 @@
     /* Phase 2: 1.5초 홀드 후 pulse loop 시작 */
     gsap.to(el, {
       boxShadow: minGlow,
-      duration: 1.8,
+      duration: 2.5,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,

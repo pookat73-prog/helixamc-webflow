@@ -14,7 +14,7 @@
    transition: none으로 box-shadow 페이드인 개입 차단 → 최고밝기로 즉시 시작 */
 .bt-box-1.is-looping,
 .bt-box-2.is-looping {
-  animation: glowShimmerBlue 3.2s infinite ease-in-out !important;
+  animation: glowShimmerBlue 5.0s infinite ease-in-out !important;
   transition: none !important;
 }
 
