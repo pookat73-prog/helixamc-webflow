@@ -436,13 +436,15 @@
       }
     });
 
-    /* Erase: btn2 bottom → 뷰포트 top → sec3 헤딩 top center
-       scrub: true = 스크롤에 1:1 비례 (리니어) → 선이 더 오래 노출됨 */
+    /* Erase: btn2 bottom이 헤더 하단에 가려지는 순간 꼬리 출발 (헬릭스 라인과 동일) */
+    var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
+    log('zigLine navbarH=' + navbarH + ' eraseStart="' + eraseStart + '"');
     ScrollTrigger.create({
       trigger: btn2,
-      start: 'bottom top',
+      start: eraseStart,
       endTrigger: sec3Head,
-      end: 'top center',
+      end: 'top 40%',
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
