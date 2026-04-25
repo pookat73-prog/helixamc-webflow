@@ -374,8 +374,9 @@
       pathD = ['M', f(relSX), '0', 'L', f(relEX), f(lineH)].join(' ');
     } else {
       var diagLen = Math.sqrt(absDx * absDx + diag_y * diag_y);
-      var r = Math.min(seg1 * 0.35, seg3 * 0.35, diagLen * 0.30);
-      r = Math.max(r, 6);
+      /* 곡률 r: 곡선 시작점을 꼭지점에서 더 멀리 → 더 유려한 곡선 */
+      var r = Math.min(seg1 * 0.6, seg3 * 0.6, diagLen * 0.5);
+      r = Math.max(r, 12);
 
       var bend1Y = seg1;
       var bend2Y = seg1 + diag_y;
@@ -435,13 +436,13 @@
     });
 
     /* Erase: btn2 bottom → 뷰포트 top → sec3 헤딩 top center
-       scrub:2 = 꼬리가 머리를 느리게 따라잡는 효과 */
+       scrub: true = 스크롤에 1:1 비례 (리니어) → 선이 더 오래 노출됨 */
     ScrollTrigger.create({
       trigger: btn2,
       start: 'bottom top',
       endTrigger: sec3Head,
       end: 'top center',
-      scrub: 2,
+      scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
         tailProgress = self.progress;
