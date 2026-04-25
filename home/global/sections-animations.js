@@ -307,7 +307,9 @@
     var absDx = Math.abs(Dx);
     var dir   = Dx >= 0 ? 1 : -1;
 
-    var diag_y = absDx / tan20;       /* 20° 각도 유지, 거리에 따라 구간2 늘어남 */
+    /* 수평선 기준 20° 우하향 → diag_y = |Dx| * tan20 ≈ 0.364 * |Dx|
+       (수직선 기준이면 diag_y ≈ 2.75|Dx|로 H 초과 → 직선 폴백) */
+    var diag_y = absDx * tan20;
     var k      = (H - diag_y) / 2.5;  /* k>0이어야 Z형 가능 */
 
     var seg1 = 1.5 * k;
@@ -375,12 +377,13 @@
       var bend1Y = seg1;
       var bend2Y = seg1 + diag_y;
 
+      /* 수평선 기준 20° → 대각선 단위 벡터 = (cos20, sin20) */
       pathD = [
         'M',  f(relSX),                           '0',
         'L',  f(relSX),                           f(bend1Y - r),
         'Q',  f(relSX),                           f(bend1Y),
-              f(relSX + dir * r * sin20),          f(bend1Y + r * cos20),
-        'L',  f(relEX - dir * r * sin20),          f(bend2Y - r * cos20),
+              f(relSX + dir * r * cos20),          f(bend1Y + r * sin20),
+        'L',  f(relEX - dir * r * cos20),          f(bend2Y - r * sin20),
         'Q',  f(relEX),                           f(bend2Y),
               f(relEX),                           f(bend2Y + r),
         'L',  f(relEX),                           f(lineH)
