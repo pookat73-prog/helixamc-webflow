@@ -16,10 +16,10 @@
 
     var maxGlow = isPurple(el)
       ? '0 0 1.6vw 0.6vw rgba(85,40,170,1), 0 0 3vw 1vw rgba(85,40,170,0.5)'
-      : '0 0 0.45vw 0.12vw rgba(0,117,214,0.88), 0 0 4.5vw 0.2vw rgba(0,117,214,0.20)';
+      : '0 0 0.6vw 0.18vw rgba(0,117,214,1), 0 0 5.5vw 0.25vw rgba(0,117,214,0.35)';
     var minGlow = isPurple(el)
       ? '0 0 0.15vw 0.05vw rgba(85,40,170,0.05)'
-      : '0 0 0.3vw 0.08vw rgba(0,117,214,0.50), 0 0 2.8vw 0.1vw rgba(0,117,214,0.14)';
+      : '0 0 0.45vw 0.12vw rgba(0,117,214,0.88), 0 0 4.5vw 0.2vw rgba(0,117,214,0.20)';
 
     /* Phase 1: 최고밝기 즉시 설정 (페이드인은 버튼의 opacity가 담당) */
     gsap.set(el, { boxShadow: maxGlow });
