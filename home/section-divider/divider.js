@@ -136,12 +136,10 @@
       }
     });
 
-    /* Erase: marker top이 뷰포트 TOP (버튼이 화면 위로 사라진 후) → sec2 헤딩 top 25%
-       이전 'top bottom'은 scrollY < 0에서 발사 → 페이지 로드 시 이미 45% 진행됨.
-       'top top'으로 변경하면 draw 완료 후에 erase 시작 → 버튼 바텀에서 라인 정상 출발. */
+    /* Erase: 버튼 바텀이 뷰포트 TOP을 통과하는 순간 (버튼 완전히 사라진 시점) 꼬리 출발 */
     ScrollTrigger.create({
-      trigger: marker,
-      start: 'top top',
+      trigger: btn1,
+      start: 'bottom top',
       endTrigger: sec2Head,
       end: 'top 25%',
       scrub: true,
