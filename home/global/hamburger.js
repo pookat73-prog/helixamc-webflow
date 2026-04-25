@@ -90,15 +90,15 @@
       });
     }
 
-    /* ── 기존 Webflow 햄버거 버튼 가로채기 ──
-       clone으로 Webflow 이벤트 리스너를 제거하고 우리 핸들러만 연결 */
+    /* ── 햄버거 이미지 버튼에 클릭 이벤트 연결 ── */
     var wfBtn = document.querySelector('.image-18');
     if (wfBtn) {
-      var clone = wfBtn.cloneNode(true);
-      wfBtn.parentNode.replaceChild(clone, wfBtn);
-      clone.addEventListener('click', function () {
+      wfBtn.style.cursor = 'pointer';
+      wfBtn.addEventListener('click', function () {
         if (isOpen) closeMenu(); else openMenu();
       });
+    } else {
+      console.warn('[hx-menu] .image-18 not found');
     }
 
     /* ESC 키로 닫기 */
