@@ -73,18 +73,37 @@
     log('headings found:', headings.length);
 
     /* ──────────────────────────────────────────────────────────
-       1. 섹션 2 헤딩 fade-in
-          헬릭스 라인 erase end: sec2Head top 40%
-          → 그보다 약간 앞인 top 58%에서 fade-in 시작 (ease-out)
+       1. 섹션 2 헤딩 + 버튼 2 공동 트리거 (엇박 0.15s)
+          헤딩: sec2Head top 15% 도달 시 즉시 0.7s ease-out 페이드인
+          버튼: 헤딩 시작 0.15s 후 0.4s ease-out 페이드인 + 후광
     ────────────────────────────────────────────────────────── */
+    var btn2 = document.querySelector('.bt-box-2');
     if (sec2Head) {
       ScrollTrigger.create({
         trigger: sec2Head,
-        start: 'top 58%',
+        start: 'top 15%',
         once: true,
         onEnter: function () {
+          /* 헤딩 페이드인 */
           gsap.to(sec2Head, { opacity: 1, duration: 0.7, ease: 'power2.out' });
-          log('sec2 heading fade-in');
+
+          /* 버튼2: 최고밝기 즉시 준비 → 0.15s 후 페이드인 → 1.5s 홀드 → is-looping */
+          if (btn2) {
+            btn2.style.setProperty('box-shadow', '0 0 2.6vw 0.9vw rgba(0,117,214,1)', 'important');
+            gsap.to(btn2, {
+              opacity: 1,
+              duration: 0.4,
+              ease: 'power2.out',
+              delay: 0.15,
+              onComplete: function () {
+                setTimeout(function () {
+                  btn2.style.removeProperty('box-shadow');
+                  btn2.classList.add('is-looping');
+                }, 1500);
+              }
+            });
+          }
+          log('sec2 heading + btn2 fade-in (엇박 0.15s)');
         }
       });
     }
@@ -101,34 +120,6 @@
         }
       }, { threshold: 0.15 });
       io3.observe(sec3Head);
-    }
-
-    /* ──────────────────────────────────────────────────────────
-       3. 버튼 2 fade-in + 후광 (bt-box-1 패턴 동일)
-          최고밝기 즉시 설정 → opacity 페이드인 → 1.5s 홀드 → is-looping
-    ────────────────────────────────────────────────────────── */
-    var btn2 = document.querySelector('.bt-box-2');
-    if (btn2) {
-      ScrollTrigger.create({
-        trigger: btn2,
-        start: 'top 75%',
-        once: true,
-        onEnter: function () {
-          btn2.style.setProperty('box-shadow', '0 0 2.6vw 0.9vw rgba(0,117,214,1)', 'important');
-          gsap.to(btn2, {
-            opacity: 1,
-            duration: 0.4,
-            ease: 'expo.out',
-            onComplete: function () {
-              setTimeout(function () {
-                btn2.style.removeProperty('box-shadow');
-                btn2.classList.add('is-looping');
-              }, 1500);
-            }
-          });
-          log('btn2 fade-in + glow');
-        }
-      });
     }
 
     /* ──────────────────────────────────────────────────────────
@@ -316,7 +307,7 @@
 
     /* 대각선 구간의 수직 성분 (Dx가 만드는 20° 기울기의 높이) */
     var diag_y   = Math.abs(Dx) / tan20;
-    var validZ   = (diag_y > 0 && diag_y < H * 0.85);
+    var validZ   = (Math.abs(Dx) > 1 && diag_y < H - 20);
 
     /* ── SVG 컨테이너 설정 ───────────────────────────────────── */
     var zigSvg  = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
