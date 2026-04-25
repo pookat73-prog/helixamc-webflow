@@ -147,7 +147,7 @@
         ease: 'power2.out'
       })
       .to(cards, {
-        boxShadow: '0 2px 10px rgba(107, 125, 153, 0.85), 0 4px 18px rgba(107, 125, 153, 0.20)',
+        boxShadow: '0 4px 20px rgba(107, 125, 153, 0.65), 0 8px 36px rgba(107, 125, 153, 0.15)',
         stagger: 0.25,
         duration: 0.6
       }, '<0.3');
