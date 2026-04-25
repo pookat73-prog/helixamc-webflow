@@ -76,62 +76,44 @@
   }
 
   /* btn1의 실제 바텀 절대좌표 반환.
-     flex-stretch로 섹션 높이까지 늘어난 경우:
-       A) Range API → 실제 콘텐츠 바텀
-       B) .home_slogan 바텀 + 갭 + 자연 높이 추정
-       C) 섹션 높이의 65% 폴백 */
+     flex-stretch 감지 시 position:fixed 로 일시 전환해 자연 높이 측정 후 복원.
+     (화면 갱신 없이 동기 강제 reflow만 발생 — 시각적 플래시 없음) */
   function findBtnBottom(btn) {
-    var bR      = btn.getBoundingClientRect();
     var scrollY = window.scrollY || window.pageYOffset;
-    var s1El    = document.querySelector('.home_background') ||
-                  btn.closest('section') ||
-                  btn.parentElement;
-    var s1R     = s1El ? s1El.getBoundingClientRect() : null;
+    var bR      = btn.getBoundingClientRect();
+    var vH      = window.innerHeight;
 
-    /* stretch 아니면 직접 사용 */
-    if (!s1R || (s1R.bottom - bR.bottom) > 20) {
-      log('findBtnBottom: direct', bR.bottom + scrollY);
+    /* 높이가 뷰포트의 25% 미만 → stretch 아님, 직접 사용 */
+    if (bR.height < vH * 0.25) {
+      log('findBtnBottom: direct h=' + bR.height.toFixed(0));
       return bR.bottom + scrollY;
     }
-    log('findBtnBottom: stretched, trying Range API...');
+    log('findBtnBottom: stretched h=' + bR.height.toFixed(0) + ', measuring via fixed...');
 
-    /* A. Range API */
-    try {
-      var range = document.createRange();
-      range.selectNodeContents(btn);
-      var rBR    = range.getBoundingClientRect();
-      var relPos = s1R.height > 0 ? (rBR.bottom - s1R.top) / s1R.height : 0;
-      if (rBR.height > 0 && rBR.height < 200 && relPos > 0.15 && relPos < 0.96) {
-        log('findBtnBottom: Range API ->', (rBR.bottom + scrollY).toFixed(0));
-        return rBR.bottom + scrollY;
-      }
-      log('findBtnBottom: Range out of range relPos=' + relPos.toFixed(2));
-    } catch (e) { log('findBtnBottom: Range err', e); }
+    /* position:fixed + height:auto 로 자연 높이 강제 측정 */
+    var ps   = btn.style;
+    var props = ['position', 'top', 'left', 'width', 'height', 'margin'];
+    var saved = props.map(function (p) {
+      return { v: ps.getPropertyValue(p), pri: ps.getPropertyPriority(p) };
+    });
 
-    /* B. .home_slogan 기반 추정 */
-    var slogan = document.querySelector('.home_slogan');
-    if (slogan) {
-      var sR   = slogan.getBoundingClientRect();
-      var cs   = getComputedStyle(btn);
-      var natH = (parseFloat(cs.lineHeight) || 20) +
-                 (parseFloat(cs.paddingTop) || 0) +
-                 (parseFloat(cs.paddingBottom) || 0);
-      var gap  = parseFloat(getComputedStyle(slogan).marginBottom) || 0;
-      var btBox = document.querySelector('.bt-box-1');
-      if (btBox) gap += parseFloat(getComputedStyle(btBox).marginTop) || 0;
-      var est    = sR.bottom + gap + natH;
-      var estRel = s1R.height > 0 ? (est - s1R.top) / s1R.height : 0;
-      if (estRel > 0.15 && estRel < 0.96) {
-        log('findBtnBottom: slogan estimate ->', (est + scrollY).toFixed(0));
-        return est + scrollY;
-      }
-      log('findBtnBottom: slogan out of range estRel=' + estRel.toFixed(2));
-    }
+    ps.setProperty('position', 'fixed',            'important');
+    ps.setProperty('top',      bR.top  + 'px',     'important');
+    ps.setProperty('left',     bR.left + 'px',      'important');
+    ps.setProperty('width',    bR.width + 'px',     'important');
+    ps.setProperty('height',   'auto',              'important');
+    ps.setProperty('margin',   '0',                 'important');
 
-    /* C. 섹션 65% 폴백 */
-    var fb = s1R.top + s1R.height * 0.65;
-    log('findBtnBottom: 65% fallback ->', (fb + scrollY).toFixed(0));
-    return fb + scrollY;
+    var natBR = btn.getBoundingClientRect(); /* forced reflow */
+
+    props.forEach(function (p, i) {
+      if (saved[i].v) { ps.setProperty(p, saved[i].v, saved[i].pri); }
+      else            { ps.removeProperty(p); }
+    });
+
+    var result = natBR.bottom + scrollY;
+    log('findBtnBottom: fixed measure ->', result.toFixed(0), '(h=' + natBR.height.toFixed(0) + ')');
+    return result;
   }
 
   function initAnimationOnce() {
@@ -154,17 +136,37 @@
 
     function applyDash() {
       if (!pathLength) return;
-      var tail = Math.min(tailProgress, headProgress);
+      var tail       = Math.min(tailProgress, headProgress);
       var visibleLen = (headProgress - tail) * pathLength;
-      var dashOffset  = -tail * pathLength;
+      var dashOffset = -tail * pathLength;
       pathEl.setAttribute('stroke-dasharray', visibleLen + ' ' + pathLength);
       pathEl.setAttribute('stroke-dashoffset', dashOffset);
     }
 
-    /* Draw: button bottom reaches viewport center → sec2 heading reaches 75% */
-    var drawTrigger = ScrollTrigger.create({
-      trigger: btn1,
-      start: 'bottom center',
+    /* ── 위치 먼저 측정 (트리거 생성 전) ───────────────────────── */
+    var scrollY    = window.scrollY || window.pageYOffset;
+    var btnBot_abs = findBtnBottom(btn1);           /* flex-stretch 보정 포함 */
+    var s2R        = sec2Head.getBoundingClientRect();
+    var s2Top_abs  = s2R.top + scrollY;
+    var bR         = btn1.getBoundingClientRect();
+    var lineX      = bR.left + bR.width / 2;
+
+    log('btnBot_abs=' + btnBot_abs.toFixed(0) +
+        ' s2Top_abs=' + s2Top_abs.toFixed(0));
+
+    /* ── 마커 요소: 실제 버튼 바텀 위치에 1px div ────────────────
+       ScrollTrigger 트리거로 사용해 stretched btn1 측정을 우회함 */
+    var marker = document.createElement('div');
+    marker.setAttribute('data-helix-divider-marker', '1');
+    marker.style.cssText =
+      'position:absolute;top:' + btnBot_abs + 'px;left:0;' +
+      'width:1px;height:1px;pointer-events:none;';
+    document.body.appendChild(marker);
+
+    /* Draw: 마커(= 실제 버튼 바텀)가 뷰포트 중앙 → sec2 헤딩 75% */
+    ScrollTrigger.create({
+      trigger: marker,
+      start: 'top center',
       endTrigger: sec2Head,
       end: 'top 75%',
       scrub: true,
@@ -175,9 +177,9 @@
       }
     });
 
-    /* Erase: button fully leaves viewport → sec2 heading reaches 50% */
+    /* Erase: 마커가 뷰포트 아래로 사라짐 → sec2 헤딩 50% */
     ScrollTrigger.create({
-      trigger: btn1,
+      trigger: marker,
       start: 'top bottom',
       endTrigger: sec2Head,
       end: 'top 50%',
@@ -189,29 +191,18 @@
       }
     });
 
-    /* 버튼 바텀 절대좌표 — flex-stretch 보정 포함 */
-    var btnBot_abs = findBtnBottom(btn1);
+    /* ── SVG 위치 및 경로 설정 ───────────────────────────────── */
+    var lineH = Math.max(1, s2Top_abs - btnBot_abs);
+    var svgW  = AMPLITUDE * 2 + 4;
 
-    var s2R        = sec2Head.getBoundingClientRect();
-    var s2Top_abs  = s2R.top + (window.scrollY || window.pageYOffset);
-    var lineH      = Math.max(1, s2Top_abs - btnBot_abs);
-    var bR         = btn1.getBoundingClientRect();
-    var lineX      = bR.left + bR.width / 2;
-
-    log('btnBot_abs=' + btnBot_abs.toFixed(0) + ' s2Top_abs=' + s2Top_abs.toFixed(0) + ' lineH=' + lineH.toFixed(0));
-
-    /* Position SVG to cover button-to-sec2 span */
-    var svgW = AMPLITUDE * 2 + 4;
-    svgEl.style.left = (lineX - svgW / 2) + 'px';
-    svgEl.style.top  = btnBot_abs + 'px';
+    svgEl.style.left   = (lineX - svgW / 2) + 'px';
+    svgEl.style.top    = btnBot_abs + 'px';
     svgEl.style.width  = svgW + 'px';
     svgEl.style.height = lineH + 'px';
 
-    /* Set SVG coordinate space */
-    svgEl.setAttribute('width', AMPLITUDE * 2 + 4);
+    svgEl.setAttribute('width',  AMPLITUDE * 2 + 4);
     svgEl.setAttribute('height', Math.ceil(lineH));
 
-    /* Build path and set initial hidden state */
     var relCx = AMPLITUDE + 2;
     pathEl.setAttribute('d', buildPath(relCx, lineH));
     pathLength = pathEl.getTotalLength() || lineH;
@@ -219,7 +210,7 @@
     pathEl.setAttribute('stroke-dasharray', '0 ' + pathLength);
     pathEl.setAttribute('stroke-dashoffset', '0');
 
-    log('animation initialized');
+    log('initialized lineH=' + lineH.toFixed(0));
     initialized = true;
   }
 
