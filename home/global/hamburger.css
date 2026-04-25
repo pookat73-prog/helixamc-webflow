@@ -23,6 +23,19 @@
   visibility: visible;
 }
 
+/* 헤더 경계 분리용 상단 그라데이션 */
+.hx-menu-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(to bottom, rgba(154, 170, 187, 0.18), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* --- Scroll lock --- */
 body.hx-menu-open {
   overflow: hidden;
