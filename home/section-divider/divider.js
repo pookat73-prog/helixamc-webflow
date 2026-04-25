@@ -71,7 +71,7 @@
     pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     pathEl.setAttribute('class', 'helix-line-path');
     pathEl.setAttribute('fill', 'none');
-    pathEl.setAttribute('stroke', '#0075d6');
+    pathEl.setAttribute('stroke', '#329ad6');
     pathEl.setAttribute('stroke-width', '1.3');
     pathEl.setAttribute('stroke-linecap', 'round');
     svgEl.appendChild(pathEl);
