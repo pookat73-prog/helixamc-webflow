@@ -8,12 +8,15 @@
     { text: '서울동물영상종양센터', href: '#' }
   ];
 
+  /* 진료과목・특화진료, FAQ・뉴스룸 → 각각 분리 */
   var NAV_LINKS = [
-    { text: 'about HELIX',        href: '#' },
-    { text: '진료과목・특화진료',  href: '#' },
-    { text: '의료 인프라',         href: '#' },
-    { text: 'FAQ・뉴스룸',         href: '#' },
-    { text: '응급증상안내',        href: '#' }
+    { text: 'about HELIX',  href: '#' },
+    { text: '진료과목',      href: '#' },
+    { text: '특화진료',      href: '#' },
+    { text: '의료 인프라',   href: '#' },
+    { text: 'FAQ',          href: '#' },
+    { text: '뉴스룸',        href: '#' },
+    { text: '응급증상안내',  href: '#' }
   ];
 
   var VET_CHART_HREF = '#';
@@ -82,13 +85,21 @@
     tmp.innerHTML = buildOverlayHTML();
     document.body.appendChild(tmp.firstChild);
 
-    var overlay = document.querySelector('.hx-menu-overlay');
-    var isOpen  = false;
+    var overlay  = document.querySelector('.hx-menu-overlay');
+    var isOpen   = false;
+    var activeEl = null; /* 클릭된 링크 기억 */
 
     var staggerItems = overlay.querySelectorAll(
       '.hx-menu-branch, .hx-menu-divider, .hx-menu-nav-link, .hx-menu-footer-link'
     );
     gsap.set(staggerItems, { y: 20, opacity: 0 });
+
+    function setActive(el) {
+      overlay.querySelectorAll('.hx-menu-branch, .hx-menu-nav-link, .hx-menu-footer-link')
+        .forEach(function (a) { a.classList.remove('is-active'); });
+      if (el) el.classList.add('is-active');
+      activeEl = el;
+    }
 
     function openMenu() {
       isOpen = true;
@@ -96,6 +107,9 @@
       overlay.classList.add('is-open');
       overlay.setAttribute('aria-hidden', 'false');
       document.body.classList.add('hx-menu-open');
+
+      /* 이전에 클릭한 링크 활성 복원 */
+      if (activeEl) activeEl.classList.add('is-active');
 
       var tl = gsap.timeline();
       tl.fromTo(overlay,
@@ -141,9 +155,12 @@
       if (e.key === 'Escape' && isOpen) closeMenu();
     });
 
-    /* 메뉴 링크 클릭 시 닫기 */
+    /* 링크 클릭 → 활성 처리 후 닫기 */
     overlay.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', closeMenu);
+      a.addEventListener('click', function () {
+        setActive(a);
+        closeMenu();
+      });
     });
 
     /* 리사이즈 시 패널 위치 재조정 */
