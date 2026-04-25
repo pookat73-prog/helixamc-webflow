@@ -24,11 +24,9 @@
     'home/global/buttons.css',
     'home/global/buttons.js',
     'home/global/sections-animations.css',
-    'home/global/sections-animations.css',
     'home/global/sections-animations.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js'
-  ];
   ];
 
   function cdn(ref, path) {
