@@ -6,23 +6,18 @@
 .about_background {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .about-bg-video {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 40%;
   height: 100%;
   object-fit: cover;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
-}
-
-/* 섹션 1 내부 콘텐츠가 영상 위에 오도록 */
-.About_Background > * {
-  position: relative;
-  z-index: 1;
 }
 
 /* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
