@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'home/**'
+      - 'about/**'
   workflow_dispatch:
 
 jobs:
@@ -38,6 +39,7 @@ jobs:
           BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main"
           FILES=(
             "home/bootstrap.js"
+            "about/bootstrap.js"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
