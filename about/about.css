@@ -12,10 +12,9 @@
 .about-bg-video {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 40%;
+  right: 18.2vw;
   height: 100%;
-  object-fit: cover;
+  width: auto;
   z-index: -1;
   pointer-events: none;
 }
