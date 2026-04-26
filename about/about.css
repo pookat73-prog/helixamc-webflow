@@ -2,4 +2,15 @@
    HELIX AMC - ABOUT PAGE CSS
    ================================================================ */
 
-/* 여기에 About 페이지 스타일 추가 */
+/* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
+.Concept_QQ,
+.Concept_Q,
+.Blur,
+.About_Three_Contents {
+  opacity: 0;
+}
+
+.Divider_Blue_Grad_No {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
