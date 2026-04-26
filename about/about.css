@@ -105,3 +105,34 @@
   opacity: 0;
   will-change: opacity;
 }
+
+/* ── Helix History Timeline (Section 7) ── */
+.about_timeline_dot {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid #0075d6;
+  border-radius: 50%;
+  position: relative;
+  margin-right: 1.4em;
+  align-self: center;
+  opacity: 0;
+  transform: scale(0.15);
+  transform-origin: center;
+}
+
+.about_timeline_dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+  height: 5px;
+  background: #0075d6;
+  border-radius: 50%;
+}
+
+#helix-history .about_history_time-line_contents {
+  opacity: 0;
+}

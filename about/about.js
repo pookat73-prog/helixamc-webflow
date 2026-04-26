@@ -430,11 +430,138 @@
     drawLine4();
   }
 
+  /* ── Helix History Timeline ── */
+  function initHistoryTimeline() {
+    if (!window.gsap || !window.ScrollTrigger) {
+      log('initHistoryTimeline: GSAP/ScrollTrigger 없음');
+      return;
+    }
+
+    var section   = document.querySelector('#helix-history');
+    if (!section) { log('initHistoryTimeline: #helix-history 없음'); return; }
+
+    var container = section.querySelector('.just-box_qqqq');
+    if (!container) { log('initHistoryTimeline: .just-box_qqqq 없음'); return; }
+
+    var items = Array.prototype.slice.call(
+      container.querySelectorAll('.about_history_time-line')
+    );
+    if (!items.length) { log('initHistoryTimeline: 항목 없음'); return; }
+
+    /* 각 항목 앞에 도트 삽입 */
+    var dots = items.map(function (item) {
+      var dot = document.createElement('div');
+      dot.className = 'about_timeline_dot';
+      item.insertBefore(dot, item.firstChild);
+      return dot;
+    });
+
+    function build() {
+      var containerR = container.getBoundingClientRect();
+
+      var dotPos = dots.map(function (dot) {
+        var r = dot.getBoundingClientRect();
+        return {
+          x: r.left + r.width / 2 - containerR.left,
+          y: r.top  + r.height / 2 - containerR.top
+        };
+      });
+
+      var lineX  = dotPos[0].x;
+      var lineY1 = dotPos[0].y;
+      var lineY2 = dotPos[dotPos.length - 1].y;
+      var lineH  = lineY2 - lineY1;
+
+      if (lineH <= 10) { log('initHistoryTimeline: lineH 너무 작음'); return; }
+      log('timeline SVG: x=' + lineX.toFixed(1) + ' lineH=' + lineH.toFixed(1));
+
+      if (getComputedStyle(container).position === 'static') {
+        container.style.position = 'relative';
+      }
+
+      var svg     = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      var svgLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+      svg.style.cssText = [
+        'position:absolute',
+        'pointer-events:none',
+        'overflow:visible',
+        'left:' + lineX + 'px',
+        'top:'  + lineY1 + 'px',
+        'width:2px',
+        'height:' + Math.ceil(lineH) + 'px'
+      ].join(';');
+      svg.setAttribute('width',  2);
+      svg.setAttribute('height', Math.ceil(lineH));
+
+      svgLine.setAttribute('x1', 1);
+      svgLine.setAttribute('y1', 0);
+      svgLine.setAttribute('x2', 1);
+      svgLine.setAttribute('y2', lineH);
+      svgLine.setAttribute('stroke',           '#0075d6');
+      svgLine.setAttribute('stroke-width',     '1');
+      svgLine.setAttribute('stroke-linecap',   'round');
+      svgLine.setAttribute('stroke-dasharray',  lineH);
+      svgLine.setAttribute('stroke-dashoffset', lineH);
+
+      svg.appendChild(svgLine);
+      container.appendChild(svg);
+
+      /* 스크롤 연동 라인 draw */
+      gsap.to(svgLine, {
+        attr: { 'stroke-dashoffset': 0 },
+        ease: 'none',
+        scrollTrigger: {
+          trigger: container,
+          start:   'top 65%',
+          end:     'bottom 70%',
+          scrub:   1.2,
+          markers: DEBUG
+        }
+      });
+
+      /* 도트 + 텍스트 순차 등장 */
+      dots.forEach(function (dot, i) {
+        var textEl = items[i].querySelector('.about_history_time-line_contents');
+        ScrollTrigger.create({
+          trigger: dot,
+          start:   'center 68%',
+          once:    true,
+          markers: DEBUG,
+          onEnter: function () {
+            gsap.to(dot, {
+              scale: 1, opacity: 1,
+              duration: 0.45, ease: 'back.out(2)'
+            });
+            if (textEl) {
+              gsap.to(textEl, {
+                opacity: 1,
+                duration: 0.5, ease: 'power2.out', delay: 0.12
+              });
+            }
+          }
+        });
+      });
+
+      log('타임라인 초기화 완료: ' + dots.length + '개 항목');
+    }
+
+    /* 레이아웃 안정화 후 build */
+    if (document.readyState === 'complete') {
+      requestAnimationFrame(function () { requestAnimationFrame(build); });
+    } else {
+      window.addEventListener('load', function () {
+        requestAnimationFrame(function () { requestAnimationFrame(build); });
+      });
+    }
+  }
+
   function init() {
     initSection1();
     initBgVideo();
     initSection2();
     initSubheaderNav();
+    initHistoryTimeline();
     initSection5();
     initSection5Lines();
     window.Webflow = window.Webflow || [];
