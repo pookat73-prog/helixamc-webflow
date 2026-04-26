@@ -362,7 +362,7 @@
       if (imgEl && helRect && okRect) {
         var ir  = imgEl.getBoundingClientRect();
         var l4x = helRect.left  - sr.left;
-        var l4y1 = ir.top      - sr.top  - 0.5 * vw;
+        var l4y1 = 18.3 * vw;
         var l4y2 = okRect.bottom - sr.top + 0.5 * vw;
         line4v.setAttribute('x1', l4x);  line4v.setAttribute('y1', l4y1);
         line4v.setAttribute('x2', l4x);  line4v.setAttribute('y2', l4y2);
