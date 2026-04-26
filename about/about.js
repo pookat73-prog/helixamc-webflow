@@ -319,7 +319,7 @@
       if (cr) {
         var x1   = cr.right - sr.left + 0.5 * vw;
         line1Y   = cr.top + cr.height / 2 - sr.top;
-        var x2   = window.innerWidth - sr.left - 17.0 * vw;
+        var x2   = window.innerWidth - sr.left - 17.5 * vw;
         var gapL = FACE_L - sr.left;
         var gapR = FACE_R - sr.left;
         line1a.setAttribute('x1', x1);   line1a.setAttribute('y1', line1Y);
@@ -337,7 +337,7 @@
         if (daRect && ripRect) {
           var lx1 = daRect.right  - sr.left + 0.5 * vw;
           line2Y  = ripRect.bottom - sr.top - 0.1 * vw;
-          var lx2 = window.innerWidth - sr.left - 17.0 * vw;
+          var lx2 = window.innerWidth - sr.left - 17.5 * vw;
           line2.setAttribute('x1', lx1); line2.setAttribute('y1', line2Y);
           line2.setAttribute('x2', lx2); line2.setAttribute('y2', line2Y);
           log('라인2 y:', line2Y.toFixed(1));
@@ -347,8 +347,8 @@
       /* 라인 3 (세로): 두 선 사이, 위아래 0.3vw 간격, x = 뷰포트 우측 17.5vw */
       if (line1Y !== null && line2Y !== null) {
         var vx = window.innerWidth - sr.left - 17.0 * vw;
-        var vy1 = line1Y + 1.0 * vw;
-        var vy2 = line2Y - 1.0 * vw;
+        var vy1 = line1Y + 1.5 * vw;
+        var vy2 = line2Y - 1.5 * vw;
         line3v.setAttribute('x1', vx);  line3v.setAttribute('y1', vy1);
         line3v.setAttribute('x2', vx);  line3v.setAttribute('y2', vy2);
         log('라인3v x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
