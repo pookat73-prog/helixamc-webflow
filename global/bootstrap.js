@@ -1,12 +1,7 @@
 /* ================================================================
-   HELIX AMC - AUTO BOOTSTRAP LOADER
-   Pasted once in Webflow. Always serves the latest commit.
-
-   Strategy:
-     1) Fetch latest commit SHA from GitHub API
-     2) Load CSS/JS via jsDelivr using that SHA (immutable URL)
-     3) If any file 404s (jsDelivr indexing delay), fall back to @main
-     4) If GitHub API fails entirely, fall back to @main for everything
+   HELIX AMC - GLOBAL BOOTSTRAP
+   Webflow Site Settings → Custom Code → Head에 한 번만 붙여두면
+   모든 페이지에서 자동으로 최신 커밋 기준으로 로드됨.
    ================================================================ */
 
 (function () {
@@ -17,18 +12,12 @@
   var BRANCH = 'main';
 
   var FILES = [
-    'home/section1/section1.css',
-    'home/section1/section1.js',
-    'home/section-divider/divider.css',
-    'home/section-divider/divider.js',
-    'home/global/buttons.css',
-    'home/global/buttons.js',
-    'home/global/sections-animations.css',
-    'home/global/sections-animations.js'
+    'global/global.css',
+    'home/global/hamburger.css',
+    'home/global/hamburger.js'
   ];
 
   function cdn(ref, path) {
-    /* Cache-busting: new timestamp every minute prevents stale browser caches */
     var t = Math.floor(Date.now() / 60000);
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + '?t=' + t;
   }
@@ -57,10 +46,10 @@
     var ext = path.split('.').pop();
     var fallback = function () {
       if (ref === BRANCH) {
-        console.warn('[helix-bootstrap] failed even from @' + BRANCH + ':', path);
+        console.warn('[global-bootstrap] failed even from @' + BRANCH + ':', path);
         return;
       }
-      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
+      console.warn('[global-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
       loadFile(path, BRANCH);
     };
     if (ext === 'css') {
@@ -76,25 +65,16 @@
 
   var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
 
-  /* Load ScrollTrigger plugin for GSAP animations */
-  var scrollTriggerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
-  injectJs(scrollTriggerUrl, function () {
-    if (window.gsap && window.gsap.registerPlugin) {
-      window.gsap.registerPlugin(ScrollTrigger);
-    }
-  });
-
   fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
       var sha = (data.sha || '').substring(0, 10);
       if (!sha) throw new Error('no sha in response');
-      console.log('[helix-bootstrap] loading commit', sha);
+      console.log('[global-bootstrap] loading commit', sha);
       injectAll(sha);
     })
     .catch(function (err) {
-      console.warn('[helix-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
+      console.warn('[global-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
       injectAll(BRANCH);
     });
 })();
-

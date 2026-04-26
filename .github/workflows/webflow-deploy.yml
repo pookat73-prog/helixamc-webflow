@@ -7,6 +7,7 @@ on:
     paths:
       - 'home/**'
       - 'about/**'
+      - 'global/**'
   workflow_dispatch:
 
 jobs:
@@ -40,6 +41,7 @@ jobs:
           FILES=(
             "home/bootstrap.js"
             "about/bootstrap.js"
+            "global/bootstrap.js"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
