@@ -308,18 +308,18 @@
       var sr  = section.getBoundingClientRect();
       var vw  = window.innerWidth / 100;
 
-      var line1Y = null;
-      var line2Y = null;
+      var line1Y = null;   /* 라인 1 y (가로) */
+      var line3Y = null;   /* 라인 3 y (가로) */
 
-      /* 라인 1: "않는"의 "는" 오른쪽 0.5vw → 뷰포트 오른쪽 끝 17.2vw
-         인물 이미지 구간 두 토막으로 건너뜀 */
+      /* ── 라인 1 (가로): "않는"의 "는" 오른쪽 0.5vw → 뷰포트 우측 17.5vw
+         인물 이미지 구간 두 토막으로 건너뜀 ── */
       var FACE_L = 62.2 * vw;
       var FACE_R = 73.7 * vw;
 
       var cr = getCharRect('않는');
       if (cr) {
         var x1   = cr.right - sr.left + 0.5 * vw;
-        line1Y   = cr.top + cr.height / 2 - sr.top;
+        line1Y  = cr.top + cr.height / 2 - sr.top;
         var x2   = window.innerWidth - sr.left - 17.5 * vw;
         var gapL = FACE_L - sr.left;
         var gapR = FACE_R - sr.left;
@@ -330,29 +330,29 @@
         log('라인1 y:', line1Y.toFixed(1));
       }
 
-      /* 라인 2: .nomal-parag 마지막 '다' 오른쪽 0.5vw, '립' 바텀 → 라인1과 같은 x2 */
+      /* ── 라인 3 (가로): "nomal-parag" 마지막 '다' 오른쪽 0.5vw, '립' 바텀 → 뷰포트 우측 17.5vw ── */
       var paragEl = section.querySelector('.nomal-parag');
       if (paragEl) {
         var daRect  = getLastCharRect(paragEl, '다');
         var ripRect = getLastCharRect(paragEl, '립');
         if (daRect && ripRect) {
           var lx1 = daRect.right  - sr.left + 0.5 * vw;
-          line2Y  = ripRect.bottom - sr.top - 0.1 * vw;
+          line3Y  = ripRect.bottom - sr.top - 0.1 * vw;
           var lx2 = window.innerWidth - sr.left - 17.5 * vw;
-          line2.setAttribute('x1', lx1); line2.setAttribute('y1', line2Y);
-          line2.setAttribute('x2', lx2); line2.setAttribute('y2', line2Y);
-          log('라인2 y:', line2Y.toFixed(1));
+          line2.setAttribute('x1', lx1); line2.setAttribute('y1', line3Y);
+          line2.setAttribute('x2', lx2); line2.setAttribute('y2', line3Y);
+          log('라인3 y:', line3Y.toFixed(1));
         }
       }
 
-      /* 라인 3 (세로): 두 선 사이, 위아래 0.5vw 간격, x = 뷰포트 우측 17vw */
-      if (line1Y !== null && line2Y !== null) {
+      /* ── 라인 2 (세로): 라인1·3 사이, 위아래 0.5vw 간격, x = 뷰포트 우측 17vw ── */
+      if (line1Y !== null && line3Y !== null) {
         var vx = window.innerWidth - sr.left - 17.0 * vw;
         var vy1 = line1Y + 0.5 * vw;
-        var vy2 = line2Y - 0.5 * vw;
+        var vy2 = line3Y - 0.5 * vw;
         line3v.setAttribute('x1', vx);  line3v.setAttribute('y1', vy1);
         line3v.setAttribute('x2', vx);  line3v.setAttribute('y2', vy2);
-        log('라인3v x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
+        log('라인2 x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
       }
 
     }
