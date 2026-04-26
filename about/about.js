@@ -222,7 +222,13 @@
 
     ScrollTrigger.create({
       trigger: section,
-      start: 'bottom bottom',
+      start: function () {
+        var navItem = document.querySelector('.subheader_click-area');
+        var subEl = navItem ? (navItem.closest('[class*="subheader"]') || navItem.parentElement) : null;
+        if (!subEl) subEl = document.querySelector('.subheader');
+        var offset = subEl ? subEl.getBoundingClientRect().bottom : 80;
+        return 'top ' + offset + 'px';
+      },
       once: true,
       onEnter: function () {
         log('섹션 5 트리거 발사');
