@@ -292,28 +292,23 @@
 
       /* 라인 1: "않는"의 "는" 오른쪽 0.5vw → 뷰포트 오른쪽 끝 17.2vw
          인물 이미지(.whiteframe_image 중첩) 구간은 두 토막으로 건너뜀 */
-      var cr    = getCharRect('않는');
-      var photo = section.querySelector('.whiteframe_image');
-      if (cr) {
-        var x1  = cr.right - sr.left + 0.5 * vw;
-        var y1  = cr.top + cr.height / 2 - sr.top;
-        var x2  = window.innerWidth - sr.left - 17.2 * vw;
+      var FACE_L = 62.2 * vw;   /* 얼굴 왼쪽 끝 (vw) */
+      var FACE_R = 73.5 * vw;   /* 얼굴 오른쪽 끝 (vw) */
 
-        if (photo) {
-          var pr   = photo.getBoundingClientRect();
-          var gapL = pr.left  - sr.left;
-          var gapR = pr.right - sr.left;
-          /* 세그먼트 1: 시작 → 사진 왼쪽 */
-          line1a.setAttribute('x1', x1);   line1a.setAttribute('y1', y1);
-          line1a.setAttribute('x2', gapL); line1a.setAttribute('y2', y1);
-          /* 세그먼트 2: 사진 오른쪽 → 끝 */
-          line1b.setAttribute('x1', gapR); line1b.setAttribute('y1', y1);
-          line1b.setAttribute('x2', x2);   line1b.setAttribute('y2', y1);
-          log('라인1 x1:', x1.toFixed(1), 'gapL:', gapL.toFixed(1), 'gapR:', gapR.toFixed(1), 'x2:', x2.toFixed(1));
-        } else {
-          line1a.setAttribute('x1', x1); line1a.setAttribute('y1', y1);
-          line1a.setAttribute('x2', x2); line1a.setAttribute('y2', y1);
-        }
+      var cr = getCharRect('않는');
+      if (cr) {
+        var x1   = cr.right - sr.left + 0.5 * vw;
+        var y1   = cr.top + cr.height / 2 - sr.top;
+        var x2   = window.innerWidth - sr.left - 17.2 * vw;
+        var gapL = FACE_L - sr.left;
+        var gapR = FACE_R - sr.left;
+        /* 세그먼트 1: 시작 → 얼굴 왼쪽 */
+        line1a.setAttribute('x1', x1);   line1a.setAttribute('y1', y1);
+        line1a.setAttribute('x2', gapL); line1a.setAttribute('y2', y1);
+        /* 세그먼트 2: 얼굴 오른쪽 → 끝 */
+        line1b.setAttribute('x1', gapR); line1b.setAttribute('y1', y1);
+        line1b.setAttribute('x2', x2);   line1b.setAttribute('y2', y1);
+        log('라인1 x1:', x1.toFixed(1), 'gapL:', gapL.toFixed(1), 'gapR:', gapR.toFixed(1), 'x2:', x2.toFixed(1));
       }
     }
 
