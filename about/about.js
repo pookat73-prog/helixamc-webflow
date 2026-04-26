@@ -261,12 +261,28 @@
 
     var line1a = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     var line1b = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    [line1a, line1b].forEach(function (l) {
+    var line2  = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    [line1a, line1b, line2].forEach(function (l) {
       l.setAttribute('stroke', '#0075d6');
       l.setAttribute('stroke-width', '1');
       l.setAttribute('stroke-linecap', 'round');
       svg.appendChild(l);
     });
+
+    /* el 내 특정 문자의 마지막 등장 위치 rect 반환 */
+    function getLastCharRect(el, char) {
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      var last = null, node;
+      while ((node = walker.nextNode())) {
+        var idx = node.textContent.lastIndexOf(char);
+        if (idx !== -1) last = { node: node, idx: idx };
+      }
+      if (!last) return null;
+      var range = document.createRange();
+      range.setStart(last.node, last.idx);
+      range.setEnd(last.node, last.idx + 1);
+      return range.getBoundingClientRect();
+    }
 
     function getCharRect(searchStr) {
       var dialogues = section.querySelectorAll('.about_dialogue');
@@ -309,6 +325,21 @@
         line1b.setAttribute('x1', gapR); line1b.setAttribute('y1', y1);
         line1b.setAttribute('x2', x2);   line1b.setAttribute('y2', y1);
         log('라인1 x1:', x1.toFixed(1), 'gapL:', gapL.toFixed(1), 'gapR:', gapR.toFixed(1), 'x2:', x2.toFixed(1));
+      }
+
+      /* 라인 2: .nomal-parag 마지막 '다' 오른쪽 0.5vw, '립' 바텀 → 라인1과 같은 x2 */
+      var paragEl = section.querySelector('.nomal-parag');
+      if (paragEl) {
+        var daRect  = getLastCharRect(paragEl, '다');
+        var ripRect = getLastCharRect(paragEl, '립');
+        if (daRect && ripRect) {
+          var lx1 = daRect.right  - sr.left + 0.5 * vw;
+          var ly1 = ripRect.bottom - sr.top;
+          var lx2 = window.innerWidth - sr.left - 17.2 * vw;
+          line2.setAttribute('x1', lx1); line2.setAttribute('y1', ly1);
+          line2.setAttribute('x2', lx2); line2.setAttribute('y2', ly1);
+          log('라인2 x1:', lx1.toFixed(1), 'y1:', ly1.toFixed(1), 'x2:', lx2.toFixed(1));
+        }
       }
     }
 
