@@ -122,7 +122,7 @@
 
   /* ── 버튼 글로우 (블루/퍼플) ── */
   function initButtonGlow() {
-    var blueButtons   = document.querySelectorAll('.cta_seocho_button');
+    var blueButtons   = document.querySelectorAll('.cta_seocho_button, .cta-style');
     var purpleButtons = document.querySelectorAll('.link-block');
 
     if (!blueButtons.length && !purpleButtons.length) { log('버튼을 찾지 못했습니다.'); return; }
