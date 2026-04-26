@@ -55,7 +55,6 @@
     transparent 68%);
   border-radius: 0.7vw 0 0 0;
   filter: blur(0.8px);
-  mix-blend-mode: multiply;
   pointer-events: none;
   opacity: 0;
   z-index: 2;
