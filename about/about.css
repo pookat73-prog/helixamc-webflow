@@ -26,11 +26,15 @@
 
 /* 서브헤더 메뉴 밑줄 */
 .subheader_click-area {
-  position: relative;
   text-decoration: none !important;
 }
 
-.subheader_click-area::after {
+.subheader_title {
+  position: relative;
+  display: inline-block;
+}
+
+.subheader_title::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -41,8 +45,8 @@
   transition: width 0.2s ease;
 }
 
-.subheader_click-area:hover::after,
-.subheader_click-area.is-active::after {
+.subheader_click-area:hover .subheader_title::after,
+.subheader_click-area.is-active .subheader_title::after {
   width: 100%;
 }
 
