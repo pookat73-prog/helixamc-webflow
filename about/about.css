@@ -18,6 +18,12 @@
   clip-path: inset(0.8vw 0);
 }
 
+/* 섹션 1 — 헤드/서브헤드 초기 숨김 */
+.section2-heading,
+.about_contents_sub-title {
+  opacity: 0;
+}
+
 /* 섹션 3 — CTA 버튼 글로우 */
 .cta_seocho_button {
   transition: box-shadow 0.6s ease;

@@ -9,6 +9,24 @@
   function log() { if (DEBUG) console.log.apply(console, ['[About]'].concat(Array.prototype.slice.call(arguments))); }
 
   var VIDEO_URL = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/about/bg-video.mp4';
+  var s1Timeline = null;
+
+  /* ── 섹션 1 헤드/서브헤드 페이드인 ── */
+  function initSection1() {
+    if (!window.gsap) return;
+
+    var heading    = document.querySelector('.section2-heading');
+    var subheading = document.querySelector('.about_contents_sub-title');
+    if (!heading && !subheading) { log('섹션 1 헤드 요소를 찾지 못했습니다.'); return; }
+
+    if (heading)    gsap.set(heading,    { opacity: 0 });
+    if (subheading) gsap.set(subheading, { opacity: 0 });
+
+    s1Timeline = gsap.timeline({ delay: 0.3 });
+    if (heading)    s1Timeline.to(heading,    { opacity: 1, duration: 1, ease: 'power2.out' }, 0);
+    if (subheading) s1Timeline.to(subheading, { opacity: 1, duration: 1, ease: 'power2.out' }, 0.3);
+    /* 영상 페이드인은 window.load 후 initBgVideo에서 타임라인에 추가 */
+  }
 
   /* ── 섹션 1 배경 영상 ── */
   function initBgVideo() {
@@ -46,11 +64,15 @@
       log('영상 height:', videoHeight, 'top:', video.style.top);
     }
 
-    /* 처음엔 숨겨두고 위치 계산 후에 보여줌 (툭 튀는 현상 방지) */
     video.style.opacity = '0';
     window.addEventListener('load', function () {
       setVideoSize();
-      video.style.opacity = '1';
+      /* 섹션 1 타임라인 맨 마지막에 영상 페이드인 추가 */
+      if (s1Timeline && window.gsap) {
+        s1Timeline.to(video, { opacity: 1, duration: 0.8, ease: 'power2.out' }, '>0.1');
+      } else {
+        video.style.opacity = '1';
+      }
     });
     window.addEventListener('resize', setVideoSize);
   }
@@ -124,6 +146,7 @@
   }
 
   function init() {
+    initSection1();
     initBgVideo();
     initSection2();
     window.Webflow = window.Webflow || [];
