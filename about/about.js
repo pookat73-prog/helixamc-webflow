@@ -432,65 +432,47 @@
 
   /* ── 섹션 7 연혁 타임라인 ── */
   function initSection7() {
-    var section = document.querySelector('.whiteframe_open');
-    if (!section) { log('섹션 7(.whiteframe_open) 없음'); return; }
-    if (!window.gsap || !window.ScrollTrigger) { log('GSAP/ScrollTrigger 없음'); return; }
+    var section  = document.querySelector('#helix-history');
+    if (!section) { log('섹션 7(#helix-history) 없음'); return; }
+    if (!window.gsap || !window.ScrollTrigger) { return; }
 
     var titleBox = section.querySelector('.about_history_title_box');
-    var line     = section.querySelector('.white-frame_connect');
+    var line1    = titleBox ? titleBox.querySelector('h2.about_history_title_official-font') : null;
+    var block162 = titleBox ? titleBox.querySelector('.div-block-162') : null;
+    var choiEl   = block162 ? block162.querySelectorAll('h2')[1] : null; /* "최초" */
     var items    = section.querySelectorAll('.about_history_time-line');
 
-    if (!items.length) { log('섹션 7 타임라인 아이템 없음'); return; }
-    log('섹션 7 아이템', items.length, '개 발견');
+    log('섹션 7 — line1:', !!line1, 'block162:', !!block162, 'choiEl:', !!choiEl, '아이템:', items.length);
 
     /* 초기 상태 */
-    if (titleBox) gsap.set(titleBox, { opacity: 0, y: -20 });
-    if (line)     gsap.set(line, { scaleY: 0, transformOrigin: 'top center' });
-    gsap.set(items, { opacity: 0, x: -32 });
+    if (line1)    gsap.set(line1,    { opacity: 0, y: 16 });
+    if (block162) gsap.set(block162, { opacity: 0, y: 16 });
+    gsap.set(items, { opacity: 0, x: -30 });
 
-    /* 제목 진입 */
-    if (titleBox) {
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 78%',
-        once: true,
-        onEnter: function () {
-          gsap.to(titleBox, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
-        }
-      });
-    }
+    /* 제목 엇박 다라락 → 완료 즉시 '최초' shimmer */
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 75%',
+      once: true,
+      onEnter: function () {
+        var tl = gsap.timeline({
+          onComplete: function () {
+            if (choiEl) choiEl.classList.add('choi-shimmer');
+          }
+        });
+        if (line1)    tl.to(line1,    { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' }, 0);
+        if (block162) tl.to(block162, { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' }, 0.38);
+      }
+    });
 
-    /* 수직선 — 아이템 전체 구간에 걸쳐 그려짐 */
-    if (line) {
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 75%',
-        once: true,
-        onEnter: function () {
-          gsap.to(line, {
-            scaleY: 1,
-            duration: items.length * 0.18 + 0.6,
-            ease: 'power2.inOut',
-            delay: 0.2
-          });
-        }
-      });
-    }
-
-    /* 각 아이템 개별 진입 */
+    /* 각 타임라인 행 — 스크롤 진입 시 순차 등장 */
     items.forEach(function (item, i) {
       ScrollTrigger.create({
         trigger: item,
         start: 'top 85%',
         once: true,
         onEnter: function () {
-          gsap.to(item, {
-            opacity: 1,
-            x: 0,
-            duration: 0.55,
-            ease: 'power2.out',
-            delay: 0.06 * i
-          });
+          gsap.to(item, { opacity: 1, x: 0, duration: 0.55, ease: 'power2.out', delay: 0.05 * i });
         }
       });
     });

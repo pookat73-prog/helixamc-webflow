@@ -107,12 +107,39 @@
 }
 
 /* 섹션 7 — 초기 숨김 */
-.whiteframe_open .about_history_title_box {
+#helix-history .about_history_title_box > h2.about_history_title_official-font,
+#helix-history .div-block-162 {
   opacity: 0;
-  will-change: opacity, transform;
 }
 
-.whiteframe_open .about_history_time-line {
+#helix-history .about_history_time-line {
   opacity: 0;
-  will-change: opacity, transform;
+}
+
+/* 섹션 7 — '최초' 블루 빛 훑기 */
+.choi-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.choi-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 55%;
+  height: 120%;
+  background: linear-gradient(
+    105deg,
+    transparent 10%,
+    rgba(0, 117, 214, 0.55) 50%,
+    transparent 90%
+  );
+  transform: translateX(-130%);
+  animation: choiLightSweep 0.85s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes choiLightSweep {
+  to { transform: translateX(280%); }
 }
