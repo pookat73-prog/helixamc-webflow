@@ -334,7 +334,7 @@
         var ripRect = getLastCharRect(paragEl, '립');
         if (daRect && ripRect) {
           var lx1 = daRect.right  - sr.left + 0.5 * vw;
-          var ly1 = ripRect.bottom - sr.top;
+          var ly1 = ripRect.bottom - sr.top - 0.1 * vw;
           var lx2 = window.innerWidth - sr.left - 17.2 * vw;
           line2.setAttribute('x1', lx1); line2.setAttribute('y1', ly1);
           line2.setAttribute('x2', lx2); line2.setAttribute('y2', ly1);
