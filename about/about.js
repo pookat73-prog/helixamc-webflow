@@ -386,7 +386,8 @@
       var ir4  = imgEl4.getBoundingClientRect();
       var vw4  = window.innerWidth / 100;
       var l4x  = helRect4.left - sr4.left;
-      var l4y1 = 18.3 * vw4;
+      var olRect = getLastCharRect(section, '옳');
+      var l4y1 = olRect ? olRect.bottom - sr4.top + 0.5 * vw4 : 18.3 * vw4;
       var l4y2 = ir4.top - sr4.top - 0.5 * vw4;
       line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
       line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
