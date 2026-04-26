@@ -145,21 +145,29 @@
 
     if (!pairs.length) { log('연결된 섹션을 찾지 못했습니다. 섹션 ID 확인 필요.'); return; }
 
-    /* 스크롤 → 섹션이 화면 중앙 영역에 들어오면 활성 */
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        for (var i = 0; i < pairs.length; i++) {
-          if (pairs[i].section === entry.target) {
-            navItems.forEach(function (n) { n.classList.remove('is-active'); });
-            pairs[i].nav.classList.add('is-active');
-            break;
-          }
-        }
-      });
-    }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+    /* 스크롤 → 뷰포트 40% 지점 기준으로 현재 섹션 판단 (올릴 때도 작동) */
+    function updateActiveNav() {
+      var scrollMid = window.scrollY + window.innerHeight * 0.4;
+      var activeIndex = 0;
+      for (var i = 0; i < pairs.length; i++) {
+        var top = pairs[i].section.getBoundingClientRect().top + window.scrollY;
+        if (scrollMid >= top) activeIndex = i;
+      }
+      navItems.forEach(function (n) { n.classList.remove('is-active'); });
+      pairs[activeIndex].nav.classList.add('is-active');
+    }
 
-    pairs.forEach(function (p) { observer.observe(p.section); });
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        updateActiveNav();
+        ticking = false;
+      });
+    }, { passive: true });
+
+    updateActiveNav();
   }
 
   /* ── 버튼 글로우 (블루/퍼플) ── */
