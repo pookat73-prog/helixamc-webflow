@@ -402,14 +402,14 @@
 
       var tl = gsap.timeline();
       /* 라인 1 → */
-      tl.to(line1a, { attr: { 'stroke-dashoffset': 0 }, duration: t1a,  ease: 'none' }, 0);
-      tl.to(line1b, { attr: { 'stroke-dashoffset': 0 }, duration: t1b,  ease: 'none' }, t1a + tGap);
+      tl.to(line1a, { attr: { 'stroke-dashoffset': 0 }, duration: t1a,  ease: 'power2.inOut' }, 0);
+      tl.to(line1b, { attr: { 'stroke-dashoffset': 0 }, duration: t1b,  ease: 'power2.inOut' }, t1a + tGap);
       /* 라인 2 ↓ */
-      tl.to(line3v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.35, ease: 'power2.inOut' }, '>0.05');
+      tl.to(line3v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.35, ease: 'power2.inOut' }, '>0.2');
       /* 라인 3 ← */
-      tl.to(line2,  { attr: { 'stroke-dashoffset': 0 }, duration: 0.9,  ease: 'none' }, '>0.05');
+      tl.to(line2,  { attr: { 'stroke-dashoffset': 0 }, duration: 0.9,  ease: 'power2.inOut' }, '>0.2');
       /* 라인 4 ↑ */
-      tl.to(line4v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.5,  ease: 'power2.inOut' }, '>0.05');
+      tl.to(line4v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.5,  ease: 'power2.inOut' }, '>0.2');
     });
 
     window.addEventListener('load',   drawLines);
