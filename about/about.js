@@ -57,18 +57,20 @@
       return;
     }
 
-    var cards = document.querySelectorAll('.about_contents_3-concept_q');
+    var cards = document.querySelectorAll('.about_contents_3-concept');
     if (!cards.length) { log('섹션 2 카드를 찾지 못했습니다.'); return; }
 
     log('섹션 2 카드', cards.length, '개 발견');
 
     cards.forEach(function (card, i) {
+      var titleBox   = card.querySelector('.about_contents_3-concept_q');
       var strategy   = card.querySelectorAll('.about_point-number_blue_whrite, .about_point-title_blue_whrite');
       var divider    = card.querySelector('.divider_blue_grad_no-spacing-1');
       var blurCircle = card.querySelector('.blur-circle-efect');
       var contentBox = card.querySelector('.about_three_contents-box');
 
       /* 카드별 초기 상태 */
+      if (titleBox)   gsap.set(titleBox,   { opacity: 0 });
       gsap.set(strategy, { opacity: 0 });
       if (divider)    gsap.set(divider,    { scaleX: 0, transformOrigin: 'left center' });
       if (blurCircle) gsap.set(blurCircle, { opacity: 0 });
@@ -83,10 +85,11 @@
         }
       });
 
-      tl.to(strategy,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0)
-        .to(divider,    { scaleX: 1,  duration: 1,   ease: 'power2.inOut' }, 0.3)
-        .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.6)
-        .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0.9);
+      tl.to(titleBox,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0)
+        .to(strategy,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0.3)
+        .to(divider,    { scaleX: 1,  duration: 1,   ease: 'power2.inOut' }, 0.6)
+        .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.9)
+        .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.2);
     });
   }
 
