@@ -8,6 +8,28 @@
   var DEBUG = window.location.search.indexOf('debug-about=1') !== -1;
   function log() { if (DEBUG) console.log.apply(console, ['[About]'].concat(Array.prototype.slice.call(arguments))); }
 
+  var VIDEO_URL = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/about/bg-video.mp4';
+
+  /* ── 섹션 1 배경 영상 ── */
+  function initBgVideo() {
+    var container = document.querySelector('.About_Background');
+    if (!container) {
+      log('About_Background 요소를 찾지 못했습니다.');
+      return;
+    }
+
+    var video = document.createElement('video');
+    video.src        = VIDEO_URL;
+    video.autoplay   = true;
+    video.muted      = true;
+    video.playsInline = true;
+    video.loop       = false;
+    video.className  = 'about-bg-video';
+
+    container.insertBefore(video, container.firstChild);
+    log('배경 영상 삽입 완료');
+  }
+
   /* ── 섹션 2 애니메이션 ── */
   function initSection2() {
     if (!window.gsap || !window.ScrollTrigger) {
@@ -51,6 +73,7 @@
   }
 
   function init() {
+    initBgVideo();
     initSection2();
   }
 
