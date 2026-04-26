@@ -347,8 +347,8 @@
       /* 라인 3 (세로): 두 선 사이, 위아래 0.3vw 간격, x = 뷰포트 우측 17.5vw */
       if (line1Y !== null && line2Y !== null) {
         var vx = window.innerWidth - sr.left - 17.0 * vw;
-        var vy1 = line1Y + 1.5 * vw;
-        var vy2 = line2Y - 1.5 * vw;
+        var vy1 = line1Y + 0.5 * vw;
+        var vy2 = line2Y - 0.5 * vw;
         line3v.setAttribute('x1', vx);  line3v.setAttribute('y1', vy1);
         line3v.setAttribute('x2', vx);  line3v.setAttribute('y2', vy2);
         log('라인3v x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
