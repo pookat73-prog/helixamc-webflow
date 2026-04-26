@@ -368,13 +368,14 @@
     /* ── 경로 빌드 ─────────────────────────────────────────── */
     function f(n) { return n.toFixed(2); }
 
+    var diagLen = 0;
     var pathD;
     if (k <= 0) {
       /* 폴백: 단순 대각선 (diag_y >= H, 구간1/3 공간 없음) */
       log('zigLine: k<=0, simple diagonal fallback');
       pathD = ['M', f(relSX), '0', 'L', f(relEX), f(lineH)].join(' ');
     } else {
-      var diagLen = Math.sqrt(absDx * absDx + diag_y * diag_y);
+      diagLen = Math.sqrt(absDx * absDx + diag_y * diag_y);
       /* 곡률 r: 곡선 시작점을 꼭지점에서 더 멀리 → 더 유려한 곡선 */
       var r = Math.min(seg1 * 0.6, seg3 * 0.6, diagLen * 0.5);
       r = Math.max(r, 12);
@@ -400,6 +401,34 @@
     var pathLength = zigPath.getTotalLength() || lineH;
     zigPath.setAttribute('stroke-dasharray',  '0 ' + pathLength);
     zigPath.setAttribute('stroke-dashoffset', '0');
+
+    /* ── 비선형 tailProgress 맵핑 ────────────────────────────────
+       사선의 path 길이는 길지만 세로 높이(diag_y)는 짧아
+       선형 erase시 사선 구간이 시각적으로 빠르게 사라짐.
+       사선 구간에 diagLen/diag_y 배의 rawProgress 윈도우를 할당해
+       사선이 수직 구간과 비슷한 체감 속도로 지워지도록 보정.
+    ── */
+    var _p1  = seg1 / H;
+    var _q1  = seg1 / pathLength;
+    var _q2  = (seg1 + diagLen) / pathLength;
+    /* 사선 구간 확장 배수: 최대 3배, 단 p2 가 0.92 초과 시 축소 */
+    var _exp = (diagLen > 0 && diag_y > 0) ? Math.min(diagLen / diag_y, 3.0) : 1;
+    var _p2  = Math.min(_p1 + _exp * (diag_y / H), 0.92);
+
+    function remapTail(r) {
+      if (k <= 0 || diagLen === 0) return r;
+      if (r <= _p1) {
+        return _p1 > 0 ? r * (_q1 / _p1) : 0;
+      } else if (r <= _p2) {
+        var t = (r - _p1) / (_p2 - _p1);
+        return _q1 + t * (_q2 - _q1);
+      } else {
+        var t2 = (r - _p2) / (1 - _p2);
+        return _q2 + t2 * (1 - _q2);
+      }
+    }
+    log('zigLine remap: p1=' + _p1.toFixed(3) + ' p2=' + _p2.toFixed(3) +
+        ' q1=' + _q1.toFixed(3) + ' q2=' + _q2.toFixed(3) + ' exp=' + _exp.toFixed(2));
 
     /* ── head / tail progress ───────────────────────────────── */
     var headProgress = 0;
@@ -448,7 +477,7 @@
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
-        tailProgress = self.progress;
+        tailProgress = remapTail(self.progress);
         applyDash();
       }
     });
