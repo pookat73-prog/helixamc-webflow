@@ -380,7 +380,6 @@
     var imgEl4   = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
     var helRect4 = null;
     function drawLine4() {
-      if (linesAnimated) return;
       if (!helRect4) helRect4 = getLastCharRect(section, '헬');
       if (!imgEl4 || !helRect4) return;
       var sr4  = section.getBoundingClientRect();
@@ -392,7 +391,13 @@
       line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
       line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
       L.v4 = l4y2 - l4y1;
-      if (!linesAnimated) setHidden(line4v, L.v4, -1);
+      if (linesAnimated) {
+        /* 애니메이션 후: 좌표만 추적, 라인 항상 풀 표시 */
+        line4v.setAttribute('stroke-dasharray', L.v4);
+        line4v.setAttribute('stroke-dashoffset', 0);
+      } else {
+        setHidden(line4v, L.v4, -1);
+      }
     }
 
     /* ── 애니메이션 시퀀스 (helix-s5-done 이벤트 대기) ── */
