@@ -40,7 +40,7 @@
   bottom: 0;
   left: 0;
   width: 0;
-  height: 2px;
+  height: 3px;
   background: #0075d6;
   transition: width 0.2s ease;
 }
@@ -48,6 +48,12 @@
 .subheader_click-area:hover .subheader_title::after,
 .subheader_click-area.is-active .subheader_title::after {
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .subheader_title::after {
+    height: 2px;
+  }
 }
 
 /* 섹션 3 — CTA 버튼 글로우 */
