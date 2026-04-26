@@ -36,10 +36,12 @@
 }
 
 /* ================================================================
-   세라믹 반사광 — bt-box-1 샘플
-   좌상단 모서리 안쪽 약간 띄운 위치, 둥근 직각삼각형 형태
+   블루 코너 반사광 — bt-box-1/2/3
+   좌상단 삼각형, glowShimmer와 동기화 (5.0s)
    ================================================================ */
-.bt-box-1::before {
+.bt-box-1::before,
+.bt-box-2::before,
+.bt-box-3::before {
   content: '';
   position: absolute;
   top: 4px;
@@ -47,8 +49,8 @@
   width: 40%;
   height: 40%;
   background: linear-gradient(145deg,
-    rgba(255, 255, 255, 0.65) 0%,
-    rgba(255, 255, 255, 0.25) 35%,
+    rgba(100, 190, 255, 0.95) 0%,
+    rgba(0, 150, 255, 0.70) 35%,
     transparent 68%);
   clip-path: polygon(0 0, 88% 0, 0 88%);
   filter: blur(0.8px);
@@ -57,13 +59,15 @@
   z-index: 2;
 }
 
-.bt-box-1.is-looping::before {
-  animation: ceramicReflect 5.0s infinite cubic-bezier(0.37, 0, 0.63, 1);
+.bt-box-1.is-looping::before,
+.bt-box-2.is-looping::before,
+.bt-box-3.is-looping::before {
+  animation: blueReflect 5.0s infinite cubic-bezier(0.37, 0, 0.63, 1);
 }
 
-@keyframes ceramicReflect {
+@keyframes blueReflect {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.05; }
+  50%       { opacity: 0.70; }
 }
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
