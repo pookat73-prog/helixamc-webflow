@@ -319,7 +319,7 @@
       if (cr) {
         var x1   = cr.right - sr.left + 0.5 * vw;
         line1Y   = cr.top + cr.height / 2 - sr.top;
-        var x2   = window.innerWidth - sr.left - 17.2 * vw;
+        var x2   = window.innerWidth - sr.left - 17.0 * vw;
         var gapL = FACE_L - sr.left;
         var gapR = FACE_R - sr.left;
         line1a.setAttribute('x1', x1);   line1a.setAttribute('y1', line1Y);
@@ -337,7 +337,7 @@
         if (daRect && ripRect) {
           var lx1 = daRect.right  - sr.left + 0.5 * vw;
           line2Y  = ripRect.bottom - sr.top - 0.1 * vw;
-          var lx2 = window.innerWidth - sr.left - 17.2 * vw;
+          var lx2 = window.innerWidth - sr.left - 17.0 * vw;
           line2.setAttribute('x1', lx1); line2.setAttribute('y1', line2Y);
           line2.setAttribute('x2', lx2); line2.setAttribute('y2', line2Y);
           log('라인2 y:', line2Y.toFixed(1));
