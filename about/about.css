@@ -35,17 +35,15 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
+  width: 0;
   height: 0.15vw;
   background: #0075d6;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.2s ease;
+  transition: width 0.2s ease;
 }
 
 .subheader_title:hover::after,
 .subheader_title.is-active::after {
-  transform: scaleX(1);
+  width: 100%;
 }
 
 /* 섹션 3 — CTA 버튼 글로우 */
