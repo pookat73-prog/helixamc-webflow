@@ -37,10 +37,13 @@
       var subheaderTop   = subheader.getBoundingClientRect().top  + scrollY;
       var containerTop   = container.getBoundingClientRect().top  + scrollY;
 
-      video.style.top    = '';
-      video.style.bottom = '0';
-      video.style.height = (subheaderTop - headerBottom) + 'px';
-      log('영상 height:', video.style.height);
+      var videoHeight     = subheaderTop - headerBottom;
+      var containerHeight = container.getBoundingClientRect().height;
+
+      video.style.bottom = '';
+      video.style.height = videoHeight + 'px';
+      video.style.top    = (containerHeight - videoHeight) + 'px';
+      log('영상 height:', videoHeight, 'top:', video.style.top);
     }
 
     setVideoSize();
