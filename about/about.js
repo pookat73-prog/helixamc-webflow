@@ -355,23 +355,29 @@
         log('라인3v x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
       }
 
-      /* 라인 4 (세로): '헬' 좌측 x, 섹션 top 기준 44vh ~ 이미지 top -0.5vw */
-      var imgEl  = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
-      var helRect = getLastCharRect(section, '헬');
-      if (imgEl && helRect) {
-        var ir  = imgEl.getBoundingClientRect();
-        var l4x = helRect.left - sr.left;
-        var l4y1 = 0.44 * window.innerHeight;
-        var l4y2 = ir.top - sr.top - 0.5 * vw;
-        line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
-        line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
-        log('라인4v x:', l4x.toFixed(1), 'y1:', l4y1.toFixed(1), 'y2:', l4y2.toFixed(1));
-      }
+    }
+
+    /* 라인 4는 viewport 44vh 고정 → 스크롤마다 재계산 */
+    var imgEl4  = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
+    var helRect4 = null;
+    function drawLine4() {
+      if (!helRect4) helRect4 = getLastCharRect(section, '헬');
+      if (!imgEl4 || !helRect4) return;
+      var sr4  = section.getBoundingClientRect();
+      var ir4  = imgEl4.getBoundingClientRect();
+      var vw4  = window.innerWidth / 100;
+      var l4x  = helRect4.left - sr4.left;
+      var l4y1 = window.innerHeight * 0.44 - sr4.top;   /* viewport 44vh → 섹션 상대 좌표 */
+      var l4y2 = ir4.top - sr4.top - 0.5 * vw4;
+      line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
+      line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
     }
 
     window.addEventListener('load',   drawLines);
     window.addEventListener('resize', drawLines);
+    window.addEventListener('scroll', drawLine4, { passive: true });
     drawLines();
+    drawLine4();
   }
 
   function init() {
