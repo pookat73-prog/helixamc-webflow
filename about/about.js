@@ -69,7 +69,7 @@
       setVideoSize();
       /* 섹션 1 타임라인 맨 마지막에 영상 페이드인 추가 */
       if (s1Timeline && window.gsap) {
-        s1Timeline.to(video, { opacity: 1, duration: 0.8, ease: 'power2.out' }, '>0.1');
+        s1Timeline.to(video, { opacity: 1, duration: 2.5, ease: 'power2.out' }, '>0.1');
       } else {
         video.style.opacity = '1';
       }
