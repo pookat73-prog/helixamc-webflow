@@ -235,12 +235,72 @@
     });
   }
 
+  /* ── 섹션 5 라인들 ── */
+  function initSection5Lines() {
+    var section = document.querySelector('.whiteframe_image');
+    if (!section) { log('섹션 5 라인: whiteframe_image 없음'); return; }
+
+    if (window.getComputedStyle(section).position === 'static') {
+      section.style.position = 'relative';
+    }
+
+    /* SVG를 첫 번째 자식으로 삽입 → 이후 DOM 요소(사진 등)가 자연스럽게 위에 쌓임 */
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
+    section.insertBefore(svg, section.firstChild);
+
+    var line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line1.setAttribute('stroke', '#0075d6');
+    line1.setAttribute('stroke-width', '1');
+    line1.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(line1);
+
+    function getCharRect(searchStr) {
+      var dialogues = section.querySelectorAll('.about_dialogue');
+      for (var i = 0; i < dialogues.length; i++) {
+        var walker = document.createTreeWalker(dialogues[i], NodeFilter.SHOW_TEXT);
+        var node;
+        while ((node = walker.nextNode())) {
+          var idx = node.textContent.indexOf(searchStr);
+          if (idx === -1) continue;
+          var lastIdx = idx + searchStr.length - 1;
+          var range = document.createRange();
+          range.setStart(node, lastIdx);
+          range.setEnd(node, lastIdx + 1);
+          return range.getBoundingClientRect();
+        }
+      }
+      return null;
+    }
+
+    function drawLines() {
+      var sr  = section.getBoundingClientRect();
+      var vw  = window.innerWidth / 100;
+
+      /* 라인 1: "않는"의 "는" 오른쪽 0.5vw → 뷰포트 오른쪽 끝 17.2vw 지점 */
+      var cr = getCharRect('않는');
+      if (cr) {
+        var x1 = cr.right  - sr.left + 0.5 * vw;
+        var y1 = cr.top + cr.height / 2 - sr.top;
+        var x2 = window.innerWidth - sr.left - 17.2 * vw;
+        line1.setAttribute('x1', x1); line1.setAttribute('y1', y1);
+        line1.setAttribute('x2', x2); line1.setAttribute('y2', y1);
+        log('라인1 x1:', x1.toFixed(1), 'y1:', y1.toFixed(1), 'x2:', x2.toFixed(1));
+      }
+    }
+
+    window.addEventListener('load',   drawLines);
+    window.addEventListener('resize', drawLines);
+    drawLines();
+  }
+
   function init() {
     initSection1();
     initBgVideo();
     initSection2();
     initSubheaderNav();
     initSection5();
+    initSection5Lines();
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () { setTimeout(initButtonGlow, 100); });
   }
