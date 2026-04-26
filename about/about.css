@@ -116,30 +116,24 @@
   opacity: 0;
 }
 
-/* 섹션 7 — '최초' 블루 빛 훑기 */
+/* 섹션 7 — '최초' 블루 빛 훑기 (글자색 방식) */
 .choi-shimmer {
-  position: relative;
-  overflow: hidden;
-}
-
-.choi-shimmer::after {
-  content: '';
-  position: absolute;
-  top: -10%;
-  left: 0;
-  width: 55%;
-  height: 120%;
   background: linear-gradient(
-    105deg,
-    transparent 10%,
-    rgba(0, 117, 214, 0.55) 50%,
-    transparent 90%
+    90deg,
+    currentColor 0%,
+    currentColor 38%,
+    #0075d6 50%,
+    currentColor 62%,
+    currentColor 100%
   );
-  transform: translateX(-130%);
-  animation: choiLightSweep 0.85s ease-out forwards;
-  pointer-events: none;
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: choiTextSweep 0.9s ease-out forwards;
 }
 
-@keyframes choiLightSweep {
-  to { transform: translateX(280%); }
+@keyframes choiTextSweep {
+  from { background-position: 0% center; }
+  to   { background-position: 100% center; }
 }
