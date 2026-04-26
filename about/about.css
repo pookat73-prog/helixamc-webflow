@@ -103,6 +103,5 @@
 .whiteframe_image .about_dialogue,
 .whiteframe_image .about_contents_box_qqqq {
   opacity: 0;
-  transform: translateY(16px);
-  will-change: opacity, transform;
+  will-change: opacity;
 }

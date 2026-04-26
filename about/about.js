@@ -215,8 +215,8 @@
     if (!dialogue && !nameBox) { log('섹션 5 요소(.about_dialogue, .about_contents_box_qqqq)를 찾지 못했습니다.'); return; }
     log('섹션 5 초기화 — dialogue:', !!dialogue, 'nameBox:', !!nameBox);
 
-    if (dialogue) gsap.set(dialogue, { opacity: 0, y: 16 });
-    if (nameBox)  gsap.set(nameBox,  { opacity: 0, y: 16 });
+    if (dialogue) gsap.set(dialogue, { opacity: 0 });
+    if (nameBox)  gsap.set(nameBox,  { opacity: 0 });
 
     if (!window.ScrollTrigger) { log('ScrollTrigger 없음, 섹션 5 건너뜀'); return; }
 
@@ -227,8 +227,8 @@
       onEnter: function () {
         log('섹션 5 트리거 발사');
         var tl = gsap.timeline();
-        if (dialogue) tl.to(dialogue, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, 0);
-        if (nameBox)  tl.to(nameBox,  { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.5);
+        if (dialogue) tl.to(dialogue, { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0);
+        if (nameBox)  tl.to(nameBox,  { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.5);
       }
     });
   }
