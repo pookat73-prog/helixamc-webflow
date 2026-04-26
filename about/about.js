@@ -293,7 +293,7 @@
       /* 라인 1: "않는"의 "는" 오른쪽 0.5vw → 뷰포트 오른쪽 끝 17.2vw
          인물 이미지(.whiteframe_image 중첩) 구간은 두 토막으로 건너뜀 */
       var FACE_L = 62.2 * vw;   /* 얼굴 왼쪽 끝 (vw) */
-      var FACE_R = 73.5 * vw;   /* 얼굴 오른쪽 끝 (vw) */
+      var FACE_R = 73.7 * vw;   /* 얼굴 오른쪽 끝 (vw) */
 
       var cr = getCharRect('않는');
       if (cr) {
