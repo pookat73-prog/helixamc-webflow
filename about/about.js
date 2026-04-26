@@ -226,7 +226,11 @@
       once: true,
       onEnter: function () {
         log('섹션 5 트리거 발사');
-        var tl = gsap.timeline();
+        var tl = gsap.timeline({
+          onComplete: function () {
+            section.dispatchEvent(new CustomEvent('helix-s5-done'));
+          }
+        });
         dialogues.forEach(function (el, i) {
           tl.to(el, { opacity: 1, duration: 0.9, ease: 'power2.out' }, i * 0.8);
         });
@@ -254,22 +258,31 @@
       });
     }
 
-    /* SVG를 첫 번째 자식으로 삽입 → 이후 DOM 요소(사진 등)가 자연스럽게 위에 쌓임 */
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
     section.insertBefore(svg, section.firstChild);
 
     var line1a = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     var line1b = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    var line2  = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    var line3v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    var line4v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    var line2  = document.createElementNS('http://www.w3.org/2000/svg', 'line'); /* 사용자 라인 3 (←) */
+    var line3v = document.createElementNS('http://www.w3.org/2000/svg', 'line'); /* 사용자 라인 2 (↓) */
+    var line4v = document.createElementNS('http://www.w3.org/2000/svg', 'line'); /* 사용자 라인 4 (↑) */
     [line1a, line1b, line2, line3v, line4v].forEach(function (l) {
       l.setAttribute('stroke', '#0075d6');
       l.setAttribute('stroke-width', '1');
       l.setAttribute('stroke-linecap', 'round');
       svg.appendChild(l);
     });
+
+    /* 길이 저장 (애니메이션용) */
+    var L = { a: 0, b: 0, gap: 0, v2: 0, h3: 0, v4: 0 };
+    var linesAnimated = false;
+
+    function setHidden(el, len, dir) {
+      /* dir: 1 = →↓ (positive dashoffset), -1 = ←↑ (negative dashoffset) */
+      el.setAttribute('stroke-dasharray', len);
+      el.setAttribute('stroke-dashoffset', dir * len);
+    }
 
     /* el 내 특정 문자의 마지막 등장 위치 rect 반환 */
     function getLastCharRect(el, char) {
@@ -307,19 +320,14 @@
     function drawLines() {
       var sr  = section.getBoundingClientRect();
       var vw  = window.innerWidth / 100;
+      var line1Y = null, line3Y = null;
 
-      var line1Y = null;   /* 라인 1 y (가로) */
-      var line3Y = null;   /* 라인 3 y (가로) */
-
-      /* ── 라인 1 (가로): "않는"의 "는" 오른쪽 0.5vw → 뷰포트 우측 17.5vw
-         인물 이미지 구간 두 토막으로 건너뜀 ── */
-      var FACE_L = 62.2 * vw;
-      var FACE_R = 73.7 * vw;
-
+      /* ── 라인 1 (→): "않는"의 "는" → 뷰포트 우측 17.5vw, 얼굴 구간 건너뜀 ── */
+      var FACE_L = 62.2 * vw, FACE_R = 73.7 * vw;
       var cr = getCharRect('않는');
       if (cr) {
         var x1   = cr.right - sr.left + 0.5 * vw;
-        line1Y  = cr.top + cr.height / 2 - sr.top;
+        line1Y   = cr.top + cr.height / 2 - sr.top;
         var x2   = window.innerWidth - sr.left - 17.5 * vw;
         var gapL = FACE_L - sr.left;
         var gapR = FACE_R - sr.left;
@@ -327,10 +335,12 @@
         line1a.setAttribute('x2', gapL); line1a.setAttribute('y2', line1Y);
         line1b.setAttribute('x1', gapR); line1b.setAttribute('y1', line1Y);
         line1b.setAttribute('x2', x2);   line1b.setAttribute('y2', line1Y);
+        L.a = gapL - x1; L.b = x2 - gapR; L.gap = gapR - gapL;
+        if (!linesAnimated) { setHidden(line1a, L.a, 1); setHidden(line1b, L.b, 1); }
         log('라인1 y:', line1Y.toFixed(1));
       }
 
-      /* ── 라인 3 (가로): "nomal-parag" 마지막 '다' 오른쪽 0.5vw, '립' 바텀 → 뷰포트 우측 17.5vw ── */
+      /* ── 라인 3 (←): "nomal-parag" 마지막 '다' → '립' 바텀 y ── */
       var paragEl = section.querySelector('.nomal-parag');
       if (paragEl) {
         var daRect  = getLastCharRect(paragEl, '다');
@@ -341,24 +351,27 @@
           var lx2 = window.innerWidth - sr.left - 17.5 * vw;
           line2.setAttribute('x1', lx1); line2.setAttribute('y1', line3Y);
           line2.setAttribute('x2', lx2); line2.setAttribute('y2', line3Y);
+          L.h3 = lx2 - lx1;
+          if (!linesAnimated) setHidden(line2, L.h3, -1);
           log('라인3 y:', line3Y.toFixed(1));
         }
       }
 
-      /* ── 라인 2 (세로): 라인1·3 사이, 위아래 0.5vw 간격, x = 뷰포트 우측 17vw ── */
+      /* ── 라인 2 (↓): 라인1·3 사이, 위아래 0.5vw 간격 ── */
       if (line1Y !== null && line3Y !== null) {
-        var vx = window.innerWidth - sr.left - 17.0 * vw;
+        var vx  = window.innerWidth - sr.left - 17.0 * vw;
         var vy1 = line1Y + 0.5 * vw;
         var vy2 = line3Y - 0.5 * vw;
-        line3v.setAttribute('x1', vx);  line3v.setAttribute('y1', vy1);
-        line3v.setAttribute('x2', vx);  line3v.setAttribute('y2', vy2);
-        log('라인2 x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
+        line3v.setAttribute('x1', vx); line3v.setAttribute('y1', vy1);
+        line3v.setAttribute('x2', vx); line3v.setAttribute('y2', vy2);
+        L.v2 = vy2 - vy1;
+        if (!linesAnimated) setHidden(line3v, L.v2, 1);
+        log('라인2 x:', vx.toFixed(1));
       }
-
     }
 
-    /* 라인 4는 viewport 44vh 고정 → 스크롤마다 재계산 */
-    var imgEl4  = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
+    /* ── 라인 4 (↑): '헬' 좌측, viewport 44vh ~ 이미지 top -0.5vw — 스크롤마다 재계산 ── */
+    var imgEl4   = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
     var helRect4 = null;
     function drawLine4() {
       if (!helRect4) helRect4 = getLastCharRect(section, '헬');
@@ -367,11 +380,37 @@
       var ir4  = imgEl4.getBoundingClientRect();
       var vw4  = window.innerWidth / 100;
       var l4x  = helRect4.left - sr4.left;
-      var l4y1 = window.innerHeight * 0.44 - sr4.top;   /* viewport 44vh → 섹션 상대 좌표 */
+      var l4y1 = window.innerHeight * 0.44 - sr4.top;
       var l4y2 = ir4.top - sr4.top - 0.5 * vw4;
       line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
       line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
+      L.v4 = l4y2 - l4y1;
+      if (!linesAnimated) setHidden(line4v, L.v4, -1);
     }
+
+    /* ── 애니메이션 시퀀스 (helix-s5-done 이벤트 대기) ── */
+    section.addEventListener('helix-s5-done', function () {
+      if (!window.gsap || linesAnimated) return;
+      linesAnimated = true;
+
+      /* 라인1: 일정 속도(→)로 1a → gap 건너뜀 → 1b */
+      var totalL1 = L.a + L.gap + L.b;
+      var D1 = 0.9;
+      var t1a  = L.a   / totalL1 * D1;
+      var tGap = L.gap / totalL1 * D1;
+      var t1b  = L.b   / totalL1 * D1;
+
+      var tl = gsap.timeline();
+      /* 라인 1 → */
+      tl.to(line1a, { attr: { 'stroke-dashoffset': 0 }, duration: t1a,  ease: 'none' }, 0);
+      tl.to(line1b, { attr: { 'stroke-dashoffset': 0 }, duration: t1b,  ease: 'none' }, t1a + tGap);
+      /* 라인 2 ↓ */
+      tl.to(line3v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.35, ease: 'power2.inOut' }, '>0.05');
+      /* 라인 3 ← */
+      tl.to(line2,  { attr: { 'stroke-dashoffset': 0 }, duration: 0.9,  ease: 'none' }, '>0.05');
+      /* 라인 4 ↑ */
+      tl.to(line4v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.5,  ease: 'power2.inOut' }, '>0.05');
+    });
 
     window.addEventListener('load',   drawLines);
     window.addEventListener('resize', drawLines);
