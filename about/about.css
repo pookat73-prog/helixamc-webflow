@@ -3,7 +3,7 @@
    ================================================================ */
 
 /* 섹션 1 — 배경 영상 */
-.About_Background {
+.about_background {
   position: relative;
   overflow: hidden;
 }
@@ -26,14 +26,15 @@
 }
 
 /* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
-.Concept_QQ,
-.Concept_Q,
-.Blur,
-.About_Three_Contents {
+.about_point-number_blue_whrite,
+.about_point-title_blue_whrite,
+.about_contents_3-concept_q,
+.blur-circle-efect,
+.about_three_contents-box {
   opacity: 0;
 }
 
-.Divider_Blue_Grad_No {
+.divider_blue_grad_no-spacing-1 {
   transform: scaleX(0);
   transform-origin: left center;
 }

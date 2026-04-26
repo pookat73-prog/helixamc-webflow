@@ -12,7 +12,7 @@
 
   /* ── 섹션 1 배경 영상 ── */
   function initBgVideo() {
-    var container = document.querySelector('.About_Background');
+    var container = document.querySelector('.about_background');
     if (!container) {
       log('About_Background 요소를 찾지 못했습니다.');
       return;
@@ -37,14 +37,14 @@
       return;
     }
 
-    var strategy   = '.Concept_QQ';           /* STRATEGY 텍스트        */
-    var titleBox   = '.Concept_Q';            /* 우 하단 둥글린 제목 박스  */
-    var divider    = '.Divider_Blue_Grad_No'; /* 그라데이션 밑줄          */
-    var blurCircle = '.Blur';                 /* 블러 원                 */
-    var contentBox = '.About_Three_Contents'; /* 본문 텍스트 박스         */
+    var strategy   = '.about_point-number_blue_whrite, .about_point-title_blue_whrite';
+    var titleBox   = '.about_contents_3-concept_q';
+    var divider    = '.divider_blue_grad_no-spacing-1';
+    var blurCircle = '.blur-circle-efect';
+    var contentBox = '.about_three_contents-box';
 
     /* 요소 존재 확인 */
-    if (!document.querySelector(strategy)) {
+    if (!document.querySelector('.about_point-number_blue_whrite')) {
       log('섹션 2 요소를 찾지 못했습니다. 클래스명을 확인해 주세요.');
       return;
     }
