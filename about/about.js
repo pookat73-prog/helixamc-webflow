@@ -355,17 +355,16 @@
         log('라인3v x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
       }
 
-      /* 라인 4 (세로): '헬' 좌측 x, 이미지 top -0.5vw ~ '옳' bottom +0.5vw */
+      /* 라인 4 (세로): '헬' 좌측 x, 섹션 top 기준 44vh ~ 이미지 top -0.5vw */
       var imgEl  = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
       var helRect = getLastCharRect(section, '헬');
-      var okRect  = getLastCharRect(section, '옳');
-      if (imgEl && helRect && okRect) {
+      if (imgEl && helRect) {
         var ir  = imgEl.getBoundingClientRect();
-        var l4x = helRect.left  - sr.left;
-        var l4y1 = ir.top      - sr.top  - 0.5 * vw;
-        var l4y2 = okRect.bottom - sr.top + 0.5 * vw;
-        line4v.setAttribute('x1', l4x);  line4v.setAttribute('y1', l4y1);
-        line4v.setAttribute('x2', l4x);  line4v.setAttribute('y2', l4y2);
+        var l4x = helRect.left - sr.left;
+        var l4y1 = 0.44 * window.innerHeight;
+        var l4y2 = ir.top - sr.top - 0.5 * vw;
+        line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
+        line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
         log('라인4v x:', l4x.toFixed(1), 'y1:', l4y1.toFixed(1), 'y2:', l4y2.toFixed(1));
       }
     }
