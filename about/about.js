@@ -249,11 +249,14 @@
     svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
     section.insertBefore(svg, section.firstChild);
 
-    var line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line1.setAttribute('stroke', '#0075d6');
-    line1.setAttribute('stroke-width', '1');
-    line1.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(line1);
+    var line1a = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    var line1b = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    [line1a, line1b].forEach(function (l) {
+      l.setAttribute('stroke', '#0075d6');
+      l.setAttribute('stroke-width', '1');
+      l.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(l);
+    });
 
     function getCharRect(searchStr) {
       var dialogues = section.querySelectorAll('.about_dialogue');
@@ -277,15 +280,30 @@
       var sr  = section.getBoundingClientRect();
       var vw  = window.innerWidth / 100;
 
-      /* 라인 1: "않는"의 "는" 오른쪽 0.5vw → 뷰포트 오른쪽 끝 17.2vw 지점 */
-      var cr = getCharRect('않는');
+      /* 라인 1: "않는"의 "는" 오른쪽 0.5vw → 뷰포트 오른쪽 끝 17.2vw
+         인물 이미지(.whiteframe_image 중첩) 구간은 두 토막으로 건너뜀 */
+      var cr    = getCharRect('않는');
+      var photo = section.querySelector('.whiteframe_image');
       if (cr) {
-        var x1 = cr.right  - sr.left + 0.5 * vw;
-        var y1 = cr.top + cr.height / 2 - sr.top;
-        var x2 = window.innerWidth - sr.left - 17.2 * vw;
-        line1.setAttribute('x1', x1); line1.setAttribute('y1', y1);
-        line1.setAttribute('x2', x2); line1.setAttribute('y2', y1);
-        log('라인1 x1:', x1.toFixed(1), 'y1:', y1.toFixed(1), 'x2:', x2.toFixed(1));
+        var x1  = cr.right - sr.left + 0.5 * vw;
+        var y1  = cr.top + cr.height / 2 - sr.top;
+        var x2  = window.innerWidth - sr.left - 17.2 * vw;
+
+        if (photo) {
+          var pr   = photo.getBoundingClientRect();
+          var gapL = pr.left  - sr.left;
+          var gapR = pr.right - sr.left;
+          /* 세그먼트 1: 시작 → 사진 왼쪽 */
+          line1a.setAttribute('x1', x1);   line1a.setAttribute('y1', y1);
+          line1a.setAttribute('x2', gapL); line1a.setAttribute('y2', y1);
+          /* 세그먼트 2: 사진 오른쪽 → 끝 */
+          line1b.setAttribute('x1', gapR); line1b.setAttribute('y1', y1);
+          line1b.setAttribute('x2', x2);   line1b.setAttribute('y2', y1);
+          log('라인1 x1:', x1.toFixed(1), 'gapL:', gapL.toFixed(1), 'gapR:', gapR.toFixed(1), 'x2:', x2.toFixed(1));
+        } else {
+          line1a.setAttribute('x1', x1); line1a.setAttribute('y1', y1);
+          line1a.setAttribute('x2', x2); line1a.setAttribute('y2', y1);
+        }
       }
     }
 
