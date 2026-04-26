@@ -37,10 +37,13 @@
       var subheaderTop   = subheader.getBoundingClientRect().top  + scrollY;
       var containerTop   = container.getBoundingClientRect().top  + scrollY;
 
-      var cropPx = 0.006 * window.innerWidth; /* 0.6vw */
-      video.style.top    = (headerBottom - containerTop - cropPx) + 'px';
-      video.style.height = (subheaderTop - headerBottom + cropPx * 2) + 'px';
-      log('영상 top:', video.style.top, 'height:', video.style.height);
+      var scrollY       = window.scrollY || window.pageYOffset;
+      var containerBottom = container.getBoundingClientRect().bottom + scrollY;
+
+      video.style.top    = '';
+      video.style.height = (subheaderTop - headerBottom) + 'px';
+      video.style.bottom = (containerBottom - subheaderTop) + 'px';
+      log('영상 height:', video.style.height, 'bottom:', video.style.bottom);
     }
 
     setVideoSize();

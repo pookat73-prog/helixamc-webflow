@@ -15,7 +15,7 @@
   width: auto;
   z-index: -1;
   pointer-events: none;
-  clip-path: inset(0.6vw 0);
+  clip-path: inset(0.8vw 0);
 }
 
 /* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
