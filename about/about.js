@@ -376,7 +376,7 @@
       }
     }
 
-    /* ── 라인 4 (↑): '헬' 좌측, viewport 44vh ~ 이미지 top -0.5vw — 스크롤마다 재계산 ── */
+    /* ── 라인 4 (↑): '헬' 좌측, 섹션 상단 18.3vw ~ 이미지 top -0.5vw — 고정값 ── */
     var imgEl4   = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
     var helRect4 = null;
     function drawLine4() {
@@ -386,13 +386,12 @@
       var ir4  = imgEl4.getBoundingClientRect();
       var vw4  = window.innerWidth / 100;
       var l4x  = helRect4.left - sr4.left;
-      var l4y1 = window.innerHeight * 0.44 - sr4.top;
+      var l4y1 = 18.3 * vw4;
       var l4y2 = ir4.top - sr4.top - 0.5 * vw4;
       line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
       line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
       L.v4 = l4y2 - l4y1;
       if (linesAnimated) {
-        /* 애니메이션 후: 좌표만 추적, 라인 항상 풀 표시 */
         line4v.setAttribute('stroke-dasharray', L.v4);
         line4v.setAttribute('stroke-dashoffset', 0);
       } else {
@@ -424,9 +423,8 @@
       tl.to(line4v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.65, ease: 'expo.inOut' }, '>');
     });
 
-    window.addEventListener('load',   drawLines);
-    window.addEventListener('resize', drawLines);
-    window.addEventListener('scroll', drawLine4, { passive: true });
+    window.addEventListener('load',   function () { drawLines(); drawLine4(); });
+    window.addEventListener('resize', function () { drawLines(); drawLine4(); });
     drawLines();
     drawLine4();
   }
