@@ -21,7 +21,6 @@
 /* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
 .about_point-number_blue_whrite,
 .about_point-title_blue_whrite,
-.about_contents_3-concept_q,
 .blur-circle-efect,
 .about_three_contents-box {
   opacity: 0;

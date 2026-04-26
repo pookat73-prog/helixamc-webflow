@@ -57,39 +57,37 @@
       return;
     }
 
-    var strategy   = '.about_point-number_blue_whrite, .about_point-title_blue_whrite';
-    var titleBox   = '.about_contents_3-concept_q';
-    var divider    = '.divider_blue_grad_no-spacing-1';
-    var blurCircle = '.blur-circle-efect';
-    var contentBox = '.about_three_contents-box';
+    var cards = document.querySelectorAll('.about_contents_3-concept_q');
+    if (!cards.length) { log('섹션 2 카드를 찾지 못했습니다.'); return; }
 
-    /* 요소 존재 확인 */
-    if (!document.querySelector('.about_point-number_blue_whrite')) {
-      log('섹션 2 요소를 찾지 못했습니다. 클래스명을 확인해 주세요.');
-      return;
-    }
+    log('섹션 2 카드', cards.length, '개 발견');
 
-    /* 초기 상태 — 모두 보이지 않게 */
-    gsap.set([strategy, titleBox, blurCircle], { opacity: 0 });
-    gsap.set(contentBox, { opacity: 0, y: 24 });
-    gsap.set(divider, { scaleX: 0, transformOrigin: 'left center' });
+    cards.forEach(function (card, i) {
+      var strategy   = card.querySelectorAll('.about_point-number_blue_whrite, .about_point-title_blue_whrite');
+      var divider    = card.querySelector('.divider_blue_grad_no-spacing-1');
+      var blurCircle = card.querySelector('.blur-circle-efect');
+      var contentBox = card.querySelector('.about_three_contents-box');
 
-    log('섹션 2 초기화 완료');
+      /* 카드별 초기 상태 */
+      gsap.set(strategy, { opacity: 0 });
+      if (divider)    gsap.set(divider,    { scaleX: 0, transformOrigin: 'left center' });
+      if (blurCircle) gsap.set(blurCircle, { opacity: 0 });
+      if (contentBox) gsap.set(contentBox, { opacity: 0, y: 24 });
 
-    /* 스크롤 트리거 타임라인 — 0.3초 간격 엇박자 */
-    var tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: strategy,
-        start: 'top 75%',
-        onEnter: function () { log('섹션 2 트리거 발동'); }
-      }
+      /* 카드별 독립 ScrollTrigger */
+      var tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 75%',
+          onEnter: function () { log('카드', i + 1, '트리거'); }
+        }
+      });
+
+      tl.to(strategy,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0)
+        .to(divider,    { scaleX: 1,  duration: 1,   ease: 'power2.inOut' }, 0.3)
+        .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.6)
+        .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0.9);
     });
-
-    tl.to(strategy,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0)
-      .to(titleBox,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0.3)
-      .to(divider,    { scaleX: 1,  duration: 1,   ease: 'power2.inOut' }, 0.6)
-      .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.9)
-      .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.2);
   }
 
   function init() {
