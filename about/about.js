@@ -98,9 +98,36 @@
     });
   }
 
+  /* ── 섹션 3 버튼 글로우 ── */
+  function initButtonGlow() {
+    var buttons = document.querySelectorAll('.cta_seocho_button');
+    if (!buttons.length) { log('버튼을 찾지 못했습니다.'); return; }
+
+    log('버튼', buttons.length, '개 발견');
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        observer.unobserve(el);
+
+        var maxGlow = '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 8.0vw 0.15vw rgba(0,117,214,0.30)';
+        el.style.setProperty('box-shadow', maxGlow, 'important');
+        setTimeout(function () {
+          el.style.removeProperty('box-shadow');
+          el.classList.add('is-looping');
+        }, 1500);
+      });
+    }, { threshold: 0.3 });
+
+    buttons.forEach(function (el) { observer.observe(el); });
+  }
+
   function init() {
     initBgVideo();
     initSection2();
+    window.Webflow = window.Webflow || [];
+    window.Webflow.push(function () { setTimeout(initButtonGlow, 100); });
   }
 
   if (document.readyState === 'loading') {
