@@ -11,10 +11,6 @@
   will-change: box-shadow;
 }
 
-/* overflow: hidden → ::before 반사광이 버튼 border-radius에 맞춰 자동 클리핑 */
-.bt-box-1, .bt-box-2, .bt-box-3 {
-  overflow: hidden;
-}
 
 /* 2. bt-box-1/2/3: 페이드인 완료 후 CSS animation으로 shimmer
    transition: none으로 box-shadow 페이드인 개입 차단 → 최고밝기로 즉시 시작 */
@@ -57,7 +53,7 @@
     rgba(100, 190, 255, 0.95) 0%,
     rgba(0, 150, 255, 0.70) 35%,
     transparent 68%);
-  clip-path: polygon(0 0, 90% 0, 0 90%);
+  border-radius: 0.8vw 0 0 0;
   filter: blur(0.8px);
   pointer-events: none;
   opacity: 0;
