@@ -122,7 +122,7 @@
 
   /* ── 서브헤더 활성 밑줄 ── */
   function initSubheaderNav() {
-    var navItems = document.querySelectorAll('.subheader_title');
+    var navItems = document.querySelectorAll('.subheader_click-area');
     if (!navItems.length) { log('서브헤더 메뉴를 찾지 못했습니다.'); return; }
     log('서브헤더 메뉴', navItems.length, '개 발견');
 
