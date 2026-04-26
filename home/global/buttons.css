@@ -55,6 +55,7 @@
     transparent 68%);
   border-radius: 0.7vw 0 0 0;
   filter: blur(0.8px);
+  mix-blend-mode: multiply;
   pointer-events: none;
   opacity: 0;
   z-index: 2;
@@ -67,8 +68,8 @@
 }
 
 @keyframes blueReflect {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.70; }
+  0%, 100% { opacity: 0.75; }
+  50%       { opacity: 0.08; }
 }
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
