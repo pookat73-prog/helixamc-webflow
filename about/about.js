@@ -46,7 +46,12 @@
       log('영상 height:', videoHeight, 'top:', video.style.top);
     }
 
-    setVideoSize();
+    /* 처음엔 숨겨두고 위치 계산 후에 보여줌 (툭 튀는 현상 방지) */
+    video.style.opacity = '0';
+    window.addEventListener('load', function () {
+      setVideoSize();
+      video.style.opacity = '1';
+    });
     window.addEventListener('resize', setVideoSize);
   }
 
@@ -85,8 +90,8 @@
         }
       });
 
-      tl.to(titleBox,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0)
-        .to(strategy,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0.3)
+      tl.to(strategy,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0)
+        .to(titleBox,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0.3)
         .to(divider,    { scaleX: 1,  duration: 1,   ease: 'power2.inOut' }, 0.6)
         .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.9)
         .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.2);
