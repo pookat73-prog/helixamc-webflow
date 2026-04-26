@@ -120,29 +120,39 @@
     });
   }
 
-  /* ── 섹션 3 버튼 글로우 ── */
+  /* ── 버튼 글로우 (블루/퍼플) ── */
   function initButtonGlow() {
-    var buttons = document.querySelectorAll('.cta_seocho_button');
-    if (!buttons.length) { log('버튼을 찾지 못했습니다.'); return; }
+    var blueButtons   = document.querySelectorAll('.cta_seocho_button');
+    var purpleButtons = document.querySelectorAll('.link-block');
 
-    log('버튼', buttons.length, '개 발견');
+    if (!blueButtons.length && !purpleButtons.length) { log('버튼을 찾지 못했습니다.'); return; }
+    log('블루버튼', blueButtons.length, '개 / 퍼플버튼', purpleButtons.length, '개 발견');
 
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        observer.unobserve(el);
+    function makeGlowObserver(color) {
+      var maxGlow = color === 'purple'
+        ? '0 0 0.6vw 0.18vw rgba(85,40,170,0.90), 0 0 8.0vw 0.15vw rgba(85,40,170,0.30)'
+        : '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 8.0vw 0.15vw rgba(0,117,214,0.30)';
 
-        var maxGlow = '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 8.0vw 0.15vw rgba(0,117,214,0.30)';
-        el.style.setProperty('box-shadow', maxGlow, 'important');
-        setTimeout(function () {
-          el.style.removeProperty('box-shadow');
-          el.classList.add('is-looping');
-        }, 1500);
-      });
-    }, { threshold: 0.3 });
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          obs.unobserve(el);
+          el.style.setProperty('box-shadow', maxGlow, 'important');
+          setTimeout(function () {
+            el.style.removeProperty('box-shadow');
+            el.classList.add('is-looping');
+          }, 1500);
+        });
+      }, { threshold: 0.3 });
+      return obs;
+    }
 
-    buttons.forEach(function (el) { observer.observe(el); });
+    var blueObs   = makeGlowObserver('blue');
+    var purpleObs = makeGlowObserver('purple');
+
+    blueButtons.forEach(function (el) { blueObs.observe(el); });
+    purpleButtons.forEach(function (el) { purpleObs.observe(el); });
   }
 
   function init() {
