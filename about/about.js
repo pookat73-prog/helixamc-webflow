@@ -205,11 +205,40 @@
     purpleButtons.forEach(function (el) { purpleObs.observe(el); });
   }
 
+  /* ── 섹션 5 페이드인 ── */
+  function initSection5() {
+    var section  = document.querySelector('.whiteframe_image');
+    if (!section) { log('섹션 5(.whiteframe_image)를 찾지 못했습니다.'); return; }
+
+    var dialogue = section.querySelector('.about_dialogue');
+    var nameBox  = section.querySelector('.about_contents_box_qqqq');
+    if (!dialogue && !nameBox) { log('섹션 5 요소(.about_dialogue, .about_contents_box_qqqq)를 찾지 못했습니다.'); return; }
+    log('섹션 5 초기화 — dialogue:', !!dialogue, 'nameBox:', !!nameBox);
+
+    if (dialogue) gsap.set(dialogue, { opacity: 0, y: 16 });
+    if (nameBox)  gsap.set(nameBox,  { opacity: 0, y: 16 });
+
+    if (!window.ScrollTrigger) { log('ScrollTrigger 없음, 섹션 5 건너뜀'); return; }
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'bottom bottom',
+      once: true,
+      onEnter: function () {
+        log('섹션 5 트리거 발사');
+        var tl = gsap.timeline();
+        if (dialogue) tl.to(dialogue, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' }, 0);
+        if (nameBox)  tl.to(nameBox,  { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 0.5);
+      }
+    });
+  }
+
   function init() {
     initSection1();
     initBgVideo();
     initSection2();
     initSubheaderNav();
+    initSection5();
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () { setTimeout(initButtonGlow, 100); });
   }

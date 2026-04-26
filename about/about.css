@@ -98,3 +98,11 @@
   transform: scaleX(0);
   transform-origin: left center;
 }
+
+/* 섹션 5 — 초기 숨김 */
+.whiteframe_image .about_dialogue,
+.whiteframe_image .about_contents_box_qqqq {
+  opacity: 0;
+  transform: translateY(16px);
+  will-change: opacity, transform;
+}
