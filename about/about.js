@@ -37,8 +37,9 @@
       var subheaderTop   = subheader.getBoundingClientRect().top  + scrollY;
       var containerTop   = container.getBoundingClientRect().top  + scrollY;
 
-      video.style.top    = (headerBottom - containerTop) + 'px';
-      video.style.height = (subheaderTop - headerBottom) + 'px';
+      var cropPx = 0.002 * window.innerWidth; /* 0.2vw */
+      video.style.top    = (headerBottom - containerTop - cropPx) + 'px';
+      video.style.height = (subheaderTop - headerBottom + cropPx * 2) + 'px';
       log('영상 top:', video.style.top, 'height:', video.style.height);
     }
 
