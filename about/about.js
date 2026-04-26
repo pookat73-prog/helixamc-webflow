@@ -101,7 +101,7 @@
       gsap.set(strategy, { opacity: 0 });
       if (divider)    gsap.set(divider,    { scaleX: 0, transformOrigin: 'left center' });
       if (blurCircle) gsap.set(blurCircle, { opacity: 0 });
-      if (contentBox) gsap.set(contentBox, { opacity: 0, y: 24 });
+      if (contentBox) gsap.set(contentBox, { opacity: 0, y: -24 });
 
       /* 카드별 독립 ScrollTrigger */
       var tl = gsap.timeline({
