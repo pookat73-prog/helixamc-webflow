@@ -228,9 +228,9 @@
         log('섹션 5 트리거 발사');
         var tl = gsap.timeline();
         dialogues.forEach(function (el, i) {
-          tl.to(el, { opacity: 1, duration: 0.9, ease: 'power2.out' }, i * 0.45);
+          tl.to(el, { opacity: 1, duration: 0.9, ease: 'power2.out' }, i * 0.8);
         });
-        if (nameBox) tl.to(nameBox, { opacity: 1, duration: 0.8, ease: 'power2.out' }, dialogues.length * 0.45);
+        if (nameBox) tl.to(nameBox, { opacity: 1, duration: 0.8, ease: 'power2.out' }, dialogues.length * 0.8);
       }
     });
   }
