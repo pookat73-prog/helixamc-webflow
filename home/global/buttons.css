@@ -68,8 +68,11 @@
 }
 
 @keyframes blueReflect {
-  0%, 100% { opacity: 0.75; }
-  50%       { opacity: 0.08; }
+  0%        { opacity: 0; }
+  15%       { opacity: 0.22; }
+  50%       { opacity: 0.03; }
+  85%       { opacity: 0.22; }
+  100%      { opacity: 0; }
 }
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
