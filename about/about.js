@@ -14,20 +14,36 @@
   function initBgVideo() {
     var container = document.querySelector('.about_background');
     if (!container) {
-      log('About_Background 요소를 찾지 못했습니다.');
+      log('about_background 요소를 찾지 못했습니다.');
       return;
     }
 
     var video = document.createElement('video');
-    video.src        = VIDEO_URL;
-    video.autoplay   = true;
-    video.muted      = true;
+    video.src         = VIDEO_URL;
+    video.autoplay    = true;
+    video.muted       = true;
     video.playsInline = true;
-    video.loop       = false;
-    video.className  = 'about-bg-video';
-
+    video.loop        = false;
+    video.className   = 'about-bg-video';
     container.insertBefore(video, container.firstChild);
-    log('배경 영상 삽입 완료');
+
+    function setVideoSize() {
+      var header    = document.querySelector('header') || document.querySelector('.header');
+      var subheader = document.querySelector('.subheader') || document.querySelector('.about_contents_sub-title');
+      if (!header || !subheader) { log('헤더 또는 서브헤더 요소를 찾지 못했습니다.'); return; }
+
+      var scrollY        = window.scrollY || window.pageYOffset;
+      var headerBottom   = header.getBoundingClientRect().bottom + scrollY;
+      var subheaderTop   = subheader.getBoundingClientRect().top  + scrollY;
+      var containerTop   = container.getBoundingClientRect().top  + scrollY;
+
+      video.style.top    = (headerBottom - containerTop) + 'px';
+      video.style.height = (subheaderTop - headerBottom) + 'px';
+      log('영상 top:', video.style.top, 'height:', video.style.height);
+    }
+
+    setVideoSize();
+    window.addEventListener('resize', setVideoSize);
   }
 
   /* ── 섹션 2 애니메이션 ── */
