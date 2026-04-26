@@ -37,9 +37,10 @@
 }
 
 /* ================================================================
-   블루 코너 반사광 — bt-box-1/2/3
+   블루 코너 반사광 — bt-box-1/2/3 [DISABLED]
    좌상단 삼각형, glowShimmer와 동기화 (5.0s)
    ================================================================ */
+/*
 .bt-box-1::before,
 .bt-box-2::before,
 .bt-box-3::before {
@@ -73,6 +74,7 @@
   85%       { opacity: 0.22; }
   100%      { opacity: 0; }
 }
+*/
 
 /* 3. keyframes (bt-box-2/3/4 용 — buttons.js GSAP fallback 대비) */
 @keyframes glowLoopBlue {
