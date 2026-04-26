@@ -263,7 +263,8 @@
     var line1b = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     var line2  = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     var line3v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    [line1a, line1b, line2, line3v].forEach(function (l) {
+    var line4v = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    [line1a, line1b, line2, line3v, line4v].forEach(function (l) {
       l.setAttribute('stroke', '#0075d6');
       l.setAttribute('stroke-width', '1');
       l.setAttribute('stroke-linecap', 'round');
@@ -344,7 +345,7 @@
         }
       }
 
-      /* 라인 3 (세로): 두 선 사이, 위아래 0.3vw 간격, x = 뷰포트 우측 17.5vw */
+      /* 라인 3 (세로): 두 선 사이, 위아래 0.5vw 간격, x = 뷰포트 우측 17vw */
       if (line1Y !== null && line2Y !== null) {
         var vx = window.innerWidth - sr.left - 17.0 * vw;
         var vy1 = line1Y + 0.5 * vw;
@@ -352,6 +353,20 @@
         line3v.setAttribute('x1', vx);  line3v.setAttribute('y1', vy1);
         line3v.setAttribute('x2', vx);  line3v.setAttribute('y2', vy2);
         log('라인3v x:', vx.toFixed(1), 'y1:', vy1.toFixed(1), 'y2:', vy2.toFixed(1));
+      }
+
+      /* 라인 4 (세로): '헬' 좌측 x, 이미지 top -0.5vw ~ '옳' bottom +0.5vw */
+      var imgEl  = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
+      var helRect = getLastCharRect(section, '헬');
+      var okRect  = getLastCharRect(section, '옳');
+      if (imgEl && helRect && okRect) {
+        var ir  = imgEl.getBoundingClientRect();
+        var l4x = helRect.left  - sr.left;
+        var l4y1 = ir.top      - sr.top  - 0.5 * vw;
+        var l4y2 = okRect.bottom - sr.top + 0.5 * vw;
+        line4v.setAttribute('x1', l4x);  line4v.setAttribute('y1', l4y1);
+        line4v.setAttribute('x2', l4x);  line4v.setAttribute('y2', l4y2);
+        log('라인4v x:', l4x.toFixed(1), 'y1:', l4y1.toFixed(1), 'y2:', l4y2.toFixed(1));
       }
     }
 
