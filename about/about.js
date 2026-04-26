@@ -402,8 +402,8 @@
 
       var tl = gsap.timeline();
       /* 라인 1 → */
-      tl.to(line1a, { attr: { 'stroke-dashoffset': 0 }, duration: t1a,  ease: 'expo.inOut' }, 0);
-      tl.to(line1b, { attr: { 'stroke-dashoffset': 0 }, duration: t1b,  ease: 'expo.inOut' }, t1a + tGap);
+      tl.to(line1a, { attr: { 'stroke-dashoffset': 0 }, duration: t1a,  ease: 'expo.in' },  0);
+      tl.to(line1b, { attr: { 'stroke-dashoffset': 0 }, duration: t1b,  ease: 'expo.out' }, t1a + tGap);
       /* 라인 2 ↓ */
       tl.to(line3v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.45, ease: 'expo.inOut' }, '>0.2');
       /* 라인 3 ← */
