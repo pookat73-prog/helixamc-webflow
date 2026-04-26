@@ -244,6 +244,16 @@
       section.style.position = 'relative';
     }
 
+    /* 좌표 디버그 오버레이 (?debug-lines=1) */
+    if (window.location.search.indexOf('debug-lines=1') !== -1) {
+      var label = document.createElement('div');
+      label.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#0075d6;font:14px monospace;padding:6px 12px;border-radius:4px;z-index:99999;pointer-events:none;';
+      document.body.appendChild(label);
+      document.addEventListener('mousemove', function(e) {
+        label.textContent = (e.clientX / window.innerWidth * 100).toFixed(1) + 'vw  |  ' + (e.clientY / window.innerHeight * 100).toFixed(1) + 'vh';
+      });
+    }
+
     /* SVG를 첫 번째 자식으로 삽입 → 이후 DOM 요소(사진 등)가 자연스럽게 위에 쌓임 */
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
