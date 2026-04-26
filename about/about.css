@@ -105,3 +105,14 @@
   opacity: 0;
   will-change: opacity;
 }
+
+/* 섹션 7 — 초기 숨김 */
+.whiteframe_open .about_history_title_box {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.whiteframe_open .about_history_time-line {
+  opacity: 0;
+  will-change: opacity, transform;
+}

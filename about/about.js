@@ -430,6 +430,72 @@
     drawLine4();
   }
 
+  /* ── 섹션 7 연혁 타임라인 ── */
+  function initSection7() {
+    var section = document.querySelector('.whiteframe_open');
+    if (!section) { log('섹션 7(.whiteframe_open) 없음'); return; }
+    if (!window.gsap || !window.ScrollTrigger) { log('GSAP/ScrollTrigger 없음'); return; }
+
+    var titleBox = section.querySelector('.about_history_title_box');
+    var line     = section.querySelector('.white-frame_connect');
+    var items    = section.querySelectorAll('.about_history_time-line');
+
+    if (!items.length) { log('섹션 7 타임라인 아이템 없음'); return; }
+    log('섹션 7 아이템', items.length, '개 발견');
+
+    /* 초기 상태 */
+    if (titleBox) gsap.set(titleBox, { opacity: 0, y: -20 });
+    if (line)     gsap.set(line, { scaleY: 0, transformOrigin: 'top center' });
+    gsap.set(items, { opacity: 0, x: -32 });
+
+    /* 제목 진입 */
+    if (titleBox) {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 78%',
+        once: true,
+        onEnter: function () {
+          gsap.to(titleBox, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+        }
+      });
+    }
+
+    /* 수직선 — 아이템 전체 구간에 걸쳐 그려짐 */
+    if (line) {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 75%',
+        once: true,
+        onEnter: function () {
+          gsap.to(line, {
+            scaleY: 1,
+            duration: items.length * 0.18 + 0.6,
+            ease: 'power2.inOut',
+            delay: 0.2
+          });
+        }
+      });
+    }
+
+    /* 각 아이템 개별 진입 */
+    items.forEach(function (item, i) {
+      ScrollTrigger.create({
+        trigger: item,
+        start: 'top 85%',
+        once: true,
+        onEnter: function () {
+          gsap.to(item, {
+            opacity: 1,
+            x: 0,
+            duration: 0.55,
+            ease: 'power2.out',
+            delay: 0.06 * i
+          });
+        }
+      });
+    });
+  }
+
   function init() {
     initSection1();
     initBgVideo();
@@ -437,6 +503,7 @@
     initSubheaderNav();
     initSection5();
     initSection5Lines();
+    initSection7();
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () { setTimeout(initButtonGlow, 100); });
   }
