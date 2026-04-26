@@ -46,13 +46,13 @@
   position: absolute;
   top: 4px;
   left: 4px;
-  width: 40%;
-  height: 40%;
+  width: 65%;
+  height: 65%;
   background: linear-gradient(145deg,
     rgba(100, 190, 255, 0.95) 0%,
     rgba(0, 150, 255, 0.70) 35%,
     transparent 68%);
-  clip-path: polygon(0 0, 88% 0, 0 88%);
+  clip-path: polygon(0% 13%, 2% 6%, 6% 2%, 13% 0%, 90% 0%, 0% 90%);
   filter: blur(0.8px);
   pointer-events: none;
   opacity: 0;
