@@ -374,6 +374,7 @@
     var imgEl4   = section.querySelector('img[src*="69d48bdd4f64fe0069378849"]');
     var helRect4 = null;
     function drawLine4() {
+      if (linesAnimated) return;
       if (!helRect4) helRect4 = getLastCharRect(section, '헬');
       if (!imgEl4 || !helRect4) return;
       var sr4  = section.getBoundingClientRect();
