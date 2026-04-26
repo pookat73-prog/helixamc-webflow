@@ -109,17 +109,50 @@
     }
 
     /* ──────────────────────────────────────────────────────────
-       2. 섹션 3 헤딩 fade-in (IntersectionObserver 유지)
+       2. 섹션 3 헤딩 + 버튼 3 + 이미지 공동 트리거 (섹션 2 동일 패턴)
+          헤딩: sec3Head top 65% 도달 시 즉시 0.7s ease-out 페이드인
+          버튼: 0.15s 후 페이드인 → 1.5s 홀드 → is-looping
+          이미지: 버튼 페이드인 시작 0.3s 후 scale 0.88→1
     ────────────────────────────────────────────────────────── */
+    var btn3 = document.querySelector('.bt-box-3');
+    var img3 = document.querySelector('.div-block-153');
     if (sec3Head) {
-      var io3 = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) {
-          sec3Head.style.transition = 'opacity 0.9s ease';
-          sec3Head.style.opacity    = '1';
-          io3.disconnect();
+      ScrollTrigger.create({
+        trigger: sec3Head,
+        start: 'top 65%',
+        once: true,
+        onEnter: function () {
+          gsap.to(sec3Head, { opacity: 1, duration: 0.7, ease: 'power2.out' });
+
+          if (btn3) {
+            btn3.style.setProperty('box-shadow', '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 8.0vw 0.15vw rgba(0,117,214,0.30)', 'important');
+            gsap.to(btn3, {
+              opacity: 1,
+              duration: 0.4,
+              ease: 'power2.out',
+              delay: 0.15,
+              onComplete: function () {
+                setTimeout(function () {
+                  btn3.style.removeProperty('box-shadow');
+                  btn3.classList.add('is-looping');
+                }, 1500);
+              }
+            });
+          }
+
+          if (img3) {
+            gsap.to(img3, {
+              opacity: 1,
+              scale: 1,
+              duration: 0.6,
+              ease: 'power2.out',
+              delay: 0.3
+            });
+          }
+
+          log('sec3 heading + btn3 + img3 fade-in');
         }
-      }, { threshold: 0.15 });
-      io3.observe(sec3Head);
+      });
     }
 
     /* ──────────────────────────────────────────────────────────
