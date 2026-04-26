@@ -1,0 +1,17 @@
+/* ================================================================
+   SECTION CONNECTOR SVG: Helix line powered by ScrollTrigger.
+   All positioning and stroke animation handled via JS.
+   ================================================================ */
+
+.helix-line-svg {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 9999;
+}
+
+.helix-line-path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  shape-rendering: geometricPrecision;
+}

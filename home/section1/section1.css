@@ -1,0 +1,23 @@
+/* ================================================================
+   SECTION 1: HOME PAGE HERO ANIMATION
+   CSS only - no external dependencies
+
+   Glow keyframes/classes live in home/global/buttons.css.
+   This file only declares Hero-specific initial state.
+   ================================================================ */
+
+/* 1. Dark canvas: ensure background is dark even if bg layer is hidden */
+.home_background {
+  background-color: #0d1117 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 2. GSAP-controlled elements: FOUC-prevention initial hide */
+.home_slogan,
+.div-block-150,
+.bt-box-1 {
+  opacity: 0;
+  visibility: hidden;
+  transition: none !important;
+}

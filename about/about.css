@@ -1,0 +1,108 @@
+/* ================================================================
+   HELIX AMC - ABOUT PAGE CSS
+   ================================================================ */
+
+/* 섹션 1 — 배경 영상 */
+.about_background {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.about-bg-video {
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: -1;
+  pointer-events: none;
+  clip-path: inset(0.8vw 0);
+}
+
+/* 섹션 1 — 헤드/서브헤드 초기 숨김 */
+.section2-heading,
+.about_contents_sub-title {
+  opacity: 0;
+}
+
+/* 서브헤더 메뉴 밑줄 */
+.subheader_click-area {
+  text-decoration: none !important;
+}
+
+.subheader_title {
+  position: relative;
+  display: inline-block;
+}
+
+.subheader_title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #0075d6;
+  transition: width 0.2s ease;
+}
+
+.subheader_click-area:hover .subheader_title::after,
+.subheader_click-area.is-active .subheader_title::after {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .subheader_title::after {
+    height: 2px;
+  }
+}
+
+/* 섹션 3 — CTA 버튼 글로우 */
+.cta_seocho_button,
+.link-block,
+.cta-style {
+  transition: box-shadow 0.6s ease;
+  will-change: box-shadow;
+}
+
+.cta_seocho_button.is-looping,
+.cta-style.is-looping {
+  animation: aboutGlowShimmerBlue 5.0s infinite cubic-bezier(0.37, 0, 0.63, 1) !important;
+  transition: none !important;
+}
+
+.link-block.is-looping {
+  animation: aboutGlowShimmerPurple 5.0s infinite cubic-bezier(0.37, 0, 0.63, 1) !important;
+  transition: none !important;
+}
+
+@keyframes aboutGlowShimmerBlue {
+  0%, 100% { box-shadow: 0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 8.0vw 0.15vw rgba(0,117,214,0.30); }
+  50%       { box-shadow: 0 0 0.45vw 0.12vw rgba(0,117,214,0.88), 0 0 4.5vw 0.2vw rgba(0,117,214,0.20); }
+}
+
+@keyframes aboutGlowShimmerPurple {
+  0%, 100% { box-shadow: 0 0 0.6vw 0.18vw rgba(85,40,170,0.90), 0 0 8.0vw 0.15vw rgba(85,40,170,0.30); }
+  50%       { box-shadow: 0 0 0.45vw 0.12vw rgba(85,40,170,0.88), 0 0 4.5vw 0.2vw rgba(85,40,170,0.20); }
+}
+
+/* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
+.about_point-number_blue_whrite,
+.about_point-title_blue_whrite,
+.about_contents_3-concept_q,
+.blur-circle-efect,
+.about_three_contents-box {
+  opacity: 0;
+}
+
+.divider_blue_grad_no-spacing-1 {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* 섹션 5 — 초기 숨김 */
+.whiteframe_image .about_dialogue,
+.whiteframe_image .about_contents_box_qqqq {
+  opacity: 0;
+  transform: translateY(16px);
+  will-change: opacity, transform;
+}
