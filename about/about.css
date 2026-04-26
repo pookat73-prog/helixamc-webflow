@@ -24,6 +24,30 @@
   opacity: 0;
 }
 
+/* 서브헤더 메뉴 밑줄 */
+.subheader_title {
+  position: relative;
+  text-decoration: none !important;
+}
+
+.subheader_title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.15vw;
+  background: #0075d6;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.2s ease;
+}
+
+.subheader_title:hover::after,
+.subheader_title.is-active::after {
+  transform: scaleX(1);
+}
+
 /* 섹션 3 — CTA 버튼 글로우 */
 .cta_seocho_button,
 .link-block,

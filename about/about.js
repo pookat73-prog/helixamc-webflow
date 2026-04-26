@@ -120,6 +120,48 @@
     });
   }
 
+  /* ── 서브헤더 활성 밑줄 ── */
+  function initSubheaderNav() {
+    var navItems = document.querySelectorAll('.subheader_title');
+    if (!navItems.length) { log('서브헤더 메뉴를 찾지 못했습니다.'); return; }
+    log('서브헤더 메뉴', navItems.length, '개 발견');
+
+    /* href="#id" 기반으로 섹션 연결 */
+    var pairs = [];
+    navItems.forEach(function (item) {
+      var href = item.getAttribute('href') || '';
+      if (!href.startsWith('#')) return;
+      var section = document.querySelector(href);
+      if (section) pairs.push({ nav: item, section: section });
+    });
+
+    /* 클릭 → 즉시 활성 */
+    navItems.forEach(function (item) {
+      item.addEventListener('click', function () {
+        navItems.forEach(function (n) { n.classList.remove('is-active'); });
+        item.classList.add('is-active');
+      });
+    });
+
+    if (!pairs.length) { log('연결된 섹션을 찾지 못했습니다. 섹션 ID 확인 필요.'); return; }
+
+    /* 스크롤 → 섹션이 화면 중앙 영역에 들어오면 활성 */
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        for (var i = 0; i < pairs.length; i++) {
+          if (pairs[i].section === entry.target) {
+            navItems.forEach(function (n) { n.classList.remove('is-active'); });
+            pairs[i].nav.classList.add('is-active');
+            break;
+          }
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+    pairs.forEach(function (p) { observer.observe(p.section); });
+  }
+
   /* ── 버튼 글로우 (블루/퍼플) ── */
   function initButtonGlow() {
     var blueButtons   = document.querySelectorAll('.cta_seocho_button, .cta-style');
@@ -159,6 +201,7 @@
     initSection1();
     initBgVideo();
     initSection2();
+    initSubheaderNav();
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () { setTimeout(initButtonGlow, 100); });
   }
