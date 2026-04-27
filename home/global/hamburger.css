@@ -127,6 +127,10 @@ body.hx-menu-open {
 .hx-menu-branch:hover { color: #0075d6; }
 .hx-menu-branch.is-active { color: #0075d6; }
 
+/* 3번째 브랜치 (SVICC) — 퍼플 */
+.hx-menu-branches .hx-menu-branch:nth-child(3):hover     { color: #5528aa; }
+.hx-menu-branches .hx-menu-branch:nth-child(3).is-active { color: #5528aa; }
+
 /* --- Divider --- */
 .hx-menu-divider {
   width: 80%;
