@@ -542,9 +542,12 @@
       sweepBeam(el, WIDE_GRAD, 1.4, function () {
         /* 2: 네로우 빔 — 빠르게 */
         sweepBeam(el, NARROW_GRAD, 0.5, function () {
-          /* 최종: 블루-블랙-블루 그라데이션 정착 */
-          el.style.background     = FINAL_GRAD;
-          el.style.backgroundSize = '';
+          /* 최종: 블루-블랙-블루 그라데이션 정착 (background 단축 속성 금지 — background-clip 초기화 방지) */
+          el.style.backgroundImage      = FINAL_GRAD;
+          el.style.backgroundSize       = '100% 100%';
+          el.style.webkitBackgroundClip = 'text';
+          el.style.backgroundClip       = 'text';
+          el.style.webkitTextFillColor  = 'transparent';
           gsap.set(el, { clearProps: 'backgroundPosition' });
           /* 수직선 그리기 */
           if (svgVLine && vLineLen > 0) {
