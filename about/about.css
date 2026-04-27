@@ -108,37 +108,8 @@
 
 /* 섹션 7 — 초기 숨김 */
 #helix-history .about_history_title_box > h2.about_history_title_official-font,
-#helix-history .div-block-162 {
-  opacity: 0;
-}
-
+#helix-history .div-block-162,
 #helix-history .about_history_time-line {
   opacity: 0;
 }
-
-/* 섹션 7 — '최초' 사선 빛 훑기 (GSAP 구동, 우→좌) */
-.choi-shimmer {
-  background: linear-gradient(
-    118deg,
-    currentColor 0%,
-    currentColor 36%,
-    #0075d6 50%,
-    #90d0ff 55%,
-    #0075d6 64%,
-    currentColor 78%,
-    currentColor 100%
-  );
-  background-size: 300% 100%;
-  background-position: 100% center;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* 섹션 7 — '최초' 사선 2색 그라데이션 정착 */
-.choi-gradient {
-  background: linear-gradient(118deg, currentColor 40%, #0075d6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+/* '최초' 광선/그라데이션은 about.js 인라인 스타일로 처리 */

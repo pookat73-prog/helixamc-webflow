@@ -432,67 +432,116 @@
 
   /* ── 섹션 7 연혁 타임라인 ── */
   function initSection7() {
-    var section  = document.querySelector('#helix-history');
+    var section      = document.querySelector('#helix-history');
     if (!section) { log('섹션 7(#helix-history) 없음'); return; }
     if (!window.gsap || !window.ScrollTrigger) { return; }
 
-    var titleBox = section.querySelector('.about_history_title_box');
-    var line1    = titleBox ? titleBox.querySelector('h2.about_history_title_official-font') : null;
-    var block162 = titleBox ? titleBox.querySelector('.div-block-162') : null;
-    var choiEl   = block162 ? block162.querySelectorAll('h2')[1] : null; /* "최초" */
-    var items    = section.querySelectorAll('.about_history_time-line');
+    var titleBox     = section.querySelector('.about_history_title_box');
+    var line1        = titleBox ? titleBox.querySelector('h2.about_history_title_official-font') : null;
+    var block162     = titleBox ? titleBox.querySelector('.div-block-162') : null;
+    var choiEl       = block162 ? block162.querySelectorAll('h2')[1] : null; /* "최초" */
+    var justBox      = section.querySelector('.just-box_qqqq');
+    var firstContent = section.querySelector('.about_history_time-line_contents');
+    var items        = section.querySelectorAll('.about_history_time-line');
 
     log('섹션 7 — line1:', !!line1, 'block162:', !!block162, 'choiEl:', !!choiEl, '아이템:', items.length);
 
-    /* 초기 상태 — 페이드인만 */
+    /* ── 초기 상태 ── */
     if (line1)    gsap.set(line1,    { opacity: 0 });
     if (block162) gsap.set(block162, { opacity: 0 });
-    gsap.set(items, { opacity: 0, x: -30 });
+    gsap.set(items, { opacity: 0 });
 
-    /* 제목 차자작 페이드인 → 완료 즉시 '최초' shimmer */
+    /* ── SVG 수직선 생성 ── */
+    var svgEl = null, svgVLine = null, vLineLen = 0;
+
+    if (block162 && justBox) {
+      if (window.getComputedStyle(section).position === 'static') {
+        section.style.position = 'relative';
+      }
+      svgEl   = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svgEl.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
+      section.insertBefore(svgEl, section.firstChild);
+      svgVLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      svgVLine.setAttribute('stroke', '#0075d6');
+      svgVLine.setAttribute('stroke-width', '1');
+      svgVLine.setAttribute('stroke-linecap', 'round');
+      svgEl.appendChild(svgVLine);
+    }
+
+    function updateVLinePos() {
+      if (!svgVLine || !block162 || !justBox) return;
+      var sr  = section.getBoundingClientRect();
+      var b2r = block162.getBoundingClientRect();
+      var jbr = justBox.getBoundingClientRect();
+      var vw  = window.innerWidth / 100;
+      /* X: 섹션 왼쪽 ~ 첫 연도텍스트 왼쪽의 중간 */
+      var contL = firstContent ? firstContent.getBoundingClientRect().left - sr.left : sr.width * 0.08;
+      var x  = contL / 2;
+      var y1 = b2r.bottom - sr.top + 0.5 * vw;
+      var y2 = jbr.top    - sr.top - 0.5 * vw;
+      svgVLine.setAttribute('x1', x);  svgVLine.setAttribute('y1', y1);
+      svgVLine.setAttribute('x2', x);  svgVLine.setAttribute('y2', y2);
+      vLineLen = Math.max(0, y2 - y1);
+      svgVLine.setAttribute('stroke-dasharray',  vLineLen);
+      svgVLine.setAttribute('stroke-dashoffset', vLineLen);
+    }
+
+    updateVLinePos();
+    window.addEventListener('load',   updateVLinePos);
+    window.addEventListener('resize', updateVLinePos);
+
+    /* ── '최초' 광선 시퀀스 ── */
+    var WIDE_GRAD   = 'linear-gradient(118deg,currentColor 0%,currentColor 18%,#0075d6 36%,#b8dfff 50%,#0075d6 64%,currentColor 82%,currentColor 100%)';
+    var NARROW_GRAD = 'linear-gradient(118deg,currentColor 0%,currentColor 44%,#0075d6 50%,currentColor 56%,currentColor 100%)';
+    var FINAL_GRAD  = 'linear-gradient(118deg,#0075d6 0%,#0d1117 50%,#0075d6 100%)';
+
+    function sweepBeam(el, grad, dur, onDone) {
+      el.style.cssText += ';background:' + grad + ';background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent';
+      gsap.fromTo(el,
+        { backgroundPosition: '100% center' },
+        { backgroundPosition: '0% center', duration: dur, ease: 'power2.inOut', onComplete: onDone }
+      );
+    }
+
+    function runBeams(el) {
+      /* 1: 와이드 빔 — 느리게 */
+      sweepBeam(el, WIDE_GRAD, 1.4, function () {
+        /* 2: 네로우 빔 — 빠르게 */
+        sweepBeam(el, NARROW_GRAD, 0.5, function () {
+          /* 최종: 블루-블랙-블루 그라데이션 정착 */
+          el.style.background     = FINAL_GRAD;
+          el.style.backgroundSize = '';
+          gsap.set(el, { clearProps: 'backgroundPosition' });
+          /* 수직선 그리기 */
+          if (svgVLine && vLineLen > 0) {
+            gsap.to(svgVLine, { attr: { 'stroke-dashoffset': 0 }, duration: 1.0, ease: 'power2.inOut' });
+          }
+        });
+      });
+    }
+
+    /* ── 타이틀 ScrollTrigger ── */
     ScrollTrigger.create({
       trigger: section,
       start: 'top 75%',
       once: true,
       onEnter: function () {
         var tl = gsap.timeline({
-          onComplete: function () {
-            if (!choiEl) return;
-            choiEl.classList.add('choi-shimmer');
-            /* 1회차: 우→좌 느리게 */
-            gsap.fromTo(choiEl,
-              { backgroundPosition: '100% center' },
-              { backgroundPosition: '0% center', duration: 1.3, ease: 'power2.inOut',
-                onComplete: function () {
-                  /* 2회차: 우→좌 빠르게 → 완료 후 2색 그라데이션 정착 */
-                  gsap.fromTo(choiEl,
-                    { backgroundPosition: '100% center' },
-                    { backgroundPosition: '0% center', duration: 0.55, ease: 'power2.inOut',
-                      onComplete: function () {
-                        choiEl.classList.remove('choi-shimmer');
-                        gsap.set(choiEl, { clearProps: 'backgroundPosition' });
-                        choiEl.classList.add('choi-gradient');
-                      }
-                    }
-                  );
-                }
-              }
-            );
-          }
+          onComplete: function () { if (choiEl) runBeams(choiEl); }
         });
         if (line1)    tl.to(line1,    { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0);
         if (block162) tl.to(block162, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.38);
       }
     });
 
-    /* 각 타임라인 행 — 스크롤 진입 시 순차 등장 */
+    /* ── 각 타임라인 행 ── */
     items.forEach(function (item, i) {
       ScrollTrigger.create({
         trigger: item,
         start: 'top 85%',
         once: true,
         onEnter: function () {
-          gsap.to(item, { opacity: 1, x: 0, duration: 0.55, ease: 'power2.out', delay: 0.05 * i });
+          gsap.to(item, { opacity: 1, duration: 0.55, ease: 'power2.out', delay: 0.08 * i });
         }
       });
     });
