@@ -476,6 +476,19 @@
     var choiEl       = block162 ? block162.querySelectorAll('h2')[1] : null; /* "최초" */
     var justBox      = section.querySelector('.just-box_qqqq');
     var firstContent = section.querySelector('.about_history_time-line_contents');
+
+    /* 수직선 종점: "헬릭스동물메디컬센터의 역사는…" 문단을 텍스트로 찾음 */
+    function findHistoryPara() {
+      var walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
+      var node;
+      while ((node = walker.nextNode())) {
+        if (node.textContent.indexOf('헬릭스동물메디컬센터의 역사는') !== -1) {
+          return node.parentElement;
+        }
+      }
+      return null;
+    }
+    var paraEl = findHistoryPara() || justBox;
     var items        = section.querySelectorAll('.about_history_time-line');
 
     log('섹션 7 — line1:', !!line1, 'block162:', !!block162, 'choiEl:', !!choiEl, '아이템:', items.length);
@@ -488,7 +501,7 @@
     /* ── SVG 수직선 생성 ── */
     var svgEl = null, svgVLine = null, vLineLen = 0;
 
-    if (block162 && justBox) {
+    if (block162 && paraEl) {
       if (window.getComputedStyle(section).position === 'static') {
         section.style.position = 'relative';
       }
@@ -503,10 +516,10 @@
     }
 
     function updateVLinePos() {
-      if (!svgVLine || !block162 || !justBox) return;
+      if (!svgVLine || !block162 || !paraEl) return;
       var sr  = section.getBoundingClientRect();
       var b2r = block162.getBoundingClientRect();
-      var jbr = justBox.getBoundingClientRect();
+      var jbr = paraEl.getBoundingClientRect();
       var vw  = window.innerWidth / 100;
       /* X: 섹션 왼쪽 ~ 첫 연도텍스트 왼쪽의 중간 */
       var contL = firstContent ? firstContent.getBoundingClientRect().left - sr.left : sr.width * 0.08;
