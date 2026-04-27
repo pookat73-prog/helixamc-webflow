@@ -24,6 +24,7 @@
   }
 
   var CARD_SELECTOR = '.just-box_qqqqqqq';
+  var CARD_CLASS    = CARD_SELECTOR.replace(/^\./, '');  /* classList.contains 용 */
   var DRY_RUN       = /[?&]deck-dry=1/.test(location.search) || true;  /* 진단 모드: DOM 안 건드림. 안정화 후 false */
   var VISIBLE       = 4;        /* 동시에 보이는 카드 수 */
   var STACK_OFFSET  = 8;        /* 카드 간 y 오프셋 (px) */
@@ -40,7 +41,7 @@
     if (initialized) return true;
 
     var cards = document.querySelectorAll(CARD_SELECTOR);
-    log('found .white-frame_connect:', cards.length);
+    log('found ' + CARD_SELECTOR + ':', cards.length);
     if (cards.length < 2) {
       log('cards < 2, skip — selector may be wrong, or only one card exists');
       return false;
@@ -55,7 +56,7 @@
     /* 같은 부모 안의 카드만 묶음 (다른 섹션의 동명 카드 보호) */
     var siblings = Array.prototype.filter.call(
       parent.children,
-      function (el) { return el.classList && el.classList.contains('white-frame_connect'); }
+      function (el) { return el.classList && el.classList.contains(CARD_CLASS); }
     );
     log('siblings in same parent:', siblings.length);
     if (siblings.length < 2) {
@@ -307,11 +308,18 @@
     return true;
   }
 
+  /* 중복 retry 방지 — DOMContentLoaded/load/Webflow.push 가 각자 호출해도 interval 1개만 실행 */
+  var retrying = false;
   function retry() {
+    if (retrying || initialized) return;
+    retrying = true;
     var n = 0;
     var iv = setInterval(function () {
-      if (init() || ++n >= 60) clearInterval(iv);
-    }, 150);
+      if (init() || ++n >= 30) {
+        clearInterval(iv);
+        retrying = false;
+      }
+    }, 200);
   }
 
   if (document.readyState === 'loading') {
