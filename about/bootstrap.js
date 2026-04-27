@@ -13,9 +13,7 @@
 
   var FILES = [
     'about/about.css',
-    'about/about.js',
-    'home/global/card-stack.css',
-    'home/global/card-stack.js'
+    'about/about.js'
   ];
 
   function cdn(ref, path) {
@@ -80,7 +78,6 @@
       var sha = (data.sha || '').substring(0, 10);
       if (!sha) throw new Error('no sha in response');
       console.log('[about-bootstrap] loading commit', sha);
-      console.log('[about-bootstrap] FILES:', FILES);
       injectAll(sha);
     })
     .catch(function (err) {
