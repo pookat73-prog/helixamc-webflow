@@ -62,6 +62,7 @@
       video.style.height = videoHeight + 'px';
       video.style.top    = (containerHeight - videoHeight) + 'px';
       log('영상 height:', videoHeight, 'top:', video.style.top);
+      positionLabel();
     }
 
     /* 예시 레이블 */
@@ -71,17 +72,20 @@
     container.appendChild(exLabel);
 
     function positionLabel() {
-      var vr = video.getBoundingClientRect();
-      var cr = container.getBoundingClientRect();
-      exLabel.style.left = (vr.left - cr.left + vr.width  / 2) + 'px';
-      exLabel.style.top  = (vr.top  - cr.top  + vr.height / 2) + 'px';
+      requestAnimationFrame(function () {
+        var vr = video.getBoundingClientRect();
+        var cr = container.getBoundingClientRect();
+        if (!vr.width) return;
+        exLabel.style.left = (vr.left - cr.left + vr.width  / 2) + 'px';
+        exLabel.style.top  = (vr.top  - cr.top  + vr.height / 2) + 'px';
+      });
     }
 
     video.style.opacity = '0';
+    video.addEventListener('loadedmetadata', positionLabel);
     window.addEventListener('load', function () {
       setVideoSize();
       positionLabel();
-      window.addEventListener('resize', positionLabel);
       /* 섹션 1 타임라인 맨 마지막에 영상 페이드인 추가 */
       if (s1Timeline && window.gsap) {
         s1Timeline.to(video, { opacity: 1, duration: 4.5, ease: 'power2.out' }, '>0.1');
