@@ -100,23 +100,24 @@
       var blurCircle  = card.querySelector('.blur-circle-efect');
       var contentBox  = card.querySelector('.about_three_contents-box');
 
-      /* 카드별 초기 상태 */
-      if (strategyBox) gsap.set(strategyBox, { opacity: 0 });
-      if (conceptBox)  gsap.set(conceptBox,  { opacity: 0 });
+      /* 카드별 초기 상태 — autoAlpha: visibility+opacity 동시 제어 */
+      if (strategyBox) gsap.set(strategyBox, { autoAlpha: 0 });
+      if (conceptBox)  gsap.set(conceptBox,  { autoAlpha: 0 });
       if (divider)     gsap.set(divider,     { scaleX: 0, transformOrigin: 'left center' });
-      if (blurCircle)  gsap.set(blurCircle,  { opacity: 0 });
-      if (contentBox)  gsap.set(contentBox,  { opacity: 0, y: -20 });
+      if (blurCircle)  gsap.set(blurCircle,  { autoAlpha: 0 });
+      if (contentBox)  gsap.set(contentBox,  { autoAlpha: 0, y: -20 });
 
       /* 카드 타임라인 빌더 (paused)
          순서: ① → ② → ④ → ③ → ⑤
          엇박: 쉼표 = 0.35s, 대시 = 0.2s */
       function buildTl(onDone) {
         var tl = gsap.timeline({ paused: true, onComplete: onDone });
-        tl.to(strategyBox, { opacity: 1, duration: 1.0, ease: 'power2.out' },   0)     /* ① */
-          .to(conceptBox,  { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ② */
-          .to(blurCircle,  { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
-          .to(divider,     { scaleX: 1,  duration: 1.0, ease: 'power2.inOut' }, 0.85)  /* ③ */
-          .to(contentBox,  { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.05); /* ⑤ */
+        tl.to(strategyBox, { autoAlpha: 1, duration: 1.0, ease: 'power2.out' },   0)     /* ① */
+          .to(conceptBox,  { autoAlpha: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ② */
+          .to(blurCircle,  { autoAlpha: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
+          .set(divider,    { visibility: 'visible' },                              0.85)
+          .to(divider,     { scaleX: 1,   duration: 1.0, ease: 'power2.inOut' },  0.85)  /* ③ */
+          .to(contentBox,  { autoAlpha: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.05); /* ⑤ */
         return tl;
       }
 

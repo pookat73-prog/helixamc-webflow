@@ -85,17 +85,19 @@
   50%       { box-shadow: 0 0 0.45vw 0.12vw rgba(85,40,170,0.88), 0 0 4.5vw 0.2vw rgba(85,40,170,0.20); }
 }
 
-/* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
+/* 섹션 2 — 스크롤 전 초기 숨김
+   opacity:0 대신 visibility:hidden — Webflow IX2의 inline opacity:1 override 방지 */
 .about_contents_3-concept_qq,
 .about_contents_box_qqqqqqq,
 .blur-circle-efect,
 .about_three_contents-box {
-  opacity: 0;
+  visibility: hidden;
 }
 
 .divider_blue_grad_no-spacing-1 {
   transform: scaleX(0);
   transform-origin: left center;
+  visibility: hidden;
 }
 
 /* 섹션 5 — 초기 숨김 */
