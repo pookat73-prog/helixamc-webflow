@@ -69,6 +69,7 @@
     var exLabel = document.createElement('div');
     exLabel.textContent = '예시';
     exLabel.className = 'about-example-label';
+    exLabel.style.opacity = '0';
     container.appendChild(exLabel);
 
     function positionLabel() {
@@ -81,17 +82,21 @@
       });
     }
 
+    function fadeInVideoAndLabel() {
+      if (window.gsap) {
+        gsap.to([video, exLabel], { opacity: 1, duration: 4.5, ease: 'power2.out', delay: 0.3 });
+      } else {
+        video.style.opacity = '1';
+        exLabel.style.opacity = '1';
+      }
+    }
+
     video.style.opacity = '0';
     video.addEventListener('loadedmetadata', positionLabel);
+    video.addEventListener('canplay', fadeInVideoAndLabel);
     window.addEventListener('load', function () {
       setVideoSize();
       positionLabel();
-      /* 섹션 1 타임라인 맨 마지막에 영상 페이드인 추가 */
-      if (s1Timeline && window.gsap) {
-        s1Timeline.to(video, { opacity: 1, duration: 4.5, ease: 'power2.out' }, '>0.1');
-      } else {
-        video.style.opacity = '1';
-      }
     });
     window.addEventListener('resize', setVideoSize);
   }
