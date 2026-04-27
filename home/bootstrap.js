@@ -24,9 +24,7 @@
     'home/global/buttons.css',
     'home/global/buttons.js',
     'home/global/sections-animations.css',
-    'home/global/sections-animations.js',
-    'home/global/card-stack.css',
-    'home/global/card-stack.js'
+    'home/global/sections-animations.js'
   ];
 
   function cdn(ref, path) {
