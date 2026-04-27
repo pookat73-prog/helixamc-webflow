@@ -185,23 +185,30 @@
     initialized = true;
   }
 
+  /* 싱글톤 폴링: 여러 트리거에서 retryInit이 호출돼도 setInterval은 1개만 */
+  var pollingActive = false;
   function retryInit() {
+    if (initialized || pollingActive) return;
+    pollingActive = true;
     var n = 0;
     var iv = setInterval(function () {
       initAnimationOnce();
-      if (initialized || ++n >= 30) clearInterval(iv);
+      if (initialized || ++n >= 30) {
+        clearInterval(iv);
+        pollingActive = false;
+      }
     }, 100);
   }
 
-  /* section1.js DOM 복원 완료 신호 수신 후 측정 */
+  /* section1.js DOM 복원 완료 신호 수신 후 측정 — 정상 경로 */
   window.addEventListener('helix-s1-done', function () {
     setTimeout(retryInit, 50);
   });
 
-  /* 폴백: section1이 없는 페이지거나 이미 로드된 경우 (5s 후) */
+  /* 폴백: helix-s1-done이 안 들어오는 페이지 — load + 1s 후 시도 */
   window.addEventListener('load', function () {
     setTimeout(function () {
       if (!initialized) retryInit();
-    }, 5000);
+    }, 1000);
   });
 })();

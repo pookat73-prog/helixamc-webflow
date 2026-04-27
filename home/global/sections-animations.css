@@ -5,53 +5,39 @@
    모든 트리거·진행은 sections-animations.js가 담당
    ================================================================ */
 
-/* translateX 초기 오프셋 등이 viewport 밖으로 나가 가로스크롤 생기는 것 방지 */
-html, body {
-  overflow-x: hidden;
+/* translateX 초기 오프셋 등이 viewport 밖으로 나가 가로스크롤 생기는 것 방지
+   body 단일 적용 — html에도 두면 모바일 사파리에서 스크롤 chaining 끊김 발생 가능 */
+body {
+  overflow-x: clip;
+}
+@supports not (overflow: clip) {
+  body { overflow-x: hidden; }
 }
 
 /* ============================================================
-   섹션 2, 3 헤딩 — JS fadeIn 대상 (둘 다 .section2-heading)
+   초기 상태만 정의 — will-change는 애니메이션 직전 JS에서 동적 부여 후
+   완료 시 제거 (영구 will-change는 GPU 메모리 점유)
    ============================================================ */
-.section2-heading {
-  opacity: 0;
-  will-change: opacity;
-}
+.section2-heading { opacity: 0; }
 
-/* ============================================================
-   버튼 2, 3 — opacity 페이드인 (sections-animations.js 담당)
-   ============================================================ */
 .bt-box-2,
-.bt-box-3 {
-  opacity: 0;
-  will-change: opacity;
-}
+.bt-box-3 { opacity: 0; }
 
-/* ============================================================
-   섹션 3 이미지 — scale-in 대기
-   ============================================================ */
 .div-block-153 {
   opacity: 0;
   transform: scale(0.88);
-  will-change: opacity, transform;
 }
 
-/* ============================================================
-   섹션 4 카드 — 초기 상태: 보이지 않고 아래로 30px
-   ============================================================ */
 .home_branch-card {
   opacity: 0;
   transform: translateY(30px);
   box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   transition: box-shadow 0.6s ease-out;
-  will-change: opacity, transform, box-shadow;
 }
 
-/* SVICC 배경 (우측) — 초기: 오른쪽에서 슬라이드 인 대기 */
 .home_background_svicc {
   opacity: 0;
   transform: translateX(50px);
-  will-change: opacity, transform;
 }
 
 /* ============================================================

@@ -3,10 +3,17 @@
    Pasted once in Webflow. Always serves the latest commit.
 
    Strategy:
-     1) Fetch latest commit SHA from GitHub API
-     2) Load CSS/JS via jsDelivr using that SHA (immutable URL)
-     3) If any file 404s (jsDelivr indexing delay), fall back to @main
-     4) If GitHub API fails entirely, fall back to @main for everything
+     1) Use cached SHA from sessionStorage immediately (instant load)
+     2) Fetch latest commit SHA from GitHub API in background to refresh cache
+     3) Load CSS/JS via jsDelivr using SHA (immutable URL — full CDN/browser cache)
+     4) If any file 404s (jsDelivr indexing delay), fall back to @main
+     5) If GitHub API fails entirely, fall back to @main for everything
+
+   Performance notes:
+     - SHA URL is immutable → no cache-busting query string needed
+       (browser/jsDelivr can cache forever, instant on revisit)
+     - sessionStorage caches SHA across same-tab navigation (no API roundtrip)
+     - ScrollTrigger loaded from same jsDelivr origin as content (connection reuse)
    ================================================================ */
 
 (function () {
@@ -15,6 +22,8 @@
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
   var BRANCH = 'main';
+  var SHA_CACHE_KEY = 'helix-sha:' + OWNER + '/' + REPO + '@' + BRANCH;
+  var SHA_CACHE_TTL = 5 * 60 * 1000;  /* 5 minutes — fresh enough for editors, fast for users */
 
   var FILES = [
     'home/section1/section1.css',
@@ -28,9 +37,9 @@
   ];
 
   function cdn(ref, path) {
-    /* Cache-busting: new timestamp every minute prevents stale browser caches */
-    var t = Math.floor(Date.now() / 60000);
-    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + '?t=' + t;
+    /* SHA-pinned URL is immutable; no cache-busting needed.
+       For @main fallback, jsDelivr cache is purged via GitHub Actions workflow. */
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path;
   }
 
   function injectCss(url, onerr) {
@@ -70,31 +79,63 @@
     }
   }
 
+  var injected = false;
   function injectAll(ref) {
+    if (injected) return;
+    injected = true;
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
-  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
+  /* ── SHA cache helpers ───────────────────────────────────────── */
+  function readShaCache() {
+    try {
+      var raw = sessionStorage.getItem(SHA_CACHE_KEY);
+      if (!raw) return null;
+      var obj = JSON.parse(raw);
+      if (!obj || !obj.sha || !obj.t) return null;
+      return obj;
+    } catch (e) { return null; }
+  }
+  function writeShaCache(sha) {
+    try {
+      sessionStorage.setItem(SHA_CACHE_KEY, JSON.stringify({ sha: sha, t: Date.now() }));
+    } catch (e) {}
+  }
 
-  /* Load ScrollTrigger plugin for GSAP animations */
-  var scrollTriggerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
-  injectJs(scrollTriggerUrl, function () {
-    if (window.gsap && window.gsap.registerPlugin) {
-      window.gsap.registerPlugin(ScrollTrigger);
+  /* ── ScrollTrigger: load from jsDelivr (same origin as content → connection reuse) ── */
+  injectJs('https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js', function () {
+    if (window.gsap && window.gsap.registerPlugin && window.ScrollTrigger) {
+      window.gsap.registerPlugin(window.ScrollTrigger);
     }
   });
 
+  /* ── Stale-while-revalidate: use cached SHA instantly, refresh in background ── */
+  var cached = readShaCache();
+  if (cached && (Date.now() - cached.t) < SHA_CACHE_TTL) {
+    console.log('[helix-bootstrap] using cached commit', cached.sha);
+    injectAll(cached.sha);
+  }
+
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
   fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
       var sha = (data.sha || '').substring(0, 10);
       if (!sha) throw new Error('no sha in response');
-      console.log('[helix-bootstrap] loading commit', sha);
-      injectAll(sha);
+      writeShaCache(sha);
+      if (!injected) {
+        console.log('[helix-bootstrap] loading commit', sha);
+        injectAll(sha);
+      }
+      /* If we already injected from cache and SHA changed, files for the new
+         commit will load on the next page navigation (browser fetches fresh
+         once cache expires). Reloading mid-session is unnecessary. */
     })
     .catch(function (err) {
-      console.warn('[helix-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
-      injectAll(BRANCH);
+      if (!injected) {
+        console.warn('[helix-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
+        injectAll(BRANCH);
+      }
     });
 })();
 

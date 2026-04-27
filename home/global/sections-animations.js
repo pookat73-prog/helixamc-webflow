@@ -520,27 +520,32 @@
   }
 
   /* ============================================================
-     초기화 재시도
+     초기화 재시도 — 싱글톤 폴링 (중복 setInterval 방지)
+     초기화 트리거가 여러 이벤트(Webflow.push, helix-s1-done, load)에서
+     동시에 들어와도 polling은 1개만 돌아감.
   ============================================================ */
+  var pollingActive = false;
   function retryInit() {
-    var n  = 0;
+    if (initialized) return;
+    if (pollingActive) return;
+    if (initSectionsOnce()) return;
+    pollingActive = true;
+    var n = 0;
     var iv = setInterval(function () {
-      if (initSectionsOnce() || ++n >= 50) clearInterval(iv);
+      if (initSectionsOnce() || ++n >= 50) {
+        clearInterval(iv);
+        pollingActive = false;
+      }
     }, 100);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', retryInit);
-  } else {
-    setTimeout(retryInit, 500);
-  }
-
-  window.addEventListener('load', retryInit);
+  /* Webflow ready 가 가장 안정적 (DOMContentLoaded + Webflow IX2 초기화 완료) */
   window.Webflow = window.Webflow || [];
   window.Webflow.push(retryInit);
 
   /* section1.js DOM 복원 완료 → ScrollTrigger 위치 재측정 + 지그 라인 초기화 */
   window.addEventListener('helix-s1-done', function () {
+    retryInit();
     setTimeout(function () {
       if (window.ScrollTrigger && ScrollTrigger.refresh) {
         ScrollTrigger.refresh();
@@ -550,12 +555,12 @@
     }, 100);
   });
 
-  /* 폴백: section1이 없어도 load 후 1.5초 뒤 강제 refresh + 지그 라인 초기화 */
+  /* 폴백: section1이 없거나 helix-s1-done이 안 들어와도 load 후 ScrollTrigger 재측정 + 지그 라인 보장 */
   window.addEventListener('load', function () {
+    retryInit();
     setTimeout(function () {
-      if (window.ScrollTrigger && ScrollTrigger.refresh) {
+      if (window.ScrollTrigger && ScrollTrigger.refresh && !zigInitialized) {
         ScrollTrigger.refresh();
-        log('ScrollTrigger refreshed (fallback)');
       }
       if (!zigInitialized) initZigLine();
     }, 1500);
