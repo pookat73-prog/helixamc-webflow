@@ -18,6 +18,20 @@
   clip-path: inset(0.8vw 0);
 }
 
+/* 섹션 1 — 예시 레이블 */
+.about-example-label {
+  position: absolute;
+  top: 50%;
+  right: 18vw;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.45);
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* 섹션 1 — 헤드/서브헤드 초기 숨김 */
 .section2-heading,
 .about_contents_sub-title {

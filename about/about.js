@@ -64,6 +64,12 @@
       log('영상 height:', videoHeight, 'top:', video.style.top);
     }
 
+    /* 예시 레이블 */
+    var exLabel = document.createElement('div');
+    exLabel.textContent = '예시';
+    exLabel.className = 'about-example-label';
+    container.appendChild(exLabel);
+
     video.style.opacity = '0';
     window.addEventListener('load', function () {
       setVideoSize();
@@ -114,7 +120,7 @@
          엇박: 쉼표 = 0.35s, 대시 = 0.2s */
       function buildTl(onDone) {
         var tl = gsap.timeline({ paused: true, onComplete: onDone });
-        tl.to(strategyBox, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'back.out(2)' }, 0)  /* ① 도장 탁! */
+        tl.to(strategyBox, { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'power4.out' }, 0)  /* ① 도장 탁! */
           .to(conceptBox,  { autoAlpha: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ② */
           .to(blurCircle,  { autoAlpha: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
           .set(divider,    { visibility: 'visible' },                              0.85)
