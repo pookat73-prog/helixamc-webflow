@@ -23,9 +23,11 @@
     console.log.apply(console, ['[Deck]'].concat([].slice.call(arguments)));
   }
 
-  var CARD_SELECTOR = '.just-box_qqqqqqq';
-  var CARD_CLASS    = CARD_SELECTOR.replace(/^\./, '');  /* classList.contains 용 */
-  var DRY_RUN       = /[?&]deck-dry=1/.test(location.search) || true;  /* 진단 모드: DOM 안 건드림. 안정화 후 false */
+  var CARD_SELECTOR    = '.just-box_qqqqqqq';
+  var SECTION_SELECTOR = '.white-frame_connect';      /* 각 카드를 감싸는 섹션 */
+  var CARD_CLASS       = CARD_SELECTOR.replace(/^\./, '');
+  /* 안전장치: 강제로 진단 모드 켜고 싶을 땐 URL 에 ?deck-dry=1 */
+  var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
   var VISIBLE       = 4;        /* 동시에 보이는 카드 수 */
   var STACK_OFFSET  = 8;        /* 카드 간 y 오프셋 (px) */
   var STACK_TILT    = 4;        /* 카드 간 회전 (deg, 좌우 번갈아) */
@@ -81,17 +83,20 @@
     var lca = findCommonAncestor(Array.prototype.slice.call(cardsAll));
     log('common ancestor:', lca ? lca.tagName + '.' + (lca.className||'').split(' ').slice(0,2).join('.') : 'NONE');
 
-    /* 첫 카드의 부모 = 카드들이 흐르는 컨테이너 (가정) */
+    /* 각 카드의 섹션 조상 수집 (.white-frame_connect) */
+    var sections = [];
+    Array.prototype.forEach.call(cardsAll, function (c) {
+      var sec = c.closest(SECTION_SELECTOR);
+      if (sec) sections.push(sec);
+    });
+    log('section ancestors found:', sections.length, '/', cardsAll.length);
+    if (sections.length !== cardsAll.length) {
+      log('⚠️ 카드마다 섹션 조상이 없음, ABORT');
+      return true;
+    }
+
+    /* 첫 카드 + 사이즈 측정 */
     var firstCard = cardsAll[0];
-    var parent    = firstCard.parentElement;
-    if (!parent) return false;
-    log('first card parent:', parent.tagName, '.' + (parent.className || '').split(' ').join('.'));
-
-    /* 같은 부모 안의 카드만 묶음 — 새 전략에선 cardsAll 전체 사용 */
-    var siblings = Array.prototype.slice.call(cardsAll);
-    log('using all ' + siblings.length + ' cards (cross-parent)');
-
-    /* 카드 사이즈 측정 (첫 카드 기준) */
     var rect = firstCard.getBoundingClientRect();
     var cardW = rect.width;
     var cardH = rect.height;
@@ -101,31 +106,31 @@
       return false;
     }
 
-    /* 안전장치: 카드 너비가 viewport의 80% 이상이면 풀너비 섹션 가능성
-       전체 페이지 레이아웃 깨질 수 있어서 중단 */
+    /* 안전장치 */
     if (cardW > window.innerWidth * 0.8) {
-      log('⚠️ card width > 80% of viewport (' + cardW + 'px) — likely full-width section, ABORT to protect layout');
-      return true;  /* return true → retry 안 함 (영구 중단) */
+      log('⚠️ card width > 80% viewport, ABORT');
+      return true;
     }
 
-    /* DRY RUN: 진단만 하고 끝 */
+    /* DRY RUN */
     if (DRY_RUN) {
-      log('✅ DRY_RUN — DOM 변경 없음. 위 로그 확인 후 안전하면 DRY_RUN=false 로 전환');
-      log('   카드' + siblings.length + '장, ' + cardW + 'x' + cardH + ', 부모: ' + parent.tagName + '.' + (parent.className||'').split(' ').join('.'));
+      log('✅ DRY_RUN — DOM 변경 없음.');
       initialized = true;
       return true;
     }
 
-    /* deck host 생성: 부모 안에 첫 카드 위치에 삽입 */
+    var siblings = Array.prototype.slice.call(cardsAll);
+
+    /* deck host 생성: 첫 카드 위치(grid 안)에 삽입 */
+    var firstGrid = firstCard.parentElement;  /* .grid2_none-spacing */
     var host = document.createElement('div');
     host.className = 'helix-deck-host';
-    host.style.width  = cardW + 'px';
-    host.style.height = (cardH + (siblings.length - 1) * STACK_OFFSET) + 'px';
+    host.style.width   = cardW + 'px';
+    host.style.height  = (cardH + (siblings.length - 1) * STACK_OFFSET) + 'px';
+    host.style.margin  = '0 auto';
     host.style.display = 'block';
 
-    /* 첫 카드 위치에 host 삽입 후 모든 카드를 host 안으로 이동
-       카드마다 width/height 명시(부모 flex/grid 사이징 영향 차단) */
-    parent.insertBefore(host, firstCard);
+    firstGrid.insertBefore(host, firstCard);
     siblings.forEach(function (c) {
       c.style.width  = cardW + 'px';
       c.style.height = cardH + 'px';
@@ -133,7 +138,15 @@
       host.appendChild(c);
     });
 
-    /* deck order: 화면상 맨 위에 보이는 게 [0] */
+    /* 첫 섹션 외의 나머지 .white-frame_connect 섹션은 숨김 (페이지 짧아짐) */
+    sections.forEach(function (sec, i) {
+      if (i > 0) {
+        sec.style.display = 'none';
+        sec.setAttribute('data-deck-hidden', '1');
+      }
+    });
+    log('hidden sections:', sections.length - 1);
+
     var deck = siblings.slice();
 
     function applyTransforms(animate) {
