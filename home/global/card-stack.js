@@ -30,9 +30,9 @@
   var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
   var VISIBLE        = 4;        /* 동시에 보이는 카드 수 */
   var STACK_OFFSET_Y = 14;       /* 카드 간 y 오프셋 (px) — 아래로 쌓임 */
-  var STACK_OFFSET_X = 6;        /* 카드 간 x 오프셋 (px) — 오른쪽으로 살짝 드리프트 */
-  var STACK_TILT     = -3;       /* 모든 카드 동일 회전 (deg) — 사선 통일 */
-  var STACK_SCALE    = 0.04;     /* 카드 간 scale 감소량 */
+  var STACK_OFFSET_X = 14;       /* 카드 간 x 오프셋 (px) — 오른쪽으로 쌓임 (사선) */
+  var STACK_TILT     = 0;        /* 회전 없음 */
+  var STACK_SCALE    = 0;        /* 스케일 변화 없음 */
   var FLY_THRESHOLD = 0.25;     /* 카드 너비의 25% 드래그 시 날아감 */
   var FLY_VELOCITY  = 0.45;     /* 또는 px/ms 임계 속도 */
   var FLY_DURATION  = 380;      /* 날아가는 시간 ms */
