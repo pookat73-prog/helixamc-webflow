@@ -116,24 +116,21 @@
   opacity: 0;
 }
 
-/* 섹션 7 — '최초' 블루 빛 훑기 (글자색 방식) */
+/* 섹션 7 — '최초' 블루 빛 훑기 (글자색 방식, GSAP 구동) */
 .choi-shimmer {
   background: linear-gradient(
     90deg,
     currentColor 0%,
-    currentColor 38%,
-    #0075d6 50%,
-    currentColor 62%,
+    currentColor 10%,
+    #0075d6 35%,
+    #60b8ff 50%,
+    #0075d6 65%,
+    currentColor 90%,
     currentColor 100%
   );
   background-size: 300% 100%;
+  background-position: 0% center;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: choiTextSweep 0.9s ease-out forwards;
-}
-
-@keyframes choiTextSweep {
-  from { background-position: 0% center; }
-  to   { background-position: 100% center; }
 }

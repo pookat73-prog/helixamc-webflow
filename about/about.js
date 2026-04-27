@@ -444,12 +444,12 @@
 
     log('섹션 7 — line1:', !!line1, 'block162:', !!block162, 'choiEl:', !!choiEl, '아이템:', items.length);
 
-    /* 초기 상태 */
-    if (line1)    gsap.set(line1,    { opacity: 0, y: 16 });
-    if (block162) gsap.set(block162, { opacity: 0, y: 16 });
+    /* 초기 상태 — 페이드인만 */
+    if (line1)    gsap.set(line1,    { opacity: 0 });
+    if (block162) gsap.set(block162, { opacity: 0 });
     gsap.set(items, { opacity: 0, x: -30 });
 
-    /* 제목 엇박 다라락 → 완료 즉시 '최초' shimmer */
+    /* 제목 차자작 페이드인 → 완료 즉시 '최초' shimmer */
     ScrollTrigger.create({
       trigger: section,
       start: 'top 75%',
@@ -457,11 +457,25 @@
       onEnter: function () {
         var tl = gsap.timeline({
           onComplete: function () {
-            if (choiEl) choiEl.classList.add('choi-shimmer');
+            if (!choiEl) return;
+            choiEl.classList.add('choi-shimmer');
+            /* 1회차: 느리게 */
+            gsap.fromTo(choiEl,
+              { backgroundPosition: '0% center' },
+              { backgroundPosition: '100% center', duration: 1.3, ease: 'power2.inOut',
+                onComplete: function () {
+                  /* 2회차: 곧바로 빠르게 */
+                  gsap.fromTo(choiEl,
+                    { backgroundPosition: '0% center' },
+                    { backgroundPosition: '100% center', duration: 0.55, ease: 'power2.inOut' }
+                  );
+                }
+              }
+            );
           }
         });
-        if (line1)    tl.to(line1,    { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' }, 0);
-        if (block162) tl.to(block162, { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out' }, 0.38);
+        if (line1)    tl.to(line1,    { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0);
+        if (block162) tl.to(block162, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.38);
       }
     });
 
