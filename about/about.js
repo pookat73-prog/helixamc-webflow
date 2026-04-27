@@ -45,26 +45,6 @@
     video.className   = 'about-bg-video';
     container.insertBefore(video, container.firstChild);
 
-    function setVideoSize() {
-      var header    = document.querySelector('header') || document.querySelector('.header');
-      var subheader = document.querySelector('.subheader') || document.querySelector('.about_contents_sub-title');
-      if (!header || !subheader) { log('헤더 또는 서브헤더 요소를 찾지 못했습니다.'); return; }
-
-      var scrollY        = window.scrollY || window.pageYOffset;
-      var headerBottom   = header.getBoundingClientRect().bottom + scrollY;
-      var subheaderTop   = subheader.getBoundingClientRect().top  + scrollY;
-      var containerTop   = container.getBoundingClientRect().top  + scrollY;
-
-      var videoHeight     = subheaderTop - headerBottom;
-      var containerHeight = container.getBoundingClientRect().height;
-
-      video.style.bottom = '';
-      video.style.height = videoHeight + 'px';
-      video.style.top    = (containerHeight - videoHeight) + 'px';
-      log('영상 height:', videoHeight, 'top:', video.style.top);
-      positionLabel();
-    }
-
     /* 예시 레이블 */
     var exLabel = document.createElement('div');
     exLabel.textContent = '예시';
@@ -94,11 +74,8 @@
     video.style.opacity = '0';
     video.addEventListener('loadedmetadata', positionLabel);
     video.addEventListener('canplay', fadeInVideoAndLabel);
-    window.addEventListener('load', function () {
-      setVideoSize();
-      positionLabel();
-    });
-    window.addEventListener('resize', setVideoSize);
+    window.addEventListener('load', positionLabel);
+    window.addEventListener('resize', positionLabel);
   }
 
   /* ── 섹션 2 애니메이션 ── */

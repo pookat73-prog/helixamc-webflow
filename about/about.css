@@ -12,6 +12,7 @@
 .about-bg-video {
   position: absolute;
   right: 0;
+  bottom: 0;
   width: auto;
   z-index: -1;
   pointer-events: none;
