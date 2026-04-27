@@ -12,7 +12,7 @@
   -webkit-user-select: none;
 }
 
-/* host 의 직속 자식 카드 = .just-box_qqqqqqq (또는 다른 클래스 대비 와일드카드) */
+/* host 의 직속 자식 카드 = 절대위치 + isolation 으로 뒷카드 내용 차단 */
 .helix-deck-host > .just-box_qqqqqqq,
 .helix-deck-host > * {
   position: absolute !important;
@@ -23,6 +23,10 @@
   will-change: transform, opacity;
   cursor: grab;
   transition: box-shadow 0.25s ease;
+  /* 뒷카드 내용 비치는 것 방지: 카드 자체 isolation context */
+  isolation: isolate;
+  /* 배경 미설정시 fallback (Webflow 에서 따로 색 잡았으면 거기 우선) */
+  background-color: inherit;
 }
 
 .helix-deck-host > .is-top {
