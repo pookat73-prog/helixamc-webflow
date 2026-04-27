@@ -13,7 +13,9 @@
 
   var FILES = [
     'about/about.css',
-    'about/about.js'
+    'about/about.js',
+    'home/global/card-stack.css',
+    'home/global/card-stack.js'
   ];
 
   function cdn(ref, path) {
