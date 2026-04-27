@@ -95,25 +95,28 @@
 
     cards.forEach(function (card, i) {
       var strategyBox = card.querySelector('.about_contents_3-concept_qq');   /* ① number+label 래퍼 */
-      var titleBox    = card.querySelector('.just-box_qqqqqqqqqq');            /* ② 한국어 제목+밑줄 */
+      var subText     = card.querySelector('.about_sub-text');                /* ②-a 서브텍스트 */
+      var titleHead   = card.querySelector('.about_contents-title');          /* ②-b 메인 타이틀 */
       var divider     = card.querySelector('.divider_blue_grad_no-spacing-1');
       var blurCircle  = card.querySelector('.blur-circle-efect');
       var contentBox  = card.querySelector('.about_three_contents-box');
 
-      /* 카드별 초기 상태 (부모 .about_contents_3-concept_q 는 건드리지 않음) */
+      /* 카드별 초기 상태 (부모들은 건드리지 않음) */
       if (strategyBox) gsap.set(strategyBox, { opacity: 0 });
-      if (titleBox)    gsap.set(titleBox,    { opacity: 0 });
+      if (subText)     gsap.set(subText,     { opacity: 0 });
+      if (titleHead)   gsap.set(titleHead,   { opacity: 0 });
       if (divider)     gsap.set(divider,     { scaleX: 0, transformOrigin: 'left center' });
       if (blurCircle)  gsap.set(blurCircle,  { opacity: 0 });
       if (contentBox)  gsap.set(contentBox,  { opacity: 0, y: -20 });
 
       /* 카드 타임라인 빌더 (paused)
-         순서: ① strategyBox → ② titleBox → ④ blur → ③ divider → ⑤ content
-         엇박: 쉼표(,) = 0.35s 간격, 대시(-) = 0.2s 간격 */
+         순서: ① → ②-a → ②-b → ④ → ③ → ⑤
+         엇박: 쉼표 = 0.35s, 대시 = 0.17s */
       function buildTl(onDone) {
         var tl = gsap.timeline({ paused: true, onComplete: onDone });
         tl.to(strategyBox, { opacity: 1, duration: 1.0, ease: 'power2.out' },   0)     /* ① */
-          .to(titleBox,    { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ② */
+          .to(subText,     { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ②-a */
+          .to(titleHead,   { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.52)  /* ②-b */
           .to(blurCircle,  { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
           .to(divider,     { scaleX: 1,  duration: 1.0, ease: 'power2.inOut' }, 0.85)  /* ③ */
           .to(contentBox,  { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.05); /* ⑤ */
