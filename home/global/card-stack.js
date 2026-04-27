@@ -18,10 +18,10 @@
 (function () {
   'use strict';
 
-  var DEBUG = /[?&]debug-deck=1/.test(location.search);
-  var log = DEBUG ? function () {
+  /* 디버그: 항상 켜둠 (안정화 후 다시 ?debug-deck=1 게이트로 복원) */
+  function log() {
     console.log.apply(console, ['[Deck]'].concat([].slice.call(arguments)));
-  } : function () {};
+  }
 
   var CARD_SELECTOR = '.white-frame_connect';
   var VISIBLE       = 4;        /* 동시에 보이는 카드 수 */
@@ -39,8 +39,9 @@
     if (initialized) return true;
 
     var cards = document.querySelectorAll(CARD_SELECTOR);
+    log('found .white-frame_connect:', cards.length);
     if (cards.length < 2) {
-      log('cards < 2, skip');
+      log('cards < 2, skip — selector may be wrong, or only one card exists');
       return false;
     }
 
@@ -48,14 +49,16 @@
     var firstCard = cards[0];
     var parent    = firstCard.parentElement;
     if (!parent) return false;
+    log('first card parent:', parent.tagName, '.' + (parent.className || '').split(' ').join('.'));
 
     /* 같은 부모 안의 카드만 묶음 (다른 섹션의 동명 카드 보호) */
     var siblings = Array.prototype.filter.call(
       parent.children,
       function (el) { return el.classList && el.classList.contains('white-frame_connect'); }
     );
+    log('siblings in same parent:', siblings.length);
     if (siblings.length < 2) {
-      log('siblings < 2, skip');
+      log('siblings < 2, skip — cards may have different parents');
       return false;
     }
 
@@ -63,6 +66,7 @@
     var rect = firstCard.getBoundingClientRect();
     var cardW = rect.width;
     var cardH = rect.height;
+    log('first card size:', cardW + 'x' + cardH);
     if (!cardW || !cardH) {
       log('card size 0, retry later');
       return false;
@@ -73,10 +77,17 @@
     host.className = 'helix-deck-host';
     host.style.width  = cardW + 'px';
     host.style.height = (cardH + (siblings.length - 1) * STACK_OFFSET) + 'px';
+    host.style.display = 'block';
 
-    /* 첫 카드 위치에 host 삽입 후 모든 카드를 host 안으로 이동 */
+    /* 첫 카드 위치에 host 삽입 후 모든 카드를 host 안으로 이동
+       카드마다 width/height 명시(부모 flex/grid 사이징 영향 차단) */
     parent.insertBefore(host, firstCard);
-    siblings.forEach(function (c) { host.appendChild(c); });
+    siblings.forEach(function (c) {
+      c.style.width  = cardW + 'px';
+      c.style.height = cardH + 'px';
+      c.style.display = 'block';
+      host.appendChild(c);
+    });
 
     /* deck order: 화면상 맨 위에 보이는 게 [0] */
     var deck = siblings.slice();
