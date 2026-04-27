@@ -617,10 +617,24 @@
     });
   }
 
+  /* ── 갤러리 예정 레이블 ── */
+  function initGalleryLabels() {
+    var cards = document.querySelectorAll('.just-box_qqqqqqq');
+    if (!cards.length) { log('갤러리 카드(.just-box_qqqqqqq) 없음'); return; }
+    cards.forEach(function (card) {
+      if (window.getComputedStyle(card).position === 'static') card.style.position = 'relative';
+      var label = document.createElement('div');
+      label.textContent = '갤러리 보기 방식 예정';
+      label.className = 'about-gallery-label';
+      card.appendChild(label);
+    });
+  }
+
   function init() {
     initSection1();
     initBgVideo();
     initSubheaderNav();
+    initGalleryLabels();
     /* GSAP 애니메이션은 Webflow IX2 이후에 실행해야 인라인 opacity:1 덮어쓰기 방지 */
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () {
