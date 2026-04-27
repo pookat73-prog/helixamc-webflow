@@ -28,10 +28,11 @@
   var CARD_CLASS       = CARD_SELECTOR.replace(/^\./, '');
   /* 안전장치: 강제로 진단 모드 켜고 싶을 땐 URL 에 ?deck-dry=1 */
   var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
-  var VISIBLE       = 4;        /* 동시에 보이는 카드 수 */
-  var STACK_OFFSET  = 8;        /* 카드 간 y 오프셋 (px) */
-  var STACK_TILT    = 4;        /* 카드 간 회전 (deg, 좌우 번갈아) */
-  var STACK_SCALE   = 0.03;     /* 카드 간 scale 감소량 */
+  var VISIBLE        = 4;        /* 동시에 보이는 카드 수 */
+  var STACK_OFFSET_Y = 14;       /* 카드 간 y 오프셋 (px) — 아래로 쌓임 */
+  var STACK_OFFSET_X = 6;        /* 카드 간 x 오프셋 (px) — 오른쪽으로 살짝 드리프트 */
+  var STACK_TILT     = -3;       /* 모든 카드 동일 회전 (deg) — 사선 통일 */
+  var STACK_SCALE    = 0.04;     /* 카드 간 scale 감소량 */
   var FLY_THRESHOLD = 0.25;     /* 카드 너비의 25% 드래그 시 날아감 */
   var FLY_VELOCITY  = 0.45;     /* 또는 px/ms 임계 속도 */
   var FLY_DURATION  = 380;      /* 날아가는 시간 ms */
@@ -126,7 +127,7 @@
     var host = document.createElement('div');
     host.className = 'helix-deck-host';
     host.style.width   = cardW + 'px';
-    host.style.height  = (cardH + (siblings.length - 1) * STACK_OFFSET) + 'px';
+    host.style.height  = (cardH + (siblings.length - 1) * STACK_OFFSET_Y) + 'px';
     host.style.margin  = '0 auto';
     host.style.display = 'block';
 
@@ -154,18 +155,19 @@
         if (i >= VISIBLE) {
           card.style.opacity = '0';
           card.style.pointerEvents = 'none';
-          card.style.transform = 'translate(-50%, 0) scale(' + (1 - VISIBLE * STACK_SCALE) + ')';
+          card.style.transform =
+            'translate(calc(-50% + ' + (VISIBLE * STACK_OFFSET_X) + 'px), ' +
+            (VISIBLE * STACK_OFFSET_Y) + 'px) rotate(' + STACK_TILT + 'deg) scale(' +
+            (1 - VISIBLE * STACK_SCALE) + ')';
           card.classList.remove('is-top');
           card.style.zIndex = String(deck.length - i);
           return;
         }
 
-        /* 사선: 짝수번째 좌측 -tilt, 홀수번째 우측 +tilt (top 은 0) */
-        var tilt;
-        if (i === 0) tilt = 0;
-        else tilt = (i % 2 === 1) ? -STACK_TILT : STACK_TILT;
-
-        var y     = i * STACK_OFFSET;
+        /* 모든 카드 같은 방향 사선 (-3°) — 아래로 쌓이며 살짝 오른쪽으로 드리프트 */
+        var tilt  = STACK_TILT;
+        var x     = i * STACK_OFFSET_X;
+        var y     = i * STACK_OFFSET_Y;
         var scale = 1 - i * STACK_SCALE;
         var z     = deck.length - i;
 
@@ -179,7 +181,7 @@
         card.style.pointerEvents = (i === 0) ? 'auto' : 'none';
         card.style.zIndex        = String(z);
         card.style.transform =
-          'translate(-50%, ' + y + 'px) rotate(' + tilt + 'deg) scale(' + scale + ')';
+          'translate(calc(-50% + ' + x + 'px), ' + y + 'px) rotate(' + tilt + 'deg) scale(' + scale + ')';
 
         if (i === 0) card.classList.add('is-top');
         else         card.classList.remove('is-top');
@@ -231,8 +233,9 @@
 
       var top = deck[0];
       if (!top) return;
-      /* 드래그 거리에 비례해 회전 (최대 ±18°) */
-      var rot = Math.max(-18, Math.min(18, drag.dx / cardW * 30));
+      /* 드래그 거리에 비례해 회전 (베이스 STACK_TILT + 추가 ±18°) */
+      var extraRot = Math.max(-18, Math.min(18, drag.dx / cardW * 30));
+      var rot = STACK_TILT + extraRot;
       top.style.transition = 'none';
       top.style.transform =
         'translate(calc(-50% + ' + drag.dx + 'px), ' + drag.dy + 'px) rotate(' + rot + 'deg) scale(1)';
@@ -262,7 +265,8 @@
     function snapBack(card) {
       card.style.transition =
         'transform ' + SNAP_DURATION + 'ms cubic-bezier(0.22, 1, 0.36, 1)';
-      card.style.transform = 'translate(-50%, 0) rotate(0deg) scale(1)';
+      /* top 카드 원위치 = i=0 위치 (0,0) */
+      card.style.transform = 'translate(-50%, 0) rotate(' + STACK_TILT + 'deg) scale(1)';
     }
 
     var cycling = false;
@@ -282,14 +286,13 @@
       var rest = deck.slice(1);
       rest.forEach(function (c, idx) {
         var newIdx = idx;
-        var tilt;
-        if (newIdx === 0) tilt = 0;
-        else tilt = (newIdx % 2 === 1) ? -STACK_TILT : STACK_TILT;
-        var y = newIdx * STACK_OFFSET;
-        var s = 1 - newIdx * STACK_SCALE;
+        var tilt = STACK_TILT;
+        var nx   = newIdx * STACK_OFFSET_X;
+        var ny   = newIdx * STACK_OFFSET_Y;
+        var s    = 1 - newIdx * STACK_SCALE;
         c.style.transition = 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease';
         c.style.transform =
-          'translate(-50%, ' + y + 'px) rotate(' + tilt + 'deg) scale(' + s + ')';
+          'translate(calc(-50% + ' + nx + 'px), ' + ny + 'px) rotate(' + tilt + 'deg) scale(' + s + ')';
       });
 
       setTimeout(function () {
@@ -302,11 +305,10 @@
         last.style.opacity    = '0';
         var lastIdx = deck.length - 1;
         var hideIdx = Math.min(lastIdx, VISIBLE);
-        var tilt2;
-        if (hideIdx === 0) tilt2 = 0;
-        else tilt2 = (hideIdx % 2 === 1) ? -STACK_TILT : STACK_TILT;
         last.style.transform =
-          'translate(-50%, ' + (hideIdx * STACK_OFFSET) + 'px) rotate(' + tilt2 + 'deg) scale(' + (1 - hideIdx * STACK_SCALE) + ')';
+          'translate(calc(-50% + ' + (hideIdx * STACK_OFFSET_X) + 'px), ' +
+          (hideIdx * STACK_OFFSET_Y) + 'px) rotate(' + STACK_TILT +
+          'deg) scale(' + (1 - hideIdx * STACK_SCALE) + ')';
 
         /* 다음 frame 에서 정상 transform 재적용 (페이드인 자연스럽게) */
         requestAnimationFrame(function () {
@@ -338,7 +340,7 @@
           cardW = r.width;
           cardH = r.height;
           host.style.width  = cardW + 'px';
-          host.style.height = (cardH + (deck.length - 1) * STACK_OFFSET) + 'px';
+          host.style.height = (cardH + (deck.length - 1) * STACK_OFFSET_Y) + 'px';
           applyTransforms(false);
         }
       }, 150);
