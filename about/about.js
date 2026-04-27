@@ -602,13 +602,18 @@
   function init() {
     initSection1();
     initBgVideo();
-    initSection2();
     initSubheaderNav();
-    initSection5();
-    initSection5Lines();
-    initSection7();
+    /* GSAP 애니메이션은 Webflow IX2 이후에 실행해야 인라인 opacity:1 덮어쓰기 방지 */
     window.Webflow = window.Webflow || [];
-    window.Webflow.push(function () { setTimeout(initButtonGlow, 100); });
+    window.Webflow.push(function () {
+      setTimeout(function () {
+        initSection2();
+        initSection5();
+        initSection5Lines();
+        initSection7();
+        initButtonGlow();
+      }, 100);
+    });
   }
 
   if (document.readyState === 'loading') {
