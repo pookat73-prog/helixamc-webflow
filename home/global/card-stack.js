@@ -40,29 +40,56 @@
   function init() {
     if (initialized) return true;
 
-    var cards = document.querySelectorAll(CARD_SELECTOR);
-    log('found ' + CARD_SELECTOR + ':', cards.length);
-    if (cards.length < 2) {
+    var cardsAll = document.querySelectorAll(CARD_SELECTOR);
+    log('found ' + CARD_SELECTOR + ':', cardsAll.length);
+    if (cardsAll.length < 2) {
       log('cards < 2, skip — selector may be wrong, or only one card exists');
       return false;
     }
 
+    /* 각 카드의 부모 체인을 출력 (구조 진단) */
+    Array.prototype.forEach.call(cardsAll, function (c, i) {
+      var chain = [];
+      var p = c.parentElement;
+      var depth = 0;
+      while (p && depth < 5) {
+        chain.push(p.tagName + (p.className ? '.' + (p.className||'').split(' ').slice(0,2).join('.') : ''));
+        p = p.parentElement;
+        depth++;
+      }
+      log('  card[' + i + '] parents:', chain.join(' → '));
+    });
+
+    /* 공통 조상 찾기 — 모든 카드를 포함하는 최소 조상 */
+    function findCommonAncestor(els) {
+      if (!els.length) return null;
+      var ancestors = [];
+      var p = els[0];
+      while (p) { ancestors.push(p); p = p.parentElement; }
+      for (var i = 1; i < els.length; i++) {
+        var found = null;
+        var q = els[i];
+        while (q) {
+          if (ancestors.indexOf(q) >= 0) { found = q; break; }
+          q = q.parentElement;
+        }
+        if (!found) return null;
+        ancestors = ancestors.slice(ancestors.indexOf(found));
+      }
+      return ancestors[0];
+    }
+    var lca = findCommonAncestor(Array.prototype.slice.call(cardsAll));
+    log('common ancestor:', lca ? lca.tagName + '.' + (lca.className||'').split(' ').slice(0,2).join('.') : 'NONE');
+
     /* 첫 카드의 부모 = 카드들이 흐르는 컨테이너 (가정) */
-    var firstCard = cards[0];
+    var firstCard = cardsAll[0];
     var parent    = firstCard.parentElement;
     if (!parent) return false;
     log('first card parent:', parent.tagName, '.' + (parent.className || '').split(' ').join('.'));
 
-    /* 같은 부모 안의 카드만 묶음 (다른 섹션의 동명 카드 보호) */
-    var siblings = Array.prototype.filter.call(
-      parent.children,
-      function (el) { return el.classList && el.classList.contains(CARD_CLASS); }
-    );
-    log('siblings in same parent:', siblings.length);
-    if (siblings.length < 2) {
-      log('siblings < 2, skip — cards may have different parents');
-      return false;
-    }
+    /* 같은 부모 안의 카드만 묶음 — 새 전략에선 cardsAll 전체 사용 */
+    var siblings = Array.prototype.slice.call(cardsAll);
+    log('using all ' + siblings.length + ' cards (cross-parent)');
 
     /* 카드 사이즈 측정 (첫 카드 기준) */
     var rect = firstCard.getBoundingClientRect();
