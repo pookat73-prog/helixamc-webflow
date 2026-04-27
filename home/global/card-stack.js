@@ -132,11 +132,19 @@
     host.style.display = 'block';
 
     firstGrid.insertBefore(host, firstCard);
-    siblings.forEach(function (c) {
+    siblings.forEach(function (c, i) {
       c.style.width  = cardW + 'px';
       c.style.height = cardH + 'px';
       c.style.display = 'block';
       host.appendChild(c);
+
+      /* 카드 배경 진단 — 투명이면 흰색 강제 (뒷카드 비침 방지) */
+      var bg = window.getComputedStyle(c).backgroundColor;
+      log('  card[' + i + '] computed bg:', bg);
+      if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') {
+        c.style.backgroundColor = '#ffffff';
+        log('    → 투명 감지, 흰색으로 강제 적용');
+      }
     });
 
     /* 첫 섹션 외의 나머지 .white-frame_connect 섹션은 숨김 (페이지 짧아짐) */
