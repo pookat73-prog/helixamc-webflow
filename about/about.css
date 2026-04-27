@@ -116,20 +116,28 @@
   opacity: 0;
 }
 
-/* 섹션 7 — '최초' 블루 빛 훑기 (글자색 방식, GSAP 구동) */
+/* 섹션 7 — '최초' 사선 빛 훑기 (GSAP 구동, 우→좌) */
 .choi-shimmer {
   background: linear-gradient(
-    90deg,
+    118deg,
     currentColor 0%,
-    currentColor 10%,
-    #0075d6 35%,
-    #60b8ff 50%,
-    #0075d6 65%,
-    currentColor 90%,
+    currentColor 36%,
+    #0075d6 50%,
+    #90d0ff 55%,
+    #0075d6 64%,
+    currentColor 78%,
     currentColor 100%
   );
   background-size: 300% 100%;
-  background-position: 0% center;
+  background-position: 100% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 섹션 7 — '최초' 사선 2색 그라데이션 정착 */
+.choi-gradient {
+  background: linear-gradient(118deg, currentColor 40%, #0075d6 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

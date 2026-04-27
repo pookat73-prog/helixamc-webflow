@@ -459,15 +459,21 @@
           onComplete: function () {
             if (!choiEl) return;
             choiEl.classList.add('choi-shimmer');
-            /* 1회차: 느리게 */
+            /* 1회차: 우→좌 느리게 */
             gsap.fromTo(choiEl,
-              { backgroundPosition: '0% center' },
-              { backgroundPosition: '100% center', duration: 1.3, ease: 'power2.inOut',
+              { backgroundPosition: '100% center' },
+              { backgroundPosition: '0% center', duration: 1.3, ease: 'power2.inOut',
                 onComplete: function () {
-                  /* 2회차: 곧바로 빠르게 */
+                  /* 2회차: 우→좌 빠르게 → 완료 후 2색 그라데이션 정착 */
                   gsap.fromTo(choiEl,
-                    { backgroundPosition: '0% center' },
-                    { backgroundPosition: '100% center', duration: 0.55, ease: 'power2.inOut' }
+                    { backgroundPosition: '100% center' },
+                    { backgroundPosition: '0% center', duration: 0.55, ease: 'power2.inOut',
+                      onComplete: function () {
+                        choiEl.classList.remove('choi-shimmer');
+                        gsap.set(choiEl, { clearProps: 'backgroundPosition' });
+                        choiEl.classList.add('choi-gradient');
+                      }
+                    }
                   );
                 }
               }
