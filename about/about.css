@@ -87,8 +87,7 @@
 
 /* 섹션 2 — 스크롤 전 초기 숨김 (번쩍임 방지) */
 .about_contents_3-concept_qq,
-.just-box_qqqqqqqqqq .about_sub-text,
-.just-box_qqqqqqqqqq .about_contents-title,
+.about_contents_box_qqqqqqq > *,
 .blur-circle-efect,
 .about_three_contents-box {
   opacity: 0;
