@@ -107,14 +107,16 @@
       if (blurCircle) gsap.set(blurCircle, { opacity: 0 });
       if (contentBox) gsap.set(contentBox, { opacity: 0, y: -20 });
 
-      /* 카드 타임라인 빌더 (paused) */
+      /* 카드 타임라인 빌더 (paused)
+         순서: ① strategy → ② title → ④ blur → ③ divider → ⑤ content
+         엇박: 쉼표(,) = 0.35s 간격, 대시(-) = 0.2s 간격 */
       function buildTl(onDone) {
         var tl = gsap.timeline({ paused: true, onComplete: onDone });
-        tl.to(strategy,   { opacity: 1, duration: 1.0, ease: 'power2.out' },   0)
-          .to(titleBox,   { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.35)
-          .to(divider,    { scaleX: 1,  duration: 1.5, ease: 'power2.inOut' }, 0.7)  /* 밑줄: 0.7→2.2s */
-          .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   1.0)
-          .to(contentBox, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, 1.0); /* 밑줄 20% 시점에 등장 */
+        tl.to(strategy,   { opacity: 1, duration: 1.0, ease: 'power2.out' },   0)     /* ① */
+          .to(titleBox,   { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ② */
+          .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
+          .to(divider,    { scaleX: 1,  duration: 1.0, ease: 'power2.inOut' }, 0.85)  /* ③ */
+          .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' },  1.05); /* ⑤ */
         return tl;
       }
 
