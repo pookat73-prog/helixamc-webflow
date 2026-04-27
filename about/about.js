@@ -102,8 +102,11 @@
 
       var vw = window.innerWidth / 100;
 
+      /* strategyBox를 conceptBox 안 첫 자식으로 이동 */
+      if (strategyBox && conceptBox) conceptBox.insertBefore(strategyBox, conceptBox.firstChild);
+
       /* 카드별 초기 상태 — autoAlpha: visibility+opacity 동시 제어 */
-      if (strategyBox) gsap.set(strategyBox, { autoAlpha: 0, rotation: -3 });
+      if (strategyBox) gsap.set(strategyBox, { autoAlpha: 0, rotation: -4 });
       if (conceptBox)  gsap.set(conceptBox,  { autoAlpha: 0 });
       if (divider)     gsap.set(divider,     { scaleX: 0, transformOrigin: 'left center' });
       if (blurCircle)  gsap.set(blurCircle,  { autoAlpha: 0 });
