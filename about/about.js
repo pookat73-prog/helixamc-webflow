@@ -103,7 +103,7 @@
       var vw = window.innerWidth / 100;
 
       /* 카드별 초기 상태 — autoAlpha: visibility+opacity 동시 제어 */
-      if (strategyBox) gsap.set(strategyBox, { autoAlpha: 0, rotation: -3, y: vw });
+      if (strategyBox) gsap.set(strategyBox, { autoAlpha: 0, rotation: -3 });
       if (conceptBox)  gsap.set(conceptBox,  { autoAlpha: 0 });
       if (divider)     gsap.set(divider,     { scaleX: 0, transformOrigin: 'left center' });
       if (blurCircle)  gsap.set(blurCircle,  { autoAlpha: 0 });
@@ -114,7 +114,7 @@
          엇박: 쉼표 = 0.35s, 대시 = 0.2s */
       function buildTl(onDone) {
         var tl = gsap.timeline({ paused: true, onComplete: onDone });
-        tl.to(strategyBox, { autoAlpha: 1, rotation: 0, y: 0, duration: 1.0, ease: 'power2.out' }, 0)    /* ① */
+        tl.to(strategyBox, { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0)    /* ① 기울기 고정, 페이드인만 */
           .to(conceptBox,  { autoAlpha: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ② */
           .to(blurCircle,  { autoAlpha: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
           .set(divider,    { visibility: 'visible' },                              0.85)
