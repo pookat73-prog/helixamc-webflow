@@ -89,6 +89,10 @@
 
     log('섹션 2 카드', cards.length, '개 발견');
 
+    var timelines    = [];
+    var card2Done    = false;
+    var card3Waiting = false;
+
     cards.forEach(function (card, i) {
       var titleBox   = card.querySelector('.about_contents_3-concept_q');
       var strategy   = card.querySelectorAll('.about_point-number_blue_whrite, .about_point-title_blue_whrite');
@@ -101,22 +105,52 @@
       gsap.set(strategy, { opacity: 0 });
       if (divider)    gsap.set(divider,    { scaleX: 0, transformOrigin: 'left center' });
       if (blurCircle) gsap.set(blurCircle, { opacity: 0 });
-      if (contentBox) gsap.set(contentBox, { opacity: 0, y: -24 });
+      if (contentBox) gsap.set(contentBox, { opacity: 0, y: -20 });
 
-      /* 카드별 독립 ScrollTrigger */
-      var tl = gsap.timeline({
-        scrollTrigger: {
+      /* 카드 타임라인 빌더 (paused) */
+      function buildTl(onDone) {
+        var tl = gsap.timeline({ paused: true, onComplete: onDone });
+        tl.to(strategy,   { opacity: 1, duration: 1.0, ease: 'power2.out' },   0)
+          .to(titleBox,   { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.35)
+          .to(divider,    { scaleX: 1,  duration: 1.5, ease: 'power2.inOut' }, 0.7)  /* 밑줄: 0.7→2.2s */
+          .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   1.0)
+          .to(contentBox, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, 1.0); /* 밑줄 20% 시점에 등장 */
+        return tl;
+      }
+
+      var tl;
+
+      if (i < 2) {
+        /* 카드 1·2: 뷰포트 진입 즉시 재생 */
+        var onDone = (i === 1) ? function () {
+          card2Done = true;
+          log('카드 2 완료 → 카드 3 대기 중:', card3Waiting);
+          if (card3Waiting && timelines[2]) timelines[2].play();
+        } : null;
+
+        tl = buildTl(onDone);
+        ScrollTrigger.create({
           trigger: card,
           start: 'top 75%',
-          onEnter: function () { log('카드', i + 1, '트리거'); }
-        }
-      });
+          once: true,
+          onEnter: function () { log('카드', i + 1, '트리거'); tl.play(); }
+        });
+      } else {
+        /* 카드 3: 카드 2 완료 후에만 재생 */
+        tl = buildTl(null);
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'top 75%',
+          once: true,
+          onEnter: function () {
+            log('카드 3 뷰포트 진입 — card2Done:', card2Done);
+            if (card2Done) { tl.play(); }
+            else           { card3Waiting = true; }
+          }
+        });
+      }
 
-      tl.to(strategy,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0)
-        .to(titleBox,   { opacity: 1, duration: 1,   ease: 'power2.out' },   0.3)
-        .to(divider,    { scaleX: 1,  duration: 1,   ease: 'power2.inOut' }, 0.6)
-        .to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.9)
-        .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.2);
+      timelines[i] = tl;
     });
   }
 
