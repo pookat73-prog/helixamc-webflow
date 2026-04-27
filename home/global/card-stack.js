@@ -127,15 +127,17 @@
     var host = document.createElement('div');
     host.className = 'helix-deck-host';
     host.style.width   = cardW + 'px';
-    host.style.height  = (cardH + (siblings.length - 1) * STACK_OFFSET_Y) + 'px';
+    /* 호스트 높이: 좌하단 카드 (y=maxIdx*OFFSET) + cardH 까지 + x 오프셋 만큼 너비 여유 */
+    var maxIdxLocal = Math.min(VISIBLE - 1, siblings.length - 1);
+    host.style.height  = (cardH + maxIdxLocal * STACK_OFFSET_Y) + 'px';
+    host.style.width   = (cardW + maxIdxLocal * STACK_OFFSET_X) + 'px';
     host.style.margin  = '0 auto';
     host.style.display = 'block';
 
     firstGrid.insertBefore(host, firstCard);
     siblings.forEach(function (c, i) {
-      c.style.width  = cardW + 'px';
-      c.style.height = cardH + 'px';
-      c.style.display = 'block';
+      /* width 만 명시. height/display 는 카드 원본 그대로 → 텍스트 레이아웃 보존 */
+      c.style.width = cardW + 'px';
       host.appendChild(c);
 
       /* 카드 배경 진단 — 투명이면 흰색 강제 (뒷카드 비침 방지) */
@@ -158,24 +160,28 @@
 
     var deck = siblings.slice();
 
+    /* 사선 방향: 맨 앞 카드(i=0)는 좌하단, 뒤로 갈수록 우상향
+       maxIdx 기준으로 y 를 음수 방향으로 빼서 위로 쌓음 */
+    var maxIdx = Math.min(VISIBLE - 1, deck.length - 1);
+
     function applyTransforms(animate) {
       deck.forEach(function (card, i) {
         if (i >= VISIBLE) {
           card.style.opacity = '0';
           card.style.pointerEvents = 'none';
           card.style.transform =
-            'translate(calc(-50% + ' + (VISIBLE * STACK_OFFSET_X) + 'px), ' +
-            (VISIBLE * STACK_OFFSET_Y) + 'px) rotate(' + STACK_TILT + 'deg) scale(' +
-            (1 - VISIBLE * STACK_SCALE) + ')';
+            'translate(calc(-50% + ' + (maxIdx * STACK_OFFSET_X) + 'px), 0px) rotate(' +
+            STACK_TILT + 'deg) scale(' + (1 - VISIBLE * STACK_SCALE) + ')';
           card.classList.remove('is-top');
           card.style.zIndex = String(deck.length - i);
           return;
         }
 
-        /* 모든 카드 같은 방향 사선 (-3°) — 아래로 쌓이며 살짝 오른쪽으로 드리프트 */
+        /* i=0 (맨 앞) → 좌하단 (x=0, y=maxIdx*OFFSET)
+           i=뒤로 → 우상향 (x +OFFSET_X, y -OFFSET_Y) */
         var tilt  = STACK_TILT;
         var x     = i * STACK_OFFSET_X;
-        var y     = i * STACK_OFFSET_Y;
+        var y     = (maxIdx - i) * STACK_OFFSET_Y;
         var scale = 1 - i * STACK_SCALE;
         var z     = deck.length - i;
 
@@ -244,9 +250,10 @@
       /* 드래그 거리에 비례해 회전 (베이스 STACK_TILT + 추가 ±18°) */
       var extraRot = Math.max(-18, Math.min(18, drag.dx / cardW * 30));
       var rot = STACK_TILT + extraRot;
+      var baseY = maxIdx * STACK_OFFSET_Y;  /* top 카드 베이스 Y (좌하단) */
       top.style.transition = 'none';
       top.style.transform =
-        'translate(calc(-50% + ' + drag.dx + 'px), ' + drag.dy + 'px) rotate(' + rot + 'deg) scale(1)';
+        'translate(calc(-50% + ' + drag.dx + 'px), ' + (baseY + drag.dy) + 'px) rotate(' + rot + 'deg) scale(1)';
     }
 
     function onPointerUp(e) {
@@ -273,8 +280,10 @@
     function snapBack(card) {
       card.style.transition =
         'transform ' + SNAP_DURATION + 'ms cubic-bezier(0.22, 1, 0.36, 1)';
-      /* top 카드 원위치 = i=0 위치 (0,0) */
-      card.style.transform = 'translate(-50%, 0) rotate(' + STACK_TILT + 'deg) scale(1)';
+      /* top 카드 원위치 = i=0 위치 (x=0, y=maxIdx*OFFSET) — 좌하단 */
+      card.style.transform =
+        'translate(-50%, ' + (maxIdx * STACK_OFFSET_Y) + 'px) rotate(' +
+        STACK_TILT + 'deg) scale(1)';
     }
 
     var cycling = false;
@@ -287,16 +296,16 @@
       card.style.transition =
         'transform ' + FLY_DURATION + 'ms cubic-bezier(0.55, 0, 0.7, 0.2), opacity 220ms ease ' + (FLY_DURATION - 220) + 'ms';
       card.style.transform =
-        'translate(calc(-50% + ' + flyX + 'px), 40px) rotate(' + flyR + 'deg) scale(0.95)';
+        'translate(calc(-50% + ' + flyX + 'px), ' + (maxIdx * STACK_OFFSET_Y + 40) + 'px) rotate(' + flyR + 'deg) scale(0.95)';
       card.style.opacity = '0';
 
-      /* 나머지 카드들은 한 단계 위로 promote */
+      /* 나머지 카드들은 한 단계 앞으로 promote (idx 줄어듦 = 좌하단으로 이동) */
       var rest = deck.slice(1);
       rest.forEach(function (c, idx) {
-        var newIdx = idx;
+        var newIdx = idx;  /* 새 인덱스 (i=0 부터) */
         var tilt = STACK_TILT;
         var nx   = newIdx * STACK_OFFSET_X;
-        var ny   = newIdx * STACK_OFFSET_Y;
+        var ny   = (maxIdx - newIdx) * STACK_OFFSET_Y;
         var s    = 1 - newIdx * STACK_SCALE;
         c.style.transition = 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease';
         c.style.transform =
@@ -307,16 +316,13 @@
         /* deck 순환: top 을 맨 뒤로 보냄 */
         deck.push(deck.shift());
 
-        /* 맨 뒤로 간 카드를 시각적으로 deck 마지막 위치로 즉시 (애니 없이) 이동 */
+        /* 맨 뒤로 간 카드를 시각적으로 우상단 hidden 위치에 즉시 (애니 없이) 이동 */
         var last = deck[deck.length - 1];
         last.style.transition = 'none';
         last.style.opacity    = '0';
-        var lastIdx = deck.length - 1;
-        var hideIdx = Math.min(lastIdx, VISIBLE);
         last.style.transform =
-          'translate(calc(-50% + ' + (hideIdx * STACK_OFFSET_X) + 'px), ' +
-          (hideIdx * STACK_OFFSET_Y) + 'px) rotate(' + STACK_TILT +
-          'deg) scale(' + (1 - hideIdx * STACK_SCALE) + ')';
+          'translate(calc(-50% + ' + (maxIdx * STACK_OFFSET_X) + 'px), 0px) rotate(' +
+          STACK_TILT + 'deg) scale(' + (1 - VISIBLE * STACK_SCALE) + ')';
 
         /* 다음 frame 에서 정상 transform 재적용 (페이드인 자연스럽게) */
         requestAnimationFrame(function () {
