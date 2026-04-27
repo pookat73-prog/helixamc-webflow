@@ -94,32 +94,29 @@
     var card3Waiting = false;
 
     cards.forEach(function (card, i) {
-      var strategyBox  = card.querySelector('.about_contents_3-concept_qq');  /* ① number+label 래퍼 */
-      var conceptBox   = card.querySelector('.about_contents_box_qqqqqqq');  /* ② 제목 박스 컨테이너 */
-      var conceptItems = conceptBox ? Array.from(conceptBox.children) : [];  /* ②-a, ②-b (자식 순서대로) */
-      var divider      = card.querySelector('.divider_blue_grad_no-spacing-1');
-      var blurCircle   = card.querySelector('.blur-circle-efect');
-      var contentBox   = card.querySelector('.about_three_contents-box');
+      var strategyBox = card.querySelector('.about_contents_3-concept_qq');  /* ① number+label 래퍼 */
+      var conceptBox  = card.querySelector('.about_contents_box_qqqqqqq'); /* ② 둥글린 제목 박스 */
+      var divider     = card.querySelector('.divider_blue_grad_no-spacing-1');
+      var blurCircle  = card.querySelector('.blur-circle-efect');
+      var contentBox  = card.querySelector('.about_three_contents-box');
 
       /* 카드별 초기 상태 */
-      if (strategyBox)       gsap.set(strategyBox, { opacity: 0 });
-      if (conceptItems.length) gsap.set(conceptItems, { opacity: 0 });
-      if (divider)           gsap.set(divider,     { scaleX: 0, transformOrigin: 'left center' });
-      if (blurCircle)        gsap.set(blurCircle,  { opacity: 0 });
-      if (contentBox)        gsap.set(contentBox,  { opacity: 0, y: -20 });
+      if (strategyBox) gsap.set(strategyBox, { opacity: 0 });
+      if (conceptBox)  gsap.set(conceptBox,  { opacity: 0 });
+      if (divider)     gsap.set(divider,     { scaleX: 0, transformOrigin: 'left center' });
+      if (blurCircle)  gsap.set(blurCircle,  { opacity: 0 });
+      if (contentBox)  gsap.set(contentBox,  { opacity: 0, y: -20 });
 
       /* 카드 타임라인 빌더 (paused)
-         순서: ① → ②-a → ②-b → ④ → ③ → ⑤
-         엇박: 쉼표 = 0.35s, 대시 = 0.17s */
+         순서: ① → ② → ④ → ③ → ⑤
+         엇박: 쉼표 = 0.35s, 대시 = 0.2s */
       function buildTl(onDone) {
         var tl = gsap.timeline({ paused: true, onComplete: onDone });
-        tl.to(strategyBox, { opacity: 1, duration: 1.0, ease: 'power2.out' }, 0);   /* ① */
-        conceptItems.forEach(function (el, j) {
-          tl.to(el, { opacity: 1, duration: 1.0, ease: 'power2.out' }, 0.35 + j * 0.17); /* ②-a, ②-b */
-        });
-        tl.to(blurCircle, { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
-          .to(divider,    { scaleX: 1,  duration: 1.0, ease: 'power2.inOut' }, 0.85)  /* ③ */
-          .to(contentBox, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.05); /* ⑤ */
+        tl.to(strategyBox, { opacity: 1, duration: 1.0, ease: 'power2.out' },   0)     /* ① */
+          .to(conceptBox,  { opacity: 1, duration: 1.0, ease: 'power2.out' },   0.35)  /* ② */
+          .to(blurCircle,  { opacity: 1, duration: 1.2, ease: 'power2.out' },   0.55)  /* ④ */
+          .to(divider,     { scaleX: 1,  duration: 1.0, ease: 'power2.inOut' }, 0.85)  /* ③ */
+          .to(contentBox,  { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.05); /* ⑤ */
         return tl;
       }
 
