@@ -23,7 +23,8 @@
     console.log.apply(console, ['[Deck]'].concat([].slice.call(arguments)));
   }
 
-  var CARD_SELECTOR = '.white-frame_connect';
+  var CARD_SELECTOR = '.just-box_qqqqqqq';
+  var DRY_RUN       = /[?&]deck-dry=1/.test(location.search) || true;  /* 진단 모드: DOM 안 건드림. 안정화 후 false */
   var VISIBLE       = 4;        /* 동시에 보이는 카드 수 */
   var STACK_OFFSET  = 8;        /* 카드 간 y 오프셋 (px) */
   var STACK_TILT    = 4;        /* 카드 간 회전 (deg, 좌우 번갈아) */
@@ -70,6 +71,21 @@
     if (!cardW || !cardH) {
       log('card size 0, retry later');
       return false;
+    }
+
+    /* 안전장치: 카드 너비가 viewport의 80% 이상이면 풀너비 섹션 가능성
+       전체 페이지 레이아웃 깨질 수 있어서 중단 */
+    if (cardW > window.innerWidth * 0.8) {
+      log('⚠️ card width > 80% of viewport (' + cardW + 'px) — likely full-width section, ABORT to protect layout');
+      return true;  /* return true → retry 안 함 (영구 중단) */
+    }
+
+    /* DRY RUN: 진단만 하고 끝 */
+    if (DRY_RUN) {
+      log('✅ DRY_RUN — DOM 변경 없음. 위 로그 확인 후 안전하면 DRY_RUN=false 로 전환');
+      log('   카드' + siblings.length + '장, ' + cardW + 'x' + cardH + ', 부모: ' + parent.tagName + '.' + (parent.className||'').split(' ').join('.'));
+      initialized = true;
+      return true;
     }
 
     /* deck host 생성: 부모 안에 첫 카드 위치에 삽입 */
