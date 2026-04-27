@@ -1,0 +1,44 @@
+/* ================================================================
+   STACKED CARD SWIPE — .white-frame_connect 카드덱
+   카드들을 첫 번째 카드 자리에 사선 스택으로 겹쳐 쌓고
+   드래그/스와이프로 한 장씩 넘기면서 무한 루프
+   ================================================================ */
+
+/* host: 첫 카드가 있던 위치를 기준으로 deck 영역을 잡음 */
+.helix-deck-host {
+  position: relative;
+  margin: 0 auto;
+  /* width/height 는 JS가 첫 카드 측정 후 inline 으로 부여 */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* deck 안에 들어간 카드 공통 */
+.helix-deck-host .white-frame_connect {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin: 0 !important;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  cursor: grab;
+  /* JS 가 transform 으로 모든 위치/회전/스케일 제어 */
+  transition: box-shadow 0.25s ease;
+}
+
+.helix-deck-host .white-frame_connect.is-top {
+  z-index: 10;
+}
+
+.helix-deck-host .white-frame_connect.is-dragging {
+  cursor: grabbing;
+  transition: none !important;
+}
+
+/* 사선 스택 그림자 강화 (top 카드만) */
+.helix-deck-host .white-frame_connect.is-top {
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.18),
+    0 18px 48px rgba(0, 0, 0, 0.10);
+}
