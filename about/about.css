@@ -151,62 +151,43 @@
 
 /* ============================================================
    Hybrid Operation Room — div-block-106 글로우 인터랙션
-   12시(정중앙 상단)에서 양쪽으로 퍼지며 원을 감싸는 푸른 빛
+   둘레 ring 두 개(::before=우측 반, ::after=좌측 반)를 12시 한 점에
+   모았다가 clip-path 로 좌·우로 펼쳐 박스 둘레를 감싸는 푸른 빛.
 
-   구현: about.js가 .div-block-106의 형제로 .hybrid-glow-halo div를
-   주입하고 위치/크기를 동기화. ::before가 z-index:-1로 깔리는 패턴은
-   부모 배경/오버플로에 가려지는 케이스가 있어 분리.
+   halo div는 about.js가 .div-block-106의 형제로 주입(위치·크기 동기화).
+   안쪽 영역은 transparent — border + filter blur/drop-shadow 만 ring 으로 보임.
    ============================================================ */
-@property --glow-reveal {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@property --glow-opacity {
-  syntax: '<number>';
-  inherits: false;
-  initial-value: 0;
-}
-
 .hybrid-glow-halo {
   position: absolute;
   pointer-events: none;
   z-index: 0;
-  --glow-reveal: 0deg;
-  --glow-opacity: 0;
-  background: conic-gradient(
-    rgba(0, 117, 214, 0.95) 0deg,
-    rgba(0, 117, 214, 0.55) 40deg,
-    rgba(0, 117, 214, 0.18) 100deg,
-    rgba(0, 117, 214, 0)    165deg,
-    rgba(0, 117, 214, 0)    195deg,
-    rgba(0, 117, 214, 0.18) 260deg,
-    rgba(0, 117, 214, 0.55) 320deg,
-    rgba(0, 117, 214, 0.95) 360deg
-  );
-  filter: blur(24px);
-  opacity: var(--glow-opacity);
-  -webkit-mask-image: conic-gradient(
-    from calc(-1 * var(--glow-reveal)),
-    #000 0deg,
-    #000 calc(2 * var(--glow-reveal)),
-    transparent calc(2 * var(--glow-reveal) + 0.1deg),
-    transparent 360deg
-  );
-          mask-image: conic-gradient(
-    from calc(-1 * var(--glow-reveal)),
-    #000 0deg,
-    #000 calc(2 * var(--glow-reveal)),
-    transparent calc(2 * var(--glow-reveal) + 0.1deg),
-    transparent 360deg
-  );
+  background: transparent;
 }
 
-.hybrid-glow-halo.is-glowing {
-  --glow-reveal: 180deg;
-  --glow-opacity: 1;
+.hybrid-glow-halo::before,
+.hybrid-glow-halo::after {
+  content: '';
+  position: absolute;
+  inset: 16px;            /* halo 가 +22px 영역이므로 박스 외곽 6px 둘레 ring */
+  border-radius: inherit;
+  pointer-events: none;
+  border: 2px solid rgba(0, 117, 214, 0.92);
+  background: transparent;
+  filter: blur(6px) drop-shadow(0 0 18px rgba(0, 117, 214, 0.7));
+  opacity: 0;
+  /* 시작: 모든 꼭짓점을 12시 한 점에 모음 */
+  clip-path: polygon(50% 0, 50% 0, 50% 0, 50% 0);
   transition:
-    --glow-reveal  1.6s cubic-bezier(0.22, 1, 0.36, 1),
-    --glow-opacity 0.55s ease-out;
+    opacity   0.5s ease-out,
+    clip-path 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hybrid-glow-halo.is-glowing::before {
+  opacity: 1;
+  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);  /* 우측 반 */
+}
+
+.hybrid-glow-halo.is-glowing::after {
+  opacity: 1;
+  clip-path: polygon(50% 0, 0 0, 0 100%, 50% 100%);        /* 좌측 반 */
 }
