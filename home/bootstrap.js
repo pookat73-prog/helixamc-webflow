@@ -31,13 +31,22 @@
      bootstrap.js가 section1.css를 async로 주입하기 때문에, CSS가 도착하기
      전에 hero 슬로건/버튼이 자연 레이아웃 + 폴백 폰트로 잠깐 그려지는
      깜빡임이 발생함. 인라인 style을 동기 주입해 첫 페인트 전에 가림.
-     section1.js가 인라인 visibility:hidden을 직접 설정하면 가드 제거. */
+     section1.js가 인라인 visibility:hidden을 직접 설정하면 가드 제거.
+
+     셀렉터 전략:
+     1) `.home_background > *` — DOM 구조와 무관하게 hero 영역 자식을 통째로 가림
+        (.home_background 자체의 어두운 색만 남음)
+     2) 명시적 셀렉터 — detach로 .home_background 밖으로 옮겨진 슬로건/버튼,
+        혹은 .home_background 가 없는 변종 페이지를 위한 안전망 */
   (function injectPrepaintGuard() {
     var style = document.createElement('style');
     style.id = 'helix-home-prepaint';
     style.textContent =
+      '.home_background>*,' +
       '.home_slogan,' +
+      '.home_contents,' +
       '.bt-box-1,' +
+      '.discover-helix_button,' +
       '.div-block-150,' +
       '[class*="lackFrame_Image"],' +
       '[class*="lackframe_image"]' +
