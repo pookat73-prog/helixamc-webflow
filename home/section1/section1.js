@@ -112,10 +112,13 @@
 
     var slogan = document.querySelector('.home_slogan');
     /* bg section: legacy .div-block-150 → new BlackFrame_Image(Hero).
-       Attribute selector covers paren-escape and casing variants. */
-    var bg     = document.querySelector('.div-block-150') ||
-                 document.querySelector('[class*="lackFrame_Image"]') ||
-                 document.querySelector('[class*="lackframe_image"]');
+       우선 slogan의 가장 가까운 Hero 컨테이너를 찾고,
+       실패 시에만 하위 호환 셀렉터로 폴백한다. */
+    var bg     = (slogan && slogan.closest('.div-block-150, .BlackFrame_Image\\(Hero\\), [class*="BlackFrame_Image(Hero)"], [class*="blackframe_image(hero)"]')) ||
+                 document.querySelector('.div-block-150') ||
+                 document.querySelector('.BlackFrame_Image\\(Hero\\)') ||
+                 document.querySelector('[class*="BlackFrame_Image(Hero)"]') ||
+                 document.querySelector('[class*="blackframe_image(hero)"]');
     var box1   = document.querySelector('.bt-box-1');
 
     log('selectors found:',
