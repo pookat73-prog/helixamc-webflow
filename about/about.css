@@ -143,3 +143,8 @@
   opacity: 0;
 }
 /* '최초' 광선/그라데이션은 about.js 인라인 스타일로 처리 */
+
+/* about_history_title_standard-font 두 요소 위로 6vw 이동 */
+.about_history_title_standard-font {
+  margin-top: -6vw;
+}
