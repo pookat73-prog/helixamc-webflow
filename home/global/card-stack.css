@@ -40,3 +40,64 @@
   cursor: grabbing;
   transition: none !important;
 }
+
+/* ============================================================
+   좌우 세모 화살표 — host 부모 grid 에 절대위치
+   ============================================================ */
+.helix-deck-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.helix-deck-arrow:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.helix-deck-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.helix-deck-arrow svg {
+  display: block;
+}
+
+.helix-deck-arrow-left {
+  left: -28px;
+}
+
+.helix-deck-arrow-right {
+  right: -28px;
+}
+
+@media (max-width: 600px) {
+  .helix-deck-arrow {
+    width: 44px;
+    height: 44px;
+  }
+  .helix-deck-arrow svg {
+    width: 22px;
+    height: 22px;
+  }
+  .helix-deck-arrow-left  { left: -10px; }
+  .helix-deck-arrow-right { right: -10px; }
+}

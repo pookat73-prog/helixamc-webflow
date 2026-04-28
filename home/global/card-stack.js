@@ -248,14 +248,12 @@
 
       var top = deck[0];
       if (!top) return;
-      /* 드래그 거리에 비례해 회전 (베이스 STACK_TILT + 추가 ±18°) */
-      var extraRot = Math.max(-18, Math.min(18, drag.dx / cardW * 30));
-      var rot = STACK_TILT + extraRot;
-      var baseX = maxIdx * STACK_OFFSET_X;  /* top 카드 베이스 X (우하단) */
+      /* 회전 제거 — 직선 슬라이드만 */
+      var baseX = maxIdx * STACK_OFFSET_X;
       var baseY = maxIdx * STACK_OFFSET_Y;
       top.style.transition = 'none';
       top.style.transform =
-        'translate(calc(-50% + ' + (baseX + drag.dx) + 'px), ' + (baseY + drag.dy) + 'px) rotate(' + rot + 'deg) scale(1)';
+        'translate(calc(-50% + ' + (baseX + drag.dx) + 'px), ' + (baseY + drag.dy) + 'px) rotate(' + STACK_TILT + 'deg) scale(1)';
     }
 
     function onPointerUp(e) {
@@ -295,11 +293,11 @@
       cycling = true;
 
       var flyX = dir * (cardW * 1.6 + 200);
-      var flyR = dir * 28;
+      /* 회전 제거 — 직선으로 옆으로 슬라이드 */
       card.style.transition =
-        'transform ' + FLY_DURATION + 'ms cubic-bezier(0.55, 0, 0.7, 0.2), opacity 220ms ease ' + (FLY_DURATION - 220) + 'ms';
+        'transform ' + FLY_DURATION + 'ms cubic-bezier(0.4, 0, 0.2, 1), opacity 220ms ease ' + (FLY_DURATION - 220) + 'ms';
       card.style.transform =
-        'translate(calc(-50% + ' + (maxIdx * STACK_OFFSET_X + flyX) + 'px), ' + (maxIdx * STACK_OFFSET_Y + 40) + 'px) rotate(' + flyR + 'deg) scale(0.95)';
+        'translate(calc(-50% + ' + (maxIdx * STACK_OFFSET_X + flyX) + 'px), ' + (maxIdx * STACK_OFFSET_Y) + 'px) rotate(' + STACK_TILT + 'deg) scale(1)';
       card.style.opacity = '0';
 
       /* 나머지 카드들은 한 단계 앞으로 promote (newIdx 작을수록 우하단) */
@@ -341,6 +339,36 @@
     host.addEventListener('pointercancel', onPointerUp);
     /* 이미지/텍스트 드래그 ghost 방지 */
     host.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+    /* 좌우 세모 화살표 — host 부모(grid) 안에 절대위치로 삽입.
+       클릭 시 flyOut(◀ → 왼쪽 / ▶ → 오른쪽). */
+    function makeArrow(dir) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'helix-deck-arrow helix-deck-arrow-' + (dir < 0 ? 'left' : 'right');
+      btn.setAttribute('aria-label', dir < 0 ? '이전 카드' : '다음 카드');
+      btn.innerHTML = dir < 0
+        ? '<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M16 4 L6 12 L16 20 Z"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M8 4 L18 12 L8 20 Z"/></svg>';
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var top = deck[0];
+        if (top && !cycling) flyOut(top, dir);
+      });
+      return btn;
+    }
+    /* host 의 부모(grid)에 position:relative 보장 후 화살표 두 개 부착 */
+    var arrowParent = host.parentElement;
+    if (arrowParent && getComputedStyle(arrowParent).position === 'static') {
+      arrowParent.style.position = 'relative';
+    }
+    var leftArrow  = makeArrow(-1);
+    var rightArrow = makeArrow(+1);
+    if (arrowParent) {
+      arrowParent.appendChild(leftArrow);
+      arrowParent.appendChild(rightArrow);
+    }
 
     /* 리사이즈 시 host 크기 재측정 */
     var resizeTimer = null;
