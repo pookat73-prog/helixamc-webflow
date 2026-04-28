@@ -27,6 +27,32 @@
     'home/global/sections-animations.js'
   ];
 
+  /* Pre-paint FOUC/FOUT guard:
+     bootstrap.js가 section1.css를 async로 주입하기 때문에, CSS가 도착하기
+     전에 hero 슬로건/버튼이 자연 레이아웃 + 폴백 폰트로 잠깐 그려지는
+     깜빡임이 발생함. 인라인 style을 동기 주입해 첫 페인트 전에 가림.
+     section1.js가 인라인 visibility:hidden을 직접 설정하면 가드 제거. */
+  (function injectPrepaintGuard() {
+    var style = document.createElement('style');
+    style.id = 'helix-home-prepaint';
+    style.textContent =
+      '.home_slogan,' +
+      '.bt-box-1,' +
+      '.div-block-150,' +
+      '[class*="lackFrame_Image"],' +
+      '[class*="lackframe_image"]' +
+      '{visibility:hidden!important}';
+    (document.head || document.documentElement).appendChild(style);
+    /* 안전망: 6초 안에 section1.js 가 가드를 제거하지 않으면 강제 해제 */
+    setTimeout(function () {
+      var s = document.getElementById('helix-home-prepaint');
+      if (s && s.parentNode) {
+        s.parentNode.removeChild(s);
+        console.warn('[helix-bootstrap] section1 not ready in 6s, removing prepaint guard');
+      }
+    }, 6000);
+  })();
+
   function cdn(ref, path) {
     /* Cache-busting: new timestamp every minute prevents stale browser caches */
     var t = Math.floor(Date.now() / 60000);
