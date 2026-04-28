@@ -148,3 +148,69 @@
 .about_history_title_standard-font {
   margin-top: 6vw;
 }
+
+/* ============================================================
+   Hybrid Operation Room — div-block-106 글로우 인터랙션
+   12시(정중앙 상단)에서 양쪽으로 퍼지며 원을 감싸는 푸른 빛
+   ============================================================ */
+@property --glow-reveal {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --glow-opacity {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+#hybrid-operation-room .div-block-106 {
+  position: relative;
+  isolation: isolate;
+  --glow-reveal: 0deg;
+  --glow-opacity: 0;
+}
+
+#hybrid-operation-room .div-block-106::before {
+  content: '';
+  position: absolute;
+  inset: -22px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background: conic-gradient(
+    rgba(0, 117, 214, 0.95) 0deg,
+    rgba(0, 117, 214, 0.55) 40deg,
+    rgba(0, 117, 214, 0.18) 100deg,
+    rgba(0, 117, 214, 0)    165deg,
+    rgba(0, 117, 214, 0)    195deg,
+    rgba(0, 117, 214, 0.18) 260deg,
+    rgba(0, 117, 214, 0.55) 320deg,
+    rgba(0, 117, 214, 0.95) 360deg
+  );
+  filter: blur(24px);
+  opacity: var(--glow-opacity);
+  -webkit-mask-image: conic-gradient(
+    from calc(-1 * var(--glow-reveal)),
+    #000 0deg,
+    #000 calc(2 * var(--glow-reveal)),
+    transparent calc(2 * var(--glow-reveal) + 0.1deg),
+    transparent 360deg
+  );
+          mask-image: conic-gradient(
+    from calc(-1 * var(--glow-reveal)),
+    #000 0deg,
+    #000 calc(2 * var(--glow-reveal)),
+    transparent calc(2 * var(--glow-reveal) + 0.1deg),
+    transparent 360deg
+  );
+}
+
+#hybrid-operation-room .div-block-106.is-glowing {
+  --glow-reveal: 180deg;
+  --glow-opacity: 1;
+  transition:
+    --glow-reveal  1.6s cubic-bezier(0.22, 1, 0.36, 1),
+    --glow-opacity 0.55s ease-out;
+}

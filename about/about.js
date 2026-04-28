@@ -616,6 +616,37 @@
     });
   }
 
+  /* ── Hybrid Operation Room — div-block-106 글로우 ── */
+  function initHybridGlow() {
+    var section = document.querySelector('#hybrid-operation-room');
+    if (!section) { log('#hybrid-operation-room 섹션 없음'); return; }
+    var target = section.querySelector('.div-block-106');
+    if (!target) { log('#hybrid-operation-room .div-block-106 없음'); return; }
+
+    function fire() {
+      target.classList.add('is-glowing');
+      log('hybrid glow 발사');
+    }
+
+    if (window.ScrollTrigger) {
+      ScrollTrigger.create({
+        trigger: target,
+        start: 'top 75%',
+        once: true,
+        onEnter: fire
+      });
+    } else if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { fire(); io.disconnect(); }
+        });
+      }, { threshold: 0.25 });
+      io.observe(target);
+    } else {
+      fire();
+    }
+  }
+
   function init() {
     initSection1();
     initBgVideo();
@@ -630,6 +661,7 @@
         initSection5Lines();
         initSection7();
         initButtonGlow();
+        initHybridGlow();
       }, 100);
     });
   }
