@@ -175,24 +175,19 @@
       cardTL.to(cards, {
         opacity: 1,
         y: 0,
-        stagger: 0.25,
-        duration: 0.8,
+        stagger: 0.08,
+        duration: 0.5,
         ease: 'power2.out'
-      })
-      .to(cards, {
-        boxShadow: '0 4px 20px rgba(107, 125, 153, 0.65), 0 8px 36px rgba(107, 125, 153, 0.15)',
-        stagger: 0.25,
-        duration: 0.6
-      }, '<0.3');
+      });
 
       var svicc = document.querySelector('.home_background_svicc');
       if (svicc) {
         cardTL.to(svicc, {
           opacity: 1,
           x: 0,
-          duration: 1,
+          duration: 0.6,
           ease: 'power2.out'
-        }, '-=0.5');
+        }, '-=0.3');
       }
       log('cards animation: ' + cards.length + ' cards, svicc=' + !!svicc);
     }

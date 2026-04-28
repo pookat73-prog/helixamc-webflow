@@ -41,16 +41,15 @@ html, body {
    ============================================================ */
 .home_branch-card {
   opacity: 0;
-  transform: translateY(30px);
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  transition: box-shadow 0.6s ease-out;
-  will-change: opacity, transform, box-shadow;
+  transform: translateY(14px);
+  box-shadow: 0 4px 20px rgba(107, 125, 153, 0.55), 0 8px 36px rgba(107, 125, 153, 0.12);
+  will-change: opacity, transform;
 }
 
 /* SVICC 배경 (우측) — 초기: 오른쪽에서 슬라이드 인 대기 */
 .home_background_svicc {
   opacity: 0;
-  transform: translateX(50px);
+  transform: translateX(20px);
   will-change: opacity, transform;
 }
 
