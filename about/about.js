@@ -8,8 +8,24 @@
   var DEBUG = window.location.search.indexOf('debug-about=1') !== -1;
   function log() { if (DEBUG) console.log.apply(console, ['[About]'].concat(Array.prototype.slice.call(arguments))); }
 
-  var REF = window.HELIX_REF || 'main';
+  /* SHA를 자기 자신 script src에서 추출 → 어떤 bootstrap으로 로드되든 일관성 보장.
+     fallback 순서: script src에서 추출 → window.HELIX_REF → 'main' */
+  function resolveRef() {
+    try {
+      var s = document.currentScript;
+      if (!s) {
+        var all = document.querySelectorAll('script[src*="/about/about.js"]');
+        s = all[all.length - 1];
+      }
+      var src = s && s.src;
+      var m = src && src.match(/@([^/]+)\/about\/about\.js/);
+      if (m && m[1] && m[1] !== 'main') return m[1];
+    } catch (e) {}
+    return window.HELIX_REF || 'main';
+  }
+  var REF = resolveRef();
   var VIDEO_URL = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + REF + '/about/bg-video.mp4';
+  log('REF resolved to', REF, 'VIDEO_URL', VIDEO_URL);
   var s1Timeline = null;
 
   /* ── 섹션 1 헤드/서브헤드 페이드인 ── */
