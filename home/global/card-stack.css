@@ -43,6 +43,7 @@
 
 /* ============================================================
    좌우 세모 화살표 — host 부모 grid 에 절대위치
+   배경/테두리 없음. 세모만 보이고 클릭 에리어는 투명 원형.
    ============================================================ */
 .helix-deck-arrow {
   position: absolute;
@@ -54,27 +55,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  border: none;
   border-radius: 50%;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
   color: #333;
   cursor: pointer;
   padding: 0;
   margin: 0;
   outline: none;
-  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.18s ease, opacity 0.18s ease;
   -webkit-tap-highlight-color: transparent;
+  opacity: 0.85;
 }
 
 .helix-deck-arrow:hover {
-  background: #ffffff;
-  transform: translateY(-50%) scale(1.08);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  background: transparent;
+  transform: translateY(-50%) scale(1.15);
+  opacity: 1;
 }
 
 .helix-deck-arrow:active {
-  transform: translateY(-50%) scale(0.95);
+  transform: translateY(-50%) scale(0.92);
 }
 
 .helix-deck-arrow svg {
