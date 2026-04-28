@@ -624,14 +624,14 @@
     });
   }
 
-  /* ── Hybrid Operation Room — div-block-108 글로우 ──
-     halo div를 .div-block-108의 형제로 주입해 부모 배경/오버플로에 영향
+  /* ── Hybrid Operation Room — div-block-106 글로우 ──
+     halo div를 .div-block-106의 형제로 주입해 부모 배경/오버플로에 영향
      안 받도록 분리. 위치/크기는 target boundingRect로 동기화. */
   function initHybridGlow() {
     var section = document.querySelector('#hybrid-operation-room');
     if (!section) { log('#hybrid-operation-room 섹션 없음'); return; }
-    var target = section.querySelector('.div-block-108');
-    if (!target) { log('#hybrid-operation-room .div-block-108 없음'); return; }
+    var target = section.querySelector('.div-block-106');
+    if (!target) { log('#hybrid-operation-room .div-block-106 없음'); return; }
 
     var parent = target.parentElement;
     if (!parent) { log('hybrid target parent 없음'); return; }
