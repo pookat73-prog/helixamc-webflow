@@ -26,9 +26,10 @@
   var REF = resolveRef();
   var VIDEO_URL = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + REF + '/about/bg-video.mp4';
   log('REF resolved to', REF, 'VIDEO_URL', VIDEO_URL);
-  var s1Timeline = null;
 
-  /* ── 섹션 1 헤드/서브헤드 페이드인 ── */
+  /* ── 섹션 1 헤드/서브헤드 페이드인 ──
+     autoAlpha = visibility+opacity 동시 제어 → Webflow IX2의 인라인 opacity:1
+     덮어쓰기에도 visibility로 한 번 더 가려두므로 FOUC 안전 */
   function initSection1() {
     if (!window.gsap) return;
 
@@ -36,13 +37,12 @@
     var subheading = document.querySelector('.about_contents_sub-title');
     if (!heading && !subheading) { log('섹션 1 헤드 요소를 찾지 못했습니다.'); return; }
 
-    if (heading)    gsap.set(heading,    { opacity: 0 });
-    if (subheading) gsap.set(subheading, { opacity: 0 });
+    if (heading)    gsap.set(heading,    { autoAlpha: 0 });
+    if (subheading) gsap.set(subheading, { autoAlpha: 0 });
 
-    s1Timeline = gsap.timeline({ delay: 0.3 });
-    if (heading)    s1Timeline.to(heading,    { opacity: 1, duration: 1, ease: 'power2.out' }, 0);
-    if (subheading) s1Timeline.to(subheading, { opacity: 1, duration: 1, ease: 'power2.out' }, 0.3);
-    /* 영상 페이드인은 window.load 후 initBgVideo에서 타임라인에 추가 */
+    var tl = gsap.timeline({ delay: 0.3 });
+    if (heading)    tl.to(heading,    { autoAlpha: 1, duration: 1, ease: 'power2.out' }, 0);
+    if (subheading) tl.to(subheading, { autoAlpha: 1, duration: 1, ease: 'power2.out' }, 0.3);
   }
 
   /* ── 섹션 1 배경 영상 ── */
@@ -61,11 +61,13 @@
     video.loop        = false;
     video.preload     = 'auto';
     video.className   = 'about-bg-video';
+    /* 삽입 전에 opacity:0 → 첫 프레임 플래시 차단 */
+    video.style.opacity = '0';
     container.insertBefore(video, container.firstChild);
 
-    var faded = false;
+    var faded = false, errored = false;
     function fadeInVideo() {
-      if (faded) return;
+      if (faded || errored) return;
       faded = true;
       if (window.gsap) {
         gsap.to(video, { opacity: 1, duration: 1.5, ease: 'power2.out' });
@@ -74,14 +76,14 @@
       }
     }
 
-    video.style.opacity = '0';
     /* 첫 프레임 도착 시점(loadeddata)이 가장 빠름 */
     video.addEventListener('loadeddata', fadeInVideo);
     video.addEventListener('canplay',    fadeInVideo);
     video.addEventListener('playing',    fadeInVideo);
-    /* 안전망: 어떤 이벤트도 안 오면 3초 후 강제 표시 */
+    /* 안전망: 어떤 이벤트도 안 오면 3초 후 강제 표시 (에러 시는 표시 안 함) */
     setTimeout(fadeInVideo, 3000);
     video.addEventListener('error', function () {
+      errored = true;
       log('video error', video.error && video.error.code, 'src:', VIDEO_URL);
     });
   }
@@ -108,8 +110,6 @@
       var divider     = card.querySelector('.divider_blue_grad_no-spacing-1');
       var blurCircle  = card.querySelector('.blur-circle-efect');
       var contentBox  = card.querySelector('.about_three_contents-box');
-
-      var vw = window.innerWidth / 100;
 
       /* 카드별 초기 상태 — autoAlpha: visibility+opacity 동시 제어 */
       if (strategyBox) gsap.set(strategyBox, { autoAlpha: 0, rotation: -4, scale: 1.3 });
@@ -332,10 +332,12 @@
     var L = { a: 0, b: 0, gap: 0, v2: 0, h3: 0, v4: 0 };
     var linesAnimated = false;
 
-    function setHidden(el, len, dir) {
-      /* dir: 1 = →↓ (positive dashoffset), -1 = ←↑ (negative dashoffset) */
+    /* dir: 1 = →↓ (positive dashoffset), -1 = ←↑ (negative dashoffset)
+       애니메이션 완료 후(linesAnimated=true) resize 시에는 dashoffset=0 으로
+       항상 풀 노출 — 안 그러면 새 길이와 옛 dasharray가 어긋나 라인 깜빡임 */
+    function applyDash(el, len, dir) {
       el.setAttribute('stroke-dasharray', len);
-      el.setAttribute('stroke-dashoffset', dir * len);
+      el.setAttribute('stroke-dashoffset', linesAnimated ? 0 : (dir * len));
     }
 
     /* el 내 특정 문자의 마지막 등장 위치 rect 반환 */
@@ -390,7 +392,8 @@
         line1b.setAttribute('x1', gapR); line1b.setAttribute('y1', line1Y);
         line1b.setAttribute('x2', x2);   line1b.setAttribute('y2', line1Y);
         L.a = gapL - x1; L.b = x2 - gapR; L.gap = gapR - gapL;
-        if (!linesAnimated) { setHidden(line1a, L.a, 1); setHidden(line1b, L.b, 1); }
+        applyDash(line1a, L.a, 1);
+        applyDash(line1b, L.b, 1);
         log('라인1 y:', line1Y.toFixed(1));
       }
 
@@ -406,7 +409,7 @@
           line2.setAttribute('x1', lx1); line2.setAttribute('y1', line3Y);
           line2.setAttribute('x2', lx2); line2.setAttribute('y2', line3Y);
           L.h3 = lx2 - lx1;
-          if (!linesAnimated) setHidden(line2, L.h3, -1);
+          applyDash(line2, L.h3, -1);
           log('라인3 y:', line3Y.toFixed(1));
         }
       }
@@ -419,7 +422,7 @@
         line3v.setAttribute('x1', vx); line3v.setAttribute('y1', vy1);
         line3v.setAttribute('x2', vx); line3v.setAttribute('y2', vy2);
         L.v2 = vy2 - vy1;
-        if (!linesAnimated) setHidden(line3v, L.v2, 1);
+        applyDash(line3v, L.v2, 1);
         log('라인2 x:', vx.toFixed(1));
       }
     }
@@ -440,12 +443,7 @@
       line4v.setAttribute('x1', l4x); line4v.setAttribute('y1', l4y1);
       line4v.setAttribute('x2', l4x); line4v.setAttribute('y2', l4y2);
       L.v4 = l4y2 - l4y1;
-      if (linesAnimated) {
-        line4v.setAttribute('stroke-dasharray', L.v4);
-        line4v.setAttribute('stroke-dashoffset', 0);
-      } else {
-        setHidden(line4v, L.v4, -1);
-      }
+      applyDash(line4v, L.v4, -1);
     }
 
     /* ── 애니메이션 시퀀스 (helix-s5-done 이벤트 대기) ── */
@@ -472,10 +470,14 @@
       tl.to(line4v, { attr: { 'stroke-dashoffset': 0 }, duration: 0.65, ease: 'expo.inOut' }, '>-0.15');
     });
 
-    window.addEventListener('load',   function () { drawLines(); drawLine4(); });
-    window.addEventListener('resize', function () { drawLines(); drawLine4(); });
-    drawLines();
-    drawLine4();
+    var resizeTimer = null;
+    function redraw() { drawLines(); drawLine4(); }
+    window.addEventListener('load', redraw);
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(redraw, 120);
+    });
+    redraw();
   }
 
   /* ── 섹션 7 연혁 타임라인 ── */
@@ -513,7 +515,7 @@
     gsap.set(items, { opacity: 0 });
 
     /* ── SVG 수직선 생성 ── */
-    var svgEl = null, svgVLine = null, vLineLen = 0;
+    var svgEl = null, svgVLine = null, vLineLen = 0, vLineAnimated = false;
 
     if (block162 && paraEl) {
       if (window.getComputedStyle(section).position === 'static') {
@@ -544,20 +546,31 @@
       svgVLine.setAttribute('x2', x);  svgVLine.setAttribute('y2', y2);
       vLineLen = Math.max(0, y2 - y1);
       svgVLine.setAttribute('stroke-dasharray',  vLineLen);
-      svgVLine.setAttribute('stroke-dashoffset', vLineLen);
+      /* 애니메이션 완료 후 resize 시에는 풀 노출(0) 유지 — 안 그러면 라인 재숨김 */
+      svgVLine.setAttribute('stroke-dashoffset', vLineAnimated ? 0 : vLineLen);
     }
 
     updateVLinePos();
-    window.addEventListener('load',   updateVLinePos);
-    window.addEventListener('resize', updateVLinePos);
+    window.addEventListener('load', updateVLinePos);
+    var s7ResizeTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(s7ResizeTimer);
+      s7ResizeTimer = setTimeout(updateVLinePos, 120);
+    });
 
     /* ── '최초' 광선 시퀀스 ── */
     var WIDE_GRAD   = 'linear-gradient(118deg,currentColor 0%,currentColor 18%,#0075d6 36%,#b8dfff 50%,#0075d6 64%,currentColor 82%,currentColor 100%)';
     var NARROW_GRAD = 'linear-gradient(118deg,currentColor 0%,currentColor 44%,#0075d6 50%,currentColor 56%,currentColor 100%)';
     var FINAL_GRAD  = 'linear-gradient(118deg,#0075d6 0%,#0d1117 50%,#0075d6 100%)';
 
+    /* 개별 속성으로 설정 — cssText += 누적 시 두 번째 sweep에 옛 값이 남음.
+       background 단축 속성은 background-clip 초기화 위험이 있으므로 금지. */
     function sweepBeam(el, grad, dur, onDone) {
-      el.style.cssText += ';background:' + grad + ';background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent';
+      el.style.backgroundImage      = grad;
+      el.style.backgroundSize       = '300% 100%';
+      el.style.webkitBackgroundClip = 'text';
+      el.style.backgroundClip       = 'text';
+      el.style.webkitTextFillColor  = 'transparent';
       gsap.fromTo(el,
         { backgroundPosition: '100% center' },
         { backgroundPosition: '0% center', duration: dur, ease: 'power2.inOut', onComplete: onDone }
@@ -578,7 +591,12 @@
           gsap.set(el, { clearProps: 'backgroundPosition' });
           /* 수직선 그리기 */
           if (svgVLine && vLineLen > 0) {
-            gsap.to(svgVLine, { attr: { 'stroke-dashoffset': 0 }, duration: 1.0, ease: 'power2.inOut' });
+            gsap.to(svgVLine, {
+              attr: { 'stroke-dashoffset': 0 },
+              duration: 1.0,
+              ease: 'power2.inOut',
+              onComplete: function () { vLineAnimated = true; }
+            });
           }
         });
       });
