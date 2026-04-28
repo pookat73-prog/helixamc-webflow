@@ -69,16 +69,22 @@ home/
 3. 페이드인 완료 후 1.5초 홀드 (최고밝기 유지)
 4. inline box-shadow 제거 + `is-looping` 클래스 추가 → CSS shimmer (78%~100%, 2.4s 주기)
 
-### bt-box-2/3/4 (buttons.js)
+### bt-box-2 (sections-animations.js)
 
 | 역할 |
 |---|
-| IntersectionObserver가 버튼 viewport 진입 감지 → `gsap.set`으로 maxGlow 즉시 설정 → 1.5s 홀드 후 pulse loop (yoyo minGlow ↔ maxGlow) |
+| 섹션 2 헤딩 ScrollTrigger 진입 시 함께 페이드인. `data-s2-init` 가드로 buttons.js의 IntersectionObserver와의 race 차단. 0.4s opacity 페이드인 → 1.5s 홀드 → `is-looping` 핸드오프 |
+
+### bt-box-3/4 (buttons.js)
+
+| 역할 |
+|---|
+| IntersectionObserver가 버튼 viewport 진입 감지 → 인라인 `box-shadow` maxGlow 즉시 설정 → 1.5s 홀드 후 `is-looping` (CSS shimmer) |
 
 **핵심 포인트:**
 - `.bt-box-1` 베이스 `transition: box-shadow 0.6s`가 is-looping 전환 시 개입하지 않도록 `.is-looping`에 `transition: none !important` 필수
 - 글로우 페이드인은 **별도 GSAP 트윈을 하지 않고**, 버튼 자체의 opacity 페이드인에 편승
-- bt-box-2/3/4는 opacity 페이드인이 없으면 Webflow 기본 reveal 타이밍에 맞춰 IntersectionObserver가 발사
+- buttons.js 셀렉터에 `.bt-box-1`, `.bt-box-2`는 의도적으로 제외 — 각각 section1.js / sections-animations.js 가 통제
 
 **이전에 시도했다가 실패한 방식들 (재시도 금지):**
 - `is-holding` CSS 클래스 (`box-shadow !important`) → CSS animation 충돌로 shimmer 불가

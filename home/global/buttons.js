@@ -29,7 +29,9 @@
   }
 
   function initButtonGlow() {
-    var targets = document.querySelectorAll('.bt-box-1,.bt-box-3,.bt-box-4');
+    /* bt-box-1 은 section1.js 가, bt-box-2 는 sections-animations.js 가
+       각자 페이드인 + 글로우 시퀀스를 통제하므로 여기서는 bt-box-3/4 만 담당 */
+    var targets = document.querySelectorAll('.bt-box-3,.bt-box-4');
     if (!targets.length) return;
 
     var observer = new IntersectionObserver(function (entries) {
