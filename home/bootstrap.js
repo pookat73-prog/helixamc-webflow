@@ -39,8 +39,9 @@
       '.home_slogan,' +
       '.bt-box-1,' +
       '.div-block-150,' +
-      '[class*="lackFrame_Image"],' +
-      '[class*="lackframe_image"]' +
+      '.BlackFrame_Image\\(Hero\\),' +
+      '[class*="BlackFrame_Image(Hero)"],' +
+      '[class*="blackframe_image(hero)"]' +
       '{visibility:hidden!important}';
     (document.head || document.documentElement).appendChild(style);
     /* 안전망: 6초 안에 section1.js 가 가드를 제거하지 않으면 강제 해제 */
@@ -123,4 +124,3 @@
       injectAll(BRANCH);
     });
 })();
-

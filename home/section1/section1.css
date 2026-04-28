@@ -19,7 +19,8 @@
 .home_slogan,
 .div-block-150,
 .BlackFrame_Image\(Hero\),
-[class*="lackFrame_Image"],
+[class*="BlackFrame_Image(Hero)"],
+[class*="blackframe_image(hero)"],
 .bt-box-1 {
   opacity: 0;
   visibility: hidden;
