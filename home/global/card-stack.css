@@ -14,9 +14,10 @@
   overflow: visible;
 }
 
-/* host 의 직속 자식 카드 = 절대위치 + isolation 으로 뒷카드 내용 차단 */
+/* host 의 직속 자식 카드 = 절대위치 + isolation 으로 뒷카드 내용 차단
+   화살표(.helix-deck-arrow)는 host 자식이지만 카드 규칙에서 제외 */
 .helix-deck-host > .just-box_qqqqqqq,
-.helix-deck-host > * {
+.helix-deck-host > *:not(.helix-deck-arrow) {
   position: absolute !important;
   left: 50%;
   top: 0;
