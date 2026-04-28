@@ -132,7 +132,43 @@
 }
 /* '최초' 광선/그라데이션은 about.js 인라인 스타일로 처리 */
 
-/* Hybrid Operation Room — .div-block-108 위쪽 푸른 글로우 (사용자 지정 수치) */
+/* Hybrid Operation Room — .div-block-108 글로우 인터랙션
+   중앙 한 점에서 시작 → 라디얼 그라데이션이 scale(0→1)로 퍼짐
+   마지막에 사용자 지정 box-shadow가 fade-in 으로 정착 */
 .div-block-108 {
+  position: relative;
+  isolation: isolate;
+  box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0);
+  transition: box-shadow 0.7s ease-out 0.55s;
+}
+
+.div-block-108::before {
+  content: '';
+  position: absolute;
+  inset: -2vw;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 117, 214, 0.85) 0%,
+    rgba(0, 117, 214, 0.45) 25%,
+    rgba(0, 117, 214, 0.18) 50%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  transform: scale(0);
+  transform-origin: center;
+  opacity: 0;
+  transition:
+    transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.4s ease-out;
+  z-index: -1;
+}
+
+.div-block-108.is-glowing {
   box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0.9);
+}
+
+.div-block-108.is-glowing::before {
+  transform: scale(1);
+  opacity: 1;
 }
