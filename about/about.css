@@ -18,7 +18,6 @@
   object-fit: cover;
   z-index: -1;
   pointer-events: none;
-  clip-path: inset(0.8vw 0);
 }
 
 /* 섹션 1 — 헤드/서브헤드 초기 숨김 */
