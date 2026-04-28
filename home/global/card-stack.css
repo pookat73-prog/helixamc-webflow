@@ -10,6 +10,8 @@
   touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
+  /* 화살표를 host 바깥으로 밀어 배치하므로 잘리지 않도록 보장 */
+  overflow: visible;
 }
 
 /* host 의 직속 자식 카드 = 절대위치 + isolation 으로 뒷카드 내용 차단 */
@@ -84,22 +86,22 @@
 }
 
 .helix-deck-arrow-left {
-  left: -28px;
+  left: -64px;
 }
 
 .helix-deck-arrow-right {
-  right: -28px;
+  right: -64px;
 }
 
 @media (max-width: 600px) {
   .helix-deck-arrow {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
   .helix-deck-arrow svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
-  .helix-deck-arrow-left  { left: -10px; }
-  .helix-deck-arrow-right { right: -10px; }
+  .helix-deck-arrow-left  { left: -44px; }
+  .helix-deck-arrow-right { right: -44px; }
 }

@@ -35,8 +35,8 @@
   var STACK_SCALE    = 0;        /* 스케일 변화 없음 */
   var FLY_THRESHOLD = 0.25;     /* 카드 너비의 25% 드래그 시 날아감 */
   var FLY_VELOCITY  = 0.45;     /* 또는 px/ms 임계 속도 */
-  var FLY_DURATION  = 380;      /* 날아가는 시간 ms */
-  var SNAP_DURATION = 260;      /* 원위치 시간 ms */
+  var FLY_DURATION  = 240;      /* 날아가는 시간 ms — 짧고 단정하게 */
+  var SNAP_DURATION = 220;      /* 원위치 시간 ms */
 
   var initialized = false;
 
@@ -292,10 +292,10 @@
       if (cycling) return;
       cycling = true;
 
-      var flyX = dir * (cardW * 1.6 + 200);
-      /* 회전 제거 — 직선으로 옆으로 슬라이드 */
+      /* 짧은 슬라이드(카드 폭의 18% 한도 80px) + 즉시 페이드아웃 */
+      var flyX = dir * Math.min(cardW * 0.18, 80);
       card.style.transition =
-        'transform ' + FLY_DURATION + 'ms cubic-bezier(0.4, 0, 0.2, 1), opacity 220ms ease ' + (FLY_DURATION - 220) + 'ms';
+        'transform ' + FLY_DURATION + 'ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease';
       card.style.transform =
         'translate(calc(-50% + ' + (maxIdx * STACK_OFFSET_X + flyX) + 'px), ' + (maxIdx * STACK_OFFSET_Y) + 'px) rotate(' + STACK_TILT + 'deg) scale(1)';
       card.style.opacity = '0';
@@ -358,17 +358,12 @@
       });
       return btn;
     }
-    /* host 의 부모(grid)에 position:relative 보장 후 화살표 두 개 부착 */
-    var arrowParent = host.parentElement;
-    if (arrowParent && getComputedStyle(arrowParent).position === 'static') {
-      arrowParent.style.position = 'relative';
-    }
+    /* 화살표는 host 자식으로 두고 CSS 음수 left/right 로 host 바깥에 배치
+       → 카드 영역(host 너비) 절대 침범 안 함 */
     var leftArrow  = makeArrow(-1);
     var rightArrow = makeArrow(+1);
-    if (arrowParent) {
-      arrowParent.appendChild(leftArrow);
-      arrowParent.appendChild(rightArrow);
-    }
+    host.appendChild(leftArrow);
+    host.appendChild(rightArrow);
 
     /* 리사이즈 시 host 크기 재측정 */
     var resizeTimer = null;
