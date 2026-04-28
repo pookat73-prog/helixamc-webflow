@@ -616,15 +616,44 @@
     });
   }
 
-  /* ── Hybrid Operation Room — div-block-106 글로우 ── */
+  /* ── Hybrid Operation Room — div-block-106 글로우 ──
+     halo div를 .div-block-106의 형제로 주입해 부모 배경/오버플로에 영향
+     안 받도록 분리. 위치/크기는 target boundingRect로 동기화. */
   function initHybridGlow() {
     var section = document.querySelector('#hybrid-operation-room');
     if (!section) { log('#hybrid-operation-room 섹션 없음'); return; }
     var target = section.querySelector('.div-block-106');
     if (!target) { log('#hybrid-operation-room .div-block-106 없음'); return; }
 
+    var parent = target.parentElement;
+    if (!parent) { log('hybrid target parent 없음'); return; }
+    if (window.getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+
+    var halo = document.createElement('div');
+    halo.className = 'hybrid-glow-halo';
+    parent.insertBefore(halo, target);
+
+    function syncHalo() {
+      var tRect = target.getBoundingClientRect();
+      var pRect = parent.getBoundingClientRect();
+      var radius = window.getComputedStyle(target).borderRadius || '0';
+      halo.style.left   = (tRect.left - pRect.left - 22) + 'px';
+      halo.style.top    = (tRect.top  - pRect.top  - 22) + 'px';
+      halo.style.width  = (tRect.width  + 44) + 'px';
+      halo.style.height = (tRect.height + 44) + 'px';
+      halo.style.borderRadius = radius;
+    }
+    syncHalo();
+    window.addEventListener('resize', syncHalo);
+    if (window.ResizeObserver) {
+      new ResizeObserver(syncHalo).observe(target);
+    }
+
     function fire() {
-      target.classList.add('is-glowing');
+      syncHalo();
+      halo.classList.add('is-glowing');
       log('hybrid glow 발사');
     }
 
