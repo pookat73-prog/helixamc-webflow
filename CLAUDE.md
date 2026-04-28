@@ -1,5 +1,8 @@
 # Helix AMC Webflow — Claude 작업 가이드
 
+## 워크플로우
+- 작업 완료(커밋·푸시) 후 자동으로 PR 생성. 머지는 사용자가 결정.
+
 ## 프로젝트 개요
 Webflow로 만든 Helix 동물병원(helix-amc) 사이트의 커스텀 CSS/JS를
 GitHub에서 관리하고 jsDelivr CDN으로 자동 배포하는 구조.
