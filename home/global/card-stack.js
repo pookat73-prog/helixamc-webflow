@@ -1,16 +1,13 @@
 /* ================================================================
-   STACKED CARD SWIPE — .white-frame_connect
+   YEAR-BADGE CARD NAV — .just-box_qqqqqqq
 
    동작:
-   - .white-frame_connect 카드들을 첫 번째 카드 자리에 사선으로 겹침
-   - 드래그(터치/마우스)로 한 장씩 넘기기
-   - 임계점 넘기면 카드가 옆으로 날아가고, 맨 뒤로 돌아옴 (무한 루프)
-   - 임계점 못 넘기면 원위치로 스냅 백
-
-   스택 시각:
-   - top: 0deg / y=0 / scale=1
-   - 뒤 카드: -4°, +4°, -4°… 번갈아 / y +8px·+16px… / scale 0.97·0.94…
-   - 최대 4장 가시 (나머지는 hidden)
+   - 카드들을 가로 스크롤 컨테이너에 깔고 scroll-snap 으로 한 장씩 정착
+   - 컨테이너 아래 연도 뱃지 한 줄 (중앙정렬)
+   - IntersectionObserver 가 화면 중앙에 가장 잘 맞춰진 카드를 감지 → 그 뱃지 active
+   - 뱃지 클릭 → 해당 카드로 smooth scrollIntoView
+   - 데스크톱: 트랙패드/휠/뱃지 클릭으로 이동
+   - 모바일: 터치 스와이프 → scroll-snap 자연 정착
 
    디버그: ?debug-deck=1
    ================================================================ */
@@ -18,384 +15,152 @@
 (function () {
   'use strict';
 
-  /* 디버그: 항상 켜둠 (안정화 후 다시 ?debug-deck=1 게이트로 복원) */
+  var DEBUG = /[?&]debug-deck=1/.test(location.search);
   function log() {
-    console.log.apply(console, ['[Deck]'].concat([].slice.call(arguments)));
+    if (!DEBUG) return;
+    console.log.apply(console, ['[CardNav]'].concat([].slice.call(arguments)));
   }
 
   var CARD_SELECTOR    = '.just-box_qqqqqqq';
-  var SECTION_SELECTOR = '.white-frame_connect';      /* 각 카드를 감싸는 섹션 */
-  var CARD_CLASS       = CARD_SELECTOR.replace(/^\./, '');
-  /* 안전장치: 강제로 진단 모드 켜고 싶을 땐 URL 에 ?deck-dry=1 */
-  var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
-  var VISIBLE        = 4;        /* 동시에 보이는 카드 수 */
-  var STACK_OFFSET_Y = 8;        /* 카드 간 y 오프셋 (px) — 촘촘하게 */
-  var STACK_OFFSET_X = 8;        /* 카드 간 x 오프셋 (px) */
-  var STACK_TILT     = 0;        /* 회전 없음 */
-  var STACK_SCALE    = 0;        /* 스케일 변화 없음 */
-  var FLY_THRESHOLD = 0.25;     /* 카드 너비의 25% 드래그 시 날아감 */
-  var FLY_VELOCITY  = 0.45;     /* 또는 px/ms 임계 속도 */
-  var FLY_DURATION  = 380;      /* 날아가는 시간 ms */
-  var SNAP_DURATION = 260;      /* 원위치 시간 ms */
+  var SECTION_SELECTOR = '.white-frame_connect';
 
   var initialized = false;
+
+  function extractYear(card) {
+    var t = (card.textContent || '').replace(/\s+/g, ' ');
+    var m = t.match(/\b(19\d{2}|20\d{2})\b/);
+    return m ? m[1] : null;
+  }
 
   function init() {
     if (initialized) return true;
 
     var cardsAll = document.querySelectorAll(CARD_SELECTOR);
-    log('found ' + CARD_SELECTOR + ':', cardsAll.length);
+    log('found', CARD_SELECTOR, cardsAll.length);
     if (cardsAll.length < 2) {
-      log('cards < 2, skip — selector may be wrong, or only one card exists');
+      log('cards < 2, skip');
       return false;
     }
 
-    /* 각 카드의 부모 체인을 출력 (구조 진단) */
-    Array.prototype.forEach.call(cardsAll, function (c, i) {
-      var chain = [];
-      var p = c.parentElement;
-      var depth = 0;
-      while (p && depth < 5) {
-        chain.push(p.tagName + (p.className ? '.' + (p.className||'').split(' ').slice(0,2).join('.') : ''));
-        p = p.parentElement;
-        depth++;
-      }
-      log('  card[' + i + '] parents:', chain.join(' → '));
-    });
-
-    /* 공통 조상 찾기 — 모든 카드를 포함하는 최소 조상 */
-    function findCommonAncestor(els) {
-      if (!els.length) return null;
-      var ancestors = [];
-      var p = els[0];
-      while (p) { ancestors.push(p); p = p.parentElement; }
-      for (var i = 1; i < els.length; i++) {
-        var found = null;
-        var q = els[i];
-        while (q) {
-          if (ancestors.indexOf(q) >= 0) { found = q; break; }
-          q = q.parentElement;
-        }
-        if (!found) return null;
-        ancestors = ancestors.slice(ancestors.indexOf(found));
-      }
-      return ancestors[0];
+    var firstCard = cardsAll[0];
+    var rect = firstCard.getBoundingClientRect();
+    var cardW = rect.width;
+    var cardH = rect.height;
+    if (!cardW || !cardH) {
+      log('card size 0, retry later');
+      return false;
     }
-    var lca = findCommonAncestor(Array.prototype.slice.call(cardsAll));
-    log('common ancestor:', lca ? lca.tagName + '.' + (lca.className||'').split(' ').slice(0,2).join('.') : 'NONE');
+    log('card size:', cardW + 'x' + cardH);
 
-    /* 각 카드의 섹션 조상 수집 (.white-frame_connect) */
+    var firstGrid = firstCard.parentElement;
+    if (!firstGrid) return false;
+
+    /* 첫 섹션 외 나머지 .white-frame_connect 섹션은 숨김 (카드 모음을 한 자리에 통합) */
     var sections = [];
     Array.prototype.forEach.call(cardsAll, function (c) {
       var sec = c.closest(SECTION_SELECTOR);
       if (sec) sections.push(sec);
     });
-    log('section ancestors found:', sections.length, '/', cardsAll.length);
-    if (sections.length !== cardsAll.length) {
-      log('⚠️ 카드마다 섹션 조상이 없음, ABORT');
-      return true;
+    if (sections.length === cardsAll.length) {
+      sections.forEach(function (sec, i) {
+        if (i > 0) {
+          sec.style.display = 'none';
+          sec.setAttribute('data-deck-hidden', '1');
+        }
+      });
+      log('hidden sibling sections:', sections.length - 1);
     }
 
-    /* 첫 카드 + 사이즈 측정 */
-    var firstCard = cardsAll[0];
-    var rect = firstCard.getBoundingClientRect();
-    var cardW = rect.width;
-    var cardH = rect.height;
-    log('first card size:', cardW + 'x' + cardH);
-    if (!cardW || !cardH) {
-      log('card size 0, retry later');
-      return false;
-    }
+    /* viewport(가로 스크롤) > track(가로 flex) 구조 만들고 첫 카드 자리에 삽입 */
+    var viewport = document.createElement('div');
+    viewport.className = 'helix-card-viewport';
 
-    /* 안전장치 */
-    if (cardW > window.innerWidth * 0.8) {
-      log('⚠️ card width > 80% viewport, ABORT');
-      return true;
-    }
+    var track = document.createElement('div');
+    track.className = 'helix-card-track';
+    viewport.appendChild(track);
 
-    /* DRY RUN */
-    if (DRY_RUN) {
-      log('✅ DRY_RUN — DOM 변경 없음.');
-      initialized = true;
-      return true;
-    }
+    firstGrid.insertBefore(viewport, firstCard);
 
-    var siblings = Array.prototype.slice.call(cardsAll);
-
-    /* deck host 생성: 첫 카드 위치(grid 안)에 삽입 */
-    var firstGrid = firstCard.parentElement;  /* .grid2_none-spacing */
-    var host = document.createElement('div');
-    host.className = 'helix-deck-host';
-    host.style.width   = cardW + 'px';
-    /* 호스트 높이: 좌하단 카드 (y=maxIdx*OFFSET) + cardH 까지 + x 오프셋 만큼 너비 여유 */
-    var maxIdxLocal = Math.min(VISIBLE - 1, siblings.length - 1);
-    host.style.height  = (cardH + maxIdxLocal * STACK_OFFSET_Y) + 'px';
-    host.style.width   = (cardW + maxIdxLocal * STACK_OFFSET_X) + 'px';
-    host.style.margin  = '0 auto';
-    host.style.display = 'block';
-
-    firstGrid.insertBefore(host, firstCard);
-    siblings.forEach(function (c, i) {
-      /* 첫 카드 사이즈로 통일 (width + height) */
+    var allCards = Array.prototype.slice.call(cardsAll);
+    allCards.forEach(function (c) {
       c.style.width  = cardW + 'px';
       c.style.height = cardH + 'px';
-      host.appendChild(c);
-
-      /* 카드 배경 진단 — 투명이면 흰색 강제 (뒷카드 비침 방지) */
-      var bg = window.getComputedStyle(c).backgroundColor;
-      log('  card[' + i + '] computed bg:', bg);
-      if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') {
-        c.style.backgroundColor = '#ffffff';
-        log('    → 투명 감지, 흰색으로 강제 적용');
-      }
+      c.classList.add('helix-card-item');
+      track.appendChild(c);
     });
 
-    /* 첫 섹션 외의 나머지 .white-frame_connect 섹션은 숨김 (페이지 짧아짐) */
-    sections.forEach(function (sec, i) {
-      if (i > 0) {
-        sec.style.display = 'none';
-        sec.setAttribute('data-deck-hidden', '1');
-      }
+    /* 연도 뱃지 네비 */
+    var nav = document.createElement('div');
+    nav.className = 'helix-year-nav';
+
+    var badges = allCards.map(function (card, i) {
+      var year = extractYear(card);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'helix-year-badge';
+      b.textContent = year || String(i + 1);
+      b.setAttribute('data-index', String(i));
+      if (year) b.setAttribute('aria-label', year + '년 카드');
+      b.addEventListener('click', function () {
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+      nav.appendChild(b);
+      return b;
     });
-    log('hidden sections:', sections.length - 1);
+    firstGrid.appendChild(nav);
+    log('badges:', badges.map(function (b) { return b.textContent; }).join(' '));
 
-    var deck = siblings.slice();
-
-    /* 사선 방향: 맨 앞 카드(i=0)는 우하단, 뒤로 갈수록 좌상향
-       (maxIdx-i) 기준 → x/y 모두 i 증가시 감소 */
-    var maxIdx = Math.min(VISIBLE - 1, deck.length - 1);
-
-    function applyTransforms(animate) {
-      deck.forEach(function (card, i) {
-        if (i >= VISIBLE) {
-          card.style.opacity = '0';
-          card.style.pointerEvents = 'none';
-          card.style.transform =
-            'translate(-50%, 0px) rotate(' +
-            STACK_TILT + 'deg) scale(' + (1 - VISIBLE * STACK_SCALE) + ')';
-          card.classList.remove('is-top');
-          card.style.zIndex = String(deck.length - i);
-          return;
-        }
-
-        /* i=0 (맨 앞) → 우하단 (x=maxIdx*OFFSET, y=maxIdx*OFFSET)
-           i=뒤로 → 좌상향 (x/y 모두 감소) */
-        var tilt  = STACK_TILT;
-        var x     = (maxIdx - i) * STACK_OFFSET_X;
-        var y     = (maxIdx - i) * STACK_OFFSET_Y;
-        var scale = 1 - i * STACK_SCALE;
-        var z     = deck.length - i;
-
-        if (animate) {
-          card.style.transition = 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease';
-        } else {
-          card.style.transition = '';
-        }
-
-        card.style.opacity       = '1';
-        card.style.pointerEvents = (i === 0) ? 'auto' : 'none';
-        card.style.zIndex        = String(z);
-        card.style.transform =
-          'translate(calc(-50% + ' + x + 'px), ' + y + 'px) rotate(' + tilt + 'deg) scale(' + scale + ')';
-
-        if (i === 0) card.classList.add('is-top');
-        else         card.classList.remove('is-top');
-      });
+    /* track 양쪽 패딩으로 첫/마지막 카드도 중앙 정착 가능하게 */
+    function setSidePadding() {
+      var vw = viewport.clientWidth;
+      var pad = Math.max((vw - cardW) / 2, 0);
+      track.style.paddingLeft  = pad + 'px';
+      track.style.paddingRight = pad + 'px';
     }
+    setSidePadding();
 
-    applyTransforms(false);
-    log('deck initialized:', deck.length, 'cards', cardW + 'x' + cardH);
-
-    /* ──────────────────────────────────────────────────────────
-       드래그 처리 (Pointer Events)
-       Top 카드에만 부착. dragstart 차단으로 이미지 드래그 방지.
-    ────────────────────────────────────────────────────────── */
-    var drag = null;
-
-    function onPointerDown(e) {
-      var top = deck[0];
-      if (!top || !top.contains(e.target) && e.target !== top) return;
-      /* a/button 클릭은 드래그 막지 않음 */
-      var interactive = e.target.closest && e.target.closest('a, button, [role="button"]');
-      if (interactive) return;
-
-      drag = {
-        id: e.pointerId,
-        startX: e.clientX,
-        startY: e.clientY,
-        startT: performance.now(),
-        lastX: e.clientX,
-        lastT: performance.now(),
-        dx: 0,
-        dy: 0,
-        vx: 0
-      };
-      top.classList.add('is-dragging');
-      try { top.setPointerCapture(e.pointerId); } catch (err) {}
-      e.preventDefault();
-    }
-
-    function onPointerMove(e) {
-      if (!drag || e.pointerId !== drag.id) return;
-      drag.dx = e.clientX - drag.startX;
-      drag.dy = e.clientY - drag.startY;
-
-      var now = performance.now();
-      var dt  = now - drag.lastT;
-      if (dt > 0) drag.vx = (e.clientX - drag.lastX) / dt;
-      drag.lastX = e.clientX;
-      drag.lastT = now;
-
-      var top = deck[0];
-      if (!top) return;
-      /* 회전 제거 — 직선 슬라이드만 */
-      var baseX = maxIdx * STACK_OFFSET_X;
-      var baseY = maxIdx * STACK_OFFSET_Y;
-      top.style.transition = 'none';
-      top.style.transform =
-        'translate(calc(-50% + ' + (baseX + drag.dx) + 'px), ' + (baseY + drag.dy) + 'px) rotate(' + STACK_TILT + 'deg) scale(1)';
-    }
-
-    function onPointerUp(e) {
-      if (!drag || e.pointerId !== drag.id) return;
-      var top = deck[0];
-      var dx  = drag.dx;
-      var vx  = drag.vx;
-      drag = null;
-      if (top) {
-        top.classList.remove('is-dragging');
-        try { top.releasePointerCapture(e.pointerId); } catch (err) {}
-      }
-      if (!top) return;
-
-      var passDist = Math.abs(dx) > cardW * FLY_THRESHOLD;
-      var passVel  = Math.abs(vx) > FLY_VELOCITY;
-      if (passDist || passVel) {
-        flyOut(top, dx >= 0 ? 1 : -1);
-      } else {
-        snapBack(top);
-      }
-    }
-
-    function snapBack(card) {
-      card.style.transition =
-        'transform ' + SNAP_DURATION + 'ms cubic-bezier(0.22, 1, 0.36, 1)';
-      /* top 카드 원위치 = i=0 위치 (x=maxIdx*OFFSET_X, y=maxIdx*OFFSET_Y) — 우하단 */
-      card.style.transform =
-        'translate(calc(-50% + ' + (maxIdx * STACK_OFFSET_X) + 'px), ' +
-        (maxIdx * STACK_OFFSET_Y) + 'px) rotate(' +
-        STACK_TILT + 'deg) scale(1)';
-    }
-
-    var cycling = false;
-    function flyOut(card, dir) {
-      if (cycling) return;
-      cycling = true;
-
-      var flyX = dir * (cardW * 1.6 + 200);
-      /* 회전 제거 — 직선으로 옆으로 슬라이드 */
-      card.style.transition =
-        'transform ' + FLY_DURATION + 'ms cubic-bezier(0.4, 0, 0.2, 1), opacity 220ms ease ' + (FLY_DURATION - 220) + 'ms';
-      card.style.transform =
-        'translate(calc(-50% + ' + (maxIdx * STACK_OFFSET_X + flyX) + 'px), ' + (maxIdx * STACK_OFFSET_Y) + 'px) rotate(' + STACK_TILT + 'deg) scale(1)';
-      card.style.opacity = '0';
-
-      /* 나머지 카드들은 한 단계 앞으로 promote (newIdx 작을수록 우하단) */
-      var rest = deck.slice(1);
-      rest.forEach(function (c, idx) {
-        var newIdx = idx;  /* 새 인덱스 (i=0 부터) */
-        var tilt = STACK_TILT;
-        var nx   = (maxIdx - newIdx) * STACK_OFFSET_X;
-        var ny   = (maxIdx - newIdx) * STACK_OFFSET_Y;
-        var s    = 1 - newIdx * STACK_SCALE;
-        c.style.transition = 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease';
-        c.style.transform =
-          'translate(calc(-50% + ' + nx + 'px), ' + ny + 'px) rotate(' + tilt + 'deg) scale(' + s + ')';
-      });
-
-      setTimeout(function () {
-        /* deck 순환: top 을 맨 뒤로 보냄 */
-        deck.push(deck.shift());
-
-        /* 맨 뒤로 간 카드를 좌상단 hidden 위치에 즉시 (애니 없이) 이동 */
-        var last = deck[deck.length - 1];
-        last.style.transition = 'none';
-        last.style.opacity    = '0';
-        last.style.transform =
-          'translate(-50%, 0px) rotate(' +
-          STACK_TILT + 'deg) scale(' + (1 - VISIBLE * STACK_SCALE) + ')';
-
-        /* 다음 frame 에서 정상 transform 재적용 (페이드인 자연스럽게) */
-        requestAnimationFrame(function () {
-          applyTransforms(true);
-          cycling = false;
-        });
-      }, FLY_DURATION);
-    }
-
-    host.addEventListener('pointerdown', onPointerDown);
-    host.addEventListener('pointermove', onPointerMove);
-    host.addEventListener('pointerup',   onPointerUp);
-    host.addEventListener('pointercancel', onPointerUp);
-    /* 이미지/텍스트 드래그 ghost 방지 */
-    host.addEventListener('dragstart', function (e) { e.preventDefault(); });
-
-    /* 좌우 세모 화살표 — host 부모(grid) 안에 절대위치로 삽입.
-       클릭 시 flyOut(◀ → 왼쪽 / ▶ → 오른쪽). */
-    function makeArrow(dir) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'helix-deck-arrow helix-deck-arrow-' + (dir < 0 ? 'left' : 'right');
-      btn.setAttribute('aria-label', dir < 0 ? '이전 카드' : '다음 카드');
-      btn.innerHTML = dir < 0
-        ? '<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M16 4 L6 12 L16 20 Z"/></svg>'
-        : '<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M8 4 L18 12 L8 20 Z"/></svg>';
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var top = deck[0];
-        if (top && !cycling) flyOut(top, dir);
-      });
-      return btn;
-    }
-    /* host 의 부모(grid)에 position:relative 보장 후 화살표 두 개 부착 */
-    var arrowParent = host.parentElement;
-    if (arrowParent && getComputedStyle(arrowParent).position === 'static') {
-      arrowParent.style.position = 'relative';
-    }
-    var leftArrow  = makeArrow(-1);
-    var rightArrow = makeArrow(+1);
-    if (arrowParent) {
-      arrowParent.appendChild(leftArrow);
-      arrowParent.appendChild(rightArrow);
-    }
-
-    /* 리사이즈 시 host 크기 재측정 */
     var resizeTimer = null;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        /* deck[0]은 transform 적용 중이므로 임시 클리어 후 측정 */
-        var saved = deck[0].style.transform;
-        deck[0].style.transition = 'none';
-        deck[0].style.transform  = 'translate(-50%, 0)';
-        var r = deck[0].getBoundingClientRect();
-        deck[0].style.transform  = saved;
-        if (r.width && r.height) {
-          cardW = r.width;
-          cardH = r.height;
-          host.style.width  = cardW + 'px';
-          host.style.height = (cardH + (deck.length - 1) * STACK_OFFSET_Y) + 'px';
-          applyTransforms(false);
-        }
-      }, 150);
+      resizeTimer = setTimeout(setSidePadding, 120);
     });
 
+    /* IntersectionObserver — 가장 잘 보이는 카드의 뱃지 active */
+    function setActive(idx) {
+      badges.forEach(function (b, i) {
+        b.classList.toggle('is-active', i === idx);
+      });
+      allCards.forEach(function (c, i) {
+        c.classList.toggle('is-current', i === idx);
+      });
+    }
+
+    var ratios = new Array(allCards.length).fill(0);
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var idx = allCards.indexOf(e.target);
+        if (idx < 0) return;
+        ratios[idx] = e.intersectionRatio;
+      });
+      var bestIdx = 0;
+      var best = -1;
+      for (var i = 0; i < ratios.length; i++) {
+        if (ratios[i] > best) { best = ratios[i]; bestIdx = i; }
+      }
+      setActive(bestIdx);
+    }, {
+      root: viewport,
+      threshold: [0, 0.25, 0.5, 0.6, 0.75, 0.9, 1]
+    });
+
+    allCards.forEach(function (c) { io.observe(c); });
+    setActive(0);
+
     initialized = true;
+    log('initialized — cards:', allCards.length);
     return true;
   }
 
-  /* 중복 retry 방지 — DOMContentLoaded/load/Webflow.push 가 각자 호출해도 interval 1개만 실행 */
   var retrying = false;
   function retry() {
     if (retrying || initialized) return;
