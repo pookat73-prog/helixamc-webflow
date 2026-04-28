@@ -19,19 +19,6 @@
   clip-path: inset(0.8vw 0);
 }
 
-/* 섹션 1 — 예시 레이블 */
-.about-example-label {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-family: 'Gungsuh', '궁서', '궁서체', serif;
-  font-size: 6vw;
-  font-weight: normal;
-  color: rgba(255, 255, 255, 0.88);
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 1;
-}
-
 /* 섹션 1 — 헤드/서브헤드 초기 숨김 */
 .section2-heading,
 .about_contents_sub-title {
