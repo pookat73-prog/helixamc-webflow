@@ -150,21 +150,22 @@
   border-radius: inherit;
   box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0.9);
   opacity: 0;
-  /* 시작: 모든 꼭짓점을 12시 한 점에 응축 */
-  clip-path: polygon(50% 0, 50% 0, 50% 0, 50% 0);
+  /* 시작: 모든 꼭짓점을 12시 위쪽 점에 응축 (클립 영역이 요소 위로 약간 벗어나
+     있어야 box-shadow가 잘리지 않음) */
+  clip-path: polygon(50% -50%, 50% -50%, 50% -50%, 50% -50%);
   transition:
     clip-path 1.5s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.4s ease-out;
 }
 
+/* 우반/좌반 펼침: 폴리곤이 요소 박스 밖으로 -50%/150%까지 확장돼야
+   box-shadow의 위/양옆 글로우가 잘리지 않음 */
 .div-block-108.is-glowing::before {
   opacity: 1;
-  /* 우반 펼침: 12시 → 3시 → 6시 */
-  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+  clip-path: polygon(50% -50%, 150% -50%, 150% 150%, 50% 150%);
 }
 
 .div-block-108.is-glowing::after {
   opacity: 1;
-  /* 좌반 펼침: 12시 → 9시 → 6시 */
-  clip-path: polygon(50% 0, 0 0, 0 100%, 50% 100%);
+  clip-path: polygon(50% -50%, -50% -50%, -50% 150%, 50% 150%);
 }
