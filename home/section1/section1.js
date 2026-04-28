@@ -188,31 +188,46 @@
       });
     }
 
-    fadeIn(slogan, 'slogan', 1.2, easeSlogan, 0.3);
-    fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
-      null,
-      function () {
-        if (!box1) return;
-        /* 버튼 페이드인 완료 후 최고밝기로 1.5초 홀드 → shimmer 핸드오프 */
-        setTimeout(function () {
+    /* 페이드인 시퀀스 — 웹폰트가 도착한 후에 시작해야 폰트 메트릭 변화로
+       인한 줄바꿈 점프(예: '심' 자가 다음 줄에서 위로 튀어오르는 현상)가 안 생김 */
+    function startFades() {
+      log('fonts ready, starting fades');
+      fadeIn(slogan, 'slogan', 1.2, easeSlogan, 0.3);
+      fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
+        null,
+        function () {
           if (!box1) return;
-          box1.style.removeProperty('box-shadow');
-          box1.classList.add('is-looping');
-        }, 1500);
+          /* 버튼 페이드인 완료 후 최고밝기로 1.5초 홀드 → shimmer 핸드오프 */
+          setTimeout(function () {
+            if (!box1) return;
+            box1.style.removeProperty('box-shadow');
+            box1.classList.add('is-looping');
+          }, 1500);
+        });
+      fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
+        log('all fades done, restoring DOM');
+        cleanups.forEach(function (c) {
+          try { c.cleanup(); } catch (e) { console.warn('[Section1] cleanup failed:', e); }
+        });
+        /* DOM이 최종 위치로 복원된 후 divider.js에 신호 */
+        setTimeout(function () {
+          try { window.dispatchEvent(new CustomEvent('helix-s1-done')); } catch (e) {}
+          log('helix-s1-done dispatched');
+        }, 50);
       });
-    fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
-      log('all fades done, restoring DOM');
-      cleanups.forEach(function (c) {
-        try { c.cleanup(); } catch (e) { console.warn('[Section1] cleanup failed:', e); }
-      });
-      /* DOM이 최종 위치로 복원된 후 divider.js에 신호 */
-      setTimeout(function () {
-        try { window.dispatchEvent(new CustomEvent('helix-s1-done')); } catch (e) {}
-        log('helix-s1-done dispatched');
-      }, 50);
-    });
+    }
 
-    log('timeline started');
+    if (document.fonts && document.fonts.ready) {
+      /* 안전망: 폰트가 영영 안 오는 경우 3초 후 강제 시작 */
+      var fired = false;
+      function fire() { if (!fired) { fired = true; startFades(); } }
+      document.fonts.ready.then(fire);
+      setTimeout(fire, 3000);
+    } else {
+      startFades();
+    }
+
+    log('timeline queued (waiting for fonts)');
     return true;
   }
 
