@@ -15,11 +15,11 @@
 
 ### 타임라인
 
-| 요소           | 클래스            | 시작(delay) | 지속 | 이징                                   |
-|----------------|-------------------|-------------|------|----------------------------------------|
-| 슬로건         | `.home_slogan`    | t=0.3s      | 1.2s | 비대칭 ease-in-out (in 60% / out 40%)  |
-| 버튼 래퍼      | `.bt-box-1`       | t=1.3s      | 0.8s | `expo.out` (확 켜졌다 서서히 안착)     |
-| 배경           | `.div-block-150`  | t=1.45s     | 1.5s | 비대칭 ease-in-out (in 75% / out 25%, power3) |
+| 요소           | 클래스                                       | 시작(delay) | 지속 | 이징                                   |
+|----------------|----------------------------------------------|-------------|------|----------------------------------------|
+| 슬로건         | `.home_slogan`                               | t=0.3s      | 1.2s | 비대칭 ease-in-out (in 60% / out 40%)  |
+| 버튼 래퍼      | `.bt-box-1`                                  | t=1.3s      | 0.8s | `expo.out` (확 켜졌다 서서히 안착)     |
+| 배경           | `.BlackFrame_Image(Hero)` (legacy: `.div-block-150`) | t=1.45s     | 1.5s | 비대칭 ease-in-out (in 75% / out 25%, power3) |
 
 **의도**: 슬로건이 충분히 부각된 뒤(약 1초 간격), 버튼과 배경이 거의
 동시에 붙어 등장 — "슬로건~~~~~~~~~~~배(버)경튼" 타이밍 감각.
@@ -33,16 +33,27 @@
 
 ### Virtual Placeholder (DOM 분리)
 
-`.home_slogan`·`.bt-box-1`은 Webflow 구조상 `.div-block-150`의 **자식**.
-CSS `opacity`는 부모에서 자식으로 캐스케이드되므로 배경을 fade-in 하는 동안
-자식도 함께 가려지는 문제가 있음. 해결:
+새 구조:
+```
+.BlackFrame_Image(Hero)            ← bg 섹션 (배경 이미지)
+└── .home_contents (.clearframe .w-layout-vflex)  ← 콘텐츠 래퍼
+    ├── .home_slogan
+    └── .bt-box-1
+```
+
+`.home_slogan`·`.bt-box-1`은 bg 섹션의 **자손**. CSS `opacity`는 부모에서
+자식으로 캐스케이드되므로 배경을 fade-in 하는 동안 자식도 함께 가려지는
+문제가 있음. 해결:
 
 1. 페이지 로드 시 각 자식을 `cloneNode(true)`해서 **고스트**(투명
    placeholder)를 원래 위치에 삽입 → 레이아웃 slot 유지
-2. 원본은 `.div-block-150`의 부모 요소로 이동, `position: absolute` +
+2. 원본은 bg 섹션의 부모 요소로 이동, `position: absolute` +
    측정된 좌표로 고스트 위에 고정 → 배경 opacity 상속 차단
 3. 배경 fade 완료(≈ t=2.95s) 시점에 원본을 원래 DOM 위치로 복귀 +
    고스트 제거 → 반응형 레이아웃 재개
+
+**bg 셀렉터**: 우선순위 `.div-block-150` (legacy) →
+`[class*="lackFrame_Image"]` (대소문자 무관 부분일치) 순으로 탐색.
 
 구현: `home/section1/section1.js` 의 `detachWithGhost()`
 
