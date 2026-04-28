@@ -18,6 +18,27 @@
     'home/global/card-stack.js'
   ];
 
+  /* Pre-paint flicker guard: 카드 덱이 초기화되기 전에 Webflow가 카드 섹션을
+     세로로 늘어진 자연 레이아웃으로 먼저 그리는 깜빡임을 차단.
+     덱 init이 끝나면 첫 섹션에 .helix-deck-ready를 붙여 노출. */
+  (function injectPrepaintGuard() {
+    var style = document.createElement('style');
+    style.id = 'helix-deck-prepaint';
+    style.textContent =
+      '.white-frame_connect{visibility:hidden!important}' +
+      '.white-frame_connect.helix-deck-ready{visibility:visible!important}';
+    /* head가 아직 없을 수도 있으므로 documentElement에 붙임 */
+    (document.head || document.documentElement).appendChild(style);
+    /* 안전망: 6초 안에 덱이 준비되지 않으면 가드 해제(원본 레이아웃이라도 보이도록) */
+    setTimeout(function () {
+      if (!document.querySelector('.white-frame_connect.helix-deck-ready')) {
+        var s = document.getElementById('helix-deck-prepaint');
+        if (s && s.parentNode) s.parentNode.removeChild(s);
+        console.warn('[about-bootstrap] deck not ready in 6s, removing prepaint guard');
+      }
+    }, 6000);
+  })();
+
   function cdn(ref, path) {
     var t = Math.floor(Date.now() / 60000);
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + '?t=' + t;

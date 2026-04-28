@@ -206,6 +206,8 @@
     }
 
     applyTransforms(false);
+    /* prepaint flicker guard 해제: 첫 섹션 노출 (about/bootstrap.js 참조) */
+    if (sections[0]) sections[0].classList.add('helix-deck-ready');
     log('deck initialized:', deck.length, 'cards', cardW + 'x' + cardH);
 
     /* ──────────────────────────────────────────────────────────
