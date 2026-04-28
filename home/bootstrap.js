@@ -33,8 +33,15 @@
      깜빡임이 발생함. 인라인 style을 동기 주입해 첫 페인트 전에 가림.
      section1.js가 인라인 visibility:hidden을 직접 설정하면 가드 제거.
 
-     주의: catch-all (.home_background > *) 은 다른 페이지 요소까지 숨길 위험이
-     있어 사용 금지. 명시 셀렉터만 사용. */
+     중요: Webflow 슬로건 등에 인라인 `style="visibility:visible !important;
+     opacity:1 !important"` 이 박혀 있는 경우, 같은 속성을 CSS의 !important
+     로 덮어쓸 수 없음(인라인 !important 가 항상 이김). 따라서 시각적
+     숨김은 `clip-path: inset(100%)` 로 대체 — 클립은 인라인이 거의 쓰지
+     않는 별도 속성이라 안전하게 숨길 수 있음.
+
+     section1.js 가 prepaint <style> 을 제거하면 clip-path 규칙 자체가
+     사라지므로 정상 노출됨. 그 시점엔 forceOpacity 로 인라인 opacity:0/
+     visibility:hidden 이 부여돼 GSAP 페이드인까지 안전. */
   (function injectPrepaintGuard() {
     var style = document.createElement('style');
     style.id = 'helix-home-prepaint';
@@ -44,7 +51,7 @@
       '.div-block-150,' +
       '[class*="lackFrame_Image"],' +
       '[class*="lackframe_image"]' +
-      '{visibility:hidden!important}';
+      '{clip-path:inset(100%)!important;-webkit-clip-path:inset(100%)!important;visibility:hidden!important;opacity:0!important}';
     (document.head || document.documentElement).appendChild(style);
     /* 안전망: 6초 안에 section1.js 가 가드를 제거하지 않으면 강제 해제 */
     setTimeout(function () {

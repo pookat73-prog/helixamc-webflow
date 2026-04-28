@@ -66,8 +66,13 @@
     }
 
     var ghost = el.cloneNode(true);
-    ghost.style.visibility    = 'hidden';
-    ghost.style.pointerEvents = 'none';
+    /* cloneNode 가 Webflow 의 인라인 `style="opacity:1!important;visibility:visible!important"`
+       까지 같이 복제할 수 있으므로 setProperty + 'important' 로 명시적으로 덮어씌움.
+       단순 `ghost.style.visibility = 'hidden'` 은 인라인 !important 와 외부 CSS !important
+       에 모두 패배할 수 있음 → ghost 가 보여 슬로건이 중첩으로 보이는 버그 원인. */
+    ghost.style.setProperty('visibility',     'hidden', 'important');
+    ghost.style.setProperty('opacity',        '0',      'important');
+    ghost.style.setProperty('pointer-events', 'none',   'important');
     ghost.removeAttribute('id');
     ghost.setAttribute('data-s1-ghost', '1');
     origParent.insertBefore(ghost, el);
