@@ -624,6 +624,37 @@
     });
   }
 
+  /* ── Hybrid Operation Room — .div-block-108 글로우 트리거 ──
+     뷰포트 진입 시 is-glowing 클래스 토글 → CSS 애니메이션 발사 */
+  function initHybridGlow() {
+    var target = document.querySelector('#hybrid-operation-room .div-block-108')
+              || document.querySelector('.div-block-108');
+    if (!target) { log('.div-block-108 없음'); return; }
+
+    function fire() {
+      target.classList.add('is-glowing');
+      log('hybrid glow 발사');
+    }
+
+    if (window.ScrollTrigger) {
+      ScrollTrigger.create({
+        trigger: target,
+        start: 'top 75%',
+        once: true,
+        onEnter: fire
+      });
+    } else if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { fire(); io.disconnect(); }
+        });
+      }, { threshold: 0.25 });
+      io.observe(target);
+    } else {
+      fire();
+    }
+  }
+
   function init() {
     initSection1();
     initBgVideo();
@@ -638,6 +669,7 @@
         initSection5Lines();
         initSection7();
         initButtonGlow();
+        initHybridGlow();
       }, 100);
     });
   }
