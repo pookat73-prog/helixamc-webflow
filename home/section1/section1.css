@@ -13,9 +13,13 @@
   visibility: visible !important;
 }
 
-/* 2. GSAP-controlled elements: FOUC-prevention initial hide */
+/* 2. GSAP-controlled elements: FOUC-prevention initial hide
+      bg section: BlackFrame_Image(Hero) — match via attribute selector to
+      sidestep CSS escaping for parens / casing variants */
 .home_slogan,
 .div-block-150,
+.BlackFrame_Image\(Hero\),
+[class*="lackFrame_Image"],
 .bt-box-1 {
   opacity: 0;
   visibility: hidden;

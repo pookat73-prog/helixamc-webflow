@@ -9,9 +9,11 @@
      t=1.45  bg      1.5s  asymmetric ease-in-out (in 75% / out 25%)
 
    DOM detach ("virtual placeholder") strategy:
-     slogan and button are typically children of .div-block-150 (bg).
-     CSS opacity on the parent cascades to children, so hiding bg also
-     hides its children. To let each element fade independently we:
+     slogan and button are descendants of the bg section
+     (legacy: .div-block-150, new: .BlackFrame_Image(Hero) wrapping
+     .home_contents which holds slogan/button). CSS opacity on the bg
+     parent cascades to children, so hiding bg also hides its children.
+     To let each element fade independently we:
        1. Clone el as a hidden ghost that holds the layout slot
        2. Move the real el to bg's parent with position:absolute and
           coordinates matching the ghost's position
@@ -109,7 +111,11 @@
     }
 
     var slogan = document.querySelector('.home_slogan');
-    var bg     = document.querySelector('.div-block-150');
+    /* bg section: legacy .div-block-150 → new BlackFrame_Image(Hero).
+       Attribute selector covers paren-escape and casing variants. */
+    var bg     = document.querySelector('.div-block-150') ||
+                 document.querySelector('[class*="lackFrame_Image"]') ||
+                 document.querySelector('[class*="lackframe_image"]');
     var box1   = document.querySelector('.bt-box-1');
 
     console.log('[Section1] box1 element:', box1);
