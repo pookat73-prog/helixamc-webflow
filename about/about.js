@@ -8,7 +8,8 @@
   var DEBUG = window.location.search.indexOf('debug-about=1') !== -1;
   function log() { if (DEBUG) console.log.apply(console, ['[About]'].concat(Array.prototype.slice.call(arguments))); }
 
-  var VIDEO_URL = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/about/bg-video.mp4';
+  var REF = window.HELIX_REF || 'main';
+  var VIDEO_URL = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + REF + '/about/bg-video.mp4';
   var s1Timeline = null;
 
   /* ── 섹션 1 헤드/서브헤드 페이드인 ── */

@@ -80,10 +80,12 @@
       var sha = (data.sha || '').substring(0, 10);
       if (!sha) throw new Error('no sha in response');
       console.log('[about-bootstrap] loading commit', sha);
+      window.HELIX_REF = sha;
       injectAll(sha);
     })
     .catch(function (err) {
       console.warn('[about-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
+      window.HELIX_REF = BRANCH;
       injectAll(BRANCH);
     });
 })();

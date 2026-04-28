@@ -42,6 +42,7 @@ jobs:
             "home/bootstrap.js"
             "about/bootstrap.js"
             "global/bootstrap.js"
+            "about/bg-video.mp4"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
