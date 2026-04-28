@@ -45,37 +45,16 @@
     video.className   = 'about-bg-video';
     container.insertBefore(video, container.firstChild);
 
-    /* 예시 레이블 */
-    var exLabel = document.createElement('div');
-    exLabel.textContent = '예시';
-    exLabel.className = 'about-example-label';
-    exLabel.style.opacity = '0';
-    container.appendChild(exLabel);
-
-    function positionLabel() {
-      requestAnimationFrame(function () {
-        var vr = video.getBoundingClientRect();
-        var cr = container.getBoundingClientRect();
-        if (!vr.width) return;
-        exLabel.style.left = (vr.left - cr.left + vr.width  / 2) + 'px';
-        exLabel.style.top  = (vr.top  - cr.top  + vr.height / 2) + 'px';
-      });
-    }
-
-    function fadeInVideoAndLabel() {
+    function fadeInVideo() {
       if (window.gsap) {
-        gsap.to([video, exLabel], { opacity: 1, duration: 4.5, ease: 'power2.out', delay: 0.3 });
+        gsap.to(video, { opacity: 1, duration: 4.5, ease: 'power2.out', delay: 0.3 });
       } else {
         video.style.opacity = '1';
-        exLabel.style.opacity = '1';
       }
     }
 
     video.style.opacity = '0';
-    video.addEventListener('loadedmetadata', positionLabel);
-    video.addEventListener('canplay', fadeInVideoAndLabel);
-    window.addEventListener('load', positionLabel);
-    window.addEventListener('resize', positionLabel);
+    video.addEventListener('canplay', fadeInVideo);
   }
 
   /* ── 섹션 2 애니메이션 ── */
