@@ -43,19 +43,31 @@
     video.muted       = true;
     video.playsInline = true;
     video.loop        = false;
+    video.preload     = 'auto';
     video.className   = 'about-bg-video';
     container.insertBefore(video, container.firstChild);
 
+    var faded = false;
     function fadeInVideo() {
+      if (faded) return;
+      faded = true;
       if (window.gsap) {
-        gsap.to(video, { opacity: 1, duration: 4.5, ease: 'power2.out', delay: 0.3 });
+        gsap.to(video, { opacity: 1, duration: 1.5, ease: 'power2.out' });
       } else {
         video.style.opacity = '1';
       }
     }
 
     video.style.opacity = '0';
-    video.addEventListener('canplay', fadeInVideo);
+    /* 첫 프레임 도착 시점(loadeddata)이 가장 빠름 */
+    video.addEventListener('loadeddata', fadeInVideo);
+    video.addEventListener('canplay',    fadeInVideo);
+    video.addEventListener('playing',    fadeInVideo);
+    /* 안전망: 어떤 이벤트도 안 오면 3초 후 강제 표시 */
+    setTimeout(fadeInVideo, 3000);
+    video.addEventListener('error', function () {
+      log('video error', video.error && video.error.code, 'src:', VIDEO_URL);
+    });
   }
 
   /* ── 섹션 2 애니메이션 ── */
