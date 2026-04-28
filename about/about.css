@@ -132,37 +132,39 @@
 }
 /* '최초' 광선/그라데이션은 about.js 인라인 스타일로 처리 */
 
-/* Hybrid Operation Room — .div-block-108 글로우 인터랙션
-   기본: 사용자 지정 box-shadow 항상 표시 (JS 실패해도 안전)
-   인터랙션: 뷰포트 진입 시 ::before 라디얼이 중앙→바깥으로 퍼짐 */
+/* Hybrid Operation Room — .div-block-108 글로우 둘레 스윕 인터랙션
+   정중앙 상단(12시) 한 점에서 시작 → 양쪽 둘레를 따라 6시까지 퍼지면서
+   드롭섀도가 그려짐. ::before = 우반(12→3→6시), ::after = 좌반(12→9→6시).
+   각 가상요소는 사용자 지정 box-shadow를 갖되, 시작 시 clip-path로 점에
+   응축됐다가 .is-glowing 클래스 추가 시 반원 폴리곤으로 펼쳐짐. */
 .div-block-108 {
   position: relative;
-  box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0.9);
 }
 
-.div-block-108::before {
+.div-block-108::before,
+.div-block-108::after {
   content: '';
   position: absolute;
-  inset: -3vw;
+  inset: 0;
   pointer-events: none;
-  background: radial-gradient(
-    circle at center,
-    rgba(0, 117, 214, 0.7) 0%,
-    rgba(0, 117, 214, 0.35) 25%,
-    rgba(0, 117, 214, 0.12) 50%,
-    transparent 70%
-  );
-  border-radius: 50%;
-  transform: scale(0);
-  transform-origin: center;
+  border-radius: inherit;
+  box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0.9);
   opacity: 0;
+  /* 시작: 모든 꼭짓점을 12시 한 점에 응축 */
+  clip-path: polygon(50% 0, 50% 0, 50% 0, 50% 0);
   transition:
-    transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 1.5s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.4s ease-out;
-  z-index: -1;
 }
 
 .div-block-108.is-glowing::before {
-  transform: scale(1);
   opacity: 1;
+  /* 우반 펼침: 12시 → 3시 → 6시 */
+  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+}
+
+.div-block-108.is-glowing::after {
+  opacity: 1;
+  /* 좌반 펼침: 12시 → 9시 → 6시 */
+  clip-path: polygon(50% 0, 0 0, 0 100%, 50% 100%);
 }
