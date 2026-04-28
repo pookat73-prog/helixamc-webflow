@@ -152,6 +152,10 @@
 /* ============================================================
    Hybrid Operation Room — div-block-106 글로우 인터랙션
    12시(정중앙 상단)에서 양쪽으로 퍼지며 원을 감싸는 푸른 빛
+
+   구현: about.js가 .div-block-106의 형제로 .hybrid-glow-halo div를
+   주입하고 위치/크기를 동기화. ::before가 z-index:-1로 깔리는 패턴은
+   부모 배경/오버플로에 가려지는 케이스가 있어 분리.
    ============================================================ */
 @property --glow-reveal {
   syntax: '<angle>';
@@ -165,20 +169,12 @@
   initial-value: 0;
 }
 
-#hybrid-operation-room .div-block-106 {
-  position: relative;
-  isolation: isolate;
+.hybrid-glow-halo {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
   --glow-reveal: 0deg;
   --glow-opacity: 0;
-}
-
-#hybrid-operation-room .div-block-106::before {
-  content: '';
-  position: absolute;
-  inset: -22px;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: -1;
   background: conic-gradient(
     rgba(0, 117, 214, 0.95) 0deg,
     rgba(0, 117, 214, 0.55) 40deg,
@@ -207,7 +203,7 @@
   );
 }
 
-#hybrid-operation-room .div-block-106.is-glowing {
+.hybrid-glow-halo.is-glowing {
   --glow-reveal: 180deg;
   --glow-opacity: 1;
   transition:
