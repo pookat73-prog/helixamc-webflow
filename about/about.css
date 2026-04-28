@@ -132,45 +132,7 @@
 }
 /* '최초' 광선/그라데이션은 about.js 인라인 스타일로 처리 */
 
-/* ============================================================
-   Hybrid Operation Room — div-block-106 글로우 인터랙션
-   둘레 ring 두 개(::before=우측 반, ::after=좌측 반)를 12시 한 점에
-   모았다가 clip-path 로 좌·우로 펼쳐 박스 둘레를 감싸는 푸른 빛.
-
-   halo div는 about.js가 .div-block-106의 형제로 주입(위치·크기 동기화).
-   안쪽 영역은 transparent — border + filter blur/drop-shadow 만 ring 으로 보임.
-   ============================================================ */
-.hybrid-glow-halo {
-  position: absolute;
-  pointer-events: none;
-  z-index: 0;
-  background: transparent;
-}
-
-.hybrid-glow-halo::before,
-.hybrid-glow-halo::after {
-  content: '';
-  position: absolute;
-  inset: 16px;            /* halo 가 +22px 영역이므로 박스 외곽 6px 둘레 ring */
-  border-radius: inherit;
-  pointer-events: none;
-  border: 2px solid rgba(0, 117, 214, 0.92);
-  background: transparent;
-  filter: blur(6px) drop-shadow(0 0 18px rgba(0, 117, 214, 0.7));
-  opacity: 0;
-  /* 시작: 모든 꼭짓점을 12시 한 점에 모음 */
-  clip-path: polygon(50% 0, 50% 0, 50% 0, 50% 0);
-  transition:
-    opacity   0.5s ease-out,
-    clip-path 1.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.hybrid-glow-halo.is-glowing::before {
-  opacity: 1;
-  clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);  /* 우측 반 */
-}
-
-.hybrid-glow-halo.is-glowing::after {
-  opacity: 1;
-  clip-path: polygon(50% 0, 0 0, 0 100%, 50% 100%);        /* 좌측 반 */
+/* Hybrid Operation Room — .div-block-108 위쪽 푸른 글로우 (사용자 지정 수치) */
+.div-block-108 {
+  box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0.9);
 }
