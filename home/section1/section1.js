@@ -275,23 +275,26 @@
       return ff.split(',')[0].trim().replace(/^["']|["']$/g, '') || null;
     }
 
-    /* probe 두 개: 하나는 web 폰트, 하나는 fallback. width 비교로 web 폰트 적용 여부 판단 */
-    function makeProbe(fontFamily) {
+    /* probe 두 개: 하나는 web 폰트, 하나는 fallback. width 비교로 web 폰트 적용 여부 판단.
+       slogan 의 실제 weight/style 까지 반영해야 정확히 매칭됨 (weight 별로 face 가 다름) */
+    function makeProbe(fontFamily, weight, style) {
       var p = document.createElement('span');
-      p.textContent = 'BESbswy QHlWxX 00 11';  /* 폰트별 폭 차이가 큰 문자 조합 */
+      p.textContent = 'BESbswy QHlWxX 00 11';
       p.style.cssText =
         'position:fixed;left:-99999px;top:0;' +
         'font-size:200px;line-height:1;white-space:pre;' +
         'visibility:visible;' +
+        'font-weight:' + (weight || '400') + ';' +
+        'font-style:'  + (style  || 'normal') + ';' +
         'font-family:' + fontFamily + ';';
       document.body.appendChild(p);
       return p;
     }
 
-    function waitForWebFontApplied(family, callback) {
+    function waitForWebFontApplied(family, weight, style, callback) {
       if (!family || !document.body) { callback(); return; }
-      var probeWeb = makeProbe('"' + family + '", monospace');
-      var probeFb  = makeProbe('monospace');
+      var probeWeb = makeProbe('"' + family + '", monospace', weight, style);
+      var probeFb  = makeProbe('monospace', weight, style);
       var startTime = performance.now ? performance.now() : Date.now();
       var MAX_WAIT_MS = 1500;
       function clean() {
@@ -353,11 +356,20 @@
     }
 
     /* 1) 폰트 로드 트리거 + 대기 → 2) probe 로 web 폰트 적용 확인 →
-       3) slogan 레이아웃 안정화 폴링 → 4) fade 시작 */
+       3) slogan 레이아웃 안정화 폴링 → 4) fade 시작
+       slogan 의 실제 font-weight/style 까지 반영해 로드 (weight 별로 face 다름). */
     var loadPromises = [];
     var sloganFamily = familyFromComputed();
+    var sloganWeight = '400';
+    var sloganStyle  = 'normal';
+    if (slogan) {
+      var cs = window.getComputedStyle(slogan);
+      sloganWeight = cs.fontWeight  || '400';
+      sloganStyle  = cs.fontStyle   || 'normal';
+    }
     if (document.fonts && document.fonts.load && slogan && sloganFamily) {
-      var fontSpec = '1em "' + sloganFamily + '"';
+      /* fontSpec: "<style> <weight> <size> <family>" */
+      var fontSpec = sloganStyle + ' ' + sloganWeight + ' 1em "' + sloganFamily + '"';
       var text = (slogan.textContent || '').trim() || ' ';
       try {
         loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
@@ -368,7 +380,7 @@
     }
 
     function afterFontLoaded() {
-      waitForWebFontApplied(sloganFamily, waitForLayoutStable);
+      waitForWebFontApplied(sloganFamily, sloganWeight, sloganStyle, waitForLayoutStable);
     }
 
     if (loadPromises.length) {
