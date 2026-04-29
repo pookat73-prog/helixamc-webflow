@@ -86,3 +86,22 @@ a[href^="tel:"] {
 a[href^="tel:"]:hover .home_branch-card_call-number {
   color: #0075d6;
 }
+
+/* ============================================================
+   MOBILE (≤767px): 카드 1열 세로 스택 + SVICC X축 슬라이드 제거
+   - flex-direction: column 으로 카드 1열 강제
+   - SVICC 초기 translateX(20px) 제거 → GSAP x:0 애니메이션은 무효화되지만
+     opacity 페이드인은 유지. !important 미사용 — GSAP 인라인 transform 우선
+   ============================================================ */
+@media (max-width: 767px) {
+  .flex-block-23 {
+    flex-direction: column !important;
+    gap: 1.2rem;
+  }
+  .home_branch-card {
+    width: 100%;
+  }
+  .home_background_svicc {
+    transform: none;
+  }
+}

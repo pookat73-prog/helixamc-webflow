@@ -87,3 +87,33 @@
   0%, 100% { box-shadow: 0 0 2.4vw 0.8vw rgba(85, 40, 170, 1); }
   50%       { box-shadow: 0 0 0.2vw 0.1vw rgba(85, 40, 170, 0.08); }
 }
+
+/* ================================================================
+   MOBILE GLOW (≤767px)  — LOCKED v4 데스크톱 계약 보존
+   vw 단위가 360px 폭에서 ~3px 로 떨어지는 문제 해결을 위해
+   모바일 전용 픽셀 기반 키프레임을 추가. 데스크톱 키프레임/시퀀스는
+   1바이트도 변경하지 않고, .is-looping 핸드오프 시점의 인라인 셋업
+   값(section1.js / sections-animations.js)도 동일 픽셀값으로 분기되어
+   점프 없음.
+   ================================================================ */
+@keyframes glowShimmerBlueMobile {
+  0%, 100% { box-shadow: 0 0 12px 4px rgba(0, 117, 214, 1); }
+  50%       { box-shadow: 0 0 12px 4px rgba(0, 117, 214, 0.55); }
+}
+
+@keyframes glowShimmerPurpleMobile {
+  0%, 100% { box-shadow: 0 0 16px 6px rgba(85, 40, 170, 1); }
+  50%       { box-shadow: 0 0 16px 6px rgba(85, 40, 170, 0.55); }
+}
+
+@media (max-width: 767px) {
+  .bt-box-1.is-looping,
+  .bt-box-2.is-looping,
+  .bt-box-3.is-looping {
+    animation: glowShimmerBlueMobile 5.0s infinite cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+  }
+
+  .bt-box-4.is-looping {
+    animation: glowShimmerPurpleMobile 5.0s infinite cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+  }
+}
