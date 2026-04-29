@@ -56,9 +56,8 @@
   }
 
   var easeSlogan = asymInOut(0.6, 2);
-  /* bg: 이즈 인 많이 (전체 85% 구간을 quartic 으로 천천히 빌드업) +
-     이즈 아웃 약간만 (마지막 15% 만 빠르게 마무리) */
-  var easeBg     = asymInOut(0.85, 4);
+  /* bg: 순수 이즈 인 (가속만). 끝부분 커브 없음 — 천천히 시작해서 끝까지 가속. */
+  var easeBg     = 'power4.in';
 
   var started = false;
 
