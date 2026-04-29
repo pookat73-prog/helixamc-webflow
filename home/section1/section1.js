@@ -160,7 +160,11 @@
     function forceOpacity(el, v) {
       if (!el) return;
       el.style.setProperty('opacity', String(v), 'important');
-      el.style.setProperty('visibility', v > 0 ? 'visible' : 'hidden', 'important');
+      /* visibility 는 항상 visible 로 유지 — 가려져 있더라도 브라우저가
+         실제 paint 를 수행해야 web 폰트가 layer 에 적용됨. visibility:hidden
+         이면 paint 가 스킵되어 fade 시작 시 fallback 폰트로 첫 paint →
+         fade 도중 폰트 swap → '심'/'중' 줄바꿈 점프 발생. */
+      el.style.setProperty('visibility', 'visible', 'important');
     }
 
     forceOpacity(slogan, 0);
