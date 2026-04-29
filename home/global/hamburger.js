@@ -19,6 +19,12 @@
 
   var VET_CHART_HREF = '#';
 
+  /* 햄버거 아이콘 자체를 "준비중"으로 막을지 여부.
+     true  → 아이콘 클릭해도 메뉴 안 열리고 "준비중입니다" 토스트만 뜸
+     false → 정상 동작 (메뉴 열림)
+     메뉴 콘텐츠가 모두 준비되면 이 줄만 false 로 변경. */
+  var MENU_COMING_SOON = true;
+
   /* href 가 '#' 이면 아직 미연결 → data-coming-soon 자동 부여 */
   function comingSoonAttr(href) {
     return href === '#' ? ' data-coming-soon="1"' : '';
@@ -169,7 +175,13 @@
     var btn = document.querySelector('.image-18');
     if (btn) {
       btn.style.cursor = 'pointer';
+      /* 햄버거 자체 준비중 모드: data-coming-soon 부여 → coming-soon.js 가
+         토스트 표시. openMenu 호출은 가드해서 메뉴가 열리지 않도록 함. */
+      if (MENU_COMING_SOON) {
+        btn.setAttribute('data-coming-soon', '1');
+      }
       btn.addEventListener('click', function () {
+        if (MENU_COMING_SOON) return;  /* 토스트는 coming-soon.js 가 처리 */
         if (isOpen) closeMenu(); else openMenu();
       });
     } else {
