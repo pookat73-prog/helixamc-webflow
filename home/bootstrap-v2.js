@@ -32,7 +32,9 @@
     'home/global/buttons.css',
     'home/global/buttons.js',
     'home/global/sections-animations.css',
-    'home/global/sections-animations.js'
+    'home/global/sections-animations.js',
+    'home/global/coming-soon.css',
+    'home/global/coming-soon.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:
