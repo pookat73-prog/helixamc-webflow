@@ -1,0 +1,50 @@
+/* ================================================================
+   COMING SOON TOAST
+   data-coming-soon="1" 어트리뷰트 가진 버튼 클릭 차단 + 토스트 노출
+   ================================================================ */
+
+.helix-coming-toast {
+  position: fixed;
+  z-index: 99999;
+  padding: 0.55rem 0.95rem;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  background-color: rgba(13, 17, 23, 0.92);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  white-space: nowrap;
+  -webkit-user-select: none;
+          user-select: none;
+}
+
+.helix-coming-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* PC: 커서 우하단에 따라붙음 (top/left를 JS가 직접 지정) */
+.helix-coming-toast.is-cursor {
+  /* JS에서 top/left 직접 set */
+}
+
+/* 모바일: 화면 하단 중앙 고정 토스트 */
+.helix-coming-toast.is-mobile {
+  bottom: 2.4rem;
+  left: 50%;
+  top: auto;
+  transform: translate(-50%, 8px);
+}
+
+.helix-coming-toast.is-mobile.is-visible {
+  transform: translate(-50%, 0);
+}
+
+/* 차단된 버튼 자체에 시각적 hint는 추가하지 않음 — 디자인에 영향 X */
