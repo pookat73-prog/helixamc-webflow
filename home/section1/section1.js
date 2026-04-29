@@ -245,15 +245,34 @@
       setTimeout(runCleanups, 2100);
     }
 
-    if (document.fonts && document.fonts.ready) {
-      /* 안전망: 폰트 안전망 1초로 단축 (대부분 그 안에 옴) */
-      var fired = false;
-      function fire() { if (!fired) { fired = true; startFades(); } }
+    /* 슬로건 폰트를 명시적으로 미리 로드한 뒤 fade 시작.
+       단순 document.fonts.ready 는 "현재 시점까지 로드된 폰트만" 을 의미.
+       슬로건이 clip-path 로 가려진 상태에서는 브라우저가 슬로건 폰트를
+       아직 요청하지 않았기 때문에 ready 가 너무 빨리 resolve → fade 도중
+       fallback 폰트로 잠깐 보이다 web 폰트 도착 시 글자 폭이 바뀌어
+       '심'/'중' 자가 줄바꿈 위치를 옮기는 점프 발생. */
+    var fired = false;
+    function fire() { if (!fired) { fired = true; startFades(); } }
+
+    if (document.fonts && document.fonts.load && slogan) {
+      var s = window.getComputedStyle(slogan);
+      /* CSS 폰트 단축형: "<weight> <size> <family>" — 슬로건 텍스트만으로
+         스코프 한정해 빠르게 로드 */
+      var fontSpec = (s.fontWeight || '400') + ' ' + (s.fontSize || '1em') +
+                     ' ' + (s.fontFamily || 'sans-serif');
+      var text = (slogan.textContent || '').trim() || ' ';
+      try {
+        document.fonts.load(fontSpec, text).then(fire, fire);
+      } catch (e) {
+        if (document.fonts.ready) document.fonts.ready.then(fire);
+      }
+    } else if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(fire);
-      setTimeout(fire, 1000);
     } else {
-      startFades();
+      fire();
     }
+    /* 안전망: 폰트 로드가 영영 안 와도 1초 후 강제 시작 */
+    setTimeout(fire, 1000);
 
     log('timeline queued (waiting for fonts)');
     return true;
