@@ -141,9 +141,9 @@
           }
 
           if (img3) {
+            /* scale-in 제거 — opacity 페이드인만 */
             gsap.to(img3, {
               opacity: 1,
-              scale: 1,
               duration: 0.6,
               ease: 'power2.out',
               delay: 0.3
