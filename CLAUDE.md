@@ -52,41 +52,49 @@ home/
 - SVIC 퍼플: `#5528aa`
 - 배경: `#0d1117`
 
-## ⚠️ 버튼 글로우 — 건드리지 말 것 (LOCKED v3)
+## ⚠️ 버튼 글로우 — 건드리지 말 것 (LOCKED v4)
 
-**모든 버튼 통일 동작**: 최고밝기 초기 설정 → 버튼 opacity 페이드인하면서 글로우도 같이 등장 → 1.5s 홀드 → shimmer/pulse
+**모든 페이지 / 모든 버튼 통일 사양** (홈 + about 일괄 적용)
 
-### bt-box-1 (section1.js + buttons.css)
+### 글로우 값 (단일 그림자 + α 변동)
 
-| 파일 | 역할 |
-|---|---|
-| `home/section1/section1.js` | 초기화 시 box-shadow 최고밝기 inline !important 설정 → opacity 페이드인 → 완료 후 1.5s setTimeout → inline 제거 + `is-looping` 추가 |
-| `home/global/buttons.css` | `.bt-box-1.is-looping { animation: glowShimmerBlue 2.4s infinite; transition: none !important }` |
+| 종류 | 셀렉터 | box-shadow |
+|---|---|---|
+| 블루 | `.bt-box-1/2/3` (홈) / `.cta_seocho_button`, `.cta-style` (about) | `0 0 0.85vw 0.3vw rgba(0,117,214,α)` |
+| 퍼플 (SVIC) | `.bt-box-4` (홈) / `.link-block` (about) | `0 0 1.05vw 0.5vw rgba(85,40,170,α)` |
 
-**동작 순서:**
-1. 초기화 시 `box-shadow: 0 0 2.6vw 0.9vw rgba(0,117,214,1) !important` inline 설정
-2. 버튼 opacity 0→1 페이드인 (GSAP, 0.8s) — opacity가 box-shadow에도 적용되므로 글로우도 같이 페이드인
-3. 페이드인 완료 후 1.5초 홀드 (최고밝기 유지)
-4. inline box-shadow 제거 + `is-looping` 클래스 추가 → CSS shimmer (78%~100%, 2.4s 주기)
+- α 피크 (0%/100%): **1.0**
+- α 밸리 (50%): **0.55**
+- 주기: **5.0s**, 이징: **`cubic-bezier(0.445, 0.05, 0.55, 0.95)`** (easeInOutSine)
+- blur/spread는 피크-밸리 동일, **α만 변동**
 
-### bt-box-2 (sections-animations.js)
+### 시퀀스 (모든 버튼 공통)
 
-| 역할 |
-|---|
-| 섹션 2 헤딩 ScrollTrigger 진입 시 함께 페이드인. `data-s2-init` 가드로 buttons.js의 IntersectionObserver와의 race 차단. 0.4s opacity 페이드인 → 1.5s 홀드 → `is-looping` 핸드오프 |
+1. 초기화 시 maxGlow inline `!important` 설정 (피크 α=1.0)
+2. 버튼 opacity 0→1 페이드인 (글로우도 opacity에 편승해 같이 등장)
+3. 페이드인 완료 후 **1.5초 홀드** (피크 유지)
+4. inline `box-shadow` 제거 + `is-looping` 클래스 추가 → CSS keyframe shimmer 핸드오프
 
-### bt-box-3/4 (buttons.js)
+### 통제 주체
 
-| 역할 |
-|---|
-| IntersectionObserver가 버튼 viewport 진입 감지 → 인라인 `box-shadow` maxGlow 즉시 설정 → 1.5s 홀드 후 `is-looping` (CSS shimmer) |
+| 버튼 | 페이드인 통제 | 키프레임 |
+|---|---|---|
+| `.bt-box-1` | `home/section1/section1.js` (Hero 시퀀스) | `glowShimmerBlue` @ `home/global/buttons.css` |
+| `.bt-box-2` | `home/global/sections-animations.js` (sec2 ScrollTrigger) | `glowShimmerBlue` |
+| `.bt-box-3` | `home/global/sections-animations.js` (sec3 ScrollTrigger) | `glowShimmerBlue` |
+| `.bt-box-4` | `home/global/buttons.js` (IntersectionObserver) | `glowShimmerPurple` |
+| `.cta_seocho_button`, `.cta-style` | `about/about.js` (IntersectionObserver) | `aboutGlowShimmerBlue` |
+| `.link-block` | `about/about.js` (IntersectionObserver) | `aboutGlowShimmerPurple` |
 
-**핵심 포인트:**
-- `.bt-box-1` 베이스 `transition: box-shadow 0.6s`가 is-looping 전환 시 개입하지 않도록 `.is-looping`에 `transition: none !important` 필수
-- 글로우 페이드인은 **별도 GSAP 트윈을 하지 않고**, 버튼 자체의 opacity 페이드인에 편승
-- buttons.js 셀렉터에 `.bt-box-1`, `.bt-box-2`는 의도적으로 제외 — 각각 section1.js / sections-animations.js 가 통제
+### 핵심 포인트
 
-**이전에 시도했다가 실패한 방식들 (재시도 금지):**
+- 베이스 `transition: box-shadow 0.6s` 가 is-looping 전환에 개입하지 않도록 `.is-looping` 에 `transition: none !important` 필수
+- 글로우 페이드인은 **별도 GSAP 트윈을 하지 않고** 버튼 자체의 opacity 페이드인에 편승 (안 그러면 v1, v2 처럼 어두운 상태에서 밝아지는 느낌이 남)
+- `home/global/buttons.js` 셀렉터에 `.bt-box-1`, `.bt-box-2`, `.bt-box-3` 의도적 제외 — 각각 section1.js / sections-animations.js 가 통제 (race 방지)
+- 페이드인 maxGlow 인라인 값과 키프레임 0%/100% 값은 **반드시 동일** — 핸드오프 시 점프 방지
+- 새 페이지/버튼 추가 시: 위 표의 값 그대로 사용 + 동일 시퀀스 (페이드인 → 1.5s 홀드 → is-looping)
+
+### 이전에 시도했다가 실패한 방식들 (재시도 금지)
 - `is-holding` CSS 클래스 (`box-shadow !important`) → CSS animation 충돌로 shimmer 불가
 - GSAP multi-shadow 트위닝 fromVars → 파싱 오류로 툭 꺼짐
 - GSAP 0.5~0.6s 글로우 페이드인 트윈 → 덜 밝은 상태에서 밝아지는 느낌 (v1, v2)
@@ -98,7 +106,7 @@ home/
 - jsDelivr `@main` 직접 참조 (bootstrap.js는 예외) ❌
   → 캐시 꼬임. 항상 bootstrap 패턴 통해서 commit SHA로 로드.
 - `@latest` 사용 ❌ → GitHub Release에 바인딩되며 업데이트 안 됨.
-- bt-box-1 글로우 로직 수정 ❌ → 위 LOCKED 섹션 참조.
+- 버튼 글로우 로직 수정 ❌ → 위 LOCKED v4 섹션 참조 (홈 + about 통일 사양).
 
 ## 디버그 팁
 - 라인 애니메이션: URL에 `?debug-line=1` 추가 → 콘솔 로그
