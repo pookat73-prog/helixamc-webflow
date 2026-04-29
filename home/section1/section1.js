@@ -139,21 +139,25 @@
 
     started = true;
 
-    /* Detach slogan and box1 if they're descendants of bg */
+    /* detach 는 폰트 로드 후에 수행 — fallback 폰트 폭으로 ghost 가 측정되면
+       slogan 의 inline width 가 잘못 lock 됨. fade 끝나고 cleanup 에서 width
+       제거 시 자연 폭(web 폰트)으로 reflow 되어 '중' 자가 위로 점프. */
     var cleanups = [];
-    if (bg && bg.parentElement) {
-      var target = bg.parentElement;
-      try {
-        if (slogan && bg.contains(slogan)) {
-          log('detaching slogan from bg');
-          cleanups.push(detachWithGhost(slogan, target));
+    function performDetach() {
+      if (bg && bg.parentElement) {
+        var target = bg.parentElement;
+        try {
+          if (slogan && bg.contains(slogan)) {
+            log('detaching slogan from bg');
+            cleanups.push(detachWithGhost(slogan, target));
+          }
+          if (box1 && bg.contains(box1)) {
+            log('detaching box1 from bg');
+            cleanups.push(detachWithGhost(box1, target));
+          }
+        } catch (e) {
+          console.warn('[Section1] detach failed, continuing without:', e);
         }
-        if (box1 && bg.contains(box1)) {
-          log('detaching box1 from bg');
-          cleanups.push(detachWithGhost(box1, target));
-        }
-      } catch (e) {
-        console.warn('[Section1] detach failed, continuing without:', e);
       }
     }
 
@@ -380,7 +384,11 @@
     }
 
     function afterFontLoaded() {
-      waitForWebFontApplied(sloganFamily, sloganWeight, sloganStyle, waitForLayoutStable);
+      waitForWebFontApplied(sloganFamily, sloganWeight, sloganStyle, function () {
+        /* 폰트 paint 적용 확인 후 detach — 이제 ghost 가 web 폰트 폭으로 측정됨 */
+        performDetach();
+        waitForLayoutStable();
+      });
     }
 
     if (loadPromises.length) {
