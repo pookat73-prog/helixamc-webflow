@@ -245,29 +245,46 @@
       setTimeout(runCleanups, 2100);
     }
 
-    /* 슬로건 폰트를 명시적으로 미리 로드한 뒤 fade 시작.
-       단순 document.fonts.ready 는 "현재 시점까지 로드된 폰트만" 을 의미.
-       슬로건이 clip-path 로 가려진 상태에서는 브라우저가 슬로건 폰트를
-       아직 요청하지 않았기 때문에 ready 가 너무 빨리 resolve → fade 도중
-       fallback 폰트로 잠깐 보이다 web 폰트 도착 시 글자 폭이 바뀌어
-       '심'/'중' 자가 줄바꿈 위치를 옮기는 점프 발생. */
-    var fired = false;
-    function fire() { if (!fired) { fired = true; startFades(); } }
+    /* 슬로건 폰트 로드 + Webflow 레이아웃 settle 후 fade 시작.
 
+       콜드 캐시: 네트워크 지연 덕에 자연스럽게 Webflow CSS/IX2 가 settle 후
+                  fade 시작 → 문제 없음.
+       웜 캐시:   모든 파일이 즉시 들어와 section1.js 가 너무 빠르게 실행 →
+                  Webflow 가 슬로건 폰트 메트릭을 적용하기 전에 fade 시작 →
+                  fade 도중 폰트 swap 으로 '심'/'중' 줄바꿈 점프 재발.
+
+       해결 — 다단계 대기:
+       1) document.fonts.load(슬로건 폰트, 텍스트) — 명시적 폰트 로드
+       2) document.fonts.ready                    — 모든 폰트 로드 완료
+       3) requestAnimationFrame × 2               — Webflow 레이아웃 settle
+       4) startFades()                            — 그제서야 fade 시작 */
+    var fired = false;
+    function fire() {
+      if (fired) return;
+      fired = true;
+      /* rAF × 2: 첫 frame 에 Webflow CSS 적용 반영, 두 번째 frame 에 paint.
+         그 후 fade 시작하면 슬로건 메트릭이 이미 안정된 상태. */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(startFades);
+      });
+    }
+
+    var loadPromises = [];
     if (document.fonts && document.fonts.load && slogan) {
       var s = window.getComputedStyle(slogan);
-      /* CSS 폰트 단축형: "<weight> <size> <family>" — 슬로건 텍스트만으로
-         스코프 한정해 빠르게 로드 */
       var fontSpec = (s.fontWeight || '400') + ' ' + (s.fontSize || '1em') +
                      ' ' + (s.fontFamily || 'sans-serif');
       var text = (slogan.textContent || '').trim() || ' ';
       try {
-        document.fonts.load(fontSpec, text).then(fire, fire);
-      } catch (e) {
-        if (document.fonts.ready) document.fonts.ready.then(fire);
-      }
-    } else if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(fire);
+        loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
+      } catch (e) {}
+    }
+    if (document.fonts && document.fonts.ready) {
+      loadPromises.push(document.fonts.ready.catch(function () {}));
+    }
+
+    if (loadPromises.length) {
+      Promise.all(loadPromises).then(fire, fire);
     } else {
       fire();
     }
