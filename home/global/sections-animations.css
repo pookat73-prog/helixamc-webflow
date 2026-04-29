@@ -30,13 +30,19 @@ html, body {
 /* 섹션 3 이미지 .div-block-153 — 인터랙션 없음 (Webflow 기본 노출) */
 
 /* ============================================================
-   섹션 4 카드 — 초기 상태: 보이지 않고 아래로 30px
+   섹션 4 카드 — 초기 상태: 보이지 않고 아래로, 그림자 없음
+   카드 페이드 시작 0.15s 후 엇박으로 .is-shadowed 클래스 추가 (JS)
    ============================================================ */
 .home_branch-card {
   opacity: 0;
   transform: translateY(14px);
-  box-shadow: 0 4px 20px rgba(107, 125, 153, 0.55), 0 8px 36px rgba(107, 125, 153, 0.12);
+  box-shadow: none;
+  transition: box-shadow 0.5s ease;
   will-change: opacity, transform;
+}
+
+.home_branch-card.is-shadowed {
+  box-shadow: 0 4px 20px rgba(107, 125, 153, 0.55), 0 8px 36px rgba(107, 125, 153, 0.12);
 }
 
 /* SVICC 배경 (우측) — 초기: 오른쪽에서 슬라이드 인 대기 */

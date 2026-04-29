@@ -168,6 +168,13 @@
         stagger: 0.08,
         duration: 0.5,
         ease: 'power2.out'
+      }, 0);
+
+      /* 그림자 페이드 — 카드 페이드 시작 0.15s 후 엇박으로 시작.
+         CSS transition: box-shadow 0.5s 가 자동 페이드인 처리.
+         각 카드에 stagger 0.08s 로 클래스 추가. */
+      cards.forEach(function (card, i) {
+        cardTL.call(function () { card.classList.add('is-shadowed'); }, [], 0.15 + i * 0.08);
       });
 
       var svicc = document.querySelector('.home_background_svicc');
