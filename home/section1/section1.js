@@ -250,30 +250,55 @@
        콜드 캐시: 네트워크 지연 덕에 자연스럽게 Webflow CSS/IX2 가 settle 후
                   fade 시작 → 문제 없음.
        웜 캐시:   모든 파일이 즉시 들어와 section1.js 가 너무 빠르게 실행 →
-                  Webflow 가 슬로건 폰트 메트릭을 적용하기 전에 fade 시작 →
-                  fade 도중 폰트 swap 으로 '심'/'중' 줄바꿈 점프 재발.
+                  document.fonts.load 가 즉시 resolve 하지만 브라우저가
+                  슬로건을 아직 새 폰트로 재렌더하지 않은 상태에서 fade 시작 →
+                  fade 도중 fallback → web 폰트 swap 으로 '심' 줄바꿈 점프.
 
-       해결 — 다단계 대기:
-       1) document.fonts.load(family) — 첫 번째 family 만 따로 (멀티-family
-          파싱 이슈 회피). slogan 텍스트로 스코프 한정.
-       2) document.fonts.ready          — FontFaceSet 전체 완료
-       3) offsetWidth 읽기              — 레이아웃 강제 반영
-       4) requestAnimationFrame + 100ms — paint 완료 대기
-       5) startFades                    — 그제서야 fade 시작 */
+       해결: 폰트 로드 + 레이아웃 stability 폴링.
+       offsetWidth 가 N frame 연속 동일하면 layout 이 settle 된 것으로 간주.
+       이 방식은 폰트 로드와 무관하게 실제 렌더 결과를 직접 관찰하므로 가장 신뢰. */
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
-      /* 강제 레이아웃: 폰트가 FontFaceSet 에 도달했더라도 브라우저가 아직
-         새 폰트로 슬로건을 재계산하지 않았을 수 있으므로 offsetWidth 읽기로
-         동기적 layout pass 유도 */
-      if (slogan) { try { void slogan.offsetWidth; } catch (e) {} }
-      /* 100ms + 1 frame: layout 후 실제 paint 와 잔여 IX2 settle 여유 */
-      setTimeout(function () {
-        requestAnimationFrame(startFades);
-      }, 100);
+      startFades();
     }
 
+    function waitForLayoutStable() {
+      if (!slogan) { fire(); return; }
+      var lastWidth = slogan.offsetWidth;
+      var stableFrames = 0;
+      var startTime = performance.now ? performance.now() : Date.now();
+      var STABLE_FRAMES_REQUIRED = 4;  /* ~67ms @ 60fps */
+      var MAX_WAIT_MS = 1500;
+
+      function check() {
+        if (fired) return;
+        var w = slogan.offsetWidth;
+        if (w === lastWidth) {
+          stableFrames++;
+          if (stableFrames >= STABLE_FRAMES_REQUIRED) {
+            log('layout stable after', stableFrames, 'frames @ width', w);
+            fire();
+            return;
+          }
+        } else {
+          log('layout changed:', lastWidth, '→', w);
+          lastWidth = w;
+          stableFrames = 0;
+        }
+        var now = performance.now ? performance.now() : Date.now();
+        if (now - startTime > MAX_WAIT_MS) {
+          log('layout stability timeout, firing anyway');
+          fire();
+          return;
+        }
+        requestAnimationFrame(check);
+      }
+      requestAnimationFrame(check);
+    }
+
+    /* 우선 폰트 로드를 트리거 + 대기. 그 후 layout stability 폴링. */
     var loadPromises = [];
     if (document.fonts && document.fonts.load && slogan) {
       var s = window.getComputedStyle(slogan);
@@ -293,12 +318,12 @@
     }
 
     if (loadPromises.length) {
-      Promise.all(loadPromises).then(fire, fire);
+      Promise.all(loadPromises).then(waitForLayoutStable, waitForLayoutStable);
     } else {
-      fire();
+      waitForLayoutStable();
     }
-    /* 안전망: 폰트 로드가 영영 안 와도 1초 후 강제 시작 */
-    setTimeout(fire, 1000);
+    /* 안전망: 폰트 로드 + 레이아웃 안정화가 영영 안 와도 1.5초 후 강제 시작 */
+    setTimeout(fire, 1500);
 
     log('timeline queued (waiting for fonts)');
     return true;
