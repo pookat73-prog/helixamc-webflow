@@ -122,11 +122,11 @@
     var target = findBlockedTarget(e.target);
     if (!target) return;
 
+    /* preventDefault 만으로 a[href] 기본 이동 차단 충분.
+       stopPropagation 은 일부러 호출하지 않음 — 헤더 햄버거 메뉴처럼
+       링크 click 시 자체 닫기 핸들러가 필요한 경우(hamburger.js 의 closeMenu)
+       가 정상 동작하도록 이벤트 버블을 살려둠. */
     e.preventDefault();
-    e.stopPropagation();
-    /* a[href]의 기본 이동은 click의 default가 처리하므로 preventDefault로 충분.
-       단, Webflow 일부 핸들러가 capture 단계에서 동작할 수 있으므로
-       이 리스너도 capture: true로 등록 (아래 addEventListener 참조). */
 
     /* 마지막 입력이 mouse면 커서 옆 토스트, 아니면(터치/펜) 화면 하단 토스트 */
     var useCursor = (lastInputType === 'mouse');

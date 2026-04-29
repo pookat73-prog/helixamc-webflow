@@ -19,21 +19,29 @@
 
   var VET_CHART_HREF = '#';
 
+  /* href 가 '#' 이면 아직 미연결 → data-coming-soon 자동 부여 */
+  function comingSoonAttr(href) {
+    return href === '#' ? ' data-coming-soon="1"' : '';
+  }
+
   /* ── 오버레이 HTML 생성 ── */
   function buildOverlayHTML() {
     var branchesHTML = BRANCHES.map(function (b) {
-      return '<a href="' + b.href + '" class="hx-menu-branch">' + b.text + '</a>';
+      return '<a href="' + b.href + '"' + comingSoonAttr(b.href) +
+        ' class="hx-menu-branch">' + b.text + '</a>';
     }).join('');
 
     var navHTML = NAV_LINKS.map(function (n) {
       if (n.group) {
         var inner = n.group.map(function (g, i) {
           return (i > 0 ? '<span class="hx-menu-nav-sep">・</span>' : '') +
-            '<a href="' + g.href + '" class="hx-menu-nav-link">' + g.text + '</a>';
+            '<a href="' + g.href + '"' + comingSoonAttr(g.href) +
+            ' class="hx-menu-nav-link">' + g.text + '</a>';
         }).join('');
         return '<div class="hx-menu-nav-group">' + inner + '</div>';
       }
-      return '<a href="' + n.href + '" class="hx-menu-nav-link">' + n.text + '</a>';
+      return '<a href="' + n.href + '"' + comingSoonAttr(n.href) +
+        ' class="hx-menu-nav-link">' + n.text + '</a>';
     }).join('');
 
     return (
@@ -44,7 +52,8 @@
           '<nav class="hx-menu-nav">' + navHTML + '</nav>' +
         '</div>' +
         '<div class="hx-menu-footer">' +
-          '<a href="' + VET_CHART_HREF + '" class="hx-menu-footer-link">' +
+          '<a href="' + VET_CHART_HREF + '"' + comingSoonAttr(VET_CHART_HREF) +
+            ' class="hx-menu-footer-link">' +
             '수의사용 웹 차트' +
             '<span class="hx-menu-footer-link__arrow">›</span>' +
           '</a>' +
