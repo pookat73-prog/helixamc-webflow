@@ -196,6 +196,28 @@
       });
     }
 
+    /* cleanup 신뢰성 강화 — bg fadeIn 의 onComplete 가 어떤 이유로
+       (예: bg=null) 안 불려도 ghost 가 영구 잔존하지 않도록 안전망 타이머 추가.
+       runCleanups 는 idempotent (한 번만 실행). */
+    var cleanupRan = false;
+    function runCleanups() {
+      if (cleanupRan) return;
+      cleanupRan = true;
+      log('runCleanups firing');
+      cleanups.forEach(function (c) {
+        try { c.cleanup(); } catch (e) { console.warn('[Section1] cleanup failed:', e); }
+      });
+      /* 잔존 ghost 마지막 청소 — cleanups 가 비어있거나 실패한 경우의 안전망 */
+      var orphans = document.querySelectorAll('[data-s1-ghost]');
+      orphans.forEach(function (n) { if (n.parentNode) n.parentNode.removeChild(n); });
+      if (orphans.length) log('removed', orphans.length, 'orphan ghost(s)');
+      /* DOM이 최종 위치로 복원된 후 divider.js에 신호 */
+      setTimeout(function () {
+        try { window.dispatchEvent(new CustomEvent('helix-s1-done')); } catch (e) {}
+        log('helix-s1-done dispatched');
+      }, 50);
+    }
+
     /* 페이드인 시퀀스 — 웹폰트가 도착한 후에 시작해야 폰트 메트릭 변화로
        인한 줄바꿈 점프(예: '심' 자가 다음 줄에서 위로 튀어오르는 현상)가 안 생김 */
     function startFades() {
@@ -212,17 +234,10 @@
             box1.classList.add('is-looping');
           }, 1500);
         });
-      fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, function () {
-        log('all fades done, restoring DOM');
-        cleanups.forEach(function (c) {
-          try { c.cleanup(); } catch (e) { console.warn('[Section1] cleanup failed:', e); }
-        });
-        /* DOM이 최종 위치로 복원된 후 divider.js에 신호 */
-        setTimeout(function () {
-          try { window.dispatchEvent(new CustomEvent('helix-s1-done')); } catch (e) {}
-          log('helix-s1-done dispatched');
-        }, 50);
-      });
+      fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, runCleanups);
+      /* 안전망: bg=null 등으로 onComplete 가 안 불려도 cleanup 보장
+         (bg delay 1.45 + duration 1.5 + 0.5s 여유) */
+      setTimeout(runCleanups, 3500);
     }
 
     if (document.fonts && document.fonts.ready) {
