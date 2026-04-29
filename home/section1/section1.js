@@ -184,9 +184,14 @@
     prepaints.forEach(function (p) { if (p.parentNode) p.parentNode.removeChild(p); });
 
     /* box1에 최고밝기 box-shadow를 초기 상태로 설정
-       → opacity 0→1 페이드인하면서 글로우도 자연스럽게 같이 등장 */
+       → opacity 0→1 페이드인하면서 글로우도 자연스럽게 같이 등장
+       모바일(≤767px)은 vw 단위가 너무 작아져 픽셀값으로 분기 —
+       buttons.css 의 glowShimmerBlueMobile 0%/100% 와 동일 값이라 핸드오프 점프 없음 */
     if (box1) {
-      box1.style.setProperty('box-shadow', '0 0 0.85vw 0.3vw rgba(0,117,214,1)', 'important');
+      var maxGlowBlue = window.innerWidth <= 767
+        ? '0 0 12px 4px rgba(0,117,214,1)'
+        : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
+      box1.style.setProperty('box-shadow', maxGlowBlue, 'important');
       box1.setAttribute('data-s1-init', '');
     }
 

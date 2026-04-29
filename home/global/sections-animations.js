@@ -28,6 +28,15 @@
     if (b2) b2.setAttribute('data-s2-init', '');
   }());
 
+  /* 모바일(≤767px) 글로우 인라인 셋업 값 — buttons.css 의
+     glowShimmerBlueMobile 0%/100% 와 정확히 동일해야 .is-looping 핸드오프
+     시점에 점프 없음. ScrollTrigger 발사 시점에 평가해 리사이즈에도 적응. */
+  function maxGlowBlue() {
+    return window.innerWidth <= 767
+      ? '0 0 12px 4px rgba(0,117,214,1)'
+      : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
+  }
+
   var initialized    = false;
   var zigInitialized = false;
 
@@ -89,7 +98,7 @@
 
           /* 버튼2: 최고밝기 즉시 준비 → 0.15s 후 페이드인 → 1.5s 홀드 → is-looping */
           if (btn2) {
-            btn2.style.setProperty('box-shadow', '0 0 0.85vw 0.3vw rgba(0,117,214,1)', 'important');
+            btn2.style.setProperty('box-shadow', maxGlowBlue(), 'important');
             gsap.to(btn2, {
               opacity: 1,
               duration: 0.4,
@@ -125,7 +134,7 @@
           gsap.to(sec3Head, { opacity: 1, duration: 0.7, ease: 'power2.out' });
 
           if (btn3) {
-            btn3.style.setProperty('box-shadow', '0 0 0.85vw 0.3vw rgba(0,117,214,1)', 'important');
+            btn3.style.setProperty('box-shadow', maxGlowBlue(), 'important');
             gsap.to(btn3, {
               opacity: 1,
               duration: 0.4,
@@ -162,19 +171,22 @@
         }
       });
 
+      /* 모바일은 1열 세로 스택이라 0.08s 는 너무 빠름 — 0.12s 로 늘려 리듬 강화 */
+      var cardStagger = window.innerWidth <= 767 ? 0.12 : 0.08;
+
       cardTL.to(cards, {
         opacity: 1,
         y: 0,
-        stagger: 0.08,
+        stagger: cardStagger,
         duration: 0.5,
         ease: 'power2.out'
       }, 0);
 
       /* 그림자 페이드 — 카드 페이드 시작 0.15s 후 엇박으로 시작.
          CSS transition: box-shadow 0.5s 가 자동 페이드인 처리.
-         각 카드에 stagger 0.08s 로 클래스 추가. */
+         각 카드에 stagger 와 동일 간격으로 클래스 추가. */
       cards.forEach(function (card, i) {
-        cardTL.call(function () { card.classList.add('is-shadowed'); }, [], 0.15 + i * 0.08);
+        cardTL.call(function () { card.classList.add('is-shadowed'); }, [], 0.15 + i * cardStagger);
       });
 
       var svicc = document.querySelector('.home_background_svicc');

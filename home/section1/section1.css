@@ -25,3 +25,19 @@
   visibility: hidden;
   transition: none !important;
 }
+
+/* ============================================================
+   MOBILE (≤767px): Hero 슬로건 폰트/패딩 보정
+   - vw 기반 폰트는 360px 폭에서 커서 줄바꿈/오버플로우 위험
+   - clamp() 로 최소·기본·최대 캡 → 작은 기기에서도 안정 레이아웃
+   ============================================================ */
+@media (max-width: 767px) {
+  .home_slogan {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    line-height: 1.25;
+    padding: 0 5vw;
+  }
+  .div-block-150 {
+    padding: 0 4vw;
+  }
+}
