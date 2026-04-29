@@ -28,13 +28,13 @@
 }
 
 @keyframes glowShimmerBlue {
-  0%, 100% { box-shadow: 0 0 1.5vw 0.525vw rgba(0, 117, 214, 1); }
-  50%       { box-shadow: 0 0 1.5vw 0.525vw rgba(0, 117, 214, 0.55); }
+  0%, 100% { box-shadow: 0 0 1.7vw 0.3vw rgba(0, 117, 214, 1); }
+  50%       { box-shadow: 0 0 1.7vw 0.3vw rgba(0, 117, 214, 0.55); }
 }
 
 @keyframes glowShimmerPurple {
-  0%, 100% { box-shadow: 0 0 1.5vw 0.525vw rgba(85, 40, 170, 1); }
-  50%       { box-shadow: 0 0 1.5vw 0.525vw rgba(85, 40, 170, 0.55); }
+  0%, 100% { box-shadow: 0 0 1.7vw 0.3vw rgba(85, 40, 170, 1); }
+  50%       { box-shadow: 0 0 1.7vw 0.3vw rgba(85, 40, 170, 0.55); }
 }
 
 /* ================================================================
