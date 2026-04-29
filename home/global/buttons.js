@@ -15,8 +15,8 @@
     if (!window.gsap) return;
 
     var maxGlow = isPurple(el)
-      ? '0 0 1.7vw 0.3vw rgba(85,40,170,1)'
-      : '0 0 1.7vw 0.3vw rgba(0,117,214,1)';
+      ? '0 0 0.85vw 0.3vw rgba(85,40,170,1)'
+      : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
 
     /* Phase 1: 최고밝기 즉시 설정 */
     el.style.setProperty('box-shadow', maxGlow, 'important');
