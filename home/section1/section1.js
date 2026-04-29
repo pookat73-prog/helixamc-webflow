@@ -254,30 +254,39 @@
                   fade 도중 폰트 swap 으로 '심'/'중' 줄바꿈 점프 재발.
 
        해결 — 다단계 대기:
-       1) document.fonts.load(슬로건 폰트, 텍스트) — 명시적 폰트 로드
-       2) document.fonts.ready                    — 모든 폰트 로드 완료
-       3) requestAnimationFrame × 2               — Webflow 레이아웃 settle
-       4) startFades()                            — 그제서야 fade 시작 */
+       1) document.fonts.load(family) — 첫 번째 family 만 따로 (멀티-family
+          파싱 이슈 회피). slogan 텍스트로 스코프 한정.
+       2) document.fonts.ready          — FontFaceSet 전체 완료
+       3) offsetWidth 읽기              — 레이아웃 강제 반영
+       4) requestAnimationFrame + 100ms — paint 완료 대기
+       5) startFades                    — 그제서야 fade 시작 */
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
-      /* rAF × 2: 첫 frame 에 Webflow CSS 적용 반영, 두 번째 frame 에 paint.
-         그 후 fade 시작하면 슬로건 메트릭이 이미 안정된 상태. */
-      requestAnimationFrame(function () {
+      /* 강제 레이아웃: 폰트가 FontFaceSet 에 도달했더라도 브라우저가 아직
+         새 폰트로 슬로건을 재계산하지 않았을 수 있으므로 offsetWidth 읽기로
+         동기적 layout pass 유도 */
+      if (slogan) { try { void slogan.offsetWidth; } catch (e) {} }
+      /* 100ms + 1 frame: layout 후 실제 paint 와 잔여 IX2 settle 여유 */
+      setTimeout(function () {
         requestAnimationFrame(startFades);
-      });
+      }, 100);
     }
 
     var loadPromises = [];
     if (document.fonts && document.fonts.load && slogan) {
       var s = window.getComputedStyle(slogan);
-      var fontSpec = (s.fontWeight || '400') + ' ' + (s.fontSize || '1em') +
-                     ' ' + (s.fontFamily || 'sans-serif');
-      var text = (slogan.textContent || '').trim() || ' ';
-      try {
-        loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
-      } catch (e) {}
+      /* family 첫 항목만 추출 ('ds-endendend, sans-serif' → 'ds-endendend')
+         document.fonts.load 가 멀티-family 를 일관되게 처리하지 못하는 케이스 회피 */
+      var family = (s.fontFamily || '').split(',')[0].trim().replace(/^["']|["']$/g, '');
+      if (family) {
+        var fontSpec = '1em ' + family;
+        var text = (slogan.textContent || '').trim() || ' ';
+        try {
+          loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
+        } catch (e) {}
+      }
     }
     if (document.fonts && document.fonts.ready) {
       loadPromises.push(document.fonts.ready.catch(function () {}));
