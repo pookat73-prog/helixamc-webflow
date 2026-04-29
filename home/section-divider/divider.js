@@ -12,6 +12,10 @@
 (function () {
   'use strict';
 
+  /* idempotency: 두 번 로드돼도 SVG 라인 중복 생성 방지 */
+  if (window.__HELIX_DIVIDER_LOADED__) return;
+  window.__HELIX_DIVIDER_LOADED__ = true;
+
   var BTN1_CLASS = '.discover-helix_button';
   var AMPLITUDE  = 14;
 
