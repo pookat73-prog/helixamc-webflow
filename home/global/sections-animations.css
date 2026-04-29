@@ -41,8 +41,13 @@ html, body {
   will-change: opacity, transform;
 }
 
+/* 그림자가 카드 위로 새어나오지 않도록 offset-y 와 음수 spread 를 조정.
+   blur 의 절반이 위로 퍼지지 않도록 (offset-y - blur - spread) >= 0 유지.
+   아래 값: 두 레이어 모두 위쪽 경계가 정확히 0 (카드 하단) 에서 시작 */
 .home_branch-card.is-shadowed {
-  box-shadow: 0 4px 20px rgba(107, 125, 153, 0.55), 0 8px 36px rgba(107, 125, 153, 0.12);
+  box-shadow:
+    0 12px 20px -8px rgba(107, 125, 153, 0.55),
+    0 22px 36px -14px rgba(107, 125, 153, 0.12);
 }
 
 /* SVICC 배경 (우측) — 초기: 오른쪽에서 슬라이드 인 대기 */
