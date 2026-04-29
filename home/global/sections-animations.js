@@ -163,11 +163,15 @@
                         (cards.length ? cards[0].parentElement : null);
 
     if (cards.length && cardContainer) {
+      /* once: true — helix-s1-done 이후 ScrollTrigger.refresh() 가 트리거를
+         재평가할 때 카드가 깜빡 사라졌다 다시 페이드인되는 현상 방지.
+         한 번 발동되면 트리거 자체가 cleanup 되어 refresh 영향 안 받음. */
       var cardTL = gsap.timeline({
         scrollTrigger: {
           trigger: cardContainer,
           start: 'top 70%',
-          toggleActions: 'play none none none'
+          toggleActions: 'play none none none',
+          once: true
         }
       });
 
