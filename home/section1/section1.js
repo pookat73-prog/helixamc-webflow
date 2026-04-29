@@ -26,6 +26,10 @@
 (function () {
   'use strict';
 
+  /* idempotency: 두 번 로드돼도 detach/ghost 중복 생성 방지 */
+  if (window.__HELIX_SECTION1_LOADED__) return;
+  window.__HELIX_SECTION1_LOADED__ = true;
+
   /* bt-box-1을 가능한 빨리 표시해 buttons.js와의 레이스 컨디션 방지 */
   (function earlyProtect() {
     var b1 = document.querySelector('.bt-box-1');

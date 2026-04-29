@@ -12,6 +12,14 @@
 (function () {
   'use strict';
 
+  /* idempotency guard: bootstrap 이 두 번 로드돼도 한 번만 실행
+     (옛 bootstrap.js 가 헤드에 같이 남아있는 경우의 안전망) */
+  if (window.__HELIX_BOOTSTRAP_LOADED__) {
+    console.warn('[helix-bootstrap] already loaded, skipping duplicate execution');
+    return;
+  }
+  window.__HELIX_BOOTSTRAP_LOADED__ = true;
+
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
   var BRANCH = 'main';
