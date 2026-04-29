@@ -219,11 +219,14 @@
     }
 
     /* 페이드인 시퀀스 — 웹폰트가 도착한 후에 시작해야 폰트 메트릭 변화로
-       인한 줄바꿈 점프(예: '심' 자가 다음 줄에서 위로 튀어오르는 현상)가 안 생김 */
+       인한 줄바꿈 점프(예: '심' 자가 다음 줄에서 위로 튀어오르는 현상)가 안 생김.
+       타이밍 압축: 시작점/지속시간 모두 단축 → 사용자 진입 후 ~1.6s 안에 종료 */
     function startFades() {
       log('fonts ready, starting fades');
-      fadeIn(slogan, 'slogan', 1.2, easeSlogan, 0.3);
-      fadeIn(box1, 'button', 0.8, 'expo.out', 1.3,
+      /* slogan: t=0.1 ~ 0.9 (0.8s) */
+      fadeIn(slogan, 'slogan', 0.8, easeSlogan, 0.1);
+      /* button: t=0.5 ~ 1.0 (0.5s, expo.out) */
+      fadeIn(box1, 'button', 0.5, 'expo.out', 0.5,
         null,
         function () {
           if (!box1) return;
@@ -234,18 +237,18 @@
             box1.classList.add('is-looping');
           }, 1500);
         });
-      fadeIn(bg, 'bg', 1.5, easeBg, 1.45, null, runCleanups);
-      /* 안전망: bg=null 등으로 onComplete 가 안 불려도 cleanup 보장
-         (bg delay 1.45 + duration 1.5 + 0.5s 여유) */
-      setTimeout(runCleanups, 3500);
+      /* bg: t=0.6 ~ 1.6 (1.0s) */
+      fadeIn(bg, 'bg', 1.0, easeBg, 0.6, null, runCleanups);
+      /* 안전망: bg onComplete 가 안 불려도 cleanup 보장 (1.6s 끝 + 0.5s 여유) */
+      setTimeout(runCleanups, 2100);
     }
 
     if (document.fonts && document.fonts.ready) {
-      /* 안전망: 폰트가 영영 안 오는 경우 3초 후 강제 시작 */
+      /* 안전망: 폰트 안전망 1초로 단축 (대부분 그 안에 옴) */
       var fired = false;
       function fire() { if (!fired) { fired = true; startFades(); } }
       document.fonts.ready.then(fire);
-      setTimeout(fire, 3000);
+      setTimeout(fire, 1000);
     } else {
       startFades();
     }
