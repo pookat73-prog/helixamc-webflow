@@ -51,6 +51,10 @@
      사라지므로 정상 노출됨. 그 시점엔 forceOpacity 로 인라인 opacity:0/
      visibility:hidden 이 부여돼 GSAP 페이드인까지 안전. */
   (function injectPrepaintGuard() {
+    /* 중복 주입 방지 — bootstrap 이 두 번 로드돼도 prepaint <style> 은 하나만.
+       (Webflow head 에 옛 bootstrap.js?v=2 와 신 bootstrap-v2.js 가 둘 다
+       남아있는 케이스에서 같은 ID 의 <style> 이 두 개 생기는 사고 방지) */
+    if (document.getElementById('helix-home-prepaint')) return;
     var style = document.createElement('style');
     style.id = 'helix-home-prepaint';
     style.textContent =

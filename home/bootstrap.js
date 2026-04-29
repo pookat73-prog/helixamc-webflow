@@ -43,6 +43,8 @@
      사라지므로 정상 노출됨. 그 시점엔 forceOpacity 로 인라인 opacity:0/
      visibility:hidden 이 부여돼 GSAP 페이드인까지 안전. */
   (function injectPrepaintGuard() {
+    /* 중복 주입 방지 — bootstrap 이 두 번 로드돼도 prepaint <style> 은 하나만 */
+    if (document.getElementById('helix-home-prepaint')) return;
     var style = document.createElement('style');
     style.id = 'helix-home-prepaint';
     style.textContent =

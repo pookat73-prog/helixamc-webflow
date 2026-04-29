@@ -168,9 +168,11 @@
     forceOpacity(box1, 0);
 
     /* 인라인 visibility:hidden 적용 완료 → bootstrap의 prepaint 가드 제거.
-       이 시점부터는 section1.js가 직접 노출 시점을 통제함. */
-    var prepaint = document.getElementById('helix-home-prepaint');
-    if (prepaint && prepaint.parentNode) prepaint.parentNode.removeChild(prepaint);
+       이 시점부터는 section1.js가 직접 노출 시점을 통제함.
+       bootstrap 이 두 번 로드돼서 같은 ID 의 <style> 이 두 개 생긴 경우에도
+       모두 제거하도록 querySelectorAll 사용. */
+    var prepaints = document.querySelectorAll('#helix-home-prepaint, style#helix-home-prepaint');
+    prepaints.forEach(function (p) { if (p.parentNode) p.parentNode.removeChild(p); });
 
     /* box1에 최고밝기 box-shadow를 초기 상태로 설정
        → opacity 0→1 페이드인하면서 글로우도 자연스럽게 같이 등장 */
