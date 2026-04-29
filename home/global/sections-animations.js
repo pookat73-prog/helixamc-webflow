@@ -115,7 +115,7 @@
           이미지: 버튼 페이드인 시작 0.3s 후 scale 0.88→1
     ────────────────────────────────────────────────────────── */
     var btn3 = document.querySelector('.bt-box-3');
-    var img3 = document.querySelector('.div-block-153');
+    /* 섹션 3 이미지 .div-block-153 인터랙션 제거 — Webflow 기본 노출 */
     if (sec3Head) {
       ScrollTrigger.create({
         trigger: sec3Head,
@@ -140,17 +140,7 @@
             });
           }
 
-          if (img3) {
-            /* scale-in 제거 — opacity 페이드인만 */
-            gsap.to(img3, {
-              opacity: 1,
-              duration: 0.6,
-              ease: 'power2.out',
-              delay: 0.3
-            });
-          }
-
-          log('sec3 heading + btn3 + img3 fade-in');
+          log('sec3 heading + btn3 fade-in');
         }
       });
     }
