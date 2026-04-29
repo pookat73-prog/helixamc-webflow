@@ -249,18 +249,19 @@
       setTimeout(runCleanups, 2100);
     }
 
-    /* 슬로건 폰트 로드 + Webflow 레이아웃 settle 후 fade 시작.
+    /* 슬로건 폰트 로드 검증 + 레이아웃 settle 후 fade 시작.
 
-       콜드 캐시: 네트워크 지연 덕에 자연스럽게 Webflow CSS/IX2 가 settle 후
-                  fade 시작 → 문제 없음.
-       웜 캐시:   모든 파일이 즉시 들어와 section1.js 가 너무 빠르게 실행 →
-                  document.fonts.load 가 즉시 resolve 하지만 브라우저가
-                  슬로건을 아직 새 폰트로 재렌더하지 않은 상태에서 fade 시작 →
-                  fade 도중 fallback → web 폰트 swap 으로 '심' 줄바꿈 점프.
+       콜드(첫 창):  네트워크 지연으로 우연히 좋은 타이밍 → 잘 작동
+       웜(재진입):   브라우저가 폰트 cache 있어도 새 컨텍스트마다 font-display:swap
+                     로 fallback → web 폰트 swap 거침. 폰트 로드 신호(load/ready)는
+                     이를 정확히 못 잡음 → fade 도중 swap → '심'/'중' 점프.
 
-       해결: 폰트 로드 + 레이아웃 stability 폴링.
-       offsetWidth 가 N frame 연속 동일하면 layout 이 settle 된 것으로 간주.
-       이 방식은 폰트 로드와 무관하게 실제 렌더 결과를 직접 관찰하므로 가장 신뢰. */
+       해결 — probe element 로 직접 확인:
+       1) 화면 밖에 슬로건과 같은 family 의 probe div 두 개 생성
+          (하나는 web 폰트, 하나는 sans-serif 만)
+       2) 두 width 가 다르면 web 폰트가 실제 paint layer 에 적용된 상태
+       3) 같으면 아직 fallback. requestAnimationFrame 으로 폴링하며 다를 때까지 대기
+       4) probe 가 web 폰트 적용 확인 → slogan 레이아웃도 안정 → fade 시작 */
     var fired = false;
     function fire() {
       if (fired) return;
@@ -268,21 +269,70 @@
       startFades();
     }
 
+    function familyFromComputed() {
+      if (!slogan) return null;
+      var ff = window.getComputedStyle(slogan).fontFamily || '';
+      return ff.split(',')[0].trim().replace(/^["']|["']$/g, '') || null;
+    }
+
+    /* probe 두 개: 하나는 web 폰트, 하나는 fallback. width 비교로 web 폰트 적용 여부 판단 */
+    function makeProbe(fontFamily) {
+      var p = document.createElement('span');
+      p.textContent = 'BESbswy QHlWxX 00 11';  /* 폰트별 폭 차이가 큰 문자 조합 */
+      p.style.cssText =
+        'position:fixed;left:-99999px;top:0;' +
+        'font-size:200px;line-height:1;white-space:pre;' +
+        'visibility:visible;' +
+        'font-family:' + fontFamily + ';';
+      document.body.appendChild(p);
+      return p;
+    }
+
+    function waitForWebFontApplied(family, callback) {
+      if (!family || !document.body) { callback(); return; }
+      var probeWeb = makeProbe('"' + family + '", monospace');
+      var probeFb  = makeProbe('monospace');
+      var startTime = performance.now ? performance.now() : Date.now();
+      var MAX_WAIT_MS = 1500;
+      function clean() {
+        if (probeWeb.parentNode) probeWeb.parentNode.removeChild(probeWeb);
+        if (probeFb.parentNode)  probeFb.parentNode.removeChild(probeFb);
+      }
+      function check() {
+        if (fired) { clean(); return; }
+        if (probeWeb.offsetWidth !== probeFb.offsetWidth) {
+          log('web font applied (probeWeb=' + probeWeb.offsetWidth +
+              ', probeFb=' + probeFb.offsetWidth + ')');
+          clean();
+          callback();
+          return;
+        }
+        var now = performance.now ? performance.now() : Date.now();
+        if (now - startTime > MAX_WAIT_MS) {
+          log('web font wait timeout, firing anyway');
+          clean();
+          callback();
+          return;
+        }
+        requestAnimationFrame(check);
+      }
+      requestAnimationFrame(check);
+    }
+
     function waitForLayoutStable() {
       if (!slogan) { fire(); return; }
       var lastWidth = slogan.offsetWidth;
       var stableFrames = 0;
       var startTime = performance.now ? performance.now() : Date.now();
-      var STABLE_FRAMES_REQUIRED = 4;  /* ~67ms @ 60fps */
-      var MAX_WAIT_MS = 1500;
-
+      var STABLE_FRAMES_REQUIRED = 4;
+      var MAX_WAIT_MS = 800;
       function check() {
         if (fired) return;
         var w = slogan.offsetWidth;
         if (w === lastWidth) {
           stableFrames++;
           if (stableFrames >= STABLE_FRAMES_REQUIRED) {
-            log('layout stable after', stableFrames, 'frames @ width', w);
+            log('layout stable @ width', w);
             fire();
             return;
           }
@@ -293,7 +343,7 @@
         }
         var now = performance.now ? performance.now() : Date.now();
         if (now - startTime > MAX_WAIT_MS) {
-          log('layout stability timeout, firing anyway');
+          log('layout stability timeout');
           fire();
           return;
         }
@@ -302,32 +352,32 @@
       requestAnimationFrame(check);
     }
 
-    /* 우선 폰트 로드를 트리거 + 대기. 그 후 layout stability 폴링. */
+    /* 1) 폰트 로드 트리거 + 대기 → 2) probe 로 web 폰트 적용 확인 →
+       3) slogan 레이아웃 안정화 폴링 → 4) fade 시작 */
     var loadPromises = [];
-    if (document.fonts && document.fonts.load && slogan) {
-      var s = window.getComputedStyle(slogan);
-      /* family 첫 항목만 추출 ('ds-endendend, sans-serif' → 'ds-endendend')
-         document.fonts.load 가 멀티-family 를 일관되게 처리하지 못하는 케이스 회피 */
-      var family = (s.fontFamily || '').split(',')[0].trim().replace(/^["']|["']$/g, '');
-      if (family) {
-        var fontSpec = '1em ' + family;
-        var text = (slogan.textContent || '').trim() || ' ';
-        try {
-          loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
-        } catch (e) {}
-      }
+    var sloganFamily = familyFromComputed();
+    if (document.fonts && document.fonts.load && slogan && sloganFamily) {
+      var fontSpec = '1em "' + sloganFamily + '"';
+      var text = (slogan.textContent || '').trim() || ' ';
+      try {
+        loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
+      } catch (e) {}
     }
     if (document.fonts && document.fonts.ready) {
       loadPromises.push(document.fonts.ready.catch(function () {}));
     }
 
-    if (loadPromises.length) {
-      Promise.all(loadPromises).then(waitForLayoutStable, waitForLayoutStable);
-    } else {
-      waitForLayoutStable();
+    function afterFontLoaded() {
+      waitForWebFontApplied(sloganFamily, waitForLayoutStable);
     }
-    /* 안전망: 폰트 로드 + 레이아웃 안정화가 영영 안 와도 1.5초 후 강제 시작 */
-    setTimeout(fire, 1500);
+
+    if (loadPromises.length) {
+      Promise.all(loadPromises).then(afterFontLoaded, afterFontLoaded);
+    } else {
+      afterFontLoaded();
+    }
+    /* 안전망: 모든 단계가 영영 안 와도 2초 후 강제 시작 */
+    setTimeout(fire, 2000);
 
     log('timeline queued (waiting for fonts)');
     return true;
