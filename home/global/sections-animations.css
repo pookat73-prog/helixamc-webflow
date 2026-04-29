@@ -104,33 +104,4 @@ a[href^="tel:"]:hover .home_branch-card_call-number {
   .home_background_svicc {
     transform: none;
   }
-
-  /* ----------------------------------------------------------------
-     Webflow 표준 가로 컨테이너 → 세로 1열 강제
-     섹션이 모바일에서 가로로 좁게 압축되는 대신 자연스레 길어지도록.
-     - .w-layout-hflex: Webflow Horizontal Flex (가로 정렬)
-     - .w-layout-grid: Webflow Grid Layout
-     vflex(.w-layout-vflex)는 이미 세로라 영향 없음.
-     버튼 자체는 .w-layout-hflex 가 아닌 link/button 요소라 크기 영향 없음.
-  ---------------------------------------------------------------- */
-  .w-layout-hflex {
-    flex-direction: column !important;
-    align-items: stretch;
-  }
-  .w-layout-grid {
-    grid-template-columns: 1fr !important;
-    grid-auto-flow: row !important;
-  }
-
-  /* 헤더/내비게이션은 가로 유지 — 메뉴가 세로로 무너지는 부작용 방지 */
-  .w-nav,
-  .w-nav-brand,
-  .w-nav-menu,
-  .w-nav .w-layout-hflex,
-  nav .w-layout-hflex,
-  header .w-layout-hflex,
-  [class*="navbar"] .w-layout-hflex,
-  [class*="header"] .w-layout-hflex {
-    flex-direction: row !important;
-  }
 }
