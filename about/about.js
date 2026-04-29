@@ -228,8 +228,8 @@
 
     function makeGlowObserver(color) {
       var maxGlow = color === 'purple'
-        ? '0 0 0.6vw 0.18vw rgba(85,40,170,0.90), 0 0 8.0vw 0.15vw rgba(85,40,170,0.30)'
-        : '0 0 0.6vw 0.18vw rgba(0,117,214,0.90), 0 0 8.0vw 0.15vw rgba(0,117,214,0.30)';
+        ? '0 0 1.05vw 0.5vw rgba(85,40,170,1)'
+        : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
 
       var obs = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
