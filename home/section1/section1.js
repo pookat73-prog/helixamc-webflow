@@ -56,7 +56,9 @@
   }
 
   var easeSlogan = asymInOut(0.6, 2);
-  var easeBg     = asymInOut(0.75, 3);
+  /* bg: 이즈 인 많이 (전체 85% 구간을 quartic 으로 천천히 빌드업) +
+     이즈 아웃 약간만 (마지막 15% 만 빠르게 마무리) */
+  var easeBg     = asymInOut(0.85, 4);
 
   var started = false;
 
