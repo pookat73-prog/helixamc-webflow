@@ -40,6 +40,7 @@ jobs:
           BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main"
           FILES=(
             "home/bootstrap.js"
+            "home/bootstrap-v2.js"
             "about/bootstrap.js"
             "global/bootstrap.js"
             "about/bg-video.mp4"
