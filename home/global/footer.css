@@ -1,0 +1,50 @@
+/* ================================================================
+   FOOTER INTERACTIONS — 시각 피드백
+   - 이메일 클릭 가능 표시 (호버 색상 변화)
+   - SNS 아이콘 호버 (살짝 밝아짐 + 살짝 위로)
+   ================================================================ */
+
+/* 이메일 텍스트 — 클릭 가능 시각 힌트 */
+.footer-email-clickable {
+  transition: color 0.2s ease, opacity 0.2s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.footer-email-clickable:hover {
+  color: #0075d6;
+}
+
+.footer-email-clickable:focus-visible {
+  outline: 2px solid #0075d6;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* 복사 완료 피드백 — 메인 블루 강조 */
+.footer-email-copied {
+  color: #0075d6 !important;
+  font-weight: 700;
+}
+
+/* SNS 아이콘 — 호버 인터랙션 */
+.footer-sns-icon {
+  transition: transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.footer-sns-icon:hover {
+  transform: translateY(-2px);
+  opacity: 0.85;
+  filter: brightness(1.15);
+}
+
+.footer-sns-icon:focus-visible {
+  outline: 2px solid #0075d6;
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.footer-sns-icon:active {
+  transform: translateY(0);
+}

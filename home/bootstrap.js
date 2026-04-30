@@ -26,7 +26,9 @@
     'home/global/sections-animations.css',
     'home/global/sections-animations.js',
     'home/global/coming-soon.css',
-    'home/global/coming-soon.js'
+    'home/global/coming-soon.js',
+    'home/global/footer.css',
+    'home/global/footer.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:
