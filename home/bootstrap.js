@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - AUTO BOOTSTRAP LOADER
+   HELIX AMC - AUTO BOOTSTRAP LOADER (v3 — footer interactions)
    Pasted once in Webflow. Always serves the latest commit.
 
    Strategy:
@@ -11,6 +11,10 @@
 
 (function () {
   'use strict';
+
+  /* 진단용 로그 — 어떤 bootstrap 버전이 로드됐는지 콘솔로 확인 가능
+     v3 = footer.css/.js 포함, v2 = 그 이전 */
+  console.log('[helix-bootstrap] loader v3 (with footer interactions)');
 
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
@@ -113,6 +117,7 @@
   }
 
   function injectAll(ref) {
+    console.log('[helix-bootstrap] injecting ' + FILES.length + ' files at ref=' + ref + ':\n  - ' + FILES.join('\n  - '));
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
