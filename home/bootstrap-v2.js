@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - AUTO BOOTSTRAP LOADER
+   HELIX AMC - AUTO BOOTSTRAP LOADER (v3 — footer interactions)
    Pasted once in Webflow. Always serves the latest commit.
 
    Strategy:
@@ -11,6 +11,10 @@
 
 (function () {
   'use strict';
+
+  /* 진단용 로그 — 어떤 bootstrap 버전이 로드됐는지 콘솔로 확인 가능
+     v3 = footer.css/.js 포함, v2 = 그 이전 */
+  console.log('[helix-bootstrap] loader v3 (with footer interactions)');
 
   /* idempotency guard: bootstrap 이 두 번 로드돼도 한 번만 실행
      (옛 bootstrap.js 가 헤드에 같이 남아있는 경우의 안전망) */
@@ -34,7 +38,9 @@
     'home/global/sections-animations.css',
     'home/global/sections-animations.js',
     'home/global/coming-soon.css',
-    'home/global/coming-soon.js'
+    'home/global/coming-soon.js',
+    'home/global/footer.css',
+    'home/global/footer.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:
@@ -121,6 +127,7 @@
   }
 
   function injectAll(ref) {
+    console.log('[helix-bootstrap] injecting ' + FILES.length + ' files at ref=' + ref + ':\n  - ' + FILES.join('\n  - '));
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
