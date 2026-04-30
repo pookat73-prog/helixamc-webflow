@@ -156,9 +156,12 @@
 
     /* ──────────────────────────────────────────────────────────
        4. 섹션 4 카드 스태거 애니메이션
+          실제 카드 클래스: .flex-block-22 > .div-block-151 (Webflow 자동 생성)
+          legacy .home_branch-card 도 fallback 으로 유지
     ────────────────────────────────────────────────────────── */
-    var cards = document.querySelectorAll('.home_branch-card');
-    var cardContainer = document.querySelector('.flex-block-23') ||
+    var cards = document.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151');
+    var cardContainer = document.querySelector('.flex-block-22') ||
+                        document.querySelector('.flex-block-23') ||
                         document.querySelector('#animal-medical-center') ||
                         (cards.length ? cards[0].parentElement : null);
 
