@@ -106,7 +106,8 @@
   50%       { box-shadow: 0 0 16px 6px rgba(85, 40, 170, 0.55); }
 }
 
-@media (max-width: 767px) {
+/* TEMP DISABLED — Webflow Designer 모바일 직접 작업 중. 복구 시 1px → 767px */
+@media (max-width: 1px) {
   .bt-box-1.is-looping,
   .bt-box-2.is-looping,
   .bt-box-3.is-looping {

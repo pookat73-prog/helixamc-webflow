@@ -31,7 +31,8 @@
    - vw 기반 폰트는 360px 폭에서 커서 줄바꿈/오버플로우 위험
    - clamp() 로 최소·기본·최대 캡 → 작은 기기에서도 안정 레이아웃
    ============================================================ */
-@media (max-width: 767px) {
+/* TEMP DISABLED — Webflow Designer 모바일 직접 작업 중. 복구 시 1px → 767px */
+@media (max-width: 1px) {
   .home_slogan {
     font-size: clamp(1.6rem, 6vw, 2.2rem);
     line-height: 1.25;
