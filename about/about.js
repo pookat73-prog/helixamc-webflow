@@ -152,9 +152,9 @@
       return ff.split(',')[0].trim().replace(/^["']|["']$/g, '') || null;
     }
 
-    function makeProbe(fontFamily, weight, style) {
+    function makeProbe(fontFamily, weight, style, text) {
       var p = document.createElement('span');
-      p.textContent = 'BESbswy QHlWxX 00 11';
+      p.textContent = text;
       p.style.cssText =
         'position:fixed;left:-99999px;top:0;' +
         'font-size:200px;line-height:1;white-space:pre;' +
@@ -166,10 +166,13 @@
       return p;
     }
 
-    function waitForWebFontApplied(family, weight, style, callback) {
-      if (!family || !document.body) { callback(); return; }
-      var probeWeb = makeProbe('"' + family + '", monospace', weight, style);
-      var probeFb  = makeProbe('monospace', weight, style);
+    /* probe text 는 헤드의 실제 텍스트(한국어) 사용 — 한국어 web 폰트가 영어
+       글리프를 안 가진 경우, 영어 probe text 만으로는 swap detect 실패하기 때문.
+       fallback monospace 와의 width 차이가 명확히 나야 적용 판정. */
+    function waitForWebFontApplied(family, weight, style, probeText, callback) {
+      if (!family || !document.body || !probeText) { callback(); return; }
+      var probeWeb = makeProbe('"' + family + '", monospace', weight, style, probeText);
+      var probeFb  = makeProbe('monospace', weight, style, probeText);
       var startTime = performance.now ? performance.now() : Date.now();
       var MAX_WAIT_MS = 1500;
       function clean() {
@@ -179,13 +182,47 @@
       function check() {
         if (fired) { clean(); return; }
         if (probeWeb.offsetWidth !== probeFb.offsetWidth) {
-          log('web font applied');
+          log('web font applied (probeWeb=' + probeWeb.offsetWidth +
+              ', probeFb=' + probeFb.offsetWidth + ')');
           clean(); callback(); return;
         }
         var now = performance.now ? performance.now() : Date.now();
         if (now - startTime > MAX_WAIT_MS) {
           log('font wait timeout, firing anyway');
           clean(); callback(); return;
+        }
+        requestAnimationFrame(check);
+      }
+      requestAnimationFrame(check);
+    }
+
+    /* 헤드 자체의 width/height 가 stable 한지 추가 검증 — probe 가 적용 판정해도
+       실제 헤드에는 swap 이 한 frame 늦게 반영될 수 있음. 4 frames 동안 layout
+       변화 없으면 안정으로 간주. */
+    function waitForLayoutStable(el, callback) {
+      if (!el) { callback(); return; }
+      var lastW = el.offsetWidth, lastH = el.offsetHeight;
+      var stableFrames = 0;
+      var STABLE_FRAMES_REQUIRED = 4;
+      var startTime = performance.now ? performance.now() : Date.now();
+      var MAX_WAIT_MS = 800;
+      function check() {
+        if (fired) return;
+        var w = el.offsetWidth, h = el.offsetHeight;
+        if (w === lastW && h === lastH) {
+          stableFrames++;
+          if (stableFrames >= STABLE_FRAMES_REQUIRED) {
+            log('layout stable @ ' + w + 'x' + h);
+            callback(); return;
+          }
+        } else {
+          log('layout changed:', lastW + 'x' + lastH, '→', w + 'x' + h);
+          lastW = w; lastH = h; stableFrames = 0;
+        }
+        var now = performance.now ? performance.now() : Date.now();
+        if (now - startTime > MAX_WAIT_MS) {
+          log('layout stability timeout');
+          callback(); return;
         }
         requestAnimationFrame(check);
       }
@@ -212,8 +249,14 @@
       loadPromises.push(document.fonts.ready.catch(function () {}));
     }
 
+    var probeText = (heading && (heading.textContent || '').trim()) || 'BESbswy QHlWxX';
+
     function afterFontLoaded() {
-      waitForWebFontApplied(headFamily, headWeight, headStyle, fire);
+      waitForWebFontApplied(headFamily, headWeight, headStyle, probeText, function () {
+        /* probe 적용 후 헤드 layout 한 번 더 안정화 대기 → swap 이 paint 에 완전히
+           반영된 상태에서 시퀀스 시작 */
+        waitForLayoutStable(heading, fire);
+      });
     }
 
     if (loadPromises.length) {
