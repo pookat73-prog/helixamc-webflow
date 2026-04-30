@@ -64,8 +64,24 @@
     }, 1800);
   }
 
+  /* 화면에 실제로 렌더링되는지 확인 (display:none 부모 포함 거름) */
+  function isVisible(el) {
+    if (!el) return false;
+    if (el.offsetParent !== null) return true;
+    /* offsetParent 가 null 인 경우: position:fixed 거나 display:none 조상.
+       보수적으로 getComputedStyle 검사 */
+    var s = getComputedStyle(el);
+    return s.display !== 'none' && s.visibility !== 'hidden';
+  }
+
   /* ============================================================
      initSectionsOnce: 섹션 2-4 공통 초기화 (1회만 실행)
+
+     데스크/모바일 듀얼 섹션 구조 대응:
+     - 동일 클래스(.section2-heading, .bt-box-3, .home_background_svicc,
+       .home_branch-card)가 데스크용·모바일용 섹션에 각각 존재
+     - 각 헤딩/카드 컨테이너를 순회하며 자기 섹션 안의 짝(버튼/SVICC)을
+       찾아 self-contained 트리거 생성 → 숨겨진 섹션은 스킵
   ============================================================ */
   function initSectionsOnce() {
     if (initialized) return true;
@@ -77,98 +93,82 @@
     try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
 
     var headings = document.querySelectorAll('.section2-heading');
-    var sec2Head = headings[0] || null;
-    var sec3Head = headings[1] || null;
     log('headings found:', headings.length);
 
     /* ──────────────────────────────────────────────────────────
-       1. 섹션 2 헤딩 + 버튼 2 공동 트리거 (엇박 0.15s)
-          헤딩: sec2Head top 15% 도달 시 즉시 0.7s ease-out 페이드인
-          버튼: 헤딩 시작 0.15s 후 0.4s ease-out 페이드인 + 후광
+       헤딩 + 짝꿍 버튼 페어링 (엇박 0.15s)
+       - 첫 번째 .section2-heading 은 섹션 2 → .bt-box-2 와 페어
+       - 그 외(.section2-heading × N) 는 섹션 3 변주 → 각자 같은 section
+         조상 안의 .bt-box-3 와 페어
+       - display:none 섹션은 스킵
     ────────────────────────────────────────────────────────── */
-    var btn2 = document.querySelector('.bt-box-2');
-    if (sec2Head) {
+    headings.forEach(function (heading, idx) {
+      if (!isVisible(heading)) {
+        log('heading[' + idx + '] hidden, skip');
+        return;
+      }
+
+      var section = heading.closest('section') || heading.parentElement;
+      var btnSelector = (idx === 0) ? '.bt-box-2' : '.bt-box-3';
+      var btn = section ? section.querySelector(btnSelector) : null;
+      if (btn && !isVisible(btn)) btn = null;
+
       ScrollTrigger.create({
-        trigger: sec2Head,
+        trigger: heading,
         start: 'top 65%',
         once: true,
         onEnter: function () {
-          /* 헤딩 페이드인 */
-          gsap.to(sec2Head, { opacity: 1, duration: 0.7, ease: 'power2.out' });
+          gsap.to(heading, { opacity: 1, duration: 0.7, ease: 'power2.out' });
 
-          /* 버튼2: 최고밝기 즉시 준비 → 0.15s 후 페이드인 → 1.5s 홀드 → is-looping */
-          if (btn2) {
-            btn2.style.setProperty('box-shadow', maxGlowBlue(), 'important');
-            gsap.to(btn2, {
+          if (btn && !btn.classList.contains('is-looping')) {
+            btn.style.setProperty('box-shadow', maxGlowBlue(), 'important');
+            gsap.to(btn, {
               opacity: 1,
               duration: 0.4,
               ease: 'power2.out',
               delay: 0.15,
               onComplete: function () {
                 setTimeout(function () {
-                  btn2.style.removeProperty('box-shadow');
-                  btn2.classList.add('is-looping');
+                  btn.style.removeProperty('box-shadow');
+                  btn.classList.add('is-looping');
                 }, 1500);
               }
             });
           }
-          log('sec2 heading + btn2 fade-in (엇박 0.15s)');
+          log('heading[' + idx + '] + ' + btnSelector + ' fade-in (btn=' + !!btn + ')');
         }
       });
-    }
+    });
 
     /* ──────────────────────────────────────────────────────────
-       2. 섹션 3 헤딩 + 버튼 3 + 이미지 공동 트리거 (섹션 2 동일 패턴)
-          헤딩: sec3Head top 65% 도달 시 즉시 0.7s ease-out 페이드인
-          버튼: 0.15s 후 페이드인 → 1.5s 홀드 → is-looping
-          이미지: 버튼 페이드인 시작 0.3s 후 scale 0.88→1
+       섹션 4 카드 스태거 + SVICC 슬라이드 인
+       - .home_branch-card 가 들어있는 section 마다 독립 timeline
+       - 각 섹션 내부 카드 + 그 섹션의 .home_background_svicc 페어
+       - 데스크용·모바일용 섹션 각자 자기 트리거로 발동, 숨겨진 쪽 스킵
     ────────────────────────────────────────────────────────── */
-    var btn3 = document.querySelector('.bt-box-3');
-    /* 섹션 3 이미지 .div-block-153 인터랙션 제거 — Webflow 기본 노출 */
-    if (sec3Head) {
-      ScrollTrigger.create({
-        trigger: sec3Head,
-        start: 'top 65%',
-        once: true,
-        onEnter: function () {
-          gsap.to(sec3Head, { opacity: 1, duration: 0.7, ease: 'power2.out' });
+    var cardSections = new Set();
+    document.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151').forEach(function (card) {
+      var sec = card.closest('section');
+      if (sec) cardSections.add(sec);
+    });
 
-          if (btn3) {
-            btn3.style.setProperty('box-shadow', maxGlowBlue(), 'important');
-            gsap.to(btn3, {
-              opacity: 1,
-              duration: 0.4,
-              ease: 'power2.out',
-              delay: 0.15,
-              onComplete: function () {
-                setTimeout(function () {
-                  btn3.style.removeProperty('box-shadow');
-                  btn3.classList.add('is-looping');
-                }, 1500);
-              }
-            });
-          }
+    var sec4Count = 0;
+    cardSections.forEach(function (section) {
+      if (!isVisible(section)) {
+        log('card section hidden, skip');
+        return;
+      }
+      sec4Count++;
 
-          log('sec3 heading + btn3 fade-in');
-        }
-      });
-    }
+      var cards = section.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151');
+      if (!cards.length) return;
 
-    /* ──────────────────────────────────────────────────────────
-       4. 섹션 4 카드 스태거 애니메이션
-          실제 카드 클래스: .flex-block-22 > .div-block-151 (Webflow 자동 생성)
-          legacy .home_branch-card 도 fallback 으로 유지
-    ────────────────────────────────────────────────────────── */
-    var cards = document.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151');
-    var cardContainer = document.querySelector('.flex-block-22') ||
-                        document.querySelector('.flex-block-23') ||
-                        document.querySelector('#animal-medical-center') ||
-                        (cards.length ? cards[0].parentElement : null);
+      var cardContainer = section.querySelector('.flex-block-22') ||
+                          section.querySelector('.flex-block-23') ||
+                          cards[0].parentElement;
 
-    if (cards.length && cardContainer) {
       /* once: true — helix-s1-done 이후 ScrollTrigger.refresh() 가 트리거를
-         재평가할 때 카드가 깜빡 사라졌다 다시 페이드인되는 현상 방지.
-         한 번 발동되면 트리거 자체가 cleanup 되어 refresh 영향 안 받음. */
+         재평가할 때 카드가 깜빡 사라졌다 다시 페이드인되는 현상 방지. */
       var cardTL = gsap.timeline({
         scrollTrigger: {
           trigger: cardContainer,
@@ -189,14 +189,11 @@
         ease: 'power2.out'
       }, 0);
 
-      /* 그림자 페이드 — 카드 페이드 시작 0.15s 후 엇박으로 시작.
-         CSS transition: box-shadow 0.5s 가 자동 페이드인 처리.
-         각 카드에 stagger 와 동일 간격으로 클래스 추가. */
       cards.forEach(function (card, i) {
         cardTL.call(function () { card.classList.add('is-shadowed'); }, [], 0.15 + i * cardStagger);
       });
 
-      var svicc = document.querySelector('.home_background_svicc');
+      var svicc = section.querySelector('.home_background_svicc');
       if (svicc) {
         cardTL.to(svicc, {
           opacity: 1,
@@ -205,8 +202,9 @@
           ease: 'power2.out'
         }, '-=0.3');
       }
-      log('cards animation: ' + cards.length + ' cards, svicc=' + !!svicc);
-    }
+      log('section card animation: cards=' + cards.length + ' svicc=' + !!svicc);
+    });
+    log('total visible card sections: ' + sec4Count);
 
     /* ──────────────────────────────────────────────────────────
        5. 복사 버튼 (.copy-text-button)
@@ -291,11 +289,22 @@
     if (zigInitialized) return;
     if (!window.gsap || !window.ScrollTrigger) return;
 
-    /* 필요 요소 탐색 */
+    /* 모바일은 sec3 모바일 섹션이 따로 있어 지그 곡선 레이아웃 자체가
+       어울리지 않음 — 데스크에서만 동작 */
+    if (window.innerWidth <= 767) {
+      log('zigLine: mobile viewport → skip');
+      return;
+    }
+
+    /* 필요 요소 탐색 — 보이는 sec3 헤딩 중 첫 번째 픽업
+       (데스크/모바일 듀얼 구조에서 인덱스 의존 제거) */
     var btn1     = document.querySelector('.discover-helix_button');
     var btn2     = document.querySelector('.bt-box-2');
     var headings = document.querySelectorAll('.section2-heading');
-    var sec3Head = headings[1] || null;
+    var sec3Head = null;
+    for (var i = 1; i < headings.length; i++) {
+      if (isVisible(headings[i])) { sec3Head = headings[i]; break; }
+    }
 
     if (!btn1 || !btn2 || !sec3Head) {
       log('zigLine: btn1=' + !!btn1 + ' btn2=' + !!btn2 + ' sec3Head=' + !!sec3Head + ' → skip');
