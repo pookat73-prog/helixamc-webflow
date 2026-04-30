@@ -106,8 +106,12 @@
   50%       { box-shadow: 0 0 16px 6px rgba(85, 40, 170, 0.55); }
 }
 
-/* TEMP DISABLED — Webflow Designer 모바일 직접 작업 중. 복구 시 1px → 767px */
-@media (max-width: 1px) {
+/* 글로우는 layout 에 영향 없으므로 Webflow Designer 모바일 작업과 무관 —
+   1px 블라인드는 layout 룰만 (sections-animations.css / section1.css /
+   divider.css) 유지하고, 글로우 keyframe 은 정상 활성화.
+   px 기반 인라인 셋업(section1.js / sections-animations.js / buttons.js) 과
+   동일 값이라 .is-looping 핸드오프 시 점프 없음. */
+@media (max-width: 767px) {
   .bt-box-1.is-looping,
   .bt-box-2.is-looping,
   .bt-box-3.is-looping {

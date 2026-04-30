@@ -14,9 +14,20 @@
   function startGlow(el) {
     if (!window.gsap) return;
 
-    var maxGlow = isPurple(el)
-      ? '0 0 1.05vw 0.5vw rgba(85,40,170,1)'
-      : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
+    /* 모바일(≤767px) 은 vw 단위가 너무 작아져 px 분기 —
+       buttons.css 의 glowShimmer{Blue,Purple}Mobile 0%/100% 와 동일 값이라
+       .is-looping 핸드오프 시 점프 없음. */
+    var isMobile = window.innerWidth <= 767;
+    var maxGlow;
+    if (isPurple(el)) {
+      maxGlow = isMobile
+        ? '0 0 16px 6px rgba(85,40,170,1)'
+        : '0 0 1.05vw 0.5vw rgba(85,40,170,1)';
+    } else {
+      maxGlow = isMobile
+        ? '0 0 12px 4px rgba(0,117,214,1)'
+        : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
+    }
 
     /* Phase 1: 최고밝기 즉시 설정 */
     el.style.setProperty('box-shadow', maxGlow, 'important');
