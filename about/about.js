@@ -27,65 +27,80 @@
   var VIDEO_URL = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + REF + '/about/bg-video.mp4';
   log('REF resolved to', REF, 'VIDEO_URL', VIDEO_URL);
 
-  /* ── 섹션 1 헤드/서브헤드 페이드인 ──
+  /* ── 섹션 1 인트로 시퀀스 ──
+     까만 배경 시작 → 0.2s 딜레이 →
+       t=0:    헤드 페이드인 1.0s        (.section2-heading)
+       t=0.85: 심볼+서브헤드 페이드인 1.0s (.image-23, .about_contents_sub-title)
+       t=1.70: 영상 페이드인 1.0s         (.about_background 내부 <video>)
+     (각 단계 종료 0.15s 전에 다음 단계 시작 = 0.15s 오버랩)
+
      autoAlpha = visibility+opacity 동시 제어 → Webflow IX2의 인라인 opacity:1
      덮어쓰기에도 visibility로 한 번 더 가려두므로 FOUC 안전 */
   function initSection1() {
     if (!window.gsap) return;
 
     var heading    = document.querySelector('.section2-heading');
+    var symbol     = document.querySelector('.image-23');
     var subheading = document.querySelector('.about_contents_sub-title');
-    if (!heading && !subheading) { log('섹션 1 헤드 요소를 찾지 못했습니다.'); return; }
+    var container  = document.querySelector('.about_background');
 
     if (heading)    gsap.set(heading,    { autoAlpha: 0 });
+    if (symbol)     gsap.set(symbol,     { autoAlpha: 0 });
     if (subheading) gsap.set(subheading, { autoAlpha: 0 });
 
-    var tl = gsap.timeline({ delay: 0.3 });
-    if (heading)    tl.to(heading,    { autoAlpha: 1, duration: 1, ease: 'power2.out' }, 0);
-    if (subheading) tl.to(subheading, { autoAlpha: 1, duration: 1, ease: 'power2.out' }, 0.3);
-  }
+    /* ── 영상 사전 생성 (타임라인 발사 전에 로드 시작) ── */
+    var video = null;
+    var videoReady = false;
+    var videoErrored = false;
+    var videoFadeQueued = false;
 
-  /* ── 섹션 1 배경 영상 ── */
-  function initBgVideo() {
-    var container = document.querySelector('.about_background');
-    if (!container) {
-      log('about_background 요소를 찾지 못했습니다.');
-      return;
+    if (container) {
+      video = document.createElement('video');
+      video.src         = VIDEO_URL;
+      video.autoplay    = true;
+      video.muted       = true;
+      video.playsInline = true;
+      video.loop        = false;
+      video.preload     = 'auto';
+      video.className   = 'about-bg-video';
+      video.style.opacity = '0';
+      container.insertBefore(video, container.firstChild);
+
+      var onReady = function () {
+        if (videoReady || videoErrored) return;
+        videoReady = true;
+        if (videoFadeQueued) fadeInVideo();
+      };
+      video.addEventListener('loadeddata', onReady);
+      video.addEventListener('canplay',    onReady);
+      video.addEventListener('playing',    onReady);
+      video.addEventListener('error', function () {
+        videoErrored = true;
+        log('video error', video.error && video.error.code, 'src:', VIDEO_URL);
+      });
+      /* 안전망: 3초 안에 이벤트 안 오면 강제 ready 처리 */
+      setTimeout(onReady, 3000);
+    } else {
+      log('about_background 컨테이너 없음 — 영상 생략');
     }
 
-    var video = document.createElement('video');
-    video.src         = VIDEO_URL;
-    video.autoplay    = true;
-    video.muted       = true;
-    video.playsInline = true;
-    video.loop        = false;
-    video.preload     = 'auto';
-    video.className   = 'about-bg-video';
-    /* 삽입 전에 opacity:0 → 첫 프레임 플래시 차단 */
-    video.style.opacity = '0';
-    container.insertBefore(video, container.firstChild);
-
-    var faded = false, errored = false;
     function fadeInVideo() {
-      if (faded || errored) return;
-      faded = true;
-      if (window.gsap) {
-        gsap.to(video, { opacity: 1, duration: 1.5, ease: 'power2.out' });
-      } else {
-        video.style.opacity = '1';
-      }
+      if (!video || videoErrored) return;
+      gsap.to(video, { opacity: 1, duration: 1.0, ease: 'power2.out' });
     }
 
-    /* 첫 프레임 도착 시점(loadeddata)이 가장 빠름 */
-    video.addEventListener('loadeddata', fadeInVideo);
-    video.addEventListener('canplay',    fadeInVideo);
-    video.addEventListener('playing',    fadeInVideo);
-    /* 안전망: 어떤 이벤트도 안 오면 3초 후 강제 표시 (에러 시는 표시 안 함) */
-    setTimeout(fadeInVideo, 3000);
-    video.addEventListener('error', function () {
-      errored = true;
-      log('video error', video.error && video.error.code, 'src:', VIDEO_URL);
-    });
+    /* 마스터 타임라인 — 0.2s 딜레이 후 시퀀스 발사 */
+    var tl = gsap.timeline({ delay: 0.2 });
+    if (heading)    tl.to(heading,    { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0);
+    /* 0.85 = 1.0 - 0.15 (헤드 종료 0.15s 전) — 심볼/서브헤드 동시 시작 */
+    if (symbol)     tl.to(symbol,     { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
+    if (subheading) tl.to(subheading, { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
+    /* 1.70 = 0.85 + 1.0 - 0.15 (심볼/서브헤드 종료 0.15s 전) — 영상 시작.
+       이 시점에 영상이 아직 디코드 전이면 onReady 콜백이 fadeInVideo 호출. */
+    tl.call(function () {
+      videoFadeQueued = true;
+      if (videoReady) fadeInVideo();
+    }, null, 1.7);
   }
 
   /* ── 섹션 2 애니메이션 ── */
@@ -675,7 +690,6 @@
 
   function init() {
     initSection1();
-    initBgVideo();
     initSubheaderNav();
     initGalleryLabels();
     /* GSAP 애니메이션은 Webflow IX2 이후에 실행해야 인라인 opacity:1 덮어쓰기 방지 */

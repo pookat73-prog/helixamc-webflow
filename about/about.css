@@ -20,9 +20,10 @@
   pointer-events: none;
 }
 
-/* 섹션 1 — 헤드/서브헤드 초기 숨김 */
+/* 섹션 1 — 헤드/심볼/서브헤드 초기 숨김 (.image-23 = 섹션 1 심볼) */
 .section2-heading,
-.about_contents_sub-title {
+.about_contents_sub-title,
+.image-23 {
   opacity: 0;
 }
 
