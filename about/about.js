@@ -48,6 +48,11 @@
     if (symbol)     gsap.set(symbol,     { autoAlpha: 0 });
     if (subheading) gsap.set(subheading, { autoAlpha: 0 });
 
+    /* 인라인 autoAlpha:0 적용 완료 → bootstrap의 prepaint 가드 제거.
+       이 시점부터 about.js가 직접 노출 시점을 통제함. */
+    var prepaints = document.querySelectorAll('#helix-about-s1-prepaint, style#helix-about-s1-prepaint');
+    prepaints.forEach(function (p) { if (p.parentNode) p.parentNode.removeChild(p); });
+
     /* ── 영상 사전 생성 (타임라인 발사 전에 로드 시작) ── */
     var video = null;
     var videoReady = false;
