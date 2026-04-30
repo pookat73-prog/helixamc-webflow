@@ -28,11 +28,16 @@
   log('REF resolved to', REF, 'VIDEO_URL', VIDEO_URL);
 
   /* ── 섹션 1 인트로 시퀀스 ──
-     까만 배경 시작 → 0.2s 딜레이 →
+     까만 배경 시작 → 폰트 적용 확인 → 0.2s 딜레이 →
        t=0:    헤드 페이드인 1.0s        (.section2-heading)
        t=0.85: 심볼+서브헤드 페이드인 1.0s (.image-23, .about_contents_sub-title)
        t=1.70: 영상 페이드인 1.0s         (.about_background 내부 <video>)
      (각 단계 종료 0.15s 전에 다음 단계 시작 = 0.15s 오버랩)
+
+     폰트 게이팅: 헤드의 web 폰트가 실제 paint 에 적용된 후 시퀀스 시작.
+     안 그러면 폴백 폰트로 먼저 그려지다가 swap 되면서 글자 점프(FOUT) 발생.
+     probe element 두 개의 width 비교로 web 폰트 적용 여부를 직접 검증
+     (document.fonts.ready 만으로는 paint 타이밍 정확히 못 잡음 — section1 동일 이슈).
 
      autoAlpha = visibility+opacity 동시 제어 → Webflow IX2의 인라인 opacity:1
      덮어쓰기에도 visibility로 한 번 더 가려두므로 FOUC 안전 */
@@ -94,18 +99,102 @@
       gsap.to(video, { opacity: 1, duration: 1.0, ease: 'power2.out' });
     }
 
-    /* 마스터 타임라인 — 0.2s 딜레이 후 시퀀스 발사 */
-    var tl = gsap.timeline({ delay: 0.2 });
-    if (heading)    tl.to(heading,    { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0);
-    /* 0.85 = 1.0 - 0.15 (헤드 종료 0.15s 전) — 심볼/서브헤드 동시 시작 */
-    if (symbol)     tl.to(symbol,     { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
-    if (subheading) tl.to(subheading, { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
-    /* 1.70 = 0.85 + 1.0 - 0.15 (심볼/서브헤드 종료 0.15s 전) — 영상 시작.
-       이 시점에 영상이 아직 디코드 전이면 onReady 콜백이 fadeInVideo 호출. */
-    tl.call(function () {
-      videoFadeQueued = true;
-      if (videoReady) fadeInVideo();
-    }, null, 1.7);
+    function startTimeline() {
+      log('헤드 폰트 적용 확인 — 시퀀스 시작');
+      var tl = gsap.timeline({ delay: 0.2 });
+      if (heading)    tl.to(heading,    { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0);
+      /* 0.85 = 1.0 - 0.15 (헤드 종료 0.15s 전) — 심볼/서브헤드 동시 시작 */
+      if (symbol)     tl.to(symbol,     { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
+      if (subheading) tl.to(subheading, { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
+      /* 1.70 = 0.85 + 1.0 - 0.15 (심볼/서브헤드 종료 0.15s 전) — 영상 시작.
+         이 시점에 영상이 아직 디코드 전이면 onReady 콜백이 fadeInVideo 호출. */
+      tl.call(function () {
+        videoFadeQueued = true;
+        if (videoReady) fadeInVideo();
+      }, null, 1.7);
+    }
+
+    /* ── 폰트 게이팅: 헤드 web 폰트가 paint 에 적용될 때까지 대기 ── */
+    var fired = false;
+    function fire() { if (!fired) { fired = true; startTimeline(); } }
+
+    function familyFromComputed(el) {
+      if (!el) return null;
+      var ff = window.getComputedStyle(el).fontFamily || '';
+      return ff.split(',')[0].trim().replace(/^["']|["']$/g, '') || null;
+    }
+
+    function makeProbe(fontFamily, weight, style) {
+      var p = document.createElement('span');
+      p.textContent = 'BESbswy QHlWxX 00 11';
+      p.style.cssText =
+        'position:fixed;left:-99999px;top:0;' +
+        'font-size:200px;line-height:1;white-space:pre;' +
+        'visibility:visible;' +
+        'font-weight:' + (weight || '400') + ';' +
+        'font-style:'  + (style  || 'normal') + ';' +
+        'font-family:' + fontFamily + ';';
+      document.body.appendChild(p);
+      return p;
+    }
+
+    function waitForWebFontApplied(family, weight, style, callback) {
+      if (!family || !document.body) { callback(); return; }
+      var probeWeb = makeProbe('"' + family + '", monospace', weight, style);
+      var probeFb  = makeProbe('monospace', weight, style);
+      var startTime = performance.now ? performance.now() : Date.now();
+      var MAX_WAIT_MS = 1500;
+      function clean() {
+        if (probeWeb.parentNode) probeWeb.parentNode.removeChild(probeWeb);
+        if (probeFb.parentNode)  probeFb.parentNode.removeChild(probeFb);
+      }
+      function check() {
+        if (fired) { clean(); return; }
+        if (probeWeb.offsetWidth !== probeFb.offsetWidth) {
+          log('web font applied');
+          clean(); callback(); return;
+        }
+        var now = performance.now ? performance.now() : Date.now();
+        if (now - startTime > MAX_WAIT_MS) {
+          log('font wait timeout, firing anyway');
+          clean(); callback(); return;
+        }
+        requestAnimationFrame(check);
+      }
+      requestAnimationFrame(check);
+    }
+
+    var headFamily = familyFromComputed(heading);
+    var headWeight = '400', headStyle = 'normal';
+    if (heading) {
+      var cs = window.getComputedStyle(heading);
+      headWeight = cs.fontWeight || '400';
+      headStyle  = cs.fontStyle  || 'normal';
+    }
+
+    /* document.fonts.load + ready 로 로드 트리거 → probe 로 paint 적용 확인 → fire */
+    var loadPromises = [];
+    if (document.fonts && document.fonts.load && heading && headFamily) {
+      var fontSpec = headStyle + ' ' + headWeight + ' 1em "' + headFamily + '"';
+      var text = (heading.textContent || '').trim() || ' ';
+      try { loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {})); }
+      catch (e) {}
+    }
+    if (document.fonts && document.fonts.ready) {
+      loadPromises.push(document.fonts.ready.catch(function () {}));
+    }
+
+    function afterFontLoaded() {
+      waitForWebFontApplied(headFamily, headWeight, headStyle, fire);
+    }
+
+    if (loadPromises.length) {
+      Promise.all(loadPromises).then(afterFontLoaded, afterFontLoaded);
+    } else {
+      afterFontLoaded();
+    }
+    /* 안전망: 모든 단계가 영영 안 와도 2초 후 강제 시작 */
+    setTimeout(fire, 2000);
   }
 
   /* ── 섹션 2 애니메이션 ── */
