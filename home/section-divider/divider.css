@@ -11,7 +11,7 @@
 }
 
 .helix-line-path {
-  stroke-linecap: round;
+  stroke-linecap: butt;
   stroke-linejoin: round;
   shape-rendering: geometricPrecision;
 }

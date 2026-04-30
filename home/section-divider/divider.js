@@ -77,7 +77,11 @@
     pathEl.setAttribute('fill', 'none');
     pathEl.setAttribute('stroke', '#0075d6');
     pathEl.setAttribute('stroke-width', '1.3');
-    pathEl.setAttribute('stroke-linecap', 'round');
+    pathEl.setAttribute('stroke-linecap', 'butt');
+    /* 초기 dasharray 잠금 — path d 가 세팅되기 전에 미리 0 가시 길이로 잠가
+       첫 paint 프레임에 풀라인이 보이는 현상 방지 (path 가 비어 있어도 무해) */
+    pathEl.setAttribute('stroke-dasharray', '0 99999');
+    pathEl.setAttribute('stroke-dashoffset', '0');
     svgEl.appendChild(pathEl);
 
     if (getComputedStyle(document.body).position === 'static') {
