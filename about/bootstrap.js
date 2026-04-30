@@ -18,10 +18,39 @@
     'home/global/card-stack.js'
   ];
 
-  /* Pre-paint flicker guard: 카드 덱이 초기화되기 전에 Webflow가 카드 섹션을
+  /* Pre-paint flicker guard 1: 섹션 1 인트로 시퀀스가 발사되기 전에 헤드/심볼/
+     서브헤드가 폴백 폰트 + 자연 레이아웃으로 잠깐 노출되는 깜빡임을 차단.
+     about.js initSection1 이 가드 <style>을 제거함 (그 시점엔 인라인
+     autoAlpha:0 가 적용돼 GSAP 페이드인까지 안전).
+
+     Webflow 인라인 `style="opacity:1!important;visibility:visible!important"` 가
+     박혀 있어도 인라인 !important 는 CSS !important 를 항상 이김. 그래서 시각
+     숨김은 `clip-path:inset(100%)` 로 — 클립은 인라인이 거의 안 쓰는 별도 속성
+     이라 안전. */
+  (function injectSection1Guard() {
+    if (document.getElementById('helix-about-s1-prepaint')) return;
+    var style = document.createElement('style');
+    style.id = 'helix-about-s1-prepaint';
+    style.textContent =
+      '.section2-heading,' +
+      '.image-23,' +
+      '.about_contents_sub-title' +
+      '{clip-path:inset(100%)!important;-webkit-clip-path:inset(100%)!important;visibility:hidden!important;opacity:0!important}';
+    (document.head || document.documentElement).appendChild(style);
+    /* 안전망: 6초 안에 about.js 가 가드를 제거하지 않으면 강제 해제 */
+    setTimeout(function () {
+      var s = document.getElementById('helix-about-s1-prepaint');
+      if (s && s.parentNode) {
+        s.parentNode.removeChild(s);
+        console.warn('[about-bootstrap] section1 not ready in 6s, removing prepaint guard');
+      }
+    }, 6000);
+  })();
+
+  /* Pre-paint flicker guard 2: 카드 덱이 초기화되기 전에 Webflow가 카드 섹션을
      세로로 늘어진 자연 레이아웃으로 먼저 그리는 깜빡임을 차단.
      덱 init이 끝나면 첫 섹션에 .helix-deck-ready를 붙여 노출. */
-  (function injectPrepaintGuard() {
+  (function injectDeckGuard() {
     var style = document.createElement('style');
     style.id = 'helix-deck-prepaint';
     style.textContent =
