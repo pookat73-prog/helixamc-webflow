@@ -41,6 +41,7 @@ jobs:
           FILES=(
             "home/bootstrap.js"
             "home/bootstrap-v2.js"
+            "home/bootstrap-v3.js"
             "about/bootstrap.js"
             "global/bootstrap.js"
             "about/bg-video.mp4"
