@@ -32,8 +32,11 @@ html, body {
 /* ============================================================
    섹션 4 카드 — 초기 상태: 보이지 않고 아래로, 그림자 없음
    카드 페이드 시작 0.15s 후 엇박으로 .is-shadowed 클래스 추가 (JS)
+   실제 Webflow DOM: .flex-block-22 > .div-block-151
+   legacy .home_branch-card 도 호환용 유지
    ============================================================ */
-.home_branch-card {
+.home_branch-card,
+.flex-block-22 > .div-block-151 {
   opacity: 0;
   transform: translateY(14px);
   box-shadow: none;
@@ -44,7 +47,8 @@ html, body {
 /* 그림자가 카드 위로 새어나오지 않도록 offset-y 와 음수 spread 를 조정.
    blur 의 절반이 위로 퍼지지 않도록 (offset-y - blur - spread) >= 0 유지.
    아래 값: 두 레이어 모두 위쪽 경계가 정확히 0 (카드 하단) 에서 시작 */
-.home_branch-card.is-shadowed {
+.home_branch-card.is-shadowed,
+.flex-block-22 > .div-block-151.is-shadowed {
   box-shadow:
     0 12px 20px -8px rgba(107, 125, 153, 0.55),
     0 22px 36px -14px rgba(107, 125, 153, 0.12);
@@ -94,14 +98,67 @@ a[href^="tel:"]:hover .home_branch-card_call-number {
      opacity 페이드인은 유지. !important 미사용 — GSAP 인라인 transform 우선
    ============================================================ */
 @media (max-width: 767px) {
+  /* ----------------------------------------------------------------
+     A. 각 섹션을 모바일 1화면(100vh) 이상으로 세로로 길게
+        — 콘텐츠가 세로 1열로 펼쳐지면서 자연스레 길어짐
+        — overflow-x: hidden (전역) 이미 있어 가로스크롤 없음
+  ---------------------------------------------------------------- */
+  section.blackframe_image-hero,
+  section.home_background_2,
+  section.home_background_3,
+  section.home_background_4 {
+    min-height: 100vh;
+    padding-top: 8vh;
+    padding-bottom: 8vh;
+    box-sizing: border-box;
+  }
+
+  /* ----------------------------------------------------------------
+     B. 콘텐츠 세로 1열 강제 (핀포인트 클래스)
+        섹션 2: .div-block-149 (텍스트+사진들 outer) + .home_contents_poto (사진 3장)
+        섹션 3: section.home_background_3 (이미지+텍스트)
+        섹션 4: .flex-block-23 (이미 처리됨)
+  ---------------------------------------------------------------- */
+  .div-block-149 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4vh;
+  }
+  .home_contents_poto {
+    flex-direction: column !important;
+  }
+  section.home_background_3 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4vh;
+  }
   .flex-block-23 {
     flex-direction: column !important;
     gap: 1.2rem;
   }
-  .home_branch-card {
+
+  /* 카드 1열 (.div-block-151 실제 카드) */
+  .home_branch-card,
+  .flex-block-22 > .div-block-151 {
     width: 100%;
   }
+
+  /* ----------------------------------------------------------------
+     C. 섹션 2 사진 3장 → 첫 번째 1장만 노출
+        .home_contents_poto > .div-block-148 (첫번째) 만 보이고
+        그 외 형제 (.div-block-148dfs, .div-block-148hsrgsedg) 숨김
+  ---------------------------------------------------------------- */
+  .home_contents_poto > *:nth-child(n+2) {
+    display: none !important;
+  }
+
+  /* ----------------------------------------------------------------
+     D. SVICC (#) 배경 옆으로 삐져나오는 문제 정리
+  ---------------------------------------------------------------- */
   .home_background_svicc {
     transform: none;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 }
