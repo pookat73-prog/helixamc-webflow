@@ -49,12 +49,24 @@
     var subheading = document.querySelector('.about_contents_sub-title');
     var container  = document.querySelector('.about_background');
 
-    if (heading)    gsap.set(heading,    { autoAlpha: 0 });
-    if (symbol)     gsap.set(symbol,     { autoAlpha: 0 });
-    if (subheading) gsap.set(subheading, { autoAlpha: 0 });
+    /* visibility:hidden 으로 가리면 브라우저가 paint 스킵 → web 폰트가 layer 에
+       적용 안 됨 → fade 시작 시 폴백 폰트로 첫 paint → 폰트 swap → 글자 메트릭
+       변화로 layout shift (아래로 내려갔다 올라옴 현상). 따라서 가린 상태에서도
+       paint 가 진행되도록 visibility:visible + opacity:0 패턴 사용 (홈 section1
+       동일). */
+    function forceOpacity(el, v) {
+      if (!el) return;
+      el.style.setProperty('opacity', String(v), 'important');
+      el.style.setProperty('visibility', 'visible', 'important');
+    }
+    forceOpacity(heading, 0);
+    forceOpacity(symbol, 0);
+    forceOpacity(subheading, 0);
 
-    /* 인라인 autoAlpha:0 적용 완료 → bootstrap의 prepaint 가드 제거.
-       이 시점부터 about.js가 직접 노출 시점을 통제함. */
+    /* 인라인 visibility:visible + opacity:0 적용 완료 → bootstrap의 prepaint
+       가드 제거. 가드의 visibility:hidden 이 사라져도 인라인 opacity:0 가
+       남아 있어 시각적으로는 여전히 가려짐. paint 는 진행되므로 web 폰트
+       layer 적용 + 폰트 swap 이 이 hidden 상태에서 끝남. */
     var prepaints = document.querySelectorAll('#helix-about-s1-prepaint, style#helix-about-s1-prepaint');
     prepaints.forEach(function (p) { if (p.parentNode) p.parentNode.removeChild(p); });
 
@@ -99,13 +111,29 @@
       gsap.to(video, { opacity: 1, duration: 1.0, ease: 'power2.out' });
     }
 
+    /* fadeIn: tween 더미 객체에서 onUpdate 로 forceOpacity 호출 → 항상 인라인
+       !important 로 opacity 갱신, Webflow IX2 가 인라인 opacity:1 을 강제해도
+       매 프레임 덮어씀. visibility 도 항상 visible 유지. */
+    function fadeIn(el, name, duration, ease, position, onComplete) {
+      if (!el) return;
+      var state = { v: 0 };
+      tl.to(state, {
+        v: 1,
+        duration: duration,
+        ease: ease,
+        onUpdate: function () { forceOpacity(el, state.v); },
+        onComplete: onComplete
+      }, position);
+    }
+
+    var tl;
     function startTimeline() {
       log('헤드 폰트 적용 확인 — 시퀀스 시작');
-      var tl = gsap.timeline({ delay: 0.2 });
-      if (heading)    tl.to(heading,    { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0);
+      tl = gsap.timeline({ delay: 0.2 });
+      fadeIn(heading,    'heading', 1.0, 'power2.out', 0);
       /* 0.85 = 1.0 - 0.15 (헤드 종료 0.15s 전) — 심볼/서브헤드 동시 시작 */
-      if (symbol)     tl.to(symbol,     { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
-      if (subheading) tl.to(subheading, { autoAlpha: 1, duration: 1.0, ease: 'power2.out' }, 0.85);
+      fadeIn(symbol,     'symbol',  1.0, 'power2.out', 0.85);
+      fadeIn(subheading, 'subhead', 1.0, 'power2.out', 0.85);
       /* 1.70 = 0.85 + 1.0 - 0.15 (심볼/서브헤드 종료 0.15s 전) — 영상 시작.
          이 시점에 영상이 아직 디코드 전이면 onReady 콜백이 fadeInVideo 호출. */
       tl.call(function () {
