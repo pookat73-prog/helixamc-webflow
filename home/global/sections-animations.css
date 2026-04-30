@@ -97,7 +97,8 @@ a[href^="tel:"]:hover .home_branch-card_call-number {
    - SVICC 초기 translateX(20px) 제거 → GSAP x:0 애니메이션은 무효화되지만
      opacity 페이드인은 유지. !important 미사용 — GSAP 인라인 transform 우선
    ============================================================ */
-@media (max-width: 767px) {
+/* TEMP DISABLED — Webflow Designer 모바일 직접 작업 중. 복구 시 1px → 767px */
+@media (max-width: 1px) {
   /* ----------------------------------------------------------------
      A. 각 섹션을 모바일 1화면(100vh) 이상으로 세로로 길게
         — 콘텐츠가 세로 1열로 펼쳐지면서 자연스레 길어짐
