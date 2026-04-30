@@ -21,10 +21,47 @@
   border-radius: 2px;
 }
 
-/* 복사 완료 피드백 — 메인 블루 강조 */
-.footer-email-copied {
-  color: #0075d6 !important;
-  font-weight: 700;
+/* ============================================================
+   복사완료 토스트 — 화면 하단 중앙에 잠깐 떠올랐다 사라지는 박스
+   이메일 텍스트는 건드리지 않음 → 레이아웃 점프 0
+   ============================================================ */
+#helix-footer-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translate(-50%, 16px);
+  background: rgba(13, 17, 23, 0.94);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#helix-footer-toast.helix-toast-show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 767px) {
+  #helix-footer-toast {
+    bottom: 24px;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 8px;
+  }
 }
 
 /* SNS 아이콘 — 호버 인터랙션 */

@@ -54,17 +54,29 @@
     return Promise.resolve();
   }
 
-  function flashFeedback(el, msg) {
-    if (!el.dataset.helixOrig) el.dataset.helixOrig = el.innerText;
-    el.innerText = msg;
-    el.classList.add('footer-email-copied');
+  /* 토스트: 화면 하단 중앙에 잠깐 떠올랐다 사라지는 메시지 박스.
+     이메일 텍스트 자체는 건드리지 않음 → 레이아웃 점프 0.
+     동일 ID 재사용 → 연타해도 박스 하나만 유지. */
+  function showToast(msg) {
+    var toast = document.getElementById('helix-footer-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'helix-footer-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
 
-    if (el._helixFeedbackTimer) clearTimeout(el._helixFeedbackTimer);
-    el._helixFeedbackTimer = setTimeout(function () {
-      el.innerText = el.dataset.helixOrig;
-      el.classList.remove('footer-email-copied');
-      delete el.dataset.helixOrig;
-    }, 1600);
+    /* 애니메이션 재시작: 클래스 제거 → reflow → 다시 추가 */
+    toast.classList.remove('helix-toast-show');
+    void toast.offsetWidth;
+    toast.classList.add('helix-toast-show');
+
+    if (toast._helixTimer) clearTimeout(toast._helixTimer);
+    toast._helixTimer = setTimeout(function () {
+      toast.classList.remove('helix-toast-show');
+    }, 1800);
   }
 
   function findFooter() {
@@ -106,12 +118,11 @@
 
       function onCopy(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
-        var src = el.dataset.helixOrig || el.innerText;
-        var match = src.match(EMAIL_RE);
+        var match = el.innerText.match(EMAIL_RE);
         if (!match) return;
         var email = match[0];
         copyText(email).then(function () {
-          flashFeedback(el, '복사완료 ' + email);
+          showToast('복사완료 · ' + email);
           dbg('email copied:', email);
         });
       }
