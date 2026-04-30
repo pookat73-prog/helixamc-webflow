@@ -63,12 +63,15 @@
     forceOpacity(symbol, 0);
     forceOpacity(subheading, 0);
 
-    /* 인라인 visibility:visible + opacity:0 적용 완료 → bootstrap의 prepaint
-       가드 제거. 가드의 visibility:hidden 이 사라져도 인라인 opacity:0 가
-       남아 있어 시각적으로는 여전히 가려짐. paint 는 진행되므로 web 폰트
-       layer 적용 + 폰트 swap 이 이 hidden 상태에서 끝남. */
-    var prepaints = document.querySelectorAll('#helix-about-s1-prepaint, style#helix-about-s1-prepaint');
-    prepaints.forEach(function (p) { if (p.parentNode) p.parentNode.removeChild(p); });
+    /* prepaint 가드는 여기서 제거하지 않음. 가드는 clip-path:inset(100%) 로
+       시각 차단을 하므로, 폰트 swap 도중에도 사용자에게 안 보임. 인라인
+       visibility:visible 가 인라인 !important 우선순위로 가드의 visibility:hidden
+       을 이김 → paint 는 진행 → web 폰트 layer 적용 + swap 진행. swap 이
+       layout-stable 까지 끝난 후에 가드를 제거하여 노출 시작. */
+    function removePrepaintGuard() {
+      var prepaints = document.querySelectorAll('#helix-about-s1-prepaint, style#helix-about-s1-prepaint');
+      prepaints.forEach(function (p) { if (p.parentNode) p.parentNode.removeChild(p); });
+    }
 
     /* ── 영상 사전 생성 (타임라인 발사 전에 로드 시작) ── */
     var video = null;
@@ -129,6 +132,10 @@
     var tl;
     function startTimeline() {
       log('헤드 폰트 적용 확인 — 시퀀스 시작');
+      /* 폰트 swap + layout 안정화 완료 → 이 시점에 가드 제거. clip-path 차단이
+         사라져도 인라인 opacity:0 라 여전히 안 보임. fadeIn 이 opacity 를 점진적
+         으로 1 까지 올리면서 노출. */
+      removePrepaintGuard();
       tl = gsap.timeline({ delay: 0.2 });
       fadeIn(heading,    'heading', 1.0, 'power2.out', 0);
       /* 0.85 = 1.0 - 0.15 (헤드 종료 0.15s 전) — 심볼/서브헤드 동시 시작 */
