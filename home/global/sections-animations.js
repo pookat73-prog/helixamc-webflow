@@ -285,16 +285,113 @@
                         → 꼭지점2(곡선) → 구간3(수직 하강)
        구간1 : 구간3 = 1.5 : 1
   ============================================================ */
+  /* ============================================================
+     initSimpleVerticalLine: 모바일 sec2→sec3 단순 수직 1px 블루 라인
+     btn2 바텀 중앙 → sec3 헤딩 탑. divider.js 헬릭스 라인과 동일 패턴
+     (Draw / Hold / Erase ScrollTrigger).
+  ============================================================ */
+  function initSimpleVerticalLine(btn2, sec3Head) {
+    var scrollY    = window.scrollY || window.pageYOffset;
+    var btn2R      = btn2.getBoundingClientRect();
+    var startX     = btn2R.left + btn2R.width / 2;
+    var startY_abs = btn2R.bottom + scrollY;
+    var endY_abs   = sec3Head.getBoundingClientRect().top + scrollY;
+    var H          = endY_abs - startY_abs;
+    if (H < 40) { log('mZig: H too small → skip'); return; }
+
+    var navbar = document.querySelector('.w-nav') ||
+                 document.querySelector('nav')    ||
+                 document.querySelector('header') || null;
+    var navZ   = navbar ? parseInt(getComputedStyle(navbar).zIndex, 10) : NaN;
+    var svgZ   = (!isNaN(navZ) && navZ > 0) ? navZ - 1 : 999;
+
+    var svg  = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+    var pad   = 4;
+    var svgW  = pad * 2 + 1;
+    svg.style.cssText =
+      'position:absolute;pointer-events:none;overflow:visible;z-index:' + svgZ + ';';
+    svg.style.left   = (startX - svgW / 2) + 'px';
+    svg.style.top    = startY_abs + 'px';
+    svg.style.width  = svgW + 'px';
+    svg.style.height = H + 'px';
+    svg.setAttribute('width',  svgW);
+    svg.setAttribute('height', Math.ceil(H));
+
+    path.setAttribute('fill',         'none');
+    path.setAttribute('stroke',       '#0075d6');
+    path.setAttribute('stroke-width', '1');
+    path.setAttribute('stroke-linecap',  'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('class',        'helix-line-path');
+
+    var cx = pad;
+    path.setAttribute('d', 'M ' + cx.toFixed(2) + ' 0 L ' + cx.toFixed(2) + ' ' + H.toFixed(2));
+
+    svg.appendChild(path);
+    if (getComputedStyle(document.body).position === 'static') {
+      document.body.style.position = 'relative';
+    }
+    document.body.appendChild(svg);
+
+    var pathLength = path.getTotalLength() || H;
+    path.setAttribute('stroke-dasharray', '0 ' + pathLength);
+
+    var headProgress = 0;
+    var tailProgress = 0;
+    function applyDash() {
+      var tail       = Math.min(tailProgress, headProgress);
+      var visibleLen = (headProgress - tail) * pathLength;
+      var dashOffset = -tail * pathLength;
+      path.setAttribute('stroke-dasharray',  visibleLen + ' ' + pathLength);
+      path.setAttribute('stroke-dashoffset', dashOffset);
+    }
+
+    /* Draw: btn2 바텀 마커가 뷰포트 center 도달 → sec3 헤딩 top 75% 까지 그리기 */
+    var marker = document.createElement('div');
+    marker.setAttribute('data-zig-marker-mobile', '1');
+    marker.style.cssText =
+      'position:absolute;top:' + startY_abs + 'px;left:0;' +
+      'width:1px;height:1px;pointer-events:none;';
+    document.body.appendChild(marker);
+
+    ScrollTrigger.create({
+      trigger: marker,
+      start: 'top center',
+      endTrigger: sec3Head,
+      end: 'top 75%',
+      scrub: true,
+      markers: DEBUG,
+      onUpdate: function (self) {
+        headProgress = self.progress;
+        applyDash();
+      }
+    });
+
+    /* Erase: btn2 바텀이 헤더 하단에 닿는 순간 꼬리 출발 → sec3 헤딩 top 40% 에서 소멸 */
+    var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
+    log('mZig navbarH=' + navbarH + ' eraseStart="' + eraseStart + '" H=' + H.toFixed(0));
+    ScrollTrigger.create({
+      trigger: btn2,
+      start: eraseStart,
+      endTrigger: sec3Head,
+      end: 'top 40%',
+      scrub: true,
+      markers: DEBUG,
+      onUpdate: function (self) {
+        tailProgress = self.progress;
+        applyDash();
+      }
+    });
+
+    log('mobile vertical zig-line drawn, H=' + H.toFixed(0));
+  }
+
   function initZigLine() {
     if (zigInitialized) return;
     if (!window.gsap || !window.ScrollTrigger) return;
-
-    /* 모바일은 sec3 모바일 섹션이 따로 있어 지그 곡선 레이아웃 자체가
-       어울리지 않음 — 데스크에서만 동작 */
-    if (window.innerWidth <= 767) {
-      log('zigLine: mobile viewport → skip');
-      return;
-    }
 
     /* 필요 요소 탐색 — 보이는 sec3 헤딩 중 첫 번째 픽업
        (데스크/모바일 듀얼 구조에서 인덱스 의존 제거) */
@@ -306,8 +403,19 @@
       if (isVisible(headings[i])) { sec3Head = headings[i]; break; }
     }
 
-    if (!btn1 || !btn2 || !sec3Head) {
+    /* 모바일은 btn1(hero) 의존 없이 btn2 + sec3Head 만 있으면 됨 */
+    var isMobile = window.innerWidth <= 767;
+    if (!btn2 || !sec3Head || (!isMobile && !btn1)) {
       log('zigLine: btn1=' + !!btn1 + ' btn2=' + !!btn2 + ' sec3Head=' + !!sec3Head + ' → skip');
+      return;
+    }
+
+    /* ── 모바일 분기: 단순 수직 1px 블루 라인 ─────────────────────
+       1컬럼 레이아웃에 Z형 곡선이 어울리지 않아 헬릭스 라인과 동일한
+       단순 vertical pattern. 시작 X = bt-box-2 가로 중앙. */
+    if (isMobile) {
+      initSimpleVerticalLine(btn2, sec3Head);
+      zigInitialized = true;
       return;
     }
 
