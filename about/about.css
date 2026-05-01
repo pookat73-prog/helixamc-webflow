@@ -53,6 +53,37 @@
   font-weight: 700;
 }
 
+/* Section 1 모션 — 초기 숨김 상태 (about.js 가 GSAP 으로 페이드/스케일 인) */
+.helix-hex-diagram .hex {
+  opacity: 0;
+}
+
+/* Phase B emit — inner 외곽선 클론. 살짝 밝은 톤으로 "쏘아진" 느낌. */
+.helix-hex-diagram .hex path.hex-emit {
+  fill: transparent;
+  stroke: #7fc4ff;
+  stroke-width: 1.5;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Phase B beam — clipPath 영역(hex 내부) 안에서만 보이는 사선 광선. */
+.helix-hex-diagram .hex-beam-wrap {
+  pointer-events: none;
+}
+.helix-hex-diagram .hex-beam-mover {
+  opacity: 0;
+}
+.helix-hex-diagram .hex line.hex-beam {
+  fill: none;
+  stroke-width: 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
 /* About Contents — title 페이드 인 (뷰포트 80% 진입 시) */
 .about_contents-title {
   opacity: 0;
