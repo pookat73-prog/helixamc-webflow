@@ -1,7 +1,7 @@
 /* ================================================================
    HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER
    Webflow About 페이지 head에 한 번만 붙여두면 됨.
-   항상 최신 커밋 기준으로 파일을 불러옴.
+   항상 최신 커밋 기준으로 about.css / about.js 를 로드.
    ================================================================ */
 
 (function () {
@@ -11,64 +11,12 @@
   var REPO   = 'helixamc-webflow';
   var BRANCH = 'main';
 
+  /* 깨끗한 롤백 상태 — about 전용 CSS/JS 만 로드. card-stack 등 인터랙션은
+     필요 시 다시 추가. */
   var FILES = [
     'about/about.css',
-    'about/about.js',
-    'home/global/card-stack.css',
-    'home/global/card-stack.js'
+    'about/about.js'
   ];
-
-  /* Pre-paint flicker guard 1: 섹션 1 인트로 시퀀스가 발사되기 전에 헤드/심볼/
-     서브헤드가 폴백 폰트 + 자연 레이아웃으로 잠깐 노출되는 깜빡임을 차단.
-     about.js initSection1 이 가드 <style>을 제거함 (그 시점엔 인라인
-     autoAlpha:0 가 적용돼 GSAP 페이드인까지 안전).
-
-     Webflow 인라인 `style="opacity:1!important;visibility:visible!important"` 가
-     박혀 있어도 인라인 !important 는 CSS !important 를 항상 이김. 그래서 시각
-     숨김은 `clip-path:inset(100%)` 로 — 클립은 인라인이 거의 안 쓰는 별도 속성
-     이라 안전. */
-  (function injectSection1Guard() {
-    if (document.getElementById('helix-about-s1-prepaint')) return;
-    var style = document.createElement('style');
-    style.id = 'helix-about-s1-prepaint';
-    style.textContent =
-      '.section2-heading,' +
-      '.image-23,' +
-      '.about_contents_sub-title' +
-      '{clip-path:inset(100%)!important;-webkit-clip-path:inset(100%)!important;visibility:hidden!important;opacity:0!important}';
-    (document.head || document.documentElement).appendChild(style);
-    /* 안전망: 6초 안에 about.js 가 가드를 제거하지 않으면 강제 해제 */
-    setTimeout(function () {
-      var s = document.getElementById('helix-about-s1-prepaint');
-      if (s && s.parentNode) {
-        s.parentNode.removeChild(s);
-        console.warn('[about-bootstrap] section1 not ready in 6s, removing prepaint guard');
-      }
-    }, 6000);
-  })();
-
-  /* Pre-paint flicker guard 2: 카드 덱이 초기화되기 전에 Webflow가 카드 섹션을
-     세로로 늘어진 자연 레이아웃으로 먼저 그리는 깜빡임을 차단.
-     덱 init이 끝나면 첫 섹션에 .helix-deck-ready를 붙여 노출. */
-  (function injectDeckGuard() {
-    var style = document.createElement('style');
-    style.id = 'helix-deck-prepaint';
-    /* :has() 로 카드 덱 섹션만 타겟 — about 섹션 2처럼 덱 카드(.just-box_qqqqqqq)
-       가 없는 .white-frame_connect 는 가드에서 제외 (영영 hidden 으로 남는 사태 방지) */
-    style.textContent =
-      '.white-frame_connect:has(.just-box_qqqqqqq){visibility:hidden!important}' +
-      '.white-frame_connect.helix-deck-ready{visibility:visible!important}';
-    /* head가 아직 없을 수도 있으므로 documentElement에 붙임 */
-    (document.head || document.documentElement).appendChild(style);
-    /* 안전망: 6초 안에 덱이 준비되지 않으면 가드 해제(원본 레이아웃이라도 보이도록) */
-    setTimeout(function () {
-      if (!document.querySelector('.white-frame_connect.helix-deck-ready')) {
-        var s = document.getElementById('helix-deck-prepaint');
-        if (s && s.parentNode) s.parentNode.removeChild(s);
-        console.warn('[about-bootstrap] deck not ready in 6s, removing prepaint guard');
-      }
-    }, 6000);
-  })();
 
   function cdn(ref, path) {
     var t = Math.floor(Date.now() / 60000);
@@ -105,11 +53,8 @@
       console.warn('[about-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
       loadFile(path, BRANCH);
     };
-    if (ext === 'css') {
-      injectCss(url, fallback);
-    } else if (ext === 'js') {
-      injectJs(url, null, fallback);
-    }
+    if (ext === 'css') injectCss(url, fallback);
+    else if (ext === 'js') injectJs(url, null, fallback);
   }
 
   function injectAll(ref) {
@@ -117,14 +62,6 @@
   }
 
   var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
-
-  /* GSAP ScrollTrigger 로드 */
-  var scrollTriggerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
-  injectJs(scrollTriggerUrl, function () {
-    if (window.gsap && window.gsap.registerPlugin) {
-      window.gsap.registerPlugin(ScrollTrigger);
-    }
-  });
 
   fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
