@@ -384,31 +384,34 @@
       }
     });
 
-    /* Erase: 절대 scrollY 값으로 직접 트리거 — anchor 문자열 파싱 대신
-       startY_abs / endY_abs 를 그대로 사용해 디버깅 가능성·신뢰성↑.
-         erase 시작 scrollY = btn2 바텀이 헤더 하단에 도달하는 시점
-                            = startY_abs - navbarH
-         erase 종료 scrollY = sec3Head 탑이 헤더 하단에 도달하는 시점
-                            = endY_abs - navbarH
-       범위 = endY_abs - startY_abs = H (라인 높이). 스크롤 1px = 라인
-       1px 지움. scrub:true 로 역방향 자동 복원. */
-    var navbarH         = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var eraseStartScroll = startY_abs - navbarH;
-    var eraseEndScroll   = endY_abs - navbarH;
-    log('mZig erase: startScroll=' + eraseStartScroll.toFixed(0) +
-        ' endScroll=' + eraseEndScroll.toFixed(0) +
-        ' navbarH=' + navbarH + ' H=' + H.toFixed(0));
+    /* Erase: 라인 영역 자체를 trigger 마커로 사용 (top=startY_abs, height=H).
+         start: 'top {navbarH}px'    → marker top 이 헤더 하단 도달
+                                      = scrollY = startY_abs - navbarH
+         end:   'bottom {navbarH}px' → marker bottom 이 헤더 하단 도달
+                                      = scrollY = endY_abs - navbarH
+       범위 = H. 스크롤 1px = 라인 1px 지움. scrub:true 로 역방향 자동 복원.
+       (이전 시도: trigger 요소 없이 absolute scrollY → ScrollTrigger 가
+        등록·발사 자체를 안 하는 케이스 발생) */
+    var navbarH      = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var navAnchor    = navbarH > 0 ? navbarH + 'px' : 'top';
+    var eraseMarker  = document.createElement('div');
+    eraseMarker.setAttribute('data-zig-erase-marker-mobile', '1');
+    eraseMarker.style.cssText =
+      'position:absolute;top:' + startY_abs + 'px;left:0;' +
+      'width:1px;height:' + H + 'px;pointer-events:none;';
+    document.body.appendChild(eraseMarker);
+    log('mZig erase marker: top=' + startY_abs.toFixed(0) +
+        ' H=' + H.toFixed(0) + ' navbarH=' + navbarH);
     ScrollTrigger.create({
-      start: eraseStartScroll,
-      end: eraseEndScroll,
+      trigger: eraseMarker,
+      start: 'top ' + navAnchor,
+      end:   'bottom ' + navAnchor,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
         tailProgress = self.progress;
         applyDash();
-        if (DEBUG && self.progress > 0 && self.progress < 1) {
-          log('mZig erase progress=' + self.progress.toFixed(3));
-        }
+        if (DEBUG) log('mZig erase progress=' + self.progress.toFixed(3));
       }
     });
 
@@ -673,28 +676,31 @@
       }
     });
 
-    /* Erase: 절대 scrollY 값으로 직접 트리거 (모바일 분기와 동일 방식).
-         erase 시작 = btn2 바텀이 헤더 하단 도달 = startY_abs - navbarH
-         erase 종료 = sec3Head 탑이 헤더 하단 도달 = endY_abs - navbarH
-       범위 = H (라인 높이). 스크롤 1px = 라인 1px 지움 (사선 구간은 remapTail
-       으로 시각 속도 보정). scrub:true 로 역방향 자동 복원. */
-    var navbarH         = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var eraseStartScroll = startY_abs - navbarH;
-    var eraseEndScroll   = endY_abs - navbarH;
-    log('zigLine erase: startScroll=' + eraseStartScroll.toFixed(0) +
-        ' endScroll=' + eraseEndScroll.toFixed(0) +
-        ' navbarH=' + navbarH + ' H=' + H.toFixed(0));
+    /* Erase: 라인 영역을 trigger 마커로 사용 (모바일 분기와 동일 방식).
+       마커 div: top=startY_abs, height=H 로 라인과 동일 영역 점유.
+         start: 'top {navbarH}px'    → scrollY = startY_abs - navbarH
+         end:   'bottom {navbarH}px' → scrollY = endY_abs - navbarH
+       범위 = H. 사선 구간은 remapTail 으로 시각 속도 보정. */
+    var navbarH      = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var navAnchor    = navbarH > 0 ? navbarH + 'px' : 'top';
+    var eraseMarker  = document.createElement('div');
+    eraseMarker.setAttribute('data-zig-erase-marker', '1');
+    eraseMarker.style.cssText =
+      'position:absolute;top:' + startY_abs + 'px;left:0;' +
+      'width:1px;height:' + H + 'px;pointer-events:none;';
+    document.body.appendChild(eraseMarker);
+    log('zigLine erase marker: top=' + startY_abs.toFixed(0) +
+        ' H=' + H.toFixed(0) + ' navbarH=' + navbarH);
     ScrollTrigger.create({
-      start: eraseStartScroll,
-      end: eraseEndScroll,
+      trigger: eraseMarker,
+      start: 'top ' + navAnchor,
+      end:   'bottom ' + navAnchor,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
         tailProgress = remapTail(self.progress);
         applyDash();
-        if (DEBUG && self.progress > 0 && self.progress < 1) {
-          log('zigLine erase progress=' + self.progress.toFixed(3));
-        }
+        if (DEBUG) log('zigLine erase progress=' + self.progress.toFixed(3));
       }
     });
 
