@@ -13,7 +13,7 @@
     var s = document.createElement('style');
     s.id = 'helix-about-fouc-guard';
     s.textContent =
-      '.about-heading,.about_contents_sub-title,img.image-23{opacity:0}';
+      '.about-heading,.about_contents_sub-title,img.image-23,.about_contents-title{opacity:0}';
     (document.head || document.documentElement).appendChild(s);
   } catch (e) {}
 

@@ -44,6 +44,15 @@
   font-weight: 700;
 }
 
+/* About Contents — title 페이드 인 (뷰포트 60% 진입 시) */
+.about_contents-title {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+.about_contents-title.is-visible {
+  opacity: 1;
+}
+
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
   transform: rotate(-6deg) !important;
