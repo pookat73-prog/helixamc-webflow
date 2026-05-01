@@ -142,65 +142,73 @@
     if (video) { video.style.opacity = '1'; video.style.visibility = 'visible'; }
   }
 
-  function runTimeline(video) {
+  function runTextTimeline() {
     if (typeof gsap === 'undefined') {
-      log('GSAP missing → fallback show');
-      showAllImmediate(video);
-      return;
+      log('GSAP missing → fallback show text');
+      var els = document.querySelectorAll('.about-heading, .about_contents_sub-title, img.image-23');
+      els.forEach(function (el) { el.style.opacity = '1'; el.style.visibility = 'visible'; });
+      return Promise.resolve();
     }
     var heading = document.querySelectorAll('.about-heading');
     var subhead = document.querySelectorAll('.about_contents_sub-title');
     var symbol  = document.querySelectorAll('img.image-23');
 
-    /* 캐시된 옛날 bootstrap.js 가 visibility:hidden 을 주입했을 수 있음 → 강제로 visible */
     [heading, subhead, symbol].forEach(function (list) {
       list.forEach(function (el) { el.style.visibility = 'visible'; });
     });
-    if (video) video.style.visibility = 'visible';
-
-    /* 시작 opacity:0 강제 (캐시된 옛날 가드가 visibility 만 다뤘을 경우 대비) */
-    var allTargets = [].concat(
+    var allText = [].concat(
       Array.prototype.slice.call(heading),
       Array.prototype.slice.call(subhead),
       Array.prototype.slice.call(symbol)
     );
-    if (video) allTargets.push(video);
-    if (allTargets.length) gsap.set(allTargets, { opacity: 0 });
+    if (allText.length) gsap.set(allText, { opacity: 0 });
 
-    var tl = gsap.timeline({ delay: 0.2 });
-    if (heading.length) {
-      tl.fromTo(heading, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+    return new Promise(function (resolve) {
+      var tl = gsap.timeline({ delay: 0.2, onComplete: resolve });
+      if (heading.length) {
+        tl.fromTo(heading, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+      }
+      var symAndSub = [].concat(Array.prototype.slice.call(symbol), Array.prototype.slice.call(subhead));
+      if (symAndSub.length) {
+        tl.fromTo(symAndSub, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+      }
+      if (!tl.duration()) resolve();
+      log('text timeline started');
+    });
+  }
+
+  function fadeInVideo(video) {
+    if (!video) return;
+    video.style.visibility = 'visible';
+    if (typeof gsap === 'undefined') {
+      video.style.opacity = '1';
+      return;
     }
-    var symAndSub = [].concat(Array.prototype.slice.call(symbol), Array.prototype.slice.call(subhead));
-    if (symAndSub.length) {
-      tl.fromTo(symAndSub, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
-    }
-    if (video) {
-      tl.fromTo(video, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.out' });
-    }
-    log('timeline started');
+    gsap.fromTo(video, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+    log('video fade started');
   }
 
   function init() {
     log('init');
     var video = injectBgVideo();
+    var videoReadyP = whenVideoReady(video);
 
-    var allReady = Promise.all([
-      whenHeroFontReady(),
-      preloadSymbol(),
-      whenVideoReady(video)
-    ]);
+    /* 텍스트는 비디오를 기다리지 않음 — 폰트+심볼 준비되면 즉시 시작 */
+    var textReadyP = Promise.all([whenHeroFontReady(), preloadSymbol()]);
 
-    var started = false;
-    function start(reason) {
-      if (started) return; started = true;
-      log('start:', reason);
-      runTimeline(video);
+    /* 텍스트 시퀀스 끝난 뒤 비디오 페이드. 비디오가 그 시점에 아직 안 왔으면 기다렸다 진행 */
+    var textStarted = false;
+    function startText(reason) {
+      if (textStarted) return; textStarted = true;
+      log('text start:', reason);
+      runTextTimeline().then(function () {
+        videoReadyP.then(function () { fadeInVideo(video); });
+      });
     }
 
-    allReady.then(function () { start('all-ready'); });
-    /* 안전 폴백 */
-    setTimeout(function () { start('timeout'); }, 4500);
+    textReadyP.then(function () { startText('ready'); });
+    /* 텍스트용 안전 폴백 (비디오 무관) */
+    setTimeout(function () { startText('text-timeout'); }, 2000);
   }
 
   if (document.readyState === 'loading') {
