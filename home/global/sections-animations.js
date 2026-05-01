@@ -166,26 +166,75 @@
       var cardContainer = section.querySelector('.flex-block-22') ||
                           section.querySelector('.flex-block-23') ||
                           cards[0].parentElement;
+      var svicc = section.querySelector('.home_background_svicc');
+      var isMobileCard = window.innerWidth <= 767;
 
-      /* 모바일은 섹션 진입(섹션 top 이 뷰포트 bottom 도달) 시점에 발사,
-         데스크는 기존 cardContainer 'top 70%' 유지.
+      /* ── 모바일: 카드별 개별 ScrollTrigger 시퀀스 ──────────────
+         · 1번 카드: section top 이 뷰포트 60% 도달
+         · 2번 이후: 직전 카드 top 이 뷰포트 20% 도달
+         · SVICC: 마지막 카드가 뷰포트 위로 다 빠져나간 시점 (bottom top)
+         once: true — refresh 시 깜빡임 방지. */
+      if (isMobileCard) {
+        function playCardMobile(card) {
+          gsap.to(card, {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out'
+          });
+          setTimeout(function () { card.classList.add('is-shadowed'); }, 150);
+        }
+
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top 60%',
+          once: true,
+          onEnter: function () { playCardMobile(cards[0]); }
+        });
+
+        for (var ci = 1; ci < cards.length; ci++) {
+          (function (idx) {
+            ScrollTrigger.create({
+              trigger: cards[idx - 1],
+              start: 'top 20%',
+              once: true,
+              onEnter: function () { playCardMobile(cards[idx]); }
+            });
+          })(ci);
+        }
+
+        if (svicc) {
+          ScrollTrigger.create({
+            trigger: cards[cards.length - 1],
+            start: 'bottom top',
+            once: true,
+            onEnter: function () {
+              gsap.to(svicc, {
+                opacity: 1,
+                x: 0,
+                duration: 0.6,
+                ease: 'power2.out'
+              });
+            }
+          });
+        }
+        log('mobile sec4 sequenced triggers: cards=' + cards.length + ' svicc=' + !!svicc);
+        return;
+      }
+
+      /* ── 데스크: 기존 cardContainer 'top 70%' 단일 timeline ─────
          once: true — helix-s1-done 이후 ScrollTrigger.refresh() 가 트리거를
          재평가할 때 카드가 깜빡 사라졌다 다시 페이드인되는 현상 방지. */
-      var isMobileCard = window.innerWidth <= 767;
-      var stTrigger = isMobileCard ? section : cardContainer;
-      var stStart   = isMobileCard ? 'top bottom' : 'top 70%';
       var cardTL = gsap.timeline({
         scrollTrigger: {
-          trigger: stTrigger,
-          start: stStart,
+          trigger: cardContainer,
+          start: 'top 70%',
           toggleActions: 'play none none none',
           once: true
         }
       });
 
-      /* 모바일은 1열 세로 스택이라 0.08s 는 너무 빠름 — 0.12s 로 늘려 리듬 강화 */
-      var cardStagger = window.innerWidth <= 767 ? 0.12 : 0.08;
-
+      var cardStagger = 0.08;
       cardTL.to(cards, {
         opacity: 1,
         y: 0,
@@ -198,7 +247,6 @@
         cardTL.call(function () { card.classList.add('is-shadowed'); }, [], 0.15 + i * cardStagger);
       });
 
-      var svicc = section.querySelector('.home_background_svicc');
       if (svicc) {
         cardTL.to(svicc, {
           opacity: 1,
@@ -207,7 +255,7 @@
           ease: 'power2.out'
         }, '-=0.3');
       }
-      log('section card animation: cards=' + cards.length + ' svicc=' + !!svicc);
+      log('desktop sec4 timeline: cards=' + cards.length + ' svicc=' + !!svicc);
     });
     log('total visible card sections: ' + sec4Count);
 
