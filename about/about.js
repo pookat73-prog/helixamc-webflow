@@ -188,8 +188,75 @@
     log('video fade started');
   }
 
+  function renderHexDiagram() {
+    var holder = document.querySelector('.diagram-place-holder');
+    if (!holder) { log('diagram-place-holder not found'); return; }
+    if (holder.querySelector('.helix-hex-diagram')) return;
+
+    var s = 100;
+    var sqrt3 = Math.sqrt(3);
+    var h = sqrt3 * s;
+
+    var hexes = [
+      { id: 'naekwa',     label: '내과',       cx: 1.5 * s, cy: 0.5 * h },
+      { id: 'oikwa',      label: '외과',       cx: 4.5 * s, cy: 0.5 * h },
+      { id: 'ankwa',      label: '안과',       cx: 0,       cy: 1.0 * h },
+      { id: 'yeongsang',  label: '영상의학과', cx: 3.0 * s, cy: 1.0 * h },
+      { id: 'chikwa',     label: '치과',       cx: 6.0 * s, cy: 1.0 * h }
+    ];
+
+    var minX = -s, maxX = 7 * s;
+    var minY = 0, maxY = 1.5 * h;
+    var pad = 4;
+
+    function hexPath(cx, cy) {
+      return [
+        'M', cx - s, cy,
+        'L', cx - s/2, cy - h/2,
+        'L', cx + s/2, cy - h/2,
+        'L', cx + s, cy,
+        'L', cx + s/2, cy + h/2,
+        'L', cx - s/2, cy + h/2,
+        'Z'
+      ].join(' ');
+    }
+
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'helix-hex-diagram');
+    svg.setAttribute('viewBox', (minX - pad) + ' ' + (minY - pad) + ' ' + (maxX - minX + pad * 2) + ' ' + (maxY - minY + pad * 2));
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.display = 'block';
+    svg.style.overflow = 'visible';
+
+    hexes.forEach(function (hx) {
+      var g = document.createElementNS(svgNS, 'g');
+      g.setAttribute('class', 'hex hex-' + hx.id);
+
+      var p = document.createElementNS(svgNS, 'path');
+      p.setAttribute('d', hexPath(hx.cx, hx.cy));
+      g.appendChild(p);
+
+      var t = document.createElementNS(svgNS, 'text');
+      t.setAttribute('x', hx.cx);
+      t.setAttribute('y', hx.cy);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('dominant-baseline', 'central');
+      t.textContent = hx.label;
+      g.appendChild(t);
+
+      svg.appendChild(g);
+    });
+
+    holder.appendChild(svg);
+    log('hex diagram rendered');
+  }
+
   function init() {
     log('init');
+    renderHexDiagram();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 

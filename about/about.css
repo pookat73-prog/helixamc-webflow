@@ -1,5 +1,27 @@
 /* ================================================================
    HELIX AMC - ABOUT PAGE CSS
    ================================================================
-   FOUC + 페이드인 시퀀스는 about.js (GSAP) + bootstrap.js 인라인 가드(opacity:0)로
-   처리. 여기는 비워둠. */
+   FOUC + 페이드인 시퀀스는 about.js (GSAP) + bootstrap.js 인라인 가드로 처리.
+   여기는 honeycomb 다이어그램 스타일. */
+
+/* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
+.diagram-place-holder {
+  position: relative;
+}
+
+.helix-hex-diagram .hex path {
+  fill: transparent;
+  stroke: #0075d6;
+  stroke-width: 2;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.helix-hex-diagram .hex text {
+  fill: #000;
+  font-weight: 700;
+  font-size: 32px;
+  font-family: inherit;
+  pointer-events: none;
+  user-select: none;
+}
