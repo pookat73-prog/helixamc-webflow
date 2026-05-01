@@ -170,15 +170,16 @@
       var isMobileCard = window.innerWidth <= 767;
 
       /* ── 모바일: 카드별 개별 ScrollTrigger 시퀀스 ──────────────
-         · 1번 카드: section top 이 뷰포트 60% 도달
-         · 2번 이후: 직전 카드 top 이 뷰포트 20% 도달
-         · SVICC: 마지막 카드가 뷰포트 위로 다 빠져나간 시점 (bottom top)
-         once: true — refresh 시 깜빡임 방지. */
+         · 1번 카드: section 'top 80%'  (섹션이 뷰포트 하단 20% 진입)
+         · 2번 이후: 직전 카드 'top 50%' (직전 카드가 뷰포트 중앙)
+         · SVICC: 마지막 카드 'top 50%' (마지막 카드가 뷰포트 중앙)
+         슬라이드 인 제거 — y:0 / x:0 미리 set 해서 CSS translate 무효화,
+         애니메이션은 opacity 만. once:true 로 refresh 깜빡임 방지. */
       if (isMobileCard) {
         function playCardMobile(card) {
+          gsap.set(card, { y: 0 });
           gsap.to(card, {
             opacity: 1,
-            y: 0,
             duration: 0.5,
             ease: 'power2.out'
           });
@@ -187,7 +188,7 @@
 
         ScrollTrigger.create({
           trigger: section,
-          start: 'top 60%',
+          start: 'top 80%',
           once: true,
           onEnter: function () { playCardMobile(cards[0]); }
         });
@@ -196,7 +197,7 @@
           (function (idx) {
             ScrollTrigger.create({
               trigger: cards[idx - 1],
-              start: 'top 20%',
+              start: 'top 50%',
               once: true,
               onEnter: function () { playCardMobile(cards[idx]); }
             });
@@ -206,12 +207,12 @@
         if (svicc) {
           ScrollTrigger.create({
             trigger: cards[cards.length - 1],
-            start: 'bottom top',
+            start: 'top 50%',
             once: true,
             onEnter: function () {
+              gsap.set(svicc, { x: 0 });
               gsap.to(svicc, {
                 opacity: 1,
-                x: 0,
                 duration: 0.6,
                 ease: 'power2.out'
               });
