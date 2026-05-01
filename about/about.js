@@ -106,6 +106,16 @@
       parent.style.position = 'relative';
     }
     parent.insertBefore(v, parent.firstChild);
+
+    /* 비디오의 형제 자식(컨텐츠 래퍼들)을 위로 올려서 비디오 위에 항상 보이게 */
+    Array.prototype.forEach.call(parent.children, function (child) {
+      if (child === v) return;
+      var cs = getComputedStyle(child);
+      if (cs.position === 'static') child.style.position = 'relative';
+      var z = parseInt(child.style.zIndex || cs.zIndex, 10);
+      if (!z || z < 2) child.style.zIndex = '2';
+    });
+
     log('bg video injected:', src);
     return v;
   }
