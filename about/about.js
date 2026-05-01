@@ -1,19 +1,23 @@
 /* ================================================================
    HELIX AMC - ABOUT PAGE JS
    ================================================================
-   FOUC 방지 + CLS 방지:
-   - ds-endendend 폰트 로드 대기
-   - image-23 를 preload + Image() prefetch + loading=eager 로 가능한 빨리
-   - 셋 다 준비되면 .helix-about-ready 클래스로 일괄 표시 */
+   시퀀스:
+   - 0ms          초기 (헤드/서브헤드/심볼/배경 비디오 모두 opacity:0)
+   - +200ms       헤드 fade-in (1.0s)
+   - +1200ms      심볼 + 서브헤드 fade-in (1.0s)
+   - +2200ms      배경 비디오 fade-in (1.2s)
+
+   배경 비디오는 Webflow 가 아닌 코드로 .About_Background 안에 주입.
+   ================================================================ */
 
 (function () {
   'use strict';
 
-  var READY_CLASS = 'helix-about-ready';
-  var HERO_FONT   = 'ds-endendend';
+  var HERO_FONT = 'ds-endendend';
+  var BG_PARENT_SELECTOR = '.About_Background, .about_background, .about-background';
+  var BG_VIDEO_PATH = 'about/bg-video.mp4';
   var DEBUG = /[?&]debug-about=1/.test(location.search);
   var t0 = performance.now();
-  var root = document.documentElement;
 
   function log() {
     if (!DEBUG) return;
@@ -22,21 +26,13 @@
     console.log.apply(console, args);
   }
 
-  function reveal(reason) {
-    if (root.classList.contains(READY_CLASS)) return;
-    root.classList.add(READY_CLASS);
-    log('reveal:', reason);
-  }
-
   function whenHeroFontReady() {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
-    var loads = [
+    return Promise.all([
       document.fonts.load('1em "' + HERO_FONT + '"').catch(function () {}),
       document.fonts.load('700 1em "' + HERO_FONT + '"').catch(function () {})
-    ];
-    return Promise.all(loads).then(function () {
-      /* fonts.load 는 다운로드 완료 시점만 보장. 실제 레이아웃이 새 폰트로
-         재계산되려면 한두 프레임 더 필요. 2x rAF 로 대기. */
+    ]).then(function () {
+      /* 폰트 다운로드 후 layout 재계산까지 2x rAF 대기 */
       return new Promise(function (resolve) {
         requestAnimationFrame(function () {
           requestAnimationFrame(function () { log('font ready'); resolve(); });
@@ -47,34 +43,21 @@
 
   function preloadSymbol() {
     var imgs = document.querySelectorAll('img.image-23');
-    if (!imgs.length) { log('no image-23 found'); return Promise.resolve(); }
-
+    if (!imgs.length) { log('no image-23'); return Promise.resolve(); }
     var promises = [];
     imgs.forEach(function (img) {
       try { img.loading = 'eager'; } catch (e) {}
       try { img.decoding = 'sync'; } catch (e) {}
       try { img.fetchPriority = 'high'; } catch (e) {}
-
       var src = img.currentSrc || img.src;
       if (src) {
-        /* <link rel=preload> 로 fetch 우선순위 끌어올리기 */
         try {
-          var link = document.createElement('link');
-          link.rel = 'preload';
-          link.as = 'image';
-          link.href = src;
-          link.fetchPriority = 'high';
-          document.head.appendChild(link);
+          var l = document.createElement('link');
+          l.rel = 'preload'; l.as = 'image'; l.href = src; l.fetchPriority = 'high';
+          document.head.appendChild(l);
         } catch (e) {}
-
-        /* Image() 로 한 번 더 프리페치 (브라우저 캐시 공유) */
-        try {
-          var pre = new Image();
-          pre.fetchPriority = 'high';
-          pre.src = src;
-        } catch (e) {}
+        try { var p = new Image(); p.fetchPriority = 'high'; p.src = src; } catch (e) {}
       }
-
       if (img.complete && img.naturalWidth > 0) return;
       promises.push(new Promise(function (resolve) {
         img.addEventListener('load', function () { log('image-23 loaded'); resolve(); }, { once: true });
@@ -84,13 +67,115 @@
     return Promise.all(promises);
   }
 
+  function injectBgVideo() {
+    var parent = document.querySelector(BG_PARENT_SELECTOR);
+    if (!parent) { log('bg parent not found'); return null; }
+    var existing = parent.querySelector('video.helix-bg-video');
+    if (existing) return existing;
+
+    var ref = window.HELIX_REF || 'main';
+    var src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + BG_VIDEO_PATH;
+
+    var v = document.createElement('video');
+    v.className = 'helix-bg-video';
+    v.muted = true;
+    v.defaultMuted = true;
+    v.autoplay = true;
+    v.loop = true;
+    v.playsInline = true;
+    v.preload = 'auto';
+    /* iOS Safari autoplay 보장용 속성 명시 */
+    v.setAttribute('muted', '');
+    v.setAttribute('autoplay', '');
+    v.setAttribute('loop', '');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    v.style.cssText = [
+      'position:absolute',
+      'inset:0',
+      'width:100%',
+      'height:100%',
+      'object-fit:cover',
+      'z-index:0',
+      'pointer-events:none',
+      'opacity:0'
+    ].join(';');
+    v.src = src;
+
+    if (getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    parent.insertBefore(v, parent.firstChild);
+    log('bg video injected:', src);
+    return v;
+  }
+
+  function whenVideoReady(v) {
+    if (!v) return Promise.resolve();
+    if (v.readyState >= 2) { log('video already ready'); return Promise.resolve(); }
+    return new Promise(function (resolve) {
+      var done = false;
+      function fin(reason) {
+        if (done) return; done = true;
+        log('video ready:', reason);
+        resolve();
+      }
+      v.addEventListener('loadeddata', function () { fin('loadeddata'); }, { once: true });
+      v.addEventListener('error', function () { fin('error'); }, { once: true });
+      setTimeout(function () { fin('timeout'); }, 4000);
+    });
+  }
+
+  function showAllImmediate(video) {
+    var els = document.querySelectorAll('.about-heading, .about_contents_sub-title, img.image-23');
+    els.forEach(function (el) { el.style.opacity = '1'; });
+    if (video) video.style.opacity = '1';
+  }
+
+  function runTimeline(video) {
+    if (typeof gsap === 'undefined') {
+      log('GSAP missing → fallback show');
+      showAllImmediate(video);
+      return;
+    }
+    var heading = document.querySelectorAll('.about-heading');
+    var subhead = document.querySelectorAll('.about_contents_sub-title');
+    var symbol  = document.querySelectorAll('img.image-23');
+
+    var tl = gsap.timeline({ delay: 0.2 });
+    if (heading.length) {
+      tl.to(heading, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+    }
+    var symAndSub = [].concat(Array.prototype.slice.call(symbol), Array.prototype.slice.call(subhead));
+    if (symAndSub.length) {
+      tl.to(symAndSub, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+    }
+    if (video) {
+      tl.to(video, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+    }
+    log('timeline started');
+  }
+
   function init() {
     log('init');
-    Promise.all([whenHeroFontReady(), preloadSymbol()]).then(function () {
-      reveal('all-ready');
-    });
+    var video = injectBgVideo();
+
+    var allReady = Promise.all([
+      whenHeroFontReady(),
+      preloadSymbol(),
+      whenVideoReady(video)
+    ]);
+
+    var started = false;
+    function start(reason) {
+      if (started) return; started = true;
+      log('start:', reason);
+      runTimeline(video);
+    }
+
+    allReady.then(function () { start('all-ready'); });
     /* 안전 폴백 */
-    setTimeout(function () { reveal('timeout'); }, 2500);
+    setTimeout(function () { start('timeout'); }, 4500);
   }
 
   if (document.readyState === 'loading') {
