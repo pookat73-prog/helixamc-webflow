@@ -103,11 +103,8 @@
   white-space: nowrap;
 }
 
-/* 섹션 2 — 스크롤 전 초기 숨김
+/* 섹션 2 — 본문박스만 스크롤 전 숨김 (제목/번호/블러는 애니메이션 제거 → 항상 노출)
    opacity:0 대신 visibility:hidden — Webflow IX2의 inline opacity:1 override 방지 */
-.about_contents_3-concept_qq,
-.about_contents_box_qqqqqqq,
-.blur-circle-efect,
 .about_three_contents-box {
   visibility: hidden;
 }
