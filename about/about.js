@@ -193,34 +193,58 @@
     if (!holder) { log('diagram-place-holder not found'); return; }
     if (holder.querySelector('.helix-hex-diagram')) return;
 
-    /* pointy-top 육각형: 위/아래가 점, 좌/우가 수직 엣지.
-       이미지의 honeycomb 패턴 — 위 2개, 아래 3개. */
+    /* pointy-top 육각형. 인접 헥사가 공유하는 엣지는 한쪽에서만 그려서
+       선이 두꺼워 보이는 현상 제거. */
     var s = 100;                 /* 변 길이 */
     var sqrt3 = Math.sqrt(3);
-    var w = sqrt3 * s;           /* 헥사 가로 */
+    var w = sqrt3 * s;           /* 헥사 가로 폭 */
 
+    /* 정점 인덱스: 0 top, 1 top-right, 2 bottom-right, 3 bottom, 4 bottom-left, 5 top-left
+       엣지 E_i 는 정점 i → (i+1)%6
+       각 hex 의 edges 배열 = 그릴 엣지 인덱스. 공유 엣지는 한쪽에서만 소유. */
     var hexes = [
-      { id: 'naekwa',     label: '내과',       cx: w * 0.5,  cy: -1.5 * s },
-      { id: 'oikwa',      label: '외과',       cx: w * 1.5,  cy: -1.5 * s },
-      { id: 'ankwa',      label: '안과',       cx: 0,        cy: 0 },
-      { id: 'yeongsang',  label: '영상의학과', cx: w,        cy: 0 },
-      { id: 'chikwa',     label: '치과',       cx: w * 2,    cy: 0 }
+      { id: 'naekwa',    label: '내과',       cx: w * 0.5, cy: -1.5 * s, edges: [0,1,2,3,4,5] },
+      { id: 'oikwa',     label: '외과',       cx: w * 1.5, cy: -1.5 * s, edges: [0,1,2,3,5]   },
+      { id: 'ankwa',     label: '안과',       cx: 0,       cy: 0,        edges: [1,2,3,4,5]   },
+      { id: 'yeongsang', label: '영상의학과', cx: w,       cy: 0,        edges: [1,2,3]       },
+      { id: 'chikwa',    label: '치과',       cx: w * 2,   cy: 0,        edges: [0,1,2,3]     }
     ];
 
-    var minX = -w/2,        maxX = w * 2 + w/2;     /* 좌측 안과의 left, 우측 치과의 right */
-    var minY = -1.5*s - s,  maxY = s;                /* 상단 내과의 top, 하단 안과의 bottom */
-    var pad = 4;
+    var minX = -w/2,        maxX = w * 2 + w/2;
+    var minY = -1.5*s - s,  maxY = s;
+    var pad = 2;
 
-    function hexPath(cx, cy) {
+    function vertices(cx, cy) {
       return [
-        'M', cx,         cy - s,
-        'L', cx + w/2,   cy - s/2,
-        'L', cx + w/2,   cy + s/2,
-        'L', cx,         cy + s,
-        'L', cx - w/2,   cy + s/2,
-        'L', cx - w/2,   cy - s/2,
-        'Z'
-      ].join(' ');
+        [cx,         cy - s],
+        [cx + w/2,   cy - s/2],
+        [cx + w/2,   cy + s/2],
+        [cx,         cy + s],
+        [cx - w/2,   cy + s/2],
+        [cx - w/2,   cy - s/2]
+      ];
+    }
+
+    function buildPath(verts, edges) {
+      var sorted = edges.slice().sort(function (a, b) { return a - b; });
+      var parts = [];
+      var i = 0;
+      while (i < sorted.length) {
+        var startVi = sorted[i];
+        var p = verts[startVi];
+        parts.push('M' + p[0].toFixed(3) + ' ' + p[1].toFixed(3));
+        var endVi = (startVi + 1) % 6;
+        p = verts[endVi];
+        parts.push('L' + p[0].toFixed(3) + ' ' + p[1].toFixed(3));
+        i++;
+        while (i < sorted.length && sorted[i] === endVi) {
+          endVi = (sorted[i] + 1) % 6;
+          p = verts[endVi];
+          parts.push('L' + p[0].toFixed(3) + ' ' + p[1].toFixed(3));
+          i++;
+        }
+      }
+      return parts.join(' ');
     }
 
     var svgNS = 'http://www.w3.org/2000/svg';
@@ -230,17 +254,20 @@
       (minX - pad) + ' ' + (minY - pad) + ' ' +
       (maxX - minX + pad * 2) + ' ' + (maxY - minY + pad * 2));
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    svg.style.width = '100%';
     svg.style.height = '100%';
+    svg.style.width = 'auto';
+    svg.style.maxWidth = '100%';
+    svg.style.maxHeight = '100%';
     svg.style.display = 'block';
     svg.style.overflow = 'visible';
 
     hexes.forEach(function (hx) {
+      var verts = vertices(hx.cx, hx.cy);
       var g = document.createElementNS(svgNS, 'g');
       g.setAttribute('class', 'hex hex-' + hx.id);
 
       var p = document.createElementNS(svgNS, 'path');
-      p.setAttribute('d', hexPath(hx.cx, hx.cy));
+      p.setAttribute('d', buildPath(verts, hx.edges));
       g.appendChild(p);
 
       var t = document.createElementNS(svgNS, 'text');
