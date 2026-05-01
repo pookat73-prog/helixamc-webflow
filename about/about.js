@@ -34,7 +34,15 @@
       document.fonts.load('1em "' + HERO_FONT + '"').catch(function () {}),
       document.fonts.load('700 1em "' + HERO_FONT + '"').catch(function () {})
     ];
-    return Promise.all(loads).then(function () { log('font ready'); });
+    return Promise.all(loads).then(function () {
+      /* fonts.load 는 다운로드 완료 시점만 보장. 실제 레이아웃이 새 폰트로
+         재계산되려면 한두 프레임 더 필요. 2x rAF 로 대기. */
+      return new Promise(function (resolve) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { log('font ready'); resolve(); });
+        });
+      });
+    });
   }
 
   function preloadSymbol() {
