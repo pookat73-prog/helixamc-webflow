@@ -44,28 +44,22 @@
   font-weight: 700;
 }
 
-/* About Contents — title 페이드 인 (뷰포트 60% 진입 시) + 밑줄 draw-in */
+/* About Contents — title 페이드 인 (뷰포트 60% 진입 시) */
 .about_contents-title {
   opacity: 0;
-  position: relative;
   transition: opacity 1s ease-out;
-}
-.about_contents-title::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -0.15em;
-  width: 100%;
-  height: 2px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.6s;
 }
 .about_contents-title.is-visible {
   opacity: 1;
 }
-.about_contents-title.is-visible::after {
+
+/* Divider blue grad — 좌→우 draw-in (뷰포트 60% 진입 시) */
+.divider_blue_grad_no-spacing-1 {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.divider_blue_grad_no-spacing-1.is-visible {
   transform: scaleX(1);
 }
 
