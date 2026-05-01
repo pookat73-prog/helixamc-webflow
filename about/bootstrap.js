@@ -7,6 +7,20 @@
 (function () {
   'use strict';
 
+  /* FOUC 방지: 첫 렌더부터 hero 요소를 숨기기 위해 CSS 도착을 기다리지 않고
+     인라인 <style> 을 동기적으로 주입. about.js 가 .helix-about-ready 를
+     <html> 에 부여하면 표시. */
+  try {
+    var s = document.createElement('style');
+    s.id = 'helix-about-fouc-guard';
+    s.textContent =
+      '.about-heading,.about_contents_sub-title,img.image-23{visibility:hidden}' +
+      'html.helix-about-ready .about-heading,' +
+      'html.helix-about-ready .about_contents_sub-title,' +
+      'html.helix-about-ready img.image-23{visibility:visible}';
+    (document.head || document.documentElement).appendChild(s);
+  } catch (e) {}
+
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
   var BRANCH = 'main';
