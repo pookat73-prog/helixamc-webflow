@@ -44,8 +44,12 @@
   font-weight: 700;
 }
 
-/* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
-.Home_Contents_3_QQ {
-  transform: rotate(-3deg);
-  transform-origin: center center;
+/* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기
+   Webflow 퍼블리시 시 클래스명이 소문자화되는 케이스 대응 */
+.Home_Contents_3_QQ,
+.home_contents_3_qq,
+[class*="ome_Contents_3_QQ"],
+[class*="ome_contents_3_qq"] {
+  transform: rotate(-3deg) !important;
+  transform-origin: center center !important;
 }
