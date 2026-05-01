@@ -369,7 +369,8 @@
       }
     });
 
-    /* Erase: btn2 바텀이 헤더 하단에 닿는 순간 꼬리 출발 → sec3 헤딩 top 40% 에서 소멸 */
+    /* Erase: btn2 바텀이 헤더 하단에 닿는 순간 꼬리 출발 → sec3 헤딩 top 20% 에서 소멸
+       (top 40% → 20% 로 늦춤 — 선이 좀 더 오래 보이도록) */
     var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
     var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
     log('mZig navbarH=' + navbarH + ' eraseStart="' + eraseStart + '" H=' + H.toFixed(0));
@@ -377,7 +378,7 @@
       trigger: btn2,
       start: eraseStart,
       endTrigger: sec3Head,
-      end: 'top 40%',
+      end: 'top 20%',
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
