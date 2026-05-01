@@ -305,7 +305,7 @@
   }
 
   function initViewport60FadeIn() {
-    var sel = '.about_contents-title, .divider_blue_grad_no-spacing-1';
+    var sel = '.about_contents-title, .divider_blue_grad_no-spacing-1, .about_three_contents-box';
     var els = document.querySelectorAll(sel);
     if (!els.length) { log('no viewport-60 targets'); return; }
     if (!('IntersectionObserver' in window)) {
