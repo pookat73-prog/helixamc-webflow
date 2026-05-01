@@ -100,6 +100,30 @@ a[href^="tel:"]:hover .home_branch-card_call-number {
 }
 
 /* ============================================================
+   MOBILE (≤767px) — 섹션 4 카드 가시성 강제 보장
+   - sections-animations.js 의 cardSections 픽업이 실패하거나
+     Webflow Designer 모바일 작업으로 카드 클래스가 바뀌어 셀렉터
+     매칭이 실패해도 카드가 영구히 안 보이는 상황 방지.
+   - JS 트리거 없이도 카드 + SVICC 가 즉시 visible.
+   - 그림자는 .is-shadowed 토글 없이 상시 노출.
+   ============================================================ */
+@media (max-width: 767px) {
+  .home_branch-card,
+  .flex-block-22 > .div-block-151 {
+    opacity: 1 !important;
+    transform: none !important;
+    box-shadow:
+      0 12px 20px -8px rgba(107, 125, 153, 0.55),
+      0 22px 36px -14px rgba(107, 125, 153, 0.12);
+  }
+
+  .home_background_svicc {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
    MOBILE (≤767px): 카드 1열 세로 스택 + SVICC X축 슬라이드 제거
    - flex-direction: column 으로 카드 1열 강제
    - SVICC 초기 translateX(20px) 제거 → GSAP x:0 애니메이션은 무효화되지만
