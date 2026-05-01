@@ -5,16 +5,12 @@
 /* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
 .diagram-place-holder {
   position: relative;
-  display: flex;
-  align-items: flex-start;       /* 상단 기준 (strategy 박스 윗면) */
-  justify-content: center;
+  overflow: hidden;
 }
 
 .helix-hex-diagram {
+  width: 100%;
   height: 100%;
-  width: auto;
-  max-width: 100%;
-  max-height: 100%;
   display: block;
 }
 
