@@ -1,4 +1,17 @@
 /* ================================================================
    HELIX AMC - ABOUT PAGE CSS
    ================================================================
-   현재 어바웃 페이지는 인터랙션 없는 깨끗한 상태. */
+   FOUC 방지: 폰트/이미지 로드 완료 전까지 hero 요소 숨김.
+   about.js 가 .helix-about-ready 클래스를 <html> 에 부여하면 표시. */
+
+.about-heading,
+.about_contents_sub-title,
+img.image-23 {
+  visibility: hidden;
+}
+
+html.helix-about-ready .about-heading,
+html.helix-about-ready .about_contents_sub-title,
+html.helix-about-ready img.image-23 {
+  visibility: visible;
+}
