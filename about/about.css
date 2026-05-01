@@ -55,12 +55,18 @@
 
 /* Divider blue grad — 좌→우 draw-in (뷰포트 60% 진입 시) */
 .divider_blue_grad_no-spacing-1 {
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  transform: scaleX(0) !important;
+  transform-origin: left center !important;
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1) !important;
 }
 .divider_blue_grad_no-spacing-1.is-visible {
-  transform: scaleX(1);
+  transform: scaleX(1) !important;
+}
+
+/* 혹시 모를 .about_contents-title::after 잔존 시 (구 캐시 대비) 강제 비표시 */
+.about_contents-title::after,
+.about_contents-title::before {
+  content: none !important;
 }
 
 /* Divider blue grad — 좌→우 draw-in (뷰포트 60% 진입 시) */
