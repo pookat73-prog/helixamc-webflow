@@ -64,16 +64,12 @@
     }, 1800);
   }
 
-  /* 화면에 실제로 렌더링되는지 확인 (display:none 부모 포함 거름)
-     - getBoundingClientRect 가 0×0 이면 본인 또는 조상 어딘가에서
-       display:none → 렌더 안 됨 (가장 신뢰성 있는 검사)
-     - 보조로 computedStyle display/visibility 확인 (사이즈는 있지만
-       visibility:hidden 인 케이스 등)
-     - position:fixed 등으로 offsetParent 가 null 이어도 rect 가 살아있으면 visible */
+  /* 화면에 실제로 렌더링되는지 확인 (display:none 부모 포함 거름) */
   function isVisible(el) {
     if (!el) return false;
-    var rect = el.getBoundingClientRect();
-    if (rect.width === 0 && rect.height === 0) return false;
+    if (el.offsetParent !== null) return true;
+    /* offsetParent 가 null 인 경우: position:fixed 거나 display:none 조상.
+       보수적으로 getComputedStyle 검사 */
     var s = getComputedStyle(el);
     return s.display !== 'none' && s.visibility !== 'hidden';
   }
@@ -352,22 +348,11 @@
       path.setAttribute('stroke-dashoffset', dashOffset);
     }
 
-    /* Draw: btn2 바텀 마커가 뷰포트 center 도달 → sec3 헤딩 top 75% 까지 그리기
-       init 시점에 이미 자연 시작점을 지나친 경우 마커를 시프트해 progress=0 보장
-       (헬릭스 라인과 동일 패턴 — 라인이 반쯤 그어진 채 등장하는 현상 방지) */
-    var viewportH         = window.innerHeight;
-    var naturalStartScroll = startY_abs - viewportH / 2;
-    var markerY           = startY_abs;
-    if (scrollY > naturalStartScroll) {
-      markerY = scrollY + viewportH / 2;
-      log('mZig marker shifted: scroll=' + scrollY +
-          ' natural=' + naturalStartScroll.toFixed(0) +
-          ' → markerY=' + markerY.toFixed(0));
-    }
+    /* Draw: btn2 바텀 마커가 뷰포트 center 도달 → sec3 헤딩 top 75% 까지 그리기 */
     var marker = document.createElement('div');
     marker.setAttribute('data-zig-marker-mobile', '1');
     marker.style.cssText =
-      'position:absolute;top:' + markerY + 'px;left:0;' +
+      'position:absolute;top:' + startY_abs + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
 
@@ -384,34 +369,20 @@
       }
     });
 
-    /* Erase: 라인 영역 자체를 trigger 마커로 사용 (top=startY_abs, height=H).
-         start: 'top {navbarH}px'    → marker top 이 헤더 하단 도달
-                                      = scrollY = startY_abs - navbarH
-         end:   'bottom {navbarH}px' → marker bottom 이 헤더 하단 도달
-                                      = scrollY = endY_abs - navbarH
-       범위 = H. 스크롤 1px = 라인 1px 지움. scrub:true 로 역방향 자동 복원.
-       (이전 시도: trigger 요소 없이 absolute scrollY → ScrollTrigger 가
-        등록·발사 자체를 안 하는 케이스 발생) */
-    var navbarH      = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var navAnchor    = navbarH > 0 ? navbarH + 'px' : 'top';
-    var eraseMarker  = document.createElement('div');
-    eraseMarker.setAttribute('data-zig-erase-marker-mobile', '1');
-    eraseMarker.style.cssText =
-      'position:absolute;top:' + startY_abs + 'px;left:0;' +
-      'width:1px;height:' + H + 'px;pointer-events:none;';
-    document.body.appendChild(eraseMarker);
-    log('mZig erase marker: top=' + startY_abs.toFixed(0) +
-        ' H=' + H.toFixed(0) + ' navbarH=' + navbarH);
+    /* Erase: btn2 바텀이 헤더 하단에 닿는 순간 꼬리 출발 → sec3 헤딩 top 40% 에서 소멸 */
+    var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
+    log('mZig navbarH=' + navbarH + ' eraseStart="' + eraseStart + '" H=' + H.toFixed(0));
     ScrollTrigger.create({
-      trigger: eraseMarker,
-      start: 'top ' + navAnchor,
-      end:   'bottom ' + navAnchor,
+      trigger: btn2,
+      start: eraseStart,
+      endTrigger: sec3Head,
+      end: 'top 40%',
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
         tailProgress = self.progress;
         applyDash();
-        if (DEBUG) log('mZig erase progress=' + self.progress.toFixed(3));
       }
     });
 
@@ -422,30 +393,20 @@
     if (zigInitialized) return;
     if (!window.gsap || !window.ScrollTrigger) return;
 
-    /* 필요 요소 탐색 — 데스크/모바일 듀얼 섹션 구조 대응:
-       hidden 인 데스크 사본을 거르고 가시(visible) 요소만 픽업.
-       headings[0/1] 인덱스 기반 → 'visible 만 모은 배열'의 [0]/[1] 로 변경. */
-    var btn1 = document.querySelector('.discover-helix_button');
-
-    var allBtn2 = document.querySelectorAll('.bt-box-2');
-    var btn2    = null;
-    for (var j = 0; j < allBtn2.length; j++) {
-      if (isVisible(allBtn2[j])) { btn2 = allBtn2[j]; break; }
+    /* 필요 요소 탐색 — 보이는 sec3 헤딩 중 첫 번째 픽업
+       (데스크/모바일 듀얼 구조에서 인덱스 의존 제거) */
+    var btn1     = document.querySelector('.discover-helix_button');
+    var btn2     = document.querySelector('.bt-box-2');
+    var headings = document.querySelectorAll('.section2-heading');
+    var sec3Head = null;
+    for (var i = 1; i < headings.length; i++) {
+      if (isVisible(headings[i])) { sec3Head = headings[i]; break; }
     }
-
-    var allHeadings     = document.querySelectorAll('.section2-heading');
-    var visibleHeadings = [];
-    for (var k = 0; k < allHeadings.length; k++) {
-      if (isVisible(allHeadings[k])) visibleHeadings.push(allHeadings[k]);
-    }
-    var sec3Head = visibleHeadings[1] || null;  /* 두 번째 visible heading = sec3 */
 
     /* 모바일은 btn1(hero) 의존 없이 btn2 + sec3Head 만 있으면 됨 */
     var isMobile = window.innerWidth <= 767;
     if (!btn2 || !sec3Head || (!isMobile && !btn1)) {
-      log('zigLine: btn1=' + !!btn1 + ' btn2=' + !!btn2 +
-          ' sec3Head=' + !!sec3Head +
-          ' visibleHeadings=' + visibleHeadings.length + ' → skip');
+      log('zigLine: btn1=' + !!btn1 + ' btn2=' + !!btn2 + ' sec3Head=' + !!sec3Head + ' → skip');
       return;
     }
 
@@ -643,22 +604,11 @@
       zigPath.setAttribute('stroke-dashoffset', dashOffset);
     }
 
-    /* 마커: bt-box-2 바텀 절대 좌표 (Draw 기준점)
-       init 시점에 이미 자연 시작점을 지나친 경우 마커를 시프트해 progress=0 보장
-       (헬릭스 라인과 동일 패턴 — 라인이 반쯤 그어진 채 등장하는 현상 방지) */
-    var viewportH_zig         = window.innerHeight;
-    var naturalStartScroll_zig = startY_abs - viewportH_zig / 2;
-    var markerY_zig           = startY_abs;
-    if (scrollY > naturalStartScroll_zig) {
-      markerY_zig = scrollY + viewportH_zig / 2;
-      log('zig marker shifted: scroll=' + scrollY +
-          ' natural=' + naturalStartScroll_zig.toFixed(0) +
-          ' → markerY=' + markerY_zig.toFixed(0));
-    }
+    /* 마커: bt-box-2 바텀 절대 좌표 (Draw 기준점) */
     var marker = document.createElement('div');
     marker.setAttribute('data-zig-marker', '1');
     marker.style.cssText =
-      'position:absolute;top:' + markerY_zig + 'px;left:0;' +
+      'position:absolute;top:' + startY_abs + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
 
@@ -676,31 +626,20 @@
       }
     });
 
-    /* Erase: 라인 영역을 trigger 마커로 사용 (모바일 분기와 동일 방식).
-       마커 div: top=startY_abs, height=H 로 라인과 동일 영역 점유.
-         start: 'top {navbarH}px'    → scrollY = startY_abs - navbarH
-         end:   'bottom {navbarH}px' → scrollY = endY_abs - navbarH
-       범위 = H. 사선 구간은 remapTail 으로 시각 속도 보정. */
-    var navbarH      = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var navAnchor    = navbarH > 0 ? navbarH + 'px' : 'top';
-    var eraseMarker  = document.createElement('div');
-    eraseMarker.setAttribute('data-zig-erase-marker', '1');
-    eraseMarker.style.cssText =
-      'position:absolute;top:' + startY_abs + 'px;left:0;' +
-      'width:1px;height:' + H + 'px;pointer-events:none;';
-    document.body.appendChild(eraseMarker);
-    log('zigLine erase marker: top=' + startY_abs.toFixed(0) +
-        ' H=' + H.toFixed(0) + ' navbarH=' + navbarH);
+    /* Erase: btn2 bottom이 헤더 하단에 가려지는 순간 꼬리 출발 (헬릭스 라인과 동일) */
+    var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
+    log('zigLine navbarH=' + navbarH + ' eraseStart="' + eraseStart + '"');
     ScrollTrigger.create({
-      trigger: eraseMarker,
-      start: 'top ' + navAnchor,
-      end:   'bottom ' + navAnchor,
+      trigger: btn2,
+      start: eraseStart,
+      endTrigger: sec3Head,
+      end: 'top 40%',
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
         tailProgress = remapTail(self.progress);
         applyDash();
-        if (DEBUG) log('zigLine erase progress=' + self.progress.toFixed(3));
       }
     });
 
