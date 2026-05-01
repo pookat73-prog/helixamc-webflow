@@ -60,12 +60,14 @@
 }
 
 /* Divider blue grad — 좌→우 draw-in (뷰포트 80% 진입 시) */
-.divider_blue_grad_no-spacing-1 {
+.divider_blue_grad_no-spacing-1,
+.divider_blue_grad_no-spacing {
   transform: scaleX(0) !important;
   transform-origin: left center !important;
   transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1) !important;
 }
-.divider_blue_grad_no-spacing-1.is-visible {
+.divider_blue_grad_no-spacing-1.is-visible,
+.divider_blue_grad_no-spacing.is-visible {
   transform: scaleX(1) !important;
 }
 
