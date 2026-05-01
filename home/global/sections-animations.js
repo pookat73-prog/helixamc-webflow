@@ -64,12 +64,16 @@
     }, 1800);
   }
 
-  /* 화면에 실제로 렌더링되는지 확인 (display:none 부모 포함 거름) */
+  /* 화면에 실제로 렌더링되는지 확인 (display:none 부모 포함 거름)
+     - getBoundingClientRect 가 0×0 이면 본인 또는 조상 어딘가에서
+       display:none → 렌더 안 됨 (가장 신뢰성 있는 검사)
+     - 보조로 computedStyle display/visibility 확인 (사이즈는 있지만
+       visibility:hidden 인 케이스 등)
+     - position:fixed 등으로 offsetParent 가 null 이어도 rect 가 살아있으면 visible */
   function isVisible(el) {
     if (!el) return false;
-    if (el.offsetParent !== null) return true;
-    /* offsetParent 가 null 인 경우: position:fixed 거나 display:none 조상.
-       보수적으로 getComputedStyle 검사 */
+    var rect = el.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) return false;
     var s = getComputedStyle(el);
     return s.display !== 'none' && s.visibility !== 'hidden';
   }
