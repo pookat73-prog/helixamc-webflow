@@ -384,15 +384,18 @@
       }
     });
 
-    /* Erase: btn2 바텀이 헤더 하단에 닿는 순간 꼬리 출발 → sec3 헤딩 top 40% 에서 소멸 */
-    var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
-    log('mZig navbarH=' + navbarH + ' eraseStart="' + eraseStart + '" H=' + H.toFixed(0));
+    /* Erase: 버튼이 헤더 아래로 사라지는 스크롤 구간 = 버튼 top→bottom 이
+       헤더 하단을 통과하는 동안. 범위 = 버튼 높이 → 스크롤 움직임과 1:1
+       매칭으로 자연스럽게 꼬리부터 지워짐.
+       (이전: end='sec3Head top 40%' → 모바일 짧은 뷰포트에서 음수 범위
+        → 통째로 뿅 사라짐) */
+    var navbarH = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var pxAnchor = navbarH > 0 ? navbarH + 'px' : 'top';
+    log('mZig navbarH=' + navbarH + ' eraseRange=btn2[top→bottom] hits ' + pxAnchor + ' H=' + H.toFixed(0));
     ScrollTrigger.create({
       trigger: btn2,
-      start: eraseStart,
-      endTrigger: sec3Head,
-      end: 'top 40%',
+      start: 'top ' + pxAnchor,
+      end:   'bottom ' + pxAnchor,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
@@ -662,15 +665,16 @@
       }
     });
 
-    /* Erase: btn2 bottom이 헤더 하단에 가려지는 순간 꼬리 출발 (헬릭스 라인과 동일) */
-    var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
-    log('zigLine navbarH=' + navbarH + ' eraseStart="' + eraseStart + '"');
+    /* Erase: 버튼이 헤더 아래로 사라지는 스크롤 구간 = btn2 top→bottom 이
+       헤더 하단을 통과하는 동안. 범위 = 버튼 높이 → 스크롤 움직임과 1:1
+       매칭으로 자연스럽게 꼬리부터 지워짐. */
+    var navbarH  = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var pxAnchor = navbarH > 0 ? navbarH + 'px' : 'top';
+    log('zigLine navbarH=' + navbarH + ' eraseRange=btn2[top→bottom] hits ' + pxAnchor);
     ScrollTrigger.create({
       trigger: btn2,
-      start: eraseStart,
-      endTrigger: sec3Head,
-      end: 'top 40%',
+      start: 'top ' + pxAnchor,
+      end:   'bottom ' + pxAnchor,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
