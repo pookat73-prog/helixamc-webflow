@@ -12,7 +12,7 @@
 .helix-hex-diagram .hex path {
   fill: transparent;
   stroke: #0075d6;
-  stroke-width: 2;
+  stroke-width: 1;
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }

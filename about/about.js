@@ -193,30 +193,32 @@
     if (!holder) { log('diagram-place-holder not found'); return; }
     if (holder.querySelector('.helix-hex-diagram')) return;
 
-    var s = 100;
+    /* pointy-top 육각형: 위/아래가 점, 좌/우가 수직 엣지.
+       이미지의 honeycomb 패턴 — 위 2개, 아래 3개. */
+    var s = 100;                 /* 변 길이 */
     var sqrt3 = Math.sqrt(3);
-    var h = sqrt3 * s;
+    var w = sqrt3 * s;           /* 헥사 가로 */
 
     var hexes = [
-      { id: 'naekwa',     label: '내과',       cx: 1.5 * s, cy: 0.5 * h },
-      { id: 'oikwa',      label: '외과',       cx: 4.5 * s, cy: 0.5 * h },
-      { id: 'ankwa',      label: '안과',       cx: 0,       cy: 1.0 * h },
-      { id: 'yeongsang',  label: '영상의학과', cx: 3.0 * s, cy: 1.0 * h },
-      { id: 'chikwa',     label: '치과',       cx: 6.0 * s, cy: 1.0 * h }
+      { id: 'naekwa',     label: '내과',       cx: w * 0.5,  cy: -1.5 * s },
+      { id: 'oikwa',      label: '외과',       cx: w * 1.5,  cy: -1.5 * s },
+      { id: 'ankwa',      label: '안과',       cx: 0,        cy: 0 },
+      { id: 'yeongsang',  label: '영상의학과', cx: w,        cy: 0 },
+      { id: 'chikwa',     label: '치과',       cx: w * 2,    cy: 0 }
     ];
 
-    var minX = -s, maxX = 7 * s;
-    var minY = 0, maxY = 1.5 * h;
+    var minX = -w/2,        maxX = w * 2 + w/2;     /* 좌측 안과의 left, 우측 치과의 right */
+    var minY = -1.5*s - s,  maxY = s;                /* 상단 내과의 top, 하단 안과의 bottom */
     var pad = 4;
 
     function hexPath(cx, cy) {
       return [
-        'M', cx - s, cy,
-        'L', cx - s/2, cy - h/2,
-        'L', cx + s/2, cy - h/2,
-        'L', cx + s, cy,
-        'L', cx + s/2, cy + h/2,
-        'L', cx - s/2, cy + h/2,
+        'M', cx,         cy - s,
+        'L', cx + w/2,   cy - s/2,
+        'L', cx + w/2,   cy + s/2,
+        'L', cx,         cy + s,
+        'L', cx - w/2,   cy + s/2,
+        'L', cx - w/2,   cy - s/2,
         'Z'
       ].join(' ');
     }
@@ -224,7 +226,9 @@
     var svgNS = 'http://www.w3.org/2000/svg';
     var svg = document.createElementNS(svgNS, 'svg');
     svg.setAttribute('class', 'helix-hex-diagram');
-    svg.setAttribute('viewBox', (minX - pad) + ' ' + (minY - pad) + ' ' + (maxX - minX + pad * 2) + ' ' + (maxY - minY + pad * 2));
+    svg.setAttribute('viewBox',
+      (minX - pad) + ' ' + (minY - pad) + ' ' +
+      (maxX - minX + pad * 2) + ' ' + (maxY - minY + pad * 2));
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     svg.style.width = '100%';
     svg.style.height = '100%';
