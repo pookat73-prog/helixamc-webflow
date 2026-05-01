@@ -212,6 +212,10 @@
       { id: 'chikwa',    label: '치과',       cx: w * 2,   cy: 0,        edges: [0,1,2,3]     }
     ];
 
+    /* 모션 시퀀서가 hex 메타 (cx/cy/inner 등) 를 다시 측정하지 않고 쓸 수
+       있도록 노출. */
+    window.__helixHexes = hexes;
+
     var INNER_SCALE = 0.93;
 
     var minX = -w/2,        maxX = w * 2 + w/2;
@@ -274,20 +278,93 @@
     svg.style.display = 'block';
     svg.style.overflow = 'hidden';
 
+    var defs = document.createElementNS(svgNS, 'defs');
+    svg.appendChild(defs);
+
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
       var g = document.createElementNS(svgNS, 'g');
       g.setAttribute('class', 'hex hex-' + hx.id);
+      g.setAttribute('data-cx', hx.cx);
+      g.setAttribute('data-cy', hx.cy);
 
       var p = document.createElementNS(svgNS, 'path');
       p.setAttribute('d', buildPath(verts, hx.edges));
       g.appendChild(p);
 
       if (hx.inner) {
+        var innerD = fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE));
+
         var inner = document.createElementNS(svgNS, 'path');
         inner.setAttribute('class', 'hex-inner');
-        inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
+        inner.setAttribute('d', innerD);
         g.appendChild(inner);
+
+        /* Phase B 펄스용 emit 클론.
+           inner 와 동일 path 를 그대로 한 장 더 깔아두고, 시그니처 모션
+           시점에 "원본은 그대로 → 이 클론이 안쪽으로 작아지며 흐려져
+           사라짐" = "이너가 또다른 외곽선을 한 번 쏘고 사라지는" 효과. */
+        var emit = document.createElementNS(svgNS, 'path');
+        emit.setAttribute('class', 'hex-emit');
+        emit.setAttribute('d', innerD);
+        g.appendChild(emit);
+      } else {
+        /* Phase B 광선 sweep — beam 이 hex 영역 밖으로 새지 않도록
+           full hex 모양으로 clipPath 를 박아두고, 그 안에서 대각선 라인
+           이 평행 이동으로 훑고 지나가게 한다. */
+        var clipId = 'helixhex-clip-' + hx.id;
+        var clip = document.createElementNS(svgNS, 'clipPath');
+        clip.setAttribute('id', clipId);
+        var clipShape = document.createElementNS(svgNS, 'path');
+        clipShape.setAttribute('d', fullHexPath(verts));
+        clip.appendChild(clipShape);
+        defs.appendChild(clip);
+
+        var gradId = 'helixhex-beam-grad-' + hx.id;
+        var grad = document.createElementNS(svgNS, 'linearGradient');
+        grad.setAttribute('id', gradId);
+        grad.setAttribute('gradientUnits', 'objectBoundingBox');
+        grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
+        grad.setAttribute('x2', '1'); grad.setAttribute('y2', '1');
+        [
+          { o: 0.00, c: '#0075d6', a: 0 },
+          { o: 0.40, c: '#7fc4ff', a: 0.55 },
+          { o: 0.50, c: '#ffffff', a: 1 },
+          { o: 0.60, c: '#7fc4ff', a: 0.55 },
+          { o: 1.00, c: '#0075d6', a: 0 }
+        ].forEach(function (st) {
+          var stop = document.createElementNS(svgNS, 'stop');
+          stop.setAttribute('offset', st.o);
+          stop.setAttribute('stop-color', st.c);
+          stop.setAttribute('stop-opacity', st.a);
+          grad.appendChild(stop);
+        });
+        defs.appendChild(grad);
+
+        /* 외부 그룹: clip 고정 (transform 없음).
+           내부 mover 그룹: beam 라인을 perpendicular 방향으로 평행 이동 →
+           clip 영역 안에서만 보이는 사선 광선이 된다. */
+        var beamWrap = document.createElementNS(svgNS, 'g');
+        beamWrap.setAttribute('class', 'hex-beam-wrap');
+        beamWrap.setAttribute('clip-path', 'url(#' + clipId + ')');
+
+        var mover = document.createElementNS(svgNS, 'g');
+        mover.setAttribute('class', 'hex-beam-mover');
+
+        var beam = document.createElementNS(svgNS, 'line');
+        beam.setAttribute('class', 'hex-beam');
+        /* 길이 3s, (1,1) 방향 라인. perpendicular 평행 이동으로 hex 한쪽에서
+           반대쪽까지 sweep. */
+        var halfDiag = s * 1.5;
+        var dl = halfDiag / Math.sqrt(2);
+        beam.setAttribute('x1', hx.cx - dl);
+        beam.setAttribute('y1', hx.cy - dl);
+        beam.setAttribute('x2', hx.cx + dl);
+        beam.setAttribute('y2', hx.cy + dl);
+        beam.setAttribute('stroke', 'url(#' + gradId + ')');
+        mover.appendChild(beam);
+        beamWrap.appendChild(mover);
+        g.appendChild(beamWrap);
       }
 
       var t = document.createElementNS(svgNS, 'text');
@@ -304,6 +381,115 @@
 
     holder.appendChild(svg);
     log('hex diagram rendered');
+  }
+
+  /* ================================================================
+     Hex Diagram — Section 1 모션 시퀀스
+     ================================================================
+     Phase A : 내 → 외 → 영 → 안 → 치 순서로 페이드인 + 스케일 인
+     Phase B : 모두 등장 후 시그니처 모션
+       - 내·외·영 (inner 보유): inner 외곽선이 또다른 외곽선 한 장을 쏘고,
+         그 클론이 안으로 작아지며 흐려져 사라짐
+       - 안·치 (inner 없음): 사선 광선이 hex 를 한 번 훑고 지나감 (clipPath
+         로 hex 영역 안에서만 보임)
+     트리거: .diagram-place-holder 가 뷰포트 진입 시 한 번만 재생.
+     ================================================================ */
+  function initHexAnimations() {
+    if (typeof gsap === 'undefined') { log('GSAP missing → skip hex anim'); return; }
+    var holder = document.querySelector('.diagram-place-holder');
+    var svg = holder && holder.querySelector('.helix-hex-diagram');
+    if (!svg) { log('hex svg not found → skip anim'); return; }
+
+    var hexes = window.__helixHexes || [];
+    if (!hexes.length) { log('no hex meta'); return; }
+
+    /* 초기 상태 — CSS 가 .hex { opacity: 0 } 로 가려 두지만 transform 까지
+       명시적으로 세팅해서 첫 페인트와 첫 트윈 사이 점프 방지. */
+    hexes.forEach(function (hx) {
+      var g = svg.querySelector('.hex-' + hx.id);
+      if (!g) return;
+      gsap.set(g, {
+        opacity: 0,
+        scale: 0.55,
+        svgOrigin: hx.cx + ' ' + hx.cy
+      });
+      if (hx.inner) {
+        var emit = g.querySelector('.hex-emit');
+        if (emit) gsap.set(emit, { opacity: 0, scale: 1, svgOrigin: hx.cx + ' ' + hx.cy });
+      } else {
+        var mover = g.querySelector('.hex-beam-mover');
+        if (mover) gsap.set(mover, { opacity: 0, x: 0, y: 0 });
+      }
+    });
+
+    function play() {
+      var tl = gsap.timeline();
+
+      /* Phase A — 사용자 지정 등장 순서: 내 → 외 → 영 → 안 → 치 */
+      var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
+      var STAGGER = 0.22;
+      var ENTER_DUR = 0.6;
+      order.forEach(function (id, i) {
+        var g = svg.querySelector('.hex-' + id);
+        if (!g) return;
+        tl.to(g, {
+          opacity: 1,
+          scale: 1,
+          duration: ENTER_DUR,
+          ease: 'back.out(1.1)'
+        }, i * STAGGER);
+      });
+
+      /* Phase B — 모두 등장 + 짧은 호흡 후 시그니처 모션 */
+      var phaseB = tl.duration() + 0.35;
+
+      hexes.forEach(function (hx, i) {
+        if (!hx.inner) return;
+        var emit = svg.querySelector('.hex-' + hx.id + ' .hex-emit');
+        if (!emit) return;
+        /* 안으로 작아지며 흐려지는 단발 펄스. 헥사별 미세 stagger 로
+           세 hex 가 동시에 터지지 않고 살짝 어긋나 보이게. */
+        tl.fromTo(emit,
+          { opacity: 0.95, scale: 1 },
+          {
+            opacity: 0,
+            scale: 0.5,
+            duration: 0.75,
+            ease: 'power2.out',
+            svgOrigin: hx.cx + ' ' + hx.cy
+          },
+          phaseB + i * 0.08
+        );
+      });
+
+      hexes.forEach(function (hx, i) {
+        if (hx.inner) return;
+        var mover = svg.querySelector('.hex-' + hx.id + ' .hex-beam-mover');
+        if (!mover) return;
+        /* 라인은 (1,1) 방향. perpendicular = (1,-1) / √2.
+           beam 을 (1,-1) 방향으로 멀리 → (-1,1) 방향으로 멀리 끌어당기면
+           hex 한쪽 바깥에서 반대쪽 바깥까지 사선으로 훑는다. */
+        var SWEEP = 200;
+        var d = SWEEP / Math.sqrt(2);
+        var beamStart = phaseB + 0.18 + i * 0.14;
+        tl.set(mover,   { x:  d, y: -d, opacity: 0 }, beamStart);
+        tl.to(mover,    { opacity: 1, duration: 0.12, ease: 'power1.out' }, beamStart);
+        tl.to(mover,    { x: -d, y:  d, duration: 0.55, ease: 'sine.inOut' }, beamStart);
+        tl.to(mover,    { opacity: 0, duration: 0.16, ease: 'power1.in' }, beamStart + 0.55);
+      });
+
+      log('hex timeline duration:', tl.duration().toFixed(2) + 's');
+    }
+
+    if (!('IntersectionObserver' in window)) { play(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        play();
+      });
+    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(holder);
   }
 
   function initViewport60FadeIn() {
@@ -403,6 +589,7 @@
   function init() {
     log('init');
     renderHexDiagram();
+    initHexAnimations();
     initViewport60FadeIn();
     setupBgFit();
     var video = injectBgVideo();
