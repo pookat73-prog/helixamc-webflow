@@ -40,6 +40,11 @@
   var initialized    = false;
   var zigInitialized = false;
 
+  /* 지그/세로 라인 cleanup용 ref — resize 시 폐기 후 재생성 */
+  var zigSvgEl    = null;
+  var zigMarkerEl = null;
+  var zigTriggers = [];
+
   /* ============================================================
      fallbackCopy / flashSuccess (복사 버튼 헬퍼)
   ============================================================ */
@@ -365,6 +370,7 @@
       document.body.style.position = 'relative';
     }
     document.body.appendChild(svg);
+    zigSvgEl = svg;
 
     var pathLength = path.getTotalLength() || H;
     path.setAttribute('stroke-dasharray', '0 ' + pathLength);
@@ -386,8 +392,9 @@
       'position:absolute;top:' + startY_abs + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
+    zigMarkerEl = marker;
 
-    ScrollTrigger.create({
+    zigTriggers.push(ScrollTrigger.create({
       trigger: marker,
       start: 'top center',
       endTrigger: sec3Head,
@@ -398,14 +405,14 @@
         headProgress = self.progress;
         applyDash();
       }
-    });
+    }));
 
     /* Erase: btn2 바텀이 헤더 하단에 닿는 순간 꼬리 출발 → sec3 헤딩 top 20% 에서 소멸
        (top 40% → 20% 로 늦춤 — 선이 좀 더 오래 보이도록) */
     var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
     var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
     log('mZig navbarH=' + navbarH + ' eraseStart="' + eraseStart + '" H=' + H.toFixed(0));
-    ScrollTrigger.create({
+    zigTriggers.push(ScrollTrigger.create({
       trigger: btn2,
       start: eraseStart,
       endTrigger: sec3Head,
@@ -416,7 +423,7 @@
         tailProgress = self.progress;
         applyDash();
       }
-    });
+    }));
 
     log('mobile vertical zig-line drawn, H=' + H.toFixed(0));
   }
@@ -571,6 +578,7 @@
       document.body.style.position = 'relative';
     }
     document.body.appendChild(zigSvg);
+    zigSvgEl = zigSvg;
 
     /* SVG: startX 와 endX 양방향 포괄 */
     var pad      = 20;
@@ -674,9 +682,10 @@
       'position:absolute;top:' + startY_abs + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
+    zigMarkerEl = marker;
 
     /* Draw: marker top → 뷰포트 center → sec3 헤딩 top 75% */
-    ScrollTrigger.create({
+    zigTriggers.push(ScrollTrigger.create({
       trigger: marker,
       start: 'top center',
       endTrigger: sec3Head,
@@ -687,13 +696,13 @@
         headProgress = self.progress;
         applyDash();
       }
-    });
+    }));
 
     /* Erase: btn2 bottom이 헤더 하단에 가려지는 순간 꼬리 출발 (헬릭스 라인과 동일) */
     var navbarH    = (navbar && navbar.getBoundingClientRect().height) || 0;
     var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
     log('zigLine navbarH=' + navbarH + ' eraseStart="' + eraseStart + '"');
-    ScrollTrigger.create({
+    zigTriggers.push(ScrollTrigger.create({
       trigger: btn2,
       start: eraseStart,
       endTrigger: sec3Head,
@@ -704,7 +713,7 @@
         tailProgress = remapTail(self.progress);
         applyDash();
       }
-    });
+    }));
 
     log('zigLine done, endX=' + endX.toFixed(0));
     zigInitialized = true;
@@ -750,5 +759,30 @@
       }
       if (!zigInitialized) initZigLine();
     }, 1500);
+  });
+
+  /* ============================================================
+     리사이즈 대응: 지그/세로 라인 폐기 → 재측정 후 재생성
+     - SVG 좌표·path 가 init 시점 픽셀로 박혀 있어 resize 시 어긋남
+     - 모바일↔데스크 분기 전환도 자동 흡수 (initZigLine 내부에서 isMobile 재판정)
+  ============================================================ */
+  function cleanupZig() {
+    zigTriggers.forEach(function (t) { try { t.kill(); } catch (e) {} });
+    zigTriggers = [];
+    if (zigSvgEl    && zigSvgEl.parentNode)    zigSvgEl.parentNode.removeChild(zigSvgEl);
+    if (zigMarkerEl && zigMarkerEl.parentNode) zigMarkerEl.parentNode.removeChild(zigMarkerEl);
+    zigSvgEl = null; zigMarkerEl = null;
+    zigInitialized = false;
+  }
+
+  var zigResizeT = null;
+  window.addEventListener('resize', function () {
+    if (zigResizeT) clearTimeout(zigResizeT);
+    zigResizeT = setTimeout(function () {
+      log('resize → zig relayout');
+      cleanupZig();
+      initZigLine();
+      if (window.ScrollTrigger && ScrollTrigger.refresh) ScrollTrigger.refresh();
+    }, 150);
   });
 })();

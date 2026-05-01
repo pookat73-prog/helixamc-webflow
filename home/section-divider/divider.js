@@ -27,6 +27,8 @@
 
   var svgEl    = null;
   var pathEl   = null;
+  var markerEl = null;
+  var triggers = [];
   var btn1     = null;
   var sec2Head = null;
   var initialized = false;
@@ -144,16 +146,16 @@
           ' natural=' + naturalStartScroll.toFixed(0) +
           ' → markerY=' + markerY.toFixed(0));
     }
-    var marker = document.createElement('div');
-    marker.setAttribute('data-helix-divider-marker', '1');
-    marker.style.cssText =
+    markerEl = document.createElement('div');
+    markerEl.setAttribute('data-helix-divider-marker', '1');
+    markerEl.style.cssText =
       'position:absolute;top:' + markerY + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
-    document.body.appendChild(marker);
+    document.body.appendChild(markerEl);
 
     /* Draw: marker top이 뷰포트 center → sec2 헤딩 top 75% */
-    ScrollTrigger.create({
-      trigger: marker,
+    triggers.push(ScrollTrigger.create({
+      trigger: markerEl,
       start: 'top center',
       endTrigger: sec2Head,
       end: 'top 75%',
@@ -163,7 +165,7 @@
         headProgress = self.progress;
         applyDash();
       }
-    });
+    }));
 
     /* Erase: 버튼 바텀이 헤더 하단에 가려지는 순간 꼬리 출발
        헤더 높이만큼 아래에서 트리거 → 버튼이 헤더에 완전히 가려진 시점 */
@@ -171,7 +173,7 @@
     var navbarH   = (navbar && navbar.getBoundingClientRect().height) || 0;
     var eraseStart = 'bottom ' + (navbarH > 0 ? navbarH + 'px' : 'top');
     log('navbarH=' + navbarH + ' eraseStart="' + eraseStart + '"');
-    ScrollTrigger.create({
+    triggers.push(ScrollTrigger.create({
       trigger: btn1,
       start: eraseStart,
       endTrigger: sec2Head,
@@ -182,7 +184,7 @@
         tailProgress = self.progress;
         applyDash();
       }
-    });
+    }));
 
     /* ── SVG 위치 및 경로 설정 ─────────────────────────────────── */
     var lineH = Math.max(1, s2Top_abs - btnBot_abs);
@@ -214,6 +216,27 @@
       if (initialized || ++n >= 30) clearInterval(iv);
     }, 100);
   }
+
+  /* 리사이즈 시 SVG/마커/트리거 모두 폐기 → 재측정 후 재생성 */
+  function cleanup() {
+    triggers.forEach(function (t) { try { t.kill(); } catch (e) {} });
+    triggers = [];
+    if (svgEl    && svgEl.parentNode)    svgEl.parentNode.removeChild(svgEl);
+    if (markerEl && markerEl.parentNode) markerEl.parentNode.removeChild(markerEl);
+    svgEl = null; pathEl = null; markerEl = null;
+    initialized = false;
+  }
+
+  var resizeT = null;
+  window.addEventListener('resize', function () {
+    if (resizeT) clearTimeout(resizeT);
+    resizeT = setTimeout(function () {
+      log('resize → relayout');
+      cleanup();
+      initAnimationOnce();
+      if (window.ScrollTrigger && ScrollTrigger.refresh) ScrollTrigger.refresh();
+    }, 150);
+  });
 
   /* section1.js DOM 복원 완료 신호 수신 후 측정 */
   window.addEventListener('helix-s1-done', function () {
