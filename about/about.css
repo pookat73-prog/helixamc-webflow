@@ -71,16 +71,16 @@
   transform: scaleX(1) !important;
 }
 
-/* About 본문 박스 — 왼→오 슬라이드 + 페이드인 (쫀득 / 빠르게)
-   easing cubic-bezier(0.34, 1.56, 0.64, 1): back-out, 살짝 오버슛 → 쫀득한 도착감 */
+/* About 본문 박스 — 왼→오 슬라이드 + 페이드인 (극단적 ease-in)
+   easing cubic-bezier(0.7, 0, 0.84, 0): 시작 거의 멈춰있다 후반에 폭발적 가속 */
 .about_three_contents-box {
   opacity: 0;
   transform: translateX(-40px);
   filter: blur(4px);
   transition:
-    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
-    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s,
-    filter 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+    opacity 0.55s cubic-bezier(0.7, 0, 0.84, 0) 0.1s,
+    transform 0.7s cubic-bezier(0.7, 0, 0.84, 0) 0.1s,
+    filter 0.45s cubic-bezier(0.7, 0, 0.84, 0) 0.1s;
   will-change: opacity, transform, filter;
 }
 .about_three_contents-box.is-visible {
