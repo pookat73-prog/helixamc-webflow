@@ -53,8 +53,10 @@
   (function injectDeckGuard() {
     var style = document.createElement('style');
     style.id = 'helix-deck-prepaint';
+    /* :has() 로 카드 덱 섹션만 타겟 — about 섹션 2처럼 덱 카드(.just-box_qqqqqqq)
+       가 없는 .white-frame_connect 는 가드에서 제외 (영영 hidden 으로 남는 사태 방지) */
     style.textContent =
-      '.white-frame_connect{visibility:hidden!important}' +
+      '.white-frame_connect:has(.just-box_qqqqqqq){visibility:hidden!important}' +
       '.white-frame_connect.helix-deck-ready{visibility:visible!important}';
     /* head가 아직 없을 수도 있으므로 documentElement에 붙임 */
     (document.head || document.documentElement).appendChild(style);
