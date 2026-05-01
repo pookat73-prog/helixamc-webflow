@@ -71,9 +71,15 @@
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
-  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
+  /* 캐시 무력화: 브라우저/SW 가 옛 SHA 응답을 들고있으면 옛 영상 URL 로 흐름.
+     timestamp 쿼리로 매 로드 fresh 응답 강제. */
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
+            '?t=' + Date.now();
 
-  fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
+  fetch(api, {
+    headers: { 'Accept': 'application/vnd.github+json' },
+    cache: 'no-store'
+  })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (data) {
       var sha = (data.sha || '').substring(0, 10);

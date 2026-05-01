@@ -74,7 +74,9 @@
     if (existing) return existing;
 
     var ref = window.HELIX_REF || 'main';
-    var src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + BG_VIDEO_PATH;
+    /* SHA-pinned URL 이 immutable 이지만 브라우저 캐시가 옛 응답 들고있을 수 있어
+       ref 자체를 쿼리로 박아 캐시 키 강제 분리. */
+    var src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + BG_VIDEO_PATH + '?v=' + ref;
 
     var v = document.createElement('video');
     v.className = 'helix-bg-video';
