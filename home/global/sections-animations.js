@@ -169,28 +169,21 @@
       var svicc = section.querySelector('.home_background_svicc');
       var isMobileCard = window.innerWidth <= 767;
 
-      /* ── 모바일: 카드별 개별 ScrollTrigger 시퀀스 ──────────────
-         · 1번 카드: section 'top 80%'  (섹션이 뷰포트 하단 20% 진입)
-         · 2번 이후: 직전 카드 'top 50%' (직전 카드가 뷰포트 중앙)
-         · SVICC: 마지막 카드 'top 50%' (마지막 카드가 뷰포트 중앙)
-         슬라이드 인 제거 — y:0 / x:0 미리 set 해서 CSS translate 무효화,
-         애니메이션은 opacity 만. once:true 로 refresh 깜빡임 방지. */
+      /* ── 모바일: 그림자만 스크롤 트리거. 페이드인·슬라이드인 모두 제거 ─
+         · 카드/SVICC : 시작부터 opacity:1, transform:none (즉시 visible)
+         · 그림자 시퀀스:
+             1번 카드: section 'top 80%'
+             2번 이후: 직전 카드 'top 50%'
+         · SVICC 스크롤 인터랙션 없음 — 시작부터 visible. */
       if (isMobileCard) {
-        function playCardMobile(card) {
-          gsap.set(card, { y: 0 });
-          gsap.to(card, {
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power2.out'
-          });
-          setTimeout(function () { card.classList.add('is-shadowed'); }, 150);
-        }
+        cards.forEach(function (c) { gsap.set(c, { opacity: 1, y: 0 }); });
+        if (svicc) gsap.set(svicc, { opacity: 1, x: 0 });
 
         ScrollTrigger.create({
           trigger: section,
           start: 'top 80%',
           once: true,
-          onEnter: function () { playCardMobile(cards[0]); }
+          onEnter: function () { cards[0].classList.add('is-shadowed'); }
         });
 
         for (var ci = 1; ci < cards.length; ci++) {
@@ -199,27 +192,11 @@
               trigger: cards[idx - 1],
               start: 'top 50%',
               once: true,
-              onEnter: function () { playCardMobile(cards[idx]); }
+              onEnter: function () { cards[idx].classList.add('is-shadowed'); }
             });
           })(ci);
         }
-
-        if (svicc) {
-          ScrollTrigger.create({
-            trigger: cards[cards.length - 1],
-            start: 'top 50%',
-            once: true,
-            onEnter: function () {
-              gsap.set(svicc, { x: 0 });
-              gsap.to(svicc, {
-                opacity: 1,
-                duration: 0.6,
-                ease: 'power2.out'
-              });
-            }
-          });
-        }
-        log('mobile sec4 sequenced triggers: cards=' + cards.length + ' svicc=' + !!svicc);
+        log('mobile sec4 shadow-only: cards=' + cards.length + ' svicc=' + !!svicc);
         return;
       }
 
