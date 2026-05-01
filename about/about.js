@@ -158,16 +158,25 @@
     });
     if (video) video.style.visibility = 'visible';
 
+    /* 시작 opacity:0 강제 (캐시된 옛날 가드가 visibility 만 다뤘을 경우 대비) */
+    var allTargets = [].concat(
+      Array.prototype.slice.call(heading),
+      Array.prototype.slice.call(subhead),
+      Array.prototype.slice.call(symbol)
+    );
+    if (video) allTargets.push(video);
+    if (allTargets.length) gsap.set(allTargets, { opacity: 0 });
+
     var tl = gsap.timeline({ delay: 0.2 });
     if (heading.length) {
-      tl.to(heading, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+      tl.fromTo(heading, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
     }
     var symAndSub = [].concat(Array.prototype.slice.call(symbol), Array.prototype.slice.call(subhead));
     if (symAndSub.length) {
-      tl.to(symAndSub, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+      tl.fromTo(symAndSub, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
     }
     if (video) {
-      tl.to(video, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+      tl.fromTo(video, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.out' });
     }
     log('timeline started');
   }
