@@ -314,10 +314,15 @@
       els.forEach(function (el) { el.classList.add('is-visible'); });
       return;
     }
-    /* 폰트(ds-endendend) 가 로드되기 전에 .is-visible 을 붙이면 폴백 폰트로
-       먼저 그려졌다가 갈아끼워지는 현상 발생 → 폰트 준비 + 뷰포트 진입 둘 다
-       만족할 때만 활성화. */
-    var fontReady = whenHeroFontReady();
+    /* 폰트(ds-endendend + 페이지 모든 웹폰트) 가 로드되기 전에 .is-visible
+       을 붙이면 폴백 폰트로 먼저 그려졌다가 갈아끼워지는 현상 발생 →
+       폰트 준비 + 뷰포트 진입 둘 다 만족할 때만 활성화.
+       document.fonts.ready 는 페이지 내 모든 @font-face (본문 포함) 가
+       로드 완료된 시점에 resolve 되므로 본문박스 fade-in 중 폰트 swap 방지. */
+    var fontReady = Promise.all([
+      whenHeroFontReady(),
+      (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve()
+    ]);
     /* 폰트 무한 대기 방지: 1.5s 폴백 */
     var fontReadyOrTimeout = Promise.race([
       fontReady,
