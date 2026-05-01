@@ -49,16 +49,20 @@
 
   /* Pre-paint flicker guard 1b: 섹션 2 제목/번호 박스의 폰트 swap (FOUT) 깜빡임
      차단. 텍스트가 폴백 폰트로 먼저 그려졌다가 web 폰트로 바뀌는 현상 제거.
-     clip-path 로 시각만 차단하고 paint 는 진행되게 → web 폰트 layer 적용 보장.
-     about.js 가 document.fonts.ready 후 가드 제거. */
+     clip-path 보다 color:transparent + text-shadow:none 이 더 안정적 — 박스
+     자체는 정상 렌더되어 브라우저가 즉시 폰트를 요청하고, 텍스트만 보이지
+     않다가 폰트 적용 후 색이 풀리면 swap 자체가 사용자에게 보이지 않음.
+     about.js 가 layout-stable 후 가드 제거. */
   (function injectSection2FontGuard() {
     if (document.getElementById('helix-about-s2-prepaint')) return;
     var style = document.createElement('style');
     style.id = 'helix-about-s2-prepaint';
     style.textContent =
       '.about_contents_3-concept_qq,' +
-      '.about_contents_box_qqqqqqq' +
-      '{clip-path:inset(100%)!important;-webkit-clip-path:inset(100%)!important}';
+      '.about_contents_3-concept_qq *,' +
+      '.about_contents_box_qqqqqqq,' +
+      '.about_contents_box_qqqqqqq *' +
+      '{color:transparent!important;text-shadow:none!important;transition:none!important}';
     (document.head || document.documentElement).appendChild(style);
     /* 안전망: 4초 안에 폰트 안 오면 강제 해제 */
     setTimeout(function () {
