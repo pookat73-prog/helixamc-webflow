@@ -348,11 +348,22 @@
       path.setAttribute('stroke-dashoffset', dashOffset);
     }
 
-    /* Draw: btn2 바텀 마커가 뷰포트 center 도달 → sec3 헤딩 top 75% 까지 그리기 */
+    /* Draw: btn2 바텀 마커가 뷰포트 center 도달 → sec3 헤딩 top 75% 까지 그리기
+       init 시점에 이미 자연 시작점을 지나친 경우 마커를 시프트해 progress=0 보장
+       (헬릭스 라인과 동일 패턴 — 라인이 반쯤 그어진 채 등장하는 현상 방지) */
+    var viewportH         = window.innerHeight;
+    var naturalStartScroll = startY_abs - viewportH / 2;
+    var markerY           = startY_abs;
+    if (scrollY > naturalStartScroll) {
+      markerY = scrollY + viewportH / 2;
+      log('mZig marker shifted: scroll=' + scrollY +
+          ' natural=' + naturalStartScroll.toFixed(0) +
+          ' → markerY=' + markerY.toFixed(0));
+    }
     var marker = document.createElement('div');
     marker.setAttribute('data-zig-marker-mobile', '1');
     marker.style.cssText =
-      'position:absolute;top:' + startY_abs + 'px;left:0;' +
+      'position:absolute;top:' + markerY + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
 
@@ -604,11 +615,22 @@
       zigPath.setAttribute('stroke-dashoffset', dashOffset);
     }
 
-    /* 마커: bt-box-2 바텀 절대 좌표 (Draw 기준점) */
+    /* 마커: bt-box-2 바텀 절대 좌표 (Draw 기준점)
+       init 시점에 이미 자연 시작점을 지나친 경우 마커를 시프트해 progress=0 보장
+       (헬릭스 라인과 동일 패턴 — 라인이 반쯤 그어진 채 등장하는 현상 방지) */
+    var viewportH_zig         = window.innerHeight;
+    var naturalStartScroll_zig = startY_abs - viewportH_zig / 2;
+    var markerY_zig           = startY_abs;
+    if (scrollY > naturalStartScroll_zig) {
+      markerY_zig = scrollY + viewportH_zig / 2;
+      log('zig marker shifted: scroll=' + scrollY +
+          ' natural=' + naturalStartScroll_zig.toFixed(0) +
+          ' → markerY=' + markerY_zig.toFixed(0));
+    }
     var marker = document.createElement('div');
     marker.setAttribute('data-zig-marker', '1');
     marker.style.cssText =
-      'position:absolute;top:' + startY_abs + 'px;left:0;' +
+      'position:absolute;top:' + markerY_zig + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
 
