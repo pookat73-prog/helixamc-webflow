@@ -404,20 +404,30 @@
     if (zigInitialized) return;
     if (!window.gsap || !window.ScrollTrigger) return;
 
-    /* 필요 요소 탐색 — 보이는 sec3 헤딩 중 첫 번째 픽업
-       (데스크/모바일 듀얼 구조에서 인덱스 의존 제거) */
-    var btn1     = document.querySelector('.discover-helix_button');
-    var btn2     = document.querySelector('.bt-box-2');
-    var headings = document.querySelectorAll('.section2-heading');
-    var sec3Head = null;
-    for (var i = 1; i < headings.length; i++) {
-      if (isVisible(headings[i])) { sec3Head = headings[i]; break; }
+    /* 필요 요소 탐색 — 데스크/모바일 듀얼 섹션 구조 대응:
+       hidden 인 데스크 사본을 거르고 가시(visible) 요소만 픽업.
+       headings[0/1] 인덱스 기반 → 'visible 만 모은 배열'의 [0]/[1] 로 변경. */
+    var btn1 = document.querySelector('.discover-helix_button');
+
+    var allBtn2 = document.querySelectorAll('.bt-box-2');
+    var btn2    = null;
+    for (var j = 0; j < allBtn2.length; j++) {
+      if (isVisible(allBtn2[j])) { btn2 = allBtn2[j]; break; }
     }
+
+    var allHeadings     = document.querySelectorAll('.section2-heading');
+    var visibleHeadings = [];
+    for (var k = 0; k < allHeadings.length; k++) {
+      if (isVisible(allHeadings[k])) visibleHeadings.push(allHeadings[k]);
+    }
+    var sec3Head = visibleHeadings[1] || null;  /* 두 번째 visible heading = sec3 */
 
     /* 모바일은 btn1(hero) 의존 없이 btn2 + sec3Head 만 있으면 됨 */
     var isMobile = window.innerWidth <= 767;
     if (!btn2 || !sec3Head || (!isMobile && !btn1)) {
-      log('zigLine: btn1=' + !!btn1 + ' btn2=' + !!btn2 + ' sec3Head=' + !!sec3Head + ' → skip');
+      log('zigLine: btn1=' + !!btn1 + ' btn2=' + !!btn2 +
+          ' sec3Head=' + !!sec3Head +
+          ' visibleHeadings=' + visibleHeadings.length + ' → skip');
       return;
     }
 
