@@ -2,23 +2,13 @@
    HELIX AMC - ABOUT PAGE CSS
    ================================================================ */
 
-/* About 첫 섹션(hero) 풀-뷰포트 — 하단 빈 공간 제거.
-   .About_Background (영상 부모) 도 100% 로 확장하여 영상이 섹션 끝까지 채움 */
+/* About 첫 섹션(hero) — 영상 부모만 100% 확장. flex/min-height 강제 X
+   (이전 시도에서 section 에 flex column + 100vh 적용 → 콘텐츠 납작/
+   서브헤더 삐져나옴 → 제거) */
 .About_Background,
 .about_background,
 .about-background {
   min-height: 100%;
-  height: 100%;
-}
-section.About_Hero,
-section.about_hero,
-section[class*="About_Hero"],
-section[class*="about_hero"],
-section:has(> .About_Background),
-section:has(> .about_background) {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
