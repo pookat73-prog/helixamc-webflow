@@ -129,11 +129,25 @@
     log('btnBot_abs=' + btnBot_abs.toFixed(0) +
         ' s2Top_abs=' + s2Top_abs.toFixed(0));
 
-    /* ── 마커: 버튼 바텀 위치에 1px div (ScrollTrigger 기준점) ── */
+    /* ── 마커: 버튼 바텀 위치에 1px div (ScrollTrigger 기준점) ──
+       모바일 등 버튼이 뷰포트 상단에 가까운 경우, init 시점에 이미
+       'top center' 자연 시작점을 지나친 상태일 수 있음 → 첫 onUpdate
+       가 progress 0.3~0.5로 발사되며 라인이 반쯤 그어진 채 뿅 등장.
+       마커를 currentScroll 기준 아래로 시프트해 init 시점 progress=0
+       을 보장 → 항상 버튼에서부터 0% 로 그리기 시작. */
+    var viewportH         = window.innerHeight;
+    var naturalStartScroll = btnBot_abs - viewportH / 2;
+    var markerY           = btnBot_abs;
+    if (scrollY > naturalStartScroll) {
+      markerY = scrollY + viewportH / 2;
+      log('marker shifted: scroll=' + scrollY +
+          ' natural=' + naturalStartScroll.toFixed(0) +
+          ' → markerY=' + markerY.toFixed(0));
+    }
     var marker = document.createElement('div');
     marker.setAttribute('data-helix-divider-marker', '1');
     marker.style.cssText =
-      'position:absolute;top:' + btnBot_abs + 'px;left:0;' +
+      'position:absolute;top:' + markerY + 'px;left:0;' +
       'width:1px;height:1px;pointer-events:none;';
     document.body.appendChild(marker);
 
