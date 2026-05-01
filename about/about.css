@@ -2,13 +2,13 @@
    HELIX AMC - ABOUT PAGE CSS
    ================================================================ */
 
-/* About 첫 섹션(hero) — 영상 부모만 100% 확장. flex/min-height 강제 X
-   (이전 시도에서 section 에 flex column + 100vh 적용 → 콘텐츠 납작/
-   서브헤더 삐져나옴 → 제거) */
+/* About 첫 섹션(hero) — .About_Background 자체를 100vh 로 강제하여
+   하단 검은 줄(빈 공간) 제거. section 에 100vh 강제하면 콘텐츠가
+   납작해지므로 background div 에만 적용. */
 .About_Background,
 .about_background,
 .about-background {
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 /* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
