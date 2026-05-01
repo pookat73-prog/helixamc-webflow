@@ -412,9 +412,40 @@
 
     /* ── 모바일 분기: 단순 수직 1px 블루 라인 ─────────────────────
        1컬럼 레이아웃에 Z형 곡선이 어울리지 않아 헬릭스 라인과 동일한
-       단순 vertical pattern. 시작 X = bt-box-2 가로 중앙. */
+       단순 vertical pattern. 시작 X = bt-box-2 가로 중앙.
+
+       모바일 전용 visible 재픽업 (데스크 분기 영향 없음):
+       - 위쪽 querySelector / isVisible 은 display:none 부모 자식을
+         visible 로 오판 → hidden 데스크 사본을 잡아 H<40 skip 발생.
+       - getBoundingClientRect 0×0 검사로 DOM 사본 중 실제 렌더되는
+         것만 픽업 (display:none 조상까지 정확히 거름). */
     if (isMobile) {
-      initSimpleVerticalLine(btn2, sec3Head);
+      function isRenderedMobile(el) {
+        if (!el) return false;
+        var r = el.getBoundingClientRect();
+        return r.width > 0 || r.height > 0;
+      }
+
+      var mBtn2 = null;
+      var allBtn2 = document.querySelectorAll('.bt-box-2');
+      for (var bi = 0; bi < allBtn2.length; bi++) {
+        if (isRenderedMobile(allBtn2[bi])) { mBtn2 = allBtn2[bi]; break; }
+      }
+
+      var mSec3 = null, visCount = 0;
+      for (var hi = 0; hi < headings.length; hi++) {
+        if (isRenderedMobile(headings[hi])) {
+          visCount++;
+          if (visCount === 2) { mSec3 = headings[hi]; break; }
+        }
+      }
+
+      if (!mBtn2 || !mSec3) {
+        log('mZig: visible pick failed mBtn2=' + !!mBtn2 +
+            ' mSec3=' + !!mSec3 + ' visCount=' + visCount + ' → skip');
+        return;
+      }
+      initSimpleVerticalLine(mBtn2, mSec3);
       zigInitialized = true;
       return;
     }
