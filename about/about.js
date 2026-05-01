@@ -312,12 +312,29 @@
       els.forEach(function (el) { el.classList.add('is-visible'); });
       return;
     }
-    /* rootMargin bottom -20% → 뷰포트 상단 80% 라인에 element top 이 닿을 때 트리거 (이른 발사) */
+    /* 폰트(ds-endendend) 가 로드되기 전에 .is-visible 을 붙이면 폴백 폰트로
+       먼저 그려졌다가 갈아끼워지는 현상 발생 → 폰트 준비 + 뷰포트 진입 둘 다
+       만족할 때만 활성화. */
+    var fontReady = whenHeroFontReady();
+    /* 폰트 무한 대기 방지: 1.5s 폴백 */
+    var fontReadyOrTimeout = Promise.race([
+      fontReady,
+      new Promise(function (resolve) { setTimeout(resolve, 1500); })
+    ]);
+    var pending = [];
+    function flush() {
+      pending.splice(0).forEach(function (el) { el.classList.add('is-visible'); });
+    }
+    var fontDone = false;
+    fontReadyOrTimeout.then(function () { fontDone = true; flush(); log('font ready → flush'); });
+
+    /* rootMargin bottom -20% → 뷰포트 상단 80% 라인에 element top 이 닿을 때 트리거 */
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
           io.unobserve(e.target);
+          if (fontDone) e.target.classList.add('is-visible');
+          else pending.push(e.target);
           log('viewport-80 visible:', e.target);
         }
       });
