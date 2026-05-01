@@ -253,11 +253,9 @@
     svg.setAttribute('viewBox',
       (minX - pad) + ' ' + (minY - pad) + ' ' +
       (maxX - minX + pad * 2) + ' ' + (maxY - minY + pad * 2));
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMin meet');
+    svg.style.width = '100%';
     svg.style.height = '100%';
-    svg.style.width = 'auto';
-    svg.style.maxWidth = '100%';
-    svg.style.maxHeight = '100%';
     svg.style.display = 'block';
     svg.style.overflow = 'visible';
 
