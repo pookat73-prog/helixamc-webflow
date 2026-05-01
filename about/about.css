@@ -1,16 +1,13 @@
 /* ================================================================
    HELIX AMC - ABOUT PAGE CSS
-   ================================================================
-   FOUC + 페이드인 시퀀스는 about.js (GSAP) + bootstrap.js 인라인 가드로 처리.
-   여기는 honeycomb 다이어그램 스타일. */
+   ================================================================ */
 
 /* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
 .diagram-place-holder {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;       /* 상단 기준 (strategy 박스 윗면) */
   justify-content: center;
-  /* 높이는 Webflow 의 부모 layout 이 결정 (왼쪽 내용 영역과 같은 높이) */
 }
 
 .helix-hex-diagram {
@@ -31,10 +28,10 @@
 }
 
 .helix-hex-diagram .hex text {
-  fill: #000;
+  fill: #0075d6;                 /* 메인 블루 */
+  font-family: 'ds-endendend', sans-serif;
   font-weight: 700;
-  font-size: 14px;
-  font-family: inherit;
+  font-size: 28px;
   pointer-events: none;
   user-select: none;
 }
