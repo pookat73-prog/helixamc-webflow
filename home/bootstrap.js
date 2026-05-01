@@ -16,6 +16,34 @@
      v3 = footer.css/.js 포함, v2 = 그 이전 */
   console.log('[helix-bootstrap] loader v3 (with footer interactions)');
 
+  /* iPad Pro 전용 태블릿 모드 — viewport meta 강제 991px 로 축소
+     조건 (모두 만족 시에만 발동, 그 외 기기는 영향 없음):
+       · pointer: coarse  → 1차 입력이 터치
+       · hover:    none   → hover 불가 (터치 가능 노트북/Surface 등 제외)
+       · 992 ≤ innerWidth ≤ 1400 → iPad Pro 11"/12.9" 범위
+     영향:
+       · iPhone (≤767/991) → 이미 모바일/태블릿, 변화 없음
+       · iPad mini/Air     → 이미 ≤991, 변화 없음
+       · 데스크탑/노트북   → pointer:fine 또는 hover:hover, 변화 없음
+       · 데스크탑 터치스크린 → hover:hover 통과 못해 변화 없음 */
+  (function ipadTabletMode() {
+    if (!window.matchMedia) return;
+    var touchOnly =
+      matchMedia('(pointer: coarse)').matches &&
+      matchMedia('(hover: none)').matches;
+    if (!touchOnly) return;
+    var w = window.innerWidth;
+    if (w < 992 || w > 1400) return;
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (!vp) {
+      vp = document.createElement('meta');
+      vp.name = 'viewport';
+      document.head.appendChild(vp);
+    }
+    vp.setAttribute('content', 'width=991, initial-scale=' + (w / 991).toFixed(4));
+    console.log('[helix-bootstrap] iPad Pro detected (' + w + 'px) → tablet viewport (991px)');
+  })();
+
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
   var BRANCH = 'main';
