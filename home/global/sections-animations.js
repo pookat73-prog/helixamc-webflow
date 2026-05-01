@@ -384,18 +384,19 @@
       }
     });
 
-    /* Erase: 버튼이 헤더 아래로 사라지는 스크롤 구간 = 버튼 top→bottom 이
-       헤더 하단을 통과하는 동안. 범위 = 버튼 높이 → 스크롤 움직임과 1:1
-       매칭으로 자연스럽게 꼬리부터 지워짐.
-       (이전: end='sec3Head top 40%' → 모바일 짧은 뷰포트에서 음수 범위
-        → 통째로 뿅 사라짐) */
-    var navbarH = (navbar && navbar.getBoundingClientRect().height) || 0;
+    /* Erase: '헤더 하단이 라인을 위에서부터 먹어 들어가는' 픽셀수와 동일.
+         start = btn2 바텀이 헤더 하단 통과 (라인 시작점이 헤더에 도달)
+         end   = sec3Head 탑이 헤더 하단 통과 (라인 끝점이 헤더에 도달)
+       범위 = sec3Head_top - btn2_bottom = H (라인 높이) → 스크롤 픽셀과
+       1:1 매칭. scrub:true 라 역방향 스크롤 시 자동으로 라인 복원. */
+    var navbarH  = (navbar && navbar.getBoundingClientRect().height) || 0;
     var pxAnchor = navbarH > 0 ? navbarH + 'px' : 'top';
-    log('mZig navbarH=' + navbarH + ' eraseRange=btn2[top→bottom] hits ' + pxAnchor + ' H=' + H.toFixed(0));
+    log('mZig navbarH=' + navbarH + ' eraseRange=H=' + H.toFixed(0) + 'px (1:1 scroll)');
     ScrollTrigger.create({
       trigger: btn2,
-      start: 'top ' + pxAnchor,
-      end:   'bottom ' + pxAnchor,
+      start: 'bottom ' + pxAnchor,
+      endTrigger: sec3Head,
+      end: 'top ' + pxAnchor,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
@@ -665,16 +666,18 @@
       }
     });
 
-    /* Erase: 버튼이 헤더 아래로 사라지는 스크롤 구간 = btn2 top→bottom 이
-       헤더 하단을 통과하는 동안. 범위 = 버튼 높이 → 스크롤 움직임과 1:1
-       매칭으로 자연스럽게 꼬리부터 지워짐. */
+    /* Erase: '헤더 하단이 라인을 위에서부터 먹어 들어가는' 픽셀수와 동일.
+         start = btn2 바텀이 헤더 하단 통과
+         end   = sec3Head 탑이 헤더 하단 통과
+       범위 = H (라인 높이) → 스크롤 픽셀과 1:1 매칭. */
     var navbarH  = (navbar && navbar.getBoundingClientRect().height) || 0;
     var pxAnchor = navbarH > 0 ? navbarH + 'px' : 'top';
-    log('zigLine navbarH=' + navbarH + ' eraseRange=btn2[top→bottom] hits ' + pxAnchor);
+    log('zigLine navbarH=' + navbarH + ' eraseRange=H (1:1 scroll)');
     ScrollTrigger.create({
       trigger: btn2,
-      start: 'top ' + pxAnchor,
-      end:   'bottom ' + pxAnchor,
+      start: 'bottom ' + pxAnchor,
+      endTrigger: sec3Head,
+      end: 'top ' + pxAnchor,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
