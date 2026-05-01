@@ -33,3 +33,9 @@
   user-select: none;
   /* font-size 는 JS 에서 SVG user unit 으로 설정 (다이어그램과 함께 스케일) */
 }
+
+.helix-hex-diagram .hex-naekwa text,
+.helix-hex-diagram .hex-oikwa text,
+.helix-hex-diagram .hex-yeongsang text {
+  font-weight: 700;
+}
