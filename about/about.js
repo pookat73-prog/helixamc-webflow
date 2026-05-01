@@ -304,11 +304,12 @@
     log('hex diagram rendered');
   }
 
-  function initContentsTitleFadeIn() {
-    var titles = document.querySelectorAll('.about_contents-title');
-    if (!titles.length) { log('no .about_contents-title'); return; }
+  function initViewport60FadeIn() {
+    var sel = '.about_contents-title, .divider_blue_grad_no-spacing-1';
+    var els = document.querySelectorAll(sel);
+    if (!els.length) { log('no viewport-60 targets'); return; }
     if (!('IntersectionObserver' in window)) {
-      titles.forEach(function (el) { el.classList.add('is-visible'); });
+      els.forEach(function (el) { el.classList.add('is-visible'); });
       return;
     }
     /* rootMargin bottom -40% → 뷰포트 상단 60% 라인에 element top 이 닿을 때 트리거 */
@@ -317,17 +318,17 @@
         if (e.isIntersecting) {
           e.target.classList.add('is-visible');
           io.unobserve(e.target);
-          log('contents-title visible:', e.target);
+          log('viewport-60 visible:', e.target);
         }
       });
     }, { root: null, rootMargin: '0px 0px -40% 0px', threshold: 0 });
-    titles.forEach(function (el) { io.observe(el); });
+    els.forEach(function (el) { io.observe(el); });
   }
 
   function init() {
     log('init');
     renderHexDiagram();
-    initContentsTitleFadeIn();
+    initViewport60FadeIn();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 

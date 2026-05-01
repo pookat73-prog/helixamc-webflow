@@ -69,6 +69,16 @@
   transform: scaleX(1);
 }
 
+/* Divider blue grad — 좌→우 draw-in (뷰포트 60% 진입 시) */
+.divider_blue_grad_no-spacing-1 {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.divider_blue_grad_no-spacing-1.is-visible {
+  transform: scaleX(1);
+}
+
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
   transform: rotate(-6deg) !important;
