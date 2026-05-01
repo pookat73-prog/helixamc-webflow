@@ -273,7 +273,7 @@
       t.setAttribute('y', hx.cy);
       t.setAttribute('text-anchor', 'middle');
       t.setAttribute('dominant-baseline', 'central');
-      t.setAttribute('font-size', 28);   /* SVG user units → 다이어그램과 함께 스케일됨 */
+      t.setAttribute('font-size', 24);   /* SVG user units → 다이어그램과 함께 스케일됨 */
       t.textContent = hx.label;
       g.appendChild(t);
 
