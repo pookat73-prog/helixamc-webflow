@@ -309,16 +309,33 @@
         emit.setAttribute('d', innerD);
         g.appendChild(emit);
       } else {
-        /* Phase B 광선 sweep — beam 이 hex 영역 밖으로 새지 않도록
-           full hex 모양으로 clipPath 를 박아두고, 그 안에서 대각선 라인
-           이 평행 이동으로 훑고 지나가게 한다. */
-        var clipId = 'helixhex-clip-' + hx.id;
-        var clip = document.createElementNS(svgNS, 'clipPath');
-        clip.setAttribute('id', clipId);
-        var clipShape = document.createElementNS(svgNS, 'path');
-        clipShape.setAttribute('d', fullHexPath(verts));
-        clip.appendChild(clipShape);
-        defs.appendChild(clip);
+        /* Phase B 광선 sweep — beam 이 외곽선 위에서만 보이도록 stroke
+           마스크를 사용한다. mask 안의 stroked hex path 가 white = 보이는
+           영역, 나머지(검정)는 투명 → beam 라인이 외곽선과 교차하는
+           구간에서만 빛이 흐르듯 드러남. clipPath(영역 클립) 와 달리
+           hex 내부 빈 공간에는 beam 이 비치지 않는다. */
+        var maskId = 'helixhex-stroke-mask-' + hx.id;
+        var mask = document.createElementNS(svgNS, 'mask');
+        mask.setAttribute('id', maskId);
+        mask.setAttribute('maskUnits', 'userSpaceOnUse');
+        mask.setAttribute('maskContentUnits', 'userSpaceOnUse');
+        /* mask 영역은 hex 주위로 충분히 크게 — beam 이 sweep 중 어떤
+           위치여도 mask region 밖으로 새지 않게. */
+        mask.setAttribute('x', hx.cx - s * 2);
+        mask.setAttribute('y', hx.cy - s * 2);
+        mask.setAttribute('width',  s * 4);
+        mask.setAttribute('height', s * 4);
+
+        var maskShape = document.createElementNS(svgNS, 'path');
+        maskShape.setAttribute('d', fullHexPath(verts));
+        maskShape.setAttribute('fill', 'none');
+        maskShape.setAttribute('stroke', '#ffffff');
+        /* mask stroke 두께가 외곽선 highlight 밴드 폭을 결정. 시각적
+           외곽선보다 살짝 두껍게 잡아 빛이 stroke 주변으로 약간 번지듯. */
+        maskShape.setAttribute('stroke-width', '4');
+        maskShape.setAttribute('stroke-linejoin', 'miter');
+        mask.appendChild(maskShape);
+        defs.appendChild(mask);
 
         var gradId = 'helixhex-beam-grad-' + hx.id;
         var grad = document.createElementNS(svgNS, 'linearGradient');
@@ -341,12 +358,12 @@
         });
         defs.appendChild(grad);
 
-        /* 외부 그룹: clip 고정 (transform 없음).
+        /* 외부 그룹: mask 고정 (transform 없음).
            내부 mover 그룹: beam 라인을 perpendicular 방향으로 평행 이동 →
-           clip 영역 안에서만 보이는 사선 광선이 된다. */
+           mask 의 stroke 밴드와 교차하는 구간에서만 빛이 보임. */
         var beamWrap = document.createElementNS(svgNS, 'g');
         beamWrap.setAttribute('class', 'hex-beam-wrap');
-        beamWrap.setAttribute('clip-path', 'url(#' + clipId + ')');
+        beamWrap.setAttribute('mask', 'url(#' + maskId + ')');
 
         var mover = document.createElementNS(svgNS, 'g');
         mover.setAttribute('class', 'hex-beam-mover');
