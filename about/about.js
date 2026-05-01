@@ -312,16 +312,16 @@
       els.forEach(function (el) { el.classList.add('is-visible'); });
       return;
     }
-    /* rootMargin bottom -40% → 뷰포트 상단 60% 라인에 element top 이 닿을 때 트리거 */
+    /* rootMargin bottom -20% → 뷰포트 상단 80% 라인에 element top 이 닿을 때 트리거 (이른 발사) */
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
           e.target.classList.add('is-visible');
           io.unobserve(e.target);
-          log('viewport-60 visible:', e.target);
+          log('viewport-80 visible:', e.target);
         }
       });
-    }, { root: null, rootMargin: '0px 0px -40% 0px', threshold: 0 });
+    }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
     els.forEach(function (el) { io.observe(el); });
   }
 
