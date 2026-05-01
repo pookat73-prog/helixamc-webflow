@@ -69,15 +69,16 @@
   transform: scaleX(1) !important;
 }
 
-/* About 본문 박스 — 왼→오 슬라이드 + 페이드인 (뷰포트 80% 진입 시) */
+/* About 본문 박스 — 왼→오 슬라이드 + 페이드인 (밑줄과 엇박 / 앞이 느긋한 ease-in-out)
+   easing cubic-bezier(0.85, 0, 0.35, 1): 시작 천천히, 후반에 가속 → 도착 자연스러움 */
 .about_three_contents-box {
   opacity: 0;
   transform: translateX(-60px);
   filter: blur(8px);
   transition:
-    opacity 1.6s ease-out,
-    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 1.2s ease-out;
+    opacity 1.6s cubic-bezier(0.85, 0, 0.35, 1) 0.5s,
+    transform 1.2s cubic-bezier(0.85, 0, 0.35, 1) 0.5s,
+    filter 1.2s cubic-bezier(0.85, 0, 0.35, 1) 0.5s;
   will-change: opacity, transform, filter;
 }
 .about_three_contents-box.is-visible {
