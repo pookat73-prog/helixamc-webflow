@@ -849,91 +849,10 @@
     }
   }
 
-  /* ── 섹션 2 폰트 가드 해제 (FOUT 차단) ──
-     bootstrap 의 clip-path 가드를, 각 요소의 정확한 web 폰트가 layer 에
-     적용된 후에 제거. document.fonts.ready 만으로는 swap 이 한 frame 늦게
-     반영돼 깜빡이는 경우 있어, 명시적 fonts.load + RAF 2프레임 대기. */
-  function releaseSection2FontGuard() {
-    function remove() {
-      var g = document.getElementById('helix-about-s2-prepaint');
-      if (g && g.parentNode) g.parentNode.removeChild(g);
-    }
-
-    var els = document.querySelectorAll(
-      '.about_contents_3-concept_qq, .about_contents_box_qqqqqqq'
-    );
-    if (!els.length) { remove(); return; }
-
-    var loadPromises = [];
-    if (document.fonts && document.fonts.load) {
-      els.forEach(function (el) {
-        var cs = window.getComputedStyle(el);
-        var family = (cs.fontFamily || '').split(',')[0].trim().replace(/^["']|["']$/g, '');
-        var weight = cs.fontWeight || '400';
-        var style  = cs.fontStyle  || 'normal';
-        var text   = (el.textContent || '').trim();
-        if (!family || !text) return;
-        var spec = style + ' ' + weight + ' 1em "' + family + '"';
-        try { loadPromises.push(document.fonts.load(spec, text).catch(function () {})); }
-        catch (e) {}
-        /* 자식 텍스트 노드별로도 분리 로드 — 부모 폰트와 자식 폰트가 다른 경우
-           대응 (예: .qq 안에 숫자 element 가 별도 폰트일 때) */
-        var children = el.querySelectorAll('*');
-        children.forEach(function (ch) {
-          if (!ch.children.length && (ch.textContent || '').trim()) {
-            var ccs = window.getComputedStyle(ch);
-            var cfam = (ccs.fontFamily || '').split(',')[0].trim().replace(/^["']|["']$/g, '');
-            if (!cfam || cfam === family) return;
-            var cspec = (ccs.fontStyle || 'normal') + ' ' +
-                        (ccs.fontWeight || '400') + ' 1em "' + cfam + '"';
-            try { loadPromises.push(document.fonts.load(cspec, ch.textContent.trim()).catch(function () {})); }
-            catch (e) {}
-          }
-        });
-      });
-    }
-    if (document.fonts && document.fonts.ready) {
-      loadPromises.push(document.fonts.ready.catch(function () {}));
-    }
-
-    function afterLoaded() {
-      /* fonts.load resolve 와 실제 element 렌더 사이 한 frame 어긋남 → 각 element
-         의 offsetWidth/Height 가 4 frames 동안 변화 없을 때까지 대기.
-         clip-path:inset(100%) 는 layout 영향 없으므로 측정 정상. */
-      var meas = Array.prototype.map.call(els, function (el) {
-        return { el: el, lastW: el.offsetWidth, lastH: el.offsetHeight, stable: 0 };
-      });
-      var start = Date.now();
-      var MAX = 1500;
-      function check() {
-        var allStable = true;
-        meas.forEach(function (m) {
-          var w = m.el.offsetWidth, h = m.el.offsetHeight;
-          if (w === m.lastW && h === m.lastH) m.stable++;
-          else { m.lastW = w; m.lastH = h; m.stable = 0; }
-          if (m.stable < 4) allStable = false;
-        });
-        if (allStable) { remove(); return; }
-        if (Date.now() - start > MAX) { remove(); return; }
-        requestAnimationFrame(check);
-      }
-      requestAnimationFrame(check);
-    }
-
-    if (loadPromises.length) {
-      Promise.all(loadPromises).then(afterLoaded, afterLoaded);
-    } else {
-      afterLoaded();
-    }
-    /* 안전망: 3초 안에 어떤 이유로든 안 풀리면 강제 해제 */
-    setTimeout(remove, 3000);
-  }
-
   function init() {
     initSection1();
     initSubheaderNav();
     initGalleryLabels();
-    releaseSection2FontGuard();
     /* GSAP 애니메이션은 Webflow IX2 이후에 실행해야 인라인 opacity:1 덮어쓰기 방지 */
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () {
