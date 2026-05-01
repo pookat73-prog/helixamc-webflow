@@ -384,24 +384,31 @@
       }
     });
 
-    /* Erase: '헤더 하단이 라인을 위에서부터 먹어 들어가는' 픽셀수와 동일.
-         start = btn2 바텀이 헤더 하단 통과 (라인 시작점이 헤더에 도달)
-         end   = sec3Head 탑이 헤더 하단 통과 (라인 끝점이 헤더에 도달)
-       범위 = sec3Head_top - btn2_bottom = H (라인 높이) → 스크롤 픽셀과
-       1:1 매칭. scrub:true 라 역방향 스크롤 시 자동으로 라인 복원. */
-    var navbarH  = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var pxAnchor = navbarH > 0 ? navbarH + 'px' : 'top';
-    log('mZig navbarH=' + navbarH + ' eraseRange=H=' + H.toFixed(0) + 'px (1:1 scroll)');
+    /* Erase: 절대 scrollY 값으로 직접 트리거 — anchor 문자열 파싱 대신
+       startY_abs / endY_abs 를 그대로 사용해 디버깅 가능성·신뢰성↑.
+         erase 시작 scrollY = btn2 바텀이 헤더 하단에 도달하는 시점
+                            = startY_abs - navbarH
+         erase 종료 scrollY = sec3Head 탑이 헤더 하단에 도달하는 시점
+                            = endY_abs - navbarH
+       범위 = endY_abs - startY_abs = H (라인 높이). 스크롤 1px = 라인
+       1px 지움. scrub:true 로 역방향 자동 복원. */
+    var navbarH         = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var eraseStartScroll = startY_abs - navbarH;
+    var eraseEndScroll   = endY_abs - navbarH;
+    log('mZig erase: startScroll=' + eraseStartScroll.toFixed(0) +
+        ' endScroll=' + eraseEndScroll.toFixed(0) +
+        ' navbarH=' + navbarH + ' H=' + H.toFixed(0));
     ScrollTrigger.create({
-      trigger: btn2,
-      start: 'bottom ' + pxAnchor,
-      endTrigger: sec3Head,
-      end: 'top ' + pxAnchor,
+      start: eraseStartScroll,
+      end: eraseEndScroll,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
         tailProgress = self.progress;
         applyDash();
+        if (DEBUG && self.progress > 0 && self.progress < 1) {
+          log('mZig erase progress=' + self.progress.toFixed(3));
+        }
       }
     });
 
@@ -666,23 +673,28 @@
       }
     });
 
-    /* Erase: '헤더 하단이 라인을 위에서부터 먹어 들어가는' 픽셀수와 동일.
-         start = btn2 바텀이 헤더 하단 통과
-         end   = sec3Head 탑이 헤더 하단 통과
-       범위 = H (라인 높이) → 스크롤 픽셀과 1:1 매칭. */
-    var navbarH  = (navbar && navbar.getBoundingClientRect().height) || 0;
-    var pxAnchor = navbarH > 0 ? navbarH + 'px' : 'top';
-    log('zigLine navbarH=' + navbarH + ' eraseRange=H (1:1 scroll)');
+    /* Erase: 절대 scrollY 값으로 직접 트리거 (모바일 분기와 동일 방식).
+         erase 시작 = btn2 바텀이 헤더 하단 도달 = startY_abs - navbarH
+         erase 종료 = sec3Head 탑이 헤더 하단 도달 = endY_abs - navbarH
+       범위 = H (라인 높이). 스크롤 1px = 라인 1px 지움 (사선 구간은 remapTail
+       으로 시각 속도 보정). scrub:true 로 역방향 자동 복원. */
+    var navbarH         = (navbar && navbar.getBoundingClientRect().height) || 0;
+    var eraseStartScroll = startY_abs - navbarH;
+    var eraseEndScroll   = endY_abs - navbarH;
+    log('zigLine erase: startScroll=' + eraseStartScroll.toFixed(0) +
+        ' endScroll=' + eraseEndScroll.toFixed(0) +
+        ' navbarH=' + navbarH + ' H=' + H.toFixed(0));
     ScrollTrigger.create({
-      trigger: btn2,
-      start: 'bottom ' + pxAnchor,
-      endTrigger: sec3Head,
-      end: 'top ' + pxAnchor,
+      start: eraseStartScroll,
+      end: eraseEndScroll,
       scrub: true,
       markers: DEBUG,
       onUpdate: function (self) {
         tailProgress = remapTail(self.progress);
         applyDash();
+        if (DEBUG && self.progress > 0 && self.progress < 1) {
+          log('zigLine erase progress=' + self.progress.toFixed(3));
+        }
       }
     });
 
