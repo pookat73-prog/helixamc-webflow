@@ -210,7 +210,7 @@
       { id: 'chikwa',    label: '치과',       cx: w * 2,   cy: 0,        edges: [0,1,2,3]     }
     ];
 
-    var INNER_SCALE = 0.78;
+    var INNER_SCALE = 0.93;
 
     var minX = -w/2,        maxX = w * 2 + w/2;
     var minY = -1.5*s - s,  maxY = s;
