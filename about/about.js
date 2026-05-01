@@ -138,8 +138,8 @@
 
   function showAllImmediate(video) {
     var els = document.querySelectorAll('.about-heading, .about_contents_sub-title, img.image-23');
-    els.forEach(function (el) { el.style.opacity = '1'; });
-    if (video) video.style.opacity = '1';
+    els.forEach(function (el) { el.style.opacity = '1'; el.style.visibility = 'visible'; });
+    if (video) { video.style.opacity = '1'; video.style.visibility = 'visible'; }
   }
 
   function runTimeline(video) {
@@ -151,6 +151,12 @@
     var heading = document.querySelectorAll('.about-heading');
     var subhead = document.querySelectorAll('.about_contents_sub-title');
     var symbol  = document.querySelectorAll('img.image-23');
+
+    /* 캐시된 옛날 bootstrap.js 가 visibility:hidden 을 주입했을 수 있음 → 강제로 visible */
+    [heading, subhead, symbol].forEach(function (list) {
+      list.forEach(function (el) { el.style.visibility = 'visible'; });
+    });
+    if (video) video.style.visibility = 'visible';
 
     var tl = gsap.timeline({ delay: 0.2 });
     if (heading.length) {
