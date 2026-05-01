@@ -28,14 +28,14 @@
 .helix-hex-diagram .hex path {
   fill: transparent;
   stroke: #0075d6;
-  stroke-width: 1;
+  stroke-width: 0.7;
   stroke-linecap: butt;
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }
 
 .helix-hex-diagram .hex path.hex-inner {
-  stroke-width: 1;
+  stroke-width: 0.7;
 }
 
 .helix-hex-diagram .hex text {
@@ -58,11 +58,11 @@
   opacity: 0;
 }
 
-/* Phase B emit — inner 외곽선 클론. 살짝 밝은 톤으로 "쏘아진" 느낌. */
+/* Phase B emit — inner 외곽선 클론. 메인 블루 동일 톤. */
 .helix-hex-diagram .hex path.hex-emit {
   fill: transparent;
-  stroke: #7fc4ff;
-  stroke-width: 1.5;
+  stroke: #0075d6;
+  stroke-width: 0.7;
   stroke-linecap: butt;
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
@@ -70,7 +70,7 @@
   pointer-events: none;
 }
 
-/* Phase B beam — clipPath 영역(hex 내부) 안에서만 보이는 사선 광선. */
+/* Phase B beam — stroke 마스크로 외곽선 위에서만 보이는 사선 광선. */
 .helix-hex-diagram .hex-beam-wrap {
   pointer-events: none;
 }
