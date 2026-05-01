@@ -47,6 +47,29 @@
     }, 6000);
   })();
 
+  /* Pre-paint flicker guard 1b: 섹션 2 제목/번호 박스의 폰트 swap (FOUT) 깜빡임
+     차단. 텍스트가 폴백 폰트로 먼저 그려졌다가 web 폰트로 바뀌는 현상 제거.
+     clip-path 로 시각만 차단하고 paint 는 진행되게 → web 폰트 layer 적용 보장.
+     about.js 가 document.fonts.ready 후 가드 제거. */
+  (function injectSection2FontGuard() {
+    if (document.getElementById('helix-about-s2-prepaint')) return;
+    var style = document.createElement('style');
+    style.id = 'helix-about-s2-prepaint';
+    style.textContent =
+      '.about_contents_3-concept_qq,' +
+      '.about_contents_box_qqqqqqq' +
+      '{clip-path:inset(100%)!important;-webkit-clip-path:inset(100%)!important}';
+    (document.head || document.documentElement).appendChild(style);
+    /* 안전망: 4초 안에 폰트 안 오면 강제 해제 */
+    setTimeout(function () {
+      var s = document.getElementById('helix-about-s2-prepaint');
+      if (s && s.parentNode) {
+        s.parentNode.removeChild(s);
+        console.warn('[about-bootstrap] section2 fonts not ready in 4s, removing prepaint guard');
+      }
+    }, 4000);
+  })();
+
   /* Pre-paint flicker guard 2: 카드 덱이 초기화되기 전에 Webflow가 카드 섹션을
      세로로 늘어진 자연 레이아웃으로 먼저 그리는 깜빡임을 차단.
      덱 init이 끝나면 첫 섹션에 .helix-deck-ready를 붙여 노출. */

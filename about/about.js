@@ -849,10 +849,26 @@
     }
   }
 
+  /* ── 섹션 2 폰트 가드 해제 (FOUT 차단) ──
+     bootstrap 의 clip-path 가드를 document.fonts.ready 후 제거해 폰트 swap
+     완료된 상태로 노출. */
+  function releaseSection2FontGuard() {
+    function remove() {
+      var g = document.getElementById('helix-about-s2-prepaint');
+      if (g && g.parentNode) g.parentNode.removeChild(g);
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(remove, remove);
+    } else {
+      setTimeout(remove, 800);
+    }
+  }
+
   function init() {
     initSection1();
     initSubheaderNav();
     initGalleryLabels();
+    releaseSection2FontGuard();
     /* GSAP 애니메이션은 Webflow IX2 이후에 실행해야 인라인 opacity:1 덮어쓰기 방지 */
     window.Webflow = window.Webflow || [];
     window.Webflow.push(function () {
