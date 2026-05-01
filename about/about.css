@@ -25,6 +25,10 @@
   vector-effect: non-scaling-stroke;
 }
 
+.helix-hex-diagram .hex path.hex-inner {
+  stroke-width: 1;
+}
+
 .helix-hex-diagram .hex text {
   fill: #0075d6;
   font-family: 'ds-endendend', sans-serif;
