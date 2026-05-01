@@ -46,6 +46,6 @@
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
-  transform: rotate(-3deg) !important;
+  transform: rotate(-6deg) !important;
   transform-origin: center center !important;
 }
