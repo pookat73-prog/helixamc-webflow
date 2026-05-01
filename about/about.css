@@ -69,6 +69,18 @@
   transform: scaleX(1) !important;
 }
 
+/* About 본문 박스 — 왼→오 슬라이드 + 페이드인 (뷰포트 80% 진입 시) */
+.about_three_contents-box {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.about_three_contents-box.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
   transform: rotate(-6deg) !important;
