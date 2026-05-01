@@ -212,7 +212,7 @@
 
     var minX = -w/2,        maxX = w * 2 + w/2;
     var minY = -1.5*s - s,  maxY = s;
-    var pad = 2;
+    var pad = 8;
 
     function vertices(cx, cy) {
       return [
@@ -257,7 +257,7 @@
     svg.style.width = '100%';
     svg.style.height = '100%';
     svg.style.display = 'block';
-    svg.style.overflow = 'visible';
+    svg.style.overflow = 'hidden';
 
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
