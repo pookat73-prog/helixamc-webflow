@@ -897,10 +897,27 @@
     }
 
     function afterLoaded() {
-      /* compositor 가 새 폰트 layer 를 적용할 시간 — 2 RAF */
-      requestAnimationFrame(function () {
-        requestAnimationFrame(remove);
+      /* fonts.load resolve 와 실제 element 렌더 사이 한 frame 어긋남 → 각 element
+         의 offsetWidth/Height 가 4 frames 동안 변화 없을 때까지 대기.
+         clip-path:inset(100%) 는 layout 영향 없으므로 측정 정상. */
+      var meas = Array.prototype.map.call(els, function (el) {
+        return { el: el, lastW: el.offsetWidth, lastH: el.offsetHeight, stable: 0 };
       });
+      var start = Date.now();
+      var MAX = 1500;
+      function check() {
+        var allStable = true;
+        meas.forEach(function (m) {
+          var w = m.el.offsetWidth, h = m.el.offsetHeight;
+          if (w === m.lastW && h === m.lastH) m.stable++;
+          else { m.lastW = w; m.lastH = h; m.stable = 0; }
+          if (m.stable < 4) allStable = false;
+        });
+        if (allStable) { remove(); return; }
+        if (Date.now() - start > MAX) { remove(); return; }
+        requestAnimationFrame(check);
+      }
+      requestAnimationFrame(check);
     }
 
     if (loadPromises.length) {
