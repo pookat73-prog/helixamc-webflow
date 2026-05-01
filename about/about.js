@@ -203,26 +203,39 @@
        엣지 E_i 는 정점 i → (i+1)%6
        각 hex 의 edges 배열 = 그릴 엣지 인덱스. 공유 엣지는 한쪽에서만 소유. */
     var hexes = [
-      { id: 'naekwa',    label: '내과',       cx: w * 0.5, cy: -1.5 * s, edges: [0,1,2,3,4,5] },
-      { id: 'oikwa',     label: '외과',       cx: w * 1.5, cy: -1.5 * s, edges: [0,1,2,3,5]   },
+      { id: 'naekwa',    label: '내과',       cx: w * 0.5, cy: -1.5 * s, edges: [0,1,2,3,4,5], inner: true },
+      { id: 'oikwa',     label: '외과',       cx: w * 1.5, cy: -1.5 * s, edges: [0,1,2,3,5],   inner: true },
       { id: 'ankwa',     label: '안과',       cx: 0,       cy: 0,        edges: [1,2,3,4,5]   },
-      { id: 'yeongsang', label: '영상의학과', cx: w,       cy: 0,        edges: [1,2,3]       },
+      { id: 'yeongsang', label: '영상의학과', cx: w,       cy: 0,        edges: [1,2,3],       inner: true },
       { id: 'chikwa',    label: '치과',       cx: w * 2,   cy: 0,        edges: [0,1,2,3]     }
     ];
+
+    var INNER_SCALE = 0.78;
 
     var minX = -w/2,        maxX = w * 2 + w/2;
     var minY = -1.5*s - s,  maxY = s;
     var pad = 8;
 
-    function vertices(cx, cy) {
+    function vertices(cx, cy, scale) {
+      var k = scale || 1;
+      var ss = s * k, ww = w * k;
       return [
-        [cx,         cy - s],
-        [cx + w/2,   cy - s/2],
-        [cx + w/2,   cy + s/2],
-        [cx,         cy + s],
-        [cx - w/2,   cy + s/2],
-        [cx - w/2,   cy - s/2]
+        [cx,           cy - ss],
+        [cx + ww/2,    cy - ss/2],
+        [cx + ww/2,    cy + ss/2],
+        [cx,           cy + ss],
+        [cx - ww/2,    cy + ss/2],
+        [cx - ww/2,    cy - ss/2]
       ];
+    }
+
+    function fullHexPath(verts) {
+      return 'M' + verts[0][0].toFixed(3) + ' ' + verts[0][1].toFixed(3) +
+        ' L' + verts[1][0].toFixed(3) + ' ' + verts[1][1].toFixed(3) +
+        ' L' + verts[2][0].toFixed(3) + ' ' + verts[2][1].toFixed(3) +
+        ' L' + verts[3][0].toFixed(3) + ' ' + verts[3][1].toFixed(3) +
+        ' L' + verts[4][0].toFixed(3) + ' ' + verts[4][1].toFixed(3) +
+        ' L' + verts[5][0].toFixed(3) + ' ' + verts[5][1].toFixed(3) + ' Z';
     }
 
     function buildPath(verts, edges) {
@@ -267,6 +280,13 @@
       var p = document.createElementNS(svgNS, 'path');
       p.setAttribute('d', buildPath(verts, hx.edges));
       g.appendChild(p);
+
+      if (hx.inner) {
+        var inner = document.createElementNS(svgNS, 'path');
+        inner.setAttribute('class', 'hex-inner');
+        inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
+        g.appendChild(inner);
+      }
 
       var t = document.createElementNS(svgNS, 'text');
       t.setAttribute('x', hx.cx);
