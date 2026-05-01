@@ -349,10 +349,62 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
+  /* About_Background 높이 = 서브헤더 top - 헤더 bottom 으로 정확히 맞추기.
+     헤더(.w-nav 등) 바로 아래에서 시작 → 서브헤더(.about_contents_sub-title)
+     바로 위까지의 영역에 영상이 정확히 채워지도록.
+     리사이즈/폰트로딩으로 sub-title 위치가 변동되므로 ResizeObserver 로 추적. */
+  function fitBgToSubtitle() {
+    var bg = document.querySelector('.About_Background, .about_background, .about-background');
+    var sub = document.querySelector('.about_contents_sub-title');
+    if (!bg || !sub) return;
+
+    var navbar = document.querySelector('.w-nav') ||
+                 document.querySelector('nav')    ||
+                 document.querySelector('header');
+    var navH = navbar ? navbar.getBoundingClientRect().height : 0;
+
+    /* sub-title 의 절대 Y 좌표 (페이지 기준) - bg 의 절대 top */
+    var scrollY = window.scrollY || window.pageYOffset;
+    var bgTopAbs  = bg.getBoundingClientRect().top  + scrollY;
+    var subTopAbs = sub.getBoundingClientRect().top + scrollY;
+
+    /* 헤더가 fixed/sticky 일 때 bg 위쪽 navH 만큼이 헤더에 가려져 있을 수
+       있음. bg 가 viewport 최상단에서 시작한다면 navH 만큼 빼서 영상 영역
+       시작점 정렬. 그렇지 않으면 그대로 사용. */
+    var bgVisibleTop = bgTopAbs < navH ? navH : bgTopAbs;
+    var targetH      = subTopAbs - bgVisibleTop;
+    if (targetH < 100) return;  /* 비정상 측정 방어 */
+
+    bg.style.height    = targetH + 'px';
+    bg.style.minHeight = '0';   /* 기존 100vh min-height 가 키 잡지 못하도록 */
+    log('bg fitted: navH=' + navH.toFixed(0) +
+        ' bgTop=' + bgTopAbs.toFixed(0) +
+        ' subTop=' + subTopAbs.toFixed(0) +
+        ' h=' + targetH.toFixed(0));
+  }
+
+  function setupBgFit() {
+    fitBgToSubtitle();
+    /* 폰트 로딩 후 sub-title 위치가 변하므로 한 번 더 */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { setTimeout(fitBgToSubtitle, 0); });
+    }
+    var t;
+    window.addEventListener('resize', function () {
+      clearTimeout(t);
+      t = setTimeout(fitBgToSubtitle, 100);
+    });
+    var sub = document.querySelector('.about_contents_sub-title');
+    if (sub && window.ResizeObserver) {
+      try { new ResizeObserver(fitBgToSubtitle).observe(sub); } catch (e) {}
+    }
+  }
+
   function init() {
     log('init');
     renderHexDiagram();
     initViewport60FadeIn();
+    setupBgFit();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
