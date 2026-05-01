@@ -167,12 +167,17 @@
                           section.querySelector('.flex-block-23') ||
                           cards[0].parentElement;
 
-      /* once: true — helix-s1-done 이후 ScrollTrigger.refresh() 가 트리거를
+      /* 모바일은 섹션 진입(섹션 top 이 뷰포트 bottom 도달) 시점에 발사,
+         데스크는 기존 cardContainer 'top 70%' 유지.
+         once: true — helix-s1-done 이후 ScrollTrigger.refresh() 가 트리거를
          재평가할 때 카드가 깜빡 사라졌다 다시 페이드인되는 현상 방지. */
+      var isMobileCard = window.innerWidth <= 767;
+      var stTrigger = isMobileCard ? section : cardContainer;
+      var stStart   = isMobileCard ? 'top bottom' : 'top 70%';
       var cardTL = gsap.timeline({
         scrollTrigger: {
-          trigger: cardContainer,
-          start: 'top 70%',
+          trigger: stTrigger,
+          start: stStart,
           toggleActions: 'play none none none',
           once: true
         }
