@@ -617,17 +617,42 @@
       var pinStart = box1Ref || holder;
       var pinEnd   = box3Ref || box2Ref || box1Ref || holder;
 
-      /* 디버그: 항상 출력 (debug flag 무관) — pin 안 먹는 케이스 추적용. */
+      /* 디버그: 항상 출력 (debug flag 무관) — pin 안 먹는 케이스 추적용.
+         DOMRect 가 콘솔에서 펼치기 번거롭지 않게 top/height 만 평탄화. */
       try {
-        console.log('[helix-s2 setup]', {
+        function rectInfo(el) {
+          if (!el) return null;
+          var r = el.getBoundingClientRect();
+          return {
+            top: Math.round(r.top + window.scrollY),
+            left: Math.round(r.left),
+            w: Math.round(r.width),
+            h: Math.round(r.height),
+            absBottom: Math.round(r.top + window.scrollY + r.height)
+          };
+        }
+        var pinStartParent = pinStart && pinStart.parentElement;
+        var holderParent = holder.parentElement;
+        var holderGrandparent = holderParent && holderParent.parentElement;
+        console.log('[helix-s2 v2]', {
+          scrollY: Math.round(window.scrollY),
+          viewportH: window.innerHeight,
           boxesFound: boxes2.length,
+          holder: rectInfo(holder),
+          holderParent: holderParent && (holderParent.className || holderParent.tagName),
+          holderParentRect: rectInfo(holderParent),
+          holderGrandparent: holderGrandparent && (holderGrandparent.className || holderGrandparent.tagName),
+          holderGrandparentRect: rectInfo(holderGrandparent),
           pinStart: pinStart === holder ? 'holder(fallback)' : (pinStart.className || pinStart.tagName),
-          pinEnd:   pinEnd   === holder ? 'holder(fallback)' : (pinEnd.className   || pinEnd.tagName),
-          holderRect: holder.getBoundingClientRect(),
-          pinStartRect: pinStart && pinStart.getBoundingClientRect(),
-          pinEndRect:   pinEnd   && pinEnd.getBoundingClientRect()
+          pinStartRect: rectInfo(pinStart),
+          pinStartParent: pinStartParent && (pinStartParent.className || pinStartParent.tagName),
+          pinStartParentRect: rectInfo(pinStartParent),
+          pinEnd: pinEnd === holder ? 'holder(fallback)' : (pinEnd.className   || pinEnd.tagName),
+          pinEndRect: rectInfo(pinEnd),
+          pinRangePx: pinEnd && pinStart ?
+            Math.round(pinEnd.getBoundingClientRect().bottom - pinStart.getBoundingClientRect().top) : null
         });
-      } catch (e) {}
+      } catch (e) { console.warn('[helix-s2 debug error]', e); }
 
       window.ScrollTrigger.create({
         trigger: pinStart,
