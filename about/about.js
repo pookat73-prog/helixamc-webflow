@@ -605,19 +605,32 @@
 
       window.__hexS2Tl = section2Tl;
 
-      /* Section 2 트리거 = 좌측 두 번째 콘텐츠 박스 (.about_three_contents-box[1]).
-         이 박스의 top 이 viewport 75% 라인에 닿으면 진행 시작, bottom 이
-         25% 라인에 닿으면 진행 끝. 그 사이 다이어그램은 CSS sticky 로
-         viewport 에 붙어 있고, 좌측 텍스트는 정상 스크롤로 흘러간다.
-         박스[1] 이 없으면 row 공통 조상으로 폴백. */
       var boxes2 = document.querySelectorAll('.about_three_contents-box');
-      var triggerEl = boxes2[1] || null;
-      if (!triggerEl) {
-        var anyBox = boxes2[0];
-        triggerEl = anyBox ? findCommonAncestor(holder, anyBox) : null;
+      var box1Ref = boxes2[0] || null;
+      var box2Ref = boxes2[1] || null;
+
+      /* Pin: 다이어그램이 row 전체 스크롤 동안 viewport 에 고정되어
+         있어야 함. row = 다이어그램 + 좌측 콘텐츠 박스의 공통 조상. */
+      var rowEl = box1Ref ? findCommonAncestor(holder, box1Ref) : null;
+      if (!rowEl) rowEl = holder.parentElement;
+      if (rowEl && rowEl !== holder) {
+        window.ScrollTrigger.create({
+          trigger: rowEl,
+          start: 'top top',
+          end: 'bottom bottom',
+          pin: holder,
+          /* pinSpacing false — 다이어그램의 컬럼이 이미 flex stretch 로
+             row 와 같은 높이를 갖고 있다는 가정. spacer 추가 시 row 가
+             더 길어져 레이아웃이 어긋날 수 있음. 만약 컬럼이 다이어그램
+             높이만큼만이라 sticky 자리가 없으면 true 로 토글. */
+          pinSpacing: false
+        });
+        log('s2 pin attached to row: ' + (rowEl.className || rowEl.tagName));
       }
-      if (!triggerEl) triggerEl = holder.parentElement;
-      if (!triggerEl) { log('s2: no trigger element'); return; }
+
+      /* Scrub: Section 2 timeline 진행도를 콘텐츠 2 박스의 스크롤 범위에
+         매핑. 박스 2 가 viewport 75% 진입 시 시작, bottom 25% 통과 시 끝. */
+      var triggerEl = box2Ref || rowEl || holder;
 
       function forceS1Done() {
         if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
@@ -640,7 +653,7 @@
         }
       });
 
-      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, trigger=' + (triggerEl.className || triggerEl.tagName));
+      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, scrub trigger=' + (triggerEl.className || triggerEl.tagName));
     }
 
     tryInit();
