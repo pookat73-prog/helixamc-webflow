@@ -656,32 +656,33 @@
         console.log('[helix-s2 v3] ' + JSON.stringify(diag));
       } catch (e) { console.warn('[helix-s2 debug error]', e); }
 
-      /* 핵심 수정 — trigger 를 다이어그램 자체로.
-         이전엔 박스1 을 trigger 로 썼는데, 박스1 top(=1042) 에서 pin 이
-         발동되면 그 시점엔 다이어그램(top=928) 이 이미 viewport 위로
-         사라진 상태였음 (114px 위). 다이어그램이 viewport top 에 닿는
-         순간(scroll=928) pin 이 시작되어야 자연스럽게 고정됨.
-         endTrigger 는 박스3 의 bottom 이 viewport bottom 에 닿을 때까지
-         (= 박스 3 까지 모두 본 시점). */
+      /* 핀 시작점·종료점 튜닝.
+         start: 'center center'
+           = 다이어그램의 시각 중심이 viewport 중심에 닿는 순간 pin.
+             이전엔 'top top' 이라 viewport 최상단(서브헤드 영역)에 박혀
+             부자연스러웠음. 중심에서 잡으면 좌측 콘텐츠와 시선 라인이
+             맞고, 서브헤드와 겹치지 않음.
+         end: 'bottom top' on 박스 3
+           = 박스 3 의 bottom 이 viewport top 에 닿을 때 (= 박스 3 이 위로
+             완전히 사라질 때) 까지 핀 유지. 핀 해제 시점에는 다이어그램
+             원래 자리(top=928)가 이미 viewport 위로 한참 지난 상태라
+             unpin 점프 없음.
+         pinSpacing: false — Webflow row layout 이 흩어져 있어 spacer 추가
+           시 박스 2,3 섹션이 밀리는 사고 방지. */
       window.ScrollTrigger.create({
         trigger: holder,
         endTrigger: pinEnd,
-        start: 'top top',
-        end: 'bottom bottom',
+        start: 'center center',
+        end: 'bottom top',
         pin: holder,
-        /* pinSpacing false — 다이어그램은 별도 컬럼(white-frame_connect)
-           안에 있고, 좌측 박스들은 다른 DOM 트리에 흩어져 있음. spacer
-           추가 시 white-frame_connect 가 1500+px 늘어나면서 그 다음 섹션
-           (박스 2, 3 위치) 이 함께 밀려 layout shift 발생. spacer 없이
-           position:fixed 로만 고정 — 다이어그램 자리는 잠시 비지만, 박스
-           들이 자연스럽게 흘러가는 동안 다이어그램은 viewport 에 박힘. */
         pinSpacing: false,
         pinType: 'fixed',
         anticipatePin: 1
       });
       try {
-        console.log('[helix-s2 pin] attached, pin range ≈ ' +
-          Math.round(pinEnd.getBoundingClientRect().bottom + window.innerHeight - holder.getBoundingClientRect().top) + 'px');
+        var pinStartScroll = Math.round(holder.getBoundingClientRect().top + window.scrollY + holder.getBoundingClientRect().height / 2 - window.innerHeight / 2);
+        var pinEndScroll = Math.round(pinEnd.getBoundingClientRect().bottom + window.scrollY);
+        console.log('[helix-s2 pin] attached, pinStartScroll≈' + pinStartScroll + ' pinEndScroll≈' + pinEndScroll + ' range≈' + (pinEndScroll - pinStartScroll) + 'px');
       } catch (e) {}
 
       /* Scrub: Section 2 timeline 진행도를 콘텐츠 2 박스의 스크롤 범위에
