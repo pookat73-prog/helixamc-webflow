@@ -47,17 +47,16 @@
   opacity: 0;
 }
 
-/* 5 헥사 전체 silhouette pulse — 외곽선 halo band 확장으로 모든 변에서
-   같은 거리만큼 perpendicular 외측 튕김. stroke-width 0 → 큰 값으로
-   GSAP 가 무한 루프 (back.out 통통). hex 보다 z-order 아래에 배치되어
-   stroke 의 안쪽 절반은 hex fill 이 가리고 바깥 halo 만 보임.
-   non-scaling-stroke 빼고 stroke-width 기본 0 — 평소 invisible. */
+/* 5 헥사 전체 silhouette pulse — thin stroke 의 line 자체가 살짝 scale 로
+   바운스. hex 위 z-order 에 두어 외곽선이 깨끗하게 보임 (halo/색 효과 X).
+   GSAP 가 scale 1 → 1.08 + opacity 0.8 → 0, back.out(2) 통통 으로 무한 루프. */
 .helix-hex-diagram .hex-combined-pulse {
   fill: none;
   stroke: #0075d6;
-  stroke-width: 0;
+  stroke-width: 0.7;
   stroke-linecap: butt;
-  stroke-linejoin: round;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
   opacity: 0;
   pointer-events: none;
 }
