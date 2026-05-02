@@ -421,14 +421,18 @@
     if (!hexes.length) { log('no hex meta'); return; }
 
     /* 초기 상태 — CSS 가 .hex { opacity: 0 } 로 가려 두지만 transform 까지
-       명시적으로 세팅해서 첫 페인트와 첫 트윈 사이 점프 방지. */
+       명시적으로 세팅해서 첫 페인트와 첫 트윈 사이 점프 방지.
+       transformPerspective 도 같이 박아둠 → Section 2 의 rotateY 가 SVG <g>
+       위에서 진짜 3D 로 보이게 (CSS 의 perspective 가 SVG 내부에서 종종
+       전파 안 되는 케이스 보호). */
     hexes.forEach(function (hx) {
       var g = svg.querySelector('.hex-' + hx.id);
       if (!g) return;
       gsap.set(g, {
         opacity: 0,
         scale: 0.55,
-        svgOrigin: hx.cx + ' ' + hx.cy
+        svgOrigin: hx.cx + ' ' + hx.cy,
+        transformPerspective: 1200
       });
       if (hx.inner) {
         var emit = g.querySelector('.hex-emit');
@@ -603,22 +607,55 @@
         section2Tl.add(hexTl, 0);
       });
 
-      /* Phase 5 — 헬릭스 심볼로 모핑.
-         Phase 4 끝(3.6) 무렵 SVG 가 fade out, 같은 자리에 about hero 의
-         img.image-23 src 를 그대로 가져온 심볼이 fade in + 살짝 scale up.
-         별도 심볼 파일 없을 시 image-23 가 fallback. */
-      var symbolImg = injectMorphSymbol(holder);
-      if (symbolImg) {
-        gsap.set(symbolImg, { xPercent: -50, yPercent: -50, scale: 0.78, opacity: 0 });
-        /* 클러스터 fade out (SVG 통째로) */
+      /* Phase 5 — 크리스탈 3D 심볼로 모핑.
+         Phase 4 끝(3.6) 무렵 SVG 가 fade out, 같은 자리에 stage(크리스탈
+         효과 입힌 심볼) 가 fade in + 살짝 scale up. */
+      var morphStage = injectMorphSymbol(holder);
+      if (morphStage) {
+        gsap.set(morphStage, { xPercent: -50, yPercent: -50, scale: 0.78, opacity: 0 });
         section2Tl.to(svg, { opacity: 0, duration: 0.45, ease: 'power2.in' }, 3.55);
-        /* 심볼 fade in + 살짝 scale up */
-        section2Tl.to(symbolImg, {
+        section2Tl.to(morphStage, {
           opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out'
         }, 3.65);
-        log('s2 morph symbol injected, src: ' + (symbolImg.currentSrc || symbolImg.src).slice(0, 60) + '...');
+        log('s2 morph stage injected');
       } else {
-        log('s2 morph symbol skipped (no img.image-23 src found)');
+        log('s2 morph stage skipped (no img.image-23 src found)');
+      }
+
+      /* Box 3 — 모핑 후 심볼에서 펄스 1번 + 궤도 도는 빛점.
+         박스 3 진입 트리거 → 펄스 발사, 궤도 빛점 fade in.
+         궤도는 SVG <animateMotion> 으로 무한 루프 (placeholder 수직 타원). */
+      var box3Effects = injectBox3Effects(holder);
+      if (box3Effects && box3Ref) {
+        gsap.set(box3Effects, { opacity: 0 });
+        var pulseEl = box3Effects.querySelector('.box3-pulse');
+        var dotEl   = box3Effects.querySelector('.box3-orbit-dot');
+        if (pulseEl) gsap.set(pulseEl, { opacity: 0, attr: { r: 40 } });
+        if (dotEl)   gsap.set(dotEl,   { opacity: 0 });
+
+        window.ScrollTrigger.create({
+          trigger: box3Ref,
+          start: 'top 75%',
+          once: true,
+          onEnter: function () {
+            /* effects layer fade in */
+            gsap.to(box3Effects, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+            /* 펄스 한 번 — 작게 시작해서 크게 퍼지며 사라짐 */
+            if (pulseEl) {
+              gsap.set(pulseEl, { opacity: 1, attr: { r: 20 } });
+              gsap.to(pulseEl, {
+                attr: { r: 220 }, opacity: 0,
+                duration: 1.6, ease: 'power2.out'
+              });
+            }
+            /* 궤도 빛점 — 펄스가 어느 정도 퍼진 뒤 fade in (이후 영구 순회) */
+            if (dotEl) {
+              gsap.to(dotEl, { opacity: 1, duration: 0.6, ease: 'power2.out', delay: 0.4 });
+            }
+            log('box3 pulse + orbit started');
+          }
+        });
+        log('box3 effects ready');
       }
 
       window.__hexS2Tl = section2Tl;
@@ -744,26 +781,90 @@
     return null;
   }
 
-  /* about hero 에 이미 박혀있는 헬릭스 심볼(img.image-23) 의 src 를 그대로
-     가져와 다이어그램 holder 안에 .hex-morph-symbol 로 주입. Phase 5
-     (모핑) 시 fade in 대상. 별도 심볼 파일을 리포에 추가하면 그걸 우선
-     사용하도록 src 를 바꿔주면 됨. */
+  /* 헬릭스 심볼 모핑 타겟 stage 주입.
+     - stage 는 GSAP 가 위치/스케일/오파시티를 다루는 wrapper
+     - 그 안의 <img> 는 CSS 다층 drop-shadow + hue-shift 시머 애니메이션으로
+       크리스탈 3D 인상을 근사 표현 (진짜 3D 모델 아님)
+     - src 는 about hero 의 img.image-23 src 를 그대로 재사용 (사용자가
+       올린 심볼.svg 도 같은 PNG 가 wrapping 된 형태라 시각적으로 동일) */
   function injectMorphSymbol(holder) {
     if (!holder) return null;
-    var existing = holder.querySelector('.hex-morph-symbol');
+    var existing = holder.querySelector('.hex-morph-stage');
     if (existing) return existing;
 
     var hero = document.querySelector('img.image-23');
     var src = hero ? (hero.currentSrc || hero.src) : '';
     if (!src) return null;
 
+    var stage = document.createElement('div');
+    stage.className = 'hex-morph-stage';
+
     var img = document.createElement('img');
     img.className = 'hex-morph-symbol';
     img.src = src;
     img.alt = '';
     img.draggable = false;
-    holder.appendChild(img);
-    return img;
+    stage.appendChild(img);
+
+    holder.appendChild(stage);
+    return stage;
+  }
+
+  /* Box 3 — 심볼에서 파동 한번 + 궤도 도는 빛점.
+     placeholder 궤도 = 수직 타원 (실제 심볼 path 데이터가 없어 근사).
+     진짜 path 모션 원할 시 path 데이터가 있는 벡터 SVG 가 필요. */
+  function injectBox3Effects(holder) {
+    if (!holder) return null;
+    var existing = holder.querySelector('.box3-effects');
+    if (existing) return existing;
+
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', 'box3-effects');
+    svg.setAttribute('viewBox', '-100 -160 200 320');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+    /* Pulse ring — 펄스 1번 (확장하며 fade out) */
+    var pulse = document.createElementNS(ns, 'circle');
+    pulse.setAttribute('class', 'box3-pulse');
+    pulse.setAttribute('cx', '0'); pulse.setAttribute('cy', '0');
+    pulse.setAttribute('r', '40');
+    pulse.setAttribute('fill', 'none');
+    pulse.setAttribute('stroke', '#7fc4ff');
+    pulse.setAttribute('stroke-width', '2');
+    svg.appendChild(pulse);
+
+    /* 궤도 path (placeholder = 수직 타원) — 보이지 않게, motion 전용 */
+    var orbitD = 'M 0,-130 A 60,130 0 1,1 0,130 A 60,130 0 1,1 0,-130 Z';
+    var orbit = document.createElementNS(ns, 'path');
+    orbit.setAttribute('class', 'box3-orbit-path');
+    orbit.setAttribute('d', orbitD);
+    orbit.setAttribute('fill', 'none');
+    orbit.setAttribute('stroke', 'none');
+    svg.appendChild(orbit);
+
+    /* 궤도 도는 빛점 + halo */
+    var dotG = document.createElementNS(ns, 'g');
+    dotG.setAttribute('class', 'box3-orbit-dot');
+    var halo = document.createElementNS(ns, 'circle');
+    halo.setAttribute('r', '12');
+    halo.setAttribute('fill', 'rgba(127,196,255,0.35)');
+    var core = document.createElementNS(ns, 'circle');
+    core.setAttribute('r', '4');
+    core.setAttribute('fill', '#ffffff');
+    dotG.appendChild(halo);
+    dotG.appendChild(core);
+    /* SVG <animateMotion> — 6s 주기로 path 무한 순회 */
+    var motion = document.createElementNS(ns, 'animateMotion');
+    motion.setAttribute('dur', '6s');
+    motion.setAttribute('repeatCount', 'indefinite');
+    motion.setAttribute('path', orbitD);
+    motion.setAttribute('rotate', 'auto');
+    dotG.appendChild(motion);
+    svg.appendChild(dotG);
+
+    holder.appendChild(svg);
+    return svg;
   }
 
   function initViewport60FadeIn() {

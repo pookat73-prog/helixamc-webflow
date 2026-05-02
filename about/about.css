@@ -88,9 +88,13 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* Phase 5 모핑 타겟 — 다이어그램 위에 헬릭스 심볼.
-   Section 2 timeline 끝 무렵 SVG 가 fade out 되며 같은 자리에 fade in. */
-.diagram-place-holder .hex-morph-symbol {
+/* Phase 5 모핑 타겟 — 크리스탈 3D 인상의 헬릭스 심볼.
+   - .hex-morph-stage : GSAP 가 위치/스케일/오파시티 다루는 wrapper
+   - .hex-morph-symbol: <img>, CSS 다층 drop-shadow + hue-shift 시머로
+     크리스탈/유리 재질 인상 (진짜 3D 모델 아님, 시각 근사).
+   - GSAP 와 CSS 가 transform 충돌하지 않도록 stage 만 GSAP, img 는 CSS
+     keyframe 만 담당. */
+.diagram-place-holder .hex-morph-stage {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -100,10 +104,50 @@
   user-select: none;
   opacity: 0;
   z-index: 5;
-  /* 메인 블루 분위기의 부드러운 글로우 */
-  filter: drop-shadow(0 0 24px rgba(0, 117, 214, 0.35));
-  /* GSAP 가 xPercent/yPercent + scale 을 transform 으로 합쳐 적용. CSS 측
-     transform 은 비워둠 (이중 적용 방지). */
+}
+.diagram-place-holder .hex-morph-stage .hex-morph-symbol {
+  display: block;
+  height: 100%;
+  width: auto;
+  filter:
+    drop-shadow( 2px  2px 0 rgba(127, 196, 255, 0.45))
+    drop-shadow(-2px -2px 0 rgba( 80, 120, 255, 0.45))
+    drop-shadow(0 0 32px rgba(0, 117, 214, 0.55));
+  animation: helixCrystalShimmer 4.5s ease-in-out infinite;
+}
+@keyframes helixCrystalShimmer {
+  0%, 100% {
+    filter:
+      drop-shadow( 2px  2px 0 rgba(127, 196, 255, 0.45))
+      drop-shadow(-2px -2px 0 rgba( 80, 120, 255, 0.45))
+      drop-shadow(0 0 32px rgba(0, 117, 214, 0.55));
+  }
+  50% {
+    filter:
+      drop-shadow(-2px  2px 0 rgba(160, 220, 255, 0.55))
+      drop-shadow( 2px -2px 0 rgba( 60,  90, 255, 0.55))
+      drop-shadow(0 0 40px rgba(40, 150, 255, 0.65));
+  }
+}
+
+/* Box 3 효과 — 펄스 ring + 궤도 도는 빛점.
+   심볼과 같은 위치(holder 중앙) 에 SVG overlay. */
+.diagram-place-holder .box3-effects {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 6;
+  overflow: visible;
+}
+.diagram-place-holder .box3-effects .box3-pulse {
+  vector-effect: non-scaling-stroke;
+}
+.diagram-place-holder .box3-effects .box3-orbit-dot {
+  filter: drop-shadow(0 0 6px rgba(127, 196, 255, 0.9));
 }
 
 /* About Contents — title 페이드 인 (뷰포트 80% 진입 시) */
