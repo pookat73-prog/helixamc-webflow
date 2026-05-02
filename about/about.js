@@ -634,7 +634,7 @@
         var pinStartParent = pinStart && pinStart.parentElement;
         var holderParent = holder.parentElement;
         var holderGrandparent = holderParent && holderParent.parentElement;
-        console.log('[helix-s2 v2]', {
+        var diag = {
           scrollY: Math.round(window.scrollY),
           viewportH: window.innerHeight,
           boxesFound: boxes2.length,
@@ -651,7 +651,9 @@
           pinEndRect: rectInfo(pinEnd),
           pinRangePx: pinEnd && pinStart ?
             Math.round(pinEnd.getBoundingClientRect().bottom - pinStart.getBoundingClientRect().top) : null
-        });
+        };
+        /* JSON 문자열로 출력 — 콘솔에서 한 줄로 다 보이게 (객체 접힘 회피). */
+        console.log('[helix-s2 v3] ' + JSON.stringify(diag));
       } catch (e) { console.warn('[helix-s2 debug error]', e); }
 
       window.ScrollTrigger.create({
