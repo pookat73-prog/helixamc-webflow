@@ -608,25 +608,41 @@
       var boxes2 = document.querySelectorAll('.about_three_contents-box');
       var box1Ref = boxes2[0] || null;
       var box2Ref = boxes2[1] || null;
+      var box3Ref = boxes2[2] || null;
 
-      /* Pin: 다이어그램이 row 전체 스크롤 동안 viewport 에 고정되어
-         있어야 함. row = 다이어그램 + 좌측 콘텐츠 박스의 공통 조상. */
-      var rowEl = box1Ref ? findCommonAncestor(holder, box1Ref) : null;
-      if (!rowEl) rowEl = holder.parentElement;
-      if (rowEl && rowEl !== holder) {
-        window.ScrollTrigger.create({
-          trigger: rowEl,
-          start: 'top top',
-          end: 'bottom bottom',
-          pin: holder,
-          /* pinSpacing false — 다이어그램의 컬럼이 이미 flex stretch 로
-             row 와 같은 높이를 갖고 있다는 가정. spacer 추가 시 row 가
-             더 길어져 레이아웃이 어긋날 수 있음. 만약 컬럼이 다이어그램
-             높이만큼만이라 sticky 자리가 없으면 true 로 토글. */
-          pinSpacing: false
+      /* Pin 전략 — 다이어그램이 콘텐츠 박스 1·2·3 전체 스크롤 동안 viewport
+         에 고정되도록 명시적 trigger/endTrigger 사용. 공통 조상 탐색 대신
+         박스 1 시작 ~ 박스 3 끝 으로 직접 범위 지정 (Webflow row 가 어떤
+         wrapper 로 싸여있어도 안전). */
+      var pinStart = box1Ref || holder;
+      var pinEnd   = box3Ref || box2Ref || box1Ref || holder;
+
+      /* 디버그: 항상 출력 (debug flag 무관) — pin 안 먹는 케이스 추적용. */
+      try {
+        console.log('[helix-s2 setup]', {
+          boxesFound: boxes2.length,
+          pinStart: pinStart === holder ? 'holder(fallback)' : (pinStart.className || pinStart.tagName),
+          pinEnd:   pinEnd   === holder ? 'holder(fallback)' : (pinEnd.className   || pinEnd.tagName),
+          holderRect: holder.getBoundingClientRect(),
+          pinStartRect: pinStart && pinStart.getBoundingClientRect(),
+          pinEndRect:   pinEnd   && pinEnd.getBoundingClientRect()
         });
-        log('s2 pin attached to row: ' + (rowEl.className || rowEl.tagName));
-      }
+      } catch (e) {}
+
+      window.ScrollTrigger.create({
+        trigger: pinStart,
+        endTrigger: pinEnd,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: holder,
+        /* pinSpacing true (default) — 다이어그램이 차지하던 공간을 spacer
+           로 유지. Webflow 컬럼 높이가 다이어그램에 묶여 있어도 안전. */
+        pinSpacing: true,
+        anticipatePin: 1
+      });
+      try {
+        console.log('[helix-s2 pin] attached');
+      } catch (e) {}
 
       /* Scrub: Section 2 timeline 진행도를 콘텐츠 2 박스의 스크롤 범위에
          매핑. 박스 2 가 viewport 75% 진입 시 시작, bottom 25% 통과 시 끝. */
