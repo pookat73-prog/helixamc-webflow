@@ -366,9 +366,10 @@
 
     /* 잠수함 레이더 펄스 무한 루프 — 가볍고 산듯하게.
        fade 0 → 0.5 → 0 (투명·안투명·투명, 낮은 peak).
-       scale 1 → 0.94 (6% shrink, 절반으로 얕게) 을 power3.out 으로.
-       0.4s pulse + 0.2s 호흡 = 0.6s 주기 (짧고 산뜻).
-       fade out 0.22 → 0.40 으로 더 빨리 사라짐. */
+       scale 1 → 0.94 (6% shrink, 얕게) 을 power3.out 으로 0.6s 동안.
+       0.6s pulse + 0.2s 호흡 = 0.8s 주기.
+       fade out 은 0.20 → 0.38 으로 scale 끝나기 전에 일찍 사라짐 — 펄스
+       자체는 0.38s 시점에 사라지지만 scale 은 부드럽게 설틀까지 진행. */
     if (window.__hexInnerPulseTween) window.__hexInnerPulseTween.kill();
     var allInners = svg.querySelectorAll('.hex-inner');
     allInners.forEach(function (inner) {
@@ -385,9 +386,9 @@
         { opacity: 0, scale: 1 },
         { opacity: 0.5, duration: 0.12, ease: 'power2.out' }, 0);
       pulseTl.to(allInners,
-        { scale: 0.94, duration: 0.4, ease: 'power3.out' }, 0);
+        { scale: 0.94, duration: 0.6, ease: 'power3.out' }, 0);
       pulseTl.to(allInners,
-        { opacity: 0, duration: 0.18, ease: 'power2.in' }, 0.22);
+        { opacity: 0, duration: 0.18, ease: 'power2.in' }, 0.20);
       window.__hexInnerPulseTween = pulseTl;
     }
 
