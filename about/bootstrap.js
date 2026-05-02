@@ -71,10 +71,20 @@
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
-  /* 캐시 무력화: 브라우저/SW 가 옛 SHA 응답을 들고있으면 옛 영상 URL 로 흐름.
+  /* Cache 무력화: 브라우저/SW 가 옛 SHA 응답을 들고있으면 옛 영상 URL 로 흐름.
      timestamp 쿼리로 매 로드 fresh 응답 강제. */
   var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
             '?t=' + Date.now();
+
+  /* GSAP ScrollTrigger 플러그인 — 다이어그램 2구간 스크롤 스크럽용.
+     about.js 가 ScrollTrigger 가 등록된 뒤에 안전하게 사용할 수 있도록
+     plugin 로드를 먼저 시작 (about.js 보다 먼저 head 에 inject). */
+  var stUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
+  injectJs(stUrl, function () {
+    if (window.gsap && window.gsap.registerPlugin && window.ScrollTrigger) {
+      window.gsap.registerPlugin(window.ScrollTrigger);
+    }
+  });
 
   fetch(api, {
     headers: { 'Accept': 'application/vnd.github+json' },
