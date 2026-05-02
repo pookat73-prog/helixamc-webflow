@@ -280,6 +280,20 @@
     svg.style.display = 'block';
     svg.style.overflow = 'hidden';
 
+    /* 5 헥사 전체 perimeter (이웃과 공유하지 않는 외부 엣지만) — 1구간 끝에
+       모두 모인 silhouette 으로 파동 쏘는 데 사용. 평소 opacity 0.
+       stroke-width 0 → 큰 값 으로 애니메이션해서 perpendicular 방향으로
+       균등한 거리로 확장됨 (모든 변이 같은 거리만큼 바깥으로 튕김).
+       hex 보다 z-order 아래에 두어 stroke 의 안쪽 절반은 hex fill 이 가리고
+       바깥 절반만 보이게 함 (= 외곽 halo 효과). */
+    var pulsePath = document.createElementNS(svgNS, 'path');
+    pulsePath.setAttribute('class', 'hex-combined-pulse');
+    var combinedD = hexes.map(function (hx) {
+      return hx.outerEdges ? buildPath(vertices(hx.cx, hx.cy), hx.outerEdges) : '';
+    }).filter(Boolean).join(' ');
+    pulsePath.setAttribute('d', combinedD);
+    svg.appendChild(pulsePath);
+
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
       var g = document.createElementNS(svgNS, 'g');
@@ -294,7 +308,7 @@
 
       if (hx.inner) {
         /* inner 외곽선만 추가 — 평소엔 CSS 로 opacity:0 (안 보임).
-           Phase B 시점에 GSAP 가 opacity 0→1→0 + scale 1→0.5 로 한 번 펄스. */
+           Phase B 시점에 GSAP 가 통통 bounce 로 한 번 펄스. */
         var inner = document.createElementNS(svgNS, 'path');
         inner.setAttribute('class', 'hex-inner');
         inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
@@ -312,16 +326,6 @@
 
       svg.appendChild(g);
     });
-
-    /* 5 헥사 전체 perimeter (이웃과 공유하지 않는 외부 엣지만) — 1구간 끝에
-       모두 모인 silhouette 으로 파동 쏘는 데 사용. 평소 opacity 0. */
-    var pulsePath = document.createElementNS(svgNS, 'path');
-    pulsePath.setAttribute('class', 'hex-combined-pulse');
-    var combinedD = hexes.map(function (hx) {
-      return hx.outerEdges ? buildPath(vertices(hx.cx, hx.cy), hx.outerEdges) : '';
-    }).filter(Boolean).join(' ');
-    pulsePath.setAttribute('d', combinedD);
-    svg.appendChild(pulsePath);
 
     holder.appendChild(svg);
     log('hex diagram rendered');
@@ -363,10 +367,10 @@
       });
     });
 
-    /* 전체 silhouette pulse path — 초기 invisible, scale 1, origin = 시각 중심. */
+    /* 전체 silhouette pulse path — 초기 invisible, stroke-width 0. */
     var combinedPulse = svg.querySelector('.hex-combined-pulse');
     if (combinedPulse) {
-      gsap.set(combinedPulse, { opacity: 0, scale: 1, svgOrigin: '173 -75' });
+      gsap.set(combinedPulse, { opacity: 0, strokeWidth: 0 });
     }
 
     var played = false;
@@ -397,9 +401,10 @@
          빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
       var phaseB = tl.duration() + 0.25;
 
-      /* Phase B — 내·외·영 inner 펄스 동시에 ("통" 한번).
-         scale 1 → 0.85 까지만 줄이고 빠르게 fade out (헥사가 약간만 작아져도
-         이미 사라진 느낌). stagger 없이 셋 다 같은 시점. */
+      /* Phase B — 내·외·영 inner 펄스 동시에 "통통" bounce.
+         opacity 0 → 1 + scale 1 → 0.5 (빠르게 작아짐, power2.in)
+         → scale 0.5 → 0.7 + opacity 1 → 0 (살짝 튕겨 나오며 fade, power2.out).
+         총 0.25s. */
       hexes.forEach(function (hx) {
         if (!hx.inner) return;
         var inner = svg.querySelector('.hex-' + hx.id + ' .hex-inner');
@@ -408,8 +413,9 @@
           { opacity: 0, scale: 1 },
           {
             opacity: 1,
-            duration: 0.05,
-            ease: 'power1.out',
+            scale: 0.5,
+            duration: 0.1,
+            ease: 'power2.in',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
           phaseB
@@ -417,34 +423,37 @@
         tl.to(inner,
           {
             opacity: 0,
-            scale: 0.85,
+            scale: 0.7,
             duration: 0.15,
             ease: 'power2.out',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
-          phaseB + 0.05
+          phaseB + 0.1
         );
       });
 
-      /* 5 헥사 전체 silhouette 무한 루프 — Section 1 master timeline 의
-         play once 흐름과 분리해서, tl.call 시점에 별도 fromTo(repeat:-1)
-         tween 을 띄움. 이렇게 하면 master 는 정상적으로 progress 1 도달
-         가능 (Section 2 onEnter forceS1Done 의 progress(1) 안전망 보장). */
+      /* 5 헥사 전체 silhouette 무한 루프 — inner 펄스 끝(phaseB + 0.25)
+         + 0.8s 호흡 = phaseB + 1.05 시점에 시작.
+         stroke-width 0 → 22 + opacity 1 → 0 으로 외곽선이 모든 변에서
+         같은 거리로 perpendicular 확장 (= halo band). 통통 back.out 이즈,
+         0.5s pulse + 0.7s 휴지 = 1.2s 주기로 repeat:-1.
+         master timeline 과 분리해서 tl.call 로 띄움 (master 는 progress 1
+         도달 가능, Section 2 onEnter forceS1Done 안전망 그대로). */
       if (combinedPulse) {
         tl.call(function () {
           if (window.__hexCombinedPulseTween) window.__hexCombinedPulseTween.kill();
           window.__hexCombinedPulseTween = gsap.fromTo(combinedPulse,
-            { opacity: 0.7, scale: 1 },
+            { strokeWidth: 0, opacity: 1 },
             {
+              strokeWidth: 22,
               opacity: 0,
-              scale: 1.4,
-              duration: 1.2,
-              ease: 'power2.out',
-              svgOrigin: '173 -75',
-              repeat: -1
+              duration: 0.5,
+              ease: 'back.out(1.7)',
+              repeat: -1,
+              repeatDelay: 0.7
             }
           );
-        }, null, phaseB + 0.25);
+        }, null, phaseB + 1.05);
       }
 
       window.__hexS1Tl = tl;
