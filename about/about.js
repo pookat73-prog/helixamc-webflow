@@ -378,21 +378,28 @@
       var tl = gsap.timeline();
 
       /* Phase A — 내 → 외 → 영 → 안 → 치 출렁 엇박 등장.
-         5개 헥사가 비균등 간격으로 차례로 scale + fade in. 가운데 영 이
-         도착하기 전에 짧게 호흡 + 안·치는 다시 빠르게 — 출렁이는 wave 같은
-         리듬. ease back.out(1.5) 로 살짝 튕기며 안착. */
+         각 헥사 개별 모션: scale 0.55 → 1.18 (overshoot up + fade in)
+         → 1 (settle 착). 두 단계로 분리해서 "커졌다 작아지며 착" 명시.
+         5개가 비균등 간격으로 차례로 등장 (출렁 wave). */
       var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
       var ENTRANCE_TIMES = [0.00, 0.08, 0.22, 0.30, 0.44];
-      var ENTER_DUR = 0.45;
+      var GROW_DUR = 0.25;
+      var SETTLE_DUR = 0.20;
       order.forEach(function (id, i) {
         var g = svg.querySelector('.hex-' + id);
         if (!g) return;
+        var t = ENTRANCE_TIMES[i];
         tl.to(g, {
           opacity: 1,
+          scale: 1.18,
+          duration: GROW_DUR,
+          ease: 'power2.out'
+        }, t);
+        tl.to(g, {
           scale: 1,
-          duration: ENTER_DUR,
-          ease: 'back.out(1.5)'
-        }, ENTRANCE_TIMES[i]);
+          duration: SETTLE_DUR,
+          ease: 'power2.inOut'
+        }, t + GROW_DUR);
       });
 
       /* Phase B — 내·외·영 inner 펄스 "통 통" 빠르게.
@@ -432,24 +439,25 @@
 
       /* 5 헥사 전체 silhouette 무한 루프 — inner 펄스 끝(phaseB + 0.25)
          + 0.8s 호흡 = phaseB + 1.05 시점에 시작.
-         scale 1 → 1.08 + opacity 0.8 → 0, ease back.out(2) 로 통통 가볍게
-         튕기며 사라지는 line bounce. stroke 는 thin (0.7px non-scaling).
-         0.5s pulse + 0.6s 휴지 = 1.1s 주기 repeat:-1.
+         여유로운 line bounce — scale 1 → 1.06 + opacity 0.7 → 0, ease
+         back.out(1.5) 로 미세하게 튕기며 사라짐. stroke 는 thin (0.7px
+         non-scaling). 0.6s pulse + 0.8s 호흡 = 1.4s 주기 repeat:-1
+         (heartbeat 처럼 여유롭게).
          master timeline 과 분리해서 tl.call 로 띄움 (master 는 progress 1
          도달 가능, Section 2 onEnter forceS1Done 안전망 그대로). */
       if (combinedPulse) {
         tl.call(function () {
           if (window.__hexCombinedPulseTween) window.__hexCombinedPulseTween.kill();
           window.__hexCombinedPulseTween = gsap.fromTo(combinedPulse,
-            { opacity: 0.8, scale: 1 },
+            { opacity: 0.7, scale: 1 },
             {
               opacity: 0,
-              scale: 1.08,
-              duration: 0.5,
-              ease: 'back.out(2)',
+              scale: 1.06,
+              duration: 0.6,
+              ease: 'back.out(1.5)',
               svgOrigin: '173 -75',
               repeat: -1,
-              repeatDelay: 0.6
+              repeatDelay: 0.8
             }
           );
         }, null, phaseB + 1.05);
