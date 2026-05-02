@@ -439,7 +439,11 @@
       }
     });
 
+    var played = false;
     function play() {
+      if (played) return window.__hexS1Tl;
+      played = true;
+
       var tl = gsap.timeline();
 
       /* Phase A — 사용자 지정 등장 순서: 내 → 외 → 영 → 안 → 치 */
@@ -495,8 +499,13 @@
         tl.to(mover,    { opacity: 0, duration: 0.16, ease: 'power1.in' }, beamStart + 0.55);
       });
 
+      window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');
+      return tl;
     }
+
+    /* Section 2 onEnter 가 빠른 스크롤 케이스를 보호할 수 있도록 노출. */
+    window.__hexS1Play = play;
 
     if (!('IntersectionObserver' in window)) { play(); return; }
     var io = new IntersectionObserver(function (entries) {
@@ -507,6 +516,105 @@
       });
     }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
     io.observe(holder);
+  }
+
+  /* ================================================================
+     Hex Diagram — Section 2 (스크롤 스크럽)
+     ================================================================
+     Phase 1 : 5 헥사 일렬 평면 펼침 (+ 다운스케일 → viewBox 안에 맞춤)
+     Phase 2 : 제자리에서 세로축 비스듬한 우향우 (rotateY)
+     Phase 3 : 그 자세 그대로 거리 매우 좁게 모임 (압축)
+     Phase 4 : 정면으로 돌면서 가까이 (rotateY 0 + scale up + Z translate)
+     트리거 : .diagram-place-holder top 이 viewport top 도달 시 핀,
+              1 뷰포트 분량 스크롤로 timeline 진행 (scrub 1).
+     ================================================================ */
+  function initHexSection2() {
+    if (typeof gsap === 'undefined') { log('GSAP missing → skip s2'); return; }
+
+    var tries = 0;
+    function tryInit() {
+      if (typeof window.ScrollTrigger !== 'undefined') {
+        doInit();
+        return;
+      }
+      if (++tries > 60) { log('ScrollTrigger never loaded → s2 disabled'); return; }
+      setTimeout(tryInit, 100);
+    }
+
+    function doInit() {
+      var holder = document.querySelector('.diagram-place-holder');
+      var svg = holder && holder.querySelector('.helix-hex-diagram');
+      if (!svg) { log('s2: hex svg not found'); return; }
+
+      var hexes = window.__helixHexes || [];
+      if (!hexes.length) { log('s2: no hex meta'); return; }
+
+      /* viewBox 좌표계 기준 (about.js renderHexDiagram 와 동일):
+         - x 가운데 ≈ 173 (= w), y 가운데 ≈ -75 */
+      var ROW_ORDER     = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
+      var ROW_CENTER_X  = 173;
+      var ROW_Y         = -75;
+      var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
+      var COMP_STEP     = 28;    /* 압축 간격 (서로 거의 겹침) */
+      var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
+      var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
+      var END_SCALE     = 1.5;   /* 정면 복귀 시 줌인 스케일 */
+      var END_Z         = 90;    /* 살짝 viewer 쪽으로 다가옴 (perspective 와 함께) */
+
+      var section2Tl = gsap.timeline({ paused: true });
+
+      ROW_ORDER.forEach(function (id, i) {
+        var hx = null;
+        for (var k = 0; k < hexes.length; k++) {
+          if (hexes[k].id === id) { hx = hexes[k]; break; }
+        }
+        var g = svg.querySelector('.hex-' + id);
+        if (!hx || !g) return;
+
+        var rowX = ROW_CENTER_X + (i - 2) * ROW_STEP;
+        var compX = ROW_CENTER_X + (i - 2) * COMP_STEP;
+        var rowDx = rowX - hx.cx;
+        var rowDy = ROW_Y - hx.cy;
+        var compDx = compX - hx.cx;
+
+        /* svgOrigin 한 번 잡아두면 후속 트윈에도 동일 origin 사용 →
+           rotation·scale 이 항상 hex 자체 중심에서 일어남. */
+        var hexTl = gsap.timeline({
+          defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
+        });
+
+        hexTl.to(g, { x: rowDx, y: rowDy, scale: ROW_SCALE,
+                      duration: 1.0, ease: 'power2.inOut' }, 0);
+        hexTl.to(g, { rotationY: TILT_Y,
+                      duration: 0.8, ease: 'power2.inOut' }, 1.0);
+        hexTl.to(g, { x: compDx,
+                      duration: 0.8, ease: 'power2.inOut' }, 1.8);
+        hexTl.to(g, { rotationY: 0, scale: END_SCALE, z: END_Z,
+                      duration: 1.0, ease: 'power3.in' }, 2.6);
+
+        section2Tl.add(hexTl, 0);
+      });
+
+      window.__hexS2Tl = section2Tl;
+
+      window.ScrollTrigger.create({
+        trigger: holder,
+        start: 'top top',
+        end: '+=100%',
+        pin: true,
+        scrub: 1,
+        animation: section2Tl,
+        onEnter: function () {
+          /* Section 1 이 IO 트리거 전에 여기 도달했을 가능성 보호 */
+          if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
+          if (window.__hexS1Tl) window.__hexS1Tl.progress(1);
+        }
+      });
+
+      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's');
+    }
+
+    tryInit();
   }
 
   function initViewport60FadeIn() {
@@ -607,6 +715,7 @@
     log('init');
     renderHexDiagram();
     initHexAnimations();
+    initHexSection2();
     initViewport60FadeIn();
     setupBgFit();
     var video = injectBgVideo();

@@ -23,6 +23,16 @@
   width: 100%;
   height: 100%;
   display: block;
+  /* Section 2 — 자식 hex 그룹의 rotateY/translateZ 가 3D 로 보이도록
+     SVG 자체에 perspective 부여. */
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+}
+
+/* Section 2 — 각 hex 가 3D 변환을 받을 수 있도록. SVG <g> 에 CSS transform
+   3D 가 적용될 때 preserve-3d 가 있어야 자식들이 평탄화되지 않는다. */
+.helix-hex-diagram .hex {
+  transform-style: preserve-3d;
 }
 
 .helix-hex-diagram .hex path {
