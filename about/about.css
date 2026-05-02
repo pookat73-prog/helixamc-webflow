@@ -45,12 +45,13 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* inner = hex 안의 유리창. fill 은 hex-shimmer-grad 그라데이션 (메인 블루
-   40% 빛이 대각선으로 흐름), stroke 없음. JS 가 그라데이션 좌표를 yoyo
-   로 oscillate → 유리 기울이는 듯한 빛 반사. */
+/* inner — 잠수함 레이더 펄스 타겟. stroke only (작은 hex 윤곽선).
+   opacity 0 디폴트 — 멈춰있을 땐 안 보임. GSAP 가 무한 루프로 fade
+   in-out (0 → 0.7 → 0) + power4.out 극단적 ease-out shrink. */
 .helix-hex-diagram .hex path.hex-inner {
-  fill: url(#hex-shimmer-grad);
-  stroke: none;
+  fill: none;
+  stroke-width: 0.7;
+  opacity: 0;
   pointer-events: none;
 }
 
