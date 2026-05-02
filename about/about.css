@@ -52,15 +52,16 @@
   opacity: 0;
 }
 
-/* 5 헥사 전체 silhouette pulse — thin stroke 의 line 자체가 살짝 scale 로
-   바운스. hex 위 z-order 에 두어 외곽선이 깨끗하게 보임 (halo/색 효과 X).
-   GSAP 가 scale 1 → 1.08 + opacity 0.8 → 0, back.out(2) 통통 으로 무한 루프. */
+/* 5 헥사 외곽선 로딩 스피너 — head 30% 가 외곽 perimeter 를 따라 무한
+   회전 (stroke-dasharray + dashoffset). 굵기는 hex outline 의 3배 (2.1px,
+   non-scaling 으로 viewport 절대 픽셀). round cap/join 으로 폐곡선 곡각
+   부드럽게. hex 위 z-order. */
 .helix-hex-diagram .hex-combined-pulse {
   fill: none;
   stroke: #0075d6;
-  stroke-width: 0.7;
-  stroke-linecap: butt;
-  stroke-linejoin: miter;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
   opacity: 0;
   pointer-events: none;

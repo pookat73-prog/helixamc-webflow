@@ -317,14 +317,39 @@
       svg.appendChild(g);
     });
 
-    /* 5 헥사 전체 perimeter (이웃과 공유하지 않는 외부 엣지만) — 1구간 끝에
-       모두 모인 silhouette 으로 파동. hex 위 z-order 에 두고 thin stroke
-       로 그려서 line 자체가 살짝 scale 로 바운스 (halo/색 효과 X, 선만). */
+    /* 5 헥사 전체 perimeter — 단일 연속 path (M 한 번 + L 들 + Z) 로 구성.
+       이웃 hex 와 공유 안 하는 외부 엣지를 시계방향 순서로 트레이스 →
+       stroke-dasharray + dashoffset 으로 로딩 스피너 head/tail 회전 가능.
+       perimeterTrace 의 각 항목 = [hexId, edgeIndices] (시계방향 순서). */
+    var perimeterTrace = [
+      ['naekwa',    [4, 5, 0]],
+      ['oikwa',     [5, 0, 1]],
+      ['chikwa',    [0, 1, 2, 3]],
+      ['yeongsang', [2, 3]],
+      ['ankwa',     [2, 3, 4, 5]]
+    ];
+    var combinedD = '';
+    var pathStarted = false;
+    perimeterTrace.forEach(function (step) {
+      var stepHex = null;
+      for (var i = 0; i < hexes.length; i++) {
+        if (hexes[i].id === step[0]) { stepHex = hexes[i]; break; }
+      }
+      if (!stepHex) return;
+      var sv = vertices(stepHex.cx, stepHex.cy);
+      step[1].forEach(function (eIdx) {
+        if (!pathStarted) {
+          combinedD += 'M' + sv[eIdx][0].toFixed(3) + ',' + sv[eIdx][1].toFixed(3) + ' ';
+          pathStarted = true;
+        }
+        var endVi = (eIdx + 1) % 6;
+        combinedD += 'L' + sv[endVi][0].toFixed(3) + ',' + sv[endVi][1].toFixed(3) + ' ';
+      });
+    });
+    combinedD += 'Z';
+
     var pulsePath = document.createElementNS(svgNS, 'path');
     pulsePath.setAttribute('class', 'hex-combined-pulse');
-    var combinedD = hexes.map(function (hx) {
-      return hx.outerEdges ? buildPath(vertices(hx.cx, hx.cy), hx.outerEdges) : '';
-    }).filter(Boolean).join(' ');
     pulsePath.setAttribute('d', combinedD);
     svg.appendChild(pulsePath);
 
@@ -368,11 +393,21 @@
       });
     });
 
-    /* 전체 silhouette pulse path — 초기 invisible, scale 1.10 (외곽선 외측
-       offset 위치) 에 미리 박아둠. 펄스가 여기서부터 외측으로 뛰어 나감. */
+    /* 외곽선 따라 도는 로딩 스피너 — 단일 연속 path 의 stroke-dasharray
+       로 visible head 30% + invisible gap 70%, dashoffset 을 무한 회전.
+       길이는 16 * s (16 hex 엣지) 로 deterministic — getTotalLength 폴백. */
     var combinedPulse = svg.querySelector('.hex-combined-pulse');
     if (combinedPulse) {
-      gsap.set(combinedPulse, { opacity: 0, scale: 1.10, svgOrigin: '173 -75' });
+      var L = 0;
+      try { L = combinedPulse.getTotalLength(); } catch (e) {}
+      if (!L || L < 100) L = 16 * 100;
+      var dashLen = L * 0.3;
+      gsap.set(combinedPulse, {
+        opacity: 0,
+        attr: { 'stroke-dasharray': dashLen + ' ' + (L - dashLen) },
+        strokeDashoffset: 0
+      });
+      window.__hexCombinedPulseLength = L;
     }
 
     var played = false;
@@ -450,28 +485,22 @@
         );
       });
 
-      /* 5 헥사 전체 silhouette 무한 루프 — inner 펄스 끝(phaseB + 0.35)
-         + 0.8s 호흡 = phaseB + 1.15 시점에 시작.
-         "외곽선에서 나오지 말고 약간 띄운 외경 외곽선에서 파동" 요청 →
-         start scale 1.10 (silhouette 외곽선 바깥쪽 ~10% offset 위치) 에서
-         시작하여 1.16 까지 외측 expand + opacity 0.5 → 0 으로 fade.
-         얕고 가볍게 — amplitude 작고 opacity peak 도 0.5.
-         repeat:-1, 0.6s pulse + 0.9s 호흡 = 1.5s 주기 (여유롭게). */
+      /* 외곽선 로딩 스피너 — inner 펄스 끝 + 0.8s 호흡 = phaseB + 1.15
+         시점에 시작. 굵은 head (30% perimeter) 가 외곽선을 따라 4.5s 주기로
+         시계방향 회전. dashoffset 을 0 → -L 로 무한 linear 트윈 → head
+         앞쪽은 그려지고 뒤쪽은 지워지며 영원히 자기 꼬리를 쫓음. */
       if (combinedPulse) {
         tl.call(function () {
           if (window.__hexCombinedPulseTween) window.__hexCombinedPulseTween.kill();
-          window.__hexCombinedPulseTween = gsap.fromTo(combinedPulse,
-            { opacity: 0.5, scale: 1.10 },
-            {
-              opacity: 0,
-              scale: 1.16,
-              duration: 0.6,
-              ease: 'power2.inOut',
-              svgOrigin: '173 -75',
-              repeat: -1,
-              repeatDelay: 0.9
-            }
-          );
+          var L = window.__hexCombinedPulseLength;
+          if (!L) return;
+          gsap.to(combinedPulse, { opacity: 0.85, duration: 0.4, ease: 'power2.out' });
+          window.__hexCombinedPulseTween = gsap.to(combinedPulse, {
+            strokeDashoffset: -L,
+            duration: 4.5,
+            ease: 'none',
+            repeat: -1
+          });
         }, null, phaseB + 1.15);
       }
 
