@@ -607,21 +607,6 @@
         section2Tl.add(hexTl, 0);
       });
 
-      /* Phase 5 — 크리스탈 3D 심볼로 모핑.
-         Phase 4 끝(3.6) 무렵 SVG 가 fade out, 같은 자리에 stage(크리스탈
-         효과 입힌 심볼) 가 fade in + 살짝 scale up. */
-      var morphStage = injectMorphSymbol(holder);
-      if (morphStage) {
-        gsap.set(morphStage, { xPercent: -50, yPercent: -50, scale: 0.78, opacity: 0 });
-        section2Tl.to(svg, { opacity: 0, duration: 0.45, ease: 'power2.in' }, 3.55);
-        section2Tl.to(morphStage, {
-          opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out'
-        }, 3.65);
-        log('s2 morph stage injected');
-      } else {
-        log('s2 morph stage skipped (no img.image-23 src found)');
-      }
-
       /* Box 3 — 모핑 후 심볼에서 펄스 1번 + 궤도 도는 빛점.
          박스 3 진입 → 펄스 1회 + 궤도 빛점 fade in.
          박스 3 위로 역스크롤 → effects 통째 fade out (박스 1·2 에 보이지
