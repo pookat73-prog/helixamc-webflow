@@ -45,9 +45,11 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* inner 외곽선은 평소 안 보임. Phase B "파동 한 번" 순간에만 GSAP 가
-   opacity 0 → 1 → 0 으로 토글 + scale 1 → 0.5 로 안쪽 수축. */
+/* inner 외곽선 — 잠수함 레이더 펄스 타겟. fill 없이 stroke 만 (작은 hex
+   윤곽선). 평소 invisible, GSAP 가 무한 루프로 fade in-out + 극단적
+   ease-in shrink. */
 .helix-hex-diagram .hex path.hex-inner {
+  fill: none;
   stroke-width: 0.7;
   opacity: 0;
 }

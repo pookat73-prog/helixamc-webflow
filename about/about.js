@@ -296,14 +296,13 @@
       p.setAttribute('d', fullHexPath(verts));
       g.appendChild(p);
 
-      if (hx.inner) {
-        /* inner 외곽선만 추가 — 평소엔 CSS 로 opacity:0 (안 보임).
-           Phase B 시점에 GSAP 가 통통 bounce 로 한 번 펄스. */
-        var inner = document.createElementNS(svgNS, 'path');
-        inner.setAttribute('class', 'hex-inner');
-        inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
-        g.appendChild(inner);
-      }
+      /* 모든 hex 에 inner 외곽선(stroke only, INNER_SCALE 배 작은 hex) 추가
+         — 잠수함 레이더 펄스 타겟. Phase B 시점부터 무한 루프로 페이드
+         인아웃 + 극단적 ease-in shrink. */
+      var inner = document.createElementNS(svgNS, 'path');
+      inner.setAttribute('class', 'hex-inner');
+      inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
+      g.appendChild(inner);
 
       var t = document.createElementNS(svgNS, 'text');
       t.setAttribute('x', hx.cx);
@@ -391,6 +390,16 @@
         svgOrigin: hx.cx + ' ' + hx.cy,
         transformPerspective: 1200
       });
+      /* 레이더 펄스용 inner 초기 상태 — 평소 invisible, 자기 hex 중심에서
+         scale·fade. svgOrigin 한 번 박아두면 후속 트윈도 동일 origin. */
+      var inner = g.querySelector('.hex-inner');
+      if (inner) {
+        gsap.set(inner, {
+          opacity: 0,
+          scale: 1,
+          svgOrigin: hx.cx + ' ' + hx.cy
+        });
+      }
     });
 
     /* 외곽선 따라 도는 로딩 스피너 — 단일 연속 path 의 stroke-dasharray
@@ -455,35 +464,28 @@
          빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
       var phaseB = tl.duration() + 0.25;
 
-      /* Phase B — 내·외·영 inner 펄스, 얕고 가볍게.
-         scale 1 → 0.78 → 0.92 (얕은 shrink + 살짝 반동), opacity 0 → 0.6 → 0
-         (낮은 peak). 두 단계 모두 power2.inOut. 총 0.35s 로 약간 여유. */
-      hexes.forEach(function (hx) {
-        if (!hx.inner) return;
-        var inner = svg.querySelector('.hex-' + hx.id + ' .hex-inner');
-        if (!inner) return;
-        tl.fromTo(inner,
+      /* Phase B — 잠수함 레이더 펄스 (inner 외곽선 무한 루프).
+         5 헥사 모두 동시에 같은 사이클로 ping:
+           · 빠르게 fade in (0 → 0.7)
+           · scale 1 → 0.83 (15% shrink) 을 power4.in 극단적 ease-in 으로
+             — 처음엔 거의 안 줄어들다가 후반에 급격히 안쪽으로 빨려듬
+           · 후반부 fade out (0.7 → 0)
+         master timeline 과 분리해서 tl.call 로 띄움 (master progress 1
+         도달 가능, Section 2 onEnter forceS1Done 안전망 그대로). */
+      tl.call(function () {
+        if (window.__hexInnerPulseTween) window.__hexInnerPulseTween.kill();
+        var allInners = svg.querySelectorAll('.hex-inner');
+        if (!allInners.length) return;
+        var pulseTl = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
+        pulseTl.fromTo(allInners,
           { opacity: 0, scale: 1 },
-          {
-            opacity: 0.6,
-            scale: 0.78,
-            duration: 0.15,
-            ease: 'power2.inOut',
-            svgOrigin: hx.cx + ' ' + hx.cy
-          },
-          phaseB
-        );
-        tl.to(inner,
-          {
-            opacity: 0,
-            scale: 0.92,
-            duration: 0.20,
-            ease: 'power2.inOut',
-            svgOrigin: hx.cx + ' ' + hx.cy
-          },
-          phaseB + 0.15
-        );
-      });
+          { opacity: 0.7, duration: 0.25, ease: 'power2.out' }, 0);
+        pulseTl.to(allInners,
+          { scale: 0.83, duration: 1.0, ease: 'power4.in' }, 0);
+        pulseTl.to(allInners,
+          { opacity: 0, duration: 0.4, ease: 'power2.in' }, 0.6);
+        window.__hexInnerPulseTween = pulseTl;
+      }, null, phaseB);
 
       /* 외곽선 로딩 스피너 — inner 펄스 끝 + 0.8s 호흡 = phaseB + 1.15
          시점에 시작. 굵은 head (30% perimeter) 가 외곽선을 따라 4.5s 주기로
