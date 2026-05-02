@@ -369,38 +369,28 @@
 
       var tl = gsap.timeline();
 
-      /* Phase A — 내 → 외 → 영 → 안 → 치 일사분란 등장 (반동 포함).
-         각 헥사: scale 0.55 → 1.25 (overshoot up + fade in) → 0.92
-         (undershoot 반동) → 1 (settle 착). 3단계 모두 power2.inOut.
-         stagger 좁혀서 5개가 거의 동시에 차례로 등장. */
+      /* Phase A — 내 → 외 → 영 → 안 → 치 출렁 엇박 등장 (2단계).
+         각 헥사: scale 0.55 → 1.18 (overshoot up + fade in) → 1 (settle).
+         5개가 비균등 stagger 로 차례로 출렁이며 등장. */
       var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
-      var ENTRANCE_TIMES = [0.00, 0.04, 0.09, 0.14, 0.20];
-      /* 각 헥사 듀레이션 늘림 — 반동이 더 또렷이 보이도록.
-         total per hex = 0.30 + 0.18 + 0.14 = 0.62s. stagger 가 좁아서
-         5개가 거의 동시에 시작하지만 각자의 motion 은 길게 음미됨. */
-      var GROW_DUR = 0.30;
-      var REBOUND_DUR = 0.18;
-      var SETTLE_DUR = 0.14;
+      var ENTRANCE_TIMES = [0.00, 0.08, 0.22, 0.30, 0.44];
+      var GROW_DUR = 0.25;
+      var SETTLE_DUR = 0.20;
       order.forEach(function (id, i) {
         var g = svg.querySelector('.hex-' + id);
         if (!g) return;
         var t = ENTRANCE_TIMES[i];
         tl.to(g, {
           opacity: 1,
-          scale: 1.25,
+          scale: 1.18,
           duration: GROW_DUR,
           ease: 'power2.inOut'
         }, t);
         tl.to(g, {
-          scale: 0.92,
-          duration: REBOUND_DUR,
-          ease: 'power2.inOut'
-        }, t + GROW_DUR);
-        tl.to(g, {
           scale: 1,
           duration: SETTLE_DUR,
           ease: 'power2.inOut'
-        }, t + GROW_DUR + REBOUND_DUR);
+        }, t + GROW_DUR);
       });
 
       /* Phase B — 내·외·영 inner 펄스 "통 통" 빠르게.
