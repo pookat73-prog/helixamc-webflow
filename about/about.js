@@ -368,10 +368,11 @@
       });
     });
 
-    /* 전체 silhouette pulse path — 초기 invisible, scale 1, origin = 시각 중심. */
+    /* 전체 silhouette pulse path — 초기 invisible, scale 1.10 (외곽선 외측
+       offset 위치) 에 미리 박아둠. 펄스가 여기서부터 외측으로 뛰어 나감. */
     var combinedPulse = svg.querySelector('.hex-combined-pulse');
     if (combinedPulse) {
-      gsap.set(combinedPulse, { opacity: 0, scale: 1, svgOrigin: '173 -75' });
+      gsap.set(combinedPulse, { opacity: 0, scale: 1.10, svgOrigin: '173 -75' });
     }
 
     var played = false;
@@ -419,9 +420,9 @@
          빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
       var phaseB = tl.duration() + 0.25;
 
-      /* Phase B — 내·외·영 inner 펄스 동시에 통통 bounce.
-         opacity 0 → 1 + scale 1 → 0.5 → 0.7 + opacity 1 → 0.
-         두 단계 모두 power2.inOut 으로 부드럽게. 총 0.25s. */
+      /* Phase B — 내·외·영 inner 펄스, 얕고 가볍게.
+         scale 1 → 0.78 → 0.92 (얕은 shrink + 살짝 반동), opacity 0 → 0.6 → 0
+         (낮은 peak). 두 단계 모두 power2.inOut. 총 0.35s 로 약간 여유. */
       hexes.forEach(function (hx) {
         if (!hx.inner) return;
         var inner = svg.querySelector('.hex-' + hx.id + ' .hex-inner');
@@ -429,9 +430,9 @@
         tl.fromTo(inner,
           { opacity: 0, scale: 1 },
           {
-            opacity: 1,
-            scale: 0.5,
-            duration: 0.1,
+            opacity: 0.6,
+            scale: 0.78,
+            duration: 0.15,
             ease: 'power2.inOut',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
@@ -440,39 +441,38 @@
         tl.to(inner,
           {
             opacity: 0,
-            scale: 0.7,
-            duration: 0.15,
+            scale: 0.92,
+            duration: 0.20,
             ease: 'power2.inOut',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
-          phaseB + 0.1
+          phaseB + 0.15
         );
       });
 
-      /* 5 헥사 전체 silhouette 무한 루프 — inner 펄스 끝(phaseB + 0.25)
-         + 0.8s 호흡 = phaseB + 1.05 시점에 시작.
-         여유로운 line bounce — scale 1 → 1.06 + opacity 0.7 → 0, ease
-         back.out(1.5) 로 미세하게 튕기며 사라짐. stroke 는 thin (0.7px
-         non-scaling). 0.6s pulse + 0.8s 호흡 = 1.4s 주기 repeat:-1
-         (heartbeat 처럼 여유롭게).
-         master timeline 과 분리해서 tl.call 로 띄움 (master 는 progress 1
-         도달 가능, Section 2 onEnter forceS1Done 안전망 그대로). */
+      /* 5 헥사 전체 silhouette 무한 루프 — inner 펄스 끝(phaseB + 0.35)
+         + 0.8s 호흡 = phaseB + 1.15 시점에 시작.
+         "외곽선에서 나오지 말고 약간 띄운 외경 외곽선에서 파동" 요청 →
+         start scale 1.10 (silhouette 외곽선 바깥쪽 ~10% offset 위치) 에서
+         시작하여 1.16 까지 외측 expand + opacity 0.5 → 0 으로 fade.
+         얕고 가볍게 — amplitude 작고 opacity peak 도 0.5.
+         repeat:-1, 0.6s pulse + 0.9s 호흡 = 1.5s 주기 (여유롭게). */
       if (combinedPulse) {
         tl.call(function () {
           if (window.__hexCombinedPulseTween) window.__hexCombinedPulseTween.kill();
           window.__hexCombinedPulseTween = gsap.fromTo(combinedPulse,
-            { opacity: 0.7, scale: 1 },
+            { opacity: 0.5, scale: 1.10 },
             {
               opacity: 0,
-              scale: 1.06,
+              scale: 1.16,
               duration: 0.6,
               ease: 'power2.inOut',
               svgOrigin: '173 -75',
               repeat: -1,
-              repeatDelay: 0.8
+              repeatDelay: 0.9
             }
           );
-        }, null, phaseB + 1.05);
+        }, null, phaseB + 1.15);
       }
 
       window.__hexS1Tl = tl;
