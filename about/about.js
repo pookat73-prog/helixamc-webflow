@@ -597,24 +597,51 @@
 
       window.__hexS2Tl = section2Tl;
 
+      /* 트리거 = 다이어그램과 좌측 3 콘텐츠 박스의 공통 조상 (= 둘이 들어
+         있는 row 컨테이너). 그 row 의 top 이 viewport top 도달 시 진행 시작,
+         row 의 bottom 이 viewport bottom 도달 시 진행 끝.
+         그 사이 다이어그램은 CSS position:sticky 로 viewport 에 붙어 있고,
+         우측 텍스트 박스(좌측 콘텐츠)는 자연스럽게 스크롤되며 흘러간다. */
+      var contentBox = document.querySelector('.about_three_contents-box');
+      var triggerEl = contentBox ? findCommonAncestor(holder, contentBox) : null;
+      if (!triggerEl) triggerEl = holder.parentElement;
+      if (!triggerEl) { log('s2: no trigger ancestor'); return; }
+
+      function forceS1Done() {
+        if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
+        if (window.__hexS1Tl) window.__hexS1Tl.progress(1);
+      }
+
       window.ScrollTrigger.create({
-        trigger: holder,
+        trigger: triggerEl,
         start: 'top top',
-        end: '+=100%',
-        pin: true,
+        end: 'bottom bottom',
         scrub: 1,
         animation: section2Tl,
-        onEnter: function () {
-          /* Section 1 이 IO 트리거 전에 여기 도달했을 가능성 보호 */
-          if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
-          if (window.__hexS1Tl) window.__hexS1Tl.progress(1);
+        onEnter: forceS1Done,
+        onUpdate: function (self) {
+          /* 페이지 로드 시 이미 트리거 범위 안이면 onEnter 가 안 불릴 수
+             있으므로, 처음으로 진행도가 0 을 넘는 순간에도 안전망. */
+          if (self.progress > 0 && (!window.__hexS1Tl || window.__hexS1Tl.progress() < 1)) {
+            forceS1Done();
+          }
         }
       });
 
-      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's');
+      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, trigger=' + (triggerEl.className || triggerEl.tagName));
     }
 
     tryInit();
+  }
+
+  function findCommonAncestor(a, b) {
+    if (!a || !b) return null;
+    var seen = [];
+    for (var n = a; n; n = n.parentElement) seen.push(n);
+    for (var m = b; m; m = m.parentElement) {
+      if (seen.indexOf(m) !== -1) return m;
+    }
+    return null;
   }
 
   function initViewport60FadeIn() {
