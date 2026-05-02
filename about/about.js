@@ -294,14 +294,6 @@
       p.setAttribute('d', fullHexPath(verts));
       g.appendChild(p);
 
-      /* 모든 hex 에 inner — stroke only 작은 hex (radar pulse 타겟).
-         CSS 가 fill: none, stroke 상속, opacity 0 디폴트 (멈췄을 때 안 보임).
-         GSAP 가 무한 루프로 fade in-out + 극단적 ease-out shrink. */
-      var inner = document.createElementNS(svgNS, 'path');
-      inner.setAttribute('class', 'hex-inner');
-      inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
-      g.appendChild(inner);
-
       var t = document.createElementNS(svgNS, 'text');
       t.setAttribute('x', hx.cx);
       t.setAttribute('y', hx.cy);
@@ -364,32 +356,10 @@
       }
     });
 
-    /* 잠수함 레이더 펄스 무한 루프 — 가볍고 산듯하게.
-       fade 0 → 0.5 → 0 (투명·안투명·투명, 낮은 peak).
-       scale 1 → 0.94 (6% shrink, 얕게) 을 power3.out 으로 0.6s 동안.
-       0.6s pulse + 0.2s 호흡 = 0.8s 주기.
-       fade out 은 0.20 → 0.38 으로 scale 끝나기 전에 일찍 사라짐 — 펄스
-       자체는 0.38s 시점에 사라지지만 scale 은 부드럽게 설틀까지 진행. */
-    if (window.__hexInnerPulseTween) window.__hexInnerPulseTween.kill();
-    var allInners = svg.querySelectorAll('.hex-inner');
-    allInners.forEach(function (inner) {
-      var hexEl = inner.parentElement;
-      var cx = hexEl && hexEl.getAttribute('data-cx');
-      var cy = hexEl && hexEl.getAttribute('data-cy');
-      if (cx != null && cy != null) {
-        gsap.set(inner, { svgOrigin: cx + ' ' + cy });
-      }
-    });
-    if (allInners.length) {
-      var pulseTl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
-      pulseTl.fromTo(allInners,
-        { opacity: 0, scale: 1 },
-        { opacity: 0.5, duration: 0.20, ease: 'power2.out' }, 0);
-      pulseTl.to(allInners,
-        { scale: 0.94, duration: 1.0, ease: 'power3.out' }, 0);
-      pulseTl.to(allInners,
-        { opacity: 0, duration: 0.30, ease: 'power2.in' }, 0.33);
-      window.__hexInnerPulseTween = pulseTl;
+    /* 모든 inner 펄스 제거 — 사용자 요청. */
+    if (window.__hexInnerPulseTween) {
+      window.__hexInnerPulseTween.kill();
+      window.__hexInnerPulseTween = null;
     }
 
     var played = false;
