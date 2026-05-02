@@ -357,10 +357,12 @@
 
       var tl = gsap.timeline();
 
-      /* Phase A — 사용자 지정 등장 순서: 내 → 외 → 영 → 안 → 치 */
+      /* Phase A — 내 → 외 → 영 → 안 → 치, 엇박 + 빠른 stagger.
+         촤촤촤촤 느낌으로 빠르게 들어오되 균등 간격이 아닌 비대칭 패턴
+         (5→13→5→13 ms). 마지막 hex 시작까지 0.36s. */
       var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
-      var STAGGER = 0.22;
-      var ENTER_DUR = 0.6;
+      var ENTRANCE_TIMES = [0.00, 0.05, 0.18, 0.23, 0.36];
+      var ENTER_DUR = 0.4;
       order.forEach(function (id, i) {
         var g = svg.querySelector('.hex-' + id);
         if (!g) return;
@@ -369,41 +371,37 @@
           scale: 1,
           duration: ENTER_DUR,
           ease: 'back.out(1.1)'
-        }, i * STAGGER);
+        }, ENTRANCE_TIMES[i]);
       });
 
-      /* Phase B — 모두 등장 + 짧은 호흡 후 시그니처 모션.
-         내·외·영 hex: inner 외곽선이 짧게 등장 → 안쪽으로 수축하며 사라짐
-         (한 번의 "퉁" 펄스). 안·치 hex 는 Phase B 모션 없음 (광선 sweep
-         삭제 — 사용자 요청). */
-      var phaseB = tl.duration() + 0.35;
+      /* Phase B — 내·외·영 inner 펄스 "통 통" 빠르게.
+         빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
+      var phaseB = tl.duration() + 0.25;
 
       hexes.forEach(function (hx, i) {
         if (!hx.inner) return;
         var inner = svg.querySelector('.hex-' + hx.id + ' .hex-inner');
         if (!inner) return;
-        var pulseStart = phaseB + i * 0.08;
-        /* 빠른 등장: opacity 0 → 1 (0.15s) */
+        var pulseStart = phaseB + i * 0.06;
         tl.fromTo(inner,
           { opacity: 0, scale: 1 },
           {
             opacity: 1,
-            duration: 0.15,
+            duration: 0.05,
             ease: 'power1.out',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
           pulseStart
         );
-        /* 수축 + 페이드 아웃: opacity 1 → 0, scale 1 → 0.5 (0.6s) */
         tl.to(inner,
           {
             opacity: 0,
             scale: 0.5,
-            duration: 0.6,
+            duration: 0.25,
             ease: 'power2.out',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
-          pulseStart + 0.15
+          pulseStart + 0.05
         );
       });
 
