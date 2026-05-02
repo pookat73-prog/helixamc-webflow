@@ -281,32 +281,6 @@
     svg.style.overflow = 'visible';
     svg.setAttribute('overflow', 'visible');
 
-    /* 유리 반사광 그라데이션 — 각 hex inner 의 fill 로 사용.
-       대각선 방향 (top-left → bottom-right), 메인 블루 40% 빛이 가운데 stop.
-       gradientUnits objectBoundingBox → 모든 inner 가 자기 bbox 기준 로컬
-       렌더 → 5 hex 가 동일 패턴으로 동시에 반사. JS 가 x1/y1/x2/y2 를 yoyo
-       로 oscillate → 빛이 대각선 위아래로 왔다갔다 (유리 기울이는 느낌). */
-    var defs = document.createElementNS(svgNS, 'defs');
-    svg.appendChild(defs);
-    var shimmerGrad = document.createElementNS(svgNS, 'linearGradient');
-    shimmerGrad.setAttribute('id', 'hex-shimmer-grad');
-    shimmerGrad.setAttribute('gradientUnits', 'objectBoundingBox');
-    shimmerGrad.setAttribute('x1', '0');
-    shimmerGrad.setAttribute('y1', '0');
-    shimmerGrad.setAttribute('x2', '1');
-    shimmerGrad.setAttribute('y2', '1');
-    [
-      ['0',    '#0075d6', '0'],
-      ['0.5',  '#0075d6', '0.4'],
-      ['1',    '#0075d6', '0']
-    ].forEach(function (s) {
-      var stop = document.createElementNS(svgNS, 'stop');
-      stop.setAttribute('offset', s[0]);
-      stop.setAttribute('stop-color', s[1]);
-      stop.setAttribute('stop-opacity', s[2]);
-      shimmerGrad.appendChild(stop);
-    });
-    defs.appendChild(shimmerGrad);
 
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
@@ -320,13 +294,12 @@
       p.setAttribute('d', fullHexPath(verts));
       g.appendChild(p);
 
-      /* 모든 hex 에 inner — 유리창. fill 은 hex-shimmer-grad 그라데이션 →
-         JS 가 x1/y1/x2/y2 를 oscillate 해서 빛이 대각선으로 왓다 갓다. */
+      /* 모든 hex 에 inner — stroke only 작은 hex (radar pulse 타겟).
+         CSS 가 fill: none, stroke 상속, opacity 0 디폴트 (멈췄을 때 안 보임).
+         GSAP 가 무한 루프로 fade in-out + 극단적 ease-out shrink. */
       var inner = document.createElementNS(svgNS, 'path');
       inner.setAttribute('class', 'hex-inner');
       inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
-      inner.setAttribute('fill', 'url(#hex-shimmer-grad)');
-      inner.setAttribute('stroke', 'none');
       g.appendChild(inner);
 
       var t = document.createElementNS(svgNS, 'text');
@@ -391,27 +364,31 @@
       }
     });
 
-    /* 유리 반사광 무한 루프 — gradient 의 x1/y1/x2/y2 를 yoyo oscillate.
-       각 hex inner 가 bbox 로컬 렌더 → 5 hex 동시에 빛이 대각선으로 왓다
-       갓다 (유리 기울이는 느낌). */
-    var shimmerGrad = svg.querySelector('#hex-shimmer-grad');
-    if (shimmerGrad) {
-      if (window.__hexShimmerTween) window.__hexShimmerTween.kill();
-      var shimmerState = { pos: -1.5 };
-      window.__hexShimmerTween = gsap.to(shimmerState, {
-        pos: 1.5,
-        duration: 2.8,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        onUpdate: function () {
-          var p = shimmerState.pos;
-          shimmerGrad.setAttribute('x1', p);
-          shimmerGrad.setAttribute('y1', p);
-          shimmerGrad.setAttribute('x2', p + 1);
-          shimmerGrad.setAttribute('y2', p + 1);
-        }
-      });
+    /* 잠수함 레이더 펄스 무한 루프 — 5 hex 모두 동시에 ping.
+       fade 0 → 0.7 → 0 (투명 안투명 투명).
+       scale 1 → 0.83 (15% shrink) 을 power4.out 극단적 ease-out 으로 →
+       처음에 빠르게 줄어들었다가 후반에 천천히 안착 (레이더 ping 직후
+       echo 감쇠 느낌). 멈춤 상태엔 opacity 0 이라 inner outline 안 보임. */
+    if (window.__hexInnerPulseTween) window.__hexInnerPulseTween.kill();
+    var allInners = svg.querySelectorAll('.hex-inner');
+    allInners.forEach(function (inner) {
+      var hexEl = inner.parentElement;
+      var cx = hexEl && hexEl.getAttribute('data-cx');
+      var cy = hexEl && hexEl.getAttribute('data-cy');
+      if (cx != null && cy != null) {
+        gsap.set(inner, { svgOrigin: cx + ' ' + cy });
+      }
+    });
+    if (allInners.length) {
+      var pulseTl = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
+      pulseTl.fromTo(allInners,
+        { opacity: 0, scale: 1 },
+        { opacity: 0.7, duration: 0.25, ease: 'power2.out' }, 0);
+      pulseTl.to(allInners,
+        { scale: 0.83, duration: 1.0, ease: 'power4.out' }, 0);
+      pulseTl.to(allInners,
+        { opacity: 0, duration: 0.4, ease: 'power2.in' }, 0.6);
+      window.__hexInnerPulseTween = pulseTl;
     }
 
     var played = false;
