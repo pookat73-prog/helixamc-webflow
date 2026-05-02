@@ -4,12 +4,10 @@
 
 /* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
 .diagram-place-holder {
-  /* Section 2 스크롤 시퀀스 — 다이어그램은 viewport 에 sticky 로 붙고
-     우측 3 콘텐츠 박스가 정상 스크롤되며, ScrollTrigger 가 진행도를 보고
-     timeline 만 scrub. 좌우 컬럼이 같은 row 안에 있다는 가정. */
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  /* Section 2 스크롤 시퀀스 — ScrollTrigger pin 이 런타임에 position:fixed
+     로 잡아둠 (CSS sticky 는 Webflow 컬럼 overflow 환경에 따라 미동작
+     사례가 있어 폐기). */
+  position: relative;
   overflow: hidden;
 }
 
