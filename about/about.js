@@ -280,20 +280,6 @@
     svg.style.display = 'block';
     svg.style.overflow = 'hidden';
 
-    /* 5 헥사 전체 perimeter (이웃과 공유하지 않는 외부 엣지만) — 1구간 끝에
-       모두 모인 silhouette 으로 파동 쏘는 데 사용. 평소 opacity 0.
-       stroke-width 0 → 큰 값 으로 애니메이션해서 perpendicular 방향으로
-       균등한 거리로 확장됨 (모든 변이 같은 거리만큼 바깥으로 튕김).
-       hex 보다 z-order 아래에 두어 stroke 의 안쪽 절반은 hex fill 이 가리고
-       바깥 절반만 보이게 함 (= 외곽 halo 효과). */
-    var pulsePath = document.createElementNS(svgNS, 'path');
-    pulsePath.setAttribute('class', 'hex-combined-pulse');
-    var combinedD = hexes.map(function (hx) {
-      return hx.outerEdges ? buildPath(vertices(hx.cx, hx.cy), hx.outerEdges) : '';
-    }).filter(Boolean).join(' ');
-    pulsePath.setAttribute('d', combinedD);
-    svg.appendChild(pulsePath);
-
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
       var g = document.createElementNS(svgNS, 'g');
@@ -326,6 +312,17 @@
 
       svg.appendChild(g);
     });
+
+    /* 5 헥사 전체 perimeter (이웃과 공유하지 않는 외부 엣지만) — 1구간 끝에
+       모두 모인 silhouette 으로 파동. hex 위 z-order 에 두고 thin stroke
+       로 그려서 line 자체가 살짝 scale 로 바운스 (halo/색 효과 X, 선만). */
+    var pulsePath = document.createElementNS(svgNS, 'path');
+    pulsePath.setAttribute('class', 'hex-combined-pulse');
+    var combinedD = hexes.map(function (hx) {
+      return hx.outerEdges ? buildPath(vertices(hx.cx, hx.cy), hx.outerEdges) : '';
+    }).filter(Boolean).join(' ');
+    pulsePath.setAttribute('d', combinedD);
+    svg.appendChild(pulsePath);
 
     holder.appendChild(svg);
     log('hex diagram rendered');
@@ -367,10 +364,10 @@
       });
     });
 
-    /* 전체 silhouette pulse path — 초기 invisible, stroke-width 0. */
+    /* 전체 silhouette pulse path — 초기 invisible, scale 1, origin = 시각 중심. */
     var combinedPulse = svg.querySelector('.hex-combined-pulse');
     if (combinedPulse) {
-      gsap.set(combinedPulse, { opacity: 0, strokeWidth: 0 });
+      gsap.set(combinedPulse, { opacity: 0, scale: 1, svgOrigin: '173 -75' });
     }
 
     var played = false;
@@ -380,12 +377,13 @@
 
       var tl = gsap.timeline();
 
-      /* Phase A — 내 → 외 → 영 → 안 → 치, 엇박 + 빠른 stagger.
-         촤촤촤촤 느낌으로 빠르게 들어오되 균등 간격이 아닌 비대칭 패턴
-         (5→13→5→13 ms). 마지막 hex 시작까지 0.36s. */
+      /* Phase A — 내 → 외 → 영 → 안 → 치 출렁 엇박 등장.
+         5개 헥사가 비균등 간격으로 차례로 scale + fade in. 가운데 영 이
+         도착하기 전에 짧게 호흡 + 안·치는 다시 빠르게 — 출렁이는 wave 같은
+         리듬. ease back.out(1.5) 로 살짝 튕기며 안착. */
       var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
-      var ENTRANCE_TIMES = [0.00, 0.05, 0.18, 0.23, 0.36];
-      var ENTER_DUR = 0.4;
+      var ENTRANCE_TIMES = [0.00, 0.08, 0.22, 0.30, 0.44];
+      var ENTER_DUR = 0.45;
       order.forEach(function (id, i) {
         var g = svg.querySelector('.hex-' + id);
         if (!g) return;
@@ -393,7 +391,7 @@
           opacity: 1,
           scale: 1,
           duration: ENTER_DUR,
-          ease: 'back.out(1.1)'
+          ease: 'back.out(1.5)'
         }, ENTRANCE_TIMES[i]);
       });
 
@@ -434,23 +432,24 @@
 
       /* 5 헥사 전체 silhouette 무한 루프 — inner 펄스 끝(phaseB + 0.25)
          + 0.8s 호흡 = phaseB + 1.05 시점에 시작.
-         stroke-width 0 → 22 + opacity 1 → 0 으로 외곽선이 모든 변에서
-         같은 거리로 perpendicular 확장 (= halo band). 통통 back.out 이즈,
-         0.5s pulse + 0.7s 휴지 = 1.2s 주기로 repeat:-1.
+         scale 1 → 1.08 + opacity 0.8 → 0, ease back.out(2) 로 통통 가볍게
+         튕기며 사라지는 line bounce. stroke 는 thin (0.7px non-scaling).
+         0.5s pulse + 0.6s 휴지 = 1.1s 주기 repeat:-1.
          master timeline 과 분리해서 tl.call 로 띄움 (master 는 progress 1
          도달 가능, Section 2 onEnter forceS1Done 안전망 그대로). */
       if (combinedPulse) {
         tl.call(function () {
           if (window.__hexCombinedPulseTween) window.__hexCombinedPulseTween.kill();
           window.__hexCombinedPulseTween = gsap.fromTo(combinedPulse,
-            { strokeWidth: 0, opacity: 1 },
+            { opacity: 0.8, scale: 1 },
             {
-              strokeWidth: 22,
               opacity: 0,
+              scale: 1.08,
               duration: 0.5,
-              ease: 'back.out(1.7)',
+              ease: 'back.out(2)',
+              svgOrigin: '173 -75',
               repeat: -1,
-              repeatDelay: 0.7
+              repeatDelay: 0.6
             }
           );
         }, null, phaseB + 1.05);
