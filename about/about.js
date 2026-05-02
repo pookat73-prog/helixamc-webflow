@@ -633,7 +633,11 @@
       window.ScrollTrigger.create({
         trigger: holder,
         endTrigger: pinEnd,
-        start: 'center center',
+        /* start 'center 40%' — 다이어그램 중심이 viewport 40% 라인에 닿는
+           순간 pin. 'center center' (50%) 보다 위쪽에 자리잡아 좌측 콘텐츠
+           박스 1 의 시각 y 와 더 잘 맞춤 (이전엔 콘텐츠보다 살짝 아래에서
+           시작해서 어색했음). */
+        start: 'center 40%',
         end: 'bottom top',
         pin: holder,
         pinSpacing: false,
