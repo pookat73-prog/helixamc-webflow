@@ -203,13 +203,15 @@
 
     /* 정점 인덱스: 0 top, 1 top-right, 2 bottom-right, 3 bottom, 4 bottom-left, 5 top-left
        엣지 E_i 는 정점 i → (i+1)%6
-       각 hex 의 edges 배열 = 그릴 엣지 인덱스. 공유 엣지는 한쪽에서만 소유. */
+       각 hex 는 fullHexPath 로 완결된 개별 개체로 그림 (공유 엣지 중복 OK).
+       outerEdges = 이웃과 공유하지 않는 외부 perimeter 엣지 — 5개 헥사가
+       모두 모인 뒤 전체 silhouette 으로 파동 쏠 때 사용. */
     var hexes = [
-      { id: 'naekwa',    label: '내과',       cx: w * 0.5, cy: -1.5 * s, edges: [0,1,2,3,4,5], inner: true },
-      { id: 'oikwa',     label: '외과',       cx: w * 1.5, cy: -1.5 * s, edges: [0,1,2,3,5],   inner: true },
-      { id: 'ankwa',     label: '안과',       cx: 0,       cy: 0,        edges: [1,2,3,4,5]   },
-      { id: 'yeongsang', label: '영상의학과', cx: w,       cy: 0,        edges: [1,2,3],       inner: true },
-      { id: 'chikwa',    label: '치과',       cx: w * 2,   cy: 0,        edges: [0,1,2,3]     }
+      { id: 'naekwa',    label: '내과',       cx: w * 0.5, cy: -1.5 * s, outerEdges: [0, 4, 5],       inner: true },
+      { id: 'oikwa',     label: '외과',       cx: w * 1.5, cy: -1.5 * s, outerEdges: [0, 1, 5],       inner: true },
+      { id: 'ankwa',     label: '안과',       cx: 0,       cy: 0,        outerEdges: [2, 3, 4, 5]                },
+      { id: 'yeongsang', label: '영상의학과', cx: w,       cy: 0,        outerEdges: [2, 3],           inner: true },
+      { id: 'chikwa',    label: '치과',       cx: w * 2,   cy: 0,        outerEdges: [0, 1, 2, 3]                }
     ];
 
     /* 모션 시퀀서가 hex 메타 (cx/cy/inner 등) 를 다시 측정하지 않고 쓸 수
@@ -285,8 +287,9 @@
       g.setAttribute('data-cx', hx.cx);
       g.setAttribute('data-cy', hx.cy);
 
+      /* 완결된 6엣지 hex (공유 엣지도 양쪽에서 모두 그림 → 닫힌 fill 가능). */
       var p = document.createElementNS(svgNS, 'path');
-      p.setAttribute('d', buildPath(verts, hx.edges));
+      p.setAttribute('d', fullHexPath(verts));
       g.appendChild(p);
 
       if (hx.inner) {
@@ -309,6 +312,16 @@
 
       svg.appendChild(g);
     });
+
+    /* 5 헥사 전체 perimeter (이웃과 공유하지 않는 외부 엣지만) — 1구간 끝에
+       모두 모인 silhouette 으로 파동 쏘는 데 사용. 평소 opacity 0. */
+    var pulsePath = document.createElementNS(svgNS, 'path');
+    pulsePath.setAttribute('class', 'hex-combined-pulse');
+    var combinedD = hexes.map(function (hx) {
+      return hx.outerEdges ? buildPath(vertices(hx.cx, hx.cy), hx.outerEdges) : '';
+    }).filter(Boolean).join(' ');
+    pulsePath.setAttribute('d', combinedD);
+    svg.appendChild(pulsePath);
 
     holder.appendChild(svg);
     log('hex diagram rendered');
@@ -349,6 +362,12 @@
         transformPerspective: 1200
       });
     });
+
+    /* 전체 silhouette pulse path — 초기 invisible, scale 1, origin = 시각 중심. */
+    var combinedPulse = svg.querySelector('.hex-combined-pulse');
+    if (combinedPulse) {
+      gsap.set(combinedPulse, { opacity: 0, scale: 1, svgOrigin: '173 -75' });
+    }
 
     var played = false;
     function play() {
@@ -404,6 +423,24 @@
           pulseStart + 0.05
         );
       });
+
+      /* 개별 펄스 끝난 직후 — 5 헥사 전체 silhouette 으로 파동 한 번.
+         scale 1 → 1.4 + opacity 0.7 → 0, power2.out 0.7s. svgOrigin 시각 중심. */
+      if (combinedPulse) {
+        var combinedStart = phaseB + 0.55;
+        tl.fromTo(combinedPulse,
+          { opacity: 0.7, scale: 1 },
+          {
+            opacity: 0,
+            scale: 1.4,
+            duration: 0.7,
+            ease: 'power2.out',
+            svgOrigin: '173 -75',
+            immediateRender: false
+          },
+          combinedStart
+        );
+      }
 
       window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');

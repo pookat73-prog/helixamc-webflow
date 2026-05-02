@@ -30,9 +30,9 @@
 }
 
 .helix-hex-diagram .hex path {
-  /* fill: white — Section 2 에서 헥사가 겹쳐도 뒤가 안 비치게.
-     Section 2 가 진행되는 about 두 번째 섹션 배경이 메인 화이트라는 가정. */
-  fill: #ffffff;
+  /* fill: about 두 번째 섹션 배경 화이트 (#f4f7fb). 각 헥사가 완결된
+     6엣지 닫힌 도형이라 fill 이 깨끗하게 채워짐 → 겹쳐도 뒤가 안 비침. */
+  fill: #f4f7fb;
   stroke: #0075d6;
   stroke-width: 0.7;
   stroke-linecap: butt;
@@ -45,6 +45,19 @@
 .helix-hex-diagram .hex path.hex-inner {
   stroke-width: 0.7;
   opacity: 0;
+}
+
+/* 5 헥사 전체 silhouette pulse — 개별 inner 펄스 후 한 번 외곽으로 파동.
+   기본 invisible, GSAP 가 scale 1→1.4 + opacity 0.7→0 으로 한 번. */
+.helix-hex-diagram .hex-combined-pulse {
+  fill: none;
+  stroke: #0075d6;
+  stroke-width: 0.7;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .helix-hex-diagram .hex text {
