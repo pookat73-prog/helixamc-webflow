@@ -474,8 +474,6 @@
       var COMP_STEP     = 28;    /* 압축 간격 (서로 거의 겹침) */
       var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
-      var END_SCALE     = 1.5;   /* 정면 복귀 시 줌인 스케일 */
-      var END_Z         = 90;    /* 살짝 viewer 쪽으로 다가옴 (perspective 와 함께) */
 
       var section2Tl = gsap.timeline({ paused: true });
 
@@ -499,11 +497,10 @@
           defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
         });
 
-        /* Phase 1 — fromTo + immediateRender:false.
-           이전엔 .to() 만 써서 scrub 이 from 값을 1구간 종료 상태(scale 1)
-           가 아닌 초기 상태(scale 0.55) 로 잡아 box 2 진입 시 "툭" 하고
-           작아지는 점프 발생. 명시적으로 from = {x:0, y:0, scale:1} 박아두고
-           immediateRender:false 로 timeline 생성 시점에 안 튀게 함. */
+        /* Section 2 = 펼침 → 회전 → 압축. 3단계만.
+           Phase 1 은 fromTo + immediateRender:false → Section 1 종료
+           (scale 1) 와 매끄럽게 이어짐 (이전엔 from 값 미스매치로 "툭"
+           점프). Phase 2·3 은 .to() 가 직전 상태에서 자동으로 이어감. */
         hexTl.fromTo(g,
           { x: 0, y: 0, scale: 1 },
           { x: rowDx, y: rowDy, scale: ROW_SCALE,
@@ -515,8 +512,6 @@
                       duration: 0.8, ease: 'power2.inOut' }, 1.0);
         hexTl.to(g, { x: compDx,
                       duration: 0.8, ease: 'power2.inOut' }, 1.8);
-        hexTl.to(g, { rotationY: 0, scale: END_SCALE, z: END_Z,
-                      duration: 1.0, ease: 'power3.in' }, 2.6);
 
         section2Tl.add(hexTl, 0);
       });
