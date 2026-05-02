@@ -45,29 +45,15 @@
   vector-effect: non-scaling-stroke;
 }
 
-/* inner 외곽선 — 잠수함 레이더 펄스 타겟. fill 없이 stroke 만 (작은 hex
-   윤곽선). 평소 invisible, GSAP 가 무한 루프로 fade in-out + 극단적
-   ease-in shrink. */
+/* inner = hex 안의 유리창. fill 은 hex-shimmer-grad 그라데이션 (메인 블루
+   40% 빛이 대각선으로 흐름), stroke 없음. JS 가 그라데이션 좌표를 yoyo
+   로 oscillate → 유리 기울이는 듯한 빛 반사. */
 .helix-hex-diagram .hex path.hex-inner {
-  fill: none;
-  stroke-width: 0.7;
-  opacity: 0;
-}
-
-/* 5 헥사 외곽선 로딩 스피너 — head 30% 가 외곽 perimeter 를 따라 무한
-   회전 (stroke-dasharray + dashoffset). 굵기는 hex outline 의 3배 (2.1px,
-   non-scaling 으로 viewport 절대 픽셀). round cap/join 으로 폐곡선 곡각
-   부드럽게. hex 위 z-order. */
-.helix-hex-diagram .hex-combined-pulse {
-  fill: none;
-  stroke: #0075d6;
-  stroke-width: 2.1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-  opacity: 0;
+  fill: url(#hex-shimmer-grad);
+  stroke: none;
   pointer-events: none;
 }
+
 
 .helix-hex-diagram .hex text {
   fill: #0075d6;
