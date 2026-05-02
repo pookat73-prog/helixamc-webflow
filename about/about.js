@@ -603,6 +603,24 @@
         section2Tl.add(hexTl, 0);
       });
 
+      /* Phase 5 — 헬릭스 심볼로 모핑.
+         Phase 4 끝(3.6) 무렵 SVG 가 fade out, 같은 자리에 about hero 의
+         img.image-23 src 를 그대로 가져온 심볼이 fade in + 살짝 scale up.
+         별도 심볼 파일 없을 시 image-23 가 fallback. */
+      var symbolImg = injectMorphSymbol(holder);
+      if (symbolImg) {
+        gsap.set(symbolImg, { xPercent: -50, yPercent: -50, scale: 0.78, opacity: 0 });
+        /* 클러스터 fade out (SVG 통째로) */
+        section2Tl.to(svg, { opacity: 0, duration: 0.45, ease: 'power2.in' }, 3.55);
+        /* 심볼 fade in + 살짝 scale up */
+        section2Tl.to(symbolImg, {
+          opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out'
+        }, 3.65);
+        log('s2 morph symbol injected, src: ' + (symbolImg.currentSrc || symbolImg.src).slice(0, 60) + '...');
+      } else {
+        log('s2 morph symbol skipped (no img.image-23 src found)');
+      }
+
       window.__hexS2Tl = section2Tl;
 
       var boxes2 = document.querySelectorAll('.about_three_contents-box');
@@ -724,6 +742,28 @@
       if (seen.indexOf(m) !== -1) return m;
     }
     return null;
+  }
+
+  /* about hero 에 이미 박혀있는 헬릭스 심볼(img.image-23) 의 src 를 그대로
+     가져와 다이어그램 holder 안에 .hex-morph-symbol 로 주입. Phase 5
+     (모핑) 시 fade in 대상. 별도 심볼 파일을 리포에 추가하면 그걸 우선
+     사용하도록 src 를 바꿔주면 됨. */
+  function injectMorphSymbol(holder) {
+    if (!holder) return null;
+    var existing = holder.querySelector('.hex-morph-symbol');
+    if (existing) return existing;
+
+    var hero = document.querySelector('img.image-23');
+    var src = hero ? (hero.currentSrc || hero.src) : '';
+    if (!src) return null;
+
+    var img = document.createElement('img');
+    img.className = 'hex-morph-symbol';
+    img.src = src;
+    img.alt = '';
+    img.draggable = false;
+    holder.appendChild(img);
+    return img;
   }
 
   function initViewport60FadeIn() {
