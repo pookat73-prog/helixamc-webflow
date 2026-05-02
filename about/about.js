@@ -381,14 +381,14 @@
       }
     });
     if (allInners.length) {
-      var pulseTl = gsap.timeline({ repeat: -1, repeatDelay: 0.2 });
+      var pulseTl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
       pulseTl.fromTo(allInners,
         { opacity: 0, scale: 1 },
-        { opacity: 0.5, duration: 0.12, ease: 'power2.out' }, 0);
+        { opacity: 0.5, duration: 0.20, ease: 'power2.out' }, 0);
       pulseTl.to(allInners,
-        { scale: 0.94, duration: 0.6, ease: 'power3.out' }, 0);
+        { scale: 0.94, duration: 1.0, ease: 'power3.out' }, 0);
       pulseTl.to(allInners,
-        { opacity: 0, duration: 0.18, ease: 'power2.in' }, 0.20);
+        { opacity: 0, duration: 0.30, ease: 'power2.in' }, 0.33);
       window.__hexInnerPulseTween = pulseTl;
     }
 
