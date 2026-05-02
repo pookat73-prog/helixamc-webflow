@@ -397,11 +397,13 @@
          빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
       var phaseB = tl.duration() + 0.25;
 
-      hexes.forEach(function (hx, i) {
+      /* Phase B — 내·외·영 inner 펄스 동시에 ("통" 한번).
+         scale 1 → 0.85 까지만 줄이고 빠르게 fade out (헥사가 약간만 작아져도
+         이미 사라진 느낌). stagger 없이 셋 다 같은 시점. */
+      hexes.forEach(function (hx) {
         if (!hx.inner) return;
         var inner = svg.querySelector('.hex-' + hx.id + ' .hex-inner');
         if (!inner) return;
-        var pulseStart = phaseB + i * 0.06;
         tl.fromTo(inner,
           { opacity: 0, scale: 1 },
           {
@@ -410,36 +412,39 @@
             ease: 'power1.out',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
-          pulseStart
+          phaseB
         );
         tl.to(inner,
           {
             opacity: 0,
-            scale: 0.5,
-            duration: 0.25,
+            scale: 0.85,
+            duration: 0.15,
             ease: 'power2.out',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
-          pulseStart + 0.05
+          phaseB + 0.05
         );
       });
 
-      /* 개별 펄스 끝난 직후 — 5 헥사 전체 silhouette 으로 파동 한 번.
-         scale 1 → 1.4 + opacity 0.7 → 0, power2.out 0.7s. svgOrigin 시각 중심. */
+      /* 5 헥사 전체 silhouette 무한 루프 — Section 1 master timeline 의
+         play once 흐름과 분리해서, tl.call 시점에 별도 fromTo(repeat:-1)
+         tween 을 띄움. 이렇게 하면 master 는 정상적으로 progress 1 도달
+         가능 (Section 2 onEnter forceS1Done 의 progress(1) 안전망 보장). */
       if (combinedPulse) {
-        var combinedStart = phaseB + 0.55;
-        tl.fromTo(combinedPulse,
-          { opacity: 0.7, scale: 1 },
-          {
-            opacity: 0,
-            scale: 1.4,
-            duration: 0.7,
-            ease: 'power2.out',
-            svgOrigin: '173 -75',
-            immediateRender: false
-          },
-          combinedStart
-        );
+        tl.call(function () {
+          if (window.__hexCombinedPulseTween) window.__hexCombinedPulseTween.kill();
+          window.__hexCombinedPulseTween = gsap.fromTo(combinedPulse,
+            { opacity: 0.7, scale: 1 },
+            {
+              opacity: 0,
+              scale: 1.4,
+              duration: 1.2,
+              ease: 'power2.out',
+              svgOrigin: '173 -75',
+              repeat: -1
+            }
+          );
+        }, null, phaseB + 0.25);
       }
 
       window.__hexS1Tl = tl;
