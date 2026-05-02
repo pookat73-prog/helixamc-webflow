@@ -88,6 +88,24 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* Phase 5 모핑 타겟 — 다이어그램 위에 헬릭스 심볼.
+   Section 2 timeline 끝 무렵 SVG 가 fade out 되며 같은 자리에 fade in. */
+.diagram-place-holder .hex-morph-symbol {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 70%;
+  width: auto;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  z-index: 5;
+  /* 메인 블루 분위기의 부드러운 글로우 */
+  filter: drop-shadow(0 0 24px rgba(0, 117, 214, 0.35));
+  /* GSAP 가 xPercent/yPercent + scale 을 transform 으로 합쳐 적용. CSS 측
+     transform 은 비워둠 (이중 적용 방지). */
+}
+
 /* About Contents — title 페이드 인 (뷰포트 80% 진입 시) */
 .about_contents-title {
   opacity: 0;
