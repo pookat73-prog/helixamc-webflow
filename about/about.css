@@ -67,6 +67,18 @@
   opacity: 0;
 }
 
+/* 그림자 차단 — Webflow 디자이너에서 컬럼/도형에 박혀있을 수 있는
+   box-shadow / filter 를 명시적으로 무력화. 헥사가 깔끔하게 라인만 보이게. */
+.diagram-place-holder,
+.helix-hex-diagram,
+.helix-hex-diagram .hex,
+.helix-hex-diagram .hex path,
+.helix-hex-diagram .hex text {
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
 /* Phase 5 모핑 타겟 — 크리스탈 3D 인상의 헬릭스 심볼.
    - .hex-morph-stage : GSAP 가 위치/스케일/오파시티 다루는 wrapper
    - .hex-morph-symbol: <img>, CSS 다층 drop-shadow + hue-shift 시머로
