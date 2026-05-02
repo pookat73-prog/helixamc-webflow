@@ -507,6 +507,13 @@
     /* Section 2 onEnter 가 빠른 스크롤 케이스를 보호할 수 있도록 노출. */
     window.__hexS1Play = play;
 
+    /* Section 1 트리거 = 좌측 첫 번째 콘텐츠 박스 (.about_three_contents-box[0]).
+       이 박스가 viewport 75% 라인에 닿으면 헥사 등장 시퀀스 재생.
+       이 시점엔 .about_contents-title 가 이미 페이드인 완료된 상태 (title 은
+       박스보다 먼저 80% 라인에서 fade 시작 + 1s transition). */
+    var boxes = document.querySelectorAll('.about_three_contents-box');
+    var box1 = boxes[0] || holder;
+
     if (!('IntersectionObserver' in window)) { play(); return; }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -514,8 +521,9 @@
         io.unobserve(e.target);
         play();
       });
-    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
-    io.observe(holder);
+    }, { root: null, rootMargin: '0px 0px -25% 0px', threshold: 0 });
+    io.observe(box1);
+    log('s1 trigger bound to: ' + (box1.className || box1.tagName));
   }
 
   /* ================================================================
@@ -597,15 +605,19 @@
 
       window.__hexS2Tl = section2Tl;
 
-      /* 트리거 = 다이어그램과 좌측 3 콘텐츠 박스의 공통 조상 (= 둘이 들어
-         있는 row 컨테이너). 그 row 의 top 이 viewport top 도달 시 진행 시작,
-         row 의 bottom 이 viewport bottom 도달 시 진행 끝.
-         그 사이 다이어그램은 CSS position:sticky 로 viewport 에 붙어 있고,
-         우측 텍스트 박스(좌측 콘텐츠)는 자연스럽게 스크롤되며 흘러간다. */
-      var contentBox = document.querySelector('.about_three_contents-box');
-      var triggerEl = contentBox ? findCommonAncestor(holder, contentBox) : null;
+      /* Section 2 트리거 = 좌측 두 번째 콘텐츠 박스 (.about_three_contents-box[1]).
+         이 박스의 top 이 viewport 75% 라인에 닿으면 진행 시작, bottom 이
+         25% 라인에 닿으면 진행 끝. 그 사이 다이어그램은 CSS sticky 로
+         viewport 에 붙어 있고, 좌측 텍스트는 정상 스크롤로 흘러간다.
+         박스[1] 이 없으면 row 공통 조상으로 폴백. */
+      var boxes2 = document.querySelectorAll('.about_three_contents-box');
+      var triggerEl = boxes2[1] || null;
+      if (!triggerEl) {
+        var anyBox = boxes2[0];
+        triggerEl = anyBox ? findCommonAncestor(holder, anyBox) : null;
+      }
       if (!triggerEl) triggerEl = holder.parentElement;
-      if (!triggerEl) { log('s2: no trigger ancestor'); return; }
+      if (!triggerEl) { log('s2: no trigger element'); return; }
 
       function forceS1Done() {
         if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
@@ -614,8 +626,8 @@
 
       window.ScrollTrigger.create({
         trigger: triggerEl,
-        start: 'top top',
-        end: 'bottom bottom',
+        start: 'top 75%',
+        end: 'bottom 25%',
         scrub: 1,
         animation: section2Tl,
         onEnter: forceS1Done,
