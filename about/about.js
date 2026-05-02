@@ -278,11 +278,35 @@
     svg.style.width = '100%';
     svg.style.height = '100%';
     svg.style.display = 'block';
-    /* overflow: visible — silhouette 펄스가 scale 로 viewBox 경계 너머까지
-       퍼져도 잘리지 않게. 최종 클리핑은 .diagram-place-holder { overflow:
-       hidden } 가 담당. */
     svg.style.overflow = 'visible';
     svg.setAttribute('overflow', 'visible');
+
+    /* 유리 반사광 그라데이션 — 각 hex inner 의 fill 로 사용.
+       대각선 방향 (top-left → bottom-right), 메인 블루 40% 빛이 가운데 stop.
+       gradientUnits objectBoundingBox → 모든 inner 가 자기 bbox 기준 로컬
+       렌더 → 5 hex 가 동일 패턴으로 동시에 반사. JS 가 x1/y1/x2/y2 를 yoyo
+       로 oscillate → 빛이 대각선 위아래로 왔다갔다 (유리 기울이는 느낌). */
+    var defs = document.createElementNS(svgNS, 'defs');
+    svg.appendChild(defs);
+    var shimmerGrad = document.createElementNS(svgNS, 'linearGradient');
+    shimmerGrad.setAttribute('id', 'hex-shimmer-grad');
+    shimmerGrad.setAttribute('gradientUnits', 'objectBoundingBox');
+    shimmerGrad.setAttribute('x1', '0');
+    shimmerGrad.setAttribute('y1', '0');
+    shimmerGrad.setAttribute('x2', '1');
+    shimmerGrad.setAttribute('y2', '1');
+    [
+      ['0',    '#0075d6', '0'],
+      ['0.5',  '#0075d6', '0.4'],
+      ['1',    '#0075d6', '0']
+    ].forEach(function (s) {
+      var stop = document.createElementNS(svgNS, 'stop');
+      stop.setAttribute('offset', s[0]);
+      stop.setAttribute('stop-color', s[1]);
+      stop.setAttribute('stop-opacity', s[2]);
+      shimmerGrad.appendChild(stop);
+    });
+    defs.appendChild(shimmerGrad);
 
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
@@ -291,17 +315,18 @@
       g.setAttribute('data-cx', hx.cx);
       g.setAttribute('data-cy', hx.cy);
 
-      /* 완결된 6엣지 hex (공유 엣지도 양쪽에서 모두 그림 → 닫힌 fill 가능). */
+      /* 완결된 6엣지 hex (공유 엣지도 양쪽에서 모두 그림 → 닫힌 fill). */
       var p = document.createElementNS(svgNS, 'path');
       p.setAttribute('d', fullHexPath(verts));
       g.appendChild(p);
 
-      /* 모든 hex 에 inner 외곽선(stroke only, INNER_SCALE 배 작은 hex) 추가
-         — 잠수함 레이더 펄스 타겟. Phase B 시점부터 무한 루프로 페이드
-         인아웃 + 극단적 ease-in shrink. */
+      /* 모든 hex 에 inner — 유리창. fill 은 hex-shimmer-grad 그라데이션 →
+         JS 가 x1/y1/x2/y2 를 oscillate 해서 빛이 대각선으로 왓다 갓다. */
       var inner = document.createElementNS(svgNS, 'path');
       inner.setAttribute('class', 'hex-inner');
       inner.setAttribute('d', fullHexPath(vertices(hx.cx, hx.cy, INNER_SCALE)));
+      inner.setAttribute('fill', 'url(#hex-shimmer-grad)');
+      inner.setAttribute('stroke', 'none');
       g.appendChild(inner);
 
       var t = document.createElementNS(svgNS, 'text');
@@ -315,42 +340,6 @@
 
       svg.appendChild(g);
     });
-
-    /* 5 헥사 전체 perimeter — 단일 연속 path (M 한 번 + L 들 + Z) 로 구성.
-       이웃 hex 와 공유 안 하는 외부 엣지를 시계방향 순서로 트레이스 →
-       stroke-dasharray + dashoffset 으로 로딩 스피너 head/tail 회전 가능.
-       perimeterTrace 의 각 항목 = [hexId, edgeIndices] (시계방향 순서). */
-    var perimeterTrace = [
-      ['naekwa',    [4, 5, 0]],
-      ['oikwa',     [5, 0, 1]],
-      ['chikwa',    [0, 1, 2, 3]],
-      ['yeongsang', [2, 3]],
-      ['ankwa',     [2, 3, 4, 5]]
-    ];
-    var combinedD = '';
-    var pathStarted = false;
-    perimeterTrace.forEach(function (step) {
-      var stepHex = null;
-      for (var i = 0; i < hexes.length; i++) {
-        if (hexes[i].id === step[0]) { stepHex = hexes[i]; break; }
-      }
-      if (!stepHex) return;
-      var sv = vertices(stepHex.cx, stepHex.cy);
-      step[1].forEach(function (eIdx) {
-        if (!pathStarted) {
-          combinedD += 'M' + sv[eIdx][0].toFixed(3) + ',' + sv[eIdx][1].toFixed(3) + ' ';
-          pathStarted = true;
-        }
-        var endVi = (eIdx + 1) % 6;
-        combinedD += 'L' + sv[endVi][0].toFixed(3) + ',' + sv[endVi][1].toFixed(3) + ' ';
-      });
-    });
-    combinedD += 'Z';
-
-    var pulsePath = document.createElementNS(svgNS, 'path');
-    pulsePath.setAttribute('class', 'hex-combined-pulse');
-    pulsePath.setAttribute('d', combinedD);
-    svg.appendChild(pulsePath);
 
     holder.appendChild(svg);
     log('hex diagram rendered');
@@ -402,21 +391,27 @@
       }
     });
 
-    /* 외곽선 따라 도는 로딩 스피너 — 단일 연속 path 의 stroke-dasharray
-       로 visible head 30% + invisible gap 70%, dashoffset 을 무한 회전.
-       길이는 16 * s (16 hex 엣지) 로 deterministic — getTotalLength 폴백. */
-    var combinedPulse = svg.querySelector('.hex-combined-pulse');
-    if (combinedPulse) {
-      var L = 0;
-      try { L = combinedPulse.getTotalLength(); } catch (e) {}
-      if (!L || L < 100) L = 16 * 100;
-      var dashLen = L * 0.3;
-      gsap.set(combinedPulse, {
-        opacity: 0,
-        attr: { 'stroke-dasharray': dashLen + ' ' + (L - dashLen) },
-        strokeDashoffset: 0
+    /* 유리 반사광 무한 루프 — gradient 의 x1/y1/x2/y2 를 yoyo oscillate.
+       각 hex inner 가 bbox 로컬 렌더 → 5 hex 동시에 빛이 대각선으로 왓다
+       갓다 (유리 기울이는 느낌). */
+    var shimmerGrad = svg.querySelector('#hex-shimmer-grad');
+    if (shimmerGrad) {
+      if (window.__hexShimmerTween) window.__hexShimmerTween.kill();
+      var shimmerState = { pos: -1.5 };
+      window.__hexShimmerTween = gsap.to(shimmerState, {
+        pos: 1.5,
+        duration: 2.8,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+        onUpdate: function () {
+          var p = shimmerState.pos;
+          shimmerGrad.setAttribute('x1', p);
+          shimmerGrad.setAttribute('y1', p);
+          shimmerGrad.setAttribute('x2', p + 1);
+          shimmerGrad.setAttribute('y2', p + 1);
+        }
       });
-      window.__hexCombinedPulseLength = L;
     }
 
     var played = false;
@@ -464,47 +459,9 @@
          빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
       var phaseB = tl.duration() + 0.25;
 
-      /* Phase B — 잠수함 레이더 펄스 (inner 외곽선 무한 루프).
-         5 헥사 모두 동시에 같은 사이클로 ping:
-           · 빠르게 fade in (0 → 0.7)
-           · scale 1 → 0.83 (15% shrink) 을 power4.in 극단적 ease-in 으로
-             — 처음엔 거의 안 줄어들다가 후반에 급격히 안쪽으로 빨려듬
-           · 후반부 fade out (0.7 → 0)
-         master timeline 과 분리해서 tl.call 로 띄움 (master progress 1
-         도달 가능, Section 2 onEnter forceS1Done 안전망 그대로). */
-      tl.call(function () {
-        if (window.__hexInnerPulseTween) window.__hexInnerPulseTween.kill();
-        var allInners = svg.querySelectorAll('.hex-inner');
-        if (!allInners.length) return;
-        var pulseTl = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
-        pulseTl.fromTo(allInners,
-          { opacity: 0, scale: 1 },
-          { opacity: 0.7, duration: 0.25, ease: 'power2.out' }, 0);
-        pulseTl.to(allInners,
-          { scale: 0.83, duration: 1.0, ease: 'power4.in' }, 0);
-        pulseTl.to(allInners,
-          { opacity: 0, duration: 0.4, ease: 'power2.in' }, 0.6);
-        window.__hexInnerPulseTween = pulseTl;
-      }, null, phaseB);
-
-      /* 외곽선 로딩 스피너 — inner 펄스 끝 + 0.8s 호흡 = phaseB + 1.15
-         시점에 시작. 굵은 head (30% perimeter) 가 외곽선을 따라 4.5s 주기로
-         시계방향 회전. dashoffset 을 0 → -L 로 무한 linear 트윈 → head
-         앞쪽은 그려지고 뒤쪽은 지워지며 영원히 자기 꼬리를 쫓음. */
-      if (combinedPulse) {
-        tl.call(function () {
-          if (window.__hexCombinedPulseTween) window.__hexCombinedPulseTween.kill();
-          var L = window.__hexCombinedPulseLength;
-          if (!L) return;
-          gsap.to(combinedPulse, { opacity: 0.85, duration: 0.4, ease: 'power2.out' });
-          window.__hexCombinedPulseTween = gsap.to(combinedPulse, {
-            strokeDashoffset: -L,
-            duration: 4.5,
-            ease: 'none',
-            repeat: -1
-          });
-        }, null, phaseB + 1.15);
-      }
+      /* Phase B 의 inner 펄스/silhouette 스피너 모두 삭제.
+         이너 효과는 initHexAnimations 의 shimmer (gradient yoyo) 가 항상
+         돌고 있어서 별도 트리거 불필요. */
 
       window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');
