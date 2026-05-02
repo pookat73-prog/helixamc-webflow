@@ -30,7 +30,9 @@
 }
 
 .helix-hex-diagram .hex path {
-  fill: transparent;
+  /* fill: white — Section 2 에서 헥사가 겹쳐도 뒤가 안 비치게.
+     Section 2 가 진행되는 about 두 번째 섹션 배경이 메인 화이트라는 가정. */
+  fill: #ffffff;
   stroke: #0075d6;
   stroke-width: 0.7;
   stroke-linecap: butt;
@@ -38,8 +40,11 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* inner 외곽선은 평소 안 보임. Phase B "파동 한 번" 순간에만 GSAP 가
+   opacity 0 → 1 → 0 으로 토글 + scale 1 → 0.5 로 안쪽 수축. */
 .helix-hex-diagram .hex path.hex-inner {
   stroke-width: 0.7;
+  opacity: 0;
 }
 
 .helix-hex-diagram .hex text {
@@ -60,32 +65,6 @@
 /* Section 1 모션 — 초기 숨김 상태 (about.js 가 GSAP 으로 페이드/스케일 인) */
 .helix-hex-diagram .hex {
   opacity: 0;
-}
-
-/* Phase B emit — inner 외곽선 클론. 메인 블루 동일 톤. */
-.helix-hex-diagram .hex path.hex-emit {
-  fill: transparent;
-  stroke: #0075d6;
-  stroke-width: 0.7;
-  stroke-linecap: butt;
-  stroke-linejoin: miter;
-  vector-effect: non-scaling-stroke;
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Phase B beam — stroke 마스크로 외곽선 위에서만 보이는 사선 광선. */
-.helix-hex-diagram .hex-beam-wrap {
-  pointer-events: none;
-}
-.helix-hex-diagram .hex-beam-mover {
-  opacity: 0;
-}
-.helix-hex-diagram .hex line.hex-beam {
-  fill: none;
-  stroke-width: 7;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
 }
 
 /* Phase 5 모핑 타겟 — 크리스탈 3D 인상의 헬릭스 심볼.
