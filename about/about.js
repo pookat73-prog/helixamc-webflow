@@ -379,8 +379,7 @@
 
       /* Phase A — 내 → 외 → 영 → 안 → 치 출렁 엇박 등장.
          각 헥사 개별 모션: scale 0.55 → 1.18 (overshoot up + fade in)
-         → 1 (settle 착). 두 단계로 분리해서 "커졌다 작아지며 착" 명시.
-         5개가 비균등 간격으로 차례로 등장 (출렁 wave). */
+         → 1 (settle 착). 두 단계 모두 power2.inOut 으로 부드럽게. */
       var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
       var ENTRANCE_TIMES = [0.00, 0.08, 0.22, 0.30, 0.44];
       var GROW_DUR = 0.25;
@@ -393,7 +392,7 @@
           opacity: 1,
           scale: 1.18,
           duration: GROW_DUR,
-          ease: 'power2.out'
+          ease: 'power2.inOut'
         }, t);
         tl.to(g, {
           scale: 1,
@@ -406,10 +405,9 @@
          빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
       var phaseB = tl.duration() + 0.25;
 
-      /* Phase B — 내·외·영 inner 펄스 동시에 "통통" bounce.
-         opacity 0 → 1 + scale 1 → 0.5 (빠르게 작아짐, power2.in)
-         → scale 0.5 → 0.7 + opacity 1 → 0 (살짝 튕겨 나오며 fade, power2.out).
-         총 0.25s. */
+      /* Phase B — 내·외·영 inner 펄스 동시에 통통 bounce.
+         opacity 0 → 1 + scale 1 → 0.5 → 0.7 + opacity 1 → 0.
+         두 단계 모두 power2.inOut 으로 부드럽게. 총 0.25s. */
       hexes.forEach(function (hx) {
         if (!hx.inner) return;
         var inner = svg.querySelector('.hex-' + hx.id + ' .hex-inner');
@@ -420,7 +418,7 @@
             opacity: 1,
             scale: 0.5,
             duration: 0.1,
-            ease: 'power2.in',
+            ease: 'power2.inOut',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
           phaseB
@@ -430,7 +428,7 @@
             opacity: 0,
             scale: 0.7,
             duration: 0.15,
-            ease: 'power2.out',
+            ease: 'power2.inOut',
             svgOrigin: hx.cx + ' ' + hx.cy
           },
           phaseB + 0.1
@@ -454,7 +452,7 @@
               opacity: 0,
               scale: 1.06,
               duration: 0.6,
-              ease: 'back.out(1.5)',
+              ease: 'power2.inOut',
               svgOrigin: '173 -75',
               repeat: -1,
               repeatDelay: 0.8
