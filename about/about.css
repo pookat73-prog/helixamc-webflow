@@ -21,11 +21,6 @@
      SVG 자체에 perspective 부여. */
   perspective: 1200px;
   perspective-origin: 50% 50%;
-  /* 헥사 + 텍스트 30% 축소 — viewBox 내부 좌표·Section 2 상수는 그대로
-     두고 SVG 자체를 시각적으로 0.7 배. transform-origin 중심이라 다이어
-     그램 위치는 변하지 않음. */
-  transform: scale(0.7);
-  transform-origin: 50% 50%;
 }
 
 /* Section 2 — 각 hex 가 3D 변환을 받을 수 있도록. SVG <g> 에 CSS transform
