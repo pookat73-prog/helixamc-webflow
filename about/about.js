@@ -278,7 +278,11 @@
     svg.style.width = '100%';
     svg.style.height = '100%';
     svg.style.display = 'block';
-    svg.style.overflow = 'hidden';
+    /* overflow: visible — silhouette 펄스가 scale 로 viewBox 경계 너머까지
+       퍼져도 잘리지 않게. 최종 클리핑은 .diagram-place-holder { overflow:
+       hidden } 가 담당. */
+    svg.style.overflow = 'visible';
+    svg.setAttribute('overflow', 'visible');
 
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
@@ -383,9 +387,12 @@
          stagger 좁혀서 5개가 거의 동시에 차례로 등장. */
       var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
       var ENTRANCE_TIMES = [0.00, 0.04, 0.09, 0.14, 0.20];
-      var GROW_DUR = 0.18;
-      var REBOUND_DUR = 0.10;
-      var SETTLE_DUR = 0.08;
+      /* 각 헥사 듀레이션 늘림 — 반동이 더 또렷이 보이도록.
+         total per hex = 0.30 + 0.18 + 0.14 = 0.62s. stagger 가 좁아서
+         5개가 거의 동시에 시작하지만 각자의 motion 은 길게 음미됨. */
+      var GROW_DUR = 0.30;
+      var REBOUND_DUR = 0.18;
+      var SETTLE_DUR = 0.14;
       order.forEach(function (id, i) {
         var g = svg.querySelector('.hex-' + id);
         if (!g) return;
