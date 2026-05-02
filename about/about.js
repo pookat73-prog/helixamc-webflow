@@ -623,8 +623,9 @@
       }
 
       /* Box 3 — 모핑 후 심볼에서 펄스 1번 + 궤도 도는 빛점.
-         박스 3 진입 트리거 → 펄스 발사, 궤도 빛점 fade in.
-         궤도는 SVG <animateMotion> 으로 무한 루프 (placeholder 수직 타원). */
+         박스 3 진입 → 펄스 1회 + 궤도 빛점 fade in.
+         박스 3 위로 역스크롤 → effects 통째 fade out (박스 1·2 에 보이지
+         않게). 펄스는 "한 번" 이라 다시 진입해도 재발사 안 함. */
       var box3Effects = injectBox3Effects(holder);
       if (box3Effects && box3Ref) {
         gsap.set(box3Effects, { opacity: 0 });
@@ -633,26 +634,33 @@
         if (pulseEl) gsap.set(pulseEl, { opacity: 0, attr: { r: 40 } });
         if (dotEl)   gsap.set(dotEl,   { opacity: 0 });
 
+        var box3PulseFired = false;
         window.ScrollTrigger.create({
           trigger: box3Ref,
           start: 'top 75%',
-          once: true,
           onEnter: function () {
-            /* effects layer fade in */
+            /* effects layer fade in (매번 박스3 재진입 시 다시 켬) */
             gsap.to(box3Effects, { opacity: 1, duration: 0.4, ease: 'power2.out' });
-            /* 펄스 한 번 — 작게 시작해서 크게 퍼지며 사라짐 */
-            if (pulseEl) {
+            /* 펄스 — 최초 진입 시 한 번만 발사 ("파동 한번 퉁") */
+            if (!box3PulseFired && pulseEl) {
+              box3PulseFired = true;
               gsap.set(pulseEl, { opacity: 1, attr: { r: 20 } });
               gsap.to(pulseEl, {
                 attr: { r: 220 }, opacity: 0,
                 duration: 1.6, ease: 'power2.out'
               });
             }
-            /* 궤도 빛점 — 펄스가 어느 정도 퍼진 뒤 fade in (이후 영구 순회) */
+            /* 궤도 빛점 fade in (매 진입 시 다시 켬, 영구 순회) */
             if (dotEl) {
               gsap.to(dotEl, { opacity: 1, duration: 0.6, ease: 'power2.out', delay: 0.4 });
             }
-            log('box3 pulse + orbit started');
+            log('box3 onEnter (pulseFired=' + box3PulseFired + ')');
+          },
+          onLeaveBack: function () {
+            /* 박스 3 위로 역스크롤 → effects 통째 fade out
+               (박스 1·2 영역에 궤도 빛점이 비치지 않게) */
+            gsap.to(box3Effects, { opacity: 0, duration: 0.3, ease: 'power2.in' });
+            log('box3 onLeaveBack → effects hidden');
           }
         });
         log('box3 effects ready');
