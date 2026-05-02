@@ -131,7 +131,8 @@
 }
 
 /* Box 3 효과 — 펄스 ring + 궤도 도는 빛점.
-   심볼과 같은 위치(holder 중앙) 에 SVG overlay. */
+   심볼과 같은 위치(holder 중앙) 에 SVG overlay.
+   기본 opacity 0 — JS 가 박스3 진입 시 0→1, 역스크롤 시 1→0 으로 토글. */
 .diagram-place-holder .box3-effects {
   position: absolute;
   top: 50%;
@@ -142,6 +143,7 @@
   pointer-events: none;
   z-index: 6;
   overflow: visible;
+  opacity: 0;
 }
 .diagram-place-holder .box3-effects .box3-pulse {
   vector-effect: non-scaling-stroke;
