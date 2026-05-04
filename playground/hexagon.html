@@ -428,23 +428,24 @@ function applyS2(svg, dur) {
 
 /* Stage 3: 가운데 완전 겹침 + 변이 구부러지며 원으로 모핑 + 텍스트 페이드 아웃 */
 function applyS3(svg, dur) {
+  /* 모든 헥사를 동일한 원 경로(CX,CY 중심)로 모핑 — translate 없이 path 좌표 자체를 중앙으로
+     이렇게 해야 5개 원이 SVG 공간에서 픽셀 단위로 완전히 일치 */
+  var targetCircle = circleBezierPath(CX, CY);
+
   ORDER.forEach(function(id) {
     var hx = META[id];
     var g  = svg.querySelector('.hex-'+id);
     var p  = g.querySelector('.hex-path');
-    /* 모두 중앙으로 완전히 겹침 — scale 없이 translate만 */
+
+    /* 그룹 transform 원점 복귀 (scale·rotation 리셋, x/y는 0으로) */
     gsap.to(g, {
-      x: CX - hx.cx, y: CY - hx.cy,
-      scale: 1, rotation: 0, rotationY: 0,
-      duration: dur, ease: 'power2.inOut',
-      svgOrigin: hx.cx + ' ' + hx.cy,
-      overwrite: 'auto'
+      x: 0, y: 0, scale: 1, rotation: 0, rotationY: 0,
+      duration: dur, ease: 'power2.inOut', overwrite: 'auto'
     });
-    /* 변이 구부러지며 자연스럽게 원으로 모핑 */
+    /* path 자체를 CX,CY 중심 원으로 이동+모핑 */
     gsap.to(p, {
-      attr: { d: circleBezierPath(hx.cx, hx.cy) },
-      duration: dur * 0.85, ease: 'power2.inOut',
-      overwrite: 'auto'
+      attr: { d: targetCircle },
+      duration: dur * 0.85, ease: 'power2.inOut', overwrite: 'auto'
     });
     /* 텍스트 페이드 아웃 */
     gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.4, ease: 'power2.in', overwrite: 'auto' });
