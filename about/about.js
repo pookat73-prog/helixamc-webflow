@@ -503,8 +503,22 @@
       var ROW_CENTER_X  = 173;
       var ROW_Y         = -75;
       var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
-      var COMP_STEP_X   = 26;    /* 합체 후 가로 offset — 일정한 간격 가로 stack */
-      var COMP_STEP_Y   = 0;     /* 세로 offset 없음 — 그냥 가로로 쌓임 */
+      /* COMP_STEP_X — 합체 후 인접 헥사 사이의 화면 간격이 0.3vw 가 되도록
+         viewBox 단위로 환산. svg 가 100% width 라 pixelsPerUnit 변동이 작지만
+         리사이즈 시 다시 계산. */
+      var COMP_STEP_X   = 26;    /* 초기값, 아래에서 즉시 재계산 */
+      var COMP_STEP_Y   = 0;     /* 세로 offset 없음 — 가로로만 쌓임 */
+      function computeCompStepX() {
+        try {
+          var rect = svg.getBoundingClientRect();
+          var vb = svg.viewBox && svg.viewBox.baseVal;
+          if (!rect.width || !vb || !vb.width) return;
+          var pxPerUnit = rect.width / vb.width;
+          var targetPx  = window.innerWidth * 0.003;  /* 0.3vw */
+          COMP_STEP_X = targetPx / pxPerUnit;
+        } catch (e) {}
+      }
+      computeCompStepX();
       var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
 
@@ -745,12 +759,11 @@
         if (window.__hexS1Tl) window.__hexS1Tl.progress(1);
       }
 
-      /* SPREAD: box1.center → box2.top 까지 (구간 1과 2 사이에서 펼침 완료).
-         이전엔 box2.center 까지 였는데, 요구사항: box2 도달 전에 펼침이 끝나야
-         box2 구간은 합체 시퀀스만 진행됨. */
+      /* SPREAD: box1.center → box3.top 까지 — 세번째 스크롤(box3) 도달 시점에
+         펼침이 완전히 완성되도록 box1·box2 전체 구간을 스크럽으로 사용. */
       window.ScrollTrigger.create({
         trigger: box1Ref || holder,
-        endTrigger: box2Ref || box1Ref || holder,
+        endTrigger: box3Ref || box2Ref || box1Ref || holder,
         start: 'center center',
         end: 'top center',
         scrub: 1,
@@ -763,11 +776,9 @@
         }
       });
 
-      /* BOX2 ENTER: box2 영역 전체에 걸쳐 스크럽 — 합체가 box2 끝날 때 완성.
-         start: box2.top 이 viewport center → 펼침 완료 직후 이어붙음
-         end:   box2.bottom 이 viewport center → box2 끝에서 합체 완성 */
+      /* BOX3 STACK: box3 영역에서 합체 스크럽 — 펼침 완료 직후 켜켜이 쌓임. */
       window.ScrollTrigger.create({
-        trigger: box2Ref || holder,
+        trigger: box3Ref || box2Ref || holder,
         start: 'top center',
         end: 'bottom center',
         scrub: 1,
