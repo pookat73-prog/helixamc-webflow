@@ -503,7 +503,12 @@
       var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
 
-      var section2Tl = gsap.timeline({ paused: true });
+      /* 두 단계 분리:
+         - spreadTl  : box1 → box2 스크롤 구간에서 펼침(일렬)
+         - compressTl: box2 → box3 스크롤 구간에서 모임(중앙 합체)
+         box1 영역 내에선 progress 0 (등장만, 움직임 X). */
+      var spreadTl   = gsap.timeline({ paused: true });
+      var compressTl = gsap.timeline({ paused: true });
 
       ROW_ORDER.forEach(function (id, i) {
         var hx = null;
@@ -520,29 +525,38 @@
         var compDx = compX - hx.cx;
 
         /* svgOrigin 한 번 잡아두면 후속 트윈에도 동일 origin 사용 →
-           rotation·scale 이 항상 hex 자체 중심에서 일어남. */
-        var hexTl = gsap.timeline({
+           scale 이 항상 hex 자체 중심에서 일어남. */
+        var spreadHex = gsap.timeline({
+          defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
+        });
+        var compressHex = gsap.timeline({
           defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
         });
 
-        /* Section 2 = 펼침 → 회전 → 압축. 3단계만.
-           Phase 1 은 fromTo + immediateRender:false → Section 1 종료
-           (scale 1) 와 매끄럽게 이어짐 (이전엔 from 값 미스매치로 "툭"
-           점프). Phase 2·3 은 .to() 가 직전 상태에서 자동으로 이어감. */
-        hexTl.fromTo(g,
+        /* 펼침: identity(원래 위치) → 일렬 row 위치
+           fromTo + immediateRender:false → helix-s1 등장 직후의 scale=1
+           상태와 매끄럽게 이어짐. */
+        spreadHex.fromTo(g,
           { x: 0, y: 0, scale: 1 },
           { x: rowDx, y: rowDy, scale: ROW_SCALE,
             duration: 1.0, ease: 'power2.inOut',
             immediateRender: false },
           0
         );
-        hexTl.to(g, { rotationY: TILT_Y,
-                      duration: 0.8, ease: 'power2.inOut' }, 1.0);
-        hexTl.to(g, { x: compDx,
-                      duration: 0.8, ease: 'power2.inOut' }, 1.8);
 
-        section2Tl.add(hexTl, 0);
+        /* 모임: 일렬 위치 → 중심 압축. .to() 라 직전(=spread end) 값에서
+           자연스럽게 이어감. */
+        compressHex.to(g,
+          { x: compDx, duration: 1.0, ease: 'power2.inOut' },
+          0
+        );
+
+        spreadTl.add(spreadHex, 0);
+        compressTl.add(compressHex, 0);
       });
+
+      /* 호환용 — 외부에서 참조 가능한 이름 유지. compressTl 이 마지막 단계. */
+      var section2Tl = compressTl;
 
       /* Box 3 — 모핑 후 심볼에서 펄스 1번 + 궤도 도는 빛점.
          박스 3 진입 → 펄스 1회 + 궤도 빛점 fade in.
@@ -674,12 +688,10 @@
         console.log('[helix-s2 pin] attached, pinStartScroll≈' + pinStartScroll + ' pinEndScroll≈' + pinEndScroll + ' range≈' + (pinEndScroll - pinStartScroll) + 'px');
       } catch (e) {}
 
-      /* Scrub: Section 2 timeline 진행도를 2구간 전체 스크롤(박스 1 진입 ~
-         박스 3 끝)에 매핑. 이전엔 박스 2 한 박스 범위에만 매핑돼 있어 2구간
-         초중반에 헤쳐모여가 끝나버리고 후반엔 정적이었음. 이제 sec3 진입
-         직전에 progress=1 도달하도록 전 범위 사용. */
-      var scrubStart = box1Ref || rowEl || holder;
-      var scrubEnd   = box3Ref || box2Ref || box1Ref || holder;
+      /* 스크럽 2단계 매핑:
+         - SPREAD : box1 → box2 (둘 다 viewport center 도달 사이) → 일렬로 퍼짐
+         - COMPRESS: box2 → box3 (둘 다 viewport center 도달 사이) → 중앙 합체
+         box1 영역 안에선 두 트리거 모두 progress 0 → hexes 는 등장 상태 유지. */
 
       function forceS1Done() {
         if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
@@ -687,24 +699,31 @@
       }
 
       window.ScrollTrigger.create({
-        trigger: scrubStart,
-        endTrigger: scrubEnd,
-        start: 'top 75%',
-        end: 'bottom 25%',
+        trigger: box1Ref || holder,
+        endTrigger: box2Ref || box1Ref || holder,
+        start: 'center center',
+        end: 'center center',
         scrub: 1,
-        animation: section2Tl,
+        animation: spreadTl,
         onEnter: forceS1Done,
         onUpdate: function (self) {
-          /* 페이지 로드 시 이미 트리거 범위 안이면 onEnter 가 안 불릴 수
-             있으므로, 처음으로 진행도가 0 을 넘는 순간에도 안전망. */
           if (self.progress > 0 && (!window.__hexS1Tl || window.__hexS1Tl.progress() < 1)) {
             forceS1Done();
           }
         }
       });
 
-      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, scrub: ' +
-          (scrubStart.className || scrubStart.tagName) + ' → ' + (scrubEnd.className || scrubEnd.tagName));
+      window.ScrollTrigger.create({
+        trigger: box2Ref || holder,
+        endTrigger: box3Ref || box2Ref || holder,
+        start: 'center center',
+        end: 'center center',
+        scrub: 1,
+        animation: compressTl
+      });
+
+      log('section 2 ready — spread:' + spreadTl.duration().toFixed(2) + 's compress:' +
+          compressTl.duration().toFixed(2) + 's');
     }
 
     tryInit();
