@@ -820,9 +820,8 @@
 
     function applyWash(el) {
       if (el.dataset.washDone) return false;
-      el.dataset.washDone = '1';
 
-      /* 실제 텍스트 색 읽기 */
+      /* 실제 텍스트 색 읽기 (span 적용 전에 읽어야 정확) */
       var cs = getComputedStyle(el);
       var fill = cs.getPropertyValue('-webkit-text-fill-color');
       var base = (fill && fill !== 'rgba(0, 0, 0, 0)' && fill !== 'transparent')
@@ -830,26 +829,45 @@
       if (!base || base === 'rgba(0, 0, 0, 0)' || base === 'transparent') base = '#ffffff';
       log('history spark base=' + base);
 
-      /* background-clip:text 그라데이션 적용 */
+      /* "최초" 토큰만 span 으로 wrap */
+      var TOKEN = '최초';
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var nodes = []; var n;
+      while ((n = walker.nextNode())) nodes.push(n);
+      var span = null;
+      nodes.forEach(function (t) {
+        var idx = t.nodeValue.indexOf(TOKEN);
+        if (idx < 0 || span) return;
+        span = document.createElement('span');
+        span.style.display = 'inline';
+        var frag = document.createDocumentFragment();
+        if (idx > 0) frag.appendChild(document.createTextNode(t.nodeValue.slice(0, idx)));
+        frag.appendChild(span);
+        var rest = t.nodeValue.slice(idx + TOKEN.length);
+        if (rest) frag.appendChild(document.createTextNode(rest));
+        t.parentNode.replaceChild(frag, t);
+      });
+      if (!span) return false;
+      span.textContent = TOKEN;
+      el.dataset.washDone = '1';
+
+      /* span 에만 background-clip:text 그라데이션 적용 */
       var grad = 'linear-gradient(115deg,' +
-        base    + ' 0%,'  +
-        base    + ' 36%,' +
-        '#0075d6 49%,'    +
-        '#0075d6 51%,'    +
-        base    + ' 64%,' +
-        base    + ' 100%)';
-      el.style.backgroundImage     = grad;
-      el.style.backgroundSize      = '300% 100%';
-      el.style.backgroundRepeat    = 'no-repeat';
-      el.style.backgroundPosition  = '160% center';
-      el.style.webkitBackgroundClip = 'text';
-      el.style.backgroundClip      = 'text';
-      el.style.webkitTextFillColor = 'transparent';
+        base + ' 0%,' + base + ' 36%,' +
+        '#0075d6 49%,#0075d6 51%,' +
+        base + ' 64%,' + base + ' 100%)';
+      span.style.backgroundImage      = grad;
+      span.style.backgroundSize       = '300% 100%';
+      span.style.backgroundRepeat     = 'no-repeat';
+      span.style.backgroundPosition   = '160% center';
+      span.style.webkitBackgroundClip = 'text';
+      span.style.backgroundClip       = 'text';
+      span.style.webkitTextFillColor  = 'transparent';
 
       function start() {
         if (!window.gsap) return;
         gsap.timeline({ repeat: -1, repeatDelay: 1, delay: 0.4 })
-          .fromTo(el,
+          .fromTo(span,
             { backgroundPosition: '160% center' },
             { backgroundPosition: '-60% center', duration: 0.75, ease: 'power2.inOut' }
           );
