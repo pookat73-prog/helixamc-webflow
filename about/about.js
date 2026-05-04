@@ -674,9 +674,12 @@
         console.log('[helix-s2 pin] attached, pinStartScroll≈' + pinStartScroll + ' pinEndScroll≈' + pinEndScroll + ' range≈' + (pinEndScroll - pinStartScroll) + 'px');
       } catch (e) {}
 
-      /* Scrub: Section 2 timeline 진행도를 콘텐츠 2 박스의 스크롤 범위에
-         매핑. 박스 2 가 viewport 75% 진입 시 시작, bottom 25% 통과 시 끝. */
-      var triggerEl = box2Ref || rowEl || holder;
+      /* Scrub: Section 2 timeline 진행도를 2구간 전체 스크롤(박스 1 진입 ~
+         박스 3 끝)에 매핑. 이전엔 박스 2 한 박스 범위에만 매핑돼 있어 2구간
+         초중반에 헤쳐모여가 끝나버리고 후반엔 정적이었음. 이제 sec3 진입
+         직전에 progress=1 도달하도록 전 범위 사용. */
+      var scrubStart = box1Ref || rowEl || holder;
+      var scrubEnd   = box3Ref || box2Ref || box1Ref || holder;
 
       function forceS1Done() {
         if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
@@ -684,7 +687,8 @@
       }
 
       window.ScrollTrigger.create({
-        trigger: triggerEl,
+        trigger: scrubStart,
+        endTrigger: scrubEnd,
         start: 'top 75%',
         end: 'bottom 25%',
         scrub: 1,
@@ -699,7 +703,8 @@
         }
       });
 
-      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, scrub trigger=' + (triggerEl.className || triggerEl.tagName));
+      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, scrub: ' +
+          (scrubStart.className || scrubStart.tagName) + ' → ' + (scrubEnd.className || scrubEnd.tagName));
     }
 
     tryInit();
