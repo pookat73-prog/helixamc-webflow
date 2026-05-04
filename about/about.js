@@ -1130,8 +1130,10 @@
   }
 
   /* ── .about_hybrid-contents_box 양쪽 펼침 ───────────────────────
-     스크롤 진입 시 가운데 박스만 보이다가 양쪽 박스가 자기 위치로
-     슬라이드 아웃 + 페이드인.
+     박스 2개: 둘 다 두 박스의 기하 중심점에서 시작 (1번 visible, 2번 invisible).
+     스크롤 진입 시 각자 자연 위치로 슬라이드, 2번은 동시에 페이드인.
+     박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
+     center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
   function initHybridUnfold() {
     var SEL = '.about_hybrid-contents_box';
@@ -1140,33 +1142,40 @@
       var nodes = document.querySelectorAll(SEL);
       if (nodes.length < 2) { log('hybrid: nodes=' + nodes.length); return false; }
 
-      /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 가운데를 찾기 위함 */
+      /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 좌→우 */
       var boxes = Array.prototype.slice.call(nodes).sort(function (a, b) {
         return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
       });
-      /* 첫 박스 기준 너비가 측정 안 되면 layout 미완 → retry */
       if (!boxes[0].getBoundingClientRect().width) return false;
 
-      var centerIdx = Math.floor(boxes.length / 2);
-      var center = boxes[centerIdx];
-      var centerRect = center.getBoundingClientRect();
-      var centerCx = centerRect.left + centerRect.width / 2;
+      var rects = boxes.map(function (b) { return b.getBoundingClientRect(); });
 
-      /* 각 박스의 자연 위치에서 center 까지의 dx 측정 →
-         초기엔 모두 center 위로 translate 해 겹쳐둠 (opacity 0).
-         center 박스는 그대로 표시. */
+      /* anchorCx 결정.
+         - 2개 → 두 박스 중심의 평균 (둘 다 그 점에서 출발해 양쪽으로 펼침)
+         - 3+개 → 시각상 가운데 박스 중심 (그 박스는 고정 anchor) */
+      var anchorCx;
+      var anchorIdx = -1;          /* 슬라이드만, 페이드 없음. -1 이면 모두 페이드인 */
+      if (boxes.length === 2) {
+        anchorCx = (rects[0].left + rects[0].width / 2 +
+                    rects[1].left + rects[1].width / 2) / 2;
+        /* 1번(좌측 박스, 사용자 설명상 '가운데에서 시작하고 보이는') 은
+           슬라이드만 — opacity 변화 없음. */
+        anchorIdx = 0;
+      } else {
+        anchorIdx = Math.floor(boxes.length / 2);
+        anchorCx  = rects[anchorIdx].left + rects[anchorIdx].width / 2;
+      }
+
+      /* 초기 상태: 모든 박스를 anchorCx 로 translate. anchor 박스는 visible,
+         나머지는 invisible (페이드인 대기). */
       boxes.forEach(function (b, i) {
-        if (i === centerIdx) {
-          if (window.gsap) gsap.set(b, { opacity: 1, x: 0 });
-          else { b.style.opacity = '1'; b.style.transform = 'translateX(0)'; }
-          return;
-        }
-        var r = b.getBoundingClientRect();
-        var dx = centerCx - (r.left + r.width / 2);
-        if (window.gsap) gsap.set(b, { x: dx, opacity: 0 });
+        var cx = rects[i].left + rects[i].width / 2;
+        var dx = anchorCx - cx;
+        var op = (i === anchorIdx) ? 1 : 0;
+        if (window.gsap) gsap.set(b, { x: dx, opacity: op });
         else {
           b.style.transform = 'translateX(' + dx + 'px)';
-          b.style.opacity = '0';
+          b.style.opacity = String(op);
         }
       });
 
@@ -1174,7 +1183,6 @@
       function play() {
         if (played) return; played = true;
         boxes.forEach(function (b, i) {
-          if (i === centerIdx) return;
           if (window.gsap) {
             gsap.to(b, { x: 0, opacity: 1, duration: 1.0, ease: 'power3.out' });
           } else {
@@ -1186,6 +1194,8 @@
         log('hybrid unfold play');
       }
 
+      /* 트리거는 anchor 박스 (또는 첫 박스) — 스크롤 진입 감지 */
+      var triggerEl = boxes[anchorIdx >= 0 ? anchorIdx : 0];
       if (!('IntersectionObserver' in window)) { play(); return true; }
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
@@ -1194,8 +1204,8 @@
           play();
         });
       }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
-      io.observe(center);
-      log('hybrid unfold ready, count=' + boxes.length + ' centerIdx=' + centerIdx);
+      io.observe(triggerEl);
+      log('hybrid unfold ready, count=' + boxes.length + ' anchorIdx=' + anchorIdx);
       return true;
     }
 
