@@ -1145,16 +1145,17 @@
                                 we-are-here 와 엇박으로 0.5s 딜레이
      ─────────────────────────────────────────────────────────────── */
   function initWeAreHereReveal() {
-    var configs = [
-      {
-        sel: '.about_we-are-here',
-        fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out', delay: 0
-      },
-      {
-        sel: '.about_history_title_new',
-        fadeDur: 1.5, scaleDur: 1.5, ease: 'power2.inOut', delay: 0.5
-      }
-    ];
+    var WE_SEL    = '.about_we-are-here';
+    var TITLE_SEL = '.about_history_title_new';
+
+    var weCfg    = { fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out',   delay: 0   };
+    /* 국내 최초~도입 — we-are-here 트리거 직후 0.6s 만에 곧이어 등장 */
+    var titleCfg = { fadeDur: 1.2, scaleDur: 1.2, ease: 'power2.inOut', delay: 0.6 };
+
+    function setHidden(el) {
+      if (window.gsap) gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
+      else { el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; }
+    }
 
     function reveal(el, cfg) {
       if (window.gsap) {
@@ -1175,28 +1176,47 @@
       }
     }
 
-    configs.forEach(function (cfg) {
-      var els = document.querySelectorAll(cfg.sel);
-      if (!els.length) { log('no ' + cfg.sel); return; }
+    var weEls    = document.querySelectorAll(WE_SEL);
+    var titleEls = document.querySelectorAll(TITLE_SEL);
+    log('WeAreHere we=' + weEls.length + ' title=' + titleEls.length);
 
-      els.forEach(function (el) {
-        if (window.gsap) gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
-        else { el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; }
+    /* 둘 다 미리 숨김 처리 */
+    weEls.forEach(setHidden);
+    titleEls.forEach(setHidden);
+
+    if (!weEls.length) {
+      /* fallback: title_new 만 단독 옵저버로 처리 (we-are-here 가 없을 때) */
+      titleEls.forEach(function (el) {
+        if (!('IntersectionObserver' in window)) { reveal(el, titleCfg); return; }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            io.unobserve(e.target); reveal(e.target, titleCfg);
+          });
+        }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+        io.observe(el);
       });
+      return;
+    }
 
-      if (!('IntersectionObserver' in window)) {
-        els.forEach(function (el) { reveal(el, cfg); });
-        return;
-      }
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          io.unobserve(e.target);
-          reveal(e.target, cfg);
-        });
-      }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
-      els.forEach(function (el) { io.observe(el); });
-    });
+    /* we-are-here 트리거 시점에 title_new 도 함께 발사 (곧이어 0.6s 후 등장) */
+    function fireBoth(weEl) {
+      reveal(weEl, weCfg);
+      titleEls.forEach(function (t) { reveal(t, titleCfg); });
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      weEls.forEach(fireBoth);
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        fireBoth(e.target);
+      });
+    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    weEls.forEach(function (el) { io.observe(el); });
   }
 
   /* ── .about_hybrid-contents_box 양쪽 펼침 ───────────────────────
