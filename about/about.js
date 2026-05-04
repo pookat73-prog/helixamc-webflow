@@ -320,15 +320,15 @@
     svg.style.overflow = 'hidden';
     svg.setAttribute('overflow', 'hidden');
 
-    /* ── defs: 공유 shimmer gradient + inner hex clipPaths ── */
+    /* ── defs: 공유 shimmer gradient + 전체 hex clipPaths (5개 모두) ── */
     var svgDefs = document.createElementNS(svgNS, 'defs');
 
-    /* 대각선 빛반사 그라디언트 (rect 기준 objectBoundingBox) */
+    /* 은은하고 넓은 대각선 빛반사 그라디언트 */
     var sGrad = document.createElementNS(svgNS, 'linearGradient');
     sGrad.setAttribute('id', 'helix-shimmer-grad');
     sGrad.setAttribute('x1', '0%');  sGrad.setAttribute('y1', '0%');
     sGrad.setAttribute('x2', '100%'); sGrad.setAttribute('y2', '100%');
-    [[0,0],[35,0],[50,0.28],[65,0],[100,0]].forEach(function(s2) {
+    [[0,0],[10,0],[35,0.08],[50,0.13],[65,0.08],[90,0],[100,0]].forEach(function(s2) {
       var st = document.createElementNS(svgNS, 'stop');
       st.setAttribute('offset', s2[0] + '%');
       st.setAttribute('stop-color', '#0075d6');
@@ -337,13 +337,13 @@
     });
     svgDefs.appendChild(sGrad);
 
+    /* 5개 hex 모두 clipPath — 외곽선 안으로 클립 */
     hexes.forEach(function(hx) {
-      if (!hx.inner) return;
-      var iv = vertices(hx.cx, hx.cy, INNER_SCALE);
+      var ov = vertices(hx.cx, hx.cy);
       var cp = document.createElementNS(svgNS, 'clipPath');
-      cp.setAttribute('id', 'clip-inner-' + hx.id);
+      cp.setAttribute('id', 'clip-hex-' + hx.id);
       var cpP = document.createElementNS(svgNS, 'path');
-      cpP.setAttribute('d', fullHexPath(iv));
+      cpP.setAttribute('d', fullHexPath(ov));
       cp.appendChild(cpP);
       svgDefs.appendChild(cp);
     });
@@ -361,15 +361,6 @@
       p.setAttribute('d', fullHexPath(verts));
       g.appendChild(p);
 
-      /* inner hex 유리 fill */
-      if (hx.inner) {
-        var iv2 = vertices(hx.cx, hx.cy, INNER_SCALE);
-        var iPath = document.createElementNS(svgNS, 'path');
-        iPath.setAttribute('d', fullHexPath(iv2));
-        iPath.setAttribute('class', 'hex-glass');
-        g.appendChild(iPath);
-      }
-
       var t = document.createElementNS(svgNS, 'text');
       t.setAttribute('x', hx.cx);
       t.setAttribute('y', hx.cy);
@@ -382,21 +373,20 @@
       svg.appendChild(g);
     });
 
-    /* shimmer beam — hex 그룹 밖, SVG 직접 자식 (그룹 transform 영향 X) */
+    /* shimmer beam — hex 그룹 밖, SVG 직접 자식 (5개 모두) */
     hexes.forEach(function(hx) {
-      if (!hx.inner) return;
-      var beamW = 130;
-      var halfW = w * INNER_SCALE / 2;
+      var beamW = 200;              /* 넓은 빔 */
+      var halfW = w / 2;            /* 외곽 hex 기준 */
       var xFrom = hx.cx - halfW - beamW;
       var xTo   = hx.cx + halfW;
       var beam = document.createElementNS(svgNS, 'rect');
       beam.setAttribute('id', 'shimmer-' + hx.id);
       beam.setAttribute('x', xFrom);
-      beam.setAttribute('y', hx.cy - s * 1.05);
+      beam.setAttribute('y', hx.cy - s * 1.1);
       beam.setAttribute('width', beamW);
-      beam.setAttribute('height', s * 2.1);
+      beam.setAttribute('height', s * 2.2);
       beam.setAttribute('fill', 'url(#helix-shimmer-grad)');
-      beam.setAttribute('clip-path', 'url(#clip-inner-' + hx.id + ')');
+      beam.setAttribute('clip-path', 'url(#clip-hex-' + hx.id + ')');
       beam.setAttribute('opacity', '0');
       beam.setAttribute('data-x-from', xFrom);
       beam.setAttribute('data-x-to',   xTo);
@@ -501,10 +491,9 @@
       window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');
 
-      /* 등장 완료 후 shimmer 루프 시작 */
+      /* 등장 완료 후 shimmer 루프 — 5개 동시 시작 */
       tl.then(function() {
-        var innerIds = hexes.filter(function(h) { return h.inner; });
-        innerIds.forEach(function(hx, i) {
+        hexes.forEach(function(hx) {
           var beam = svg.querySelector('#shimmer-' + hx.id);
           if (!beam) return;
           var xFrom = parseFloat(beam.getAttribute('data-x-from'));
@@ -513,9 +502,8 @@
           gsap.fromTo(beam,
             { attr: { x: xFrom } },
             { attr: { x: xTo },
-              duration: 1.6, ease: 'power1.inOut',
-              repeat: -1, repeatDelay: 4.5,
-              delay: i * 1.4
+              duration: 2.2, ease: 'power1.inOut',
+              repeat: -1, repeatDelay: 4.0
             }
           );
         });
