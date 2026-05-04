@@ -354,19 +354,19 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
     filter     0.95s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform, filter;
 }
-/* div-block-132 자식 — Y 슬라이드 + 살짝의 스케일 */
+/* div-block-132 자식 — 살짝 스케일 */
 #helix-for-family > div.div-block-132 > div {
-  transform: translateY(28px) scale(0.96);
+  transform: scale(0.94);
 }
 /* div-block-57 자식 — 더 강한 스케일 인 (히어로 타이틀 톤) */
 #helix-for-family > div.div-block-57 > div {
-  transform: translateY(20px) scale(0.84);
-  transform-origin: 50% 60%;
+  transform: scale(0.82);
+  transform-origin: 50% 50%;
 }
 #helix-for-family > div.div-block-57 > div.is-family-in,
 #helix-for-family > div.div-block-132 > div.is-family-in {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: scale(1);
   filter: blur(0) saturate(1) brightness(1);
 }
 
