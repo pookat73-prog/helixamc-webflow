@@ -1660,7 +1660,7 @@
   'use strict';
 
   function bind() {
-    var els = Array.prototype.slice.call(document.querySelectorAll('.div-block-72'));
+    var els = Array.prototype.slice.call(document.querySelectorAll('.ts-vet, .hj-vet, .sy-vet'));
     if (!els.length) return false;
 
     if (!('IntersectionObserver' in window)) {

@@ -370,12 +370,14 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   filter: blur(0) saturate(1) brightness(1);
 }
 
-/* ── 의료진 카드 (.div-block-72) — 잔잔한 좌→우 슬라이드 페이드 ────
-   켜켜히 쌓인 카드 톤에 맞춰 미세하게 왼쪽에서 오른쪽으로 들어옴.
+/* ── 의료진 카드 (.ts-vet, .hj-vet, .sy-vet) — 좌→우 슬라이드 페이드 ─
+   각 카드의 w-node wrapper 에 붙은 vet 식별 클래스를 직접 타겟.
    blur/saturate/scale 등 화려한 효과는 의도적으로 배제 (정중한 인상).
    카드 간 150ms 일정 stagger. 트리거: about.js IntersectionObserver.
    ─────────────────────────────────────────────────────────────── */
-.div-block-72 {
+.ts-vet,
+.hj-vet,
+.sy-vet {
   opacity: 0 !important;
   transform: translateX(-12px) !important;
   transition:
@@ -383,7 +385,9 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
     transform 1.10s cubic-bezier(0.22, 1, 0.36, 1) !important;
   will-change: opacity, transform;
 }
-.div-block-72.is-doctor-in {
+.ts-vet.is-doctor-in,
+.hj-vet.is-doctor-in,
+.sy-vet.is-doctor-in {
   opacity: 1 !important;
   transform: translateX(0) !important;
 }
