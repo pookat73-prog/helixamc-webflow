@@ -1825,3 +1825,83 @@
     init();
   }
 })();
+
+/* ================================================================
+   MOTION HOLDER FIT — 좌측 콘텐츠 컬럼 높이에 맞춰 우측 모션 영역 고정
+   - 제목 박스 top ~ 마지막 본문 박스 bottom 범위로 모션 홀더 높이 매칭
+   - overflow:visible 로 펄스/이펙트 잘림 방지
+   - resize / load 시 재계산, ScrollTrigger.refresh()
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var WRAPPER_IDS = [
+    'w-node-_8b35afef-acb7-2f39-45ec-7a0b3dfd6b90-3dfd6b90', /* 2구간 */
+    'w-node-_6103b565-ef5e-f722-abf7-6712e4a7d351-e0c16bc5'  /* 3구간 */
+  ];
+
+  function fitOne(wrapperId) {
+    var wrapper = document.getElementById(wrapperId);
+    if (!wrapper) return false;
+
+    var bodies = wrapper.querySelectorAll('.about_three_contents-box');
+    if (!bodies.length) return false;
+    var leftCol = bodies[0].parentElement;
+    if (!leftCol) return false;
+
+    /* 모션 홀더 — 좌측 컬럼이 아닌 형제 (또는 .diagram-place-holder) */
+    var motionHolder = wrapper.querySelector('.diagram-place-holder');
+    if (!motionHolder) {
+      var rowChildren = leftCol.parentElement
+        ? Array.prototype.slice.call(leftCol.parentElement.children)
+        : [];
+      for (var i = 0; i < rowChildren.length; i++) {
+        if (rowChildren[i] !== leftCol) { motionHolder = rowChildren[i]; break; }
+      }
+    }
+    if (!motionHolder) return false;
+
+    /* 이전 inline 값 초기화 후 자연 위치 측정 */
+    motionHolder.style.height   = '';
+    motionHolder.style.top      = '';
+    motionHolder.style.position = 'relative';
+    motionHolder.style.overflow = 'visible';
+
+    var leftRect   = leftCol.getBoundingClientRect();
+    var motionRect = motionHolder.getBoundingClientRect();
+
+    var targetH = leftRect.height;
+    var shift   = motionRect.top - leftRect.top;
+
+    if (targetH > 0) {
+      motionHolder.style.height = targetH + 'px';
+      motionHolder.style.top    = (-shift) + 'px';
+    }
+    return true;
+  }
+
+  function fitAll() {
+    var anyOk = false;
+    WRAPPER_IDS.forEach(function (id) { if (fitOne(id)) anyOk = true; });
+    if (anyOk && window.ScrollTrigger && window.ScrollTrigger.refresh) {
+      window.ScrollTrigger.refresh();
+    }
+  }
+
+  /* 초기 + 폰트/이미지 로드 후 재계산 */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fitAll);
+  } else {
+    fitAll();
+  }
+  window.addEventListener('load', fitAll);
+  setTimeout(fitAll, 600);
+  setTimeout(fitAll, 1500);
+
+  /* 디바운스 resize */
+  var rT;
+  window.addEventListener('resize', function () {
+    clearTimeout(rT);
+    rT = setTimeout(fitAll, 120);
+  });
+})();
