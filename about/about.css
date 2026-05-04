@@ -29,12 +29,6 @@
   transform-style: preserve-3d;
 }
 
-/* inner hex — 유리 느낌 블루 틴트 */
-.helix-hex-diagram .hex-glass {
-  fill: rgba(0, 117, 214, 0.07);
-  stroke: none;
-  pointer-events: none;
-}
 
 .helix-hex-diagram .hex path {
   /* fill: about 두 번째 섹션 배경 화이트 (#f4f7fb). 각 헥사가 완결된
