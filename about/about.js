@@ -901,15 +901,18 @@
       var vcx = window.innerWidth / 2;
 
       badges.forEach(function (el, i) {
-        /* 뱃지의 자연 중심 x → 화면 중앙까지의 거리를 초기 offset 으로 */
+        /* 뱃지: 처음부터 보이되 화면 정중앙에 위치 */
         var rect = el.getBoundingClientRect();
         var offset = Math.round(vcx - (rect.left + rect.width / 2));
         el.style.transform = 'translateX(' + offset + 'px)';
-        el.style.opacity = '0';
+        el.style.opacity = '1';
         el.classList.add('js-ready');
         el.style.transitionDelay = (i * 0.09) + 's';
       });
       texts.forEach(function (el, i) {
+        /* 텍스트: 처음엔 숨김 (왼쪽으로 살짝 밀려있다 미닫이로 등장) */
+        el.style.transform = 'translateX(-40px)';
+        el.style.opacity = '0';
         el.classList.add('js-ready');
         el.style.transitionDelay = (i * 0.09) + 's';
       });
