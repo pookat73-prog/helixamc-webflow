@@ -893,27 +893,25 @@
      .is-highlighted 부착 → background-size 0% → 100% 확장.
      ─────────────────────────────────────────────────────────── */
   function initStandardFontHighlight() {
-    var SEL = '.about_history_title_standard-font';
-    var els = document.querySelectorAll(SEL);
-    log('standard-font highlight: found=' + els.length);
-    if (!els.length) return;
+    /* 사용자 지정 정확 선택자 — "헬릭스는 ~ 진화하고있습니다" 문단 */
+    var SEL = 'body > section:nth-child(22) > div > div > div:nth-child(2)';
+    var el = document.querySelector(SEL);
+    log('standard-font highlight target=' + !!el);
+    if (!el) return;
 
-    function trigger(el) {
+    el.classList.add('is-highlight-target');
+
+    function trigger() {
       if (el.dataset.highlightDone) return;
       el.dataset.highlightDone = '1';
       el.classList.add('is-highlighted');
     }
 
-    if (!('IntersectionObserver' in window)) {
-      els.forEach(trigger);
-      return;
-    }
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { trigger(e.target); io.unobserve(e.target); }
-      });
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
     }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
-    els.forEach(function (el) { io.observe(el); });
+    io.observe(el);
   }
 
   /* ── 타임라인 가운데 펼침 ────────────────────────────────────── */

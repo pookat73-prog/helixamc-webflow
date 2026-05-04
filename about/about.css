@@ -209,7 +209,7 @@
    background-size 를 0% → 100% 로 확장해 왼쪽→오른쪽 sweep.
    글씨는 inline-painted text 가 위에 그대로 있어 절대 가려지지 않음.
    ─────────────────────────────────────────────────────────────── */
-.about_history_title_standard-font {
+.is-highlight-target {
   background-image: linear-gradient(
     to right,
     rgba(0, 117, 214, 0.55) 0%,
@@ -217,15 +217,15 @@
     rgba(0, 117, 214, 0)    100%
   );
   background-repeat: no-repeat;
-  background-size: 0% 65%;
-  background-position: 0 75%;
+  background-size: 0% 45%;
+  background-position: 0 105%;
   transition: background-size 1.4s cubic-bezier(0.86, 0, 0.07, 1);
   /* 라인 끊김 방지 */
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
-.about_history_title_standard-font.is-highlighted {
-  background-size: 100% 65%;
+.is-highlight-target.is-highlighted {
+  background-size: 100% 45%;
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
