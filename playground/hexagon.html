@@ -62,12 +62,6 @@ body {
   user-select: none;
 }
 .hex-naekwa text, .hex-oikwa text, .hex-yeongsang text { font-weight: 700; }
-.hex-circle {
-  fill: rgba(0,117,214,.25);
-  stroke: #0075d6;
-  stroke-width: 0.7;
-  vector-effect: non-scaling-stroke;
-}
 .hex { transform-box: fill-box; transform-origin: center; }
 
 /* Stage 5 요소 */
@@ -219,13 +213,44 @@ function mkSvg() {
   svg.setAttribute('overflow','visible');
   svg.id = 'the-svg';
 
-  function verts(cx, cy) {
-    return [[cx,cy-s],[cx+w/2,cy-s/2],[cx+w/2,cy+s/2],
-            [cx,cy+s],[cx-w/2,cy+s/2],[cx-w/2,cy-s/2]];
+  /* 헥사곤 — 6개 cubic bezier (직선: 컨트롤포인트 = 선분 1/3, 2/3 지점)
+     원 모핑을 위해 L 대신 C 사용 (같은 포맷이어야 attr tween 가능) */
+  function hexBezierPath(cx, cy) {
+    var vx = [], vy = [];
+    for (var i = 0; i < 6; i++) {
+      var a = -Math.PI/2 + i * Math.PI/3;
+      vx.push(cx + s * Math.cos(a));
+      vy.push(cy + s * Math.sin(a));
+    }
+    var d = 'M ' + vx[0].toFixed(3) + ' ' + vy[0].toFixed(3);
+    for (var i = 0; i < 6; i++) {
+      var nx = vx[(i+1)%6], ny = vy[(i+1)%6];
+      var c1x = vx[i] + (nx-vx[i])/3,  c1y = vy[i] + (ny-vy[i])/3;
+      var c2x = vx[i] + 2*(nx-vx[i])/3, c2y = vy[i] + 2*(ny-vy[i])/3;
+      d += ' C '+c1x.toFixed(3)+' '+c1y.toFixed(3)+' '+c2x.toFixed(3)+' '+c2y.toFixed(3)+' '+nx.toFixed(3)+' '+ny.toFixed(3);
+    }
+    return d + ' Z';
   }
-  function hexPath(cx, cy) {
-    var v = verts(cx, cy);
-    return 'M'+v.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' L')+' Z';
+
+  /* 원 — 같은 꼭짓점에서 출발, 컨트롤포인트만 접선 방향으로 밀어 곡선화 */
+  function circleBezierPath(cx, cy) {
+    var k = 4/3 * Math.tan(Math.PI/12); /* ≈ 0.3572 */
+    var vx = [], vy = [];
+    for (var i = 0; i < 6; i++) {
+      var a = -Math.PI/2 + i * Math.PI/3;
+      vx.push(cx + s * Math.cos(a));
+      vy.push(cy + s * Math.sin(a));
+    }
+    var d = 'M ' + vx[0].toFixed(3) + ' ' + vy[0].toFixed(3);
+    for (var i = 0; i < 6; i++) {
+      var a0 = -Math.PI/2 + i * Math.PI/3;
+      var a1 = -Math.PI/2 + (i+1) * Math.PI/3;
+      var nx = vx[(i+1)%6], ny = vy[(i+1)%6];
+      var c1x = vx[i] - k*s*Math.sin(a0), c1y = vy[i] + k*s*Math.cos(a0);
+      var c2x = nx   + k*s*Math.sin(a1),  c2y = ny   - k*s*Math.cos(a1);
+      d += ' C '+c1x.toFixed(3)+' '+c1y.toFixed(3)+' '+c2x.toFixed(3)+' '+c2y.toFixed(3)+' '+nx.toFixed(3)+' '+ny.toFixed(3);
+    }
+    return d + ' Z';
   }
 
   var LABELS = { ankwa:'안과', naekwa:'내과', yeongsang:'영상의학과', oikwa:'외과', chikwa:'치과' };
@@ -236,17 +261,9 @@ function mkSvg() {
     g.setAttribute('class','hex hex-'+id);
 
     var p = document.createElementNS(ns,'path');
-    p.setAttribute('d', hexPath(hx.cx, hx.cy));
+    p.setAttribute('d', hexBezierPath(hx.cx, hx.cy));
     p.setAttribute('class','hex-path');
     g.appendChild(p);
-
-    /* Stage 3용 circle — 평소 숨김, Stage 3 에서 페이드 인 */
-    var c = document.createElementNS(ns,'circle');
-    c.setAttribute('cx', hx.cx); c.setAttribute('cy', hx.cy);
-    c.setAttribute('r', s * 0.92);
-    c.setAttribute('class','hex-circle');
-    c.style.opacity = '0';
-    g.appendChild(c);
 
     var t = document.createElementNS(ns,'text');
     t.setAttribute('x', hx.cx);
@@ -342,9 +359,13 @@ function applyStage(n, dur) {
   ORDER.forEach(function(id) {
     var g = svg.querySelector('.hex-'+id);
     gsap.to(g, { opacity: 1, rotationX: 0, duration: dur, overwrite: 'auto' });
-    gsap.to(g.querySelector('.hex-path'),   { opacity: 1, duration: dur * 0.5, overwrite: 'auto' });
-    gsap.to(g.querySelector('.hex-circle'), { opacity: 0, duration: dur * 0.5, overwrite: 'auto' });
-    gsap.to(g.querySelector('text'),        { opacity: 1, duration: dur * 0.5, overwrite: 'auto' });
+    /* path 를 헥사곤으로 복원 + 텍스트 복원 */
+    var hxm = META[id];
+    gsap.to(g.querySelector('.hex-path'), {
+      attr: { d: hexBezierPath(hxm.cx, hxm.cy) },
+      duration: dur * 0.5, overwrite: 'auto'
+    });
+    gsap.to(g.querySelector('text'), { opacity: 1, duration: dur * 0.5, overwrite: 'auto' });
   });
   /* stage5 요소 숨김 기본 */
   gsap.to(svg.querySelector('.s5-symbol'), { opacity: 0, duration: dur*.5 });
@@ -407,11 +428,12 @@ function applyS2(svg, dur) {
   });
 }
 
-/* Stage 3: 가운데 완전 겹침 + 도형 원으로 + 텍스트 페이드 아웃 */
+/* Stage 3: 가운데 완전 겹침 + 변이 구부러지며 원으로 모핑 + 텍스트 페이드 아웃 */
 function applyS3(svg, dur) {
   ORDER.forEach(function(id) {
     var hx = META[id];
     var g  = svg.querySelector('.hex-'+id);
+    var p  = g.querySelector('.hex-path');
     /* 모두 중앙으로 완전히 겹침 */
     gsap.to(g, {
       x: CX - hx.cx, y: CY - hx.cy,
@@ -420,10 +442,12 @@ function applyS3(svg, dur) {
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
     });
-    /* 헥사곤 path 페이드 아웃 */
-    gsap.to(g.querySelector('.hex-path'),   { opacity: 0, duration: dur * 0.7, ease: 'power2.in', overwrite: 'auto' });
-    /* 원 페이드 인 */
-    gsap.to(g.querySelector('.hex-circle'), { opacity: 1, duration: dur * 0.7, ease: 'power2.out', delay: dur * 0.3, overwrite: 'auto' });
+    /* 변이 구부러지며 자연스럽게 원으로 모핑 */
+    gsap.to(p, {
+      attr: { d: circleBezierPath(hx.cx, hx.cy) },
+      duration: dur * 0.85, ease: 'power2.inOut',
+      overwrite: 'auto'
+    });
     /* 텍스트 페이드 아웃 */
     gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.4, ease: 'power2.in', overwrite: 'auto' });
   });
