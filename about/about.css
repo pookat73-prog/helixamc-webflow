@@ -434,18 +434,19 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 /* ── Subheader (서브헤더) ──
    호버: 블루 / 액티브(스크롤스파이/클릭): 블루 + 밑줄 */
 .subheader_click-area {
-  position: relative;
   text-decoration: none !important;
 }
 .subheader_click-area .subheader_title {
+  position: relative;
+  display: inline-block;
   transition: color 0.2s ease;
 }
-.subheader_click-area::after {
+.subheader_click-area .subheader_title::after {
   content: '';
   position: absolute;
-  left: 12%;
-  right: 12%;
-  bottom: -6px;
+  left: 0;
+  right: 0;
+  top: 100%;
   height: 2px;
   background: #0075d6;
   transform: scaleX(0);
@@ -458,15 +459,15 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 .subheader_click-area.w--current .subheader_title {
   color: #0075d6 !important;
 }
-.subheader_click-area.is-active::after,
-.subheader_click-area.w--current::after {
+.subheader_click-area.is-active .subheader_title::after,
+.subheader_click-area.w--current .subheader_title::after {
   transform: scaleX(1);
 }
-.subheader_click-area:hover::after {
+.subheader_click-area:hover .subheader_title::after {
   transform: scaleX(0.6);
 }
-.subheader_click-area.is-active:hover::after,
-.subheader_click-area.w--current:hover::after {
+.subheader_click-area.is-active:hover .subheader_title::after,
+.subheader_click-area.w--current:hover .subheader_title::after {
   transform: scaleX(1);
 }
 
