@@ -1044,11 +1044,11 @@
       }, { rootMargin: '0px 0px -80% 0px', threshold: 0 });
       ioDraw.observe(drawTrigger);
 
-      /* Erase: sub-font 가 뷰포트 하단 30% 영역에 들어오면 */
+      /* Erase: sub-font 의 top 이 뷰포트 절반(50%) 위로 올라올 때 */
       var ioErase = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
         ioErase.disconnect(); eraseLine();
-      }, { rootMargin: '-70% 0px 0px 0px', threshold: 0 });
+      }, { rootMargin: '0px 0px -50% 0px', threshold: 0 });
       ioErase.observe(bottom);
 
       log('history helix line ready, len=' + len.toFixed(0));
