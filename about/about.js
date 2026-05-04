@@ -1012,29 +1012,46 @@
       path.style.strokeDasharray  = len;
       path.style.strokeDashoffset = len;
 
-      var played = false;
-      function play() {
-        if (played) return; played = true;
+      var drawnFired = false, erasedFired = false;
+      function drawLine() {
+        if (drawnFired) return; drawnFired = true;
         if (!window.gsap) {
           path.style.transition = 'stroke-dashoffset 0.55s cubic-bezier(0.65,0,0.35,1)';
           path.style.strokeDashoffset = '0';
-          setTimeout(function () {
-            path.style.transition = 'stroke-dashoffset 0.5s cubic-bezier(0.65,0,0.35,1)';
-            path.style.strokeDashoffset = String(-len);
-          }, 700);
           return;
         }
-        gsap.timeline()
-          .to(path, { strokeDashoffset: 0,    duration: 0.55, ease: 'power2.inOut' })
-          .to(path, { strokeDashoffset: -len, duration: 0.5,  ease: 'power2.inOut' }, '+=0.15');
+        gsap.to(path, { strokeDashoffset: 0, duration: 0.55, ease: 'power2.inOut' });
+      }
+      function eraseLine() {
+        if (erasedFired) return; erasedFired = true;
+        if (!drawnFired) drawLine();
+        if (!window.gsap) {
+          path.style.transition = 'stroke-dashoffset 0.5s cubic-bezier(0.65,0,0.35,1)';
+          path.style.strokeDashoffset = String(-len);
+          return;
+        }
+        gsap.to(path, { strokeDashoffset: -len, duration: 0.5, ease: 'power2.inOut', delay: 0.1 });
       }
 
-      if (!('IntersectionObserver' in window)) { play(); return true; }
-      var io = new IntersectionObserver(function (entries) {
+      if (!('IntersectionObserver' in window)) {
+        drawLine();
+        setTimeout(eraseLine, 800);
+        return true;
+      }
+
+      /* Draw: "최초의 길" 이 뷰포트 상단 20% 영역에 들어오면 (아직 보이는 동안) */
+      var ioDraw = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
-        io.disconnect(); play();
-      }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
-      io.observe(bottom);
+        ioDraw.disconnect(); drawLine();
+      }, { rootMargin: '0px 0px -80% 0px', threshold: 0 });
+      ioDraw.observe(top);
+
+      /* Erase: sub-font 가 뷰포트 하단 30% 영역에 들어오면 */
+      var ioErase = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        ioErase.disconnect(); eraseLine();
+      }, { rootMargin: '-70% 0px 0px 0px', threshold: 0 });
+      ioErase.observe(bottom);
 
       log('history helix line ready, len=' + len.toFixed(0));
       return true;
