@@ -1069,21 +1069,33 @@
     }, 800);
   }
 
-  /* ── .about_we-are-here 페이드인 + 스케일 ──────────────────────
-     스크롤 진입 시 fade-in 0.8s + scale 0.8 → 1.0 (2s, 동시 시작).
+  /* ── 스크롤 진입 페이드인 + 스케일 ──────────────────────────────
+     .about_we-are-here     — fade 0.8s + scale 2s (power2.out), 동시 시작
+     .about_history_title_new — fade 1.5s + scale 1.5s (power2.inOut),
+                                we-are-here 와 엇박으로 0.5s 딜레이
      ─────────────────────────────────────────────────────────────── */
   function initWeAreHereReveal() {
-    var els = document.querySelectorAll('.about_we-are-here, .about_history_title_new');
-    if (!els.length) { log('no we-are-here / history_title_new'); return; }
+    var configs = [
+      {
+        sel: '.about_we-are-here',
+        fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out', delay: 0
+      },
+      {
+        sel: '.about_history_title_new',
+        fadeDur: 1.5, scaleDur: 1.5, ease: 'power2.inOut', delay: 0.5
+      }
+    ];
 
-    function reveal(el) {
+    function reveal(el, cfg) {
       if (window.gsap) {
         gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
-        var tl = gsap.timeline();
-        tl.to(el, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0);
-        tl.to(el, { scale: 1,   duration: 2.0, ease: 'power2.out' }, 0);
+        var tl = gsap.timeline({ delay: cfg.delay });
+        tl.to(el, { opacity: 1, duration: cfg.fadeDur,  ease: cfg.ease }, 0);
+        tl.to(el, { scale: 1,   duration: cfg.scaleDur, ease: cfg.ease }, 0);
       } else {
-        el.style.transition = 'opacity 0.8s ease-out, transform 2s ease-out';
+        el.style.transition =
+          'opacity ' + cfg.fadeDur + 's ease-in-out ' + cfg.delay + 's, ' +
+          'transform ' + cfg.scaleDur + 's ease-in-out ' + cfg.delay + 's';
         el.style.opacity = '0';
         el.style.transform = 'scale(0.8)';
         requestAnimationFrame(function () {
@@ -1093,22 +1105,28 @@
       }
     }
 
-    els.forEach(function (el) {
-      if (window.gsap) gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
-      else { el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; }
-    });
+    configs.forEach(function (cfg) {
+      var els = document.querySelectorAll(cfg.sel);
+      if (!els.length) { log('no ' + cfg.sel); return; }
 
-    if (!('IntersectionObserver' in window)) {
-      els.forEach(reveal); return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-        reveal(e.target);
+      els.forEach(function (el) {
+        if (window.gsap) gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
+        else { el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; }
       });
-    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
-    els.forEach(function (el) { io.observe(el); });
+
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { reveal(el, cfg); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.unobserve(e.target);
+          reveal(e.target, cfg);
+        });
+      }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+      els.forEach(function (el) { io.observe(el); });
+    });
   }
 
   function init() {
