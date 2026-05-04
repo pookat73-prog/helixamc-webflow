@@ -503,8 +503,8 @@
       var ROW_CENTER_X  = 173;
       var ROW_Y         = -75;
       var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
-      var COMP_STEP_X   = 26;    /* 합체 후 가로 offset — 켜켜이 비스듬한 stack */
-      var COMP_STEP_Y   = 14;    /* 합체 후 세로 offset — 대각선 layering */
+      var COMP_STEP_X   = 26;    /* 합체 후 가로 offset — 일정한 간격 가로 stack */
+      var COMP_STEP_Y   = 0;     /* 세로 offset 없음 — 그냥 가로로 쌓임 */
       var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
 
@@ -583,8 +583,9 @@
          appendChild 로 끝으로 이동 = 위로 올림. */
       box2EnterTl.call(function () {
         var parent = svg.querySelector('.helix-hex-diagram') || svg;
-        /* z-order: yeongsang(생존자) 최하단, ankwa(맨 왼쪽 = leftmost) 최상단 */
-        var stackOrder = ['yeongsang', 'chikwa', 'oikwa', 'naekwa', 'ankwa'];
+        /* z-order (DOM 순서: 뒤쪽 → 앞쪽): ankwa 최하단 … chikwa 최상단.
+           ROW_ORDER 마지막 헥사(chikwa) 가 stack 의 제일 첫 장(앞면). */
+        var stackOrder = ['ankwa', 'naekwa', 'yeongsang', 'oikwa', 'chikwa'];
         stackOrder.forEach(function (id) {
           var g = svg.querySelector('.hex-' + id);
           if (g && g.parentNode) g.parentNode.appendChild(g);
