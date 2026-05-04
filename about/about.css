@@ -312,13 +312,8 @@
   transition: box-shadow 1.9s cubic-bezier(0.45, 0.05, 0.55, 1) !important;
 }
 #w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning {
-  /* 점화 완료: 위쪽으로 후광이 강하게 새어나오는 형태.
-     offset-y 음수로 그림자를 위로 밀어내고, 음수 spread 로 아래쪽
-     반경을 줄여서 윗쪽만 진하게 보이도록.
-     레이어 1: 위쪽 진한 코어. 레이어 2: 위쪽 부드러운 외곽 헤일로. */
-  box-shadow:
-    0 -22px 40px -6px rgba(0, 117, 214, 0.65),
-    0 -38px 70px -12px rgba(0, 117, 214, 0.40) !important;
+  /* 점화 완료: 원본 Webflow 값 그대로. x:0 y:-0.7vw blur:0.9vw spread:-0.3vw */
+  box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0.7) !important;
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
