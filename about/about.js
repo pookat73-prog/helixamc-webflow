@@ -1069,6 +1069,48 @@
     }, 800);
   }
 
+  /* ── .about_we-are-here 페이드인 + 스케일 ──────────────────────
+     스크롤 진입 시 fade-in 0.8s + scale 0.8 → 1.0 (2s, 동시 시작).
+     ─────────────────────────────────────────────────────────────── */
+  function initWeAreHereReveal() {
+    var els = document.querySelectorAll('.about_we-are-here');
+    if (!els.length) { log('no we-are-here'); return; }
+
+    function reveal(el) {
+      if (window.gsap) {
+        gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
+        var tl = gsap.timeline();
+        tl.to(el, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0);
+        tl.to(el, { scale: 1,   duration: 2.0, ease: 'power2.out' }, 0);
+      } else {
+        el.style.transition = 'opacity 0.8s ease-out, transform 2s ease-out';
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.8)';
+        requestAnimationFrame(function () {
+          el.style.opacity = '1';
+          el.style.transform = 'scale(1)';
+        });
+      }
+    }
+
+    els.forEach(function (el) {
+      if (window.gsap) gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
+      else { el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; }
+    });
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(reveal); return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        reveal(e.target);
+      });
+    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
   function init() {
     log('init');
     renderHexDiagram();
@@ -1078,6 +1120,7 @@
     initHistorySpark();
     initHistoryTimeline();
     initHistoryHelixLine();
+    initWeAreHereReveal();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
