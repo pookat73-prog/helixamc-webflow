@@ -272,8 +272,6 @@
    ─────────────────────────────────────────────────────────────── */
 #hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title {
   opacity: 0;
-  transform: scale(0.88);
-  transform-origin: 0% 0%;
   -webkit-mask-image: linear-gradient(135deg,
     #000 0%, #000 38%,
     transparent 62%, transparent 100%);
@@ -288,14 +286,12 @@
           mask-position: 100% 100%;
   transition:
     opacity              1.2s cubic-bezier(0.22, 1, 0.36, 1),
-    transform            1.6s cubic-bezier(0.22, 1, 0.36, 1),
     -webkit-mask-position 1.7s cubic-bezier(0.22, 1, 0.36, 1),
             mask-position 1.7s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform, mask-position;
+  will-change: opacity, mask-position;
 }
 #hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title.is-corner-in {
   opacity: 1;
-  transform: scale(1);
   -webkit-mask-position: 0% 0%;
           mask-position: 0% 0%;
 }
