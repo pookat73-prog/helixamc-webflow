@@ -312,10 +312,8 @@
   transition: box-shadow 1.9s cubic-bezier(0.45, 0.05, 0.55, 1) !important;
 }
 #w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning {
-  /* 점화 완료: 푸른 후광 풀로 켜짐. Webflow 디자이너 후광과 비슷한 톤. */
-  box-shadow:
-    0 0 40px 6px rgba(0, 117, 214, 0.55),
-    0 0 80px 12px rgba(0, 117, 214, 0.30) !important;
+  /* 점화 완료: 원본 Webflow 값 그대로. x:0 y:-0.7vw blur:0.9vw spread:-0.3vw */
+  box-shadow: 0 -0.7vw 0.9vw -0.3vw rgba(0, 117, 214, 0.7) !important;
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
