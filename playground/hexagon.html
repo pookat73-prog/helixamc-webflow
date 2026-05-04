@@ -45,9 +45,16 @@ body {
   overflow: visible;
 }
 
-/* 헥사(원) 기본 스타일 */
-.hex circle { fill: rgba(0,117,214,.25); stroke: var(--blue); stroke-width: 2; }
-.hex        { transform-box: fill-box; transform-origin: center; }
+/* 헥사곤 기본 스타일 — about 페이지와 동일 */
+.hex path {
+  fill: #f4f7fb;
+  stroke: #0075d6;
+  stroke-width: 0.7;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+.hex { transform-box: fill-box; transform-origin: center; }
 
 /* Stage 5 요소 */
 .s5-symbol { opacity: 0; }
@@ -143,7 +150,10 @@ body {
   <h4>Stage 파라미터</h4>
 
   <div id="ctrl-s1">
-    <div class="row"><label>겹침 정도</label><input id="s1-overlap" type="range" min=".3" max=".85" value=".55" step=".01"><span class="v" id="s1-overlapV">.55</span></div>
+    <div style="color:var(--muted);font-size:12px;line-height:1.6">
+      어바웃 페이지 Section 1<br>허니컴 배열 등장 완료 상태<br>
+      <span style="color:var(--blue)">fill #f4f7fb · stroke #0075d6</span>
+    </div>
   </div>
   <div id="ctrl-s2" style="display:none">
     <div class="row"><label>겹침 (px)</label><input id="s2-step" type="range" min="40" max="140" value="80" step="2"><span class="v" id="s2-stepV">80</span></div>
@@ -194,14 +204,22 @@ function mkSvg() {
   svg.setAttribute('overflow','visible');
   svg.id = 'the-svg';
 
+  function verts(cx, cy) {
+    return [[cx,cy-s],[cx+w/2,cy-s/2],[cx+w/2,cy+s/2],
+            [cx,cy+s],[cx-w/2,cy+s/2],[cx-w/2,cy-s/2]];
+  }
+  function hexPath(cx, cy) {
+    var v = verts(cx, cy);
+    return 'M'+v.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' L')+' Z';
+  }
+
   ORDER.forEach(function(id){
     var hx = META[id];
     var g = document.createElementNS(ns,'g');
     g.setAttribute('class','hex hex-'+id);
-    var c = document.createElementNS(ns,'circle');
-    c.setAttribute('cx', hx.cx); c.setAttribute('cy', hx.cy);
-    c.setAttribute('r', s * 0.95); /* 원 반지름 = hex 크기와 동일 비율 */
-    g.appendChild(c);
+    var p = document.createElementNS(ns,'path');
+    p.setAttribute('d', hexPath(hx.cx, hx.cy));
+    g.appendChild(p);
     svg.appendChild(g);
   });
 
@@ -315,22 +333,18 @@ function applyStage(n, dur) {
   document.getElementById('next-btn').disabled = n === 4;
 }
 
-/* Stage 1: 올림픽 링 — 허니컴 위치에서 안쪽으로 당겨 겹침, 텍스트 숨김 */
+/* Stage 1: 어바웃 페이지 Section 1 최종 모습 — 허니컴 원위치, scale 1 */
 function applyS1(svg, dur) {
-  var ov = +document.getElementById('s1-overlap').value;
   ORDER.forEach(function(id) {
     var hx = META[id];
     var g = svg.querySelector('.hex-'+id);
-    var tx = CX + (hx.cx - CX) * ov;
-    var ty = CY + (hx.cy - CY) * ov;
     gsap.to(g, {
-      x: tx - hx.cx, y: ty - hx.cy,
-      scale: 1, rotation: 0, rotationY: 0,
+      x: 0, y: 0,
+      scale: 1, rotation: 0, rotationY: 0, opacity: 1,
       duration: dur, ease: 'power2.inOut',
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
     });
-    /* 텍스트 숨김 */
   });
 }
 
