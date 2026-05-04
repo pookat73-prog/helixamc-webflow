@@ -504,11 +504,15 @@
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
 
       /* 두 단계 분리:
-         - spreadTl  : box1 → box2 스크롤 구간에서 펼침(일렬)
-         - compressTl: box2 → box3 스크롤 구간에서 모임(중앙 합체)
-         box1 영역 내에선 progress 0 (등장만, 움직임 X). */
-      var spreadTl   = gsap.timeline({ paused: true });
-      var compressTl = gsap.timeline({ paused: true });
+         - spreadTl     : box1 → box2 스크롤 구간에서 펼침(일렬). 스크럽.
+         - box2EnterTl  : box2 진입 시 자동 재생 시퀀스 — 비스듬 회전 → 한 점
+                          으로 모임 → 4개 fade out (yeongsang 만 생존) → 정면
+                          으로 다시 회전 → 파동 1회. */
+      var spreadTl    = gsap.timeline({ paused: true });
+      var box2EnterTl = gsap.timeline({ paused: true });
+
+      /* 5→1 합체 후 생존 헥사 — 정중앙 (yeongsang = 영상의학과). */
+      var SURVIVOR_ID = 'yeongsang';
 
       ROW_ORDER.forEach(function (id, i) {
         var hx = null;
@@ -518,24 +522,16 @@
         var g = svg.querySelector('.hex-' + id);
         if (!hx || !g) return;
 
-        var rowX = ROW_CENTER_X + (i - 2) * ROW_STEP;
-        var compX = ROW_CENTER_X + (i - 2) * COMP_STEP;
+        var rowX  = ROW_CENTER_X + (i - 2) * ROW_STEP;
         var rowDx = rowX - hx.cx;
         var rowDy = ROW_Y - hx.cy;
-        var compDx = compX - hx.cx;
+        var mergeDx = ROW_CENTER_X - hx.cx; /* 모두 정중앙으로 */
 
-        /* svgOrigin 한 번 잡아두면 후속 트윈에도 동일 origin 사용 →
-           scale 이 항상 hex 자체 중심에서 일어남. */
         var spreadHex = gsap.timeline({
           defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
         });
-        var compressHex = gsap.timeline({
-          defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
-        });
 
-        /* 펼침: identity(원래 위치) → 일렬 row 위치
-           fromTo + immediateRender:false → helix-s1 등장 직후의 scale=1
-           상태와 매끄럽게 이어짐. */
+        /* 펼침: identity(원래 위치) → 일렬 row 위치 */
         spreadHex.fromTo(g,
           { x: 0, y: 0, scale: 1 },
           { x: rowDx, y: rowDy, scale: ROW_SCALE,
@@ -544,19 +540,44 @@
           0
         );
 
-        /* 모임: 일렬 위치 → 중심 압축. .to() 라 직전(=spread end) 값에서
-           자연스럽게 이어감. */
-        compressHex.to(g,
-          { x: compDx, duration: 1.0, ease: 'power2.inOut' },
-          0
-        );
-
         spreadTl.add(spreadHex, 0);
-        compressTl.add(compressHex, 0);
+
+        /* box2 자동 시퀀스 — 각 hex 별 트윈을 하나의 통합 타임라인에 add */
+        var hexEnter = gsap.timeline({
+          defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
+        });
+
+        /* Phase A (0.0~0.6s): 비스듬 Y축 회전 */
+        hexEnter.to(g, { rotationY: 32, duration: 0.6, ease: 'power2.inOut' }, 0);
+
+        /* Phase B (0.6~1.4s): 한 점으로 모임 (간격 0) */
+        hexEnter.to(g, { x: mergeDx, duration: 0.8, ease: 'power2.inOut' }, 0.6);
+
+        /* Phase C (1.4~1.8s): 생존자 외 4개 fade out */
+        if (id !== SURVIVOR_ID) {
+          hexEnter.to(g, { opacity: 0, duration: 0.4, ease: 'power2.in' }, 1.4);
+        }
+
+        /* Phase D (1.8~2.4s): 생존자 정면으로 복귀 (rotationY 0) */
+        if (id === SURVIVOR_ID) {
+          hexEnter.to(g, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' }, 1.8);
+        }
+
+        box2EnterTl.add(hexEnter, 0);
       });
 
-      /* 호환용 — 외부에서 참조 가능한 이름 유지. compressTl 이 마지막 단계. */
-      var section2Tl = compressTl;
+      /* Phase E (2.4~3.4s): 파동 1회 — survivor 위치에서 동심원 펄스 */
+      var box2Wave = injectBox2Wave(svg, ROW_CENTER_X, ROW_Y);
+      if (box2Wave) {
+        box2EnterTl.fromTo(box2Wave,
+          { attr: { r: 8 }, opacity: 0.9 },
+          { attr: { r: 180 }, opacity: 0,
+            duration: 1.0, ease: 'power2.out' },
+          2.4);
+      }
+
+      /* 호환용 — 외부에서 참조 가능한 이름 유지. */
+      var section2Tl = box2EnterTl;
 
       /* Box 3 — 모핑 후 심볼에서 펄스 1번 + 궤도 도는 빛점.
          박스 3 진입 → 펄스 1회 + 궤도 빛점 fade in.
@@ -688,10 +709,9 @@
         console.log('[helix-s2 pin] attached, pinStartScroll≈' + pinStartScroll + ' pinEndScroll≈' + pinEndScroll + ' range≈' + (pinEndScroll - pinStartScroll) + 'px');
       } catch (e) {}
 
-      /* 스크럽 2단계 매핑:
-         - SPREAD : box1 → box2 (둘 다 viewport center 도달 사이) → 일렬로 퍼짐
-         - COMPRESS: box2 → box3 (둘 다 viewport center 도달 사이) → 중앙 합체
-         box1 영역 안에선 두 트리거 모두 progress 0 → hexes 는 등장 상태 유지. */
+      /* SPREAD: box1 → box2 스크럽 (일렬 펼침)
+         BOX2 ENTER: box2 진입 시 자동 재생 (회전→모임→합체→정면→파동)
+         box1 영역에선 spread progress 0 → hexes 정적, 등장만. */
 
       function forceS1Done() {
         if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
@@ -713,17 +733,18 @@
         }
       });
 
+      /* box2 진입 자동 시퀀스 — 한 번 onEnter 시 play, onLeaveBack 시 reverse
+         (역스크롤 시 자연스럽게 spread 상태로 복귀) */
       window.ScrollTrigger.create({
         trigger: box2Ref || holder,
-        endTrigger: box3Ref || box2Ref || holder,
-        start: 'center center',
-        end: 'center center',
-        scrub: 1,
-        animation: compressTl
+        start: 'top 65%',
+        onEnter:     function () { box2EnterTl.play(); },
+        onEnterBack: function () { box2EnterTl.play(); },
+        onLeaveBack: function () { box2EnterTl.reverse(); }
       });
 
-      log('section 2 ready — spread:' + spreadTl.duration().toFixed(2) + 's compress:' +
-          compressTl.duration().toFixed(2) + 's');
+      log('section 2 ready — spread:' + spreadTl.duration().toFixed(2) +
+          's box2Enter:' + box2EnterTl.duration().toFixed(2) + 's');
     }
 
     tryInit();
@@ -745,6 +766,26 @@
        크리스탈 3D 인상을 근사 표현 (진짜 3D 모델 아님)
      - src 는 about hero 의 img.image-23 src 를 그대로 재사용 (사용자가
        올린 심볼.svg 도 같은 PNG 가 wrapping 된 형태라 시각적으로 동일) */
+  /* box2 정면 헥사 파동 — survivor 위치에 동심원 stroke 1회 발사용 SVG circle */
+  function injectBox2Wave(svg, cx, cy) {
+    if (!svg) return null;
+    var existing = svg.querySelector('.box2-wave');
+    if (existing) return existing;
+    var ns = 'http://www.w3.org/2000/svg';
+    var c = document.createElementNS(ns, 'circle');
+    c.setAttribute('class', 'box2-wave');
+    c.setAttribute('cx', cx);
+    c.setAttribute('cy', cy);
+    c.setAttribute('r', 8);
+    c.setAttribute('fill', 'none');
+    c.setAttribute('stroke', '#0075d6');
+    c.setAttribute('stroke-width', '2');
+    c.setAttribute('opacity', '0');
+    c.style.pointerEvents = 'none';
+    svg.appendChild(c);
+    return c;
+  }
+
   function injectMorphSymbol(holder) {
     if (!holder) return null;
     var existing = holder.querySelector('.hex-morph-stage');
