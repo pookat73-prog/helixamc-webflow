@@ -851,26 +851,15 @@
       span.textContent = TOKEN;
       el.dataset.washDone = '1';
 
-      /* span 에만 background-clip:text 그라데이션 적용 */
-      var grad = 'linear-gradient(115deg,' +
-        base + ' 0%,' + base + ' 36%,' +
-        '#0075d6 49%,#0075d6 51%,' +
-        base + ' 64%,' + base + ' 100%)';
-      span.style.backgroundImage      = grad;
-      span.style.backgroundSize       = '300% 100%';
-      span.style.backgroundRepeat     = 'no-repeat';
-      span.style.backgroundPosition   = '160% center';
-      span.style.webkitBackgroundClip = 'text';
-      span.style.backgroundClip       = 'text';
-      span.style.webkitTextFillColor  = 'transparent';
+      /* -webkit-text-fill-color 를 currentColor 로 고정해 color 애니메이션이 반영되도록 */
+      span.style.webkitTextFillColor = 'currentColor';
+      span.style.color = base;
 
       function start() {
         if (!window.gsap) return;
-        gsap.timeline({ repeat: -1, repeatDelay: 1, delay: 0.4 })
-          .fromTo(span,
-            { backgroundPosition: '160% center' },
-            { backgroundPosition: '-60% center', duration: 0.75, ease: 'power2.inOut' }
-          );
+        gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 0.5 })
+          .to(span, { color: '#0075d6', duration: 1.4, ease: 'sine.inOut' })
+          .to(span, { color: base,     duration: 1.2, ease: 'sine.inOut' });
       }
 
       if (!('IntersectionObserver' in window)) { start(); return true; }
