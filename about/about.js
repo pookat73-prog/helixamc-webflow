@@ -1070,7 +1070,8 @@
     initViewport60FadeIn();
     initHistorySpark();
     initHistoryTimeline();
-    initHistoryHelixLine();
+    /* 일시 비활성: 헤더/서브헤더 사이 틈새 원인 진단용
+       initHistoryHelixLine(); */
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
