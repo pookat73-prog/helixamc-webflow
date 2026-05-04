@@ -910,13 +910,19 @@
         el.style.transitionDelay = (i * 0.09) + 's';
       });
       texts.forEach(function (el, i) {
-        /* 텍스트: 뱃지가 있는 화면 정중앙에서 출발 → 자연 위치로 미닫이 슬라이드 */
+        /* 텍스트: 뱃지 뒤에서 출발해 오른쪽으로 슬라이드.
+           opacity 는 transform 보다 늦게 페이드인 → 뱃지가 비켜준 뒤에야 보임. */
         var rect = el.getBoundingClientRect();
-        var offset = Math.round(vcx - rect.left);  /* 텍스트 왼쪽 끝을 화면 중앙으로 */
+        var offset = Math.round(vcx - rect.left);
         el.style.transform = 'translateX(' + offset + 'px)';
         el.style.opacity = '0';
         el.classList.add('js-ready');
-        el.style.transitionDelay = (i * 0.09) + 's';
+        var rowDelay = i * 0.09;
+        var ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
+        /* transform: 즉시 / opacity: 0.35s 늦게 페이드인 */
+        el.style.transition =
+          'transform 0.6s ' + ease + ' ' + rowDelay + 's, ' +
+          'opacity 0.4s ' + ease + ' ' + (rowDelay + 0.35) + 's';
       });
 
       function fire() {
