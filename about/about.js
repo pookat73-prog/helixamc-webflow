@@ -948,6 +948,119 @@
     }, 300);
   }
 
+  /* ── History Helix Line ─────────────────────────────────────────
+     "최초의 길" 정중앙 → .about_history_title_sub-font 위까지
+     사인파 헬릭스 라인을 빠르게 draw + erase.
+     ─────────────────────────────────────────────────────────────── */
+  function initHistoryHelixLine() {
+    var TOP_SEL    = '.about_history_title_official-font';
+    var BOTTOM_SEL = '.about_history_title_sub-font';
+    var COLOR      = '#0075d6';
+    var STROKE     = 1.5;
+    var AMP        = 14;
+    var WAVES      = 4;       /* 사인파 cycle 수 */
+
+    function build() {
+      var top    = document.querySelector(TOP_SEL);
+      var bottom = document.querySelector(BOTTOM_SEL);
+      if (!top || !bottom) return false;
+
+      var topR    = top.getBoundingClientRect();
+      var botR    = bottom.getBoundingClientRect();
+      var sx      = window.scrollX, sy = window.scrollY;
+      var startX  = topR.left + topR.width / 2 + sx;
+      var startY  = topR.top  + topR.height / 2 + sy;     /* 정중앙 */
+      var endX    = botR.left + botR.width / 2 + sx;
+      var endY    = botR.top  + sy - 8;                    /* sub-font 위에서 끝 */
+
+      if (endY - startY < 50) return false;                /* 너무 가까우면 skip */
+
+      var docH = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight
+      );
+      var docW = Math.max(
+        document.documentElement.scrollWidth,
+        document.body.scrollWidth
+      );
+
+      var svgNS = 'http://www.w3.org/2000/svg';
+      var svg = document.createElementNS(svgNS, 'svg');
+      svg.setAttribute('xmlns', svgNS);
+      svg.style.position      = 'absolute';
+      svg.style.left          = '0';
+      svg.style.top           = '0';
+      svg.style.width         = docW + 'px';
+      svg.style.height        = docH + 'px';
+      svg.style.pointerEvents = 'none';
+      svg.style.zIndex        = '5';
+      svg.style.overflow      = 'visible';
+
+      /* 사인파 path 빌드 */
+      var dy    = endY - startY;
+      var steps = Math.max(40, Math.floor(dy / 6));
+      var d     = '';
+      for (var i = 0; i <= steps; i++) {
+        var t = i / steps;
+        var baseX = startX + (endX - startX) * t;
+        var y     = startY + dy * t;
+        var env   = Math.sin(t * Math.PI);                 /* 양 끝 0 */
+        var x     = baseX + Math.sin(t * Math.PI * 2 * WAVES) * AMP * env;
+        d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+      }
+
+      var path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('stroke', COLOR);
+      path.setAttribute('stroke-width', String(STROKE));
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-linecap', 'round');
+
+      svg.appendChild(path);
+      document.body.appendChild(svg);
+
+      var len = path.getTotalLength();
+      path.style.strokeDasharray  = len;
+      path.style.strokeDashoffset = len;
+
+      var played = false;
+      function play() {
+        if (played) return; played = true;
+        if (!window.gsap) {
+          path.style.transition = 'stroke-dashoffset 0.55s cubic-bezier(0.65,0,0.35,1)';
+          path.style.strokeDashoffset = '0';
+          setTimeout(function () {
+            path.style.transition = 'stroke-dashoffset 0.5s cubic-bezier(0.65,0,0.35,1)';
+            path.style.strokeDashoffset = String(-len);
+          }, 700);
+          return;
+        }
+        gsap.timeline()
+          .to(path, { strokeDashoffset: 0,    duration: 0.55, ease: 'power2.inOut' })
+          .to(path, { strokeDashoffset: -len, duration: 0.5,  ease: 'power2.inOut' }, '+=0.15');
+      }
+
+      if (!('IntersectionObserver' in window)) { play(); return true; }
+      var io = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect(); play();
+      }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+      io.observe(bottom);
+
+      log('history helix line ready, len=' + len.toFixed(0));
+      return true;
+    }
+
+    /* layout 안정화 후 시도 + 재시도 */
+    setTimeout(function () {
+      if (build()) return;
+      var tries = 0;
+      var iv = setInterval(function () {
+        if (build() || ++tries > 30) clearInterval(iv);
+      }, 300);
+    }, 800);
+  }
+
   function init() {
     log('init');
     renderHexDiagram();
@@ -956,6 +1069,7 @@
     initViewport60FadeIn();
     initHistorySpark();
     initHistoryTimeline();
+    initHistoryHelixLine();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
