@@ -320,15 +320,15 @@
     svg.style.overflow = 'hidden';
     svg.setAttribute('overflow', 'hidden');
 
-    /* ── defs: 공유 shimmer gradient + 전체 hex clipPaths (5개 모두) ── */
+    /* ── defs: 공유 shimmer gradient + 내경 hex clipPaths (5개 모두) ── */
     var svgDefs = document.createElementNS(svgNS, 'defs');
 
-    /* 은은하고 넓은 대각선 빛반사 그라디언트 */
+    /* 빔 폭 방향으로 소프트 엣지 — 빔이 사선으로 훑을 때 자연스러운 fade */
     var sGrad = document.createElementNS(svgNS, 'linearGradient');
     sGrad.setAttribute('id', 'helix-shimmer-grad');
     sGrad.setAttribute('x1', '0%');  sGrad.setAttribute('y1', '0%');
-    sGrad.setAttribute('x2', '100%'); sGrad.setAttribute('y2', '100%');
-    [[0,0],[10,0],[35,0.08],[50,0.13],[65,0.08],[90,0],[100,0]].forEach(function(s2) {
+    sGrad.setAttribute('x2', '100%'); sGrad.setAttribute('y2', '0%');
+    [[0,0],[15,0],[35,0.10],[50,0.16],[65,0.10],[85,0],[100,0]].forEach(function(s2) {
       var st = document.createElementNS(svgNS, 'stop');
       st.setAttribute('offset', s2[0] + '%');
       st.setAttribute('stop-color', '#0075d6');
@@ -337,13 +337,13 @@
     });
     svgDefs.appendChild(sGrad);
 
-    /* 5개 hex 모두 clipPath — 외곽선 안으로 클립 */
+    /* 내경 hex clipPaths (scale 0.82) — 창문 영역만 반짝임, 외곽선 없음 */
     hexes.forEach(function(hx) {
-      var ov = vertices(hx.cx, hx.cy);
+      var iv = vertices(hx.cx, hx.cy, 0.82);
       var cp = document.createElementNS(svgNS, 'clipPath');
-      cp.setAttribute('id', 'clip-hex-' + hx.id);
+      cp.setAttribute('id', 'clip-inner-' + hx.id);
       var cpP = document.createElementNS(svgNS, 'path');
-      cpP.setAttribute('d', fullHexPath(ov));
+      cpP.setAttribute('d', fullHexPath(iv));
       cp.appendChild(cpP);
       svgDefs.appendChild(cp);
     });
@@ -373,24 +373,29 @@
       svg.appendChild(g);
     });
 
-    /* shimmer beam — hex 그룹 밖, SVG 직접 자식 (5개 모두) */
+    /* shimmer — 사선(-35°) 빔이 내경 hex 클립 안에서 sweep.
+       <g clip-path> 안에 회전 rect 배치, GSAP 이 그룹 x 를 이동시킴. */
     hexes.forEach(function(hx) {
-      var beamW = 200;              /* 넓은 빔 */
-      var halfW = w / 2;            /* 외곽 hex 기준 */
-      var xFrom = hx.cx - halfW - beamW;
-      var xTo   = hx.cx + halfW;
-      var beam = document.createElementNS(svgNS, 'rect');
-      beam.setAttribute('id', 'shimmer-' + hx.id);
-      beam.setAttribute('x', xFrom);
-      beam.setAttribute('y', hx.cy - s * 1.1);
-      beam.setAttribute('width', beamW);
-      beam.setAttribute('height', s * 2.2);
-      beam.setAttribute('fill', 'url(#helix-shimmer-grad)');
-      beam.setAttribute('clip-path', 'url(#clip-hex-' + hx.id + ')');
-      beam.setAttribute('opacity', '0');
-      beam.setAttribute('data-x-from', xFrom);
-      beam.setAttribute('data-x-to',   xTo);
-      svg.appendChild(beam);
+      var beamW  = 130;            /* 빔 두께 (회전 후 사선 폭) */
+      var travel = w + beamW * 2;  /* 좌→우 이동 거리 */
+
+      var wrapG = document.createElementNS(svgNS, 'g');
+      wrapG.setAttribute('id', 'shimmer-' + hx.id);
+      wrapG.setAttribute('clip-path', 'url(#clip-inner-' + hx.id + ')');
+      wrapG.setAttribute('opacity', '0');
+      wrapG.setAttribute('data-travel', travel);
+
+      /* 내경보다 충분히 큰 rect (높이 s*4), 중심 기준으로 -35° 회전 */
+      var rect = document.createElementNS(svgNS, 'rect');
+      rect.setAttribute('x', (hx.cx - beamW / 2).toFixed(2));
+      rect.setAttribute('y', (hx.cy - s * 2).toFixed(2));
+      rect.setAttribute('width', beamW);
+      rect.setAttribute('height', (s * 4).toFixed(2));
+      rect.setAttribute('fill', 'url(#helix-shimmer-grad)');
+      rect.setAttribute('transform',
+        'rotate(-35 ' + hx.cx.toFixed(2) + ' ' + hx.cy.toFixed(2) + ')');
+      wrapG.appendChild(rect);
+      svg.appendChild(wrapG);
     });
 
     holder.appendChild(svg);
@@ -491,17 +496,16 @@
       window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');
 
-      /* 등장 완료 후 shimmer 루프 — 5개 동시 시작 */
+      /* 등장 완료 후 shimmer 루프 — 5개 동시, 사선 빔 sweep */
       tl.then(function() {
         hexes.forEach(function(hx) {
-          var beam = svg.querySelector('#shimmer-' + hx.id);
-          if (!beam) return;
-          var xFrom = parseFloat(beam.getAttribute('data-x-from'));
-          var xTo   = parseFloat(beam.getAttribute('data-x-to'));
-          gsap.set(beam, { opacity: 1 });
-          gsap.fromTo(beam,
-            { attr: { x: xFrom } },
-            { attr: { x: xTo },
+          var wrapG = svg.querySelector('#shimmer-' + hx.id);
+          if (!wrapG) return;
+          var travel = parseFloat(wrapG.getAttribute('data-travel'));
+          gsap.set(wrapG, { opacity: 1 });
+          gsap.fromTo(wrapG,
+            { x: -travel },
+            { x: travel,
               duration: 2.2, ease: 'power1.inOut',
               repeat: -1, repeatDelay: 4.0
             }
