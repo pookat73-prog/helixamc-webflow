@@ -62,6 +62,12 @@ body {
   user-select: none;
 }
 .hex-naekwa text, .hex-oikwa text, .hex-yeongsang text { font-weight: 700; }
+.hex-circle {
+  fill: rgba(0,117,214,.25);
+  stroke: #0075d6;
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+}
 .hex { transform-box: fill-box; transform-origin: center; }
 
 /* Stage 5 요소 */
@@ -264,6 +270,14 @@ function mkSvg() {
     p.setAttribute('d', hexBezierPath(hx.cx, hx.cy));
     p.setAttribute('class','hex-path');
     g.appendChild(p);
+
+    /* Stage 3용 circle — 평소 숨김, Stage 3 에서 페이드 인 */
+    var c = document.createElementNS(ns,'circle');
+    c.setAttribute('cx', hx.cx); c.setAttribute('cy', hx.cy);
+    c.setAttribute('r', s * 0.92);
+    c.setAttribute('class','hex-circle');
+    c.style.opacity = '0';
+    g.appendChild(c);
 
     var t = document.createElementNS(ns,'text');
     t.setAttribute('x', hx.cx);
