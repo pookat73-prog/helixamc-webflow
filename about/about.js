@@ -13,6 +13,40 @@
 (function () {
   'use strict';
 
+  /* ── 헤더/햄버거/coming-soon 공유 모듈 동적 로드 ──
+     about/bootstrap.js 가 jsDelivr @main 에 stale 캐시될 때를 대비해
+     window.HELIX_REF (약식 SHA) 기준으로 약식 inject. 이미 로드된 경우 스킵. */
+  (function injectSharedModules() {
+    var ref = window.HELIX_REF || 'main';
+    var t   = Math.floor(Date.now() / 60000);
+    var BASE = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/';
+    var assets = [
+      { type: 'css', path: 'global/global.css' },
+      { type: 'css', path: 'home/global/hamburger.css' },
+      { type: 'css', path: 'home/global/coming-soon.css' },
+      { type: 'js',  path: 'home/global/coming-soon.js' },
+      { type: 'js',  path: 'home/global/hamburger.js' }
+    ];
+    assets.forEach(function (a) {
+      var url = BASE + a.path + '?t=' + t;
+      var sel = a.type === 'css'
+        ? 'link[href*="' + a.path + '"]'
+        : 'script[src*="' + a.path + '"]';
+      if (document.querySelector(sel)) return;
+      var el;
+      if (a.type === 'css') {
+        el = document.createElement('link');
+        el.rel = 'stylesheet';
+        el.href = url;
+      } else {
+        el = document.createElement('script');
+        el.src = url;
+        el.async = false;
+      }
+      document.head.appendChild(el);
+    });
+  })();
+
   var HERO_FONT = 'ds-endendend';
   var BG_PARENT_SELECTOR = '.About_Background, .about_background, .about-background';
   var BG_VIDEO_PATH = 'about/bg-video.mp4';
