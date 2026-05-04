@@ -346,12 +346,12 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    ─────────────────────────────────────────────────────────────── */
 @property --pulse-blue-a {
   syntax: '<number>';
-  initial-value: 0.18;
+  initial-value: 0.32;
   inherits: false;
 }
 #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(1),
 #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(2) {
-  --pulse-blue-a: 0.18;
+  --pulse-blue-a: 0.32;
   box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, var(--pulse-blue-a)) !important;
   animation: divBlock116InnerPulse 3.6s linear infinite;
   will-change: --pulse-blue-a;
@@ -359,9 +359,9 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 /* 비대칭 이즈인아웃: 부드럽게 솟아 (ease-in-out) → 길게 천천히 꺼짐 (ease-out)
    → 길게 쉼. 키프레임 사이에 timing-function 직접 박아서 곡선 분리. */
 @keyframes divBlock116InnerPulse {
-  0%   { --pulse-blue-a: 0.18; animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95); }
+  0%   { --pulse-blue-a: 0.32; animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95); }
   22%  { --pulse-blue-a: 1;    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
-  60%  { --pulse-blue-a: 0.18; animation-timing-function: linear; }
-  100% { --pulse-blue-a: 0.18; }
+  60%  { --pulse-blue-a: 0.32; animation-timing-function: linear; }
+  100% { --pulse-blue-a: 0.32; }
 }
 
