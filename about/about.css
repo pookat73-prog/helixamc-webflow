@@ -315,24 +315,29 @@
   position: relative;
   --burn-half: 0deg;
   transition: --burn-half 1.9s cubic-bezier(0.45, 0.05, 0.55, 1);
+  /* 부모 overflow:hidden 가 외곽 글로우를 자르지 않도록 명시적으로 풀어줌
+     (Webflow Designer 에서 박혀있을 수 있음) */
+  overflow: visible !important;
 }
 #w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108::before {
   content: "";
   position: absolute;
-  inset: -14%;
+  inset: -22%;
   border-radius: 50%;
   pointer-events: none;
-  z-index: -1;
+  /* z-index 음수 빼고 element 바깥 ring 만 보이도록 radial mask 로 가운데 비움 */
+  -webkit-mask-image: radial-gradient(circle, transparent 42%, #000 52%, #000 100%);
+          mask-image: radial-gradient(circle, transparent 42%, #000 52%, #000 100%);
   /* from -90deg = conic 0deg 가 12시. 0deg→half 시계방향, 360-half→360deg 반시계 */
   background: conic-gradient(
     from -90deg,
-    rgba(0, 117, 214, 0.85) 0deg,
-    rgba(0, 117, 214, 0.85) var(--burn-half),
+    rgba(0, 117, 214, 0.95) 0deg,
+    rgba(0, 117, 214, 0.95) var(--burn-half),
     rgba(0, 117, 214, 0)    var(--burn-half),
     rgba(0, 117, 214, 0)    calc(360deg - var(--burn-half)),
-    rgba(0, 117, 214, 0.85) calc(360deg - var(--burn-half)),
-    rgba(0, 117, 214, 0.85) 360deg);
-  filter: blur(18px);
+    rgba(0, 117, 214, 0.95) calc(360deg - var(--burn-half)),
+    rgba(0, 117, 214, 0.95) 360deg);
+  filter: blur(20px);
 }
 #w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning {
   --burn-half: 180deg;
