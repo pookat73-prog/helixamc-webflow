@@ -313,8 +313,27 @@
   transition: box-shadow 1.6s cubic-bezier(0.7, 0, 0.84, 0) !important;
 }
 #w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning {
-  /* 점화 완료: 원본 Webflow 비율 + 더 큰 blur/spread + 진한 alpha 로 확 켜짐 */
-  box-shadow: 0 -0.9vw 1.6vw 0.1vw rgba(0, 117, 214, 0.95) !important;
+  /* 점화 완료: 원본 Webflow 비율 가깝게, 과장 줄임 */
+  box-shadow: 0 -0.7vw 1.0vw -0.25vw rgba(0, 117, 214, 0.7) !important;
+}
+
+/* ── text-block-13-copy 투명도 마스크 ──────────────────────────────
+   겹쳐진 텍스트와 시각적으로 안 겹치도록 그라데이션 마스크.
+   세로 방향 (위 진하고 아래로 갈수록 투명) 으로 fade.
+   ─────────────────────────────────────────────────────────────── */
+body > section.blackframe_image-h > section.clearframe_connect > div > div > div:nth-child(1) > div > div.text-block-13-copy {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1)    0%,
+    rgba(0, 0, 0, 1)    35%,
+    rgba(0, 0, 0, 0.25) 75%,
+    rgba(0, 0, 0, 0)    100%);
+          mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1)    0%,
+    rgba(0, 0, 0, 1)    35%,
+    rgba(0, 0, 0, 0.25) 75%,
+    rgba(0, 0, 0, 0)    100%);
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
