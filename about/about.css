@@ -300,6 +300,41 @@
           mask-position: 0% 0%;
 }
 
+/* ── div-block-108 원형 푸른 글로우 — 휘발유 점화 (상단 → 원주 따라) ────
+   상단(12시) 부터 시계방향으로 conic-gradient 가 채워지며 원주 글로우.
+   filter: blur 로 부드럽게 번지는 그림자, 원 외곽으로 inset 확장.
+   @property --burn-angle 로 conic-gradient stop 을 애니메이션.
+   ─────────────────────────────────────────────────────────────── */
+@property --burn-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108 {
+  position: relative;
+  --burn-angle: 0deg;
+  transition: --burn-angle 1.9s cubic-bezier(0.45, 0.05, 0.55, 1);
+}
+#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108::before {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  /* 12시 (-90deg) 에서 시계방향으로 채워지는 푸른 글로우 */
+  background: conic-gradient(
+    from -90deg,
+    rgba(0, 117, 214, 0.85) 0deg,
+    rgba(0, 117, 214, 0.85) var(--burn-angle),
+    rgba(0, 117, 214, 0)    var(--burn-angle));
+  filter: blur(18px);
+  opacity: 0.95;
+}
+#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning {
+  --burn-angle: 360deg;
+}
+
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
   transform: rotate(-6deg) !important;

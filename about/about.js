@@ -937,6 +937,29 @@
     io.observe(el);
   }
 
+  /* ── div-block-108 — 휘발유 점화 글로우 ─────────────────────────
+     CSS 가 conic-gradient + @property 로 burn-angle 0→360deg 애니메이션.
+     JS 는 IO 진입 시 .is-burning 부착.
+     ─────────────────────────────────────────────────────────── */
+  function initBurnGlow() {
+    var SEL = '#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108';
+    var el = document.querySelector(SEL);
+    log('burn-glow target=' + !!el);
+    if (!el) return;
+
+    function trigger() {
+      if (el.dataset.burnDone) return;
+      el.dataset.burnDone = '1';
+      el.classList.add('is-burning');
+    }
+
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(el);
+  }
+
   /* ── Hybrid Operation Room h1 — 좌상단 비대칭 reveal ─────────── */
   function initHybridRoomTitle() {
     var SEL = '#hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title';
@@ -1297,6 +1320,7 @@
     initStandardFontHighlight();
     initChewyH2();
     initHybridRoomTitle();
+    initBurnGlow();
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
