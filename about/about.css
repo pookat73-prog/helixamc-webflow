@@ -377,7 +377,10 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    ─────────────────────────────────────────────────────────────── */
 .ts-vet,
 .hj-vet,
-.sy-vet {
+.sy-vet,
+.si-vet,
+.sh-vet,
+.ys-vet {
   opacity: 0;
   transform: translateX(-12px);
   will-change: opacity, transform;
@@ -386,7 +389,10 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    Webflow IX2 가 박은 inline opacity/transform 를 확실히 덮어씀. */
 .ts-vet.is-doctor-in,
 .hj-vet.is-doctor-in,
-.sy-vet.is-doctor-in {
+.sy-vet.is-doctor-in,
+.si-vet.is-doctor-in,
+.sh-vet.is-doctor-in,
+.ys-vet.is-doctor-in {
   animation: doctorCardSlideIn 1.10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes doctorCardSlideIn {
