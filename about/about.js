@@ -811,13 +811,31 @@
   }
 
   function wrapHistorySpark() {
-    var els = document.querySelectorAll(
-      '.About_History_Title_Official.Font, .about_history_title_official.font'
-    );
-    if (!els.length) { log('history spark: no target'); return; }
+    /* Webflow 가 클래스 케이스를 변경할 수 있어 case-insensitive 매칭 */
     var token = '최초';
-    els.forEach(function (el) {
-      if (el.dataset.sparkInit === '1') return;
+    function findTargets() {
+      var all = document.querySelectorAll('[class*="istory" i]');
+      var hit = [];
+      for (var i = 0; i < all.length; i++) {
+        var cn = (all[i].className || '') + '';
+        if (/about[_\- ]history[_\- ]title[_\- ]official/i.test(cn)) hit.push(all[i]);
+      }
+      /* 그래도 없으면 token 으로 폴백 탐색 */
+      if (!hit.length) {
+        var pool = document.querySelectorAll('h1,h2,h3,h4,h5,h6,div,span,p');
+        for (var j = 0; j < pool.length; j++) {
+          if (pool[j].dataset && pool[j].dataset.sparkInit) continue;
+          if ((pool[j].textContent || '').indexOf(token) >= 0 &&
+              pool[j].children.length === 0) {
+            hit.push(pool[j]);
+          }
+        }
+      }
+      return hit;
+    }
+
+    function applyTo(el) {
+      if (el.dataset.sparkInit === '1') return false;
       var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
       var nodes = [];
       while (walker.nextNode()) nodes.push(walker.currentNode);
@@ -838,8 +856,24 @@
         matched = true;
       });
       if (matched) el.dataset.sparkInit = '1';
-    });
-    log('history spark wrapped');
+      return matched;
+    }
+
+    function tick() {
+      var targets = findTargets();
+      var any = false;
+      targets.forEach(function (el) { if (applyTo(el)) any = true; });
+      log('history spark: targets=' + targets.length + ' applied=' + any);
+      return any;
+    }
+
+    if (tick()) return;
+    /* 늦게 그려지는 경우 대비 — MutationObserver + 재시도 */
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      if (tick() || tries > 20) clearInterval(iv);
+    }, 300);
   }
 
   function init() {
