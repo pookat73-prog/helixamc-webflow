@@ -904,36 +904,48 @@
   }
 
   function initHistoryTimeline() {
-    var contents = document.querySelectorAll('.about_history_time-line_contents');
-    var titles   = document.querySelectorAll('.about_history_time-line_contents-copy_title');
-    if (!contents.length) { log('history timeline: no contents'); return; }
+    function run() {
+      var contents = document.querySelectorAll('.about_history_time-line_contents');
+      var titles   = document.querySelectorAll('.about_history_time-line_contents-copy_title');
+      log('history timeline: contents=' + contents.length + ' titles=' + titles.length);
+      if (!contents.length) return false;
 
-    /* 행별 stagger delay (12ms 간격) */
-    contents.forEach(function (el, i) {
-      el.style.transitionDelay = (i * 0.12) + 's';
-    });
-    titles.forEach(function (el, i) {
-      el.style.transitionDelay = (i * 0.12) + 's';
-    });
+      /* JS가 확인한 후에만 숨김 클래스 부착 */
+      contents.forEach(function (el, i) {
+        el.classList.add('js-anim-ready');
+        el.style.transitionDelay = (i * 0.12) + 's';
+      });
+      titles.forEach(function (el, i) {
+        el.classList.add('js-anim-ready');
+        el.style.transitionDelay = (i * 0.12) + 's';
+      });
 
-    /* 첫 번째 contents 요소가 뷰포트에 들어오면 전체 행 일제히 시작 */
-    if (!('IntersectionObserver' in window)) {
-      contents.forEach(function (el) { el.classList.add('is-visible'); });
-      titles.forEach(function (el)   { el.classList.add('is-visible'); });
-      return;
+      function fire() {
+        contents.forEach(function (el) { el.classList.add('is-visible'); });
+        titles.forEach(function (el)   { el.classList.add('is-visible'); });
+        log('history timeline: fired');
+      }
+
+      if (!('IntersectionObserver' in window)) { fire(); return true; }
+
+      var fired = false;
+      var io = new IntersectionObserver(function (entries) {
+        if (fired || !entries[0].isIntersecting) return;
+        fired = true;
+        io.disconnect();
+        fire();
+      }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0 });
+      io.observe(contents[0]);
+      return true;
     }
-    var fired = false;
-    var io = new IntersectionObserver(function (entries) {
-      if (fired) return;
-      if (!entries[0].isIntersecting) return;
-      fired = true;
-      io.disconnect();
-      contents.forEach(function (el) { el.classList.add('is-visible'); });
-      titles.forEach(function (el)   { el.classList.add('is-visible'); });
-      log('history timeline: fired');
-    }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0 });
-    io.observe(contents[0]);
-    log('history timeline: ready rows=' + contents.length);
+
+    if (run()) return;
+    /* DOM 늦게 렌더되는 경우 재시도 */
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      if (run() || tries > 20) clearInterval(iv);
+    }, 300);
   }
 
   function init() {

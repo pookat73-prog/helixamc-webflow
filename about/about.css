@@ -183,8 +183,9 @@
   filter: blur(0);
 }
 
-/* History timeline — contents 오른쪽→왼쪽 슬라이드인 */
-.about_history_time-line_contents {
+/* History timeline — JS가 js-anim-ready 클래스를 붙인 후에만 숨김 적용
+   (JS 미로드 시 항상 보임 보장) */
+.about_history_time-line_contents.js-anim-ready {
   opacity: 0;
   transform: translateX(48px);
   transition:
@@ -193,12 +194,11 @@
   will-change: opacity, transform;
 }
 .about_history_time-line_contents.is-visible {
-  opacity: 1;
-  transform: translateX(0);
+  opacity: 1 !important;
+  transform: translateX(0) !important;
 }
 
-/* History timeline — copy title 오른쪽에서 드로우인 */
-.about_history_time-line_contents-copy_title {
+.about_history_time-line_contents-copy_title.js-anim-ready {
   opacity: 0;
   transform: translateX(56px);
   transition:
@@ -207,8 +207,8 @@
   will-change: opacity, transform;
 }
 .about_history_time-line_contents-copy_title.is-visible {
-  opacity: 1;
-  transform: translateX(0);
+  opacity: 1 !important;
+  transform: translateX(0) !important;
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
