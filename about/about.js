@@ -1748,3 +1748,80 @@
   }
   window.addEventListener('load', start);
 })();
+
+/* ================================================================
+   SUBHEADER — 호버 / 스크롤스파이 / 클릭 밑줄
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function init() {
+    var links = document.querySelectorAll('.subheader_click-area');
+    if (!links.length) return;
+
+    var entries = [];
+    links.forEach(function (a) {
+      var href = a.getAttribute('href') || '';
+      if (href.charAt(0) !== '#' || href.length < 2) return;
+      var target = document.getElementById(href.slice(1)) ||
+                   document.querySelector(href);
+      if (target) entries.push({ link: a, target: target });
+    });
+    if (!entries.length) return;
+
+    function setActive(link) {
+      links.forEach(function (l) { l.classList.remove('is-active', 'w--current'); });
+      if (link) link.classList.add('is-active');
+    }
+
+    var clickedAt = 0;
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href') || '';
+        if (href.charAt(0) !== '#') return;
+        var t = document.getElementById(href.slice(1)) || document.querySelector(href);
+        if (!t) return;
+        e.preventDefault();
+        setActive(a);
+        clickedAt = Date.now();
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var sub = document.querySelector('.subheader');
+        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        if (history.replaceState) history.replaceState(null, '', href);
+      });
+    });
+
+    /* 스크롤스파이 — 뷰포트 상단 30% 라인을 통과한 가장 최근 섹션 활성화 */
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        if (Date.now() - clickedAt < 700) return;
+        var line = window.innerHeight * 0.3;
+        var current = null;
+        for (var i = 0; i < entries.length; i++) {
+          var rect = entries[i].target.getBoundingClientRect();
+          if (rect.top <= line) current = entries[i].link;
+          else break;
+        }
+        if (!current && window.pageYOffset < 50) current = entries[0].link;
+        if (current && !current.classList.contains('is-active')) setActive(current);
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
