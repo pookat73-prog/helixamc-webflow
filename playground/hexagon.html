@@ -488,16 +488,8 @@ function applyS4(svg, dur) {
         svgOrigin: CX + ' ' + CY, overwrite: 'auto'
       });
     } else {
-      /* 나머지 4개 — 흩어지며 반투명하게 등장 */
-      var sc = S4_SCATTER[id];
-      gsap.to(g, {
-        x: sc.dx, y: sc.dy,
-        opacity: 0.35, scale: 0.45, scaleX: 1, scaleY: 1,
-        rotation: 0, rotationY: 0,
-        duration: dur, ease: 'power2.out',
-        svgOrigin: CX + ' ' + CY, overwrite: 'auto',
-        delay: dur * 0.2
-      });
+      /* 나머지 4개는 계속 숨김 유지 */
+      gsap.set(g, { opacity: 0 });
     }
   });
   gsap.to(document.getElementById('hex-wrap'), { rotationX: 0, duration: dur });
