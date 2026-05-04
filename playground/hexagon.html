@@ -201,6 +201,44 @@ var CX = w;           /* 클러스터 가로 중심 */
 var CY = -0.6*s;      /* 클러스터 세로 중심 */
 var ns = 'http://www.w3.org/2000/svg';
 
+/* ─────── 경로 생성 (전역) ─────── */
+function hexBezierPath(cx, cy) {
+  var vx = [], vy = [];
+  for (var i = 0; i < 6; i++) {
+    var a = -Math.PI/2 + i * Math.PI/3;
+    vx.push(cx + s * Math.cos(a));
+    vy.push(cy + s * Math.sin(a));
+  }
+  var d = 'M ' + vx[0].toFixed(3) + ' ' + vy[0].toFixed(3);
+  for (var i = 0; i < 6; i++) {
+    var nx = vx[(i+1)%6], ny = vy[(i+1)%6];
+    var c1x = vx[i] + (nx-vx[i])/3,  c1y = vy[i] + (ny-vy[i])/3;
+    var c2x = vx[i] + 2*(nx-vx[i])/3, c2y = vy[i] + 2*(ny-vy[i])/3;
+    d += ' C '+c1x.toFixed(3)+' '+c1y.toFixed(3)+' '+c2x.toFixed(3)+' '+c2y.toFixed(3)+' '+nx.toFixed(3)+' '+ny.toFixed(3);
+  }
+  return d + ' Z';
+}
+
+function circleBezierPath(cx, cy) {
+  var k = 4/3 * Math.tan(Math.PI/12);
+  var vx = [], vy = [];
+  for (var i = 0; i < 6; i++) {
+    var a = -Math.PI/2 + i * Math.PI/3;
+    vx.push(cx + s * Math.cos(a));
+    vy.push(cy + s * Math.sin(a));
+  }
+  var d = 'M ' + vx[0].toFixed(3) + ' ' + vy[0].toFixed(3);
+  for (var i = 0; i < 6; i++) {
+    var a0 = -Math.PI/2 + i * Math.PI/3;
+    var a1 = -Math.PI/2 + (i+1) * Math.PI/3;
+    var nx = vx[(i+1)%6], ny = vy[(i+1)%6];
+    var c1x = vx[i] - k*s*Math.sin(a0), c1y = vy[i] + k*s*Math.cos(a0);
+    var c2x = nx   + k*s*Math.sin(a1),  c2y = ny   - k*s*Math.cos(a1);
+    d += ' C '+c1x.toFixed(3)+' '+c1y.toFixed(3)+' '+c2x.toFixed(3)+' '+c2y.toFixed(3)+' '+nx.toFixed(3)+' '+ny.toFixed(3);
+  }
+  return d + ' Z';
+}
+
 /* ─────── SVG 생성 ─────── */
 function mkSvg() {
   var wrap = document.getElementById('hex-wrap');
@@ -212,46 +250,6 @@ function mkSvg() {
   svg.setAttribute('viewBox', vbX+' '+vbY+' '+vbW+' '+vbH);
   svg.setAttribute('overflow','visible');
   svg.id = 'the-svg';
-
-  /* 헥사곤 — 6개 cubic bezier (직선: 컨트롤포인트 = 선분 1/3, 2/3 지점)
-     원 모핑을 위해 L 대신 C 사용 (같은 포맷이어야 attr tween 가능) */
-  function hexBezierPath(cx, cy) {
-    var vx = [], vy = [];
-    for (var i = 0; i < 6; i++) {
-      var a = -Math.PI/2 + i * Math.PI/3;
-      vx.push(cx + s * Math.cos(a));
-      vy.push(cy + s * Math.sin(a));
-    }
-    var d = 'M ' + vx[0].toFixed(3) + ' ' + vy[0].toFixed(3);
-    for (var i = 0; i < 6; i++) {
-      var nx = vx[(i+1)%6], ny = vy[(i+1)%6];
-      var c1x = vx[i] + (nx-vx[i])/3,  c1y = vy[i] + (ny-vy[i])/3;
-      var c2x = vx[i] + 2*(nx-vx[i])/3, c2y = vy[i] + 2*(ny-vy[i])/3;
-      d += ' C '+c1x.toFixed(3)+' '+c1y.toFixed(3)+' '+c2x.toFixed(3)+' '+c2y.toFixed(3)+' '+nx.toFixed(3)+' '+ny.toFixed(3);
-    }
-    return d + ' Z';
-  }
-
-  /* 원 — 같은 꼭짓점에서 출발, 컨트롤포인트만 접선 방향으로 밀어 곡선화 */
-  function circleBezierPath(cx, cy) {
-    var k = 4/3 * Math.tan(Math.PI/12); /* ≈ 0.3572 */
-    var vx = [], vy = [];
-    for (var i = 0; i < 6; i++) {
-      var a = -Math.PI/2 + i * Math.PI/3;
-      vx.push(cx + s * Math.cos(a));
-      vy.push(cy + s * Math.sin(a));
-    }
-    var d = 'M ' + vx[0].toFixed(3) + ' ' + vy[0].toFixed(3);
-    for (var i = 0; i < 6; i++) {
-      var a0 = -Math.PI/2 + i * Math.PI/3;
-      var a1 = -Math.PI/2 + (i+1) * Math.PI/3;
-      var nx = vx[(i+1)%6], ny = vy[(i+1)%6];
-      var c1x = vx[i] - k*s*Math.sin(a0), c1y = vy[i] + k*s*Math.cos(a0);
-      var c2x = nx   + k*s*Math.sin(a1),  c2y = ny   - k*s*Math.cos(a1);
-      d += ' C '+c1x.toFixed(3)+' '+c1y.toFixed(3)+' '+c2x.toFixed(3)+' '+c2y.toFixed(3)+' '+nx.toFixed(3)+' '+ny.toFixed(3);
-    }
-    return d + ' Z';
-  }
 
   var LABELS = { ankwa:'안과', naekwa:'내과', yeongsang:'영상의학과', oikwa:'외과', chikwa:'치과' };
 
