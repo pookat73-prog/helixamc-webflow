@@ -495,7 +495,11 @@
 
       /* viewBox 좌표계 기준 (about.js renderHexDiagram 와 동일):
          - x 가운데 ≈ 173 (= w), y 가운데 ≈ -75 */
-      var ROW_ORDER     = ['chikwa', 'oikwa', 'yeongsang', 'naekwa', 'ankwa'];
+      /* ROW_ORDER — 각 hex 의 honeycomb origin cx 순서 (좌→우) 와 일치시켜
+         펼침 시 서로 경로 크로스가 일어나지 않도록 함.
+         ankwa(cx=0) → naekwa(0.5w) → yeongsang(w) → oikwa(1.5w) → chikwa(2w)
+         조건 충족: 영상 중심 / 내외 안쪽(±1) / 안치 가장자리(±2). */
+      var ROW_ORDER     = ['ankwa', 'naekwa', 'yeongsang', 'oikwa', 'chikwa'];
       var ROW_CENTER_X  = 173;
       var ROW_Y         = -75;
       var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
@@ -579,7 +583,8 @@
          appendChild 로 끝으로 이동 = 위로 올림. */
       box2EnterTl.call(function () {
         var parent = svg.querySelector('.helix-hex-diagram') || svg;
-        var stackOrder = ['yeongsang', 'oikwa', 'naekwa', 'ankwa', 'chikwa'];
+        /* z-order: yeongsang(생존자) 최하단, ankwa(맨 왼쪽 = leftmost) 최상단 */
+        var stackOrder = ['yeongsang', 'chikwa', 'oikwa', 'naekwa', 'ankwa'];
         stackOrder.forEach(function (id) {
           var g = svg.querySelector('.hex-' + id);
           if (g && g.parentNode) g.parentNode.appendChild(g);
@@ -758,9 +763,12 @@
 
       /* box2 진입 자동 시퀀스 — 한 번 onEnter 시 play, onLeaveBack 시 reverse
          (역스크롤 시 자연스럽게 spread 상태로 복귀) */
+      /* spread 가 끝나는 시점(box2 center == viewport center)에 box2 시퀀스
+         발사. 이전엔 'top 65%' 라 spread 중에 발사되어 텍스트/회전이
+         펼침과 겹쳐 나옴. */
       window.ScrollTrigger.create({
         trigger: box2Ref || holder,
-        start: 'top 65%',
+        start: 'center center',
         onEnter:     function () { box2EnterTl.play(); },
         onEnterBack: function () { box2EnterTl.play(); },
         onLeaveBack: function () { box2EnterTl.reverse(); }
