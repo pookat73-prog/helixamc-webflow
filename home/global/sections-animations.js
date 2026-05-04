@@ -146,6 +146,28 @@
     });
 
     /* ──────────────────────────────────────────────────────────
+       .official-font_title — 극단적 ease-in 페이드 + 스케일 인
+       expo.in: 초반엔 거의 변화 없다가 후반에 폭발적으로 나타남
+    ────────────────────────────────────────────────────────── */
+    document.querySelectorAll('.official-font_title').forEach(function (title) {
+      if (!isVisible(title)) return;
+      ScrollTrigger.create({
+        trigger: title,
+        start: 'top 80%',
+        once: true,
+        onEnter: function () {
+          gsap.to(title, {
+            opacity: 1,
+            scale: 1,
+            duration: 1.1,
+            ease: 'expo.in'
+          });
+          log('official-font_title fade+scale in');
+        }
+      });
+    });
+
+    /* ──────────────────────────────────────────────────────────
        섹션 4 카드 스태거 + SVICC 슬라이드 인
        - .home_branch-card 가 들어있는 section 마다 독립 timeline
        - 각 섹션 내부 카드 + 그 섹션의 .home_background_svicc 페어
