@@ -1660,18 +1660,14 @@
   'use strict';
 
   function bind() {
-    var els = Array.prototype.slice.call(document.querySelectorAll('.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet'));
-    if (!els.length) return false;
-
-    /* DOM 순서가 화면 좌→우 와 다른 경우가 있어 (CSS grid order 가
-       DOM 과 어긋남) 화면상 시각 위치로 정렬. 행은 top, 같은 행은 left. */
-    els.sort(function (a, b) {
-      var ra = a.getBoundingClientRect();
-      var rb = b.getBoundingClientRect();
-      var rowGap = 40; /* 같은 행으로 간주할 top 허용 오차 */
-      if (Math.abs(ra.top - rb.top) > rowGap) return ra.top - rb.top;
-      return ra.left - rb.left;
+    /* CSS grid order 와 DOM 순서가 어긋나서, 시각 좌→우 순서를 명시. */
+    var ORDER = ['ts-vet', 'sy-vet', 'hj-vet', 'ys-vet', 'sh-vet', 'si-vet', 'hs-vet', 'hc-vet'];
+    var els = [];
+    ORDER.forEach(function (cls) {
+      var el = document.querySelector('.' + cls);
+      if (el) els.push(el);
     });
+    if (!els.length) return false;
 
     if (!('IntersectionObserver' in window)) {
       els.forEach(function (el) { el.classList.add('is-doctor-in'); });
