@@ -810,52 +810,42 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* ── "최초" 광선 ────────────────────────────────────────────── */
+  /* ── "최초" 광선 ────────────────────────────────────────────────
+     텍스트는 절대 건드리지 않음 — 빔 오버레이 div 를 요소 위에 올림.
+     mix-blend-mode:screen 으로 텍스트 색상과 무관하게 광선이 보임.
+     ─────────────────────────────────────────────────────────────── */
   function initHistorySpark() {
     var SEL = '.about_history_title_official-font';
-    var TOKEN = '최초';
 
-    function wrapToken(el) {
-      if (el.dataset.sparkDone) return false;
-      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
-      var nodes = []; var n;
-      while ((n = walker.nextNode())) nodes.push(n);
-      var hit = false;
-      nodes.forEach(function (t) {
-        var idx = t.nodeValue.indexOf(TOKEN);
-        if (idx < 0) return;
-        var span = document.createElement('span');
-        span.className = 'helix-spark';
-        span.textContent = TOKEN;
-        var frag = document.createDocumentFragment();
-        if (idx > 0) frag.appendChild(document.createTextNode(t.nodeValue.slice(0, idx)));
-        frag.appendChild(span);
-        var rest = t.nodeValue.slice(idx + TOKEN.length);
-        if (rest) frag.appendChild(document.createTextNode(rest));
-        t.parentNode.replaceChild(frag, t);
-        hit = true;
-      });
-      if (hit) el.dataset.sparkDone = '1';
-      return hit;
-    }
+    function injectBeam(el) {
+      if (el.dataset.beamDone) return false;
+      el.dataset.beamDone = '1';
 
-    function armSpark(el) {
-      var span = el.querySelector('.helix-spark');
-      if (!span) return;
-      if (!('IntersectionObserver' in window)) { span.classList.add('is-running'); return; }
+      var cs = getComputedStyle(el);
+      if (cs.position === 'static') el.style.position = 'relative';
+
+      var beam = document.createElement('span');
+      beam.className = 'helix-spark-beam';
+      el.appendChild(beam);
+
+      if (!('IntersectionObserver' in window)) {
+        beam.classList.add('is-running');
+        return true;
+      }
       var io = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
-        span.classList.add('is-running');
+        beam.classList.add('is-running');
         io.disconnect();
       }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
       io.observe(el);
+      return true;
     }
 
     function tryInit() {
       var els = document.querySelectorAll(SEL);
       log('history spark: found=' + els.length);
       var any = false;
-      els.forEach(function (el) { if (wrapToken(el)) { armSpark(el); any = true; } });
+      els.forEach(function (el) { if (injectBeam(el)) any = true; });
       return any;
     }
 
