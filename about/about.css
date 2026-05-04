@@ -325,14 +325,14 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   -webkit-mask-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 35%,
-    rgba(0, 0, 0, 0) 70%,
+    rgba(0, 0, 0, 1) 55%,
+    rgba(0, 0, 0, 0) 90%,
     rgba(0, 0, 0, 0) 100%);
           mask-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 35%,
-    rgba(0, 0, 0, 0) 70%,
+    rgba(0, 0, 0, 1) 55%,
+    rgba(0, 0, 0, 0) 90%,
     rgba(0, 0, 0, 0) 100%);
 }
 
