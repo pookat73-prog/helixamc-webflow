@@ -495,7 +495,7 @@
 
       /* viewBox 좌표계 기준 (about.js renderHexDiagram 와 동일):
          - x 가운데 ≈ 173 (= w), y 가운데 ≈ -75 */
-      var ROW_ORDER     = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
+      var ROW_ORDER     = ['chikwa', 'oikwa', 'yeongsang', 'naekwa', 'ankwa'];
       var ROW_CENTER_X  = 173;
       var ROW_Y         = -75;
       var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
@@ -566,13 +566,36 @@
         box2EnterTl.add(hexEnter, 0);
       });
 
-      /* Phase E (2.4~3.4s): 파동 1회 — survivor 위치에서 동심원 펄스 */
+      /* Phase B 시점에 텍스트 fade out 시작 (합쳐질수록 텍스트 사라짐) */
+      var hexTexts = svg.querySelectorAll('.hex text');
+      if (hexTexts.length) {
+        box2EnterTl.to(hexTexts,
+          { opacity: 0, duration: 0.8, ease: 'power2.in' },
+          0.6);
+      }
+
+      /* Phase B 시작 직전 z-order 재배치 — 합칠 때 맨 왼쪽 헥사(chikwa) 가
+         최상단, 생존자(yeongsang) 가 최하단. SVG 는 DOM 순서대로 렌더되므로
+         appendChild 로 끝으로 이동 = 위로 올림. */
+      box2EnterTl.call(function () {
+        var parent = svg.querySelector('.helix-hex-diagram') || svg;
+        var stackOrder = ['yeongsang', 'oikwa', 'naekwa', 'ankwa', 'chikwa'];
+        stackOrder.forEach(function (id) {
+          var g = svg.querySelector('.hex-' + id);
+          if (g && g.parentNode) g.parentNode.appendChild(g);
+        });
+      }, null, 0.55);
+
+      /* Phase E (2.4~3.4s): 파동 1회 — survivor 위치에서 동심원 펄스.
+         immediateRender:false 로 paused 상태에서 from 값이 미리 적용되지
+         않도록 (= 트리거 전엔 wave 가 화면에 안 보임). */
       var box2Wave = injectBox2Wave(svg, ROW_CENTER_X, ROW_Y);
       if (box2Wave) {
         box2EnterTl.fromTo(box2Wave,
           { attr: { r: 8 }, opacity: 0.9 },
           { attr: { r: 180 }, opacity: 0,
-            duration: 1.0, ease: 'power2.out' },
+            duration: 1.0, ease: 'power2.out',
+            immediateRender: false },
           2.4);
       }
 
