@@ -54,6 +54,14 @@ body {
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }
+.hex text {
+  fill: #0075d6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  pointer-events: none;
+  user-select: none;
+}
+.hex-naekwa text, .hex-oikwa text, .hex-yeongsang text { font-weight: 700; }
 .hex { transform-box: fill-box; transform-origin: center; }
 
 /* Stage 5 요소 */
@@ -213,13 +221,26 @@ function mkSvg() {
     return 'M'+v.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' L')+' Z';
   }
 
+  var LABELS = { ankwa:'안과', naekwa:'내과', yeongsang:'영상의학과', oikwa:'외과', chikwa:'치과' };
+
   ORDER.forEach(function(id){
     var hx = META[id];
     var g = document.createElementNS(ns,'g');
     g.setAttribute('class','hex hex-'+id);
+
     var p = document.createElementNS(ns,'path');
     p.setAttribute('d', hexPath(hx.cx, hx.cy));
     g.appendChild(p);
+
+    var t = document.createElementNS(ns,'text');
+    t.setAttribute('x', hx.cx);
+    t.setAttribute('y', hx.cy);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('dominant-baseline', 'central');
+    t.setAttribute('font-size', '22');
+    t.textContent = LABELS[id];
+    g.appendChild(t);
+
     svg.appendChild(g);
   });
 
