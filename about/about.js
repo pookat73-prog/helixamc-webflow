@@ -937,6 +937,26 @@
     io.observe(el);
   }
 
+  /* ── Hybrid Operation Room h1 — 좌상단 비대칭 reveal ─────────── */
+  function initHybridRoomTitle() {
+    var SEL = '#hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title';
+    var el = document.querySelector(SEL);
+    log('hybrid-room title target=' + !!el);
+    if (!el) return;
+
+    function trigger() {
+      if (el.dataset.cornerInDone) return;
+      el.dataset.cornerInDone = '1';
+      el.classList.add('is-corner-in');
+    }
+
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(el);
+  }
+
   /* ── 타임라인 가운데 펼침 ────────────────────────────────────── */
   function initHistoryTimeline() {
     var BADGE_SEL = '.about_history_time-line_contents';
@@ -1275,6 +1295,7 @@
     initHistorySpark();
     initStandardFontHighlight();
     initChewyH2();
+    initHybridRoomTitle();
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
