@@ -19,6 +19,18 @@ html, body {
 }
 
 /* ============================================================
+   .official-font_title — 극단적 ease-in 페이드 + 스케일 인
+   초기 상태: 작고 투명. JS ScrollTrigger 가 expo.in 으로 등장.
+   transform-origin: center 로 중앙 기준 스케일.
+   ============================================================ */
+.official-font_title {
+  opacity: 0;
+  transform: scale(0.5);
+  transform-origin: center center;
+  will-change: opacity, transform;
+}
+
+/* ============================================================
    버튼 2, 3 — opacity 페이드인 (sections-animations.js 담당)
    ============================================================ */
 .bt-box-2,
