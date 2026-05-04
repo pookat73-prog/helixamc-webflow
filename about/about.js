@@ -503,7 +503,7 @@
       var ROW_CENTER_X  = 173;
       var ROW_Y         = -75;
       var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
-      var COMP_STEP     = 28;    /* 압축 간격 (서로 거의 겹침) */
+      var COMP_STEP     = 46;    /* 압축 간격 — 켜켜이 쌓인 layering 이 또렷이 보이게 */
       var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
 
@@ -558,17 +558,21 @@
         /* Phase A (0.0~0.6s): 비스듬 Y축 회전 */
         hexEnter.to(g, { rotationY: 32, duration: 0.6, ease: 'power2.inOut' }, 0);
 
-        /* Phase B (0.6~1.4s): 한 점으로 모임 (간격 0) */
+        /* Phase B (0.6~1.4s): 한 점으로 모임 — COMP_STEP 간격으로 켜켜이 쌓임 */
         hexEnter.to(g, { x: mergeDx, duration: 0.8, ease: 'power2.inOut' }, 0.6);
 
-        /* Phase C (1.4~1.8s): 생존자 외 4개 fade out */
+        /* Hold (1.4~2.4s): 켜켜이 쌓인 상태 유지 — layering 이 또렷이 보이는 구간 */
+
+        /* Phase C (2.4~2.9s): 생존자 외 4개 fade out (한 장씩 빠지며 합쳐지는 느낌) */
         if (id !== SURVIVOR_ID) {
-          hexEnter.to(g, { opacity: 0, duration: 0.4, ease: 'power2.in' }, 1.4);
+          /* stagger: 위에서부터 (ankwa=맨위 z-order) 순차 fade — 0.08s 간격 */
+          var fadeOrder = { ankwa: 0, naekwa: 0.08, oikwa: 0.16, chikwa: 0.24 };
+          hexEnter.to(g, { opacity: 0, duration: 0.35, ease: 'power2.in' }, 2.4 + (fadeOrder[id] || 0));
         }
 
-        /* Phase D (1.8~2.4s): 생존자 정면으로 복귀 (rotationY 0) */
+        /* Phase D (2.9~3.5s): 생존자 정면으로 복귀 (rotationY 0) */
         if (id === SURVIVOR_ID) {
-          hexEnter.to(g, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' }, 1.8);
+          hexEnter.to(g, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' }, 2.9);
         }
 
         box2EnterTl.add(hexEnter, 0);
@@ -595,9 +599,7 @@
         });
       }, null, 0.55);
 
-      /* Phase E (2.4~3.4s): 파동 1회 — survivor 위치에서 동심원 펄스.
-         immediateRender:false 로 paused 상태에서 from 값이 미리 적용되지
-         않도록 (= 트리거 전엔 wave 가 화면에 안 보임). */
+      /* Phase E (3.5~4.5s): 파동 1회 — survivor 위치에서 동심원 펄스. */
       var box2Wave = injectBox2Wave(svg, ROW_CENTER_X, ROW_Y);
       if (box2Wave) {
         box2EnterTl.fromTo(box2Wave,
@@ -605,7 +607,7 @@
           { attr: { r: 180 }, opacity: 0,
             duration: 1.0, ease: 'power2.out',
             immediateRender: false },
-          2.4);
+          3.5);
       }
 
       /* 호환용 — 외부에서 참조 가능한 이름 유지. */
