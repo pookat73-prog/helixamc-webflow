@@ -338,6 +338,38 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   transform-origin: center center !important;
 }
 
+/* ── #helix-for-family — 자식 div 들 스크롤 진입 시 엇박 페이드 인 ──
+   div-block-57 / div-block-132 의 직계 div 자식들을 DOM 순서대로
+   엇박 stagger 로 등장. opacity + Y 슬라이드 + blur/saturate/brightness
+   풀림으로 화사하게. div-block-57 자식은 추가로 강한 스케일 인.
+   트리거는 IntersectionObserver (about.js).
+   ─────────────────────────────────────────────────────────────── */
+#helix-for-family > div.div-block-57 > div,
+#helix-for-family > div.div-block-132 > div {
+  opacity: 0;
+  filter: blur(10px) saturate(1.4) brightness(1.15);
+  transition:
+    opacity    0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    transform  1.20s cubic-bezier(0.22, 1, 0.36, 1),
+    filter     0.95s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+/* div-block-132 자식 — Y 슬라이드 + 살짝의 스케일 */
+#helix-for-family > div.div-block-132 > div {
+  transform: translateY(28px) scale(0.96);
+}
+/* div-block-57 자식 — 더 강한 스케일 인 (히어로 타이틀 톤) */
+#helix-for-family > div.div-block-57 > div {
+  transform: translateY(20px) scale(0.84);
+  transform-origin: 50% 60%;
+}
+#helix-for-family > div.div-block-57 > div.is-family-in,
+#helix-for-family > div.div-block-132 > div.is-family-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0) saturate(1) brightness(1);
+}
+
 /* ── div-block-116 두 자식 — 인너 섀도우 파동 (통..통..통..) ───────
    웹플로우 원본 inset shadow: 0 0 1.5vw 0.4vw rgba(0,117,214,1).
    @keyframes 안의 !important 는 스펙상 무시되므로, alpha 를 @property
