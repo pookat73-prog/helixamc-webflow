@@ -859,16 +859,39 @@
       return matched;
     }
 
+    function armObserver() {
+      var sparks = document.querySelectorAll('.about-history-spark');
+      if (!sparks.length || !('IntersectionObserver' in window)) {
+        sparks.forEach(function (s) { s.classList.add('is-running'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-running');
+            io.unobserve(e.target);
+          }
+        });
+      }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+      sparks.forEach(function (s) {
+        if (!s.dataset.sparkObserved) {
+          s.dataset.sparkObserved = '1';
+          io.observe(s);
+        }
+      });
+    }
+
     function tick() {
       var targets = findTargets();
       var any = false;
       targets.forEach(function (el) { if (applyTo(el)) any = true; });
       log('history spark: targets=' + targets.length + ' applied=' + any);
+      if (any) armObserver();
       return any;
     }
 
     if (tick()) return;
-    /* 늦게 그려지는 경우 대비 — MutationObserver + 재시도 */
+    /* 늦게 그려지는 경우 대비 — 재시도 */
     var tries = 0;
     var iv = setInterval(function () {
       tries++;
