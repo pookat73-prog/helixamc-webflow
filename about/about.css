@@ -431,3 +431,42 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   100% { --pulse-blue-a: 0.32; }
 }
 
+/* ── Subheader (서브헤더) ──
+   호버: 블루 / 액티브(스크롤스파이/클릭): 블루 + 밑줄 */
+.subheader_click-area {
+  position: relative;
+  text-decoration: none !important;
+}
+.subheader_click-area .subheader_title {
+  transition: color 0.2s ease;
+}
+.subheader_click-area::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -6px;
+  height: 2px;
+  background: #0075d6;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.subheader_click-area:hover .subheader_title,
+.subheader_click-area.is-active .subheader_title,
+.subheader_click-area.w--current .subheader_title {
+  color: #0075d6 !important;
+}
+.subheader_click-area.is-active::after,
+.subheader_click-area.w--current::after {
+  transform: scaleX(1);
+}
+.subheader_click-area:hover::after {
+  transform: scaleX(0.6);
+}
+.subheader_click-area.is-active:hover::after,
+.subheader_click-area.w--current:hover::after {
+  transform: scaleX(1);
+}
+
