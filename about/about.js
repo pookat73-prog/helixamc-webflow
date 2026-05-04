@@ -956,9 +956,7 @@
     var TOP_SEL    = '.about_history_title_official-font';
     var BOTTOM_SEL = '.about_history_title_sub-font';
     var COLOR      = '#0075d6';
-    var STROKE     = 1.5;
-    var AMP        = 14;
-    var WAVES      = 4;       /* 사인파 cycle 수 */
+    var STROKE     = 0.6;
 
     function build() {
       var top    = document.querySelector(TOP_SEL);
@@ -996,18 +994,9 @@
       svg.style.zIndex        = '5';
       svg.style.overflow      = 'visible';
 
-      /* 사인파 path 빌드 */
-      var dy    = endY - startY;
-      var steps = Math.max(40, Math.floor(dy / 6));
-      var d     = '';
-      for (var i = 0; i <= steps; i++) {
-        var t = i / steps;
-        var baseX = startX + (endX - startX) * t;
-        var y     = startY + dy * t;
-        var env   = Math.sin(t * Math.PI);                 /* 양 끝 0 */
-        var x     = baseX + Math.sin(t * Math.PI * 2 * WAVES) * AMP * env;
-        d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
-      }
+      /* 직선 path */
+      var d = 'M' + startX.toFixed(1) + ',' + startY.toFixed(1) +
+              ' L' + endX.toFixed(1) + ',' + endY.toFixed(1);
 
       var path = document.createElementNS(svgNS, 'path');
       path.setAttribute('d', d);
