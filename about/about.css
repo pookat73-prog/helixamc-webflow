@@ -217,15 +217,33 @@
     rgba(0, 117, 214, 0)    100%
   );
   background-repeat: no-repeat;
-  background-size: 0% 45%;
-  background-position: 0 105%;
+  background-size: 0% 75%;
+  background-position: 0 110%;
   transition: background-size 1.4s cubic-bezier(0.86, 0, 0.07, 1);
   /* 라인 끊김 방지 */
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 .is-highlight-target.is-highlighted {
-  background-size: 100% 45%;
+  background-size: 100% 75%;
+}
+
+/* ── 쫀득한 ease-in-out h2 등장 ───────────────────────────────────
+   극단적 S-커브 (easeInOutExpo) + 살짝의 scale + Y 슬라이드.
+   초반 거의 정지 → 중반 폭발적 → 후반 부드럽게 정착해 '쫀득한' 체감.
+   ─────────────────────────────────────────────────────────────── */
+#w-node-_12c5d099-8df6-4231-81c4-5ea6bfff211d-e0c16bc5 > h2 {
+  opacity: 0;
+  transform: translateY(28px) scale(0.92);
+  transform-origin: left center;
+  transition:
+    opacity   1.4s cubic-bezier(0.87, 0, 0.13, 1),
+    transform 1.6s cubic-bezier(0.87, 0, 0.13, 1);
+  will-change: opacity, transform;
+}
+#w-node-_12c5d099-8df6-4231-81c4-5ea6bfff211d-e0c16bc5 > h2.is-chewy-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
