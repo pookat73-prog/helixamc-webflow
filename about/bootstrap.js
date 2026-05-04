@@ -39,6 +39,10 @@
   var BRANCH = 'main';
 
   var FILES = [
+    /* 헤더 + 햄버거 메뉴 — 홈과 동일 사양 */
+    'global/global.css',
+    'home/global/hamburger.css',
+    'home/global/hamburger.js',
     'about/about.css',
     'about/about.js',
     /* 카드덱 (.just-box_qqqqqqq) — home/global 공유 모듈 */
