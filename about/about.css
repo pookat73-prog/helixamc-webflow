@@ -340,19 +340,27 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 
 /* ── div-block-116 두 자식 — 인너 섀도우 파동 (통..통..통..) ───────
    웹플로우 원본 inset shadow: 0 0 1.5vw 0.4vw rgba(0,117,214,1).
-   alpha 만 키프레임으로 변동 → 확 들어왔다가 천천히 꺼지고 길게 쉼.
-   두 div 동시에 울림.
+   @keyframes 안의 !important 는 스펙상 무시되므로, alpha 를 @property
+   변수로 애니메이션하고 box-shadow 자체는 셀렉터에서 !important 로 고정.
+   두 div 동시에 울림. 확 들어왔다 천천히 꺼지고 길게 쉼.
    ─────────────────────────────────────────────────────────────── */
+@property --pulse-blue-a {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: false;
+}
 #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(1),
 #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(2) {
+  --pulse-blue-a: 0;
+  box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, var(--pulse-blue-a)) !important;
   animation: divBlock116InnerPulse 3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  will-change: box-shadow;
+  will-change: --pulse-blue-a;
 }
 @keyframes divBlock116InnerPulse {
-  0%   { box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, 0)    !important; }
-  6%   { box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, 1)    !important; }
-  28%  { box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, 0.18) !important; }
-  45%  { box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, 0)    !important; }
-  100% { box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, 0)    !important; }
+  0%   { --pulse-blue-a: 0; }
+  6%   { --pulse-blue-a: 1; }
+  28%  { --pulse-blue-a: 0.18; }
+  45%  { --pulse-blue-a: 0; }
+  100% { --pulse-blue-a: 0; }
 }
 
