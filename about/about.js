@@ -1660,7 +1660,7 @@
   'use strict';
 
   function bind() {
-    var els = Array.prototype.slice.call(document.querySelectorAll('.ts-vet, .hj-vet, .sy-vet'));
+    var els = Array.prototype.slice.call(document.querySelectorAll('.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet'));
     if (!els.length) return false;
 
     if (!('IntersectionObserver' in window)) {
@@ -1671,10 +1671,12 @@
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
+        /* 한 행이 3장 단위라 stagger 도 3 단위로 리셋 — 두번째 행이
+           나중에 진입해도 카드별 누적 지연이 무한정 늘어나지 않음. */
         var idx = els.indexOf(entry.target);
         setTimeout(function () {
           entry.target.classList.add('is-doctor-in');
-        }, idx * 150);
+        }, (idx % 3) * 150);
         io.unobserve(entry.target);
       });
     }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
