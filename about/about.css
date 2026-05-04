@@ -300,43 +300,22 @@
           mask-position: 0% 0%;
 }
 
-/* ── div-block-108 원형 푸른 글로우 — 12시 양쪽으로 점화 ──────────
-   ::before = 오른쪽 반 ring (12시→6시 CW), ::after = 왼쪽 반 ring (12시→6시 CCW).
-   clip-path inset 의 bottom 값을 100% → 0 으로 transition → 위에서 아래로 확장.
-   radial-gradient mask 로 element 영역(가운데) 비워서 콘텐츠 가리지 않음.
-   @property 없이 clip-path 기반이라 모든 모던 브라우저에서 작동.
+/* ── div-block-108 — Webflow 후광 자체를 transition 으로 점화 ──────
+   pseudo 추가 ring 시도는 외곽선처럼 보여 폐기.
+   초기엔 box-shadow 자체를 none 으로 덮어쓰고, .is-burning 시점에
+   box-shadow 가 부드럽게 켜지도록 transition.
+   blur/spread/alpha 모두 0 → max 로 동시 보간 → 후광이 자연스럽게 발화.
    ─────────────────────────────────────────────────────────────── */
 #w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108 {
-  position: relative;
-  overflow: visible !important;
+  /* 초기: 후광 무시 (Webflow 가 박은 box-shadow 가 있어도 강제로 끔) */
+  box-shadow: 0 0 0 0 rgba(0, 117, 214, 0) !important;
+  transition: box-shadow 1.9s cubic-bezier(0.45, 0.05, 0.55, 1) !important;
 }
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108::before,
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108::after {
-  content: "";
-  position: absolute;
-  inset: -22%;
-  border-radius: 50%;
-  pointer-events: none;
-  background: rgba(0, 117, 214, 0.95);
-  /* 가운데(element 영역) 비우고 외곽 ring 만 보이도록 */
-  -webkit-mask-image: radial-gradient(circle, transparent 42%, #000 52%, #000 100%);
-          mask-image: radial-gradient(circle, transparent 42%, #000 52%, #000 100%);
-  filter: blur(20px);
-  transition: clip-path 1.9s cubic-bezier(0.45, 0.05, 0.55, 1);
-}
-/* ::before = 오른쪽 반 (12시 위에서 아래로 자라남) */
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108::before {
-  clip-path: inset(0 0 100% 50%);
-}
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning::before {
-  clip-path: inset(0 0 0 50%);
-}
-/* ::after = 왼쪽 반 (12시 위에서 아래로 자라남) */
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108::after {
-  clip-path: inset(0 50% 100% 0);
-}
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning::after {
-  clip-path: inset(0 50% 0 0);
+#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning {
+  /* 점화 완료: 푸른 후광 풀로 켜짐. Webflow 디자이너 후광과 비슷한 톤. */
+  box-shadow:
+    0 0 40px 6px rgba(0, 117, 214, 0.55),
+    0 0 80px 12px rgba(0, 117, 214, 0.30) !important;
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
