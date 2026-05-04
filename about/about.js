@@ -750,11 +750,14 @@
         if (window.__hexS1Tl) window.__hexS1Tl.progress(1);
       }
 
+      /* SPREAD: box1.center → box2.top 까지 (구간 1과 2 사이에서 펼침 완료).
+         이전엔 box2.center 까지 였는데, 요구사항: box2 도달 전에 펼침이 끝나야
+         box2 구간은 합체 시퀀스만 진행됨. */
       window.ScrollTrigger.create({
         trigger: box1Ref || holder,
         endTrigger: box2Ref || box1Ref || holder,
         start: 'center center',
-        end: 'center center',
+        end: 'top center',
         scrub: 1,
         animation: spreadTl,
         onEnter: forceS1Done,
@@ -765,17 +768,15 @@
         }
       });
 
-      /* box2 진입 자동 시퀀스 — 한 번 onEnter 시 play, onLeaveBack 시 reverse
-         (역스크롤 시 자연스럽게 spread 상태로 복귀) */
-      /* spread 가 끝나는 시점(box2 center == viewport center)에 box2 시퀀스
-         발사. 이전엔 'top 65%' 라 spread 중에 발사되어 텍스트/회전이
-         펼침과 겹쳐 나옴. */
+      /* BOX2 ENTER: box2 영역 전체에 걸쳐 스크럽 — 합체가 box2 끝날 때 완성.
+         start: box2.top 이 viewport center → 펼침 완료 직후 이어붙음
+         end:   box2.bottom 이 viewport center → box2 끝에서 합체 완성 */
       window.ScrollTrigger.create({
         trigger: box2Ref || holder,
-        start: 'center center',
-        onEnter:     function () { box2EnterTl.play(); },
-        onEnterBack: function () { box2EnterTl.play(); },
-        onLeaveBack: function () { box2EnterTl.reverse(); }
+        start: 'top center',
+        end: 'bottom center',
+        scrub: 1,
+        animation: box2EnterTl
       });
 
       log('section 2 ready — spread:' + spreadTl.duration().toFixed(2) +
