@@ -317,27 +317,23 @@
   box-shadow: 0 -0.7vw 1.0vw -0.25vw rgba(0, 117, 214, 0.7) !important;
 }
 
-/* ── 텍스트 블록 wrapper 투명도 마스크 ────────────────────────────
-   가운데 좁은 띠만 투명 → 그 위치의 표/배경만 사라지고
-   위/아래는 그대로 보임. 텍스트가 별도 레이어에 있으면 텍스트는 살아있음.
+/* ── 표 wrapper 투명도 마스크 ──────────────────────────────────
+   .lkujjghlbkjb 가 깔린 하단 영역에서 표가 비치지 않도록
+   아래쪽은 완전히 투명, 위로 갈수록 슬슬 풀려서 보이게.
    ─────────────────────────────────────────────────────────────── */
-body > section.blackframe_image-h > section.clearframe_connect > div > div > div:nth-child(1) > div {
+body > section.blackframe_image-h > section.clearframe_connect > div > div > div.lkujjghlbkjb {
   -webkit-mask-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 42%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0) 58%,
-    rgba(0, 0, 0, 1) 66%,
-    rgba(0, 0, 0, 1) 100%);
+    rgba(0, 0, 0, 1) 30%,
+    rgba(0, 0, 0, 0) 70%,
+    rgba(0, 0, 0, 0) 100%);
           mask-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 42%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0) 58%,
-    rgba(0, 0, 0, 1) 66%,
-    rgba(0, 0, 0, 1) 100%);
+    rgba(0, 0, 0, 1) 30%,
+    rgba(0, 0, 0, 0) 70%,
+    rgba(0, 0, 0, 0) 100%);
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
