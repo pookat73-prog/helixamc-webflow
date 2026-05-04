@@ -376,16 +376,16 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    카드 간 150ms 일정 stagger. 트리거: about.js IntersectionObserver.
    ─────────────────────────────────────────────────────────────── */
 .div-block-72 {
-  opacity: 0;
-  transform: translateX(-12px);
+  opacity: 0 !important;
+  transform: translateX(-12px) !important;
   transition:
     opacity   1.10s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.10s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 1.10s cubic-bezier(0.22, 1, 0.36, 1) !important;
   will-change: opacity, transform;
 }
 .div-block-72.is-doctor-in {
-  opacity: 1;
-  transform: translateX(0);
+  opacity: 1 !important;
+  transform: translateX(0) !important;
 }
 
 /* ── div-block-116 두 자식 — 인너 섀도우 파동 (통..통..통..) ───────
