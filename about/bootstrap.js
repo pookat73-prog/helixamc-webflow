@@ -22,6 +22,16 @@
          자연 위치에 잠깐 그려질 수 있음 → 초기 opacity:0, JS 가 중앙박스만 다시 켬 */
       '.about_hybrid-contents_box{opacity:0}';
     (document.head || document.documentElement).appendChild(s);
+    /* 안전망: 3초 안에 카드덱 init 실패하면 cards visibility 강제 해제
+       (실패해도 카드가 영영 안 보이는 사고 방지) */
+    setTimeout(function () {
+      if (!document.querySelector('.helix-deck-host')) {
+        var fix = document.createElement('style');
+        fix.textContent = '.just-box_qqqqqqq{visibility:visible!important}';
+        document.head.appendChild(fix);
+        console.warn('[about-bootstrap] card-stack 미가동 → cards visibility 강제 해제');
+      }
+    }, 3000);
   } catch (e) {}
 
   var OWNER  = 'pookat73-prog';

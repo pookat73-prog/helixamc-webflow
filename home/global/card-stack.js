@@ -109,9 +109,9 @@
       return false;
     }
 
-    /* 안전장치 */
-    if (cardW > window.innerWidth * 0.8) {
-      log('⚠️ card width > 80% viewport, ABORT');
+    /* 안전장치: 카드가 viewport 보다 넓으면 (약간의 여유 5%) ABORT */
+    if (cardW > window.innerWidth * 1.05) {
+      log('⚠️ card width > 105% viewport, ABORT (viewport=' + window.innerWidth + ', card=' + cardW + ')');
       return true;
     }
 
