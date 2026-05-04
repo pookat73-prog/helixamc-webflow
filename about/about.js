@@ -337,9 +337,9 @@
     });
     svgDefs.appendChild(sGrad);
 
-    /* 내경 hex clipPaths (scale 0.82) — 창문 영역만 반짝임, 외곽선 없음 */
+    /* 내경 hex clipPaths (scale 0.92) — 외곽선 살짝만 비우고 거의 외경에 근접 */
     hexes.forEach(function(hx) {
-      var iv = vertices(hx.cx, hx.cy, 0.82);
+      var iv = vertices(hx.cx, hx.cy, 0.92);
       var cp = document.createElementNS(svgNS, 'clipPath');
       cp.setAttribute('id', 'clip-inner-' + hx.id);
       var cpP = document.createElementNS(svgNS, 'path');
@@ -513,7 +513,7 @@
           gsap.fromTo(moveG,
             { x: -travel },
             { x: travel,
-              duration: 2.2, ease: 'power1.inOut',
+              duration: 4.5, ease: 'power3.in',
               repeat: -1, repeatDelay: 4.0
             }
           );
