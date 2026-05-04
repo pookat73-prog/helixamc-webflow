@@ -967,7 +967,7 @@
       var botR    = bottom.getBoundingClientRect();
       var sx      = window.scrollX, sy = window.scrollY;
       var startX  = topR.left + topR.width / 2 + sx;
-      var startY  = topR.top  + topR.height / 2 + sy;     /* 정중앙 */
+      var startY  = topR.bottom + sy + 8;                  /* 최초 문단 바로 아래 */
       var endX    = botR.left + botR.width / 2 + sx;
       var endY    = botR.top  + sy - 8;                    /* sub-font 위에서 끝 */
 
