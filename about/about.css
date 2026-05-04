@@ -317,11 +317,11 @@
   box-shadow: 0 -0.7vw 1.0vw -0.25vw rgba(0, 117, 214, 0.7) !important;
 }
 
-/* ── text-block-13-copy 투명도 마스크 ──────────────────────────────
+/* ── 텍스트 블록 wrapper 투명도 마스크 ────────────────────────────
    겹쳐진 텍스트와 시각적으로 안 겹치도록 그라데이션 마스크.
    세로 방향 (위 진하고 아래로 갈수록 투명) 으로 fade.
    ─────────────────────────────────────────────────────────────── */
-body > section.blackframe_image-h > section.clearframe_connect > div > div > div:nth-child(1) > div > div.text-block-13-copy {
+body > section.blackframe_image-h > section.clearframe_connect > div > div > div:nth-child(1) > div {
   -webkit-mask-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 1)    0%,
