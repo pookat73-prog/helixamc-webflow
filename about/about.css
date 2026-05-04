@@ -184,40 +184,38 @@
 }
 
 /* ── History "최초" 광선 ─────────────────────────────────────────
-   #329ad6 사선 광선이 한 번 훑고 완전히 사라짐. 1초 딜레이 후 루프.
-   JS 가 요소를 찾은 뒤 .spark-ready 를 붙여야만 적용.
+   텍스트를 건드리지 않고 오버레이 빔(helix-spark-beam)을 얹음.
+   mix-blend-mode:screen → 어떤 텍스트 색이어도 광선이 자연스럽게 빛남.
    ─────────────────────────────────────────────────────────────── */
-.about_history_title_official-font .helix-spark,
-.about_history_title_official-font.helix-spark {
-  display: inline !important;
-  color: inherit !important;
+.helix-spark-beam {
+  position: absolute !important;
+  inset: -4px -16px !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  mix-blend-mode: screen !important;
   background-image: linear-gradient(
     115deg,
-    currentColor  0%,
-    currentColor  42%,
-    rgba(50,154,214,0.55) 46%,
-    #329ad6       49%,
-    #8fd0f5       51%,
-    #329ad6       53%,
-    rgba(50,154,214,0.55) 57%,
-    currentColor  61%,
-    currentColor  100%
+    transparent                  0%,
+    transparent                  38%,
+    rgba(50, 154, 214, 0.0)      42%,
+    rgba(50, 154, 214, 0.55)     47%,
+    rgba(180, 225, 255, 0.9)     50%,
+    rgba(50, 154, 214, 0.55)     53%,
+    rgba(50, 154, 214, 0.0)      58%,
+    transparent                  62%,
+    transparent                  100%
   ) !important;
-  background-size: 280% 100% !important;
+  background-size: 300% 100% !important;
   background-repeat: no-repeat !important;
   background-position: 160% center !important;
-  -webkit-background-clip: text !important;
-          background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
 }
-.about_history_title_official-font .helix-spark.is-running,
-.about_history_title_official-font.helix-spark.is-running {
-  animation: helixSpark 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+.helix-spark-beam.is-running {
+  animation: helixBeamSweep 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
 }
-@keyframes helixSpark {
-  0%    { background-position: 160% center; }  /* 빔 오른쪽 대기 */
-  44%   { background-position: -60% center; }  /* 빔 왼쪽 탈출 완료 */
-  100%  { background-position: -60% center; }  /* 1초 이상 정적 */
+@keyframes helixBeamSweep {
+  0%   { background-position: 160% center; }
+  44%  { background-position: -60% center; }
+  100% { background-position: -60% center; }
 }
 
 /* ── History Timeline 가운데 펼침 ────────────────────────────────
