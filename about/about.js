@@ -810,32 +810,55 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* ── "최초" 광선 ────────────────────────────────────────────────
-     텍스트는 절대 건드리지 않음 — 빔 오버레이 div 를 요소 위에 올림.
-     mix-blend-mode:screen 으로 텍스트 색상과 무관하게 광선이 보임.
+  /* ── "최초" 사선 물들기 ─────────────────────────────────────────
+     런타임에 실제 텍스트 색을 읽어 background-clip:text 그라데이션에
+     명시 색상값으로 박음 → currentColor / transparent 문제 없음.
+     GSAP 으로 backgroundPosition 을 animate → 사선 wash 효과.
      ─────────────────────────────────────────────────────────────── */
   function initHistorySpark() {
     var SEL = '.about_history_title_official-font';
 
-    function injectBeam(el) {
-      if (el.dataset.beamDone) return false;
-      el.dataset.beamDone = '1';
+    function applyWash(el) {
+      if (el.dataset.washDone) return false;
+      el.dataset.washDone = '1';
 
+      /* 실제 텍스트 색 읽기 */
       var cs = getComputedStyle(el);
-      if (cs.position === 'static') el.style.position = 'relative';
+      var fill = cs.getPropertyValue('-webkit-text-fill-color');
+      var base = (fill && fill !== 'rgba(0, 0, 0, 0)' && fill !== 'transparent')
+        ? fill : cs.color;
+      if (!base || base === 'rgba(0, 0, 0, 0)' || base === 'transparent') base = '#ffffff';
+      log('history spark base=' + base);
 
-      var beam = document.createElement('span');
-      beam.className = 'helix-spark-beam';
-      el.appendChild(beam);
+      /* background-clip:text 그라데이션 적용 */
+      var grad = 'linear-gradient(115deg,' +
+        base    + ' 0%,'  +
+        base    + ' 36%,' +
+        '#0075d6 49%,'    +
+        '#0075d6 51%,'    +
+        base    + ' 64%,' +
+        base    + ' 100%)';
+      el.style.backgroundImage     = grad;
+      el.style.backgroundSize      = '300% 100%';
+      el.style.backgroundRepeat    = 'no-repeat';
+      el.style.backgroundPosition  = '160% center';
+      el.style.webkitBackgroundClip = 'text';
+      el.style.backgroundClip      = 'text';
+      el.style.webkitTextFillColor = 'transparent';
 
-      if (!('IntersectionObserver' in window)) {
-        beam.classList.add('is-running');
-        return true;
+      function start() {
+        if (!window.gsap) return;
+        gsap.timeline({ repeat: -1, repeatDelay: 1, delay: 0.4 })
+          .fromTo(el,
+            { backgroundPosition: '160% center' },
+            { backgroundPosition: '-60% center', duration: 0.75, ease: 'power2.inOut' }
+          );
       }
+
+      if (!('IntersectionObserver' in window)) { start(); return true; }
       var io = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
-        beam.classList.add('is-running');
-        io.disconnect();
+        io.disconnect(); start();
       }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
       io.observe(el);
       return true;
@@ -845,7 +868,7 @@
       var els = document.querySelectorAll(SEL);
       log('history spark: found=' + els.length);
       var any = false;
-      els.forEach(function (el) { if (injectBeam(el)) any = true; });
+      els.forEach(function (el) { if (applyWash(el)) any = true; });
       return any;
     }
 
