@@ -914,6 +914,29 @@
     io.observe(el);
   }
 
+  /* ── 쫀득한 h2 등장 ────────────────────────────────────────────
+     CSS 가 초기 숨김 + transition 정의. JS 는 IntersectionObserver
+     로 진입 시 .is-chewy-in 부착 → fade + Y 슬라이드 + scale.
+     ─────────────────────────────────────────────────────────── */
+  function initChewyH2() {
+    var SEL = '#w-node-_12c5d099-8df6-4231-81c4-5ea6bfff211d-e0c16bc5 > h2';
+    var el = document.querySelector(SEL);
+    log('chewy h2 target=' + !!el);
+    if (!el) return;
+
+    function trigger() {
+      if (el.dataset.chewyDone) return;
+      el.dataset.chewyDone = '1';
+      el.classList.add('is-chewy-in');
+    }
+
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(el);
+  }
+
   /* ── 타임라인 가운데 펼침 ────────────────────────────────────── */
   function initHistoryTimeline() {
     var BADGE_SEL = '.about_history_time-line_contents';
@@ -1251,6 +1274,7 @@
     initViewport60FadeIn();
     initHistorySpark();
     initStandardFontHighlight();
+    initChewyH2();
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
