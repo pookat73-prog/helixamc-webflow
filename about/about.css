@@ -318,22 +318,26 @@
 }
 
 /* ── 텍스트 블록 wrapper 투명도 마스크 ────────────────────────────
-   겹쳐진 텍스트와 시각적으로 안 겹치도록 그라데이션 마스크.
-   세로 방향 (위 진하고 아래로 갈수록 투명) 으로 fade.
+   가운데 좁은 띠만 투명 → 그 위치의 표/배경만 사라지고
+   위/아래는 그대로 보임. 텍스트가 별도 레이어에 있으면 텍스트는 살아있음.
    ─────────────────────────────────────────────────────────────── */
 body > section.blackframe_image-h > section.clearframe_connect > div > div > div:nth-child(1) > div {
   -webkit-mask-image: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 1)    0%,
-    rgba(0, 0, 0, 1)    35%,
-    rgba(0, 0, 0, 0.25) 75%,
-    rgba(0, 0, 0, 0)    100%);
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 42%,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0) 58%,
+    rgba(0, 0, 0, 1) 66%,
+    rgba(0, 0, 0, 1) 100%);
           mask-image: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 1)    0%,
-    rgba(0, 0, 0, 1)    35%,
-    rgba(0, 0, 0, 0.25) 75%,
-    rgba(0, 0, 0, 0)    100%);
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 42%,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0) 58%,
+    rgba(0, 0, 0, 1) 66%,
+    rgba(0, 0, 0, 1) 100%);
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
