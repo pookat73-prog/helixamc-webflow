@@ -210,22 +210,40 @@
    글씨는 inline-painted text 가 위에 그대로 있어 절대 가려지지 않음.
    ─────────────────────────────────────────────────────────────── */
 .is-highlight-target {
+  position: relative;
+  /* 형광펜 fill: #329ad6 반투명 단색. 0% → 100% width 로 직사각형 sweep */
   background-image: linear-gradient(
     to right,
-    rgba(0, 117, 214, 0.55) 0%,
-    rgba(0, 117, 214, 0.35) 60%,
-    rgba(0, 117, 214, 0)    100%
+    rgba(50, 154, 214, 0.4),
+    rgba(50, 154, 214, 0.4)
   );
   background-repeat: no-repeat;
   background-size: 0% 75%;
   background-position: 0 110%;
-  transition: background-size 1.4s cubic-bezier(0.86, 0, 0.07, 1);
-  /* 라인 끊김 방지 */
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  transition: background-size 1.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.18s;
+}
+/* 얇은 직사각형 커서 — 페이드인 후 fill 과 함께 좌→우 이동 */
+.is-highlight-target::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8%;
+  width: 3px;
+  height: 75%;
+  background: #329ad6;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition:
+    opacity 0.18s ease-out,
+    left    1.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.18s;
 }
 .is-highlight-target.is-highlighted {
   background-size: 100% 75%;
+}
+.is-highlight-target.is-highlighted::before {
+  opacity: 1;
+  left: calc(100% - 3px);
 }
 
 /* ── 쫀득한 ease-in-out h2 등장 ───────────────────────────────────
