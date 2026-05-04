@@ -173,8 +173,8 @@ body {
     </div>
   </div>
   <div id="ctrl-s4" style="display:none">
-    <div class="row"><label>rotateX</label><input id="s4-rx" type="range" min="0" max="88" value="75" step="1"><span class="v" id="s4-rxV">75</span></div>
-    <div class="row"><label>hex rotate</label><input id="s4-rot" type="range" min="0" max="90" value="30" step="1"><span class="v" id="s4-rotV">30</span></div>
+    <div class="row"><label>가로 스케일</label><input id="s4-sx" type="range" min=".05" max="1" value=".55" step=".01"><span class="v" id="s4-sxV">.55</span></div>
+    <div class="row"><label>세로 스케일</label><input id="s4-sy" type="range" min=".01" max=".5" value=".08" step=".01"><span class="v" id="s4-syV">.08</span></div>
   </div>
   <div id="ctrl-s5" style="display:none">
     <div class="row"><label>심볼 크기</label><input id="s5-sym" type="range" min=".5" max="2" value="1" step=".05"><span class="v" id="s5-symV">1.0</span></div>
@@ -452,26 +452,34 @@ function applyS3(svg, dur) {
   });
 }
 
-/* Stage 4: 완전 겹침 + 가로로 누움 */
+/* Stage 4: 원이 작아지며 가로 타원으로 눕는 효과 */
 function applyS4(svg, dur) {
-  var rx  = +document.getElementById('s4-rx').value;
-  var rot = +document.getElementById('s4-rot').value;
+  var sx = +document.getElementById('s4-sx').value;
+  var sy = +document.getElementById('s4-sy').value;
+  var targetCircle = circleBezierPath(CX, CY);
+
   ORDER.forEach(function(id) {
     var hx = META[id];
     var g = svg.querySelector('.hex-'+id);
+    var p = g.querySelector('.hex-path');
+    /* 원점 복귀 + 가로로 납작하게 눌림 */
     gsap.to(g, {
-      x: CX - hx.cx, y: CY - hx.cy,
-      scale: 0.6, rotation: rot, rotationY: 0,
+      x: 0, y: 0,
+      scaleX: sx, scaleY: sy,
+      rotation: 0, rotationY: 0,
       duration: dur, ease: 'power2.inOut',
-      svgOrigin: hx.cx + ' ' + hx.cy,
+      svgOrigin: CX + ' ' + CY,
       overwrite: 'auto'
     });
+    /* S1·S2에서 바로 넘어와도 path를 원으로 */
+    gsap.to(p, {
+      attr: { d: targetCircle },
+      duration: dur * 0.7, ease: 'power2.inOut', overwrite: 'auto'
+    });
+    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.3, overwrite: 'auto' });
   });
-  /* 컨테이너 rotateX → 눕는 효과 */
-  gsap.to(document.getElementById('hex-wrap'), {
-    rotationX: rx,
-    duration: dur, ease: 'power2.inOut'
-  });
+  /* hex-wrap 3D 리셋 */
+  gsap.to(document.getElementById('hex-wrap'), { rotationX: 0, duration: dur });
 }
 
 /* Stage 5: 심볼 + 호 */
@@ -539,7 +547,7 @@ for (var di = 0; di < 5; di++) {
 
 /* 슬라이더 라이브 값 표시 */
 [['s2-step','s2-stepV',0],['s2-scale','s2-scaleV',2],
- ['s4-rx','s4-rxV',0],['s4-rot','s4-rotV',0],
+ ['s4-sx','s4-sxV',2],['s4-sy','s4-syV',2],
  ['s5-sym','s5-symV',1],['s5-arc','s5-arcV',0]
 ].forEach(function(t){
   var inp = document.getElementById(t[0]);
