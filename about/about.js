@@ -910,8 +910,10 @@
         el.style.transitionDelay = (i * 0.09) + 's';
       });
       texts.forEach(function (el, i) {
-        /* 텍스트: 처음엔 숨김 (왼쪽으로 살짝 밀려있다 미닫이로 등장) */
-        el.style.transform = 'translateX(-40px)';
+        /* 텍스트: 뱃지가 있는 화면 정중앙에서 출발 → 자연 위치로 미닫이 슬라이드 */
+        var rect = el.getBoundingClientRect();
+        var offset = Math.round(vcx - rect.left);  /* 텍스트 왼쪽 끝을 화면 중앙으로 */
+        el.style.transform = 'translateX(' + offset + 'px)';
         el.style.opacity = '0';
         el.classList.add('js-ready');
         el.style.transitionDelay = (i * 0.09) + 's';
