@@ -859,6 +859,7 @@
         if (!window.gsap) return;
         gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 0.5 })
           .to(span, { color: '#0075d6', duration: 1.4, ease: 'sine.inOut' })
+          .to(span, { color: '#0075d6', duration: 2.0 })          /* 2초 유지 */
           .to(span, { color: base,     duration: 1.2, ease: 'sine.inOut' });
       }
 
