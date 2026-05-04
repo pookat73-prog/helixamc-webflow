@@ -529,7 +529,11 @@
         var rowX  = ROW_CENTER_X + (i - 2) * ROW_STEP;
         var rowDx = rowX - hx.cx;
         var rowDy = ROW_Y - hx.cy;
-        var mergeDx = ROW_CENTER_X - hx.cx; /* 모두 정중앙으로 */
+        /* 켜켜히 stack — 정중앙 한 점이 아닌 COMP_STEP 간격으로 살짝 겹침.
+           (최종적으론 한 점 합체가 목표지만 우선 단계적 겹침으로 시각적
+           layering 보존.) */
+        var mergeX  = ROW_CENTER_X + (i - 2) * COMP_STEP;
+        var mergeDx = mergeX - hx.cx;
 
         var spreadHex = gsap.timeline({
           defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
