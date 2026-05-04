@@ -1660,7 +1660,7 @@
   'use strict';
 
   function bind() {
-    var els = Array.prototype.slice.call(document.querySelectorAll('.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet'));
+    var els = Array.prototype.slice.call(document.querySelectorAll('.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet'));
     if (!els.length) return false;
 
     if (!('IntersectionObserver' in window)) {
