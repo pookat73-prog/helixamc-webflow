@@ -195,11 +195,7 @@
   will-change: opacity, transform;
 }
 .about_history_time-line_contents-copy_title.js-ready {
-  opacity: 0;
-  transform: translateX(-80px);  /* 중앙에서 오른쪽으로 → 자연 위치 */
-  transition:
-    opacity  0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  /* transform / opacity / transition 모두 JS 가 inline 으로 박음 (다른 타이밍) */
   will-change: opacity, transform;
 }
 .about_history_time-line_contents.is-visible,
