@@ -370,6 +370,24 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   filter: blur(0) saturate(1) brightness(1);
 }
 
+/* ── 의료진 카드 (.div-block-72) — 잔잔한 슬라이드 페이드 ─────────
+   켜켜히 쌓인 카드 톤에 맞춰 미세하게 위로 들어올리듯 등장.
+   blur/saturate/scale 등 화려한 효과는 의도적으로 배제 (정중한 인상).
+   카드 간 150ms 일정 stagger. 트리거: about.js IntersectionObserver.
+   ─────────────────────────────────────────────────────────────── */
+.div-block-72 {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity   1.10s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.10s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.div-block-72.is-doctor-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ── div-block-116 두 자식 — 인너 섀도우 파동 (통..통..통..) ───────
    웹플로우 원본 inset shadow: 0 0 1.5vw 0.4vw rgba(0,117,214,1).
    @keyframes 안의 !important 는 스펙상 무시되므로, alpha 를 @property
