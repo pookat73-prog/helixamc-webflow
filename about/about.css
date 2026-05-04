@@ -183,72 +183,9 @@
   filter: blur(0);
 }
 
-/* History timeline — JS가 js-anim-ready 클래스를 붙인 후에만 숨김 적용
-   (JS 미로드 시 항상 보임 보장) */
-.about_history_time-line_contents.js-anim-ready {
-  opacity: 0;
-  transform: translateX(48px);
-  transition:
-    opacity 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: opacity, transform;
-}
-.about_history_time-line_contents.is-visible {
-  opacity: 1 !important;
-  transform: translateX(0) !important;
-}
-
-.about_history_time-line_contents-copy_title.js-anim-ready {
-  opacity: 0;
-  transform: translateX(56px);
-  transition:
-    opacity 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: opacity, transform;
-}
-.about_history_time-line_contents-copy_title.is-visible {
-  opacity: 1 !important;
-  transform: translateX(0) !important;
-}
-
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
   transform: rotate(-6deg) !important;
   transform-origin: center center !important;
 }
 
-/* History "최초" — 광선 sweep
-   원래 텍스트 색은 currentColor 로 유지, 가운데 좁은 highlight 밴드만
-   오른쪽 → 왼쪽으로 한 번 훑고 사라짐. 이후 긴 정적 구간 후 루프. */
-.about-history-spark {
-  --spark-color: #cfeeff;
-  --spark-core: #ffffff;
-  display: inline-block !important;
-  color: inherit !important;
-  background-image: linear-gradient(
-    100deg,
-    currentColor 0%,
-    currentColor 42%,
-    var(--spark-color) 47%,
-    var(--spark-core) 50%,
-    var(--spark-color) 53%,
-    currentColor 58%,
-    currentColor 100%
-  ) !important;
-  background-size: 320% 100% !important;
-  background-repeat: no-repeat !important;
-  background-position: 160% 0 !important;
-  -webkit-background-clip: text !important;
-          background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  will-change: background-position;
-}
-/* 스크롤로 뷰포트 진입했을 때만 발사 */
-.about-history-spark.is-running {
-  animation: aboutHistorySpark 5.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0.4s infinite !important;
-}
-@keyframes aboutHistorySpark {
-  0%   { background-position: 160% 0; }
-  18%  { background-position: -60% 0; }
-  100% { background-position: -60% 0; }
-}
