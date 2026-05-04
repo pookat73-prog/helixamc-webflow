@@ -1597,3 +1597,56 @@
   window.Webflow = window.Webflow || [];
   window.Webflow.push(retry);
 })();
+
+/* ================================================================
+   #helix-for-family — 자식 div 엇박 페이드 인 (스크롤 진입 트리거)
+   - div-block-57 / div-block-132 의 직계 div 자식을 DOM 순서로 수집
+   - IntersectionObserver 가 뷰포트 진입 감지 시 stagger delay 로
+     .is-family-in 부착 (CSS 가 페이드/스케일/blur 풀림)
+   - delay: 기본 220ms 간격, 홀수 인덱스에 +90ms 오프셋으로 엇박
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var SELECTOR =
+    '#helix-for-family > div.div-block-57 > div, ' +
+    '#helix-for-family > div.div-block-132 > div';
+
+  function bind() {
+    var els = Array.prototype.slice.call(document.querySelectorAll(SELECTOR));
+    if (!els.length) return false;
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-family-in'); });
+      return true;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var idx = els.indexOf(entry.target);
+        var delay = idx * 220 + (idx % 2 ? 90 : 0); /* 엇박 */
+        setTimeout(function () {
+          entry.target.classList.add('is-family-in');
+        }, delay);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+    els.forEach(function (el) { io.observe(el); });
+    return true;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind()) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
