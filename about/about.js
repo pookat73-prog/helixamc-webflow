@@ -503,7 +503,8 @@
       var ROW_CENTER_X  = 173;
       var ROW_Y         = -75;
       var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
-      var COMP_STEP     = 46;    /* 압축 간격 — 켜켜이 쌓인 layering 이 또렷이 보이게 */
+      var COMP_STEP_X   = 26;    /* 합체 후 가로 offset — 켜켜이 비스듬한 stack */
+      var COMP_STEP_Y   = 14;    /* 합체 후 세로 offset — 대각선 layering */
       var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
 
@@ -529,11 +530,12 @@
         var rowX  = ROW_CENTER_X + (i - 2) * ROW_STEP;
         var rowDx = rowX - hx.cx;
         var rowDy = ROW_Y - hx.cy;
-        /* 켜켜히 stack — 정중앙 한 점이 아닌 COMP_STEP 간격으로 살짝 겹침.
-           (최종적으론 한 점 합체가 목표지만 우선 단계적 겹침으로 시각적
-           layering 보존.) */
-        var mergeX  = ROW_CENTER_X + (i - 2) * COMP_STEP;
+        /* 켜켜히 stack — 합쳐지지 않고 대각선으로 비스듬히 쌓인 모습이 최종 상태.
+           5장 카드가 살짝씩 옆+아래로 어긋나 layering 이 또렷이 보이게. */
+        var mergeX  = ROW_CENTER_X + (i - 2) * COMP_STEP_X;
+        var mergeY  = ROW_Y       + (i - 2) * COMP_STEP_Y;
         var mergeDx = mergeX - hx.cx;
+        var mergeDy = mergeY - hx.cy;
 
         var spreadHex = gsap.timeline({
           defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
@@ -558,22 +560,12 @@
         /* Phase A (0.0~0.6s): 비스듬 Y축 회전 */
         hexEnter.to(g, { rotationY: 32, duration: 0.6, ease: 'power2.inOut' }, 0);
 
-        /* Phase B (0.6~1.4s): 한 점으로 모임 — COMP_STEP 간격으로 켜켜이 쌓임 */
-        hexEnter.to(g, { x: mergeDx, duration: 0.8, ease: 'power2.inOut' }, 0.6);
+        /* Phase B (0.6~1.6s): 대각선으로 모이며 켜켜이 쌓임 (X+Y offset) */
+        hexEnter.to(g, { x: mergeDx, y: mergeDy, duration: 1.0, ease: 'power2.inOut' }, 0.6);
 
-        /* Hold (1.4~2.4s): 켜켜이 쌓인 상태 유지 — layering 이 또렷이 보이는 구간 */
-
-        /* Phase C (2.4~2.9s): 생존자 외 4개 fade out (한 장씩 빠지며 합쳐지는 느낌) */
-        if (id !== SURVIVOR_ID) {
-          /* stagger: 위에서부터 (ankwa=맨위 z-order) 순차 fade — 0.08s 간격 */
-          var fadeOrder = { ankwa: 0, naekwa: 0.08, oikwa: 0.16, chikwa: 0.24 };
-          hexEnter.to(g, { opacity: 0, duration: 0.35, ease: 'power2.in' }, 2.4 + (fadeOrder[id] || 0));
-        }
-
-        /* Phase D (2.9~3.5s): 생존자 정면으로 복귀 (rotationY 0) */
-        if (id === SURVIVOR_ID) {
-          hexEnter.to(g, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' }, 2.9);
-        }
+        /* Phase C (1.6~2.2s): 5장 모두 정면 복귀 — 카드 stack 같은 최종 모습.
+           합쳐지지 않고 비스듬히 쌓인 상태가 그대로 유지됨. */
+        hexEnter.to(g, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' }, 1.6);
 
         box2EnterTl.add(hexEnter, 0);
       });
@@ -599,15 +591,15 @@
         });
       }, null, 0.55);
 
-      /* Phase E (3.5~4.5s): 파동 1회 — survivor 위치에서 동심원 펄스. */
+      /* Phase E (2.2~3.0s): 파동 1회 — stack 중심에서 동심원 펄스. */
       var box2Wave = injectBox2Wave(svg, ROW_CENTER_X, ROW_Y);
       if (box2Wave) {
         box2EnterTl.fromTo(box2Wave,
           { attr: { r: 8 }, opacity: 0.9 },
           { attr: { r: 180 }, opacity: 0,
-            duration: 1.0, ease: 'power2.out',
+            duration: 0.8, ease: 'power2.out',
             immediateRender: false },
-          3.5);
+          2.2);
       }
 
       /* 호환용 — 외부에서 참조 가능한 이름 유지. */
