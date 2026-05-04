@@ -432,10 +432,10 @@ function applyS3(svg, dur) {
     var hx = META[id];
     var g  = svg.querySelector('.hex-'+id);
     var p  = g.querySelector('.hex-path');
-    /* 모두 중앙으로 완전히 겹침 */
+    /* 모두 중앙으로 완전히 겹침 — scale 없이 translate만 */
     gsap.to(g, {
       x: CX - hx.cx, y: CY - hx.cy,
-      scale: 0.65, rotation: 0, rotationY: 0,
+      scale: 1, rotation: 0, rotationY: 0,
       duration: dur, ease: 'power2.inOut',
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
