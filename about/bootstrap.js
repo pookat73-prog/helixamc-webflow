@@ -39,8 +39,12 @@
   var BRANCH = 'main';
 
   var FILES = [
-    /* 헤더 + 햄버거 메뉴 — 홈과 동일 사양 */
+    /* 헤더 + 햄버거 메뉴 — 홈과 동일 사양
+       (hamburger 의 MENU_COMING_SOON=true 모드에서 클릭 시 토스트를
+       띄우는 coming-soon.js 가 함께 로드돼야 동작함) */
     'global/global.css',
+    'home/global/coming-soon.css',
+    'home/global/coming-soon.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
     'about/about.css',
