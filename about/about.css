@@ -2,20 +2,6 @@
    HELIX AMC - ABOUT PAGE CSS
    ================================================================ */
 
-/* ── 헤더 ↔ 서브헤더 사이 틈새 제거 (방어적) ────────────────────
-   Webflow 의 nav 와 그 직후 섹션 사이에 빈 공간이 생겨 배경 비치는 문제.
-   ─────────────────────────────────────────────────────────────── */
-.w-nav { margin-bottom: 0 !important; }
-.w-nav + *,
-.w-nav-overlay + *,
-header + *,
-nav + * { margin-top: 0 !important; }
-
-body > .w-container > *:first-child,
-.page-wrapper > *:first-child,
-.main-wrapper > *:first-child,
-main > *:first-child { margin-top: 0 !important; padding-top: 0 !important; }
-
 /* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
 .diagram-place-holder {
   /* Section 2 스크롤 시퀀스 — ScrollTrigger pin 이 런타임에 position:fixed
