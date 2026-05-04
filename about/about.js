@@ -810,12 +810,113 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
+  /* ── "최초" 광선 ────────────────────────────────────────────── */
+  function initHistorySpark() {
+    var SEL = '.about_history_title_official-font';
+    var TOKEN = '최초';
+
+    function wrapToken(el) {
+      if (el.dataset.sparkDone) return false;
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var nodes = []; var n;
+      while ((n = walker.nextNode())) nodes.push(n);
+      var hit = false;
+      nodes.forEach(function (t) {
+        var idx = t.nodeValue.indexOf(TOKEN);
+        if (idx < 0) return;
+        var span = document.createElement('span');
+        span.className = 'helix-spark';
+        span.textContent = TOKEN;
+        var frag = document.createDocumentFragment();
+        if (idx > 0) frag.appendChild(document.createTextNode(t.nodeValue.slice(0, idx)));
+        frag.appendChild(span);
+        var rest = t.nodeValue.slice(idx + TOKEN.length);
+        if (rest) frag.appendChild(document.createTextNode(rest));
+        t.parentNode.replaceChild(frag, t);
+        hit = true;
+      });
+      if (hit) el.dataset.sparkDone = '1';
+      return hit;
+    }
+
+    function armSpark(el) {
+      var span = el.querySelector('.helix-spark');
+      if (!span) return;
+      if (!('IntersectionObserver' in window)) { span.classList.add('is-running'); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        span.classList.add('is-running');
+        io.disconnect();
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+      io.observe(el);
+    }
+
+    function tryInit() {
+      var els = document.querySelectorAll(SEL);
+      log('history spark: found=' + els.length);
+      var any = false;
+      els.forEach(function (el) { if (wrapToken(el)) { armSpark(el); any = true; } });
+      return any;
+    }
+
+    if (tryInit()) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (tryInit() || ++tries > 20) clearInterval(iv);
+    }, 300);
+  }
+
+  /* ── 타임라인 가운데 펼침 ────────────────────────────────────── */
+  function initHistoryTimeline() {
+    var BADGE_SEL = '.about_history_time-line_contents';
+    var TEXT_SEL  = '.about_history_time-line_contents-copy_title';
+
+    function tryInit() {
+      var badges = document.querySelectorAll(BADGE_SEL);
+      var texts  = document.querySelectorAll(TEXT_SEL);
+      log('history timeline: badges=' + badges.length + ' texts=' + texts.length);
+      if (!badges.length) return false;
+
+      badges.forEach(function (el, i) {
+        el.classList.add('js-ready');
+        el.style.transitionDelay = (i * 0.09) + 's';
+      });
+      texts.forEach(function (el, i) {
+        el.classList.add('js-ready');
+        el.style.transitionDelay = (i * 0.09) + 's';
+      });
+
+      function fire() {
+        badges.forEach(function (el) { el.classList.add('is-visible'); });
+        texts.forEach(function (el)  { el.classList.add('is-visible'); });
+        log('history timeline: fired');
+      }
+
+      if (!('IntersectionObserver' in window)) { fire(); return true; }
+      var fired = false;
+      var io = new IntersectionObserver(function (entries) {
+        if (fired || !entries[0].isIntersecting) return;
+        fired = true; io.disconnect(); fire();
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+      io.observe(badges[0]);
+      return true;
+    }
+
+    if (tryInit()) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (tryInit() || ++tries > 20) clearInterval(iv);
+    }, 300);
+  }
+
   function init() {
     log('init');
     renderHexDiagram();
     initHexAnimations();
     initHexSection2();
     initViewport60FadeIn();
+    initHistorySpark();
+    initHistoryTimeline();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
