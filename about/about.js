@@ -953,8 +953,10 @@
      사인파 헬릭스 라인을 빠르게 draw + erase.
      ─────────────────────────────────────────────────────────────── */
   function initHistoryHelixLine() {
-    var TOP_SEL    = '.about_history_title_official-font';
+    var TOP_SEL    = '.div-block-163';
     var BOTTOM_SEL = '.about_history_title_sub-font';
+    /* draw 트리거는 여전히 "최초의 길" 진입 기준으로 — 시각/타이밍 분리 */
+    var DRAW_TRIGGER_SEL = '.about_history_title_official-font';
     var COLOR      = '#0075d6';
     var STROKE     = 0.6;
 
@@ -1034,12 +1036,13 @@
         return true;
       }
 
-      /* Draw: "최초의 길" 이 뷰포트 상단 20% 영역에 들어오면 (아직 보이는 동안) */
+      /* Draw 트리거: 최초의 길 (또는 fallback 으로 top 자체) 가 상단 20%에 들어오면 */
+      var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
       var ioDraw = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
         ioDraw.disconnect(); drawLine();
       }, { rootMargin: '0px 0px -80% 0px', threshold: 0 });
-      ioDraw.observe(top);
+      ioDraw.observe(drawTrigger);
 
       /* Erase: sub-font 가 뷰포트 하단 30% 영역에 들어오면 */
       var ioErase = new IntersectionObserver(function (entries) {
