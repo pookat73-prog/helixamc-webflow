@@ -1660,7 +1660,13 @@
   'use strict';
 
   function bind() {
-    var els = Array.prototype.slice.call(document.querySelectorAll('.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet'));
+    /* CSS grid order 와 DOM 순서가 어긋나서, 시각 좌→우 순서를 명시. */
+    var ORDER = ['ts-vet', 'sy-vet', 'hj-vet', 'ys-vet', 'sh-vet', 'si-vet', 'hs-vet', 'hc-vet'];
+    var els = [];
+    ORDER.forEach(function (cls) {
+      var el = document.querySelector('.' + cls);
+      if (el) els.push(el);
+    });
     if (!els.length) return false;
 
     /* DOM 순서가 화면 좌→우 와 다른 경우가 있어 (CSS grid order 가
