@@ -315,6 +315,34 @@
     svg.style.overflow = 'visible';
     svg.setAttribute('overflow', 'visible');
 
+    /* ── defs: 공유 shimmer gradient + inner hex clipPaths ── */
+    var svgDefs = document.createElementNS(svgNS, 'defs');
+
+    /* 대각선 빛반사 그라디언트 (rect 기준 objectBoundingBox) */
+    var sGrad = document.createElementNS(svgNS, 'linearGradient');
+    sGrad.setAttribute('id', 'helix-shimmer-grad');
+    sGrad.setAttribute('x1', '0%');  sGrad.setAttribute('y1', '0%');
+    sGrad.setAttribute('x2', '100%'); sGrad.setAttribute('y2', '100%');
+    [[0,0],[35,0],[50,0.28],[65,0],[100,0]].forEach(function(s2) {
+      var st = document.createElementNS(svgNS, 'stop');
+      st.setAttribute('offset', s2[0] + '%');
+      st.setAttribute('stop-color', '#0075d6');
+      st.setAttribute('stop-opacity', s2[1]);
+      sGrad.appendChild(st);
+    });
+    svgDefs.appendChild(sGrad);
+
+    hexes.forEach(function(hx) {
+      if (!hx.inner) return;
+      var iv = vertices(hx.cx, hx.cy, INNER_SCALE);
+      var cp = document.createElementNS(svgNS, 'clipPath');
+      cp.setAttribute('id', 'clip-inner-' + hx.id);
+      var cpP = document.createElementNS(svgNS, 'path');
+      cpP.setAttribute('d', fullHexPath(iv));
+      cp.appendChild(cpP);
+      svgDefs.appendChild(cp);
+    });
+    svg.appendChild(svgDefs);
 
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
@@ -328,6 +356,15 @@
       p.setAttribute('d', fullHexPath(verts));
       g.appendChild(p);
 
+      /* inner hex 유리 fill */
+      if (hx.inner) {
+        var iv2 = vertices(hx.cx, hx.cy, INNER_SCALE);
+        var iPath = document.createElementNS(svgNS, 'path');
+        iPath.setAttribute('d', fullHexPath(iv2));
+        iPath.setAttribute('class', 'hex-glass');
+        g.appendChild(iPath);
+      }
+
       var t = document.createElementNS(svgNS, 'text');
       t.setAttribute('x', hx.cx);
       t.setAttribute('y', hx.cy);
@@ -338,6 +375,27 @@
       g.appendChild(t);
 
       svg.appendChild(g);
+    });
+
+    /* shimmer beam — hex 그룹 밖, SVG 직접 자식 (그룹 transform 영향 X) */
+    hexes.forEach(function(hx) {
+      if (!hx.inner) return;
+      var beamW = 130;
+      var halfW = w * INNER_SCALE / 2;
+      var xFrom = hx.cx - halfW - beamW;
+      var xTo   = hx.cx + halfW;
+      var beam = document.createElementNS(svgNS, 'rect');
+      beam.setAttribute('id', 'shimmer-' + hx.id);
+      beam.setAttribute('x', xFrom);
+      beam.setAttribute('y', hx.cy - s * 1.05);
+      beam.setAttribute('width', beamW);
+      beam.setAttribute('height', s * 2.1);
+      beam.setAttribute('fill', 'url(#helix-shimmer-grad)');
+      beam.setAttribute('clip-path', 'url(#clip-inner-' + hx.id + ')');
+      beam.setAttribute('opacity', '0');
+      beam.setAttribute('data-x-from', xFrom);
+      beam.setAttribute('data-x-to',   xTo);
+      svg.appendChild(beam);
     });
 
     holder.appendChild(svg);
@@ -437,6 +495,27 @@
 
       window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');
+
+      /* 등장 완료 후 shimmer 루프 시작 */
+      tl.then(function() {
+        var innerIds = hexes.filter(function(h) { return h.inner; });
+        innerIds.forEach(function(hx, i) {
+          var beam = svg.querySelector('#shimmer-' + hx.id);
+          if (!beam) return;
+          var xFrom = parseFloat(beam.getAttribute('data-x-from'));
+          var xTo   = parseFloat(beam.getAttribute('data-x-to'));
+          gsap.set(beam, { opacity: 1 });
+          gsap.fromTo(beam,
+            { attr: { x: xFrom } },
+            { attr: { x: xTo },
+              duration: 1.6, ease: 'power1.inOut',
+              repeat: -1, repeatDelay: 4.5,
+              delay: i * 1.4
+            }
+          );
+        });
+      });
+
       return tl;
     }
 
@@ -1463,17 +1542,6 @@
     log('init');
     renderHexDiagram();
     initHexAnimations();
-    initHexSection2();
-    initViewport60FadeIn();
-    initHistorySpark();
-    initStandardFontHighlight();
-    initChewyH2();
-    initHybridRoomTitle();
-    initBurnGlow();
-    initHistoryTimeline();
-    initHistoryHelixLine();
-    initWeAreHereReveal();
-    initHybridUnfold();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
