@@ -84,7 +84,9 @@
     var lca = findCommonAncestor(Array.prototype.slice.call(cardsAll));
     log('common ancestor:', lca ? lca.tagName + '.' + (lca.className||'').split(' ').slice(0,2).join('.') : 'NONE');
 
-    /* 각 카드의 섹션 조상 수집 (.white-frame_connect) */
+    /* 각 카드의 섹션 조상 수집 (.white-frame_connect — home 전용).
+       about 등 다른 페이지에선 이 섹션이 없을 수 있음 → 매치 실패해도
+       ABORT 하지 않고 sections 를 비워두고 진행. 섹션 숨김 단계만 건너뜀. */
     var sections = [];
     Array.prototype.forEach.call(cardsAll, function (c) {
       var sec = c.closest(SECTION_SELECTOR);
@@ -92,8 +94,8 @@
     });
     log('section ancestors found:', sections.length, '/', cardsAll.length);
     if (sections.length !== cardsAll.length) {
-      log('⚠️ 카드마다 섹션 조상이 없음, ABORT');
-      return true;
+      log('섹션 조상 매치 실패 → 섹션 숨김 단계 스킵 (다른 페이지 구조)');
+      sections = [];
     }
 
     /* 첫 카드 + 사이즈 측정 */
