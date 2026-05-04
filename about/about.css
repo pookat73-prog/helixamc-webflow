@@ -183,39 +183,38 @@
   filter: blur(0);
 }
 
-/* ── History "최초" 광선 ─────────────────────────────────────────
-   텍스트를 건드리지 않고 오버레이 빔(helix-spark-beam)을 얹음.
-   mix-blend-mode:screen → 어떤 텍스트 색이어도 광선이 자연스럽게 빛남.
+/* ── History "최초" 그라데이션 물들기 ───────────────────────────
+   텍스트를 건드리지 않고 오버레이로 메인블루 사선 물들이기.
+   mix-blend-mode:color → 텍스트 명도는 유지하면서 색상만 파랗게 물듦.
    ─────────────────────────────────────────────────────────────── */
 .helix-spark-beam {
   position: absolute !important;
-  inset: -4px -16px !important;
+  inset: -4px -8px !important;
   pointer-events: none !important;
   z-index: 1 !important;
-  mix-blend-mode: screen !important;
+  mix-blend-mode: color !important;
   background-image: linear-gradient(
     115deg,
-    transparent                  0%,
-    transparent                  38%,
-    rgba(50, 154, 214, 0.0)      42%,
-    rgba(50, 154, 214, 0.55)     47%,
-    rgba(180, 225, 255, 0.9)     50%,
-    rgba(50, 154, 214, 0.55)     53%,
-    rgba(50, 154, 214, 0.0)      58%,
-    transparent                  62%,
-    transparent                  100%
+    transparent   0%,
+    transparent   30%,
+    #0075d6       50%,
+    transparent   70%,
+    transparent   100%
   ) !important;
   background-size: 300% 100% !important;
   background-repeat: no-repeat !important;
   background-position: 160% center !important;
+  opacity: 0 !important;
 }
 .helix-spark-beam.is-running {
-  animation: helixBeamSweep 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+  animation: helixColorWash 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
 }
-@keyframes helixBeamSweep {
-  0%   { background-position: 160% center; }
-  44%  { background-position: -60% center; }
-  100% { background-position: -60% center; }
+@keyframes helixColorWash {
+  0%          { background-position: 160% center; opacity: 0; }
+  8%          { opacity: 1; }
+  42%         { background-position: -60% center; opacity: 1; }
+  55%         { background-position: -60% center; opacity: 0; }
+  100%        { background-position: -60% center; opacity: 0; }
 }
 
 /* ── History Timeline 가운데 펼침 ────────────────────────────────
