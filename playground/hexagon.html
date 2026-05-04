@@ -455,7 +455,7 @@ function arcPath(cx, cy, dx, dy, h) {
        + ' '  + x2.toFixed(2) + ' ' + y2.toFixed(2);
 }
 
-/* Stage 3: 헥사들이 앞으로 훌쩍 솟아오르며 중앙 수렴 → 원 모핑 → 1개 남김 */
+/* Stage 3: 가운데 완전 겹침 → 원 모핑 → 대표 원 1개만 남김 */
 function applyS3(svg, dur) {
   var targetCircle = circleBezierPath(CX, CY);
 
@@ -463,28 +463,19 @@ function applyS3(svg, dur) {
     var g = svg.querySelector('.hex-'+id);
     var p = g.querySelector('.hex-path');
 
-    /* 2-phase: ① 앞으로 훌쩍 오며 수렴 → ② 살짝 안착 */
-    var tl = gsap.timeline({ overwrite: 'auto' });
-    tl.to(g, {
-      x: 0, y: 0, opacity: 1,
-      scale: 1.8, scaleX: 1, scaleY: 1,
-      rotation: 0, rotationY: 0,
-      duration: dur * 0.45, ease: 'power3.in',
-      svgOrigin: CX + ' ' + CY
-    }).to(g, {
-      scale: 1.2,
-      duration: dur * 0.55, ease: 'expo.out',
-      svgOrigin: CX + ' ' + CY
+    gsap.to(g, {
+      x: 0, y: 0, scale: 1, scaleX: 1, scaleY: 1,
+      rotation: 0, rotationY: 0, opacity: 1,
+      duration: dur, ease: 'power2.inOut', overwrite: 'auto'
     });
-
     gsap.to(p, {
       attr: { d: targetCircle },
       duration: dur * 0.85, ease: 'power2.inOut', overwrite: 'auto'
     });
-    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.35, ease: 'power2.in', overwrite: 'auto' });
+    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.4, ease: 'power2.in', overwrite: 'auto' });
 
     if (id !== S3_MAIN) {
-      gsap.to(g, { opacity: 0, duration: dur * 0.4, delay: dur * 0.6, ease: 'power2.in', overwrite: false });
+      gsap.to(g, { opacity: 0, duration: dur * 0.45, delay: dur * 0.55, ease: 'power2.in', overwrite: false });
     }
   });
 }
