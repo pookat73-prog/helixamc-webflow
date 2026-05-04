@@ -1129,6 +1129,83 @@
     });
   }
 
+  /* ── .about_hybrid-contents_box 양쪽 펼침 ───────────────────────
+     스크롤 진입 시 가운데 박스만 보이다가 양쪽 박스가 자기 위치로
+     슬라이드 아웃 + 페이드인.
+     ─────────────────────────────────────────────────────────────── */
+  function initHybridUnfold() {
+    var SEL = '.about_hybrid-contents_box';
+
+    function build() {
+      var nodes = document.querySelectorAll(SEL);
+      if (nodes.length < 2) { log('hybrid: nodes=' + nodes.length); return false; }
+
+      /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 가운데를 찾기 위함 */
+      var boxes = Array.prototype.slice.call(nodes).sort(function (a, b) {
+        return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+      });
+      /* 첫 박스 기준 너비가 측정 안 되면 layout 미완 → retry */
+      if (!boxes[0].getBoundingClientRect().width) return false;
+
+      var centerIdx = Math.floor(boxes.length / 2);
+      var center = boxes[centerIdx];
+      var centerRect = center.getBoundingClientRect();
+      var centerCx = centerRect.left + centerRect.width / 2;
+
+      /* 각 박스의 자연 위치에서 center 까지의 dx 측정 →
+         초기엔 모두 center 위로 translate 해 겹쳐둠 (opacity 0).
+         center 박스는 그대로 표시. */
+      boxes.forEach(function (b, i) {
+        if (i === centerIdx) {
+          if (window.gsap) gsap.set(b, { opacity: 1, x: 0 });
+          else { b.style.opacity = '1'; b.style.transform = 'translateX(0)'; }
+          return;
+        }
+        var r = b.getBoundingClientRect();
+        var dx = centerCx - (r.left + r.width / 2);
+        if (window.gsap) gsap.set(b, { x: dx, opacity: 0 });
+        else {
+          b.style.transform = 'translateX(' + dx + 'px)';
+          b.style.opacity = '0';
+        }
+      });
+
+      var played = false;
+      function play() {
+        if (played) return; played = true;
+        boxes.forEach(function (b, i) {
+          if (i === centerIdx) return;
+          if (window.gsap) {
+            gsap.to(b, { x: 0, opacity: 1, duration: 1.0, ease: 'power3.out' });
+          } else {
+            b.style.transition = 'transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease-out';
+            b.style.transform  = 'translateX(0)';
+            b.style.opacity    = '1';
+          }
+        });
+        log('hybrid unfold play');
+      }
+
+      if (!('IntersectionObserver' in window)) { play(); return true; }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          play();
+        });
+      }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+      io.observe(center);
+      log('hybrid unfold ready, count=' + boxes.length + ' centerIdx=' + centerIdx);
+      return true;
+    }
+
+    if (build()) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (build() || ++tries > 30) clearInterval(iv);
+    }, 200);
+  }
+
   function init() {
     log('init');
     renderHexDiagram();
@@ -1139,6 +1216,7 @@
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
+    initHybridUnfold();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 

@@ -17,7 +17,10 @@
       /* 카드덱: init 전엔 모두 가려둠 (스크롤로 펼쳐지는 사고 방지).
          card-stack.js 가 .helix-deck-host 안으로 옮긴 뒤 다시 보이게. */
       '.just-box_qqqqqqq{visibility:hidden!important}' +
-      '.helix-deck-host .just-box_qqqqqqq{visibility:visible!important}';
+      '.helix-deck-host .just-box_qqqqqqq{visibility:visible!important}' +
+      /* 하이브리드 박스: about.js 가 사이드 박스를 center 위로 이동하기 전엔
+         자연 위치에 잠깐 그려질 수 있음 → 초기 opacity:0, JS 가 중앙박스만 다시 켬 */
+      '.about_hybrid-contents_box{opacity:0}';
     (document.head || document.documentElement).appendChild(s);
   } catch (e) {}
 
