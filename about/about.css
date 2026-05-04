@@ -454,20 +454,13 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
-.subheader_click-area:hover .subheader_title,
 .subheader_click-area.is-active .subheader_title,
 .subheader_click-area.w--current .subheader_title {
   color: #0075d6 !important;
 }
+.subheader_click-area:hover .subheader_title::after,
 .subheader_click-area.is-active .subheader_title::after,
 .subheader_click-area.w--current .subheader_title::after {
-  transform: scaleX(1);
-}
-.subheader_click-area:hover .subheader_title::after {
-  transform: scaleX(0.6);
-}
-.subheader_click-area.is-active:hover .subheader_title::after,
-.subheader_click-area.w--current:hover .subheader_title::after {
   transform: scaleX(1);
 }
 
