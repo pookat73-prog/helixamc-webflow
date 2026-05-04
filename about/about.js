@@ -887,6 +887,35 @@
     }, 300);
   }
 
+  /* ── Standard-font 형광펜 sweep ───────────────────────────────
+     CSS 가 background-image (메인 블루 → 투명 그라데이션) 와
+     transition 을 정의. JS 는 IntersectionObserver 로 진입 시
+     .is-highlighted 부착 → background-size 0% → 100% 확장.
+     ─────────────────────────────────────────────────────────── */
+  function initStandardFontHighlight() {
+    var SEL = '.about_history_title_standard-font';
+    var els = document.querySelectorAll(SEL);
+    log('standard-font highlight: found=' + els.length);
+    if (!els.length) return;
+
+    function trigger(el) {
+      if (el.dataset.highlightDone) return;
+      el.dataset.highlightDone = '1';
+      el.classList.add('is-highlighted');
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(trigger);
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { trigger(e.target); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
   /* ── 타임라인 가운데 펼침 ────────────────────────────────────── */
   function initHistoryTimeline() {
     var BADGE_SEL = '.about_history_time-line_contents';
@@ -1223,6 +1252,7 @@
     initHexSection2();
     initViewport60FadeIn();
     initHistorySpark();
+    initStandardFontHighlight();
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
