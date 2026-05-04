@@ -60,7 +60,10 @@
     'home/global/coming-soon.css',
     'home/global/coming-soon.js',
     'home/global/footer.css',
-    'home/global/footer.js'
+    'home/global/footer.js',
+    /* 카드덱 (.just-box_qqqqqqq) — 카드 없으면 자동 스킵 */
+    'home/global/card-stack.css',
+    'home/global/card-stack.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:

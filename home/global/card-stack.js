@@ -18,6 +18,10 @@
 (function () {
   'use strict';
 
+  /* 스크립트 로드 즉시 마커 — bootstrap 이 정상적으로 이 파일을 가져왔는지
+     확인용. [Deck] 로그가 아예 안 보이면 이 파일 자체가 로드 안 된 것. */
+  console.log('[Deck] card-stack.js loaded');
+
   /* 디버그: 항상 켜둠 (안정화 후 다시 ?debug-deck=1 게이트로 복원) */
   function log() {
     console.log.apply(console, ['[Deck]'].concat([].slice.call(arguments)));
