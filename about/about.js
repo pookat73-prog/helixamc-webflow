@@ -1867,11 +1867,19 @@
     motionHolder.style.position = 'relative';
     motionHolder.style.overflow = 'visible';
 
-    var leftRect   = leftCol.getBoundingClientRect();
-    var motionRect = motionHolder.getBoundingClientRect();
+    var leftRect    = leftCol.getBoundingClientRect();
+    var motionRect  = motionHolder.getBoundingClientRect();
+    var wrapperRect = wrapper.getBoundingClientRect();
 
     var targetH = leftRect.height;
     var shift   = motionRect.top - leftRect.top;
+
+    /* 클램프 — 시각적 bottom 이 wrapper(=구간) bottom 을 절대 넘지 않도록.
+       leftCol 이 wrapper 보다 더 아래로 늘어진 경우 height 를 줄임. */
+    var visibleBottom = (motionRect.top - shift) + targetH;
+    if (visibleBottom > wrapperRect.bottom) {
+      targetH = Math.max(0, wrapperRect.bottom - (motionRect.top - shift));
+    }
 
     if (targetH > 0) {
       motionHolder.style.height = targetH + 'px';
