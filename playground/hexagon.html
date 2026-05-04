@@ -66,8 +66,8 @@ body {
 
 /* Stage 5 요소 */
 .s5-symbol { opacity: 0; }
-.s5-arc    { opacity: 0; fill: none; stroke: var(--blue); stroke-width: 2; }
-.s5-arc2   { opacity: 0; fill: none; stroke: rgba(255,255,255,.35); stroke-width: 1.5; }
+.s5-arc    { opacity: 0; fill: none; stroke: var(--blue); stroke-width: 2; stroke-linecap: round; }
+.s5-dot    { opacity: 0; fill: var(--blue); stroke: #fff; stroke-width: 1.5; }
 
 /* ── 하단 내비 ── */
 #nav {
@@ -176,8 +176,8 @@ body {
     <div class="row"><label>세로 스케일</label><input id="s4-sy" type="range" min=".02" max=".5" value=".18" step=".01"><span class="v" id="s4-syV">.18</span></div>
   </div>
   <div id="ctrl-s5" style="display:none">
-    <div class="row"><label>심볼 크기</label><input id="s5-sym" type="range" min=".5" max="2" value="1" step=".05"><span class="v" id="s5-symV">1.0</span></div>
-    <div class="row"><label>호 반지름</label><input id="s5-arc" type="range" min="60" max="300" value="150" step="5"><span class="v" id="s5-arcV">150</span></div>
+    <div class="row"><label>호 길이</label><input id="s5-spread" type="range" min=".5" max="1.5" value="1" step=".02"><span class="v" id="s5-spreadV">1.00</span></div>
+    <div class="row"><label>호 높이</label><input id="s5-height" type="range" min=".5" max="1.5" value="1" step=".02"><span class="v" id="s5-heightV">1.00</span></div>
   </div>
 
   <div class="sep"></div>
@@ -279,19 +279,22 @@ function mkSvg() {
   sym.setAttribute('class','s5-symbol');
   svg.appendChild(sym);
 
-  var arc = document.createElementNS(ns,'circle');
-  arc.setAttribute('class','s5-arc');
-  arc.setAttribute('cx', CX); arc.setAttribute('cy', CY-10);
-  arc.setAttribute('r','150');
-  arc.id = 'arc1';
-  svg.appendChild(arc);
+  /* Stage 5: 5개 비행 경로 호 + 도착 도트 */
+  ORDER.forEach(function(id) {
+    var a = S5_ARCS[id];
+    var arcEl = document.createElementNS(ns,'path');
+    arcEl.setAttribute('d', arcPath(CX, CY, a.dx, a.dy, a.h));
+    arcEl.setAttribute('class','s5-arc');
+    arcEl.setAttribute('id','arc-'+id);
+    svg.appendChild(arcEl);
 
-  var arc2 = document.createElementNS(ns,'circle');
-  arc2.setAttribute('class','s5-arc2');
-  arc2.setAttribute('cx', CX); arc2.setAttribute('cy', CY-10);
-  arc2.setAttribute('r','110');
-  arc2.id = 'arc2';
-  svg.appendChild(arc2);
+    var dot = document.createElementNS(ns,'circle');
+    dot.setAttribute('cx', CX + a.dx); dot.setAttribute('cy', CY + a.dy);
+    dot.setAttribute('r', 5);
+    dot.setAttribute('class','s5-dot');
+    dot.setAttribute('id','dot-'+id);
+    svg.appendChild(dot);
+  });
 
   wrap.appendChild(svg);
 }
@@ -366,8 +369,10 @@ function applyStage(n, dur) {
   });
   /* stage5 요소 숨김 기본 */
   gsap.to(svg.querySelector('.s5-symbol'), { opacity: 0, duration: dur*.5 });
-  gsap.to(svg.querySelector('#arc1'),       { opacity: 0, duration: dur*.5 });
-  gsap.to(svg.querySelector('#arc2'),       { opacity: 0, duration: dur*.5 });
+  ORDER.forEach(function(id) {
+    gsap.to(svg.querySelector('#arc-'+id), { opacity: 0, duration: dur*.5, overwrite: 'auto' });
+    gsap.to(svg.querySelector('#dot-'+id), { opacity: 0, duration: dur*.5, overwrite: 'auto' });
+  });
   /* svg container rotateX 리셋 */
   gsap.to(document.getElementById('hex-wrap'), { rotationX: 0, duration: dur });
 
@@ -431,6 +436,24 @@ function applyS2(svg, dur) {
 }
 
 var S3_MAIN = 'yeongsang'; /* 중심에 남을 대표 원 */
+
+/* Stage 5: 비행 경로 호 — (CX,CY)에서 5방향으로 출발
+   dx/dy = 도착점 오프셋, h = 호 정점 높이(위로 솟는 정도) */
+var S5_ARCS = {
+  ankwa:    { dx: -380, dy:  35, h: 230 },
+  naekwa:   { dx: -190, dy: -55, h: 150 },
+  yeongsang:{ dx:   30, dy:-180, h:  90 },
+  oikwa:    { dx:  210, dy: -55, h: 165 },
+  chikwa:   { dx:  400, dy:  35, h: 250 }
+};
+
+function arcPath(cx, cy, dx, dy, h) {
+  var x2 = cx + dx, y2 = cy + dy;
+  var mx = (cx + x2) / 2, my = (cy + y2) / 2 - h;
+  return 'M' + cx.toFixed(2) + ' ' + cy.toFixed(2)
+       + ' Q' + mx.toFixed(2) + ' ' + my.toFixed(2)
+       + ' '  + x2.toFixed(2) + ' ' + y2.toFixed(2);
+}
 
 /* Stage 3: 가운데 완전 겹침 → 대표 원 1개만 남기고 나머지 페이드 아웃 */
 function applyS3(svg, dur) {
@@ -499,40 +522,70 @@ function applyS4(svg, dur) {
   gsap.to(document.getElementById('hex-wrap'), { rotationX: 0, duration: dur });
 }
 
-/* Stage 5: 심볼 + 호 */
+/* Stage 5: 누운 타원 유지 + 5방향 비행 경로 호 그리기 */
 function applyS5(svg, dur) {
-  var symScale = +document.getElementById('s5-sym').value;
-  var arcR     = +document.getElementById('s5-arc').value;
+  var spread = +document.getElementById('s5-spread').value; /* 호 길이 배율 */
+  var height = +document.getElementById('s5-height').value; /* 호 높이 배율 */
+  var sx = +document.getElementById('s4-sx').value;
+  var sy = +document.getElementById('s4-sy').value;
+  var targetCircle = circleBezierPath(CX, CY);
 
-  /* 헥사 fade out (뒤로 빠짐) */
+  /* 헥사: S4와 동일 — 대표만 타원으로 누운 채 유지, 나머지 숨김 */
   ORDER.forEach(function(id) {
-    var hx = META[id];
     var g = svg.querySelector('.hex-'+id);
-    gsap.to(g, {
-      x: CX - hx.cx, y: CY - hx.cy,
-      scale: 0.55, opacity: 0.12, rotation: 0,
-      duration: dur, ease: 'power2.inOut',
-      svgOrigin: hx.cx + ' ' + hx.cy,
+    var p = g.querySelector('.hex-path');
+    gsap.to(p, { attr: { d: targetCircle }, duration: dur * 0.5, overwrite: 'auto' });
+    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.3, overwrite: 'auto' });
+    if (id === S3_MAIN) {
+      gsap.to(g, {
+        x: 0, y: 0, opacity: 1, scaleX: sx, scaleY: sy,
+        rotation: 0, rotationY: 0,
+        duration: dur, ease: 'power2.inOut',
+        svgOrigin: CX + ' ' + CY, overwrite: 'auto'
+      });
+    } else {
+      gsap.to(g, { opacity: 0, duration: dur * 0.3, overwrite: 'auto' });
+    }
+  });
+  gsap.to(document.getElementById('hex-wrap'), { rotationX: 0, duration: dur });
+
+  /* 5개 호: 스트로크-대시 그리기 + 도착 도트 팝 */
+  ORDER.forEach(function(id, i) {
+    var a = S5_ARCS[id];
+    var arcEl = svg.querySelector('#arc-'+id);
+    var dotEl = svg.querySelector('#dot-'+id);
+    var dx = a.dx * spread, dy = a.dy * spread, h = a.h * height;
+    var x2 = CX + dx, y2 = CY + dy;
+
+    /* path 갱신 */
+    arcEl.setAttribute('d', arcPath(CX, CY, dx, dy, h));
+    dotEl.setAttribute('cx', x2);
+    dotEl.setAttribute('cy', y2);
+
+    /* dasharray 길이 — 곡선 길이 대용으로 path 길이 사용 */
+    var len = arcEl.getTotalLength();
+    gsap.set(arcEl, {
+      attr: { 'stroke-dasharray': len + ' ' + len, 'stroke-dashoffset': len },
+      opacity: 1
+    });
+    gsap.set(dotEl, { opacity: 0, scale: 0, svgOrigin: x2 + ' ' + y2 });
+
+    var stagger = i * 0.12;
+    gsap.to(arcEl, {
+      attr: { 'stroke-dashoffset': 0 },
+      duration: dur * 1.4, ease: 'power2.out', delay: dur * 0.2 + stagger,
+      overwrite: 'auto'
+    });
+    gsap.to(dotEl, {
+      opacity: 1, scale: 1, duration: dur * 0.5, ease: 'back.out(2)',
+      delay: dur * 0.2 + stagger + dur * 1.2,
       overwrite: 'auto'
     });
   });
 
-  /* 심볼 등장 */
+  /* 심볼은 살짝 뒤로 — 중심에 작게 (선택적) */
   var sym = svg.querySelector('.s5-symbol');
-  gsap.set(sym, { scale: symScale, svgOrigin: CX + ' ' + (CY-10) });
-  gsap.to(sym, { opacity: 1, duration: dur, ease: 'power2.out', delay: dur * .3 });
-
-  /* 호 */
-  var a1 = svg.querySelector('#arc1');
-  var a2 = svg.querySelector('#arc2');
-  a1.setAttribute('r', arcR);
-  a2.setAttribute('r', arcR * 0.73);
-  var circ1 = 2 * Math.PI * arcR;
-  var circ2 = 2 * Math.PI * arcR * 0.73;
-  gsap.set(a1, { attr: { 'stroke-dasharray': circ1+' '+circ1, 'stroke-dashoffset': circ1 } });
-  gsap.set(a2, { attr: { 'stroke-dasharray': circ2+' '+circ2, 'stroke-dashoffset': -circ2 } });
-  gsap.to(a1, { opacity: 1, attr: { 'stroke-dashoffset': 0 }, duration: dur*1.2, ease: 'power2.out', delay: dur*.1 });
-  gsap.to(a2, { opacity: 1, attr: { 'stroke-dashoffset': 0 }, duration: dur*1.2, ease: 'power2.out', delay: dur*.25 });
+  gsap.to(sym, { opacity: 0, duration: dur * 0.3, overwrite: 'auto' });
 }
 
 /* ─────── 내비게이션 ─────── */
@@ -565,7 +618,7 @@ for (var di = 0; di < 5; di++) {
 /* 슬라이더 라이브 값 표시 */
 [['s2-t','s2-tV',2],
  ['s4-sx','s4-sxV',2],['s4-sy','s4-syV',2],
- ['s5-sym','s5-symV',1],['s5-arc','s5-arcV',0]
+ ['s5-spread','s5-spreadV',2],['s5-height','s5-heightV',2]
 ].forEach(function(t){
   var inp = document.getElementById(t[0]);
   var out = document.getElementById(t[1]);
