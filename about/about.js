@@ -810,12 +810,45 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
+  function wrapHistorySpark() {
+    var els = document.querySelectorAll(
+      '.About_History_Title_Official.Font, .about_history_title_official.font'
+    );
+    if (!els.length) { log('history spark: no target'); return; }
+    var token = '최초';
+    els.forEach(function (el) {
+      if (el.dataset.sparkInit === '1') return;
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      var matched = false;
+      nodes.forEach(function (t) {
+        var idx = t.nodeValue.indexOf(token);
+        if (idx < 0) return;
+        var before = t.nodeValue.slice(0, idx);
+        var after  = t.nodeValue.slice(idx + token.length);
+        var span = document.createElement('span');
+        span.className = 'about-history-spark';
+        span.textContent = token;
+        var frag = document.createDocumentFragment();
+        if (before) frag.appendChild(document.createTextNode(before));
+        frag.appendChild(span);
+        if (after) frag.appendChild(document.createTextNode(after));
+        t.parentNode.replaceChild(frag, t);
+        matched = true;
+      });
+      if (matched) el.dataset.sparkInit = '1';
+    });
+    log('history spark wrapped');
+  }
+
   function init() {
     log('init');
     renderHexDiagram();
     initHexAnimations();
     initHexSection2();
     initViewport60FadeIn();
+    wrapHistorySpark();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
