@@ -45,17 +45,9 @@ body {
   overflow: visible;
 }
 
-/* 헥사 기본 스타일 */
-.hex path   { stroke-width: 2; fill: rgba(0,117,214,.13); stroke: var(--blue); }
-.hex text   { fill: var(--text); font-size: 22px; font-weight: 700; font-family: -apple-system, sans-serif; }
+/* 헥사(원) 기본 스타일 */
+.hex circle { fill: rgba(0,117,214,.25); stroke: var(--blue); stroke-width: 2; }
 .hex        { transform-box: fill-box; transform-origin: center; }
-
-/* 각 헥사 tint (Stage 1 올림픽 링) */
-.hex-ankwa    path { fill: rgba(0,117,214,.25);  stroke: #0075d6; }
-.hex-naekwa   path { fill: rgba(240,165,0,.25);  stroke: #f0a500; }
-.hex-oikwa    path { fill: rgba(0,180,80,.25);   stroke: #00b450; }
-.hex-yeongsang path { fill: rgba(220,50,50,.25); stroke: #dc3232; }
-.hex-chikwa   path { fill: rgba(85,40,170,.25);  stroke: #5528aa; }
 
 /* Stage 5 요소 */
 .s5-symbol { opacity: 0; }
@@ -202,28 +194,14 @@ function mkSvg() {
   svg.setAttribute('overflow','visible');
   svg.id = 'the-svg';
 
-  function verts(cx,cy){
-    return [[cx,cy-s],[cx+w/2,cy-s/2],[cx+w/2,cy+s/2],
-            [cx,cy+s],[cx-w/2,cy+s/2],[cx-w/2,cy-s/2]];
-  }
-  function hexPath(cx,cy){
-    var v=verts(cx,cy);
-    return 'M'+v.map(function(p){return p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' L')+' Z';
-  }
-
   ORDER.forEach(function(id){
     var hx = META[id];
     var g = document.createElementNS(ns,'g');
     g.setAttribute('class','hex hex-'+id);
-    var p = document.createElementNS(ns,'path');
-    p.setAttribute('d', hexPath(hx.cx, hx.cy));
-    g.appendChild(p);
-    var t = document.createElementNS(ns,'text');
-    t.setAttribute('x', hx.cx); t.setAttribute('y', hx.cy);
-    t.setAttribute('text-anchor','middle');
-    t.setAttribute('dominant-baseline','central');
-    t.textContent = ({ankwa:'안과',naekwa:'내과',yeongsang:'영상',oikwa:'외과',chikwa:'치과'})[id];
-    g.appendChild(t);
+    var c = document.createElementNS(ns,'circle');
+    c.setAttribute('cx', hx.cx); c.setAttribute('cy', hx.cy);
+    c.setAttribute('r', s * 0.95); /* 원 반지름 = hex 크기와 동일 비율 */
+    g.appendChild(c);
     svg.appendChild(g);
   });
 
@@ -353,7 +331,6 @@ function applyS1(svg, dur) {
       overwrite: 'auto'
     });
     /* 텍스트 숨김 */
-    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * .4 });
   });
 }
 
@@ -373,7 +350,6 @@ function applyS2(svg, dur) {
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
     });
-    gsap.to(g.querySelector('text'), { opacity: 1, duration: dur });
   });
 }
 
@@ -394,7 +370,6 @@ function applyS3(svg, dur) {
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
     });
-    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * .4 });
   });
   /* z-order: chikwa 최상단 */
   setTimeout(function() {
@@ -419,7 +394,6 @@ function applyS4(svg, dur) {
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
     });
-    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * .3 });
   });
   /* 컨테이너 rotateX → 눕는 효과 */
   gsap.to(document.getElementById('hex-wrap'), {
@@ -444,7 +418,6 @@ function applyS5(svg, dur) {
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
     });
-    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * .3 });
   });
 
   /* 심볼 등장 */
