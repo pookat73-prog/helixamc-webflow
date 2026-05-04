@@ -328,7 +328,7 @@
     sGrad.setAttribute('id', 'helix-shimmer-grad');
     sGrad.setAttribute('x1', '0%');  sGrad.setAttribute('y1', '0%');
     sGrad.setAttribute('x2', '100%'); sGrad.setAttribute('y2', '0%');
-    [[0,0],[15,0],[35,0.10],[50,0.16],[65,0.10],[85,0],[100,0]].forEach(function(s2) {
+    [[0,0],[20,0],[40,0.04],[50,0.07],[60,0.04],[80,0],[100,0]].forEach(function(s2) {
       var st = document.createElementNS(svgNS, 'stop');
       st.setAttribute('offset', s2[0] + '%');
       st.setAttribute('stop-color', '#0075d6');
@@ -502,9 +502,10 @@
       window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');
 
-      /* 등장 완료 후 shimmer 루프 — 5개 동시, 사선 빔 sweep */
+      /* 등장 완료 후 shimmer 루프 — 5개 동시, 사선 빔 sweep
+         + 매우 약한 scale 바운스 (각 hex 마다 다른 딜레이로 가끔씩) */
       tl.then(function() {
-        hexes.forEach(function(hx) {
+        hexes.forEach(function(hx, idx) {
           var moveG = svg.querySelector('#shimmer-' + hx.id);
           var clipG = svg.querySelector('#shimmer-clip-' + hx.id);
           if (!moveG || !clipG) return;
@@ -517,6 +518,23 @@
               repeat: -1, repeatDelay: 4.0
             }
           );
+
+          /* 가끔씩 등장 같은 매우 약한 scale 바운스 — hex <g> 자체에 적용.
+             transformOrigin 을 hex 중심으로 잡아 제자리 바운스. */
+          var hexG = svg.querySelector('.hex-' + hx.id);
+          if (hexG) {
+            gsap.set(hexG, { transformOrigin: hx.cx + 'px ' + hx.cy + 'px' });
+            gsap.to(hexG, {
+              keyframes: [
+                { scale: 1.018, duration: 0.35, ease: 'power2.out' },
+                { scale: 0.994, duration: 0.30, ease: 'power2.inOut' },
+                { scale: 1.000, duration: 0.55, ease: 'power2.out' }
+              ],
+              repeat: -1,
+              repeatDelay: 7.5 + idx * 1.3,
+              delay: 1.5 + idx * 0.9
+            });
+          }
         });
       });
 
