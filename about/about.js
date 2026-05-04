@@ -374,16 +374,21 @@
     });
 
     /* shimmer — 사선(-35°) 빔이 내경 hex 클립 안에서 sweep.
-       <g clip-path> 안에 회전 rect 배치, GSAP 이 그룹 x 를 이동시킴. */
+       clipG(고정, clip-path 적용) > moveG(GSAP x 트윈) > rect(회전).
+       clip-path 가 transform 되는 엘리먼트에 붙으면 클립도 같이 움직여서
+       빔이 hex 밖으로 새어 나오기 때문에 두 레이어로 분리. */
     hexes.forEach(function(hx) {
       var beamW  = 130;            /* 빔 두께 (회전 후 사선 폭) */
       var travel = w + beamW * 2;  /* 좌→우 이동 거리 */
 
-      var wrapG = document.createElementNS(svgNS, 'g');
-      wrapG.setAttribute('id', 'shimmer-' + hx.id);
-      wrapG.setAttribute('clip-path', 'url(#clip-inner-' + hx.id + ')');
-      wrapG.setAttribute('opacity', '0');
-      wrapG.setAttribute('data-travel', travel);
+      var clipG = document.createElementNS(svgNS, 'g');
+      clipG.setAttribute('id', 'shimmer-clip-' + hx.id);
+      clipG.setAttribute('clip-path', 'url(#clip-inner-' + hx.id + ')');
+      clipG.setAttribute('opacity', '0');
+
+      var moveG = document.createElementNS(svgNS, 'g');
+      moveG.setAttribute('id', 'shimmer-' + hx.id);
+      moveG.setAttribute('data-travel', travel);
 
       /* 내경보다 충분히 큰 rect (높이 s*4), 중심 기준으로 -35° 회전 */
       var rect = document.createElementNS(svgNS, 'rect');
@@ -394,8 +399,9 @@
       rect.setAttribute('fill', 'url(#helix-shimmer-grad)');
       rect.setAttribute('transform',
         'rotate(-35 ' + hx.cx.toFixed(2) + ' ' + hx.cy.toFixed(2) + ')');
-      wrapG.appendChild(rect);
-      svg.appendChild(wrapG);
+      moveG.appendChild(rect);
+      clipG.appendChild(moveG);
+      svg.appendChild(clipG);
     });
 
     holder.appendChild(svg);
@@ -499,11 +505,12 @@
       /* 등장 완료 후 shimmer 루프 — 5개 동시, 사선 빔 sweep */
       tl.then(function() {
         hexes.forEach(function(hx) {
-          var wrapG = svg.querySelector('#shimmer-' + hx.id);
-          if (!wrapG) return;
-          var travel = parseFloat(wrapG.getAttribute('data-travel'));
-          gsap.set(wrapG, { opacity: 1 });
-          gsap.fromTo(wrapG,
+          var moveG = svg.querySelector('#shimmer-' + hx.id);
+          var clipG = svg.querySelector('#shimmer-clip-' + hx.id);
+          if (!moveG || !clipG) return;
+          var travel = parseFloat(moveG.getAttribute('data-travel'));
+          gsap.set(clipG, { opacity: 1 });
+          gsap.fromTo(moveG,
             { x: -travel },
             { x: travel,
               duration: 2.2, ease: 'power1.inOut',
