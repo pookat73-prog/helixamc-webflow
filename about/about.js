@@ -1044,12 +1044,16 @@
       }, { rootMargin: '0px 0px -80% 0px', threshold: 0 });
       ioDraw.observe(drawTrigger);
 
-      /* Erase: sub-font 의 top 이 뷰포트 절반(50%) 위로 올라올 때 */
+      /* Erase: 출발 요소(.div-block-163) 가 뷰포트에서 완전히 사라지는 순간
+         (홈 헬릭스 라인과 동일한 패턴) */
+      var wasVisible = false;
       var ioErase = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
+        var visible = entries[0].isIntersecting;
+        if (visible) { wasVisible = true; return; }
+        if (!wasVisible) return;
         ioErase.disconnect(); eraseLine();
-      }, { rootMargin: '0px 0px -50% 0px', threshold: 0 });
-      ioErase.observe(bottom);
+      }, { threshold: 0 });
+      ioErase.observe(top);
 
       log('history helix line ready, len=' + len.toFixed(0));
       return true;
