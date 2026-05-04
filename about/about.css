@@ -321,7 +321,7 @@
    .lkujjghlbkjb 가 깔린 하단 영역에서 표가 비치지 않도록
    아래쪽은 완전히 투명, 위로 갈수록 슬슬 풀려서 보이게.
    ─────────────────────────────────────────────────────────────── */
-body > section.blackframe_image-h > section.clearframe_connect > div > div > div.lkujjghlbkjb {
+body > section.blackframe_image-h > section.clearframe_connect > div > div > div:nth-child(1) > div {
   -webkit-mask-image: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 1) 0%,
