@@ -480,15 +480,7 @@ function applyS3(svg, dur) {
   });
 }
 
-/* Stage 4: 대표 원이 가로 타원으로 누우면서 나머지 4개가 뒤에서 흩어져 등장 */
-/* 흩어지는 위치 (x:0, y:0 기준 — path가 CX,CY에 있으므로 화면상 CX+dx, CY+dy) */
-var S4_SCATTER = {
-  ankwa:    { dx: -190, dy:  40 },
-  naekwa:   { dx:  -90, dy: -90 },
-  oikwa:    { dx:   90, dy: -90 },
-  chikwa:   { dx:  190, dy:  40 }
-};
-
+/* Stage 4: 원이 화면 앞으로 훅 오면서 납작한 가로 타원으로 눕기 */
 function applyS4(svg, dur) {
   var sx = +document.getElementById('s4-sx').value;
   var sy = +document.getElementById('s4-sy').value;
@@ -498,24 +490,24 @@ function applyS4(svg, dur) {
     var g = svg.querySelector('.hex-'+id);
     var p = g.querySelector('.hex-path');
 
-    /* path를 원으로 확보 */
-    gsap.to(p, {
-      attr: { d: targetCircle },
-      duration: dur * 0.7, ease: 'power2.inOut', overwrite: 'auto'
-    });
+    gsap.to(p, { attr: { d: targetCircle }, duration: dur * 0.5, overwrite: 'auto' });
     gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.3, overwrite: 'auto' });
 
     if (id === S3_MAIN) {
-      /* 대표 원 → 가로 타원으로 눕기 */
-      gsap.to(g, {
+      /* 2-phase: ① 훅 앞으로 → ② 납작하게 눕기 */
+      var tl = gsap.timeline({ overwrite: 'auto' });
+      tl.to(g, {
         x: 0, y: 0, opacity: 1,
-        scaleX: sx, scaleY: sy,
-        rotation: 0, rotationY: 0,
-        duration: dur, ease: 'power2.inOut',
-        svgOrigin: CX + ' ' + CY, overwrite: 'auto'
+        scale: 1.7, scaleX: 1, scaleY: 0.55,
+        rotation: 0,
+        duration: dur * 0.38, ease: 'power3.in',
+        svgOrigin: CX + ' ' + CY
+      }).to(g, {
+        scale: 1, scaleX: sx, scaleY: sy,
+        duration: dur * 0.62, ease: 'expo.out',
+        svgOrigin: CX + ' ' + CY
       });
     } else {
-      /* 나머지 4개 — 타원만 보여야 하므로 즉시 완전히 숨김 */
       gsap.to(g, { opacity: 0, duration: dur * 0.3, overwrite: 'auto' });
     }
   });
