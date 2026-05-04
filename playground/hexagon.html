@@ -356,7 +356,7 @@ function applyStage(n, dur) {
   /* 공용: 헥사 복원 — path 보임, circle 숨김, 텍스트 보임 */
   ORDER.forEach(function(id) {
     var g = svg.querySelector('.hex-'+id);
-    gsap.to(g, { opacity: 1, rotationX: 0, duration: dur, overwrite: 'auto' });
+    gsap.to(g, { opacity: 1, rotationX: 0, scaleX: 1, scaleY: 1, duration: dur, overwrite: 'auto' });
     /* path 를 헥사곤으로 복원 + 텍스트 복원 */
     var hxm = META[id];
     gsap.to(g.querySelector('.hex-path'), {
@@ -426,59 +426,80 @@ function applyS2(svg, dur) {
   });
 }
 
-/* Stage 3: 가운데 완전 겹침 + 변이 구부러지며 원으로 모핑 + 텍스트 페이드 아웃 */
+var S3_MAIN = 'yeongsang'; /* 중심에 남을 대표 원 */
+
+/* Stage 3: 가운데 완전 겹침 → 대표 원 1개만 남기고 나머지 페이드 아웃 */
 function applyS3(svg, dur) {
-  /* 모든 헥사를 동일한 원 경로(CX,CY 중심)로 모핑 — translate 없이 path 좌표 자체를 중앙으로
-     이렇게 해야 5개 원이 SVG 공간에서 픽셀 단위로 완전히 일치 */
   var targetCircle = circleBezierPath(CX, CY);
 
   ORDER.forEach(function(id) {
-    var hx = META[id];
-    var g  = svg.querySelector('.hex-'+id);
-    var p  = g.querySelector('.hex-path');
+    var g = svg.querySelector('.hex-'+id);
+    var p = g.querySelector('.hex-path');
 
-    /* 그룹 transform 원점 복귀 (scale·rotation 리셋, x/y는 0으로) */
     gsap.to(g, {
-      x: 0, y: 0, scale: 1, rotation: 0, rotationY: 0,
+      x: 0, y: 0, scale: 1, scaleX: 1, scaleY: 1, rotation: 0, rotationY: 0,
       duration: dur, ease: 'power2.inOut', overwrite: 'auto'
     });
-    /* path 자체를 CX,CY 중심 원으로 이동+모핑 */
     gsap.to(p, {
       attr: { d: targetCircle },
       duration: dur * 0.85, ease: 'power2.inOut', overwrite: 'auto'
     });
-    /* 텍스트 페이드 아웃 */
     gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.4, ease: 'power2.in', overwrite: 'auto' });
+
+    /* 대표 원 제외 나머지 — 모인 후 페이드 아웃 */
+    if (id !== S3_MAIN) {
+      gsap.to(g, { opacity: 0, duration: dur * 0.45, delay: dur * 0.55, ease: 'power2.in', overwrite: false });
+    }
   });
 }
 
-/* Stage 4: 원이 작아지며 가로 타원으로 눕는 효과 */
+/* Stage 4: 대표 원이 가로 타원으로 누우면서 나머지 4개가 뒤에서 흩어져 등장 */
+/* 흩어지는 위치 (x:0, y:0 기준 — path가 CX,CY에 있으므로 화면상 CX+dx, CY+dy) */
+var S4_SCATTER = {
+  ankwa:    { dx: -190, dy:  40 },
+  naekwa:   { dx:  -90, dy: -90 },
+  oikwa:    { dx:   90, dy: -90 },
+  chikwa:   { dx:  190, dy:  40 }
+};
+
 function applyS4(svg, dur) {
   var sx = +document.getElementById('s4-sx').value;
   var sy = +document.getElementById('s4-sy').value;
   var targetCircle = circleBezierPath(CX, CY);
 
   ORDER.forEach(function(id) {
-    var hx = META[id];
     var g = svg.querySelector('.hex-'+id);
     var p = g.querySelector('.hex-path');
-    /* 원점 복귀 + 가로로 납작하게 눌림 */
-    gsap.to(g, {
-      x: 0, y: 0,
-      scaleX: sx, scaleY: sy,
-      rotation: 0, rotationY: 0,
-      duration: dur, ease: 'power2.inOut',
-      svgOrigin: CX + ' ' + CY,
-      overwrite: 'auto'
-    });
-    /* S1·S2에서 바로 넘어와도 path를 원으로 */
+
+    /* path를 원으로 확보 */
     gsap.to(p, {
       attr: { d: targetCircle },
       duration: dur * 0.7, ease: 'power2.inOut', overwrite: 'auto'
     });
     gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.3, overwrite: 'auto' });
+
+    if (id === S3_MAIN) {
+      /* 대표 원 → 가로 타원으로 눕기 */
+      gsap.to(g, {
+        x: 0, y: 0, opacity: 1,
+        scaleX: sx, scaleY: sy,
+        rotation: 0, rotationY: 0,
+        duration: dur, ease: 'power2.inOut',
+        svgOrigin: CX + ' ' + CY, overwrite: 'auto'
+      });
+    } else {
+      /* 나머지 4개 — 흩어지며 반투명하게 등장 */
+      var sc = S4_SCATTER[id];
+      gsap.to(g, {
+        x: sc.dx, y: sc.dy,
+        opacity: 0.35, scale: 0.45, scaleX: 1, scaleY: 1,
+        rotation: 0, rotationY: 0,
+        duration: dur, ease: 'power2.out',
+        svgOrigin: CX + ' ' + CY, overwrite: 'auto',
+        delay: dur * 0.2
+      });
+    }
   });
-  /* hex-wrap 3D 리셋 */
   gsap.to(document.getElementById('hex-wrap'), { rotationX: 0, duration: dur });
 }
 
