@@ -898,7 +898,14 @@
       log('history timeline: badges=' + badges.length + ' texts=' + texts.length);
       if (!badges.length) return false;
 
+      var vcx = window.innerWidth / 2;
+
       badges.forEach(function (el, i) {
+        /* 뱃지의 자연 중심 x → 화면 중앙까지의 거리를 초기 offset 으로 */
+        var rect = el.getBoundingClientRect();
+        var offset = Math.round(vcx - (rect.left + rect.width / 2));
+        el.style.transform = 'translateX(' + offset + 'px)';
+        el.style.opacity = '0';
         el.classList.add('js-ready');
         el.style.transitionDelay = (i * 0.09) + 's';
       });

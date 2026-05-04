@@ -188,8 +188,7 @@
    JS 가 js-ready 부착 후에만 숨김. 미적용 시 항상 표시.
    ─────────────────────────────────────────────────────────────── */
 .about_history_time-line_contents.js-ready {
-  opacity: 0;
-  transform: translateX(80px);   /* 중앙에서 왼쪽으로 → 자연 위치 */
+  /* transform / opacity 는 JS 가 inline 으로 계산해서 박음 */
   transition:
     opacity  0.6s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
