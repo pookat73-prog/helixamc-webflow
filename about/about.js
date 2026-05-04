@@ -256,7 +256,10 @@
 
     var minX = -w/2,        maxX = w * 2 + w/2;
     var minY = -1.5*s - s,  maxY = s;
-    var pad = 8;
+    /* scale:1.18 bounce 가 viewBox 바깥으로 나가지 않도록 여유 확보.
+       가장 넓은 hex(ankwa/chikwa) 반폭 ≈ w/2, 18% 팽창 = 0.18*(w/2) ≈ 15.
+       상하도 동일 비율. 패딩 25로 충분히 커버. */
+    var pad = 25;
 
     function vertices(cx, cy, scale) {
       var k = scale || 1;
@@ -312,8 +315,10 @@
     svg.style.width = '100%';
     svg.style.height = '100%';
     svg.style.display = 'block';
-    svg.style.overflow = 'visible';
-    svg.setAttribute('overflow', 'visible');
+    /* overflow hidden — viewBox 밖으로 content 가 삐져나와 부모 pin-spacer 에
+       잘리는 현상 방지. pad=25 로 scale:1.18 bounce 를 viewBox 안에 흡수. */
+    svg.style.overflow = 'hidden';
+    svg.setAttribute('overflow', 'hidden');
 
     /* ── defs: 공유 shimmer gradient + inner hex clipPaths ── */
     var svgDefs = document.createElementNS(svgNS, 'defs');
