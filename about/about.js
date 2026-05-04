@@ -1073,8 +1073,8 @@
      스크롤 진입 시 fade-in 0.8s + scale 0.8 → 1.0 (2s, 동시 시작).
      ─────────────────────────────────────────────────────────────── */
   function initWeAreHereReveal() {
-    var els = document.querySelectorAll('.about_we-are-here');
-    if (!els.length) { log('no we-are-here'); return; }
+    var els = document.querySelectorAll('.about_we-are-here, .about_history_title_new');
+    if (!els.length) { log('no we-are-here / history_title_new'); return; }
 
     function reveal(el) {
       if (window.gsap) {

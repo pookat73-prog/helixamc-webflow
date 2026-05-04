@@ -13,7 +13,11 @@
     var s = document.createElement('style');
     s.id = 'helix-about-fouc-guard';
     s.textContent =
-      '.about-heading,.about_contents_sub-title,img.image-23,.about_contents-title,.about_three_contents-box{opacity:0}';
+      '.about-heading,.about_contents_sub-title,img.image-23,.about_contents-title,.about_three_contents-box{opacity:0}' +
+      /* 카드덱: init 전엔 모두 가려둠 (스크롤로 펼쳐지는 사고 방지).
+         card-stack.js 가 .helix-deck-host 안으로 옮긴 뒤 다시 보이게. */
+      '.just-box_qqqqqqq{visibility:hidden!important}' +
+      '.helix-deck-host .just-box_qqqqqqq{visibility:visible!important}';
     (document.head || document.documentElement).appendChild(s);
   } catch (e) {}
 
@@ -21,11 +25,12 @@
   var REPO   = 'helixamc-webflow';
   var BRANCH = 'main';
 
-  /* 깨끗한 롤백 상태 — about 전용 CSS/JS 만 로드. card-stack 등 인터랙션은
-     필요 시 다시 추가. */
   var FILES = [
     'about/about.css',
-    'about/about.js'
+    'about/about.js',
+    /* 카드덱 (.just-box_qqqqqqq) — home/global 공유 모듈 */
+    'home/global/card-stack.css',
+    'home/global/card-stack.js'
   ];
 
   function cdn(ref, path) {
