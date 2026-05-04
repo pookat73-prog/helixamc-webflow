@@ -62,6 +62,12 @@ body {
   user-select: none;
 }
 .hex-naekwa text, .hex-oikwa text, .hex-yeongsang text { font-weight: 700; }
+.hex-circle {
+  fill: rgba(0,117,214,.25);
+  stroke: #0075d6;
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+}
 .hex { transform-box: fill-box; transform-origin: center; }
 
 /* Stage 5 요소 */
@@ -168,8 +174,9 @@ body {
     <div class="row"><label>스케일</label><input id="s2-scale" type="range" min=".4" max="1" value=".62" step=".01"><span class="v" id="s2-scaleV">.62</span></div>
   </div>
   <div id="ctrl-s3" style="display:none">
-    <div class="row"><label>간격 (vw)</label><input id="s3-vw" type="range" min="0" max="3" value=".3" step=".05"><span class="v" id="s3-vwV">.30</span></div>
-    <div class="row"><label>스케일</label><input id="s3-scale" type="range" min=".3" max=".9" value=".6" step=".01"><span class="v" id="s3-scaleV">.60</span></div>
+    <div style="color:var(--muted);font-size:12px;line-height:1.6">
+      가운데 완전 겹침<br>헥사곤 → 원 페이드<br>텍스트 페이드 아웃
+    </div>
   </div>
   <div id="ctrl-s4" style="display:none">
     <div class="row"><label>rotateX</label><input id="s4-rx" type="range" min="0" max="88" value="75" step="1"><span class="v" id="s4-rxV">75</span></div>
@@ -230,7 +237,16 @@ function mkSvg() {
 
     var p = document.createElementNS(ns,'path');
     p.setAttribute('d', hexPath(hx.cx, hx.cy));
+    p.setAttribute('class','hex-path');
     g.appendChild(p);
+
+    /* Stage 3용 circle — 평소 숨김, Stage 3 에서 페이드 인 */
+    var c = document.createElementNS(ns,'circle');
+    c.setAttribute('cx', hx.cx); c.setAttribute('cy', hx.cy);
+    c.setAttribute('r', s * 0.92);
+    c.setAttribute('class','hex-circle');
+    c.style.opacity = '0';
+    g.appendChild(c);
 
     var t = document.createElementNS(ns,'text');
     t.setAttribute('x', hx.cx);
@@ -322,10 +338,13 @@ function applyStage(n, dur) {
   var svg = document.getElementById('the-svg');
   if (!svg) return;
 
-  /* 공용: 헥사 기본 색상 복원 (stage 1 tint → restore) */
+  /* 공용: 헥사 복원 — path 보임, circle 숨김, 텍스트 보임 */
   ORDER.forEach(function(id) {
     var g = svg.querySelector('.hex-'+id);
     gsap.to(g, { opacity: 1, rotationX: 0, duration: dur, overwrite: 'auto' });
+    gsap.to(g.querySelector('.hex-path'),   { opacity: 1, duration: dur * 0.5, overwrite: 'auto' });
+    gsap.to(g.querySelector('.hex-circle'), { opacity: 0, duration: dur * 0.5, overwrite: 'auto' });
+    gsap.to(g.querySelector('text'),        { opacity: 1, duration: dur * 0.5, overwrite: 'auto' });
   });
   /* stage5 요소 숨김 기본 */
   gsap.to(svg.querySelector('.s5-symbol'), { opacity: 0, duration: dur*.5 });
@@ -388,31 +407,26 @@ function applyS2(svg, dur) {
   });
 }
 
-/* Stage 3: 켜켜이 */
+/* Stage 3: 가운데 완전 겹침 + 도형 원으로 + 텍스트 페이드 아웃 */
 function applyS3(svg, dur) {
-  var vw    = +document.getElementById('s3-vw').value;
-  var scale = +document.getElementById('s3-scale').value;
-  var csx   = getCompStepX(vw);
-  var rowY  = CY;
-  ORDER.forEach(function(id, i) {
+  ORDER.forEach(function(id) {
     var hx = META[id];
-    var g = svg.querySelector('.hex-'+id);
-    var tx = CX + (i - 2) * csx;
+    var g  = svg.querySelector('.hex-'+id);
+    /* 모두 중앙으로 완전히 겹침 */
     gsap.to(g, {
-      x: tx - hx.cx, y: rowY - hx.cy,
-      scale: scale, rotation: 0, rotationY: 0,
+      x: CX - hx.cx, y: CY - hx.cy,
+      scale: 0.65, rotation: 0, rotationY: 0,
       duration: dur, ease: 'power2.inOut',
       svgOrigin: hx.cx + ' ' + hx.cy,
       overwrite: 'auto'
     });
+    /* 헥사곤 path 페이드 아웃 */
+    gsap.to(g.querySelector('.hex-path'),   { opacity: 0, duration: dur * 0.7, ease: 'power2.in', overwrite: 'auto' });
+    /* 원 페이드 인 */
+    gsap.to(g.querySelector('.hex-circle'), { opacity: 1, duration: dur * 0.7, ease: 'power2.out', delay: dur * 0.3, overwrite: 'auto' });
+    /* 텍스트 페이드 아웃 */
+    gsap.to(g.querySelector('text'), { opacity: 0, duration: dur * 0.4, ease: 'power2.in', overwrite: 'auto' });
   });
-  /* z-order: chikwa 최상단 */
-  setTimeout(function() {
-    ['ankwa','naekwa','yeongsang','oikwa','chikwa'].forEach(function(id) {
-      var g = svg.querySelector('.hex-'+id);
-      if (g && g.parentNode) g.parentNode.appendChild(g);
-    });
-  }, dur * 500);
 }
 
 /* Stage 4: 완전 겹침 + 가로로 누움 */
@@ -502,7 +516,6 @@ for (var di = 0; di < 5; di++) {
 
 /* 슬라이더 라이브 값 표시 */
 [['s2-step','s2-stepV',0],['s2-scale','s2-scaleV',2],
- ['s3-vw','s3-vwV',2],['s3-scale','s3-scaleV',2],
  ['s4-rx','s4-rxV',0],['s4-rot','s4-rotV',0],
  ['s5-sym','s5-symV',1],['s5-arc','s5-arcV',0]
 ].forEach(function(t){
