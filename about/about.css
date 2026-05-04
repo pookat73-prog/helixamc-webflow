@@ -183,6 +183,68 @@
   filter: blur(0);
 }
 
+/* ── History "최초" 광선 ─────────────────────────────────────────
+   #329ad6 사선 광선이 한 번 훑고 완전히 사라짐. 1초 딜레이 후 루프.
+   JS 가 요소를 찾은 뒤 .spark-ready 를 붙여야만 적용.
+   ─────────────────────────────────────────────────────────────── */
+.about_history_title_official-font .helix-spark,
+.about_history_title_official-font.helix-spark {
+  display: inline !important;
+  color: inherit !important;
+  background-image: linear-gradient(
+    115deg,
+    currentColor  0%,
+    currentColor  42%,
+    rgba(50,154,214,0.55) 46%,
+    #329ad6       49%,
+    #8fd0f5       51%,
+    #329ad6       53%,
+    rgba(50,154,214,0.55) 57%,
+    currentColor  61%,
+    currentColor  100%
+  ) !important;
+  background-size: 280% 100% !important;
+  background-repeat: no-repeat !important;
+  background-position: 160% center !important;
+  -webkit-background-clip: text !important;
+          background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+.about_history_title_official-font .helix-spark.is-running,
+.about_history_title_official-font.helix-spark.is-running {
+  animation: helixSpark 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+@keyframes helixSpark {
+  0%    { background-position: 160% center; }  /* 빔 오른쪽 대기 */
+  44%   { background-position: -60% center; }  /* 빔 왼쪽 탈출 완료 */
+  100%  { background-position: -60% center; }  /* 1초 이상 정적 */
+}
+
+/* ── History Timeline 가운데 펼침 ────────────────────────────────
+   JS 가 js-ready 부착 후에만 숨김. 미적용 시 항상 표시.
+   ─────────────────────────────────────────────────────────────── */
+.about_history_time-line_contents.js-ready {
+  opacity: 0;
+  transform: translateX(80px);   /* 중앙에서 왼쪽으로 → 자연 위치 */
+  transition:
+    opacity  0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.about_history_time-line_contents-copy_title.js-ready {
+  opacity: 0;
+  transform: translateX(-80px);  /* 중앙에서 오른쪽으로 → 자연 위치 */
+  transition:
+    opacity  0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.about_history_time-line_contents.is-visible,
+.about_history_time-line_contents-copy_title.is-visible {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
   transform: rotate(-6deg) !important;
