@@ -211,6 +211,7 @@
    ─────────────────────────────────────────────────────────────── */
 .is-highlight-target {
   position: relative;
+  display: inline-block;
   /* 형광펜 fill: #329ad6 반투명 단색. 0% → 100% width 로 직사각형 sweep */
   background-image: linear-gradient(
     to right,
@@ -218,32 +219,32 @@
     rgba(50, 154, 214, 0.4)
   );
   background-repeat: no-repeat;
-  background-size: 0% 75%;
-  background-position: 0 110%;
+  background-size: 0% 70%;
+  background-position: 0 95%;
   transition: background-size 1.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.18s;
 }
-/* 얇은 직사각형 커서 — 페이드인 후 fill 과 함께 좌→우 이동 */
-.is-highlight-target::before {
+/* 얇은 직사각형 커서 — 페이드인 후 fill 과 함께 좌→우 이동 후 정지 */
+.is-highlight-target::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -8%;
-  width: 3px;
-  height: 75%;
+  bottom: 0;
+  width: 4px;
+  height: 70%;
   background: #329ad6;
+  box-shadow: 0 0 6px rgba(50, 154, 214, 0.6);
   opacity: 0;
   pointer-events: none;
-  z-index: -1;
   transition:
     opacity 0.18s ease-out,
     left    1.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.18s;
 }
 .is-highlight-target.is-highlighted {
-  background-size: 100% 75%;
+  background-size: 100% 70%;
 }
-.is-highlight-target.is-highlighted::before {
+.is-highlight-target.is-highlighted::after {
   opacity: 1;
-  left: calc(100% - 3px);
+  left: calc(100% - 4px);
 }
 
 /* ── 쫀득한 ease-in-out h2 등장 ───────────────────────────────────
@@ -271,25 +272,37 @@
    ─────────────────────────────────────────────────────────────── */
 #hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title {
   opacity: 0;
-  transform: scale(0.85);
+  transform: scale(0.88);
   transform-origin: 0% 0%;
-  clip-path: inset(0 100% 100% 0);
+  /* mask 가 element 보다 크게 잡히고 (250%) 135deg 그라데이션이
+     좌상→우하로 #000(불투명) → transparent. 초기 mask-position 100% 100%
+     → element 가 mask 의 우하 영역 (transparent) 을 샘플링 → 안 보임.
+     final 0% 0% → element 가 mask 의 좌상 영역 (#000) 샘플링 → fully visible.
+     position 슬라이드 동안 사선 (135°) 으로 reveal edge 가 지나감. */
   -webkit-mask-image: linear-gradient(135deg,
-    rgba(0,0,0,1) 35%,
-    rgba(0,0,0,0.5) 100%);
+    #000 0%, #000 38%,
+    transparent 62%, transparent 100%);
           mask-image: linear-gradient(135deg,
-    rgba(0,0,0,1) 35%,
-    rgba(0,0,0,0.5) 100%);
+    #000 0%, #000 38%,
+    transparent 62%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: 250% 250%;
+          mask-size: 250% 250%;
+  -webkit-mask-position: 100% 100%;
+          mask-position: 100% 100%;
   transition:
-    opacity   1.4s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.6s cubic-bezier(0.22, 1, 0.36, 1),
-    clip-path 1.7s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform, clip-path;
+    opacity              1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    transform            1.6s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-mask-position 1.7s cubic-bezier(0.22, 1, 0.36, 1),
+            mask-position 1.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, mask-position;
 }
 #hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title.is-corner-in {
   opacity: 1;
   transform: scale(1);
-  clip-path: inset(0 0 0 0);
+  -webkit-mask-position: 0% 0%;
+          mask-position: 0% 0%;
 }
 
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
