@@ -171,8 +171,10 @@
       });
     }
 
-    /* ── .image-18 클릭 이벤트 연결 ── */
-    var btn = document.querySelector('.image-18');
+    /* ── 햄버거 클릭 이벤트 연결 ──
+       홈: .image-18 / about: .menu-bar_mobile (Webflow 마크업 차이) */
+    var btn = document.querySelector('.image-18') ||
+              document.querySelector('.menu-bar_mobile');
     if (btn) {
       btn.style.cursor = 'pointer';
       /* 햄버거 자체 준비중 모드: data-coming-soon 부여 → coming-soon.js 가
