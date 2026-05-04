@@ -183,6 +183,34 @@
   filter: blur(0);
 }
 
+/* History timeline — contents 오른쪽→왼쪽 슬라이드인 */
+.about_history_time-line_contents {
+  opacity: 0;
+  transform: translateX(48px);
+  transition:
+    opacity 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+.about_history_time-line_contents.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* History timeline — copy title 오른쪽에서 드로우인 */
+.about_history_time-line_contents-copy_title {
+  opacity: 0;
+  transform: translateX(56px);
+  transition:
+    opacity 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+.about_history_time-line_contents-copy_title.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
 .about_contents_3-concept_qq {
   transform: rotate(-6deg) !important;

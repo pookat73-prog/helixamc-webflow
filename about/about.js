@@ -820,17 +820,21 @@
         var cn = (all[i].className || '') + '';
         if (/about[_\- ]history[_\- ]title[_\- ]official/i.test(cn)) hit.push(all[i]);
       }
-      /* 그래도 없으면 token 으로 폴백 탐색 */
+      /* 폴백 — "최초" 텍스트 노드를 직접 가진 리프 요소 탐색 */
       if (!hit.length) {
         var pool = document.querySelectorAll('h1,h2,h3,h4,h5,h6,div,span,p');
         for (var j = 0; j < pool.length; j++) {
           if (pool[j].dataset && pool[j].dataset.sparkInit) continue;
-          if ((pool[j].textContent || '').indexOf(token) >= 0 &&
-              pool[j].children.length === 0) {
-            hit.push(pool[j]);
+          var tn = pool[j].childNodes;
+          for (var k = 0; k < tn.length; k++) {
+            if (tn[k].nodeType === 3 && tn[k].nodeValue.indexOf(token) >= 0) {
+              hit.push(pool[j]);
+              break;
+            }
           }
         }
       }
+      if (hit.length) log('history spark findTargets hit=' + hit.length + ' cls=' + (hit[0].className || '?'));
       return hit;
     }
 
@@ -899,6 +903,39 @@
     }, 300);
   }
 
+  function initHistoryTimeline() {
+    var contents = document.querySelectorAll('.about_history_time-line_contents');
+    var titles   = document.querySelectorAll('.about_history_time-line_contents-copy_title');
+    if (!contents.length) { log('history timeline: no contents'); return; }
+
+    /* 행별 stagger delay (12ms 간격) */
+    contents.forEach(function (el, i) {
+      el.style.transitionDelay = (i * 0.12) + 's';
+    });
+    titles.forEach(function (el, i) {
+      el.style.transitionDelay = (i * 0.12) + 's';
+    });
+
+    /* 첫 번째 contents 요소가 뷰포트에 들어오면 전체 행 일제히 시작 */
+    if (!('IntersectionObserver' in window)) {
+      contents.forEach(function (el) { el.classList.add('is-visible'); });
+      titles.forEach(function (el)   { el.classList.add('is-visible'); });
+      return;
+    }
+    var fired = false;
+    var io = new IntersectionObserver(function (entries) {
+      if (fired) return;
+      if (!entries[0].isIntersecting) return;
+      fired = true;
+      io.disconnect();
+      contents.forEach(function (el) { el.classList.add('is-visible'); });
+      titles.forEach(function (el)   { el.classList.add('is-visible'); });
+      log('history timeline: fired');
+    }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0 });
+    io.observe(contents[0]);
+    log('history timeline: ready rows=' + contents.length);
+  }
+
   function init() {
     log('init');
     renderHexDiagram();
@@ -906,6 +943,7 @@
     initHexSection2();
     initViewport60FadeIn();
     wrapHistorySpark();
+    initHistoryTimeline();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
