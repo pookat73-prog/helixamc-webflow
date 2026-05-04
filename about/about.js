@@ -973,26 +973,21 @@
 
       if (endY - startY < 50) return false;                /* 너무 가까우면 skip */
 
-      var docH = Math.max(
-        document.documentElement.scrollHeight,
-        document.body.scrollHeight
-      );
-      var docW = Math.max(
-        document.documentElement.scrollWidth,
-        document.body.scrollWidth
-      );
-
+      /* SVG 자체는 0×0 으로 두고 overflow:visible 로 path 만 그려지게 함.
+         (큰 width/height 박으면 body 스크롤/레이아웃에 영향 가서 헤더/섹션 사이
+         틈새가 벌어지는 사고가 생김) */
       var svgNS = 'http://www.w3.org/2000/svg';
       var svg = document.createElementNS(svgNS, 'svg');
       svg.setAttribute('xmlns', svgNS);
       svg.style.position      = 'absolute';
       svg.style.left          = '0';
       svg.style.top           = '0';
-      svg.style.width         = docW + 'px';
-      svg.style.height        = docH + 'px';
+      svg.style.width         = '1px';
+      svg.style.height        = '1px';
       svg.style.pointerEvents = 'none';
       svg.style.zIndex        = '5';
       svg.style.overflow      = 'visible';
+      svg.setAttribute('overflow', 'visible');
 
       /* 직선 path */
       var d = 'M' + startX.toFixed(1) + ',' + startY.toFixed(1) +
