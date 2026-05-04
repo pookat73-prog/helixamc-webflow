@@ -164,8 +164,7 @@ body {
     </div>
   </div>
   <div id="ctrl-s2" style="display:none">
-    <div class="row"><label>겹침 (px)</label><input id="s2-step" type="range" min="40" max="140" value="80" step="2"><span class="v" id="s2-stepV">80</span></div>
-    <div class="row"><label>스케일</label><input id="s2-scale" type="range" min=".4" max="1" value=".62" step=".01"><span class="v" id="s2-scaleV">.62</span></div>
+    <div class="row"><label>수렴 비율</label><input id="s2-t" type="range" min=".1" max=".9" value=".45" step=".01"><span class="v" id="s2-tV">.45</span></div>
   </div>
   <div id="ctrl-s3" style="display:none">
     <div style="color:var(--muted);font-size:12px;line-height:1.6">
@@ -407,22 +406,27 @@ function applyS1(svg, dur) {
   });
 }
 
-/* Stage 2: 가로 일렬, 겹침 */
+/* Stage 2: S1(원위치)과 S3(중앙 수렴) 사이 자연스러운 중간 — 위치만 t 비율 */
 function applyS2(svg, dur) {
-  var step  = +document.getElementById('s2-step').value;
-  var scale = +document.getElementById('s2-scale').value;
-  var rowY  = CY;
-  ORDER.forEach(function(id, i) {
+  var t = +document.getElementById('s2-t').value; /* 0=S1위치, 1=S3위치 */
+  ORDER.forEach(function(id) {
     var hx = META[id];
     var g = svg.querySelector('.hex-'+id);
-    var tx = CX + (i - 2) * step;
+    var p = g.querySelector('.hex-path');
     gsap.to(g, {
-      x: tx - hx.cx, y: rowY - hx.cy,
-      scale: scale, rotation: 0, rotationY: 0,
-      duration: dur, ease: 'power2.inOut',
-      svgOrigin: hx.cx + ' ' + hx.cy,
-      overwrite: 'auto'
+      x: (CX - hx.cx) * t,
+      y: (CY - hx.cy) * t,
+      scale: 1, scaleX: 1, scaleY: 1,
+      rotation: 0, rotationY: 0, opacity: 1,
+      duration: dur, ease: 'power2.inOut', overwrite: 'auto'
     });
+    /* 헥사 shape 복원 (S3에서 왔을 때 원→헥사 복원) */
+    gsap.to(p, {
+      attr: { d: hexBezierPath(hx.cx, hx.cy) },
+      duration: dur * 0.6, ease: 'power2.inOut', overwrite: 'auto'
+    });
+    /* 텍스트: t에 비례해 흐려짐 */
+    gsap.to(g.querySelector('text'), { opacity: 1 - t * 0.7, duration: dur * 0.5, overwrite: 'auto' });
   });
 }
 
@@ -559,7 +563,7 @@ for (var di = 0; di < 5; di++) {
 }
 
 /* 슬라이더 라이브 값 표시 */
-[['s2-step','s2-stepV',0],['s2-scale','s2-scaleV',2],
+[['s2-t','s2-tV',2],
  ['s4-sx','s4-sxV',2],['s4-sy','s4-syV',2],
  ['s5-sym','s5-symV',1],['s5-arc','s5-arcV',0]
 ].forEach(function(t){
