@@ -1101,9 +1101,9 @@
   }
 
   /* ── 사선 빛 반사 sweep (한 번 통과, 루프 X) ─────────────────────
-     원 텍스트 색을 그대로 두고, 가로 그라데이션의 밝은 피크가 좌→우로
-     한 번 지나가는 효과. 그라데이션은 background-clip: text 로 텍스트
-     모양에만 클립. 종료 후 인라인 스타일 모두 제거 → 원래 색 복귀.
+     원본 텍스트는 손대지 않고, 같은 글자를 복제한 오버레이 span 을
+     위에 올려 거기에만 그라데이션을 적용. 오버레이 양옆은 완전 투명,
+     가운데 피크만 옅은 색 → 빛만 좌→우로 지나가는 효과.
 
      opts:
        peakColor: 'r,g,b' (피크 색)
@@ -1114,6 +1114,7 @@
      ─────────────────────────────────────────────────────────── */
   function helixShineSweep(el, opts) {
     if (!el) return;
+    if (el.querySelector('.helix-shine-overlay')) return;
     opts = opts || {};
     var peakColor = opts.peakColor || '0,117,214';
     var peakAlpha = (opts.peakAlpha != null) ? opts.peakAlpha : 0.45;
@@ -1121,43 +1122,57 @@
     var duration  = opts.duration  || 1600;
     var angle     = opts.angle     || '115deg';
 
-    var base = window.getComputedStyle(el).color || '#000';
     var lo = Math.max(0, 50 - bandWidth);
     var hi = Math.min(100, 50 + bandWidth);
 
-    var grad = 'linear-gradient(' + angle + ', '
-      + base + ' 0%, '
-      + base + ' ' + lo + '%, '
-      + 'rgba(' + peakColor + ',' + peakAlpha + ') 50%, '
-      + base + ' ' + hi + '%, '
-      + base + ' 100%)';
+    var cs = window.getComputedStyle(el);
+    var prevPos = el.style.position;
+    if (cs.position === 'static') el.style.position = 'relative';
 
-    el.style.backgroundImage = grad;
-    el.style.backgroundSize = '300% 100%';
-    el.style.backgroundPosition = '200% 0';
-    el.style.backgroundRepeat = 'no-repeat';
-    el.style.setProperty('-webkit-background-clip', 'text');
-    el.style.setProperty('background-clip', 'text');
-    el.style.setProperty('-webkit-text-fill-color', 'transparent');
-    el.style.color = 'transparent';
-    el.style.transition = 'background-position ' + (duration / 1000) + 's cubic-bezier(0.45,0,0.55,1)';
+    var overlay = document.createElement('span');
+    overlay.className = 'helix-shine-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.textContent = el.textContent;
+
+    var grad = 'linear-gradient(' + angle + ', '
+      + 'rgba(' + peakColor + ',0) 0%, '
+      + 'rgba(' + peakColor + ',0) ' + lo + '%, '
+      + 'rgba(' + peakColor + ',' + peakAlpha + ') 50%, '
+      + 'rgba(' + peakColor + ',0) ' + hi + '%, '
+      + 'rgba(' + peakColor + ',0) 100%)';
+
+    overlay.style.cssText = [
+      'position:absolute',
+      'left:0','top:0','right:0','bottom:0',
+      'margin:0','padding:0','border:0',
+      'pointer-events:none',
+      'font:inherit','letter-spacing:inherit','word-spacing:inherit',
+      'line-height:inherit','text-align:inherit','text-transform:inherit',
+      'white-space:inherit','direction:inherit',
+      'display:block',
+      'color:transparent',
+      '-webkit-text-fill-color:transparent',
+      '-webkit-background-clip:text',
+      'background-clip:text',
+      'background-repeat:no-repeat',
+      'background-size:300% 100%',
+      'background-position:150% 0',
+      'background-image:' + grad,
+      'transition:background-position ' + (duration / 1000) + 's cubic-bezier(0.45,0,0.55,1)'
+    ].join(';');
+
+    el.appendChild(overlay);
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        el.style.backgroundPosition = '-100% 0';
+        overlay.style.backgroundPosition = '-50% 0';
       });
     });
 
     setTimeout(function () {
-      el.style.removeProperty('background-image');
-      el.style.removeProperty('background-size');
-      el.style.removeProperty('background-position');
-      el.style.removeProperty('background-repeat');
-      el.style.removeProperty('-webkit-background-clip');
-      el.style.removeProperty('background-clip');
-      el.style.removeProperty('-webkit-text-fill-color');
-      el.style.removeProperty('color');
-      el.style.removeProperty('transition');
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      if (prevPos) el.style.position = prevPos;
+      else el.style.removeProperty('position');
     }, duration + 80);
   }
 
