@@ -469,14 +469,23 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
      (background-clip:text 와 호환 — text-shadow 는 투명 fill 사이로
       비쳐서 회색 ghost 처럼 보이므로 filter:drop-shadow 사용)
    ================================================================ */
+/* @property 등록 — CSS custom property 가 numeric 으로 보간되도록 명시.
+   이 등록이 없으면 브라우저는 var() 안 의 숫자를 string 으로만 다뤄서
+   keyframes 사이가 갑자기 jump 함 (= shine 이 툭 꺼지는 원인). */
+@property --about-shine-alpha {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: false;
+}
+
 .about_point-title_blue_whrite {
   background-image:
-    /* 1) shine 띠 — keyframes 에서 alpha 가 1 → 0 으로 페이드 */
+    /* 1) shine 띠 — alpha 는 --about-shine-alpha 로 키프레임 보간 */
     linear-gradient(
       115deg,
-      rgba(176, 216, 245, 0)    42%,
-      rgba(176, 216, 245, 0.95) 50%,
-      rgba(176, 216, 245, 0)    58%
+      rgba(176, 216, 245, 0)                          42%,
+      rgba(176, 216, 245, var(--about-shine-alpha))   50%,
+      rgba(176, 216, 245, 0)                          58%
     ),
     /* 2) 베이스 — 솔리드 메인 블루 */
     linear-gradient(#0075d6, #0075d6);
@@ -487,37 +496,27 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
           background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  /* 외경에서 한 칸 떨어져서 떨어지도록 Y 더 내리고(3px), blur 약간(1.5px),
-     alpha 0.55 — 너무 깝깝해 보이지 않게 breathing room */
   filter: drop-shadow(0 0.208vw 0.104vw rgba(61, 79, 107, 0.55));
-  animation: aboutPointTitleShine 3.6s linear infinite;
+  animation: aboutPointTitleShine 5.5s linear infinite;
 }
 
-/* 우 → 좌 sweep + 진행하면서 빛이 바래서 사라짐
-   (gradient stop 의 rgba alpha 가 0% → 100% 사이에서 0.95 → 0 으로 보간) */
+/* 우 → 좌 sweep + 진행하면서 alpha 0.95 → 0 페이드.
+   55~100% 구간은 화면 밖에서 invisible 상태 유지 → 다음 사이클로 점프할 때
+   alpha 0 → 0.95 복귀가 화면 밖에서 일어나서 pop 안 보임. */
 @keyframes aboutPointTitleShine {
   0% {
-    background-image:
-      linear-gradient(
-        115deg,
-        rgba(176, 216, 245, 0)    42%,
-        rgba(176, 216, 245, 0.95) 50%,
-        rgba(176, 216, 245, 0)    58%
-      ),
-      linear-gradient(#0075d6, #0075d6);
+    --about-shine-alpha: 0.95;
     background-position: 225% 0, 0 0;
   }
+  55% {
+    --about-shine-alpha: 0;
+    background-position: -125% 0, 0 0;
+  }
   100% {
-    background-image:
-      linear-gradient(
-        115deg,
-        rgba(176, 216, 245, 0) 42%,
-        rgba(176, 216, 245, 0) 50%,
-        rgba(176, 216, 245, 0) 58%
-      ),
-      linear-gradient(#0075d6, #0075d6);
+    --about-shine-alpha: 0;
     background-position: -125% 0, 0 0;
   }
 }
+
 
 
