@@ -1354,8 +1354,10 @@
 
   function init() {
     log('init');
+    /* TEMP HOLD — 헥사 모션그래픽 잠시 비활성화 (사용자 요청)
     renderHexDiagram();
     initHexAnimations();
+    */
     initHexSection2();
     initViewport60FadeIn();
     initHistorySpark();
