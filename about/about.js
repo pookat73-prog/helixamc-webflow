@@ -1124,9 +1124,30 @@
     document.head.appendChild(style);
   }
 
+  /* el 의 base 색을 캡처해 bg-clip:text 모드를 영구 적용. 이후 sweep 은
+     bg-image 만 swap 하므로 렌더링 모드 전환이 없어 "툭" 어긋남 없음. */
+  function helixShinePrime(el) {
+    if (!el || el.dataset.helixShinePrimed === '1') return;
+    var base = window.getComputedStyle(el).color || 'rgb(255,255,255)';
+    var bm = base.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/);
+    var br = bm ? +bm[1] : 255, bg = bm ? +bm[2] : 255, bb = bm ? +bm[3] : 255;
+    var ba = bm && bm[4] != null ? +bm[4] : 1;
+    var baseRGB = 'rgba(' + br + ',' + bg + ',' + bb + ',' + ba + ')';
+    el.dataset.helixShineBase = baseRGB;
+    el.style.backgroundImage = 'linear-gradient(' + baseRGB + ', ' + baseRGB + ')';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.backgroundSize = '100% 100%';
+    el.style.setProperty('-webkit-background-clip', 'text');
+    el.style.setProperty('background-clip', 'text');
+    el.style.setProperty('-webkit-text-fill-color', 'transparent');
+    el.style.color = 'transparent';
+    el.dataset.helixShinePrimed = '1';
+  }
+
   function helixShineSweep(el, opts) {
     if (!el) return;
     if (el.dataset.helixShining === '1') return;
+    helixShinePrime(el);
     opts = opts || {};
     var peakColor = opts.peakColor || '0,117,214';
     var peakAlpha = (opts.peakAlpha != null) ? opts.peakAlpha : 0.6;
@@ -1137,21 +1158,15 @@
     var lo = Math.max(0, 50 - bandWidth);
     var hi = Math.min(100, 50 + bandWidth);
 
-    /* base 색을 RGB 파싱 → peak 색과 alpha 로 미리 믹스해서 그라데이션
-       stop 을 모두 full-opaque 로 만든다. 양옆에서도 텍스트가 base 색
-       그대로 보임 (와이퍼 없음). size 300% + position 100→0 으로
-       피크가 좌측 밖(-0.5W)에서 우측 밖(+1.5W) 까지 traverse 하면서
-       엘리먼트는 항상 완전 커버 범위 안에 있음. */
-    var base = window.getComputedStyle(el).color || 'rgb(255,255,255)';
-    var bm = base.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/);
-    var br = bm ? +bm[1] : 255, bg = bm ? +bm[2] : 255, bb = bm ? +bm[3] : 255;
-    var ba = bm && bm[4] != null ? +bm[4] : 1;
+    var baseRGB = el.dataset.helixShineBase;
+    var bm2 = baseRGB.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/);
+    var br = +bm2[1], bg = +bm2[2], bb = +bm2[3];
+    var ba = bm2[4] != null ? +bm2[4] : 1;
     var pm = peakColor.split(',');
     var pr = +pm[0] || 0, pg = +pm[1] || 0, pb = +pm[2] || 0;
     var mixR = Math.round(br * (1 - peakAlpha) + pr * peakAlpha);
     var mixG = Math.round(bg * (1 - peakAlpha) + pg * peakAlpha);
     var mixB = Math.round(bb * (1 - peakAlpha) + pb * peakAlpha);
-    var baseRGB = 'rgba(' + br + ',' + bg + ',' + bb + ',' + ba + ')';
     var peakRGB = 'rgba(' + mixR + ',' + mixG + ',' + mixB + ',' + ba + ')';
 
     var grad = 'linear-gradient(' + angle + ', '
@@ -1163,39 +1178,20 @@
 
     ensureHelixShineKeyframes();
     el.dataset.helixShining = '1';
-    /* bg 와 clip 을 먼저 깔고 1프레임 페인트한 뒤 fill 을 transparent 로
-       바꿔야 첫 프레임에 텍스트가 잠깐 투명해지는 "툭" 플래시가 사라짐. */
     el.style.backgroundImage = grad;
     el.style.backgroundSize = '500% 100%';
     el.style.backgroundPosition = '100% 0';
-    el.style.backgroundRepeat = 'no-repeat';
-    el.style.setProperty('-webkit-background-clip', 'text');
-    el.style.setProperty('background-clip', 'text');
-
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        el.style.setProperty('-webkit-text-fill-color', 'transparent');
-        el.style.color = 'transparent';
-        el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.7, 0, 1, 1) forwards';
-      });
-    });
+    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.7, 0, 1, 1) forwards';
 
     setTimeout(function () {
-      /* fill 을 먼저 원복하고 다음 프레임에 bg 를 정리 — 역순으로 한 프레임
-         원본 텍스트가 페인트되도록 해서 sweep 종료 시점의 잔여 점프 방지. */
-      el.style.removeProperty('-webkit-text-fill-color');
-      el.style.removeProperty('color');
-      requestAnimationFrame(function () {
-        el.style.removeProperty('animation');
-        el.style.removeProperty('background-image');
-        el.style.removeProperty('background-size');
-        el.style.removeProperty('background-position');
-        el.style.removeProperty('background-repeat');
-        el.style.removeProperty('-webkit-background-clip');
-        el.style.removeProperty('background-clip');
-        delete el.dataset.helixShining;
-      });
-    }, duration + 80);
+      /* sweep 종료 → bg 를 단색 base 로 다시 swap. bg-clip 모드는 유지되므로
+         렌더링 모드 전환이 없어 "툭" 없음. */
+      el.style.removeProperty('animation');
+      el.style.backgroundImage = 'linear-gradient(' + baseRGB + ', ' + baseRGB + ')';
+      el.style.backgroundSize = '100% 100%';
+      el.style.removeProperty('background-position');
+      delete el.dataset.helixShining;
+    }, duration + 60);
   }
 
   /* ── About Mini Title shine — 4개 시간차 여린 블루 sweep ────────
@@ -1214,6 +1210,10 @@
     });
     log('about_mini_title shine targets=' + picked.length + ' (of ' + all.length + ')');
     if (!picked.length) return;
+
+    /* 페이지 로드 시점에 4개를 모두 bg-clip:text 모드로 prime 해 둔다.
+       sweep 시점에 모드를 전환하지 않으므로 렌더링 변화가 없어 "툭" 없음. */
+    picked.forEach(helixShinePrime);
 
     var DURATION = 1500;
     var GAP = 200;
