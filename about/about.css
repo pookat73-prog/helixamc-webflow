@@ -270,26 +270,21 @@
 }
 
 /* ── 하이브리드 부제 박스 (.hybrid_title_block) 동시 페이드인 ─────
+   번호 .point-number_blue_freely 는 페이드 대상 제외 + 항상 최상단.
    about.js 가 첫 블록 진입 시 .helix-fade-pre 부착 → .is-visible 로 노출.
    ─────────────────────────────────────────────────────────────── */
-.hybrid_title_block.helix-fade-pre {
+.hybrid_title_block.helix-fade-pre > *:not(.point-number_blue_freely) {
   opacity: 0;
   transition: opacity 1.2s cubic-bezier(0.42, 0, 0.58, 1);
 }
-.hybrid_title_block.helix-fade-pre.is-visible {
+.hybrid_title_block.helix-fade-pre.is-visible > *:not(.point-number_blue_freely) {
   opacity: 1;
 }
-/* 박스 위 번호가 가려지지 않도록 — 블록 자신의 stacking 을 낮추고
-   sibling/내부 자식에게 z-index 우선권. 번호의 정확한 클래스를 알면
-   거기에 z-index 만 박는 게 더 깔끔. */
-.hybrid_title_block {
+/* 번호는 어떤 경우에도 항상 최상단 */
+.point-number_blue_freely {
   position: relative;
-  z-index: 0;
-}
-.hybrid_title_block ~ *,
-.hybrid_title_block > * {
-  position: relative;
-  z-index: 2;
+  z-index: 10;
+  opacity: 1 !important;
 }
 
 /* ── 왜 하이브리드인가 h2 — 인터랙션 제거 (사용자 요청) ─────────────
