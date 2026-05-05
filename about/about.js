@@ -1060,6 +1060,29 @@
     });
   }
 
+  /* ── About History 표제 페이드인 ─────────────────────────────────
+     "헬릭스는 끊임없이, 진화하고 있습니다." 텍스트.
+     IO 진입 시 .is-visible 부착 → CSS 가 opacity 0→1 transition.
+     ─────────────────────────────────────────────────────────── */
+  function initAboutHistoryStandardFontFade() {
+    var els = document.querySelectorAll('.about_history_title_standard-font');
+    log('history standard-font fade targets=' + els.length);
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
   /* ── About Button Glow — LOCKED v4 (CLAUDE.md 사양 그대로) ────
      홈 buttons.js 패턴 동일:
      1) IO 진입 → maxGlow 인라인 !important 설정 (피크 α=1.0)
@@ -1492,6 +1515,7 @@
     initBurnGlow();
     initAboutButtonGlow();
     initSection22Reveal();
+    initAboutHistoryStandardFontFade();
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
