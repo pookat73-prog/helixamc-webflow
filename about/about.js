@@ -1002,23 +1002,23 @@
     io.observe(el);
   }
 
-  /* ── Section 2-2 (.about_contents_qq3) — 스크롤 진입 reveal ────
-     CSS 가 초기 상태 + transition 정의. JS 는 IO 로 진입 시
-     .is-section22-in 부착, div-block-175 인덱스별 transition-delay
-     설정해서 좌→우 타라락 stagger.
+  /* ── Section 2-2 (.about_contents_qq3) — column 단위 stagger 페이드인 ─
+     각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
+     + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 로 한 번에 등장.
+     좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
     var container = document.querySelector('.about_contents_qq3');
     log('section2-2 reveal target=' + !!container);
     if (!container) return;
 
-    /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
-       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
-    var BASE = 1.8;  /* 파란 필기체 fade 완료 후 시작 (s) */
-    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
-    var blocks = container.querySelectorAll('.div-block-175');
-    Array.prototype.forEach.call(blocks, function (b, i) {
-      b.style.transitionDelay = (BASE + i * STEP) + 's';
+    var STEP = 0.12; /* column 간 stagger (s) */
+    var idx = 0;
+    Array.prototype.forEach.call(container.children, function (c) {
+      if (c.classList && c.classList.contains('div-block-176')) {
+        c.style.transitionDelay = (idx * STEP) + 's';
+        idx++;
+      }
     });
 
     function trigger() {
@@ -1028,8 +1028,6 @@
     }
 
     if (!('IntersectionObserver' in window)) { trigger(); return; }
-    /* rootMargin bottom -35% → 섹션 top 이 뷰포트 65% 라인 도달 시 발사
-       (이전 -15% 는 너무 일찍 발사돼서 사용자가 진입 전 애니가 끝남) */
     var io = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
     }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
