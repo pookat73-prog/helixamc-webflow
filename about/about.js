@@ -1021,7 +1021,7 @@
     if (!('IntersectionObserver' in window)) { trigger(); return; }
     var io = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
-    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px 25% 0px', threshold: 0 });
     io.observe(el);
   }
 
