@@ -247,6 +247,15 @@
   left: calc(100% - 4px);
 }
 
+/* ── Standard-font 텍스트 페이드인 (하이라이터 효과는 별도 유지) ── */
+.is-fade-target {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+.is-fade-target.is-faded-in {
+  opacity: 1;
+}
+
 /* ── 쫀득한 ease-in-out h2 등장 ───────────────────────────────────
    극단적 S-커브 (easeInOutExpo) + 살짝의 scale + Y 슬라이드.
    초반 거의 정지 → 중반 폭발적 → 후반 부드럽게 정착해 '쫀득한' 체감.
