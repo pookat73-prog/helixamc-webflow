@@ -1163,27 +1163,39 @@
 
     ensureHelixShineKeyframes();
     el.dataset.helixShining = '1';
+    /* bg 와 clip 을 먼저 깔고 1프레임 페인트한 뒤 fill 을 transparent 로
+       바꿔야 첫 프레임에 텍스트가 잠깐 투명해지는 "툭" 플래시가 사라짐. */
     el.style.backgroundImage = grad;
     el.style.backgroundSize = '500% 100%';
+    el.style.backgroundPosition = '100% 0';
     el.style.backgroundRepeat = 'no-repeat';
     el.style.setProperty('-webkit-background-clip', 'text');
     el.style.setProperty('background-clip', 'text');
-    el.style.setProperty('-webkit-text-fill-color', 'transparent');
-    el.style.color = 'transparent';
-    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.7, 0, 1, 1) forwards';
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        el.style.setProperty('-webkit-text-fill-color', 'transparent');
+        el.style.color = 'transparent';
+        el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.7, 0, 1, 1) forwards';
+      });
+    });
 
     setTimeout(function () {
-      el.style.removeProperty('animation');
-      el.style.removeProperty('background-image');
-      el.style.removeProperty('background-size');
-      el.style.removeProperty('background-position');
-      el.style.removeProperty('background-repeat');
-      el.style.removeProperty('-webkit-background-clip');
-      el.style.removeProperty('background-clip');
+      /* fill 을 먼저 원복하고 다음 프레임에 bg 를 정리 — 역순으로 한 프레임
+         원본 텍스트가 페인트되도록 해서 sweep 종료 시점의 잔여 점프 방지. */
       el.style.removeProperty('-webkit-text-fill-color');
       el.style.removeProperty('color');
-      delete el.dataset.helixShining;
-    }, duration + 60);
+      requestAnimationFrame(function () {
+        el.style.removeProperty('animation');
+        el.style.removeProperty('background-image');
+        el.style.removeProperty('background-size');
+        el.style.removeProperty('background-position');
+        el.style.removeProperty('background-repeat');
+        el.style.removeProperty('-webkit-background-clip');
+        el.style.removeProperty('background-clip');
+        delete el.dataset.helixShining;
+      });
+    }, duration + 80);
   }
 
   /* ── About Mini Title shine — 4개 시간차 여린 블루 sweep ────────
@@ -1203,9 +1215,9 @@
     log('about_mini_title shine targets=' + picked.length + ' (of ' + all.length + ')');
     if (!picked.length) return;
 
-    var DURATION = 2500;
+    var DURATION = 1500;
     var GAP = 200;
-    var START_DELAY = 200;
+    var START_DELAY = 150;
     function shine(el) {
       helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.6, bandWidth: 28, duration: DURATION });
     }
