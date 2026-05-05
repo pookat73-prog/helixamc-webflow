@@ -269,22 +269,26 @@
   opacity: 1;
 }
 
-/* ── 하이브리드 부제 박스 (.hybrid_title_block) 동시 페이드인 ─────
-   번호 .point-number_blue_freely 는 페이드 대상 제외 + 항상 최상단.
-   about.js 가 첫 블록 진입 시 .helix-fade-pre 부착 → .is-visible 로 노출.
+/* ── 하이브리드 부제 박스 (.hybrid_title_block) 흰 배경만 페이드인 ──
+   텍스트/번호는 처음부터 그대로 노출. 박스 자체의 background-color 와
+   box-shadow (있다면) 만 transition. 콘텐츠는 건드리지 않음.
+   about.js 가 첫 블록 진입 시 .helix-fade-pre 부착 → .is-visible 로 발화.
    ─────────────────────────────────────────────────────────────── */
-.hybrid_title_block.helix-fade-pre > *:not(.point-number_blue_freely) {
-  opacity: 0;
-  transition: opacity 1.2s cubic-bezier(0.42, 0, 0.58, 1);
+.hybrid_title_block.helix-fade-pre {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  transition:
+    background-color 1.2s cubic-bezier(0.42, 0, 0.58, 1),
+    box-shadow       1.2s cubic-bezier(0.42, 0, 0.58, 1);
 }
-.hybrid_title_block.helix-fade-pre.is-visible > *:not(.point-number_blue_freely) {
-  opacity: 1;
+.hybrid_title_block.helix-fade-pre.is-visible {
+  background-color: #ffffff !important;
+  box-shadow: 0 0.4vw 1.6vw rgba(0, 0, 0, 0.08) !important;
 }
-/* 번호는 어떤 경우에도 항상 최상단 */
+/* 번호는 항상 최상단 */
 .point-number_blue_freely {
   position: relative;
   z-index: 10;
-  opacity: 1 !important;
 }
 
 /* ── 왜 하이브리드인가 h2 — 인터랙션 제거 (사용자 요청) ─────────────
