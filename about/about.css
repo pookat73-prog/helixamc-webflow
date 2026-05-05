@@ -639,3 +639,27 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   opacity: 1;
   transform: translateX(0);
 }
+
+/* 인증 카드 동그라미 버튼 (.cert-plus) — 스태거 끝나고 셋다 동시에 한번 버언쩍.
+   살짝 크게 빛났다가 기본(0/0/0.6vw/0.1vw)으로 복귀, 그대로 고정 (loop X) */
+#cert .cert-plus {
+  box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1);
+}
+#cert .cert-plus.is-cert-burst {
+  animation: certBurst 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes certBurst {
+  0%   { box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1); }
+  40%  { box-shadow: 0 0 1.4vw 0.45vw rgba(0, 117, 214, 1); }
+  100% { box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1); }
+}
+@media (max-width: 767px) {
+  #cert .cert-plus {
+    box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1);
+  }
+  @keyframes certBurst {
+    0%   { box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1); }
+    40%  { box-shadow: 0 0 18px 6px rgba(0, 117, 214, 1); }
+    100% { box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1); }
+  }
+}

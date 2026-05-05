@@ -1930,12 +1930,26 @@
       return true;
     }
 
+    var bursted = false;
+    function fireBurst() {
+      if (bursted) return;
+      bursted = true;
+      var btns = document.querySelectorAll('#cert .cert-plus');
+      Array.prototype.forEach.call(btns, function (b) {
+        b.classList.add('is-cert-burst');
+      });
+    }
+
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         var idx = els.indexOf(entry.target);
         setTimeout(function () {
           entry.target.classList.add('is-cert-in');
+          /* 마지막 카드의 슬라이드/페이드 트랜지션(0.5s)이 끝나는 시점에 셋다 동시 burst */
+          if (idx === els.length - 1) {
+            setTimeout(fireBurst, 500);
+          }
         }, idx * 140);
         io.unobserve(entry.target);
       });
