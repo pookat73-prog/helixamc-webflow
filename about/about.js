@@ -1002,6 +1002,35 @@
     io.observe(el);
   }
 
+  /* ── Section 2-2 (.about_contents_qq3) — 스크롤 진입 reveal ────
+     CSS 가 초기 상태 + transition 정의. JS 는 IO 로 진입 시
+     .is-section22-in 부착, div-block-175 인덱스별 transition-delay
+     설정해서 좌→우 타라락 stagger.
+     ─────────────────────────────────────────────────────────── */
+  function initSection22Reveal() {
+    var container = document.querySelector('.about_contents_qq3');
+    log('section2-2 reveal target=' + !!container);
+    if (!container) return;
+
+    var STEP = 0.18; /* 좌→우 stagger 간격 (s) */
+    var blocks = container.querySelectorAll('.div-block-175');
+    Array.prototype.forEach.call(blocks, function (b, i) {
+      b.style.transitionDelay = (i * STEP) + 's';
+    });
+
+    function trigger() {
+      if (container.dataset.s22Done) return;
+      container.dataset.s22Done = '1';
+      container.classList.add('is-section22-in');
+    }
+
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(container);
+  }
+
   /* ── Hybrid Operation Room h1 — 좌상단 비대칭 reveal ─────────── */
   function initHybridRoomTitle() {
     var SEL = '#hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title';
@@ -1365,6 +1394,7 @@
     initChewyH2();
     initHybridRoomTitle();
     initBurnGlow();
+    initSection22Reveal();
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
