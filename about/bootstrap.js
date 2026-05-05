@@ -8,30 +8,18 @@
   'use strict';
 
   /* FOUC 방지: 첫 렌더부터 hero 요소를 opacity:0 으로 숨김.
-     about.js 의 GSAP 타임라인이 인라인 opacity 값으로 페이드인. */
+     about.js 의 GSAP 타임라인이 인라인 opacity 값으로 페이드인.
+     (구 .just-box_qqqqqqq 카드덱 가드는 about 페이지에서 제거 — 클래스 분리됨:
+      Just Box_TBL, Just Box_Card, Just  Box_HT 로 재명명되어 카드덱 미발동) */
   try {
     var s = document.createElement('style');
     s.id = 'helix-about-fouc-guard';
     s.textContent =
       '.about-heading,.about_contents_sub-title,img.image-23,.about_contents-title,.about_three_contents-box{opacity:0}' +
-      /* 카드덱: init 전엔 모두 가려둠 (스크롤로 펼쳐지는 사고 방지).
-         card-stack.js 가 .helix-deck-host 안으로 옮긴 뒤 다시 보이게. */
-      '.just-box_qqqqqqq{visibility:hidden!important}' +
-      '.helix-deck-host .just-box_qqqqqqq{visibility:visible!important}' +
       /* 하이브리드 박스: about.js 가 사이드 박스를 center 위로 이동하기 전엔
          자연 위치에 잠깐 그려질 수 있음 → 초기 opacity:0, JS 가 중앙박스만 다시 켬 */
       '.about_hybrid-contents_box{opacity:0}';
     (document.head || document.documentElement).appendChild(s);
-    /* 안전망: 3초 안에 카드덱 init 실패하면 cards visibility 강제 해제
-       (실패해도 카드가 영영 안 보이는 사고 방지) */
-    setTimeout(function () {
-      if (!document.querySelector('.helix-deck-host')) {
-        var fix = document.createElement('style');
-        fix.textContent = '.just-box_qqqqqqq{visibility:visible!important}';
-        document.head.appendChild(fix);
-        console.warn('[about-bootstrap] card-stack 미가동 → cards visibility 강제 해제');
-      }
-    }, 3000);
   } catch (e) {}
 
   var OWNER  = 'pookat73-prog';
@@ -48,10 +36,7 @@
     'home/global/hamburger.css',
     'home/global/hamburger.js',
     'about/about.css',
-    'about/about.js',
-    /* 카드덱 (.just-box_qqqqqqq) — home/global 공유 모듈 */
-    'home/global/card-stack.css',
-    'home/global/card-stack.js'
+    'about/about.js'
   ];
 
   function cdn(ref, path) {
