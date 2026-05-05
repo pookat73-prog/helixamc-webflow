@@ -1015,7 +1015,7 @@
     /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
        그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
     var BASE = 1.8;  /* 파란 필기체 fade 완료 후 시작 (s) */
-    var STEP = 0.35; /* 흰 블록 좌→우 stagger 간격 (s) */
+    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
     var blocks = container.querySelectorAll('.div-block-175');
     Array.prototype.forEach.call(blocks, function (b, i) {
       b.style.transitionDelay = (BASE + i * STEP) + 's';
