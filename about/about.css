@@ -176,12 +176,10 @@
     transform 1.1s cubic-bezier(0.87, 0, 0.13, 1) 0.1s,
     filter 0.8s cubic-bezier(0.87, 0, 0.13, 1) 0.1s;
   will-change: opacity, transform, filter;
-  /* 위→아래 그라데이션 stroke (top #329ad6 → bottom 메인 블루 #0075d6)
-     border-image-slice 1 로 4면 그라데이션 적용. 좌·우 면에서 자연스러운
-     상하 전환이 시원한 인상을 만듦. border-radius 는 무시되므로 사각 박스
-     일 때 의도대로 표현됨. */
-  border: 2px solid transparent;
-  border-image: linear-gradient(to bottom, #329ad6, #0075d6) 1;
+  /* 위→아래 그라데이션 stroke (top 라이트 시안 #7dd3fc → bottom 메인 블루 #0075d6)
+     border-image-slice 1 로 4면 그라데이션 적용. */
+  border: 1px solid transparent;
+  border-image: linear-gradient(to bottom, #7dd3fc, #0075d6) 1;
 }
 .about_three_contents-box.is-visible {
   opacity: 1;
