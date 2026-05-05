@@ -949,10 +949,14 @@
     if (!el) return;
 
     el.classList.add('is-highlight-target');
+    /* 텍스트 자체도 페이드인 — 진입 전엔 보이지 않다가 트리거 시 페이드 후
+       하이라이터 sweep. 하이라이터 효과는 그대로 유지. */
+    el.classList.add('is-fade-target');
 
     function trigger() {
       if (el.dataset.highlightDone) return;
       el.dataset.highlightDone = '1';
+      el.classList.add('is-faded-in');
       el.classList.add('is-highlighted');
     }
 
