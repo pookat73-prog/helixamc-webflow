@@ -518,9 +518,18 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   }
 }
 
-/* .div-block-175 — box-shadow (X/Y/blur/spread, #9aaabb) */
+/* .div-block-175 — box-shadow (X/Y/blur/spread, #9aaabb) + 내경 1px 메인 블루 라인 */
 .div-block-175 {
   box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
+  position: relative;
+}
+.div-block-175::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid #0075d6;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 /* ================================================================
