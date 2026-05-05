@@ -176,8 +176,6 @@
     transform 1.1s cubic-bezier(0.87, 0, 0.13, 1) 0.1s,
     filter 0.8s cubic-bezier(0.87, 0, 0.13, 1) 0.1s;
   will-change: opacity, transform, filter;
-  /* 옅은 단색 stroke — 메인블루 알파 0.45 균일 (4면 모두) */
-  border: 1px solid rgba(0, 117, 214, 0.45);
 }
 .about_three_contents-box.is-visible {
   opacity: 1;
@@ -543,12 +541,15 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   opacity: 1;
 }
 
+/* 흰 블록 자체 opacity 페이드인 — 그림자 + 안쪽 서브텍스트 / h3 / 디바이더
+   까지 부모 opacity 에 편승해 한 번에 등장. (안쪽 자식들 opacity: 1 강제는
+   아래 그룹 규칙에서 유지 — 부모 opacity 0 → 1 이 자식 가시성 통제) */
 .about_contents_qq3 .div-block-175 {
-  box-shadow: 0 0.3vw 0.6vw 0 rgba(154, 170, 187, 0);
-  transition: box-shadow 1.2s ease;
+  opacity: 0;
+  transition: opacity 1.2s ease;
 }
 .about_contents_qq3.is-section22-in .div-block-175 {
-  box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
+  opacity: 1;
 }
 
 /* 섹션 2-2 한정 — 본문박스/타이틀/디바이더 인터랙션 비활성화
