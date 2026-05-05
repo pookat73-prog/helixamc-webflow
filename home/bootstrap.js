@@ -49,6 +49,8 @@
   var BRANCH = 'main';
 
   var FILES = [
+    /* 사이트 전역 (헤더 메뉴, 한글 줄바꿈 정책 등) */
+    'global/global.css',
     'home/section1/section1.css',
     'home/section1/section1.js',
     'home/section-divider/divider.css',
