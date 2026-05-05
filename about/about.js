@@ -1036,6 +1036,54 @@
     io.observe(container);
   }
 
+  /* ── About Button Glow — LOCKED v4 (CLAUDE.md 사양 그대로) ────
+     홈 buttons.js 패턴 동일:
+     1) IO 진입 → maxGlow 인라인 !important 설정 (피크 α=1.0)
+     2) 1.5s 홀드 → 인라인 제거 + .is-looping 부착 → CSS keyframe 핸드오프
+     ─────────────────────────────────────────────────────────── */
+  function initAboutButtonGlow() {
+    var BLUE_SEL   = '.cta_seocho_button, .cta-style';
+    var PURPLE_SEL = '.div-block-173';
+    var targets = document.querySelectorAll(BLUE_SEL + ', ' + PURPLE_SEL);
+    if (!targets.length) { log('about button glow: no targets'); return; }
+    log('about button glow targets=' + targets.length);
+
+    function isPurple(el) { return el.matches(PURPLE_SEL); }
+
+    function startGlow(el) {
+      var isMobile = window.innerWidth <= 767;
+      var maxGlow;
+      if (isPurple(el)) {
+        maxGlow = isMobile
+          ? '0 0 16px 6px rgba(85,40,170,1)'
+          : '0 0 1.05vw 0.5vw rgba(85,40,170,1)';
+      } else {
+        maxGlow = isMobile
+          ? '0 0 12px 4px rgba(0,117,214,1)'
+          : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
+      }
+      el.style.setProperty('box-shadow', maxGlow, 'important');
+      setTimeout(function () {
+        el.style.removeProperty('box-shadow');
+        el.classList.add('is-looping');
+      }, 1500);
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(function (el) { startGlow(el); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        io.unobserve(el);
+        startGlow(el);
+      });
+    }, { threshold: 0.3 });
+    targets.forEach(function (el) { io.observe(el); });
+  }
+
   /* ── Hybrid Operation Room h1 — 좌상단 비대칭 reveal ─────────── */
   function initHybridRoomTitle() {
     var SEL = '#hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title';
@@ -1399,6 +1447,7 @@
     initChewyH2();
     initHybridRoomTitle();
     initBurnGlow();
+    initAboutButtonGlow();
     initSection22Reveal();
     initHistoryTimeline();
     initHistoryHelixLine();
