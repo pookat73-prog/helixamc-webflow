@@ -935,7 +935,9 @@
        "헬릭스는 ... 진화하고 있습니다" 텍스트를 가진 가장 가까운 컨테이너 탐색.
        (이전 회귀: 섹션 추가 → nth-child(22) 이탈 → 하이라이트 통째 누락) */
     if (!el) {
-      var nodes = document.querySelectorAll('section p, section div, section span, section h1, section h2, section h3, section h4, section h5, section h6');
+      /* div/section 은 카드/래퍼일 수 있어 inline-block 변환 시 레이아웃
+         붕괴 위험 → 텍스트성 태그(p/span/h*)로만 한정. */
+      var nodes = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6');
       var best = null, bestLen = Infinity;
       for (var i = 0; i < nodes.length; i++) {
         var t = (nodes[i].textContent || '').replace(/\s+/g, '');
