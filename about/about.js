@@ -1936,10 +1936,10 @@
         var idx = els.indexOf(entry.target);
         setTimeout(function () {
           entry.target.classList.add('is-cert-in');
-        }, idx * 80);
+        }, idx * 140);
         io.unobserve(entry.target);
       });
-    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+    }, { threshold: 0.5, rootMargin: '0px 0px -22% 0px' });
 
     els.forEach(function (el) { io.observe(el); });
     return true;
