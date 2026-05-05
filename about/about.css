@@ -526,8 +526,8 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 .div-block-175::after {
   content: "";
   position: absolute;
-  inset: 6px;
-  border: 1px solid #0075d6;
+  inset: 4px;
+  border: 0.7px solid #0075d6;
   border-radius: inherit;
   pointer-events: none;
 }
