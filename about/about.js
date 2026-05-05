@@ -1909,3 +1909,52 @@
     init();
   }
 })();
+
+/* ================================================================
+   #cert — 인증 카드 3장 스크롤 진입 스태거 (좌→우 슬라이드 + 페이드)
+   - 셀렉터: #cert .About_Contents_Box_QQQQQQ (DOM 순서대로)
+   - IntersectionObserver 진입 시 .is-cert-in 부착 (CSS 가 트랜지션 처리)
+   - stagger: 80ms — 챠쟈쟉, 기민하게
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function bind() {
+    var els = Array.prototype.slice.call(
+      document.querySelectorAll('#cert .About_Contents_Box_QQQQQQ')
+    );
+    if (!els.length) return false;
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-cert-in'); });
+      return true;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var idx = els.indexOf(entry.target);
+        setTimeout(function () {
+          entry.target.classList.add('is-cert-in');
+        }, idx * 80);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+    els.forEach(function (el) { io.observe(el); });
+    return true;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind()) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
