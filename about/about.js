@@ -1143,15 +1143,16 @@
        피크가 좌측 밖(-0.5W)에서 우측 밖(+1.5W) 까지 traverse 하면서
        엘리먼트는 항상 완전 커버 범위 안에 있음. */
     var base = window.getComputedStyle(el).color || 'rgb(255,255,255)';
-    var bm = base.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+    var bm = base.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/);
     var br = bm ? +bm[1] : 255, bg = bm ? +bm[2] : 255, bb = bm ? +bm[3] : 255;
+    var ba = bm && bm[4] != null ? +bm[4] : 1;
     var pm = peakColor.split(',');
     var pr = +pm[0] || 0, pg = +pm[1] || 0, pb = +pm[2] || 0;
     var mixR = Math.round(br * (1 - peakAlpha) + pr * peakAlpha);
     var mixG = Math.round(bg * (1 - peakAlpha) + pg * peakAlpha);
     var mixB = Math.round(bb * (1 - peakAlpha) + pb * peakAlpha);
-    var baseRGB = 'rgb(' + br + ',' + bg + ',' + bb + ')';
-    var peakRGB = 'rgb(' + mixR + ',' + mixG + ',' + mixB + ')';
+    var baseRGB = 'rgba(' + br + ',' + bg + ',' + bb + ',' + ba + ')';
+    var peakRGB = 'rgba(' + mixR + ',' + mixG + ',' + mixB + ',' + ba + ')';
 
     var grad = 'linear-gradient(' + angle + ', '
       + baseRGB + ' 0%, '
