@@ -530,39 +530,35 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 }
 
 /* ================================================================
-   Section 2-2 (.about_contents_qq3) — 스크롤 진입 reveal
-   - 파란 필기체 (.about_point-title_blue_whrite) 3개 동시 페이드인 1s
-   - 흰 블록 (.div-block-175) 의 box-shadow 만 좌→우 stagger 페이드인
-     (텍스트는 보이는 상태 유지 — div-block-175 자체에 opacity 안 건다)
-   - transition-delay 는 about.js 의 initSection22Reveal 이 인덱스별로 부착
+   Section 2-2 (.about_contents_qq3) — column 단위 stagger 페이드인
+   - 각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
+     + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 페이드.
+   - 좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
+   - 내부 요소들의 자체 fade/slide/scaleX 인터랙션은 모두 무력화 →
+     상위 column 페이드가 단일 통제.
+   - transition-delay 는 about.js 의 initSection22Reveal 이 인덱스별 부착.
    ================================================================ */
-.about_contents_qq3 .about_point-title_blue_whrite {
-  opacity: 0;
-  /* 3개 동시 페이드인 1.8s — 시작 딜레이 없음 (그림자보다 먼저) */
-  transition: opacity 1.8s ease;
-}
-.about_contents_qq3.is-section22-in .about_point-title_blue_whrite {
-  opacity: 1;
-}
-
-.about_contents_qq3 .div-block-175 {
-  box-shadow: 0 0.3vw 0.6vw 0 rgba(154, 170, 187, 0);
-  transition: box-shadow 1.2s ease;
-}
-.about_contents_qq3.is-section22-in .div-block-175 {
-  box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
-}
-
-/* 섹션 2-2 한정 — 본문박스/타이틀/디바이더 인터랙션 비활성화
-   (스크롤 reveal 은 파란 필기체 + 흰 블록 그림자만) */
 .about_contents_qq3 .about_three_contents-box,
 .about_contents_qq3 .about_contents-title,
+.about_contents_qq3 .about_point-title_blue_whrite,
 .about_contents_qq3 .divider_blue_grad_no-spacing-1,
 .about_contents_qq3 .divider_blue_grad_no-spacing {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
   transition: none !important;
+}
+.about_contents_qq3 .div-block-175 {
+  box-shadow: 0 0.3vw 0.6vw 0 #9aaabb !important;
+  transition: none !important;
+}
+
+.about_contents_qq3 > .div-block-176 {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.about_contents_qq3.is-section22-in > .div-block-176 {
+  opacity: 1;
 }
 
 /* ================================================================
