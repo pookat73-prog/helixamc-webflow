@@ -187,10 +187,20 @@
     return tl;
   }
 
-  function init() {
-    var host = document.getElementById(CONTAINER_ID);
+  function findHost() {
+    return document.getElementById(CONTAINER_ID) ||
+           document.querySelector('[id="' + CONTAINER_ID + '"]');
+  }
+
+  function init(tries) {
+    tries = tries || 0;
+    var host = findHost();
     if (!host) {
-      console.warn('[nodes-cluster] container not found:', CONTAINER_ID);
+      if (tries < 40) { /* DOM 늦게 그려질 수 있음 (~10s 한도) */
+        setTimeout(function () { init(tries + 1); }, 250);
+      } else {
+        console.warn('[nodes-cluster] container not found:', CONTAINER_ID);
+      }
       return;
     }
     if (host.querySelector('.helix-nodes-svg')) return; /* 중복 가드 */
