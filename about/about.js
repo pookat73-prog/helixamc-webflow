@@ -1555,7 +1555,9 @@
     console.log.apply(console, ['[Deck-emb]'].concat([].slice.call(arguments)));
   }
 
-  var CARD_SELECTOR    = '.just-box_qqqqqqq';
+  /* Webflow 에서 클래스가 just-box_qqqqqqq, _qqqqqqqq, _qqqqqqqqq … 식으로
+     변종 생성된 케이스 대비 — Q 가 7개 이상인 모든 클래스 매칭. */
+  var CARD_SELECTOR    = '[class*="just-box_qqqqqqq"]';
   var SECTION_SELECTOR = '.white-frame_connect';
   var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
   var VISIBLE        = 4;
