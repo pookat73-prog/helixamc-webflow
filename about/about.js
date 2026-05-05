@@ -1921,7 +1921,7 @@
 
   function bind() {
     var els = Array.prototype.slice.call(
-      document.querySelectorAll('#cert .About_Contents_Box_QQQQQQ')
+      document.querySelectorAll('#cert .about_contents_box_qqqqqq')
     );
     if (!els.length) return false;
 
