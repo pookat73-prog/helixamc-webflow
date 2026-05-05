@@ -1169,7 +1169,7 @@
     el.style.setProperty('background-clip', 'text');
     el.style.setProperty('-webkit-text-fill-color', 'transparent');
     el.style.color = 'transparent';
-    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.42,0,0.58,1) forwards';
+    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's ease-in-out forwards';
 
     setTimeout(function () {
       el.style.removeProperty('animation');
@@ -1205,7 +1205,7 @@
     var DURATION = 2800;
     var GAP = 200;
     function shine(el) {
-      helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.6, bandWidth: 12, duration: DURATION });
+      helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.6, bandWidth: 28, duration: DURATION });
     }
 
     /* 카드덱/transform 으로 el 자체가 intersect 안 되는 경우가 많아
