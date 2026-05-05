@@ -176,17 +176,8 @@
     transform 1.1s cubic-bezier(0.87, 0, 0.13, 1) 0.1s,
     filter 0.8s cubic-bezier(0.87, 0, 0.13, 1) 0.1s;
   will-change: opacity, transform, filter;
-  /* 위→아래 옅은 투명도 stroke
-     - 메인 블루 단색을 알파 0.45 로 옅게
-     - 위·아래 끝부분만 좁게 transparent 로 페이드 (15% 폭) */
-  border: 1px solid transparent;
-  border-image: linear-gradient(
-    to bottom,
-    rgba(0, 117, 214, 0) 0%,
-    rgba(0, 117, 214, 0.45) 15%,
-    rgba(0, 117, 214, 0.45) 85%,
-    rgba(0, 117, 214, 0) 100%
-  ) 1;
+  /* 옅은 단색 stroke — 메인블루 알파 0.45 균일 (4면 모두) */
+  border: 1px solid rgba(0, 117, 214, 0.45);
 }
 .about_three_contents-box.is-visible {
   opacity: 1;
