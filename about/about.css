@@ -279,7 +279,7 @@
    transform-origin 0% 0% → scale 도 좌상단 기준.
    mask 그라데이션으로 BR 살짝 페더링해 대각선 느낌 강조.
    ─────────────────────────────────────────────────────────────── */
-#hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title {
+#hybrid-operation-room h1.official-font_title {
   opacity: 0;
   -webkit-mask-image: linear-gradient(135deg,
     #000 0%, #000 38%,
@@ -299,7 +299,7 @@
             mask-position 1.7s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, mask-position;
 }
-#hybrid-operation-room > div.just-box_qqqqqqqqq > div > h1.official-font_title.is-corner-in {
+#hybrid-operation-room h1.official-font_title.is-corner-in {
   opacity: 1;
   -webkit-mask-position: 0% 0%;
           mask-position: 0% 0%;
