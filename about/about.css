@@ -465,7 +465,9 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    - 베이스 fill 은 메인 블루(#0075d6) — 항상 솔리드 (글자 안 사라짐)
    - 그 위에 좁고 사선인 밝은 띠가 좌→우로 무한 sweep
    - background-clip: text 로 두 레이어 모두 글자 모양으로만 표시
-   - text-shadow: 0 0.069vw 0.208vw #3d4f6b
+   - drop-shadow: 0 0.069vw 0.208vw #3d4f6b
+     (background-clip:text 와 호환 — text-shadow 는 투명 fill 사이로
+      비쳐서 회색 ghost 처럼 보이므로 filter:drop-shadow 사용)
    ================================================================ */
 .about_point-title_blue_whrite {
   background-image:
@@ -485,7 +487,7 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
           background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0.069vw 0.208vw #3d4f6b;
+  filter: drop-shadow(0 0.069vw 0.208vw #3d4f6b);
   animation: aboutPointTitleShine 3.6s linear infinite;
 }
 
