@@ -189,14 +189,9 @@
   }
 
   function findHost() {
-    /* w-node ID 가 정확한 두 번째 placeholder. 클래스(.diagram-place-holder)는
-       6개나 있어서 첫 번째(헥사)에 잘못 박힘 → ID 우선. */
-    var byId = document.getElementById(CONTAINER_ID) ||
-               document.querySelector('[id="' + CONTAINER_ID + '"]');
-    if (byId) return byId;
-    /* 폴백: 동일 컨테이너의 인덱스(헥사 다음 = index 1) */
-    var all = document.querySelectorAll('.' + CONTAINER_CLASS);
-    return all[1] || null;
+    return document.querySelector('.' + CONTAINER_CLASS) ||
+           document.getElementById(CONTAINER_ID) ||
+           document.querySelector('[id="' + CONTAINER_ID + '"]');
   }
 
   function init(tries) {
