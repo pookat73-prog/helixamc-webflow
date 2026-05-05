@@ -1,5 +1,5 @@
 /* ================================================================
-   STACKED CARD SWIPE — .just-box_qqqqqqq 카드덱
+   STACKED CARD SWIPE — .just-box_qqqqqqq (홈) / .just-box_card (about) 카드덱
    호스트 .helix-deck-host 안의 모든 직속 자식 카드를 절대위치로 겹침
    ================================================================ */
 
@@ -17,6 +17,7 @@
 /* host 의 직속 자식 카드 = 절대위치 + isolation 으로 뒷카드 내용 차단
    화살표(.helix-deck-arrow)는 host 자식이지만 카드 규칙에서 제외 */
 .helix-deck-host > .just-box_qqqqqqq,
+.helix-deck-host > .just-box_card,
 .helix-deck-host > *:not(.helix-deck-arrow) {
   position: absolute !important;
   left: 50%;

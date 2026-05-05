@@ -27,9 +27,13 @@
     console.log.apply(console, ['[Deck]'].concat([].slice.call(arguments)));
   }
 
-  var CARD_SELECTOR    = '.just-box_qqqqqqq';
+  /* 카드 셀렉터 — 두 페이지 패턴 모두 지원
+       · 홈: .just-box_qqqqqqq 카드들이 단일 .grid2_none-spacing 그리드에 형제로 모임
+       · about: .just-box_card 카드들이 각자 .white-frame_connect 섹션에 분산
+     init() 의 sections 매칭 로직이 패턴별로 분기 (about 은 섹션 숨김, 홈은 스킵). */
+  var CARD_SELECTOR    = '.just-box_qqqqqqq, .just-box_card';
   var SECTION_SELECTOR = '.white-frame_connect';      /* 각 카드를 감싸는 섹션 */
-  var CARD_CLASS       = CARD_SELECTOR.replace(/^\./, '');
+  var CARD_CLASS       = 'just-box_qqqqqqq';
   /* 안전장치: 강제로 진단 모드 켜고 싶을 땐 URL 에 ?deck-dry=1 */
   var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
   var VISIBLE        = 4;        /* 동시에 보이는 카드 수 */
@@ -52,27 +56,6 @@
     if (cardsAll.length < 2) {
       log('cards < 2, skip — selector may be wrong, or only one card exists');
       return false;
-    }
-
-    /* 카드덱 레이아웃 가드 — 홈 패턴은 카드들이 같은 그리드(.grid2_none-spacing)
-       안에 형제로 모여있음. about 페이지의 연혁 항목들도 .just-box_qqqqqqq 클래스를
-       공유하지만 각 카드가 별도 .white-frame_connect 섹션에 분산돼 있어,
-       card-stack 이 발동하면 첫 카드 외 모든 섹션이 display:none 처리돼 라이브에서
-       콘텐츠가 사라짐. 모든 카드가 같은 직속 부모를 공유할 때만 카드덱 발동. */
-    var firstParent = cardsAll[0].parentElement;
-    var allSiblings = Array.prototype.every.call(cardsAll, function (c) {
-      return c.parentElement === firstParent;
-    });
-    if (!allSiblings) {
-      log('cards spread across different parents → not a deck layout, skip & release visibility');
-      /* about/bootstrap.js 의 .just-box_qqqqqqq{visibility:hidden} FOUC 가드를
-         즉시 풀어줌 (3초 safety net 기다리지 않고 바로 노출). */
-      var release = document.createElement('style');
-      release.id = 'helix-deck-release';
-      release.textContent = '.just-box_qqqqqqq{visibility:visible!important}';
-      document.head.appendChild(release);
-      initialized = true;
-      return true;
     }
 
     /* 각 카드의 부모 체인을 출력 (구조 진단) */
