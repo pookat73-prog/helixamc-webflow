@@ -1163,13 +1163,13 @@
     ensureHelixShineKeyframes();
     el.dataset.helixShining = '1';
     el.style.backgroundImage = grad;
-    el.style.backgroundSize = '300% 100%';
+    el.style.backgroundSize = '500% 100%';
     el.style.backgroundRepeat = 'no-repeat';
     el.style.setProperty('-webkit-background-clip', 'text');
     el.style.setProperty('background-clip', 'text');
     el.style.setProperty('-webkit-text-fill-color', 'transparent');
     el.style.color = 'transparent';
-    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's ease-in-out forwards';
+    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.7, 0, 1, 1) forwards';
 
     setTimeout(function () {
       el.style.removeProperty('animation');
