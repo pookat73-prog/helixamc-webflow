@@ -1299,9 +1299,9 @@
         fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out', delay: 0
       },
       {
-        /* 국내 최초~도입 — we-are-here 와 동시 시작 */
+        /* 국내 최초~도입 — we-are-here 재생 중 0.3s 딜레이 후 등장 */
         sel: '.about_history_title_new',
-        fadeDur: 1.2, scaleDur: 1.2, ease: 'power2.inOut', delay: 0
+        fadeDur: 1.2, scaleDur: 1.2, ease: 'power2.inOut', delay: 0.3
       }
     ];
 
