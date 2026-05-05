@@ -1412,18 +1412,22 @@
       });
 
       var played = false;
+      /* h2 "국내 최초~도입" 이 거의 다 펼쳐졌을 때(0.5s) 박스 unfold 가
+         이어지도록 진입 감지 후 대기. (h2 = trigger+0.1s 시작, 0.6s 펼침) */
+      var PRE_DELAY = 0.5;
       function play() {
         if (played) return; played = true;
         boxes.forEach(function (b, i) {
           if (window.gsap) {
-            gsap.to(b, { x: 0, opacity: 1, duration: 1.0, ease: 'power3.out' });
+            gsap.to(b, { x: 0, opacity: 1, duration: 1.0, ease: 'power3.out', delay: PRE_DELAY });
           } else {
-            b.style.transition = 'transform 1s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease-out';
+            b.style.transitionDelay = PRE_DELAY + 's';
+            b.style.transition = 'transform 1s cubic-bezier(0.22,1,0.36,1) ' + PRE_DELAY + 's, opacity 0.8s ease-out ' + PRE_DELAY + 's';
             b.style.transform  = 'translateX(0)';
             b.style.opacity    = '1';
           }
         });
-        log('hybrid unfold play');
+        log('hybrid unfold play (delay ' + PRE_DELAY + 's)');
       }
 
       /* 트리거는 anchor 박스 (또는 첫 박스) — 스크롤 진입 감지 */
