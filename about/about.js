@@ -1012,10 +1012,10 @@
     log('section2-2 reveal target=' + !!container);
     if (!container) return;
 
-    /* 시퀀스: 파란 필기체 1s 페이드인 (delay 0) → 그림자 좌→우 stagger
-       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1s) */
-    var BASE = 1.0;  /* 파란 필기체 fade 완료 후 시작 (s) */
-    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) */
+    /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
+       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
+    var BASE = 1.8;  /* 파란 필기체 fade 완료 후 시작 (s) */
+    var STEP = 0.35; /* 흰 블록 좌→우 stagger 간격 (s) */
     var blocks = container.querySelectorAll('.div-block-175');
     Array.prototype.forEach.call(blocks, function (b, i) {
       b.style.transitionDelay = (BASE + i * STEP) + 's';
@@ -1028,9 +1028,11 @@
     }
 
     if (!('IntersectionObserver' in window)) { trigger(); return; }
+    /* rootMargin bottom -35% → 섹션 top 이 뷰포트 65% 라인 도달 시 발사
+       (이전 -15% 는 너무 일찍 발사돼서 사용자가 진입 전 애니가 끝남) */
     var io = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
-    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
     io.observe(container);
   }
 
