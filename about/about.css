@@ -257,8 +257,8 @@
 }
 
 /* ── About History 표제 페이드인 (스크롤 진입 시) ──────────────────
-   "헬릭스는 끊임없이, 진화하고 있습니다." 텍스트.
-   IO 진입 시 about.js 가 .is-visible 부착 → opacity 0 → 1.
+   "헬릭스는 끊임없이, 진화하고 있습니다." 만 페이드 대상.
+   "포기하지 않는 진료…" 는 about.js 가 즉시 .is-visible 부착해 노출.
    ─────────────────────────────────────────────────────────────── */
 .about_history_title_standard-font {
   opacity: 0;
@@ -266,6 +266,19 @@
   will-change: opacity;
 }
 .about_history_title_standard-font.is-visible {
+  opacity: 1;
+}
+
+/* ── 하이브리드 부제 (.parag_title-blue-serif) 페이드 대기 ────────
+   about.js 가 "왜 하이브리드 인가?" h2 진입 시 .helix-fade-pre 부착해
+   초기 hide → stagger 후 .is-visible 로 노출.
+   ─────────────────────────────────────────────────────────────── */
+.parag_title-blue-serif.helix-fade-pre {
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity;
+}
+.parag_title-blue-serif.helix-fade-pre.is-visible {
   opacity: 1;
 }
 

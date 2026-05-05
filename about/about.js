@@ -1061,15 +1061,32 @@
   }
 
   /* ── About History 표제 페이드인 ─────────────────────────────────
-     "헬릭스는 끊임없이, 진화하고 있습니다." 텍스트.
-     IO 진입 시 .is-visible 부착 → CSS 가 opacity 0→1 transition.
+     "헬릭스는 끊임없이, 진화하고 있습니다." 만 IO 페이드인.
+     "포기하지 않는 진료…" 는 같은 클래스지만 페이드 대상 아님 → 즉시 표시.
      ─────────────────────────────────────────────────────────── */
   function initAboutHistoryStandardFontFade() {
     var els = document.querySelectorAll('.about_history_title_standard-font');
-    log('history standard-font fade targets=' + els.length);
+    log('history standard-font fade scan=' + els.length);
     if (!els.length) return;
+    var fadeTargets = [];
+    Array.prototype.forEach.call(els, function (el) {
+      var t = (el.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('헬릭스는끊임없이') !== -1) {
+        fadeTargets.push(el);
+      } else {
+        /* 페이드 대상 아님 — transition 일시 차단 후 즉시 표시 */
+        var prev = el.style.transition;
+        el.style.transition = 'none';
+        el.classList.add('is-visible');
+        requestAnimationFrame(function () {
+          el.style.transition = prev || '';
+        });
+      }
+    });
+    log('history standard-font fade targets=' + fadeTargets.length);
+    if (!fadeTargets.length) return;
     if (!('IntersectionObserver' in window)) {
-      els.forEach(function (el) { el.classList.add('is-visible'); });
+      fadeTargets.forEach(function (el) { el.classList.add('is-visible'); });
       return;
     }
     var io = new IntersectionObserver(function (entries) {
@@ -1080,7 +1097,182 @@
         }
       });
     }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
-    els.forEach(function (el) { io.observe(el); });
+    fadeTargets.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ── 사선 빛 반사 sweep (한 번 통과, 루프 X) ─────────────────────
+     원 텍스트 색을 그대로 두고, 가로 그라데이션의 밝은 피크가 좌→우로
+     한 번 지나가는 효과. 그라데이션은 background-clip: text 로 텍스트
+     모양에만 클립. 종료 후 인라인 스타일 모두 제거 → 원래 색 복귀.
+
+     opts:
+       peakColor: 'r,g,b' (피크 색)
+       peakAlpha: 0.0~1.0 (피크 투명도)
+       bandWidth: 피크 폭 (gradient % 단위 — 작을수록 좁은 빛)
+       duration: ms
+       angle: '115deg' 등
+     ─────────────────────────────────────────────────────────── */
+  function helixShineSweep(el, opts) {
+    if (!el) return;
+    opts = opts || {};
+    var peakColor = opts.peakColor || '0,117,214';
+    var peakAlpha = (opts.peakAlpha != null) ? opts.peakAlpha : 0.45;
+    var bandWidth = opts.bandWidth || 12;
+    var duration  = opts.duration  || 1600;
+    var angle     = opts.angle     || '115deg';
+
+    var base = window.getComputedStyle(el).color || '#000';
+    var lo = Math.max(0, 50 - bandWidth);
+    var hi = Math.min(100, 50 + bandWidth);
+
+    var grad = 'linear-gradient(' + angle + ', '
+      + base + ' 0%, '
+      + base + ' ' + lo + '%, '
+      + 'rgba(' + peakColor + ',' + peakAlpha + ') 50%, '
+      + base + ' ' + hi + '%, '
+      + base + ' 100%)';
+
+    el.style.backgroundImage = grad;
+    el.style.backgroundSize = '300% 100%';
+    el.style.backgroundPosition = '200% 0';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.setProperty('-webkit-background-clip', 'text');
+    el.style.setProperty('background-clip', 'text');
+    el.style.setProperty('-webkit-text-fill-color', 'transparent');
+    el.style.color = 'transparent';
+    el.style.transition = 'background-position ' + (duration / 1000) + 's cubic-bezier(0.45,0,0.55,1)';
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        el.style.backgroundPosition = '-100% 0';
+      });
+    });
+
+    setTimeout(function () {
+      el.style.removeProperty('background-image');
+      el.style.removeProperty('background-size');
+      el.style.removeProperty('background-position');
+      el.style.removeProperty('background-repeat');
+      el.style.removeProperty('-webkit-background-clip');
+      el.style.removeProperty('background-clip');
+      el.style.removeProperty('-webkit-text-fill-color');
+      el.style.removeProperty('color');
+      el.style.removeProperty('transition');
+    }, duration + 80);
+  }
+
+  /* ── About Mini Title shine — 4개 시간차 여린 블루 sweep ────────
+     "일년 365일", "하루 24시간", "특화", "응급 케어"
+     카드덱에 겹쳐 있어도 IO 는 모두 같이 진입 → 0.35s stagger.
+     ─────────────────────────────────────────────────────────── */
+  function initAboutMiniTitleShine() {
+    var els = document.querySelectorAll('.about_mini_title');
+    log('about_mini_title shine targets=' + els.length);
+    if (!els.length) return;
+
+    var fired = false;
+    function fire() {
+      if (fired) return;
+      fired = true;
+      Array.prototype.forEach.call(els, function (el, i) {
+        setTimeout(function () {
+          helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.4, bandWidth: 10, duration: 1500 });
+        }, i * 350);
+      });
+    }
+
+    var sentinel = els[0];
+    if (!('IntersectionObserver' in window)) { fire(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { fire(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(sentinel);
+  }
+
+  /* ── 하이브리드 reveal — h2 sweep + 3 paragraph stagger fade-in ─
+     "왜 하이브리드 인가?" h2 진입 시:
+       1) 약간 밝고 너무 얇지 않은 사선 빛 sweep
+       2) 0.4s 후 .parag_title-blue-serif 3개 매우 빠른 stagger 페이드인
+     ─────────────────────────────────────────────────────────── */
+  function initHybridQuestionReveal() {
+    var titles = document.querySelectorAll('.about_contents-title, h2');
+    var hTitle = null;
+    Array.prototype.forEach.call(titles, function (h) {
+      if (hTitle) return;
+      var t = (h.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('왜하이브리드') !== -1) hTitle = h;
+    });
+    log('hybrid question reveal title=' + !!hTitle);
+    if (!hTitle) return;
+
+    /* 3개 부제 — 페이드 대기 상태로 클래스 부여 (CSS 의 .helix-fade-pre 가 hide).
+       JS 가 텍스트 매칭으로 정확히 3개 골라 등록. 이미 다른 곳에서 쓰는
+       클래스라도 안전하게 동작하도록 클래스 부착으로만 hide. */
+    var allParag = document.querySelectorAll('.parag_title-blue-serif');
+    var paragTargets = [];
+    Array.prototype.forEach.call(allParag, function (p) { paragTargets.push(p); });
+    log('hybrid question paragraph targets=' + paragTargets.length);
+    paragTargets.forEach(function (p) { p.classList.add('helix-fade-pre'); });
+
+    var fired = false;
+    function fire() {
+      if (fired) return;
+      fired = true;
+      helixShineSweep(hTitle, { peakColor: '50,154,214', peakAlpha: 0.7, bandWidth: 14, duration: 1500 });
+      paragTargets.forEach(function (p, i) {
+        setTimeout(function () { p.classList.add('is-visible'); }, 400 + i * 90);
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) { fire(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { fire(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+    io.observe(hTitle);
+  }
+
+  /* ── Clearframe section 배경 쫀득 페이드인 + 캐논 알페닉스 sweep ─
+     섹션 진입 시 opacity 0→1 (cubic-bezier 0.87,0,0.13,1, 1.6s),
+     완료 후 .official-font_title "캐논 알페닉스" 메인 블루 sweep.
+     ─────────────────────────────────────────────────────────── */
+  function initClearframeAlphenixReveal() {
+    var titles = document.querySelectorAll('h1.official-font_title');
+    var alphenix = null;
+    Array.prototype.forEach.call(titles, function (h) {
+      if (alphenix) return;
+      var t = (h.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('캐논알페닉스') !== -1) alphenix = h;
+    });
+    log('clearframe alphenix title=' + !!alphenix);
+    if (!alphenix) return;
+
+    var sec = alphenix.closest('section.clearframe') ||
+              alphenix.closest('section');
+    if (!sec) return;
+
+    /* 초기 hide — 인라인으로 박아 다른 룰 간섭 차단 */
+    sec.style.opacity = '0';
+    sec.style.transition = 'opacity 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
+    sec.style.willChange = 'opacity';
+
+    var fired = false;
+    function fire() {
+      if (fired) return;
+      fired = true;
+      requestAnimationFrame(function () {
+        sec.style.opacity = '1';
+      });
+      setTimeout(function () {
+        sec.style.removeProperty('will-change');
+        helixShineSweep(alphenix, { peakColor: '0,117,214', peakAlpha: 0.85, bandWidth: 14, duration: 1700 });
+      }, 1700);
+    }
+
+    if (!('IntersectionObserver' in window)) { fire(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { fire(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+    io.observe(sec);
   }
 
   /* ── About Button Glow — LOCKED v4 (CLAUDE.md 사양 그대로) ────
@@ -1516,6 +1708,9 @@
     initAboutButtonGlow();
     initSection22Reveal();
     initAboutHistoryStandardFontFade();
+    initAboutMiniTitleShine();
+    initHybridQuestionReveal();
+    initClearframeAlphenixReveal();
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
