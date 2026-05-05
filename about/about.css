@@ -256,6 +256,19 @@
   opacity: 1;
 }
 
+/* ── About History 표제 페이드인 (스크롤 진입 시) ──────────────────
+   "헬릭스는 끊임없이, 진화하고 있습니다." 텍스트.
+   IO 진입 시 about.js 가 .is-visible 부착 → opacity 0 → 1.
+   ─────────────────────────────────────────────────────────────── */
+.about_history_title_standard-font {
+  opacity: 0;
+  transition: opacity 1.2s ease-out;
+  will-change: opacity;
+}
+.about_history_title_standard-font.is-visible {
+  opacity: 1;
+}
+
 /* ── 쫀득한 ease-in-out h2 등장 ───────────────────────────────────
    극단적 S-커브 (easeInOutExpo) + 살짝의 scale + Y 슬라이드.
    초반 거의 정지 → 중반 폭발적 → 후반 부드럽게 정착해 '쫀득한' 체감.
