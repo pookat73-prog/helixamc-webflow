@@ -1261,46 +1261,28 @@
     });
   }
 
-  /* ── 하이브리드 reveal — h2 sweep + 3 paragraph stagger fade-in ─
-     "왜 하이브리드 인가?" h2 진입 시:
-       1) 약간 밝고 너무 얇지 않은 사선 빛 sweep
-       2) 0.4s 후 .parag_title-blue-serif 3개 매우 빠른 stagger 페이드인
+  /* ── 하이브리드 부제 reveal — .hybrid_title_block 3개 동시 페이드인 ─
+     스크롤 진입 시 (첫 번째 블록이 뷰포트 진입) 3개 동시 페이드인.
      ─────────────────────────────────────────────────────────── */
   function initHybridQuestionReveal() {
-    var titles = document.querySelectorAll('.about_contents-title, h2');
-    var hTitle = null;
-    Array.prototype.forEach.call(titles, function (h) {
-      if (hTitle) return;
-      var t = (h.textContent || '').replace(/\s+/g, '');
-      if (t.indexOf('왜하이브리드') !== -1) hTitle = h;
-    });
-    log('hybrid question reveal title=' + !!hTitle);
-    if (!hTitle) return;
+    var blocks = document.querySelectorAll('.hybrid_title_block');
+    log('hybrid title blocks=' + blocks.length);
+    if (!blocks.length) return;
 
-    /* 3개 부제 — 페이드 대기 상태로 클래스 부여 (CSS 의 .helix-fade-pre 가 hide).
-       JS 가 텍스트 매칭으로 정확히 3개 골라 등록. 이미 다른 곳에서 쓰는
-       클래스라도 안전하게 동작하도록 클래스 부착으로만 hide. */
-    var allParag = document.querySelectorAll('.parag_title-blue-serif');
-    var paragTargets = [];
-    Array.prototype.forEach.call(allParag, function (p) { paragTargets.push(p); });
-    log('hybrid question paragraph targets=' + paragTargets.length);
-    paragTargets.forEach(function (p) { p.classList.add('helix-fade-pre'); });
+    Array.prototype.forEach.call(blocks, function (b) { b.classList.add('helix-fade-pre'); });
 
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
-      /* h2 sweep 제거 — 헤드라인 인터랙션 모두 빼는 사용자 요청 */
-      paragTargets.forEach(function (p, i) {
-        setTimeout(function () { p.classList.add('is-visible'); }, 400 + i * 90);
-      });
+      Array.prototype.forEach.call(blocks, function (b) { b.classList.add('is-visible'); });
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
     var io = new IntersectionObserver(function (es) {
       if (es[0].isIntersecting) { fire(); io.disconnect(); }
-    }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
-    io.observe(hTitle);
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(blocks[0]);
   }
 
   /* ── Clearframe section 배경 쫀득 페이드인 + 캐논 알페닉스 sweep ─
