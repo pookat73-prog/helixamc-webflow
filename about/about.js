@@ -1114,66 +1114,69 @@
      ─────────────────────────────────────────────────────────── */
   function helixShineSweep(el, opts) {
     if (!el) return;
-    if (el.querySelector('.helix-shine-overlay')) return;
+    if (el.dataset.helixShining === '1') return;
     opts = opts || {};
     var peakColor = opts.peakColor || '0,117,214';
-    var peakAlpha = (opts.peakAlpha != null) ? opts.peakAlpha : 0.45;
+    var peakAlpha = (opts.peakAlpha != null) ? opts.peakAlpha : 0.6;
     var bandWidth = opts.bandWidth || 12;
-    var duration  = opts.duration  || 1600;
+    var duration  = opts.duration  || 2800;
     var angle     = opts.angle     || '115deg';
 
     var lo = Math.max(0, 50 - bandWidth);
     var hi = Math.min(100, 50 + bandWidth);
 
-    var cs = window.getComputedStyle(el);
-    var prevPos = el.style.position;
-    if (cs.position === 'static') el.style.position = 'relative';
-
-    var overlay = document.createElement('span');
-    overlay.className = 'helix-shine-overlay';
-    overlay.setAttribute('aria-hidden', 'true');
-    overlay.textContent = el.textContent;
+    /* 원본 base 색을 RGB 로 파싱해서 peak 색과 alpha 비율로 미리 믹스.
+       그라데이션 stop 들은 모두 full-opaque 색으로 채워 양옆에서도
+       텍스트가 base 색 그대로 보이도록 (와이퍼 현상 방지). */
+    var base = window.getComputedStyle(el).color || 'rgb(255,255,255)';
+    var bm = base.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+    var br = bm ? +bm[1] : 255, bg = bm ? +bm[2] : 255, bb = bm ? +bm[3] : 255;
+    var pm = peakColor.split(',');
+    var pr = +pm[0] || 0, pg = +pm[1] || 0, pb = +pm[2] || 0;
+    var mixR = Math.round(br * (1 - peakAlpha) + pr * peakAlpha);
+    var mixG = Math.round(bg * (1 - peakAlpha) + pg * peakAlpha);
+    var mixB = Math.round(bb * (1 - peakAlpha) + pb * peakAlpha);
+    var baseRGB = 'rgb(' + br + ',' + bg + ',' + bb + ')';
+    var peakRGB = 'rgb(' + mixR + ',' + mixG + ',' + mixB + ')';
 
     var grad = 'linear-gradient(' + angle + ', '
-      + 'rgba(' + peakColor + ',0) 0%, '
-      + 'rgba(' + peakColor + ',0) ' + lo + '%, '
-      + 'rgba(' + peakColor + ',' + peakAlpha + ') 50%, '
-      + 'rgba(' + peakColor + ',0) ' + hi + '%, '
-      + 'rgba(' + peakColor + ',0) 100%)';
+      + baseRGB + ' 0%, '
+      + baseRGB + ' ' + lo + '%, '
+      + peakRGB + ' 50%, '
+      + baseRGB + ' ' + hi + '%, '
+      + baseRGB + ' 100%)';
 
-    overlay.style.cssText = [
-      'position:absolute',
-      'left:0','top:0','right:0','bottom:0',
-      'margin:0','padding:0','border:0',
-      'pointer-events:none',
-      'font:inherit','letter-spacing:inherit','word-spacing:inherit',
-      'line-height:inherit','text-align:inherit','text-transform:inherit',
-      'white-space:inherit','direction:inherit',
-      'display:block',
-      'color:transparent',
-      '-webkit-text-fill-color:transparent',
-      '-webkit-background-clip:text',
-      'background-clip:text',
-      'background-repeat:no-repeat',
-      'background-size:300% 100%',
-      'background-position:150% 0',
-      'background-image:' + grad,
-      'transition:background-position ' + (duration / 1000) + 's cubic-bezier(0.45,0,0.55,1)'
-    ].join(';');
-
-    el.appendChild(overlay);
+    /* size 200% + position 100% → -25% : 피크가 좌단에서 우단을 지나
+       살짝 밖으로 빠지면서 자연스럽게 사라짐 (페이드아웃 효과). */
+    el.dataset.helixShining = '1';
+    el.style.backgroundImage = grad;
+    el.style.backgroundSize = '200% 100%';
+    el.style.backgroundPosition = '100% 0';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.setProperty('-webkit-background-clip', 'text');
+    el.style.setProperty('background-clip', 'text');
+    el.style.setProperty('-webkit-text-fill-color', 'transparent');
+    el.style.color = 'transparent';
+    el.style.transition = 'background-position ' + (duration / 1000) + 's cubic-bezier(0.42,0,0.58,1)';
 
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        overlay.style.backgroundPosition = '-50% 0';
+        el.style.backgroundPosition = '-25% 0';
       });
     });
 
     setTimeout(function () {
-      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-      if (prevPos) el.style.position = prevPos;
-      else el.style.removeProperty('position');
-    }, duration + 80);
+      el.style.removeProperty('background-image');
+      el.style.removeProperty('background-size');
+      el.style.removeProperty('background-position');
+      el.style.removeProperty('background-repeat');
+      el.style.removeProperty('-webkit-background-clip');
+      el.style.removeProperty('background-clip');
+      el.style.removeProperty('-webkit-text-fill-color');
+      el.style.removeProperty('color');
+      el.style.removeProperty('transition');
+      delete el.dataset.helixShining;
+    }, duration + 60);
   }
 
   /* ── About Mini Title shine — 4개 시간차 여린 블루 sweep ────────
@@ -1193,8 +1196,10 @@
     log('about_mini_title shine targets=' + picked.length + ' (of ' + all.length + ')');
     if (!picked.length) return;
 
+    var DURATION = 2800;
+    var GAP = 200;
     function shine(el) {
-      helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.75, bandWidth: 10, duration: 2800 });
+      helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.6, bandWidth: 12, duration: DURATION });
     }
 
     /* 카드덱/transform 으로 el 자체가 intersect 안 되는 경우가 많아
@@ -1215,7 +1220,7 @@
     log('about_mini_title shine groups=' + groups.length);
 
     function fireGroup(g) {
-      g.els.forEach(function (el, i) { setTimeout(function () { shine(el); }, i * 500); });
+      g.els.forEach(function (el, i) { setTimeout(function () { shine(el); }, i * (DURATION + GAP)); });
     }
 
     if (!('IntersectionObserver' in window)) {
