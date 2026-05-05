@@ -1203,8 +1203,9 @@
     log('about_mini_title shine targets=' + picked.length + ' (of ' + all.length + ')');
     if (!picked.length) return;
 
-    var DURATION = 2800;
+    var DURATION = 2500;
     var GAP = 200;
+    var START_DELAY = 200;
     function shine(el) {
       helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.6, bandWidth: 28, duration: DURATION });
     }
@@ -1227,7 +1228,7 @@
     log('about_mini_title shine groups=' + groups.length);
 
     function fireGroup(g) {
-      g.els.forEach(function (el, i) { setTimeout(function () { shine(el); }, i * (DURATION + GAP)); });
+      g.els.forEach(function (el, i) { setTimeout(function () { shine(el); }, START_DELAY + i * (DURATION + GAP)); });
     }
 
     if (!('IntersectionObserver' in window)) {
