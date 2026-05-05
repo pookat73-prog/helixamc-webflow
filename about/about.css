@@ -461,32 +461,37 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 }
 
 /* ================================================================
-   .about_point-title_blue_whrite — 블루↔밝은블루 그라데이션 흐름
-   - 피크 색은 화이트 대신 밝은 블루 (#80c0f0) — 배경에 묻혀
-     글씨가 사라지는 사고 방지
-   - text-shadow: 0 0.069vw 0.208vw #3d4f6b (1440 기준 0/1/3 px → vw)
+   .about_point-title_blue_whrite — 빛반사(shine sweep) 효과
+   - 베이스 fill 은 메인 블루(#0075d6) — 항상 솔리드 (글자 안 사라짐)
+   - 그 위에 좁고 사선인 밝은 띠가 좌→우로 무한 sweep
+   - background-clip: text 로 두 레이어 모두 글자 모양으로만 표시
+   - text-shadow: 0 0.069vw 0.208vw #3d4f6b
    ================================================================ */
 .about_point-title_blue_whrite {
-  background-image: linear-gradient(
-    90deg,
-    #0075d6 0%,
-    #80c0f0 50%,
-    #0075d6 100%
-  );
-  background-size: 200% 100%;
-  background-position: 0% 50%;
-  background-repeat: no-repeat;
+  background-image:
+    /* 1) shine 띠 — 사선 115deg, 좁은 폭 */
+    linear-gradient(
+      115deg,
+      rgba(255, 255, 255, 0)    42%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0)    58%
+    ),
+    /* 2) 베이스 — 솔리드 메인 블루 */
+    linear-gradient(#0075d6, #0075d6);
+  background-size: 250% 100%, 100% 100%;
+  background-position: -125% 0, 0 0;
+  background-repeat: no-repeat, no-repeat;
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0.069vw 0.208vw #3d4f6b;
-  animation: aboutPointTitleFlow 4s linear infinite;
+  animation: aboutPointTitleShine 3.6s linear infinite;
 }
 
-@keyframes aboutPointTitleFlow {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+@keyframes aboutPointTitleShine {
+  0%   { background-position: -125% 0, 0 0; }
+  100% { background-position:  225% 0, 0 0; }
 }
 
 
