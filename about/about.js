@@ -1012,13 +1012,21 @@
     log('section2-2 reveal target=' + !!container);
     if (!container) return;
 
-    var STEP = 0.12; /* column 간 stagger (s) */
+    /* column 자체 페이드인 + 안쪽 파란 영문/흰 블록 그림자 살짝 늦은
+       자체 페이드인. 모두 좌→우 column index 기반 stagger. */
+    var STEP = 0.12;        /* column 간 stagger (s) */
+    var BLUE_OFFSET   = 0.18; /* column 시작 후 파란 영문 fade 시작 */
+    var SHADOW_OFFSET = 0.28; /* column 시작 후 그림자 fade 시작 */
     var idx = 0;
     Array.prototype.forEach.call(container.children, function (c) {
-      if (c.classList && c.classList.contains('div-block-176')) {
-        c.style.transitionDelay = (idx * STEP) + 's';
-        idx++;
-      }
+      if (!c.classList || !c.classList.contains('div-block-176')) return;
+      var colDelay = idx * STEP;
+      c.style.transitionDelay = colDelay + 's';
+      var blue = c.querySelector('.about_point-title_blue_whrite');
+      if (blue) blue.style.transitionDelay = (colDelay + BLUE_OFFSET) + 's';
+      var block = c.querySelector('.div-block-175');
+      if (block) block.style.transitionDelay = (colDelay + SHADOW_OFFSET) + 's';
+      idx++;
     });
 
     function trigger() {
