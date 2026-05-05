@@ -1,0 +1,34 @@
+/* ================================================================
+   ABOUT — NODES CLUSTER (헥사 다음 그래픽)
+   #w-node-_810f296c-ac78-274c-a805-e5d2fa51c6f8-e0c16bc5 안에 삽입
+   ================================================================ */
+
+#w-node-_810f296c-ac78-274c-a805-e5d2fa51c6f8-e0c16bc5 {
+  position: relative;
+  overflow: visible;
+}
+
+.helix-nodes-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.helix-nodes-link {
+  stroke: #0075d6;
+  stroke-width: 1.2;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.85;
+}
+
+.helix-nodes-dot {
+  fill: #0075d6;
+  stroke: #0075d6;
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+}
