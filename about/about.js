@@ -1025,13 +1025,13 @@
     io.observe(el);
   }
 
-  /* ── Section 2-2 (.about_contents_qq3) — column 단위 stagger 페이드인 ─
+  /* ── Section 2-2 (.about_contents_grid-3) — column 단위 stagger 페이드인 ─
      각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
      + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 로 한 번에 등장.
      좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    var containers = document.querySelectorAll('.about_contents_qq3');
+    var containers = document.querySelectorAll('.about_contents_grid-3');
     log('section2-2 reveal containers=' + containers.length);
     if (!containers.length) return;
 
@@ -1730,7 +1730,7 @@
 
   function bind() {
     var els = Array.prototype.slice.call(
-      document.querySelectorAll('#cert .about_contents_box_qqqqqq')
+      document.querySelectorAll('#cert .about_contents_box_ahha')
     );
     if (!els.length) return false;
 
