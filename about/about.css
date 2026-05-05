@@ -646,11 +646,11 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1);
 }
 #cert .cert-plus.is-cert-burst {
-  animation: certBurst 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: certBurst 1.3s cubic-bezier(0.445, 0.05, 0.55, 0.95) forwards;
 }
 @keyframes certBurst {
   0%   { box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1); }
-  40%  { box-shadow: 0 0 1.4vw 0.45vw rgba(0, 117, 214, 1); }
+  50%  { box-shadow: 0 0 1.1vw 0.1vw rgba(0, 117, 214, 1); }
   100% { box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1); }
 }
 @media (max-width: 767px) {
@@ -659,7 +659,7 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   }
   @keyframes certBurst {
     0%   { box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1); }
-    40%  { box-shadow: 0 0 18px 6px rgba(0, 117, 214, 1); }
+    50%  { box-shadow: 0 0 14px 1.5px rgba(0, 117, 214, 1); }
     100% { box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1); }
   }
 }
