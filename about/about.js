@@ -1150,7 +1150,6 @@
       'line-height:inherit','text-align:inherit','text-transform:inherit',
       'white-space:inherit','direction:inherit',
       'display:block',
-      'mix-blend-mode:screen',
       'color:transparent',
       '-webkit-text-fill-color:transparent',
       '-webkit-background-clip:text',
