@@ -113,6 +113,46 @@ home/
 - 배포 확인: 시크릿 창으로 사이트 열고 DevTools Network에서 파일이 `cdn.jsdelivr.net/gh/.../@<sha>/...` 형태로 로드되는지 확인
 - Actions Summary에서 붙여넣을 head code 다시 볼 수 있음
 
+## ⚠️ About Mini Title 빛반사 — 건드리지 말 것 (LOCKED v1)
+
+**커밋**: `6d65738` (about: 빛반사 bg-clip 모드 영구 유지로 어긋남 제거)
+
+### 확정 사양
+
+대상: `about/about.js` 의 `.about_mini_title` 중 **텍스트 정확 매칭 4개**
+- "일년 365일", "하루 24시간", "특화", "응급 케어"
+
+| 항목 | 값 |
+|---|---|
+| peakColor | `0,117,214` (메인 블루) |
+| peakAlpha | `0.6` |
+| bandWidth | `28` (피크 ±28% gradient stop) |
+| duration | `1500ms` |
+| start delay | `150ms` (그룹 진입 후 첫 sweep 까지) |
+| gap | `200ms` (sweep 종료 후 다음 sweep 까지) |
+| bg-size | `500% 100%` (양 끝 모두 tint 가시 영역 밖) |
+| keyframes | `helix-shine-sweep`: bg-position 100% → 0% |
+| timing | `cubic-bezier(0.7, 0, 1, 1)` (급격한 ease-in) |
+| trigger | 가장 가까운 안정적 부모 (section/main) IntersectionObserver, 카드덱 transform 회피 |
+| 그룹 발사 | 같은 트리거 안의 mini title 들은 한 그룹으로 **순차** 재생 |
+
+### 핵심 메커니즘 (재발 방지)
+
+1. **`helixShinePrime`**: 페이지 로드 시점에 4개 mini title 모두 `bg-clip:text` + 단색 그라데이션 + `color:transparent` 영구 적용. 모드 전환 자체를 없앰.
+2. **`helixShineSweep`**: bg-image 만 sweep 그라데이션으로 swap → 애니메이션 → 종료 후 단색 그라데이션으로 다시 swap. 렌더링 모드는 항상 동일.
+3. base 색은 `getComputedStyle().color` 에서 RGBA 모두 파싱 (알파 보존). peakRGB 는 base 색과 peakColor 를 peakAlpha 로 미리 믹스해 stop 모두 동일 알파.
+4. tint stop (`lo% ~ hi%`) 이 시작/종료 visible window 밖에 위치 → 잔여 틴트 없이 자연 종료.
+
+### 시도했다가 실패한 방식 (재시도 금지)
+
+- 오버레이 span 방식 (absolute position) → 1~2px 어긋난 안티앨리어스 가장자리가 흰 띠로 보임
+- bg-clip:text 모드를 sweep 시점에만 적용/해제 → 모드 전환마다 글리프 렌더링이 바뀌어 "툭" 어긋남
+- `mix-blend-mode: screen` → 부모 stacking context 와 충돌해 sweep 자체가 안 보임
+- `background-size: 200%` + position `-25%` 오버슈트 → 좌측 25% 영역이 bg 커버 밖으로 빠져 와이퍼 재발
+- 단일 sentinel 로 4개 동시 발사 → 카드덱 아래쪽 카드의 sweep 이 사용자 도달 전에 이미 끝남
+- 엘리먼트 자체에 IntersectionObserver → 카드덱 transform 으로 intersect 가 안 잡혀 영영 발사 안 됨
+- `transition` + RAF 더블 트릭 → 시작점 페인트를 건너뛰고 종료점만 보여주는 케이스 발생
+
 ## 📌 Version Backup 1 (섹션 1 버튼까지 확정)
 
 **커밋**: `828e698` (divider: BTN1_CLASS .discover-helix_button으로 복원)
