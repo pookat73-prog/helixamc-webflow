@@ -957,7 +957,9 @@
       if (el.dataset.highlightDone) return;
       el.dataset.highlightDone = '1';
       el.classList.add('is-faded-in');
-      el.classList.add('is-highlighted');
+      /* 하이라이터 sweep 임시 비활성화 (사용자 요청) — 추후 재활성화 시
+         아래 한 줄 주석 해제하면 즉시 복구. CSS 규칙은 유지됨. */
+      // el.classList.add('is-highlighted');
     }
 
     if (!('IntersectionObserver' in window)) { trigger(); return; }
