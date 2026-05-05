@@ -1150,6 +1150,7 @@
       'line-height:inherit','text-align:inherit','text-transform:inherit',
       'white-space:inherit','direction:inherit',
       'display:block',
+      'mix-blend-mode:screen',
       'color:transparent',
       '-webkit-text-fill-color:transparent',
       '-webkit-background-clip:text',
@@ -1196,23 +1197,26 @@
     log('about_mini_title shine targets=' + els.length + ' (of ' + all.length + ')');
     if (!els.length) return;
 
-    var fired = false;
-    function fire() {
-      if (fired) return;
-      fired = true;
-      els.forEach(function (el, i) {
-        setTimeout(function () {
-          helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.4, bandWidth: 10, duration: 2800 });
-        }, i * 500);
-      });
+    function shine(el) {
+      helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.75, bandWidth: 10, duration: 2800 });
     }
 
-    var sentinel = els[0];
-    if (!('IntersectionObserver' in window)) { fire(); return; }
-    var io = new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) { fire(); io.disconnect(); }
-    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
-    io.observe(sentinel);
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el, i) { setTimeout(function () { shine(el); }, i * 500); });
+      return;
+    }
+
+    els.forEach(function (el) {
+      var fired = false;
+      var io = new IntersectionObserver(function (es) {
+        if (!fired && es[0].isIntersecting) {
+          fired = true;
+          shine(el);
+          io.disconnect();
+        }
+      }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+      io.observe(el);
+    });
   }
 
   /* ── 하이브리드 reveal — h2 sweep + 3 paragraph stagger fade-in ─
