@@ -1324,28 +1324,38 @@
       }
     }
 
-    configs.forEach(function (cfg) {
+    /* 모든 대상 사전 숨김 */
+    var groups = configs.map(function (cfg) {
       var els = document.querySelectorAll(cfg.sel);
-      if (!els.length) { log('no ' + cfg.sel); return; }
-
       els.forEach(function (el) {
         if (window.gsap) gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
         else { el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; }
       });
+      return { cfg: cfg, els: els };
+    });
 
-      if (!('IntersectionObserver' in window)) {
-        els.forEach(function (el) { reveal(el, cfg); });
+    /* 트리거는 첫 번째 그룹(we-are-here)의 등장 — 트리거 발사 시 모든 그룹 동시 reveal,
+       각자 자기 cfg.delay 만큼 늦춰 시작. h2가 we-are-here 보다 아래라 자기
+       뷰포트 진입을 기다리면 영어가 끝난 뒤에야 발사되던 문제 해결. */
+    var trigger = groups[0];
+    if (!trigger || !trigger.els.length) { log('no trigger for we-are-here reveal'); return; }
+
+    function fireAll() {
+      groups.forEach(function (g) {
+        g.els.forEach(function (el) { reveal(el, g.cfg); });
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) { fireAll(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        io.disconnect();
+        fireAll();
         return;
       }
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          io.unobserve(e.target);
-          reveal(e.target, cfg);
-        });
-      }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
-      els.forEach(function (el) { io.observe(el); });
-    });
+    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    trigger.els.forEach(function (el) { io.observe(el); });
   }
 
   /* ── .about_hybrid-contents_box 양쪽 펼침 ───────────────────────
