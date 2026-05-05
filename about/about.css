@@ -532,7 +532,8 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    ================================================================ */
 .about_contents_qq3 .about_point-title_blue_whrite {
   opacity: 0;
-  transition: opacity 1s ease;
+  /* 0.35s 시작 딜레이 후 3개 동시 페이드인 1s */
+  transition: opacity 1s ease 0.35s;
 }
 .about_contents_qq3.is-section22-in .about_point-title_blue_whrite {
   opacity: 1;
@@ -544,6 +545,18 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 }
 .about_contents_qq3.is-section22-in .div-block-175 {
   box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
+}
+
+/* 섹션 2-2 한정 — 본문박스/타이틀/디바이더 인터랙션 비활성화
+   (스크롤 reveal 은 파란 필기체 + 흰 블록 그림자만) */
+.about_contents_qq3 .about_three_contents-box,
+.about_contents_qq3 .about_contents-title,
+.about_contents_qq3 .divider_blue_grad_no-spacing-1,
+.about_contents_qq3 .divider_blue_grad_no-spacing {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
 }
 
 
