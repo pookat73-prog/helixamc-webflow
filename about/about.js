@@ -927,10 +927,25 @@
      .is-highlighted 부착 → background-size 0% → 100% 확장.
      ─────────────────────────────────────────────────────────── */
   function initStandardFontHighlight() {
-    /* 사용자 지정 정확 선택자 — "헬릭스는 ~ 진화하고있습니다" 문단 */
+    /* 1차 시도 — 사용자 지정 정확 셀렉터 */
     var SEL = 'body > section:nth-child(22) > div > div > div:nth-child(2)';
     var el = document.querySelector(SEL);
-    log('standard-font highlight target=' + !!el);
+
+    /* 2차 폴백 — 섹션 구조가 바뀌어 nth-child 가 빗나가도 동작하도록
+       "헬릭스는 ... 진화하고 있습니다" 텍스트를 가진 가장 가까운 컨테이너 탐색.
+       (이전 회귀: 섹션 추가 → nth-child(22) 이탈 → 하이라이트 통째 누락) */
+    if (!el) {
+      var nodes = document.querySelectorAll('section p, section div, section span, section h1, section h2, section h3, section h4, section h5, section h6');
+      var best = null, bestLen = Infinity;
+      for (var i = 0; i < nodes.length; i++) {
+        var t = (nodes[i].textContent || '').replace(/\s+/g, '');
+        if (t.indexOf('끊임없이') !== -1 && t.indexOf('진화') !== -1 && t.length < bestLen) {
+          best = nodes[i]; bestLen = t.length;
+        }
+      }
+      el = best;
+    }
+    log('standard-font highlight target=' + !!el + (el ? ' via=' + (el === document.querySelector(SEL) ? 'nth' : 'text') : ''));
     if (!el) return;
 
     el.classList.add('is-highlight-target');
