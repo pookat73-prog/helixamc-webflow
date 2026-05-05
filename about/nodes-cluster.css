@@ -1,15 +1,11 @@
 /* ================================================================
    ABOUT — NODES CLUSTER (헥사 다음 그래픽)
-   #w-node-_810f296c-ac78-274c-a805-e5d2fa51c6f8-e0c16bc5 안에 삽입
+   두 번째 .diagram-place-holder 만 타겟. 다른 placeholder 영향 없음.
    ================================================================ */
 
-.diagram-place-holder,
-#w-node-_810f296c-ac78-274c-a805-e5d2fa51c6f8-e0c16bc5 {
-  position: relative;
-  overflow: visible;
-  min-width: 1px;
-  min-height: 240px;
-}
+/* 컨테이너 자체엔 손대지 않음 — about.js 의 fitOne() 로직이
+   .diagram-place-holder 의 height/top/position 을 매 프레임 관리하기 때문.
+   대신 SVG 에 자체 사이즈를 줘서 컨테이너가 0 이어도 보이게 함. */
 
 .helix-nodes-svg {
   display: block;
