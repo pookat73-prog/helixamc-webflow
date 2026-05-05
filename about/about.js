@@ -1261,12 +1261,25 @@
     });
   }
 
-  /* ── 하이브리드 부제 reveal — .hybrid_title_block 3개 동시 페이드인 ─
-     스크롤 진입 시 (첫 번째 블록이 뷰포트 진입) 3개 동시 페이드인.
+  /* ── 하이브리드 부제 reveal — .div-block-175 (흰 박스) 3개 동시 페이드인 ─
+     Webflow 실제 클래스: 흰 박스 = Div Block 175, 번호 = Div Block 177.
+     헤드라인 "왜 하이브리드 인가?" h2 = .about_contents-title — Webflow 네이티브
+     IX2 페이드인이 붙어있을 가능성 → data-w-id 제거 + opacity/transform 강제 해제.
      ─────────────────────────────────────────────────────────── */
   function initHybridQuestionReveal() {
-    var blocks = document.querySelectorAll('.hybrid_title_block');
-    log('hybrid title blocks=' + blocks.length);
+    /* 헤드라인 인터랙션 강제 무효화 — 텍스트 매칭으로 정확히 그 h2만 잡음 */
+    var allH = document.querySelectorAll('h1, h2, h3');
+    Array.prototype.forEach.call(allH, function (h) {
+      var t = (h.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('왜하이브리드') === -1) return;
+      h.removeAttribute('data-w-id');
+      h.style.setProperty('opacity', '1', 'important');
+      h.style.setProperty('transform', 'none', 'important');
+      h.style.setProperty('transition', 'none', 'important');
+    });
+
+    var blocks = document.querySelectorAll('.div-block-175');
+    log('hybrid white blocks=' + blocks.length);
     if (!blocks.length) return;
 
     Array.prototype.forEach.call(blocks, function (b) { b.classList.add('helix-fade-pre'); });

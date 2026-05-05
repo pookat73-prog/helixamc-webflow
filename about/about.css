@@ -269,29 +269,27 @@
   opacity: 1;
 }
 
-/* ── 하이브리드 부제 박스 (.hybrid_title_block) 흰 배경만 페이드인 ──
-   텍스트/번호는 처음부터 그대로 노출. 박스 자체의 background-color 와
-   box-shadow (있다면) 만 transition. 콘텐츠는 건드리지 않음.
+/* ── 하이브리드 부제 박스 (.div-block-175) 흰 배경만 페이드인 ──
+   Webflow 실제 클래스: 흰 카드 = Div Block 175 (background-color 화이트 +
+   box-shadow + radius 1.8vw). 텍스트/번호는 처음부터 그대로 노출.
+   배경+그림자만 transparent → 원래값 transition. 콘텐츠는 건드리지 않음.
    about.js 가 첫 블록 진입 시 .helix-fade-pre 부착 → .is-visible 로 발화.
    ─────────────────────────────────────────────────────────────── */
-.hybrid_title_block.helix-fade-pre {
+.div-block-175.helix-fade-pre {
   background-color: transparent !important;
-  transition: background-color 1.2s cubic-bezier(0.42, 0, 0.58, 1);
+  box-shadow: none !important;
+  transition: background-color 1.2s cubic-bezier(0.42, 0, 0.58, 1),
+              box-shadow      1.2s cubic-bezier(0.42, 0, 0.58, 1);
 }
-.hybrid_title_block.helix-fade-pre.is-visible {
+.div-block-175.helix-fade-pre.is-visible {
   background-color: #ffffff !important;
+  /* box-shadow 는 인라인 제거 → Webflow 원본(variable) 자동 복귀 */
+  box-shadow: revert !important;
 }
-/* 번호는 항상 최상단 */
-.point-number_blue_freely {
+/* 번호 동그라미는 항상 최상단 */
+.div-block-177 {
   position: relative;
   z-index: 10;
-}
-
-/* ── 왜 하이브리드인가 h2 — 인터랙션 제거 (사용자 요청) ─────────────
-   기존 쫀득한 fade-in (.is-chewy-in 토글) 비활성화. h2 는 평소대로 노출. */
-#w-node-_12c5d099-8df6-4231-81c4-5ea6bfff211d-e0c16bc5 > h2 {
-  opacity: 1;
-  transform: none;
 }
 
 /* ── Hybrid Operation Room 타이틀 — TL 부터 비대칭 reveal ─────────
