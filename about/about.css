@@ -532,8 +532,8 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    ================================================================ */
 .about_contents_qq3 .about_point-title_blue_whrite {
   opacity: 0;
-  /* 0.35s 시작 딜레이 후 3개 동시 페이드인 1s */
-  transition: opacity 1s ease 0.35s;
+  /* 3개 동시 페이드인 1s — 시작 딜레이 없음 (그림자보다 먼저) */
+  transition: opacity 1s ease;
 }
 .about_contents_qq3.is-section22-in .about_point-title_blue_whrite {
   opacity: 1;
