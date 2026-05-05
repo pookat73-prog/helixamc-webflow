@@ -1555,9 +1555,10 @@
     console.log.apply(console, ['[Deck-emb]'].concat([].slice.call(arguments)));
   }
 
-  /* Webflow 에서 클래스가 just-box_qqqqqqq, _qqqqqqqq, _qqqqqqqqq … 식으로
-     변종 생성된 케이스 대비 — Q 가 7개 이상인 모든 클래스 매칭. */
-  var CARD_SELECTOR    = '[class*="just-box_qqqqqqq"]';
+  /* 7-q 정확 매칭만. 변종(8/9/10-q) 은 다른 섹션의 별개 요소이므로
+     prefix 매칭으로 넓히면 2번째 섹션 카드가 통째 display:none 처리되는
+     회귀 발생 (PR #396 → 즉시 롤백). */
+  var CARD_SELECTOR    = '.just-box_qqqqqqq';
   var SECTION_SELECTOR = '.white-frame_connect';
   var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
   var VISIBLE        = 4;
