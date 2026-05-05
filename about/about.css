@@ -274,11 +274,22 @@
    ─────────────────────────────────────────────────────────────── */
 .hybrid_title_block.helix-fade-pre {
   opacity: 0;
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity;
+  transition: opacity 1.2s cubic-bezier(0.42, 0, 0.58, 1);
 }
 .hybrid_title_block.helix-fade-pre.is-visible {
   opacity: 1;
+}
+/* 박스 위 번호가 가려지지 않도록 — 블록 자신의 stacking 을 낮추고
+   sibling/내부 자식에게 z-index 우선권. 번호의 정확한 클래스를 알면
+   거기에 z-index 만 박는 게 더 깔끔. */
+.hybrid_title_block {
+  position: relative;
+  z-index: 0;
+}
+.hybrid_title_block ~ *,
+.hybrid_title_block > * {
+  position: relative;
+  z-index: 2;
 }
 
 /* ── 왜 하이브리드인가 h2 — 인터랙션 제거 (사용자 요청) ─────────────
