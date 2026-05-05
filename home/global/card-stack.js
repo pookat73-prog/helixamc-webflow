@@ -54,6 +54,27 @@
       return false;
     }
 
+    /* 카드덱 레이아웃 가드 — 홈 패턴은 카드들이 같은 그리드(.grid2_none-spacing)
+       안에 형제로 모여있음. about 페이지의 연혁 항목들도 .just-box_qqqqqqq 클래스를
+       공유하지만 각 카드가 별도 .white-frame_connect 섹션에 분산돼 있어,
+       card-stack 이 발동하면 첫 카드 외 모든 섹션이 display:none 처리돼 라이브에서
+       콘텐츠가 사라짐. 모든 카드가 같은 직속 부모를 공유할 때만 카드덱 발동. */
+    var firstParent = cardsAll[0].parentElement;
+    var allSiblings = Array.prototype.every.call(cardsAll, function (c) {
+      return c.parentElement === firstParent;
+    });
+    if (!allSiblings) {
+      log('cards spread across different parents → not a deck layout, skip & release visibility');
+      /* about/bootstrap.js 의 .just-box_qqqqqqq{visibility:hidden} FOUC 가드를
+         즉시 풀어줌 (3초 safety net 기다리지 않고 바로 노출). */
+      var release = document.createElement('style');
+      release.id = 'helix-deck-release';
+      release.textContent = '.just-box_qqqqqqq{visibility:visible!important}';
+      document.head.appendChild(release);
+      initialized = true;
+      return true;
+    }
+
     /* 각 카드의 부모 체인을 출력 (구조 진단) */
     Array.prototype.forEach.call(cardsAll, function (c, i) {
       var chain = [];
