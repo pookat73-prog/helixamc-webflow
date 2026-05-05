@@ -49,9 +49,6 @@
     'home/global/hamburger.js',
     'about/about.css',
     'about/about.js',
-    /* TEMP DISABLED — about 페이지 인터랙션 회귀 원인 조사 중
-       'about/nodes-cluster.css',
-       'about/nodes-cluster.js', */
     /* 카드덱 (.just-box_qqqqqqq) — home/global 공유 모듈 */
     'home/global/card-stack.css',
     'home/global/card-stack.js'
