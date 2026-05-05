@@ -471,29 +471,32 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    ================================================================ */
 .about_point-title_blue_whrite {
   background-image:
-    /* 1) shine 띠 — 사선 115deg, 좁은 폭 */
+    /* 1) shine 띠 — 사선, 좁은 폭. 색은 텍스트(#0075d6) 톤에 맞춰 옅은 블루 */
     linear-gradient(
       115deg,
-      rgba(255, 255, 255, 0)    42%,
-      rgba(255, 255, 255, 0.85) 50%,
-      rgba(255, 255, 255, 0)    58%
+      rgba(176, 216, 245, 0)    42%,
+      rgba(176, 216, 245, 0.9)  50%,
+      rgba(176, 216, 245, 0)    58%
     ),
     /* 2) 베이스 — 솔리드 메인 블루 */
     linear-gradient(#0075d6, #0075d6);
   background-size: 250% 100%, 100% 100%;
-  background-position: -125% 0, 0 0;
+  /* 시작/끝 위치를 keyframes 0% 와 동일하게 — 우→좌 sweep */
+  background-position: 225% 0, 0 0;
   background-repeat: no-repeat, no-repeat;
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0.069vw 0.208vw #3d4f6b);
+  /* Y 살짝 내리고 사이즈(blur) 줄임 — 1440 기준 0/2/1.5 px */
+  filter: drop-shadow(0 0.139vw 0.104vw #3d4f6b);
   animation: aboutPointTitleShine 3.6s linear infinite;
 }
 
 @keyframes aboutPointTitleShine {
-  0%   { background-position: -125% 0, 0 0; }
-  100% { background-position:  225% 0, 0 0; }
+  /* 우 → 좌 방향 sweep */
+  0%   { background-position:  225% 0, 0 0; }
+  100% { background-position: -125% 0, 0 0; }
 }
 
 
