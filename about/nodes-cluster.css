@@ -3,12 +3,11 @@
    #w-node-_810f296c-ac78-274c-a805-e5d2fa51c6f8-e0c16bc5 안에 삽입
    ================================================================ */
 
-.diagram-place-holder,
 #w-node-_810f296c-ac78-274c-a805-e5d2fa51c6f8-e0c16bc5 {
   position: relative;
   overflow: visible;
   min-width: 1px;
-  min-height: 240px;
+  min-height: 1px;
 }
 
 .helix-nodes-svg {

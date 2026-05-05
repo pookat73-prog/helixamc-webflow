@@ -9,7 +9,6 @@
   'use strict';
 
   var CONTAINER_ID = 'w-node-_810f296c-ac78-274c-a805-e5d2fa51c6f8-e0c16bc5';
-  var CONTAINER_CLASS = 'diagram-place-holder';
 
   /* viewBox 좌표계: 200 x 200, 중심 (100,100) */
   var VB = 200;
@@ -189,8 +188,7 @@
   }
 
   function findHost() {
-    return document.querySelector('.' + CONTAINER_CLASS) ||
-           document.getElementById(CONTAINER_ID) ||
+    return document.getElementById(CONTAINER_ID) ||
            document.querySelector('[id="' + CONTAINER_ID + '"]');
   }
 
