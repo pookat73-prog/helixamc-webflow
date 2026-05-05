@@ -282,22 +282,11 @@
   opacity: 1;
 }
 
-/* ── 쫀득한 ease-in-out h2 등장 ───────────────────────────────────
-   극단적 S-커브 (easeInOutExpo) + 살짝의 scale + Y 슬라이드.
-   초반 거의 정지 → 중반 폭발적 → 후반 부드럽게 정착해 '쫀득한' 체감.
-   ─────────────────────────────────────────────────────────────── */
+/* ── 왜 하이브리드인가 h2 — 인터랙션 제거 (사용자 요청) ─────────────
+   기존 쫀득한 fade-in (.is-chewy-in 토글) 비활성화. h2 는 평소대로 노출. */
 #w-node-_12c5d099-8df6-4231-81c4-5ea6bfff211d-e0c16bc5 > h2 {
-  opacity: 0;
-  transform: scale(0.85);
-  transform-origin: center center;
-  transition:
-    opacity   1.4s cubic-bezier(0.87, 0, 0.13, 1),
-    transform 1.6s cubic-bezier(0.87, 0, 0.13, 1);
-  will-change: opacity, transform;
-}
-#w-node-_12c5d099-8df6-4231-81c4-5ea6bfff211d-e0c16bc5 > h2.is-chewy-in {
   opacity: 1;
-  transform: scale(1);
+  transform: none;
 }
 
 /* ── Hybrid Operation Room 타이틀 — TL 부터 비대칭 reveal ─────────

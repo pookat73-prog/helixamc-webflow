@@ -1290,7 +1290,7 @@
     function fire() {
       if (fired) return;
       fired = true;
-      helixShineSweep(hTitle, { peakColor: '50,154,214', peakAlpha: 0.7, bandWidth: 14, duration: 1500 });
+      /* h2 sweep 제거 — 헤드라인 인터랙션 모두 빼는 사용자 요청 */
       paragTargets.forEach(function (p, i) {
         setTimeout(function () { p.classList.add('is-visible'); }, 400 + i * 90);
       });
@@ -1774,14 +1774,14 @@
     initViewport60FadeIn();
     initHistorySpark();
     initStandardFontHighlight();
-    initChewyH2();
+    /* initChewyH2(); — 왜 하이브리드 h2 인터랙션 제거 (사용자 요청) */
     initHybridRoomTitle();
     initBurnGlow();
     initAboutButtonGlow();
     initSection22Reveal();
     initAboutHistoryStandardFontFade();
     initAboutMiniTitleShine();
-    /* initHybridQuestionReveal(); — 인터랙션 제거 (사용자 요청) */
+    initHybridQuestionReveal();
     initClearframeAlphenixReveal();
     initHistoryTimeline();
     initHistoryHelixLine();
