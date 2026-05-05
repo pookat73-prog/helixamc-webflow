@@ -49,9 +49,6 @@
     'home/global/hamburger.js',
     'about/about.css',
     'about/about.js',
-    /* 헥사 다음 그래픽 — 5노드 클러스터 회전 애니메이션 */
-    'about/nodes-cluster.css',
-    'about/nodes-cluster.js',
     /* 카드덱 (.just-box_qqqqqqq) — home/global 공유 모듈 */
     'home/global/card-stack.css',
     'home/global/card-stack.js'
