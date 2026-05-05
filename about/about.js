@@ -1781,7 +1781,7 @@
     initSection22Reveal();
     initAboutHistoryStandardFontFade();
     initAboutMiniTitleShine();
-    initHybridQuestionReveal();
+    /* initHybridQuestionReveal(); — 인터랙션 제거 (사용자 요청) */
     initClearframeAlphenixReveal();
     initHistoryTimeline();
     initHistoryHelixLine();
