@@ -1341,7 +1341,9 @@
     if (!trigger || !trigger.els.length) { log('no trigger for we-are-here reveal'); return; }
 
     function fireAll() {
+      console.log('[helix-about] WeAreHere unified trigger fired @', performance.now().toFixed(0), 'ms');
       groups.forEach(function (g) {
+        console.log('[helix-about]   group', g.cfg.sel, 'delay=' + g.cfg.delay + 's count=' + g.els.length);
         g.els.forEach(function (el) { reveal(el, g.cfg); });
       });
     }
