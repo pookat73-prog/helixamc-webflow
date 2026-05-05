@@ -1043,7 +1043,7 @@
      ─────────────────────────────────────────────────────────── */
   function initAboutButtonGlow() {
     var BLUE_SEL   = '.cta_seocho_button, .cta-style';
-    var PURPLE_SEL = '.div-block-173';
+    var PURPLE_SEL = '.link-block';
     var targets = document.querySelectorAll(BLUE_SEL + ', ' + PURPLE_SEL);
     if (!targets.length) { log('about button glow: no targets'); return; }
     log('about button glow targets=' + targets.length);
