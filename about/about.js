@@ -1008,30 +1008,33 @@
      좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    var container = document.querySelector('.about_contents_qq3');
-    log('section2-2 reveal target=' + !!container);
-    if (!container) return;
+    var containers = document.querySelectorAll('.about_contents_qq3');
+    log('section2-2 reveal containers=' + containers.length);
+    if (!containers.length) return;
 
     /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
        그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
     var BASE = 1.8;  /* 파란 필기체 fade 완료 후 시작 (s) */
     var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
-    var blocks = container.querySelectorAll('.div-block-175');
-    Array.prototype.forEach.call(blocks, function (b, i) {
-      b.style.transitionDelay = (BASE + i * STEP) + 's';
+
+    Array.prototype.forEach.call(containers, function (container) {
+      var blocks = container.querySelectorAll('.div-block-175');
+      Array.prototype.forEach.call(blocks, function (b, i) {
+        b.style.transitionDelay = (BASE + i * STEP) + 's';
+      });
+
+      function trigger() {
+        if (container.dataset.s22Done) return;
+        container.dataset.s22Done = '1';
+        container.classList.add('is-section22-in');
+      }
+
+      if (!('IntersectionObserver' in window)) { trigger(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+      }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
+      io.observe(container);
     });
-
-    function trigger() {
-      if (container.dataset.s22Done) return;
-      container.dataset.s22Done = '1';
-      container.classList.add('is-section22-in');
-    }
-
-    if (!('IntersectionObserver' in window)) { trigger(); return; }
-    var io = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
-    }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
-    io.observe(container);
   }
 
   /* ── About Button Glow — LOCKED v4 (CLAUDE.md 사양 그대로) ────
