@@ -276,14 +276,10 @@
    ─────────────────────────────────────────────────────────────── */
 .hybrid_title_block.helix-fade-pre {
   background-color: transparent !important;
-  box-shadow: none !important;
-  transition:
-    background-color 1.2s cubic-bezier(0.42, 0, 0.58, 1),
-    box-shadow       1.2s cubic-bezier(0.42, 0, 0.58, 1);
+  transition: background-color 1.2s cubic-bezier(0.42, 0, 0.58, 1);
 }
 .hybrid_title_block.helix-fade-pre.is-visible {
   background-color: #ffffff !important;
-  box-shadow: 0 0.4vw 1.6vw rgba(0, 0, 0, 0.08) !important;
 }
 /* 번호는 항상 최상단 */
 .point-number_blue_freely {
