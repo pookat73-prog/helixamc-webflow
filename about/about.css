@@ -461,16 +461,16 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 }
 
 /* ================================================================
-   .about_point-title_blue_whrite — 블루↔화이트 그라데이션 흐름
-   배경을 텍스트로 클립 + background-position 무한 루프
+   .about_point-title_blue_whrite — 블루↔밝은블루 그라데이션 흐름
+   - 피크 색은 화이트 대신 밝은 블루 (#80c0f0) — 배경에 묻혀
+     글씨가 사라지는 사고 방지
+   - text-shadow: 0 0.069vw 0.208vw #3d4f6b (1440 기준 0/1/3 px → vw)
    ================================================================ */
 .about_point-title_blue_whrite {
   background-image: linear-gradient(
     90deg,
     #0075d6 0%,
-    #f4f7fb 35%,
-    #f4f7fb 50%,
-    #f4f7fb 65%,
+    #80c0f0 50%,
     #0075d6 100%
   );
   background-size: 200% 100%;
@@ -480,6 +480,7 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
           background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 0.069vw 0.208vw #3d4f6b;
   animation: aboutPointTitleFlow 4s linear infinite;
 }
 
