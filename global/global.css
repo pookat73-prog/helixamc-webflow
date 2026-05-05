@@ -2,6 +2,15 @@
    HELIX AMC - GLOBAL CSS (모든 페이지 공통)
    ================================================================ */
 
+/* ── 한글 본문 줄바꿈 정책 ──
+   word-break: keep-all   → 한글 단어 중간 끊김 방지 (예: "헬릭/스" X)
+   overflow-wrap: break-word → 너무 긴 영문/URL 은 어쩔 수 없이 끊어 오버플로우 방지
+   body 단위로 박아 사이트 전역(헤딩·본문·버튼·캡션 등) 자동 적용. */
+body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 /* ── 헤더 메뉴 ── */
 
 /* 호버 → 메인 블루 */
