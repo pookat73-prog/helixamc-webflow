@@ -256,10 +256,7 @@
 
     var minX = -w/2,        maxX = w * 2 + w/2;
     var minY = -1.5*s - s,  maxY = s;
-    /* scale:1.18 bounce 가 viewBox 바깥으로 나가지 않도록 여유 확보.
-       가장 넓은 hex(ankwa/chikwa) 반폭 ≈ w/2, 18% 팽창 = 0.18*(w/2) ≈ 15.
-       상하도 동일 비율. 패딩 25로 충분히 커버. */
-    var pad = 25;
+    var pad = 8;
 
     function vertices(cx, cy, scale) {
       var k = scale || 1;
@@ -315,39 +312,9 @@
     svg.style.width = '100%';
     svg.style.height = '100%';
     svg.style.display = 'block';
-    /* overflow hidden — viewBox 밖으로 content 가 삐져나와 부모 pin-spacer 에
-       잘리는 현상 방지. pad=25 로 scale:1.18 bounce 를 viewBox 안에 흡수. */
-    svg.style.overflow = 'hidden';
-    svg.setAttribute('overflow', 'hidden');
+    svg.style.overflow = 'visible';
+    svg.setAttribute('overflow', 'visible');
 
-    /* ── defs: 공유 shimmer gradient + 내경 hex clipPaths (5개 모두) ── */
-    var svgDefs = document.createElementNS(svgNS, 'defs');
-
-    /* 빔 폭 방향으로 소프트 엣지 — 빔이 사선으로 훑을 때 자연스러운 fade */
-    var sGrad = document.createElementNS(svgNS, 'linearGradient');
-    sGrad.setAttribute('id', 'helix-shimmer-grad');
-    sGrad.setAttribute('x1', '0%');  sGrad.setAttribute('y1', '0%');
-    sGrad.setAttribute('x2', '100%'); sGrad.setAttribute('y2', '0%');
-    [[0,0],[20,0],[40,0.04],[50,0.07],[60,0.04],[80,0],[100,0]].forEach(function(s2) {
-      var st = document.createElementNS(svgNS, 'stop');
-      st.setAttribute('offset', s2[0] + '%');
-      st.setAttribute('stop-color', '#0075d6');
-      st.setAttribute('stop-opacity', s2[1]);
-      sGrad.appendChild(st);
-    });
-    svgDefs.appendChild(sGrad);
-
-    /* 내경 hex clipPaths (scale 0.92) — 외곽선 살짝만 비우고 거의 외경에 근접 */
-    hexes.forEach(function(hx) {
-      var iv = vertices(hx.cx, hx.cy, 0.92);
-      var cp = document.createElementNS(svgNS, 'clipPath');
-      cp.setAttribute('id', 'clip-inner-' + hx.id);
-      var cpP = document.createElementNS(svgNS, 'path');
-      cpP.setAttribute('d', fullHexPath(iv));
-      cp.appendChild(cpP);
-      svgDefs.appendChild(cp);
-    });
-    svg.appendChild(svgDefs);
 
     hexes.forEach(function (hx) {
       var verts = vertices(hx.cx, hx.cy);
@@ -371,37 +338,6 @@
       g.appendChild(t);
 
       svg.appendChild(g);
-    });
-
-    /* shimmer — 사선(-35°) 빔이 내경 hex 클립 안에서 sweep.
-       clipG(고정, clip-path 적용) > moveG(GSAP x 트윈) > rect(회전).
-       clip-path 가 transform 되는 엘리먼트에 붙으면 클립도 같이 움직여서
-       빔이 hex 밖으로 새어 나오기 때문에 두 레이어로 분리. */
-    hexes.forEach(function(hx) {
-      var beamW  = 130;            /* 빔 두께 (회전 후 사선 폭) */
-      var travel = w + beamW * 2;  /* 좌→우 이동 거리 */
-
-      var clipG = document.createElementNS(svgNS, 'g');
-      clipG.setAttribute('id', 'shimmer-clip-' + hx.id);
-      clipG.setAttribute('clip-path', 'url(#clip-inner-' + hx.id + ')');
-      clipG.setAttribute('opacity', '0');
-
-      var moveG = document.createElementNS(svgNS, 'g');
-      moveG.setAttribute('id', 'shimmer-' + hx.id);
-      moveG.setAttribute('data-travel', travel);
-
-      /* 내경보다 충분히 큰 rect (높이 s*4), 중심 기준으로 -35° 회전 */
-      var rect = document.createElementNS(svgNS, 'rect');
-      rect.setAttribute('x', (hx.cx - beamW / 2).toFixed(2));
-      rect.setAttribute('y', (hx.cy - s * 2).toFixed(2));
-      rect.setAttribute('width', beamW);
-      rect.setAttribute('height', (s * 4).toFixed(2));
-      rect.setAttribute('fill', 'url(#helix-shimmer-grad)');
-      rect.setAttribute('transform',
-        'rotate(-35 ' + hx.cx.toFixed(2) + ' ' + hx.cy.toFixed(2) + ')');
-      moveG.appendChild(rect);
-      clipG.appendChild(moveG);
-      svg.appendChild(clipG);
     });
 
     holder.appendChild(svg);
@@ -501,43 +437,6 @@
 
       window.__hexS1Tl = tl;
       log('hex timeline duration:', tl.duration().toFixed(2) + 's');
-
-      /* 등장 완료 후 shimmer 루프 — 5개 동시, 사선 빔 sweep
-         + 매우 약한 scale 바운스 (각 hex 마다 다른 딜레이로 가끔씩) */
-      tl.then(function() {
-        hexes.forEach(function(hx, idx) {
-          var moveG = svg.querySelector('#shimmer-' + hx.id);
-          var clipG = svg.querySelector('#shimmer-clip-' + hx.id);
-          if (!moveG || !clipG) return;
-          var travel = parseFloat(moveG.getAttribute('data-travel'));
-          gsap.set(clipG, { opacity: 1 });
-          gsap.fromTo(moveG,
-            { x: -travel },
-            { x: travel,
-              duration: 4.5, ease: 'power3.in',
-              repeat: -1, repeatDelay: 4.0
-            }
-          );
-
-          /* 가끔씩 등장 같은 매우 약한 scale 바운스 — hex <g> 자체에 적용.
-             transformOrigin 을 hex 중심으로 잡아 제자리 바운스. */
-          var hexG = svg.querySelector('.hex-' + hx.id);
-          if (hexG) {
-            gsap.set(hexG, { transformOrigin: hx.cx + 'px ' + hx.cy + 'px' });
-            gsap.to(hexG, {
-              keyframes: [
-                { scale: 1.018, duration: 0.35, ease: 'power2.out' },
-                { scale: 0.994, duration: 0.30, ease: 'power2.inOut' },
-                { scale: 1.000, duration: 0.55, ease: 'power2.out' }
-              ],
-              repeat: -1,
-              repeatDelay: 7.5 + idx * 1.3,
-              delay: 1.5 + idx * 0.9
-            });
-          }
-        });
-      });
-
       return tl;
     }
 
@@ -596,43 +495,15 @@
 
       /* viewBox 좌표계 기준 (about.js renderHexDiagram 와 동일):
          - x 가운데 ≈ 173 (= w), y 가운데 ≈ -75 */
-      /* ROW_ORDER — 각 hex 의 honeycomb origin cx 순서 (좌→우) 와 일치시켜
-         펼침 시 서로 경로 크로스가 일어나지 않도록 함.
-         ankwa(cx=0) → naekwa(0.5w) → yeongsang(w) → oikwa(1.5w) → chikwa(2w)
-         조건 충족: 영상 중심 / 내외 안쪽(±1) / 안치 가장자리(±2). */
-      var ROW_ORDER     = ['ankwa', 'naekwa', 'yeongsang', 'oikwa', 'chikwa'];
+      var ROW_ORDER     = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
       var ROW_CENTER_X  = 173;
       var ROW_Y         = -75;
       var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
-      /* COMP_STEP_X — 합체 후 인접 헥사 사이의 화면 간격이 0.3vw 가 되도록
-         viewBox 단위로 환산. svg 가 100% width 라 pixelsPerUnit 변동이 작지만
-         리사이즈 시 다시 계산. */
-      var COMP_STEP_X   = 26;    /* 초기값, 아래에서 즉시 재계산 */
-      var COMP_STEP_Y   = 0;     /* 세로 offset 없음 — 가로로만 쌓임 */
-      function computeCompStepX() {
-        try {
-          var rect = svg.getBoundingClientRect();
-          var vb = svg.viewBox && svg.viewBox.baseVal;
-          if (!rect.width || !vb || !vb.width) return;
-          var pxPerUnit = rect.width / vb.width;
-          var targetPx  = window.innerWidth * 0.003;  /* 0.3vw */
-          COMP_STEP_X = targetPx / pxPerUnit;
-        } catch (e) {}
-      }
-      computeCompStepX();
+      var COMP_STEP     = 28;    /* 압축 간격 (서로 거의 겹침) */
       var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
       var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
 
-      /* 두 단계 분리:
-         - spreadTl     : box1 → box2 스크롤 구간에서 펼침(일렬). 스크럽.
-         - box2EnterTl  : box2 진입 시 자동 재생 시퀀스 — 비스듬 회전 → 한 점
-                          으로 모임 → 4개 fade out (yeongsang 만 생존) → 정면
-                          으로 다시 회전 → 파동 1회. */
-      var spreadTl    = gsap.timeline({ paused: true });
-      var box2EnterTl = gsap.timeline({ paused: true });
-
-      /* 5→1 합체 후 생존 헥사 — 정중앙 (yeongsang = 영상의학과). */
-      var SURVIVOR_ID = 'yeongsang';
+      var section2Tl = gsap.timeline({ paused: true });
 
       ROW_ORDER.forEach(function (id, i) {
         var hx = null;
@@ -642,84 +513,36 @@
         var g = svg.querySelector('.hex-' + id);
         if (!hx || !g) return;
 
-        var rowX  = ROW_CENTER_X + (i - 2) * ROW_STEP;
+        var rowX = ROW_CENTER_X + (i - 2) * ROW_STEP;
+        var compX = ROW_CENTER_X + (i - 2) * COMP_STEP;
         var rowDx = rowX - hx.cx;
         var rowDy = ROW_Y - hx.cy;
-        /* 켜켜히 stack — 합쳐지지 않고 대각선으로 비스듬히 쌓인 모습이 최종 상태.
-           5장 카드가 살짝씩 옆+아래로 어긋나 layering 이 또렷이 보이게. */
-        var mergeX  = ROW_CENTER_X + (i - 2) * COMP_STEP_X;
-        var mergeY  = ROW_Y       + (i - 2) * COMP_STEP_Y;
-        var mergeDx = mergeX - hx.cx;
-        var mergeDy = mergeY - hx.cy;
+        var compDx = compX - hx.cx;
 
-        var spreadHex = gsap.timeline({
+        /* svgOrigin 한 번 잡아두면 후속 트윈에도 동일 origin 사용 →
+           rotation·scale 이 항상 hex 자체 중심에서 일어남. */
+        var hexTl = gsap.timeline({
           defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
         });
 
-        /* 펼침: identity(원래 위치) → 일렬 row 위치 */
-        spreadHex.fromTo(g,
+        /* Section 2 = 펼침 → 회전 → 압축. 3단계만.
+           Phase 1 은 fromTo + immediateRender:false → Section 1 종료
+           (scale 1) 와 매끄럽게 이어짐 (이전엔 from 값 미스매치로 "툭"
+           점프). Phase 2·3 은 .to() 가 직전 상태에서 자동으로 이어감. */
+        hexTl.fromTo(g,
           { x: 0, y: 0, scale: 1 },
           { x: rowDx, y: rowDy, scale: ROW_SCALE,
             duration: 1.0, ease: 'power2.inOut',
             immediateRender: false },
           0
         );
+        hexTl.to(g, { rotationY: TILT_Y,
+                      duration: 0.8, ease: 'power2.inOut' }, 1.0);
+        hexTl.to(g, { x: compDx,
+                      duration: 0.8, ease: 'power2.inOut' }, 1.8);
 
-        spreadTl.add(spreadHex, 0);
-
-        /* box2 자동 시퀀스 — 각 hex 별 트윈을 하나의 통합 타임라인에 add */
-        var hexEnter = gsap.timeline({
-          defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
-        });
-
-        /* Phase A (0.0~0.6s): 비스듬 Y축 회전 */
-        hexEnter.to(g, { rotationY: 32, duration: 0.6, ease: 'power2.inOut' }, 0);
-
-        /* Phase B (0.6~1.6s): 대각선으로 모이며 켜켜이 쌓임 (X+Y offset) */
-        hexEnter.to(g, { x: mergeDx, y: mergeDy, duration: 1.0, ease: 'power2.inOut' }, 0.6);
-
-        /* Phase C (1.6~2.2s): 5장 모두 정면 복귀 — 카드 stack 같은 최종 모습.
-           합쳐지지 않고 비스듬히 쌓인 상태가 그대로 유지됨. */
-        hexEnter.to(g, { rotationY: 0, duration: 0.6, ease: 'power2.inOut' }, 1.6);
-
-        box2EnterTl.add(hexEnter, 0);
+        section2Tl.add(hexTl, 0);
       });
-
-      /* Phase B 시점에 텍스트 fade out 시작 (합쳐질수록 텍스트 사라짐) */
-      var hexTexts = svg.querySelectorAll('.hex text');
-      if (hexTexts.length) {
-        box2EnterTl.to(hexTexts,
-          { opacity: 0, duration: 0.8, ease: 'power2.in' },
-          0.6);
-      }
-
-      /* Phase B 시작 직전 z-order 재배치 — 합칠 때 맨 왼쪽 헥사(chikwa) 가
-         최상단, 생존자(yeongsang) 가 최하단. SVG 는 DOM 순서대로 렌더되므로
-         appendChild 로 끝으로 이동 = 위로 올림. */
-      box2EnterTl.call(function () {
-        var parent = svg.querySelector('.helix-hex-diagram') || svg;
-        /* z-order (DOM 순서: 뒤쪽 → 앞쪽): ankwa 최하단 … chikwa 최상단.
-           ROW_ORDER 마지막 헥사(chikwa) 가 stack 의 제일 첫 장(앞면). */
-        var stackOrder = ['ankwa', 'naekwa', 'yeongsang', 'oikwa', 'chikwa'];
-        stackOrder.forEach(function (id) {
-          var g = svg.querySelector('.hex-' + id);
-          if (g && g.parentNode) g.parentNode.appendChild(g);
-        });
-      }, null, 0.55);
-
-      /* Phase E (2.2~3.0s): 파동 1회 — stack 중심에서 동심원 펄스. */
-      var box2Wave = injectBox2Wave(svg, ROW_CENTER_X, ROW_Y);
-      if (box2Wave) {
-        box2EnterTl.fromTo(box2Wave,
-          { attr: { r: 8 }, opacity: 0.9 },
-          { attr: { r: 180 }, opacity: 0,
-            duration: 0.8, ease: 'power2.out',
-            immediateRender: false },
-          2.2);
-      }
-
-      /* 호환용 — 외부에서 참조 가능한 이름 유지. */
-      var section2Tl = box2EnterTl;
 
       /* Box 3 — 모핑 후 심볼에서 펄스 1번 + 궤도 도는 빛점.
          박스 3 진입 → 펄스 1회 + 궤도 빛점 fade in.
@@ -851,43 +674,32 @@
         console.log('[helix-s2 pin] attached, pinStartScroll≈' + pinStartScroll + ' pinEndScroll≈' + pinEndScroll + ' range≈' + (pinEndScroll - pinStartScroll) + 'px');
       } catch (e) {}
 
-      /* SPREAD: box1 → box2 스크럽 (일렬 펼침)
-         BOX2 ENTER: box2 진입 시 자동 재생 (회전→모임→합체→정면→파동)
-         box1 영역에선 spread progress 0 → hexes 정적, 등장만. */
+      /* Scrub: Section 2 timeline 진행도를 콘텐츠 2 박스의 스크롤 범위에
+         매핑. 박스 2 가 viewport 75% 진입 시 시작, bottom 25% 통과 시 끝. */
+      var triggerEl = box2Ref || rowEl || holder;
 
       function forceS1Done() {
         if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
         if (window.__hexS1Tl) window.__hexS1Tl.progress(1);
       }
 
-      /* SPREAD: box1.center → box3.top 까지 — 세번째 스크롤(box3) 도달 시점에
-         펼침이 완전히 완성되도록 box1·box2 전체 구간을 스크럽으로 사용. */
       window.ScrollTrigger.create({
-        trigger: box1Ref || holder,
-        endTrigger: box3Ref || box2Ref || box1Ref || holder,
-        start: 'center center',
-        end: 'top center',
+        trigger: triggerEl,
+        start: 'top 75%',
+        end: 'bottom 25%',
         scrub: 1,
-        animation: spreadTl,
+        animation: section2Tl,
         onEnter: forceS1Done,
         onUpdate: function (self) {
+          /* 페이지 로드 시 이미 트리거 범위 안이면 onEnter 가 안 불릴 수
+             있으므로, 처음으로 진행도가 0 을 넘는 순간에도 안전망. */
           if (self.progress > 0 && (!window.__hexS1Tl || window.__hexS1Tl.progress() < 1)) {
             forceS1Done();
           }
         }
       });
 
-      /* BOX3 STACK: box3 영역에서 합체 스크럽 — 펼침 완료 직후 켜켜이 쌓임. */
-      window.ScrollTrigger.create({
-        trigger: box3Ref || box2Ref || holder,
-        start: 'top center',
-        end: 'bottom center',
-        scrub: 1,
-        animation: box2EnterTl
-      });
-
-      log('section 2 ready — spread:' + spreadTl.duration().toFixed(2) +
-          's box2Enter:' + box2EnterTl.duration().toFixed(2) + 's');
+      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, scrub trigger=' + (triggerEl.className || triggerEl.tagName));
     }
 
     tryInit();
@@ -909,26 +721,6 @@
        크리스탈 3D 인상을 근사 표현 (진짜 3D 모델 아님)
      - src 는 about hero 의 img.image-23 src 를 그대로 재사용 (사용자가
        올린 심볼.svg 도 같은 PNG 가 wrapping 된 형태라 시각적으로 동일) */
-  /* box2 정면 헥사 파동 — survivor 위치에 동심원 stroke 1회 발사용 SVG circle */
-  function injectBox2Wave(svg, cx, cy) {
-    if (!svg) return null;
-    var existing = svg.querySelector('.box2-wave');
-    if (existing) return existing;
-    var ns = 'http://www.w3.org/2000/svg';
-    var c = document.createElementNS(ns, 'circle');
-    c.setAttribute('class', 'box2-wave');
-    c.setAttribute('cx', cx);
-    c.setAttribute('cy', cy);
-    c.setAttribute('r', 8);
-    c.setAttribute('fill', 'none');
-    c.setAttribute('stroke', '#0075d6');
-    c.setAttribute('stroke-width', '2');
-    c.setAttribute('opacity', '0');
-    c.style.pointerEvents = 'none';
-    svg.appendChild(c);
-    return c;
-  }
-
   function injectMorphSymbol(holder) {
     if (!holder) return null;
     var existing = holder.querySelector('.hex-morph-stage');
@@ -1564,6 +1356,17 @@
     log('init');
     renderHexDiagram();
     initHexAnimations();
+    initHexSection2();
+    initViewport60FadeIn();
+    initHistorySpark();
+    initStandardFontHighlight();
+    initChewyH2();
+    initHybridRoomTitle();
+    initBurnGlow();
+    initHistoryTimeline();
+    initHistoryHelixLine();
+    initWeAreHereReveal();
+    initHybridUnfold();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
@@ -2021,92 +1824,4 @@
   } else {
     init();
   }
-})();
-
-/* ================================================================
-   MOTION HOLDER FIT — 좌측 콘텐츠 컬럼 높이에 맞춰 우측 모션 영역 고정
-   - 제목 박스 top ~ 마지막 본문 박스 bottom 범위로 모션 홀더 높이 매칭
-   - overflow:visible 로 펄스/이펙트 잘림 방지
-   - resize / load 시 재계산, ScrollTrigger.refresh()
-   ================================================================ */
-(function () {
-  'use strict';
-
-  var WRAPPER_IDS = [
-    'w-node-_8b35afef-acb7-2f39-45ec-7a0b3dfd6b90-3dfd6b90', /* 2구간 */
-    'w-node-_6103b565-ef5e-f722-abf7-6712e4a7d351-e0c16bc5'  /* 3구간 */
-  ];
-
-  function fitOne(wrapperId) {
-    var wrapper = document.getElementById(wrapperId);
-    if (!wrapper) return false;
-
-    var bodies = wrapper.querySelectorAll('.about_three_contents-box');
-    if (!bodies.length) return false;
-    var leftCol = bodies[0].parentElement;
-    if (!leftCol) return false;
-
-    /* 모션 홀더 — 좌측 컬럼이 아닌 형제 (또는 .diagram-place-holder) */
-    var motionHolder = wrapper.querySelector('.diagram-place-holder');
-    if (!motionHolder) {
-      var rowChildren = leftCol.parentElement
-        ? Array.prototype.slice.call(leftCol.parentElement.children)
-        : [];
-      for (var i = 0; i < rowChildren.length; i++) {
-        if (rowChildren[i] !== leftCol) { motionHolder = rowChildren[i]; break; }
-      }
-    }
-    if (!motionHolder) return false;
-
-    /* 이전 inline 값 초기화 후 자연 위치 측정 */
-    motionHolder.style.height   = '';
-    motionHolder.style.top      = '';
-    motionHolder.style.position = 'relative';
-    motionHolder.style.overflow = 'visible';
-
-    var leftRect    = leftCol.getBoundingClientRect();
-    var motionRect  = motionHolder.getBoundingClientRect();
-    var wrapperRect = wrapper.getBoundingClientRect();
-
-    var targetH = leftRect.height;
-    var shift   = motionRect.top - leftRect.top;
-
-    /* 클램프 — 시각적 bottom 이 wrapper(=구간) bottom 을 절대 넘지 않도록.
-       leftCol 이 wrapper 보다 더 아래로 늘어진 경우 height 를 줄임. */
-    var visibleBottom = (motionRect.top - shift) + targetH;
-    if (visibleBottom > wrapperRect.bottom) {
-      targetH = Math.max(0, wrapperRect.bottom - (motionRect.top - shift));
-    }
-
-    if (targetH > 0) {
-      motionHolder.style.height = targetH + 'px';
-      motionHolder.style.top    = (-shift) + 'px';
-    }
-    return true;
-  }
-
-  function fitAll() {
-    var anyOk = false;
-    WRAPPER_IDS.forEach(function (id) { if (fitOne(id)) anyOk = true; });
-    if (anyOk && window.ScrollTrigger && window.ScrollTrigger.refresh) {
-      window.ScrollTrigger.refresh();
-    }
-  }
-
-  /* 초기 + 폰트/이미지 로드 후 재계산 */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fitAll);
-  } else {
-    fitAll();
-  }
-  window.addEventListener('load', fitAll);
-  setTimeout(fitAll, 600);
-  setTimeout(fitAll, 1500);
-
-  /* 디바운스 resize */
-  var rT;
-  window.addEventListener('resize', function () {
-    clearTimeout(rT);
-    rT = setTimeout(fitAll, 120);
-  });
 })();
