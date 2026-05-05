@@ -460,3 +460,32 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   transform: scaleX(1);
 }
 
+/* ================================================================
+   .about_point-title_blue_whrite — 블루↔화이트 그라데이션 흐름
+   배경을 텍스트로 클립 + background-position 무한 루프
+   ================================================================ */
+.about_point-title_blue_whrite {
+  background-image: linear-gradient(
+    90deg,
+    #0075d6 0%,
+    #f4f7fb 35%,
+    #f4f7fb 50%,
+    #f4f7fb 65%,
+    #0075d6 100%
+  );
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: aboutPointTitleFlow 4s linear infinite;
+}
+
+@keyframes aboutPointTitleFlow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+
