@@ -1181,18 +1181,29 @@
      카드덱에 겹쳐 있어도 IO 는 모두 같이 진입 → 0.35s stagger.
      ─────────────────────────────────────────────────────────── */
   function initAboutMiniTitleShine() {
-    var els = document.querySelectorAll('.about_mini_title');
-    log('about_mini_title shine targets=' + els.length);
+    var WANTED = ['일년365일', '하루24시간', '특화', '응급케어'];
+    var all = document.querySelectorAll('.about_mini_title');
+    var picked = [];
+    var seen = {};
+    Array.prototype.forEach.call(all, function (el) {
+      var t = (el.textContent || '').replace(/\s+/g, '');
+      for (var i = 0; i < WANTED.length; i++) {
+        if (seen[i]) continue;
+        if (t === WANTED[i]) { picked[i] = el; seen[i] = true; return; }
+      }
+    });
+    var els = picked.filter(Boolean);
+    log('about_mini_title shine targets=' + els.length + ' (of ' + all.length + ')');
     if (!els.length) return;
 
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
-      Array.prototype.forEach.call(els, function (el, i) {
+      els.forEach(function (el, i) {
         setTimeout(function () {
-          helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.4, bandWidth: 10, duration: 1500 });
-        }, i * 350);
+          helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.4, bandWidth: 10, duration: 2800 });
+        }, i * 500);
       });
     }
 
