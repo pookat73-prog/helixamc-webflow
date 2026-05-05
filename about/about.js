@@ -1012,21 +1012,13 @@
     log('section2-2 reveal target=' + !!container);
     if (!container) return;
 
-    /* column 자체 페이드인 + 안쪽 파란 영문/흰 블록 그림자 살짝 늦은
-       자체 페이드인. 모두 좌→우 column index 기반 stagger. */
-    var STEP = 0.12;        /* column 간 stagger (s) */
-    var BLUE_OFFSET   = 0.18; /* column 시작 후 파란 영문 fade 시작 */
-    var SHADOW_OFFSET = 0.28; /* column 시작 후 그림자 fade 시작 */
-    var idx = 0;
-    Array.prototype.forEach.call(container.children, function (c) {
-      if (!c.classList || !c.classList.contains('div-block-176')) return;
-      var colDelay = idx * STEP;
-      c.style.transitionDelay = colDelay + 's';
-      var blue = c.querySelector('.about_point-title_blue_whrite');
-      if (blue) blue.style.transitionDelay = (colDelay + BLUE_OFFSET) + 's';
-      var block = c.querySelector('.div-block-175');
-      if (block) block.style.transitionDelay = (colDelay + SHADOW_OFFSET) + 's';
-      idx++;
+    /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
+       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
+    var BASE = 1.8;  /* 파란 필기체 fade 완료 후 시작 (s) */
+    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
+    var blocks = container.querySelectorAll('.div-block-175');
+    Array.prototype.forEach.call(blocks, function (b, i) {
+      b.style.transitionDelay = (BASE + i * STEP) + 's';
     });
 
     function trigger() {
