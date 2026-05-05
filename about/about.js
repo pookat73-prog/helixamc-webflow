@@ -1112,6 +1112,18 @@
        duration: ms
        angle: '115deg' 등
      ─────────────────────────────────────────────────────────── */
+  function ensureHelixShineKeyframes() {
+    if (document.getElementById('helix-shine-keyframes')) return;
+    var style = document.createElement('style');
+    style.id = 'helix-shine-keyframes';
+    style.textContent =
+      '@keyframes helix-shine-sweep {' +
+      '  from { background-position: 100% 0; }' +
+      '  to   { background-position: 0% 0; }' +
+      '}';
+    document.head.appendChild(style);
+  }
+
   function helixShineSweep(el, opts) {
     if (!el) return;
     if (el.dataset.helixShining === '1') return;
@@ -1125,9 +1137,11 @@
     var lo = Math.max(0, 50 - bandWidth);
     var hi = Math.min(100, 50 + bandWidth);
 
-    /* 원본 base 색을 RGB 로 파싱해서 peak 색과 alpha 비율로 미리 믹스.
-       그라데이션 stop 들은 모두 full-opaque 색으로 채워 양옆에서도
-       텍스트가 base 색 그대로 보이도록 (와이퍼 현상 방지). */
+    /* base 색을 RGB 파싱 → peak 색과 alpha 로 미리 믹스해서 그라데이션
+       stop 을 모두 full-opaque 로 만든다. 양옆에서도 텍스트가 base 색
+       그대로 보임 (와이퍼 없음). size 300% + position 100→0 으로
+       피크가 좌측 밖(-0.5W)에서 우측 밖(+1.5W) 까지 traverse 하면서
+       엘리먼트는 항상 완전 커버 범위 안에 있음. */
     var base = window.getComputedStyle(el).color || 'rgb(255,255,255)';
     var bm = base.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)/);
     var br = bm ? +bm[1] : 255, bg = bm ? +bm[2] : 255, bb = bm ? +bm[3] : 255;
@@ -1146,26 +1160,19 @@
       + baseRGB + ' ' + hi + '%, '
       + baseRGB + ' 100%)';
 
-    /* size 200% + position 100% → -25% : 피크가 좌단에서 우단을 지나
-       살짝 밖으로 빠지면서 자연스럽게 사라짐 (페이드아웃 효과). */
+    ensureHelixShineKeyframes();
     el.dataset.helixShining = '1';
     el.style.backgroundImage = grad;
-    el.style.backgroundSize = '200% 100%';
-    el.style.backgroundPosition = '100% 0';
+    el.style.backgroundSize = '300% 100%';
     el.style.backgroundRepeat = 'no-repeat';
     el.style.setProperty('-webkit-background-clip', 'text');
     el.style.setProperty('background-clip', 'text');
     el.style.setProperty('-webkit-text-fill-color', 'transparent');
     el.style.color = 'transparent';
-    el.style.transition = 'background-position ' + (duration / 1000) + 's cubic-bezier(0.42,0,0.58,1)';
-
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        el.style.backgroundPosition = '-25% 0';
-      });
-    });
+    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.42,0,0.58,1) forwards';
 
     setTimeout(function () {
+      el.style.removeProperty('animation');
       el.style.removeProperty('background-image');
       el.style.removeProperty('background-size');
       el.style.removeProperty('background-position');
@@ -1174,7 +1181,6 @@
       el.style.removeProperty('background-clip');
       el.style.removeProperty('-webkit-text-fill-color');
       el.style.removeProperty('color');
-      el.style.removeProperty('transition');
       delete el.dataset.helixShining;
     }, duration + 60);
   }
