@@ -1150,7 +1150,6 @@
       'line-height:inherit','text-align:inherit','text-transform:inherit',
       'white-space:inherit','direction:inherit',
       'display:block',
-      'mix-blend-mode:screen',
       'color:transparent',
       '-webkit-text-fill-color:transparent',
       '-webkit-background-clip:text',
@@ -1185,37 +1184,55 @@
     var WANTED = ['일년365일', '하루24시간', '특화', '응급케어'];
     var all = document.querySelectorAll('.about_mini_title');
     var picked = [];
-    var seen = {};
     Array.prototype.forEach.call(all, function (el) {
       var t = (el.textContent || '').replace(/\s+/g, '');
-      for (var i = 0; i < WANTED.length; i++) {
-        if (seen[i]) continue;
-        if (t === WANTED[i]) { picked[i] = el; seen[i] = true; return; }
-      }
+      WANTED.forEach(function (w) {
+        if (t.indexOf(w) !== -1 && picked.indexOf(el) === -1) picked.push(el);
+      });
     });
-    var els = picked.filter(Boolean);
-    log('about_mini_title shine targets=' + els.length + ' (of ' + all.length + ')');
-    if (!els.length) return;
+    log('about_mini_title shine targets=' + picked.length + ' (of ' + all.length + ')');
+    if (!picked.length) return;
 
     function shine(el) {
       helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.75, bandWidth: 10, duration: 2800 });
     }
 
+    /* 카드덱/transform 으로 el 자체가 intersect 안 되는 경우가 많아
+       안정적 부모 컨테이너를 트리거로 사용. 같은 컨테이너 안의
+       mini title 들은 한 그룹으로 묶어 stagger 발사. */
+    function findTrigger(el) {
+      return el.closest('section, .about_section, [class*="section"], main') || el.parentElement || el;
+    }
+
+    var groups = []; // [{trigger, els: []}]
+    picked.forEach(function (el) {
+      var trig = findTrigger(el);
+      var g = null;
+      for (var i = 0; i < groups.length; i++) if (groups[i].trigger === trig) { g = groups[i]; break; }
+      if (!g) { g = { trigger: trig, els: [] }; groups.push(g); }
+      g.els.push(el);
+    });
+    log('about_mini_title shine groups=' + groups.length);
+
+    function fireGroup(g) {
+      g.els.forEach(function (el, i) { setTimeout(function () { shine(el); }, i * 500); });
+    }
+
     if (!('IntersectionObserver' in window)) {
-      els.forEach(function (el, i) { setTimeout(function () { shine(el); }, i * 500); });
+      groups.forEach(fireGroup);
       return;
     }
 
-    els.forEach(function (el) {
+    groups.forEach(function (g) {
       var fired = false;
       var io = new IntersectionObserver(function (es) {
         if (!fired && es[0].isIntersecting) {
           fired = true;
-          shine(el);
+          fireGroup(g);
           io.disconnect();
         }
       }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
-      io.observe(el);
+      io.observe(g.trigger);
     });
   }
 
