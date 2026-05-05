@@ -518,5 +518,10 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   }
 }
 
+/* .div-block-175 — box-shadow (X/Y/blur/spread, #9aaabb) */
+.div-block-175 {
+  box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
+}
+
 
 
