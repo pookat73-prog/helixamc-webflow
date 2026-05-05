@@ -622,3 +622,20 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 
 
 
+
+/* ================================================================
+   #cert — 인증 카드 3장 스크롤 진입 페이드 + 좌→우 살짝 슬라이드
+   - JS (about.js) 가 IntersectionObserver 로 .is-cert-in 부착
+   - stagger 80ms, transition 0.5s easeOutExpo (챠쟈쟉)
+   ================================================================ */
+#cert .About_Contents_Box_QQQQQQ {
+  opacity: 0;
+  transform: translateX(-14px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+#cert .About_Contents_Box_QQQQQQ.is-cert-in {
+  opacity: 1;
+  transform: translateX(0);
+}
