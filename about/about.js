@@ -1299,9 +1299,9 @@
         fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out', delay: 0
       },
       {
-        /* 국내 최초~도입 — we-are-here 다음에 곧이어 (0.5s) */
+        /* 국내 최초~도입 — we-are-here 재생 중에 겹쳐 등장 (0.15s) */
         sel: '.about_history_title_new',
-        fadeDur: 1.2, scaleDur: 1.2, ease: 'power2.inOut', delay: 0.5
+        fadeDur: 1.2, scaleDur: 1.2, ease: 'power2.inOut', delay: 0.15
       }
     ];
 
