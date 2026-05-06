@@ -1330,12 +1330,12 @@
               b.style.removeProperty('box-shadow');
             }, i * 150);
           });
-          /* div-block-178 — 흰 블록 fire 시점 +200ms 후 3개 동시에 페이드인 */
+          /* div-block-178 — 흰 블록 fire 시점 +800ms 후 3개 동시에 페이드인 */
           setTimeout(function () {
             Array.prototype.forEach.call(subBlocks, function (b) {
               b.style.removeProperty('opacity');
             });
-          }, 200);
+          }, 800);
         });
       });
     }
