@@ -1278,35 +1278,51 @@
       h.style.setProperty('transition', 'none', 'important');
     });
 
-    var blocks = document.querySelectorAll('.div-block-175');
+    /* 사용자 확인 정확한 경로 (다른 곳 절대 매칭 안 됨):
+       body > section:nth-child(22) > div.about_contents_grid-3.is-section22-in
+         > div:nth-child(N) > div > div > div.div-block-135 > div
+       그리드 컨테이너로 스코프 한정 → 다른 섹션 .div-block-135 도 안전. */
+    var blocks = document.querySelectorAll('.about_contents_grid-3 .div-block-135 > div');
+    try { console.log('[About:hybrid] white blocks=' + blocks.length); } catch (e) {}
     log('hybrid white blocks=' + blocks.length);
     if (!blocks.length) return;
 
-    Array.prototype.forEach.call(blocks, function (b) { b.classList.add('helix-fade-pre'); });
+    /* 인라인 hide — 정확히 3개 매칭 요소에만 적용. CSS 룰 변경 0,
+       전역 클래스 사용 0 → 다른 요소에 부작용 불가능. */
+    var TRANSITION = 'background-color 1.2s cubic-bezier(0.42,0,0.58,1), ' +
+                     'background-image 1.2s cubic-bezier(0.42,0,0.58,1), ' +
+                     'box-shadow 1.2s cubic-bezier(0.42,0,0.58,1)';
+    Array.prototype.forEach.call(blocks, function (b) {
+      b.style.transition = TRANSITION;
+      b.style.setProperty('background-color', 'transparent', 'important');
+      b.style.setProperty('background-image', 'none', 'important');
+      b.style.setProperty('box-shadow', 'none', 'important');
+    });
 
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
-      Array.prototype.forEach.call(blocks, function (b) { b.classList.add('is-visible'); });
+      /* double rAF: hide 상태가 1프레임 페인트 된 후 reveal 해야 transition 발화 */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          Array.prototype.forEach.call(blocks, function (b, i) {
+            setTimeout(function () {
+              /* 인라인 제거 → Webflow 네이티브 흰배경/그림자 자동 복귀 */
+              b.style.removeProperty('background-color');
+              b.style.removeProperty('background-image');
+              b.style.removeProperty('box-shadow');
+            }, i * 150);
+          });
+        });
+      });
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
-    /* rootMargin 완화 + 모든 카드 관찰 (첫 카드가 부모 transform 등으로
-       intersect 안 잡히는 케이스 방어). 어느 하나만 보여도 fire. */
     var io = new IntersectionObserver(function (es) {
-      for (var k = 0; k < es.length; k++) {
-        if (es[k].isIntersecting) {
-          try { console.log('[About:hybrid] IO hit'); } catch (e) {}
-          fire(); io.disconnect(); break;
-        }
-      }
-    }, { rootMargin: '0px', threshold: 0 });
-    Array.prototype.forEach.call(blocks, function (b) { io.observe(b); });
-
-    /* 안전망: 4초 안에 IO 가 발화 못 하면 강제 fire (관찰 대상이 어떤 이유로
-       intersect 신호를 못 보내는 경우 방어) */
-    setTimeout(function () { if (!fired) { try { console.log('[About:hybrid] fallback fire'); } catch (e) {} fire(); } }, 4000);
+      if (es[0].isIntersecting) { fire(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(blocks[0]);
   }
 
   /* ── Clearframe section 배경 쫀득 페이드인 + 캐논 알페닉스 sweep ─
