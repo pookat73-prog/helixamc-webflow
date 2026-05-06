@@ -1288,7 +1288,16 @@
     function fire() {
       if (fired) return;
       fired = true;
-      Array.prototype.forEach.call(blocks, function (b) { b.classList.add('is-visible'); });
+      /* double rAF: pre-state(.helix-fade-pre)가 최소 1프레임 페인트 된 후
+         is-visible 을 붙여야 transition 이 발화. 같은 프레임에 두 클래스가
+         붙으면 브라우저가 시작 상태를 건너뛰어 페이드인이 안 보임. */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          Array.prototype.forEach.call(blocks, function (b, i) {
+            setTimeout(function () { b.classList.add('is-visible'); }, i * 150);
+          });
+        });
+      });
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
