@@ -322,6 +322,25 @@
   ============================================================ */
   var initialized = false;
 
+  /* ============================================================
+     글로벌 mailto: 가로채기 — footer detect 와 무관하게 모든 mailto 링크를
+     클립보드 복사 + 토스트로 변환. Webflow 가 footer 클래스를 바꾸거나
+     이메일 텍스트를 <a href="mailto:..."> 안에 넣은 경우도 커버.
+  ============================================================ */
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a[href^="mailto:"]');
+    if (!a) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var raw = (a.getAttribute('href') || '').replace(/^mailto:/i, '').split('?')[0];
+    var email = decodeURIComponent(raw).trim();
+    if (!email) return;
+    copyText(email).then(function () {
+      showToast('복사완료 · ' + email);
+      dbg('mailto link copied:', email);
+    });
+  }, true);
+
   function init() {
     if (initialized) return true;
     var footer = findFooter();
