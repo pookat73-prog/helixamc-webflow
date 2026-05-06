@@ -81,10 +81,18 @@
     heroEls.forEach(function (el) {
       try {
         var cs = getComputedStyle(el);
-        var spec = (cs.fontStyle || 'normal') + ' ' + (cs.fontWeight || '400') +
-                   ' 1em "' + HERO_FONT + '"';
-        specs.push(spec);
-        loaders.push(document.fonts.load(spec, el.textContent || '').catch(function () {}));
+        /* Webflow 가 .about-heading 에 다른 font-family 를 박아뒀을 수 있어
+           computed 의 첫 family 를 직접 추출 (HERO_FONT 가 아닐 수 있음). */
+        var firstFamily = (cs.fontFamily || HERO_FONT).split(',')[0].replace(/['"]/g, '').trim();
+        var families = firstFamily ? [firstFamily] : [HERO_FONT];
+        if (families.indexOf(HERO_FONT) === -1) families.push(HERO_FONT);
+        families.forEach(function (fam) {
+          var spec = (cs.fontStyle || 'normal') + ' ' + (cs.fontWeight || '400') +
+                     ' 1em "' + fam + '"';
+          specs.push(spec);
+          loaders.push(document.fonts.load(spec, el.textContent || '').catch(function () {}));
+        });
+        log('hero font spec:', firstFamily, cs.fontStyle, cs.fontWeight);
       } catch (e) {}
     });
 
@@ -1937,8 +1945,9 @@
     }
 
     textReadyP.then(function () { startText('ready'); });
-    /* 텍스트용 안전 폴백 (비디오 무관) */
-    setTimeout(function () { startText('text-timeout'); }, 2000);
+    /* 텍스트용 안전 폴백 (비디오 무관) — 폰트 로드가 느릴 때 fade-in 중간
+       swap 깜빡임 방지를 위해 5초까지 늘려 폰트 ready 를 우선시 */
+    setTimeout(function () { startText('text-timeout'); }, 5000);
   }
 
   if (document.readyState === 'loading') {
