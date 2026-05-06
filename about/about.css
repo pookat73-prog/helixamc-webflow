@@ -701,13 +701,20 @@ section.subheader {
   z-index: 50;
   /* 위쪽 1px 갭으로 body 다크 bg 가 비치는 케이스 차단 */
   margin-top: -1px;
+  /* 아래쪽 sub-pixel 갭 차단 — sticky 가 fractional scroll 위치에서 멈출 때
+     브라우저가 element bottom 을 1px 비워 뒤쪽 layer (html bg / fixed navbar)
+     가 비치는 검정 라인 현상. box-shadow 로 같은 색을 1px 더 그려서 덮음. */
+  box-shadow: 0 1px 0 0 rgb(244, 247, 251);
 }
 
 /* ================================================================
-   about 페이지 한정 body bg — 어떤 1~2px 갭이 나도 검정이 비치지 않도록
-   subheader 와 같은 색으로 통일. about.css 는 about 페이지에서만 로드되니
-   다른 페이지 영향 없음.
+   about 페이지 한정 body / html bg — 어떤 1~2px 갭이 나도 검정이 비치지
+   않도록 subheader 와 같은 색으로 통일. about.css 는 about 페이지에서만
+   로드되니 다른 페이지 영향 없음.
+   html 까지 묶은 이유: body bg 만으로는 fixed navbar (#0d1117) 가 z-index
+   적층 하단에 깔린 채 비치는 케이스를 못 막음.
    ================================================================ */
+html,
 body {
   background-color: rgb(244, 247, 251);
 }
