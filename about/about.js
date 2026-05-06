@@ -1639,11 +1639,11 @@
       {
         sel: '.about_we-are-here',
         fadeDur: 0.8, scaleDur: 1.5, ease: 'power2.out', delay: 0,
-        scaleFrom: 0.8
+        scaleFrom: 0.9
       },
       {
         sel: '.about_history_title_new',
-        fadeDur: 0.6, scaleDur: 0.6, ease: 'power2.out', delay: 0.15,
+        fadeDur: 0.6, scaleDur: 0.6, ease: 'power2.out', delay: 0.2,
         scaleFrom: 0.8
       }
     ];
