@@ -1638,7 +1638,7 @@
     var configs = [
       {
         sel: '.about_we-are-here',
-        fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out', delay: 0,
+        fadeDur: 0.8, scaleDur: 1.5, ease: 'power2.out', delay: 0,
         scaleFrom: 0.8
       },
       {
