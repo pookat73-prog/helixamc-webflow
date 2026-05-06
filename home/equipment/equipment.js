@@ -113,9 +113,60 @@
     return found;
   }
 
+  /* ============================================================
+     이 섹션에서 알페닉스 페이드(.official-font_title 의 GSAP) +
+     빛반사 외 모든 인터랙션을 무력화.
+
+     무력화 대상:
+       - Webflow IX2 (data-w-id 바인딩 + 인라인 opacity/transform)
+       - 헤드 .parag_title-w
+       - 영문 .official-font_title_en
+       - 본문 .nomalparag-w_left-spacing
+       - 래퍼들 (.div-block-130, .about_title-a-b, section.clearframe, 무명 div)
+       - 배경 section.blackframe_image-he 자체
+
+     보호:
+       - 한글 .official-font_title (캐논 알페닉스) → sections-animations.js
+         의 expo.in 페이드+스케일 + 이 파일의 빛반사 그대로 유지
+
+     실행 시점: 가능한 빨리 + 안전망으로 여러 차례 (DOMContentLoaded, Webflow
+     ready, load, +500ms). data-w-id 를 미리 떼면 IX2 가 아예 바인딩 안 함.
+     이미 IX2 가 인라인 opacity:0 등을 박아놨다면 !important 인라인으로 덮음.
+  ============================================================ */
+  function neutralizeIX(alphenix) {
+    var frames = document.querySelectorAll('.blackframe_image-he');
+    if (!frames.length) return;
+
+    Array.prototype.forEach.call(frames, function (frame) {
+      /* frame 자체부터 */
+      var nodes = [frame];
+      var all = frame.querySelectorAll('*');
+      for (var i = 0; i < all.length; i++) nodes.push(all[i]);
+
+      nodes.forEach(function (el) {
+        if (el === alphenix) return;
+        if (el.hasAttribute && el.hasAttribute('data-w-id')) {
+          el.removeAttribute('data-w-id');
+        }
+        if (!el.style) return;
+        el.style.removeProperty('opacity');
+        el.style.removeProperty('transform');
+        el.style.removeProperty('visibility');
+        el.style.setProperty('opacity',    '1',       'important');
+        el.style.setProperty('visibility', 'visible', 'important');
+        el.style.setProperty('transform',  'none',    'important');
+      });
+    });
+    log('IX2 neutralized (alphenix protected=' + !!alphenix + ')');
+  }
+
   function init() {
     var alphenix = findAlphenix();
     log('alphenix found=' + !!alphenix);
+
+    /* alphenix 미발견이어도 IX2 무력화는 실행 (텍스트 변경 대응) */
+    neutralizeIX(alphenix);
+
     if (!alphenix) return;
 
     /* IO 진입 → 페이드인 (sections-animations.js GSAP expo.in ~1.1s) 완료 대기 → sweep.
@@ -142,11 +193,21 @@
     io.observe(alphenix);
   }
 
+  /* IX2 무력화는 가능한 빨리 + 여러 시점에서 반복 (IX2 가 늦게 바인딩해도 덮음) */
+  function earlyNeutralize() {
+    neutralizeIX(findAlphenix());
+  }
   if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', earlyNeutralize);
     document.addEventListener('DOMContentLoaded', init);
   } else {
+    earlyNeutralize();
     setTimeout(init, 200);
   }
+  window.addEventListener('load', earlyNeutralize);
+  setTimeout(earlyNeutralize, 500);
+  setTimeout(earlyNeutralize, 1500);
   window.Webflow = window.Webflow || [];
+  window.Webflow.push(earlyNeutralize);
   window.Webflow.push(init);
 })();
