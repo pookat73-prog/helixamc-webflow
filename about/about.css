@@ -269,23 +269,13 @@
   opacity: 1;
 }
 
-/* ── 하이브리드 부제 박스 (.div-block-175) 흰 배경만 페이드인 ──
-   Webflow 실제 클래스: 흰 카드 = Div Block 175 (background-color 화이트 +
-   box-shadow + radius 1.8vw). 텍스트/번호는 처음부터 그대로 노출.
-   배경+그림자만 transparent → 원래값 transition. 콘텐츠는 건드리지 않음.
-   about.js 가 첫 블록 진입 시 .helix-fade-pre 부착 → .is-visible 로 발화.
+/* ── 하이브리드 흰박스 페이드인 — JS 인라인 통제로 전환됨 ─────
+   기존 .div-block-175.helix-fade-pre[.is-visible] CSS 룰 제거.
+   `box-shadow: revert !important` 가 Webflow 원본이 아닌 user-agent 기본값
+   (=그림자 없음) 으로 되돌려 Webflow 그림자를 죽이는 버그가 있었음.
+   현재는 about.js 의 initHybridQuestionReveal 이 인라인 transition + 인라인
+   !important hide → 인라인 제거(reveal) 로 처리. CSS 룰 불필요.
    ─────────────────────────────────────────────────────────────── */
-.div-block-175.helix-fade-pre {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  transition: background-color 1.2s cubic-bezier(0.42, 0, 0.58, 1),
-              box-shadow      1.2s cubic-bezier(0.42, 0, 0.58, 1);
-}
-.div-block-175.helix-fade-pre.is-visible {
-  background-color: #ffffff !important;
-  /* box-shadow 는 인라인 제거 → Webflow 원본(variable) 자동 복귀 */
-  box-shadow: revert !important;
-}
 /* 번호 동그라미는 항상 최상단 */
 .div-block-177 {
   position: relative;
