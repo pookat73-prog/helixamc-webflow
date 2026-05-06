@@ -170,24 +170,97 @@
 (function () {
   'use strict';
 
+  /* 클래스 기반 1차 마킹 */
   var COMING_SELECTORS = [
     '.bt-box-2',
     '.bt-box-3',
     '.bt-box-4',
     '.home_branch-card',
+    '.flex-block-22 > .div-block-151',
     '.just-box_qqqqqqq'
   ];
+  /* 면제 — 클래스 마킹된 카드 안의 복사·전화는 기존 동작 유지 */
   var EXEMPT_SELECTORS = [
-    '.home_branch-card .copy-text-button',
-    '.home_branch-card a[href^="tel:"]'
+    '.copy-text-button',
+    'a[href^="tel:"]',
+    'a[href^="mailto:"]'
   ];
+
+  /* 텍스트 기반 2차 폴백 — Webflow 클래스가 바뀌어도 동작
+     이 텍스트가 들어있는 가장 작은 클릭형 컨테이너(앵커/버튼/카드)에
+     data-coming-soon 부여. 카드 + 버튼 모두 커버. */
+  var TEXT_TARGETS = [
+    '서초 본원', '서초본원',
+    '일산 분원', '일산분원',
+    '서울동물영상종양센터', '서울 동물영상종양센터',
+    '특화진료', 'HELIX Specialty',
+    '응급 내원이 필요한 증상', '응급증상', 'Critical Symptoms'
+  ];
+
+  /* 클릭형 컨테이너로 간주할 셀렉터 — 이 중 하나에 해당하는
+     가장 가까운 조상에 마킹 */
+  var CLICKABLE_ANCESTOR = [
+    'a[href]', 'button', '[role="button"]',
+    '.bt-box-1', '.bt-box-2', '.bt-box-3', '.bt-box-4',
+    '.home_branch-card', '.flex-block-22 > .div-block-151',
+    '.just-box_qqqqqqq', '[class*="branch-card"]',
+    '[class*="cta"]', '[class*="button"]', '[class*="btn"]'
+  ].join(', ');
+
+  function findClickableAncestor(node) {
+    var el = node;
+    while (el && el.nodeType === 1 && el !== document.body) {
+      if (el.matches && el.matches(CLICKABLE_ANCESTOR)) return el;
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  function markByText() {
+    /* 본문에서 매칭 텍스트 노드를 찾아 가까운 클릭형 조상 마킹 */
+    var walker = document.createTreeWalker(
+      document.body || document.documentElement,
+      NodeFilter.SHOW_TEXT,
+      null
+    );
+    var node;
+    while ((node = walker.nextNode())) {
+      var text = (node.textContent || '').trim();
+      if (!text) continue;
+      var matched = TEXT_TARGETS.some(function (kw) { return text.indexOf(kw) !== -1; });
+      if (!matched) continue;
+      var anc = findClickableAncestor(node.parentElement);
+      if (!anc) continue;
+      if (anc.matches('a[href^="tel:"], a[href^="mailto:"], .copy-text-button')) continue;
+      if (!anc.hasAttribute('data-coming-soon')) {
+        anc.setAttribute('data-coming-soon', '1');
+      }
+    }
+  }
+
+  function markPlusButtons() {
+    /* 카드 안의 "+" 모양 버튼 — 텍스트가 "+" 단독, 또는 클래스에 plus 포함 */
+    var nodes = document.querySelectorAll(
+      '[class*="plus" i], [class*="add" i], [aria-label*="더" ], [aria-label*="more" i]'
+    );
+    nodes.forEach(function (el) {
+      if (!el.hasAttribute('data-coming-soon')) el.setAttribute('data-coming-soon', '1');
+    });
+    /* 텍스트가 "+" 단독인 작은 버튼/링크 */
+    var clickable = document.querySelectorAll('a, button, [role="button"]');
+    clickable.forEach(function (el) {
+      var t = (el.innerText || el.textContent || '').trim();
+      if (t === '+' && !el.hasAttribute('data-coming-soon')) {
+        el.setAttribute('data-coming-soon', '1');
+      }
+    });
+  }
 
   function mark() {
     COMING_SELECTORS.forEach(function (sel) {
       document.querySelectorAll(sel).forEach(function (el) {
         if (!el.hasAttribute('data-coming-soon')) {
           el.setAttribute('data-coming-soon', '1');
-          el.style.cursor = 'pointer';
         }
       });
     });
@@ -198,6 +271,8 @@
         }
       });
     });
+    try { markByText(); } catch (e) {}
+    try { markPlusButtons(); } catch (e) {}
   }
 
   function start() {

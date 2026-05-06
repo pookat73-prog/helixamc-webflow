@@ -325,15 +325,18 @@
   function init() {
     if (initialized) return true;
     var footer = findFooter();
-    if (!footer) { dbg('footer not found yet'); return false; }
+    /* 폴백 — 푸터 detect 실패해도 document.body 전체에서 시도.
+       이메일은 정확 패턴 매칭, SNS 는 마지막 img 묶음 휴리스틱 */
+    var scope = footer || document.body;
+    if (!footer) dbg('footer not found, scanning whole document');
 
-    var emails = initEmailCopy(footer);
-    var sns    = initSnsLinks(footer);
-    var stopBtn = initScrollTopBtn(footer);
+    var emails = initEmailCopy(scope);
+    var sns    = initSnsLinks(scope);
+    var stopBtn = footer ? initScrollTopBtn(footer) : 0;
 
     if (emails || sns || stopBtn) {
       initialized = true;
-      log('initialized (email=' + emails + ', sns=' + sns + ', scrollTop=' + stopBtn + ')');
+      log('initialized (email=' + emails + ', sns=' + sns + ', scrollTop=' + stopBtn + ', footerFound=' + !!footer + ')');
       return true;
     }
     return false;
