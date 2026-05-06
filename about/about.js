@@ -1330,12 +1330,13 @@
               b.style.removeProperty('box-shadow');
             }, i * 150);
           });
-          /* div-block-178 — 흰 블록 fire 시점 +800ms 후 3개 동시에 페이드인 */
+          /* div-block-178 — 흰 블록 인터 완료 후 시작.
+             흰 블록 stagger 마지막(2*150=300ms) + transition 1.2s = 1500ms. */
           setTimeout(function () {
             Array.prototype.forEach.call(subBlocks, function (b) {
               b.style.removeProperty('opacity');
             });
-          }, 800);
+          }, 1500);
         });
       });
     }
