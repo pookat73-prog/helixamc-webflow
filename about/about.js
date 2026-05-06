@@ -60,6 +60,46 @@
     console.log.apply(console, args);
   }
 
+  /* width-metric 기반 폰트 로드 감지 (FontFaceObserver 전통 기법).
+     document.fonts API 가 신뢰할 수 없을 때의 ground-truth.
+     같은 글자를 두 span 에 그리고 한쪽은 monospace 만, 다른쪽은 타겟 family + monospace 로
+     렌더 → 두 너비가 달라지는 순간이 타겟 폰트 실제 적용 시점. */
+  function waitFontByMetric(family, weight, style, timeout) {
+    return new Promise(function (resolve) {
+      if (!family || !document.body) { resolve(false); return; }
+      var TEST = 'BESbswy';
+      var common = 'position:absolute;left:-9999px;top:-9999px;visibility:hidden;font-size:200px;line-height:1;white-space:pre;margin:0;padding:0;';
+      var fb = document.createElement('span');
+      var tgt = document.createElement('span');
+      fb.textContent = TEST; tgt.textContent = TEST;
+      fb.style.cssText  = common + 'font-family:monospace;font-weight:' + weight + ';font-style:' + style + ';';
+      tgt.style.cssText = common + 'font-family:"' + family + '",monospace;font-weight:' + weight + ';font-style:' + style + ';';
+      document.body.appendChild(fb);
+      document.body.appendChild(tgt);
+      var t0 = performance.now();
+      var done = false;
+      function cleanup() {
+        try { document.body.removeChild(fb); } catch (e) {}
+        try { document.body.removeChild(tgt); } catch (e) {}
+      }
+      function tick() {
+        if (done) return;
+        if (tgt.offsetWidth !== fb.offsetWidth) {
+          done = true; cleanup();
+          log('font metric: loaded', family, '(' + Math.round(performance.now() - t0) + 'ms)');
+          resolve(true); return;
+        }
+        if (performance.now() - t0 > timeout) {
+          done = true; cleanup();
+          log('font metric: TIMEOUT', family);
+          resolve(false); return;
+        }
+        requestAnimationFrame(tick);
+      }
+      tick();
+    });
+  }
+
   function whenHeroFontReady() {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
 
@@ -1928,9 +1968,21 @@
     /* 텍스트는 비디오를 기다리지 않음 — 폰트+심볼 준비되면 즉시 시작.
        document.fonts.ready 까지 함께 기다려야 폴백 폰트로 먼저 그려진 뒤
        지정 폰트로 swap 되는 깜빡임을 차단할 수 있음 (initViewport60FadeIn 과 동일 패턴). */
+    /* width-metric ground-truth: .about-heading 의 실제 computed family/weight/style 로
+       두 span(타겟+monospace, monospace only) 의 너비가 달라질 때까지 대기.
+       document.fonts API 가 일찍 resolve 되거나 실제 family 가 다를 가능성을 모두 우회. */
+    function metricForHeading() {
+      var h = document.querySelector('.about-heading');
+      if (!h) return Promise.resolve();
+      var cs = getComputedStyle(h);
+      var fam = (cs.fontFamily || '').split(',')[0].replace(/['"]/g, '').trim();
+      if (!fam) return Promise.resolve();
+      return waitFontByMetric(fam, cs.fontWeight || '400', cs.fontStyle || 'normal', 4000);
+    }
     var heroFontReady = Promise.all([
       whenHeroFontReady(),
-      (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve()
+      (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve(),
+      metricForHeading()
     ]);
     var textReadyP = Promise.all([heroFontReady, preloadSymbol()]);
 
@@ -1945,9 +1997,9 @@
     }
 
     textReadyP.then(function () { startText('ready'); });
-    /* 텍스트용 안전 폴백 (비디오 무관) — 폰트 로드가 느릴 때 fade-in 중간
-       swap 깜빡임 방지를 위해 5초까지 늘려 폰트 ready 를 우선시 */
-    setTimeout(function () { startText('text-timeout'); }, 5000);
+    /* 텍스트용 안전 폴백 (비디오 무관) — width-metric 까지 4s 폴링이라
+       그보다 여유를 둔 6s 폴백 */
+    setTimeout(function () { startText('text-timeout'); }, 6000);
   }
 
   if (document.readyState === 'loading') {
