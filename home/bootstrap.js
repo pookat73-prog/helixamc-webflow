@@ -65,7 +65,9 @@
     'home/global/footer.js',
     /* 카드덱 (.just-box_qqqqqqq) — 카드 없으면 자동 스킵 */
     'home/global/card-stack.css',
-    'home/global/card-stack.js'
+    'home/global/card-stack.js',
+    /* 핵심 장비 섹션 — 캐논 알페닉스 빛반사만 (콘텐츠 페이드는 Webflow IX2) */
+    'home/equipment/equipment.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:
