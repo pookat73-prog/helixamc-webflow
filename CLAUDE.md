@@ -113,6 +113,62 @@ home/
 - 배포 확인: 시크릿 창으로 사이트 열고 DevTools Network에서 파일이 `cdn.jsdelivr.net/gh/.../@<sha>/...` 형태로 로드되는지 확인
 - Actions Summary에서 붙여넣을 head code 다시 볼 수 있음
 
+## ⚠️ About 핵심 장비 섹션 (캐논 알페닉스) — 건드리지 말 것 (LOCKED v1)
+
+**커밋**: `d7af70a` (about/equipment: 알페닉스만 페이드 + 나머지 IX2 무력화 #445)
+
+### 확정 사양
+
+대상 페이지: **about** (홈 아님)
+
+DOM 구조:
+```
+section.blackframe_image-he             ← 배경 (인터랙션 없음)
+└── section.clearframe
+    └── div
+        ├── h2.parag_title-w            "핵심 장비"          (인터랙션 없음)
+        ├── div.div-block-130
+        │   └── div.about_title-a-b
+        │       ├── h1.official-font_title     "캐논 알페닉스"  ← 유일한 인터랙션
+        │       └── h1.official-font_title_en  "Canon Alphenix" (인터랙션 없음)
+        └── p.nomalparag-w_left-spacing  "병변을 3D 영상으로..." (인터랙션 없음)
+```
+
+### 유일한 인터랙션: 한글 캐논 알페닉스
+
+| 항목 | 값 |
+|---|---|
+| 트리거 | IO `rootMargin: '0px 0px -25% 0px'`, `threshold: 0` |
+| 페이드 | opacity 0→1, 1.6s, `cubic-bezier(0.87, 0, 0.13, 1)` |
+| sweep 시작 | 페이드 fire 시점 +1700ms |
+| sweep 파라미터 | `peakColor: '0,117,214'`, `peakAlpha: 0.85`, `bandWidth: 14`, `duration: 1700` |
+| sweep 메커니즘 | `helixShineSweep` (About Mini Title LOCKED v1 과 동일) |
+
+### 핵심 메커니즘 — IX2 무력화
+
+`about.js > initClearframeAlphenixReveal()` 가:
+1. `section.blackframe_image-he` (없으면 `section.clearframe`) 안 모든 노드 순회
+2. 알페닉스 h1 **제외** 한 모든 노드에서:
+   - `data-w-id` 제거 → Webflow IX2 바인딩 차단
+   - 인라인 `opacity` / `transform` / `visibility` 제거
+   - `opacity:1` / `visibility:visible` / `transform:none` **!important 인라인** 강제
+3. 다중 시점(즉시 / +300ms / +1200ms) — IX2 늦은 바인딩 커버
+
+### 시도했다가 실패한 방식 (재시도 금지)
+
+- `section.clearframe` 전체 opacity 0→1 페이드 → 헤드/영문/본문이 모두 같이 페이드돼 사용자 사양 위반 (PR #443/#444 이전 상태)
+- 홈 페이지에 `home/equipment/equipment.js` 등록 → 핵심 장비 섹션은 about 페이지에만 있어 home 에선 무동작 (#443/#444). 현재 무해하지만 정리 보류 — 추후 home 에 같은 섹션 생기면 활용
+- CSS `!important` 만으로 IX2 인라인 덮기 시도 → IX2 가 바인딩되면 매 프레임 opacity 갱신 가능성 → 인라인 !important + `data-w-id` 제거 둘 다 필요
+
+### 변경하면 안 되는 것
+
+- 캐논 알페닉스 외 다른 요소에 fade / scale / 인터랙션 추가 ❌
+- 섹션 전체 페이드로 회귀 ❌
+- sweep 파라미터 (peakAlpha 0.85, bandWidth 14, duration 1700) 변경 ❌
+- 다중 시점 무력화 줄이기 ❌ (IX2 타이밍 race 재발)
+
+---
+
 ## ⚠️ About Mini Title 빛반사 — 건드리지 말 것 (LOCKED v1)
 
 **커밋**: `6d65738` (about: 빛반사 bg-clip 모드 영구 유지로 어긋남 제거)
