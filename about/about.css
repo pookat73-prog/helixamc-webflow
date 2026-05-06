@@ -689,3 +689,32 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
     100% { box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1); }
   }
 }
+
+/* ================================================================
+   닻 메뉴 바 (헬릭스, 치료의 철학 등) — fixed header 바로 밑에 sticky.
+   header 높이 56px 아래에 붙어 스크롤 중 항상 보이며 본문이 그 사이로
+   비치는 갭을 차단. 솔리드 bg(rgb 244,247,251) 는 Webflow 가 이미 박아둠.
+   ================================================================ */
+section.subheader {
+  position: sticky;
+  top: 56px;
+  z-index: 50;
+}
+
+/* ================================================================
+   섹션 1 hero — bg-video sub-pixel 렌더링 갭 차단.
+   - 부모 overflow:hidden 으로 video edge clip 보장
+   - video 자체 GPU 합성 promotion (translateZ + backface-visibility) 으로
+     scroll 시 fractional-pixel 위치에서 body 다크 bg 가 1px 비치는 현상 차단
+   ================================================================ */
+.About_Background,
+.about_background,
+.about-background {
+  overflow: hidden;
+}
+.About_Background video.helix-bg-video,
+.about_background video.helix-bg-video,
+.about-background video.helix-bg-video {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
