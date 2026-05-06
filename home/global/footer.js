@@ -220,9 +220,8 @@
     return allImgs;
   }
 
-  function initSnsLinks(footer) {
-    var imgs = findSnsImages(footer);
-    if (!imgs.length) {
+  function bindSnsImages(imgs) {
+    if (!imgs || !imgs.length) {
       log('SNS 아이콘 이미지를 찾지 못했습니다 (footer 안에 img 없음)');
       return 0;
     }
@@ -266,6 +265,50 @@
     });
 
     return hits;
+  }
+
+  /* ============================================================
+     LOGO: 푸터 첫 번째 img (SNS 아이콘 제외) → 홈 "/" 이동
+     푸터 컴포넌트 노드 순서상 로고가 항상 첫 img. SNS 아이콘 셋에서
+     제외된 가장 앞쪽 img 를 로고로 간주.
+  ============================================================ */
+  function initLogoLink(footer, snsImgs) {
+    var snsSet = new Set(snsImgs || []);
+    var imgs = Array.from(footer.querySelectorAll('img'));
+    var logo = null;
+    for (var i = 0; i < imgs.length; i++) {
+      if (!snsSet.has(imgs[i]) && imgs[i].offsetParent !== null) {
+        logo = imgs[i]; break;
+      }
+    }
+    if (!logo) { dbg('logo img not found'); return 0; }
+    if (logo.dataset.helixLogoInit) return 1;
+    logo.dataset.helixLogoInit = '1';
+
+    logo.style.cursor = 'pointer';
+    logo.classList.add('footer-logo-clickable');
+    logo.setAttribute('role', 'link');
+    logo.setAttribute('tabindex', '0');
+    logo.setAttribute('aria-label', '홈으로 이동');
+
+    function go(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      if (location.pathname === '/' || location.pathname === '') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        location.href = '/';
+      }
+      dbg('logo click → /');
+    }
+
+    logo.addEventListener('click', go);
+    logo.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') go(e);
+    });
+
+    /* 로고 컨테이너가 <a> 인 경우 중복 네비게이션 방지: 부모 a 의 href 만
+       유지하고 우리 핸들러에 위임 (동일 동작) */
+    return 1;
   }
 
   /* ============================================================
@@ -350,12 +393,14 @@
     if (!footer) dbg('footer not found, scanning whole document');
 
     var emails = initEmailCopy(scope);
-    var sns    = initSnsLinks(scope);
+    var snsImgs = findSnsImages(scope);
+    var sns    = bindSnsImages(snsImgs);
+    var logo   = initLogoLink(scope, snsImgs);
     var stopBtn = footer ? initScrollTopBtn(footer) : 0;
 
-    if (emails || sns || stopBtn) {
+    if (emails || sns || logo || stopBtn) {
       initialized = true;
-      log('initialized (email=' + emails + ', sns=' + sns + ', scrollTop=' + stopBtn + ', footerFound=' + !!footer + ')');
+      log('initialized (email=' + emails + ', sns=' + sns + ', logo=' + logo + ', scrollTop=' + stopBtn + ', footerFound=' + !!footer + ')');
       return true;
     }
     return false;
