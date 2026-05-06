@@ -62,17 +62,68 @@
 
   function whenHeroFontReady() {
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
-    return Promise.all([
+
+    /* 1) Hero 텍스트 엘리먼트의 실제 computed weight/style + 텍스트 내용으로
+          명시 load — Webflow 가 어떤 weight (300/500/800 등) 를 박아뒀는지
+          모르기 때문에 element 단위로 spec 추출. 텍스트 인자까지 넘겨야
+          브라우저가 그 글리프까지 보장하도록 다운로드.
+       2) 안전망: 흔한 weight (400/700) 도 동시 트리거.
+       3) document.fonts.ready 로 페이지 내 모든 in-use 폰트 완료까지 대기.
+       4) check() 폴링으로 실제 사용 가능 여부 확인 — load() 가 일찍 resolve
+          되는 케이스 방어.
+       5) 최종 2x rAF 으로 layout/paint 동기화. */
+    var heroEls = document.querySelectorAll('.about-heading, .about_contents_sub-title');
+    var loaders = [
       document.fonts.load('1em "' + HERO_FONT + '"').catch(function () {}),
       document.fonts.load('700 1em "' + HERO_FONT + '"').catch(function () {})
-    ]).then(function () {
-      /* 폰트 다운로드 후 layout 재계산까지 2x rAF 대기 */
+    ];
+    var specs = ['1em "' + HERO_FONT + '"', '700 1em "' + HERO_FONT + '"'];
+    heroEls.forEach(function (el) {
+      try {
+        var cs = getComputedStyle(el);
+        var spec = (cs.fontStyle || 'normal') + ' ' + (cs.fontWeight || '400') +
+                   ' 1em "' + HERO_FONT + '"';
+        specs.push(spec);
+        loaders.push(document.fonts.load(spec, el.textContent || '').catch(function () {}));
+      } catch (e) {}
+    });
+
+    function checkAll() {
+      try {
+        for (var i = 0; i < specs.length; i++) {
+          if (!document.fonts.check(specs[i])) return false;
+        }
+        return true;
+      } catch (e) { return true; }
+    }
+
+    function waitUntilCheckPasses() {
       return new Promise(function (resolve) {
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () { log('font ready'); resolve(); });
+        var tries = 0;
+        function tick() {
+          if (checkAll() || tries >= 30) { /* 30 frame ≈ 0.5s 폴링 상한 */
+            resolve();
+            return;
+          }
+          tries++;
+          requestAnimationFrame(tick);
+        }
+        tick();
+      });
+    }
+
+    return Promise.all(loaders)
+      .then(function () {
+        return (document.fonts.ready) ? document.fonts.ready : null;
+      })
+      .then(waitUntilCheckPasses)
+      .then(function () {
+        return new Promise(function (resolve) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { log('font ready'); resolve(); });
+          });
         });
       });
-    });
   }
 
   function preloadSymbol() {
