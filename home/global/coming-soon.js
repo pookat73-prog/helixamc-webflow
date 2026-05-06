@@ -158,3 +158,67 @@
   }
 })();
 
+
+/* ================================================================
+   COMING SOON MARKER — 준비중 토스트 대상 요소 자동 마킹
+   대상 (홈):
+     · .bt-box-2 / .bt-box-3 / .bt-box-4 — 특화진료 / 응급 / SVIC CTA
+     · .home_branch-card / .flex-block-22 > .div-block-151
+       — 지점 카드 (서초/일산/SVICC, legacy + 현재 Webflow DOM)
+     · .just-box_qqqqqqq — 섹션3 카드덱 카드들 ("+" 버튼 포함)
+   면제 (마커가 박혀도 기존 동작 유지):
+     · .copy-text-button — 주소 복사
+     · a[href^="tel:"] — 전화 링크
+     · a[href^="mailto:"] — 메일 링크 (footer.js 가 별도 처리)
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var COMING_SELECTORS = [
+    '.bt-box-2',
+    '.bt-box-3',
+    '.bt-box-4',
+    '.home_branch-card',
+    '.flex-block-22 > .div-block-151',
+    '.just-box_qqqqqqq'
+  ];
+  var EXEMPT_SELECTORS = [
+    '.copy-text-button',
+    'a[href^="tel:"]',
+    'a[href^="mailto:"]'
+  ];
+
+  function mark() {
+    COMING_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (!el.hasAttribute('data-coming-soon')) {
+          el.setAttribute('data-coming-soon', '1');
+        }
+      });
+    });
+    EXEMPT_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (!el.hasAttribute('data-coming-soon-exempt')) {
+          el.setAttribute('data-coming-soon-exempt', '1');
+        }
+      });
+    });
+  }
+
+  function start() {
+    mark();
+    /* 카드덱은 card-stack.js 가 DOM 을 옮긴 후 다시 마킹 필요 */
+    var n = 0;
+    var iv = setInterval(function () {
+      mark();
+      if (++n >= 20) clearInterval(iv);
+    }, 250);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
