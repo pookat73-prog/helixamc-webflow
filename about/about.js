@@ -1307,6 +1307,14 @@
       b.style.setProperty('box-shadow', 'none', 'important');
     });
 
+    /* .div-block-178 (흰 블록 바로 아래 요소) — 3개 동시 페이드인,
+       흰 블록 fire 시점 + 200ms 딜레이. 그리드 컨테이너로 스코프 한정. */
+    var subBlocks = document.querySelectorAll('.about_contents_grid-3 .div-block-178');
+    Array.prototype.forEach.call(subBlocks, function (b) {
+      b.style.transition = 'opacity 0.8s cubic-bezier(0.42,0,0.58,1)';
+      b.style.setProperty('opacity', '0', 'important');
+    });
+
     var fired = false;
     function fire() {
       if (fired) return;
@@ -1322,6 +1330,12 @@
               b.style.removeProperty('box-shadow');
             }, i * 150);
           });
+          /* div-block-178 — 흰 블록 fire 시점 +200ms 후 3개 동시에 페이드인 */
+          setTimeout(function () {
+            Array.prototype.forEach.call(subBlocks, function (b) {
+              b.style.removeProperty('opacity');
+            });
+          }, 200);
         });
       });
     }
