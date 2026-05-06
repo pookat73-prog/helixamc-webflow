@@ -48,11 +48,3 @@
 }
 
 /* 차단된 버튼 자체에 시각적 hint는 추가하지 않음 — 디자인에 영향 X */
-
-/* 방어: 마커가 붙은 요소나 그 안의 텍스트가 의도치 않게 굵어지지 않도록.
-   font-weight 만 부모로부터 상속받게 강제. (Webflow IX2 호버/포커스 등에서
-   bold 가 적용되는 사고 방지 — 지점 카드 제목 굵어짐 이슈) */
-[data-coming-soon],
-[data-coming-soon] * {
-  font-weight: inherit !important;
-}
