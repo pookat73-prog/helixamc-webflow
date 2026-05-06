@@ -1292,10 +1292,21 @@
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
+    /* rootMargin 완화 + 모든 카드 관찰 (첫 카드가 부모 transform 등으로
+       intersect 안 잡히는 케이스 방어). 어느 하나만 보여도 fire. */
     var io = new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) { fire(); io.disconnect(); }
-    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
-    io.observe(blocks[0]);
+      for (var k = 0; k < es.length; k++) {
+        if (es[k].isIntersecting) {
+          try { console.log('[About:hybrid] IO hit'); } catch (e) {}
+          fire(); io.disconnect(); break;
+        }
+      }
+    }, { rootMargin: '0px', threshold: 0 });
+    Array.prototype.forEach.call(blocks, function (b) { io.observe(b); });
+
+    /* 안전망: 4초 안에 IO 가 발화 못 하면 강제 fire (관찰 대상이 어떤 이유로
+       intersect 신호를 못 보내는 경우 방어) */
+    setTimeout(function () { if (!fired) { try { console.log('[About:hybrid] fallback fire'); } catch (e) {} fire(); } }, 4000);
   }
 
   /* ── Clearframe section 배경 쫀득 페이드인 + 캐논 알페닉스 sweep ─
