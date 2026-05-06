@@ -1367,8 +1367,17 @@
      IX2 페이드인이 붙어있을 가능성 → data-w-id 제거 + opacity/transform 강제 해제.
      ─────────────────────────────────────────────────────────── */
   function initHybridQuestionReveal() {
-    /* "왜 하이브리드 인가?" 헤드는 절대 건드리지 않음 (사용자 사양).
-       흰 블록과 파란 인용구만 제어. */
+    /* "왜 하이브리드 인가?" 헤드는 인터랙션 0 — Webflow 네이티브 그대로.
+       단, 전역 CSS `.about_contents-title { opacity:0 }` + initViewport60FadeIn
+       의 .is-visible 페이드인이 이 h2 에도 걸려 있어서 강제 무력화. */
+    var allH = document.querySelectorAll('h1, h2, h3');
+    Array.prototype.forEach.call(allH, function (h) {
+      var t = (h.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('왜하이브리드') === -1) return;
+      h.classList.add('is-visible');
+      h.style.setProperty('opacity', '1', 'important');
+      h.style.setProperty('transition', 'none', 'important');
+    });
 
     /* 사용자 확인 정확한 경로 (다른 곳 절대 매칭 안 됨):
        body > section:nth-child(22) > div.about_contents_grid-3.is-section22-in
@@ -1494,26 +1503,45 @@
     setTimeout(neutralize, 300);
     setTimeout(neutralize, 1200);
 
-    /* alphenix 단독 초기 hide — 좌→우 와이프 리빌 (옆에서부터 글자가 나타남) */
+    /* alphenix 단독 초기 hide — 좌→우 mask 그라디언트 와이프 (소프트 에지) */
+    var MASK_GRAD = 'linear-gradient(90deg, black 0%, black 60%, transparent 100%)';
     alphenix.style.opacity = '1';
-    alphenix.style.clipPath = 'inset(0 100% 0 0)';
-    alphenix.style.webkitClipPath = 'inset(0 100% 0 0)';
-    alphenix.style.transition = 'clip-path 1.6s cubic-bezier(0.87, 0, 0.13, 1), ' +
-                                '-webkit-clip-path 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
-    alphenix.style.willChange = 'clip-path';
+    alphenix.style.webkitMaskImage = MASK_GRAD;
+    alphenix.style.maskImage = MASK_GRAD;
+    alphenix.style.webkitMaskSize = '250% 100%';
+    alphenix.style.maskSize = '250% 100%';
+    alphenix.style.webkitMaskRepeat = 'no-repeat';
+    alphenix.style.maskRepeat = 'no-repeat';
+    /* mask-position 100% → 가시 영역이 그라디언트의 transparent 끝 → 글자 안 보임 */
+    alphenix.style.webkitMaskPosition = '100% 0';
+    alphenix.style.maskPosition = '100% 0';
+    alphenix.style.transition = '-webkit-mask-position 1.8s cubic-bezier(0.87, 0, 0.13, 1), ' +
+                                'mask-position 1.8s cubic-bezier(0.87, 0, 0.13, 1)';
+    alphenix.style.willChange = 'mask-position';
 
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
       requestAnimationFrame(function () {
-        alphenix.style.clipPath = 'inset(0 0 0 0)';
-        alphenix.style.webkitClipPath = 'inset(0 0 0 0)';
+        /* mask-position 0% → 가시 영역이 그라디언트의 black 영역 → 글자 완전 노출.
+           전이 중: 좌→우 reveal, 우측 끝은 transparent→black 으로 부드럽게 페이드. */
+        alphenix.style.webkitMaskPosition = '0% 0';
+        alphenix.style.maskPosition = '0% 0';
       });
       setTimeout(function () {
         alphenix.style.removeProperty('will-change');
+        /* mask 인라인 정리 (sweep 영향 방지) */
+        alphenix.style.removeProperty('-webkit-mask-image');
+        alphenix.style.removeProperty('mask-image');
+        alphenix.style.removeProperty('-webkit-mask-size');
+        alphenix.style.removeProperty('mask-size');
+        alphenix.style.removeProperty('-webkit-mask-repeat');
+        alphenix.style.removeProperty('mask-repeat');
+        alphenix.style.removeProperty('-webkit-mask-position');
+        alphenix.style.removeProperty('mask-position');
         helixShineSweep(alphenix, { peakColor: '0,117,214', peakAlpha: 0.85, bandWidth: 14, duration: 1700 });
-      }, 1700);
+      }, 1900);
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
