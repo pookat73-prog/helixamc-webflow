@@ -1866,8 +1866,14 @@
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
 
-    /* 텍스트는 비디오를 기다리지 않음 — 폰트+심볼 준비되면 즉시 시작 */
-    var textReadyP = Promise.all([whenHeroFontReady(), preloadSymbol()]);
+    /* 텍스트는 비디오를 기다리지 않음 — 폰트+심볼 준비되면 즉시 시작.
+       document.fonts.ready 까지 함께 기다려야 폴백 폰트로 먼저 그려진 뒤
+       지정 폰트로 swap 되는 깜빡임을 차단할 수 있음 (initViewport60FadeIn 과 동일 패턴). */
+    var heroFontReady = Promise.all([
+      whenHeroFontReady(),
+      (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve()
+    ]);
+    var textReadyP = Promise.all([heroFontReady, preloadSymbol()]);
 
     /* 텍스트 시퀀스 끝난 뒤 비디오 페이드. 비디오가 그 시점에 아직 안 왔으면 기다렸다 진행 */
     var textStarted = false;
