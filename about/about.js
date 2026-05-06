@@ -1883,6 +1883,7 @@
     });
 
     function fire() {
+      var totalMs = (DUR + (lines.length - 1) * STEP) * 1000;
       lines.forEach(function (el, i) {
         if (window.gsap) {
           gsap.to(el, { opacity: 1, duration: DUR, ease: 'power2.out', delay: i * STEP });
@@ -1890,6 +1891,9 @@
           setTimeout(function () { el.style.opacity = '1'; }, i * STEP * 1000);
         }
       });
+      setTimeout(function () {
+        document.dispatchEvent(new CustomEvent('helix-history-title-done'));
+      }, totalMs);
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
@@ -1900,6 +1904,49 @@
       }
     }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
     io.observe(box);
+  }
+
+  /* ── #helix-history 타이틀 아래 본문 게이트 ───────────────────────
+     대상: #helix-history > .w-layout-vflex.flex-block-42 > div
+     초기엔 opacity:0 으로 가려두고, 다음 중 먼저 일어나는 시점에 페이드인:
+       (a) helix-history-title-done — 타이틀 박스 3줄 페이드인 종료
+       (b) 래퍼가 뷰포트 깊이 충분히 진입 (rootMargin -40%)
+     안쪽 인터랙션(timeline / standard-font / helix line 등) 은 자기
+     IO 트리거대로 동작하지만 wrapper opacity 가 풀리기 전엔 가려짐.
+     ─────────────────────────────────────────────────────────────── */
+  function initHistoryBodyGate() {
+    var sel = '#helix-history > div.w-layout-vflex.flex-block-42 > div';
+    var el = document.querySelector(sel);
+    if (!el) { log('history body gate: not found'); return; }
+
+    var DUR = 0.9;
+    if (window.gsap) gsap.set(el, { opacity: 0 });
+    else {
+      el.style.opacity = '0';
+      el.style.transition = 'opacity ' + DUR + 's ease-out';
+    }
+
+    var fired = false;
+    function release() {
+      if (fired) return;
+      fired = true;
+      if (window.gsap) gsap.to(el, { opacity: 1, duration: DUR, ease: 'power2.out' });
+      else el.style.opacity = '1';
+    }
+
+    document.addEventListener('helix-history-title-done', release, { once: true });
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (!entries[i].isIntersecting) continue;
+          io.disconnect(); release(); return;
+        }
+      }, { root: null, rootMargin: '0px 0px -40% 0px', threshold: 0 });
+      io.observe(el);
+    } else {
+      release();
+    }
   }
 
   /* ── .about_hybrid-contents_box 양쪽 펼침 ───────────────────────
@@ -2016,6 +2063,7 @@
     initHistoryHelixLine();
     initWeAreHereReveal();
     initHistoryTitleBoxFadeIn();
+    initHistoryBodyGate();
     initHybridUnfold();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
