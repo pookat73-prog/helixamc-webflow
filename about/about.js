@@ -2415,9 +2415,18 @@
     '#cert .cert-plus'
   ];
 
+  function isInFooter(el) {
+    /* 푸터 안의 .cta-style 등은 실제 네비게이션 링크일 수 있음 →
+       coming-soon 마킹 제외 (홈 페이지 푸터처럼 링크가 정상 동작하도록). */
+    return !!(el.closest && el.closest(
+      'section.footer, .footer, footer, section[class*="footer" i], [class*="footer" i]:not([class*="-bar" i])'
+    ));
+  }
+
   function mark() {
     COMING_SELECTORS.forEach(function (sel) {
       document.querySelectorAll(sel).forEach(function (el) {
+        if (isInFooter(el)) return;
         if (!el.hasAttribute('data-coming-soon')) {
           el.setAttribute('data-coming-soon', '1');
         }
