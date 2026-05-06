@@ -387,16 +387,16 @@
   function init() {
     if (initialized) return true;
     var footer = findFooter();
-    /* 폴백 — 푸터 detect 실패해도 document.body 전체에서 시도.
-       이메일은 정확 패턴 매칭, SNS 는 마지막 img 묶음 휴리스틱 */
-    var scope = footer || document.body;
-    if (!footer) dbg('footer not found, scanning whole document');
+    /* 푸터를 못 찾으면 body 전역 스캔 절대 안 함 — 헤더 로고/네비/히어로
+       img·이메일 패턴에 잘못 바인딩되어 시각 회귀 일으키는 사고 차단.
+       footer 가 들어올 때까지 retry/observer 로 대기. */
+    if (!footer) { dbg('footer not yet, will retry'); return false; }
 
-    var emails = initEmailCopy(scope);
-    var snsImgs = findSnsImages(scope);
+    var emails = initEmailCopy(footer);
+    var snsImgs = findSnsImages(footer);
     var sns    = bindSnsImages(snsImgs);
-    var logo   = initLogoLink(scope, snsImgs);
-    var stopBtn = footer ? initScrollTopBtn(footer) : 0;
+    var logo   = initLogoLink(footer, snsImgs);
+    var stopBtn = initScrollTopBtn(footer);
 
     if (emails || sns || logo || stopBtn) {
       initialized = true;
