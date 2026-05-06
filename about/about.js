@@ -1287,6 +1287,14 @@
     log('hybrid white blocks=' + blocks.length);
     if (!blocks.length) return;
 
+    /* 옛 캐시 JS 가 붙여놓은 helix-fade-pre/is-visible 잔존 클래스 정리.
+       (이전 CSS 룰의 box-shadow:revert !important 가 Webflow 그림자를
+       지워버리는 버그를 남기지 않도록 매번 정화.) */
+    Array.prototype.forEach.call(blocks, function (b) {
+      b.classList.remove('helix-fade-pre');
+      b.classList.remove('is-visible');
+    });
+
     /* 인라인 hide — 정확히 3개 매칭 요소에만 적용. CSS 룰 변경 0,
        전역 클래스 사용 0 → 다른 요소에 부작용 불가능. */
     var TRANSITION = 'background-color 1.2s cubic-bezier(0.42,0,0.58,1), ' +
