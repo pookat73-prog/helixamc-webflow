@@ -15,7 +15,8 @@
 (function () {
   'use strict';
 
-  var ATTR = 'data-coming-soon';
+  var ATTR        = 'data-coming-soon';
+  var EXEMPT_ATTR = 'data-coming-soon-exempt';
   var TEXT = '준비중입니다';
   var SHOW_MS = 900;   /* 풀 노출 시간 */
   var FADE_MS = 300;   /* 페이드아웃 시간 (CSS transition과 일치) */
@@ -103,9 +104,12 @@
   }
 
   function findBlockedTarget(node) {
-    /* click target에서 위로 올라가며 data-coming-soon 마킹된 조상 찾기 */
+    /* click target에서 위로 올라가며 data-coming-soon 마킹된 조상 찾기.
+       단, 더 가까운 조상이 data-coming-soon-exempt 면 차단 안 함
+       (예: branch-card 의 copy 버튼 / tel 링크는 카드 자체 마킹과 무관하게 동작) */
     var el = node;
     while (el && el !== document.body && el.nodeType === 1) {
+      if (el.hasAttribute && el.hasAttribute(EXEMPT_ATTR)) return null;
       if (el.hasAttribute && el.hasAttribute(ATTR)) {
         var v = el.getAttribute(ATTR);
         /* 빈 값/"1"/"true"는 활성화로 간주, "0"/"false"는 비활성 */
@@ -152,4 +156,64 @@
   } else {
     init();
   }
+})();
+
+/* ================================================================
+   COMING SOON MARKER — 준비중 토스트 대상 요소 자동 마킹
+   home 페이지의 다음 요소들을 data-coming-soon 으로 표시:
+     · .bt-box-2 / .bt-box-3 / .bt-box-4 — 특화진료/응급/SVIC CTA
+     · .home_branch-card — 지점 카드 (서초/일산/SVICC)
+     · .just-box_qqqqqqq — 섹션3 카드덱 카드들 ("+" 버튼 포함)
+   단, .home_branch-card 내부의 .copy-text-button 과 a[href^="tel:"] 는
+   data-coming-soon-exempt 로 면제 → 기존 복사/전화 동작 유지.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var COMING_SELECTORS = [
+    '.bt-box-2',
+    '.bt-box-3',
+    '.bt-box-4',
+    '.home_branch-card',
+    '.just-box_qqqqqqq'
+  ];
+  var EXEMPT_SELECTORS = [
+    '.home_branch-card .copy-text-button',
+    '.home_branch-card a[href^="tel:"]'
+  ];
+
+  function mark() {
+    COMING_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (!el.hasAttribute('data-coming-soon')) {
+          el.setAttribute('data-coming-soon', '1');
+          el.style.cursor = 'pointer';
+        }
+      });
+    });
+    EXEMPT_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (!el.hasAttribute('data-coming-soon-exempt')) {
+          el.setAttribute('data-coming-soon-exempt', '1');
+        }
+      });
+    });
+  }
+
+  function start() {
+    mark();
+    /* 카드덱은 card-stack.js 가 DOM 을 옮긴 후 다시 마킹 필요 */
+    var n = 0;
+    var iv = setInterval(function () {
+      mark();
+      if (++n >= 20) clearInterval(iv);
+    }, 250);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
 })();

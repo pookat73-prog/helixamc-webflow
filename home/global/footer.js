@@ -81,12 +81,36 @@
 
   function findFooter() {
     /* Webflow Native 컴포넌트 .footer (section) — 가장 가능성 높은 selector
-       부터 차례로 시도 */
-    return document.querySelector('section.footer') ||
-           document.querySelector('.footer') ||
-           document.querySelector('section[class*="footer" i]') ||
-           document.querySelector('[class*="footer" i]:not([class*="-bar" i])') ||
-           null;
+       부터 차례로 시도. 모두 실패 시 휴리스틱: 페이지 하단(문서 하단 30% 안에
+       시작) 영역에 email 패턴 텍스트가 있는 가장 가까운 section/footer 조상.
+       Webflow 에서 클래스를 임의로 변경한 경우 대비. */
+    var direct =
+      document.querySelector('section.footer') ||
+      document.querySelector('.footer') ||
+      document.querySelector('footer') ||
+      document.querySelector('section[class*="footer" i]') ||
+      document.querySelector('[class*="footer" i]:not([class*="-bar" i])');
+    if (direct) return direct;
+
+    /* 휴리스틱 폴백 */
+    var docH = document.documentElement.scrollHeight;
+    var threshold = docH * 0.7;
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    var node, hits = [];
+    while ((node = walker.nextNode())) {
+      if (!EMAIL_RE.test(node.textContent || '')) continue;
+      var p = node.parentElement;
+      if (!p) continue;
+      var top = p.getBoundingClientRect().top + window.pageYOffset;
+      if (top < threshold) continue;
+      var sec = p.closest('footer, section, [class*="footer" i]') || p;
+      if (sec) hits.push(sec);
+    }
+    if (hits.length) {
+      dbg('footer via heuristic (email near page bottom):', hits[0].tagName, hits[0].className);
+      return hits[0];
+    }
+    return null;
   }
 
   /* ============================================================
