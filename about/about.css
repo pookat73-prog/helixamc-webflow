@@ -717,4 +717,8 @@ section.subheader {
 .about-background video.helix-bg-video {
   transform: translateZ(0);
   backface-visibility: hidden;
+  /* 영상 원본(1280x720, 1.78) 이 박스(2.36) 보다 좁아 cover 가 위/아래를 자르는데,
+     영상 하단 픽셀이 검정이라 박스 바닥에 까만줄로 보임 → 시야를 위로 끌어올려
+     바닥 검정 영역을 잘라냄. center 50% 기본 → center 25% 로 변경. */
+  object-position: center 25%;
 }
