@@ -384,6 +384,36 @@
     });
   }, true);
 
+  /* ============================================================
+     LINK PROTECTION — 푸터 내 모든 실제 <a href> 링크가 항상 이동되도록.
+     coming-soon.js 가 캡처 단계 click 핸들러로 a[href] 기본 이동을 막을 수
+     있는데, 어떤 페이지의 마커 셀렉터가 우연히 푸터 요소와 매칭되면 푸터
+     링크가 토스트만 뜨고 이동 안 되는 사고가 발생함 (예: about 페이지의
+     '.cta-style' 마커). 푸터 내 유효한 href 를 가진 <a> 에는 coming-soon
+     EXEMPT 어트리뷰트를 명시 부여 → 어떤 마킹과도 무관하게 정상 이동.
+     mailto/tel/# 링크는 다른 핸들러가 처리하므로 EXEMPT 부여 안 함.
+  ============================================================ */
+  function protectFooterLinks(footer) {
+    var anchors = footer.querySelectorAll('a[href]');
+    var n = 0;
+    anchors.forEach(function (a) {
+      var href = (a.getAttribute('href') || '').trim();
+      if (!href) return;
+      if (href === '#' || href.charAt(0) === '#') return;
+      if (/^(mailto:|tel:|javascript:)/i.test(href)) return;
+      if (a.dataset.helixLinkProtected) return;
+      a.dataset.helixLinkProtected = '1';
+      /* coming-soon.js 의 findBlockedTarget 은 가까운 EXEMPT 가 있으면
+         차단하지 않음. 링크 자체에 부여 → 자손 click 도 안전. */
+      if (!a.hasAttribute('data-coming-soon-exempt')) {
+        a.setAttribute('data-coming-soon-exempt', '1');
+      }
+      n++;
+    });
+    if (n) dbg('footer link protection: ' + n + ' anchors marked exempt');
+    return n;
+  }
+
   function init() {
     if (initialized) return true;
     var footer = findFooter();
@@ -397,10 +427,11 @@
     var sns    = bindSnsImages(snsImgs);
     var logo   = initLogoLink(footer, snsImgs);
     var stopBtn = initScrollTopBtn(footer);
+    var links  = protectFooterLinks(footer);
 
-    if (emails || sns || logo || stopBtn) {
+    if (emails || sns || logo || stopBtn || links) {
       initialized = true;
-      log('initialized (email=' + emails + ', sns=' + sns + ', logo=' + logo + ', scrollTop=' + stopBtn + ', footerFound=' + !!footer + ')');
+      log('initialized (email=' + emails + ', sns=' + sns + ', logo=' + logo + ', scrollTop=' + stopBtn + ', links=' + links + ', footerFound=' + !!footer + ')');
       return true;
     }
     return false;
