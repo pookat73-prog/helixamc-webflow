@@ -715,10 +715,11 @@ section.subheader {
 .About_Background video.helix-bg-video,
 .about_background video.helix-bg-video,
 .about-background video.helix-bg-video {
-  transform: translateZ(0);
+  /* GPU 합성 promotion (sub-pixel 갭 차단) + 1.5× 확대 (위·아래 검정 한번에
+     잘라냄). 박스 비율(2.36) 과 영상 비율(1.78) 미스매치로 cover 가 위/아래
+     ~98px 만 자르는데, 영상 가장자리 검정이 그보다 두꺼워서 잔존했음.
+     scale(1.5) 로 자르는 영역을 native 179px 까지 확장 → 양쪽 검정 모두 차단.
+     transform-origin 기본값(center) 으로 중앙 확대. */
+  transform: translateZ(0) scale(1.5);
   backface-visibility: hidden;
-  /* 영상 원본(1280x720, 1.78) 이 박스(2.36) 보다 좁아 cover 가 위/아래를 자르는데,
-     영상 하단 픽셀이 검정이라 박스 바닥에 까만줄로 보임 → 시야를 위로 끌어올려
-     바닥 검정 영역을 잘라냄. center 50% 기본 → center 25% 로 변경. */
-  object-position: center 25%;
 }
