@@ -711,15 +711,10 @@ section.subheader {
 .about_background,
 .about-background {
   overflow: hidden;
-  /* 박스 비율을 영상 비율(16:9) 에 맞춤 → cover 가 자를 게 없어 영상 100%
-     그대로 표시. 박스 높이 ~604 → ~802 로 증가. 영상 가장자리 검정으로
-     위·아래 잘려 보이던 문제 자체를 비율 일치로 제거. */
-  aspect-ratio: 16 / 9;
 }
 .About_Background video.helix-bg-video,
 .about_background video.helix-bg-video,
 .about-background video.helix-bg-video {
-  /* GPU 합성 promotion (sub-pixel 갭 차단). 박스 비율 매칭으로 scale 불요. */
   transform: translateZ(0);
   backface-visibility: hidden;
 }
