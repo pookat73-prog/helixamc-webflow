@@ -1638,19 +1638,19 @@
     var configs = [
       {
         sel: '.about_we-are-here',
-        fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out', delay: 0
+        fadeDur: 0.8, scaleDur: 2.0, ease: 'power2.out', delay: 0,
+        scaleFrom: 0.6
       },
       {
-        /* 국내 최초~도입 — we-are-here 재생 중 0.3s 딜레이 후 등장.
-           we-are-here scale 2s 안에 h2 가 완전히 펼쳐 보이도록 지속시간 단축. */
         sel: '.about_history_title_new',
-        fadeDur: 0.6, scaleDur: 0.6, ease: 'power2.out', delay: 0.1
+        fadeDur: 0.6, scaleDur: 0.6, ease: 'power2.out', delay: 0.15,
+        scaleFrom: 0.8
       }
     ];
 
     function reveal(el, cfg) {
       if (window.gsap) {
-        gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
+        gsap.set(el, { opacity: 0, scale: cfg.scaleFrom, transformOrigin: '50% 50%' });
         var tl = gsap.timeline({ delay: cfg.delay });
         tl.to(el, { opacity: 1, duration: cfg.fadeDur,  ease: cfg.ease }, 0);
         tl.to(el, { scale: 1,   duration: cfg.scaleDur, ease: cfg.ease }, 0);
@@ -1659,7 +1659,7 @@
           'opacity ' + cfg.fadeDur + 's ease-in-out ' + cfg.delay + 's, ' +
           'transform ' + cfg.scaleDur + 's ease-in-out ' + cfg.delay + 's';
         el.style.opacity = '0';
-        el.style.transform = 'scale(0.8)';
+        el.style.transform = 'scale(' + cfg.scaleFrom + ')';
         requestAnimationFrame(function () {
           el.style.opacity = '1';
           el.style.transform = 'scale(1)';
@@ -1671,8 +1671,8 @@
     var groups = configs.map(function (cfg) {
       var els = document.querySelectorAll(cfg.sel);
       els.forEach(function (el) {
-        if (window.gsap) gsap.set(el, { opacity: 0, scale: 0.8, transformOrigin: '50% 50%' });
-        else { el.style.opacity = '0'; el.style.transform = 'scale(0.8)'; }
+        if (window.gsap) gsap.set(el, { opacity: 0, scale: cfg.scaleFrom, transformOrigin: '50% 50%' });
+        else { el.style.opacity = '0'; el.style.transform = 'scale(' + cfg.scaleFrom + ')'; }
       });
       return { cfg: cfg, els: els };
     });
