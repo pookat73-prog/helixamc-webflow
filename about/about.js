@@ -1311,7 +1311,7 @@
        흰 블록 fire 시점 + 200ms 딜레이. 그리드 컨테이너로 스코프 한정. */
     var subBlocks = document.querySelectorAll('.about_contents_grid-3 .div-block-178');
     Array.prototype.forEach.call(subBlocks, function (b) {
-      b.style.transition = 'opacity 0.8s cubic-bezier(0.42,0,0.58,1)';
+      b.style.transition = 'opacity 1.3s cubic-bezier(0.42,0,0.58,1)';
       b.style.setProperty('opacity', '0', 'important');
     });
 
