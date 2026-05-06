@@ -1191,8 +1191,9 @@
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
+          var t = e.target;
+          io.unobserve(t);
+          historyGate.onOpen(function () { t.classList.add('is-visible'); });
         }
       });
     }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
@@ -1636,11 +1637,12 @@
         log('history timeline: fired');
       }
 
-      if (!('IntersectionObserver' in window)) { fire(); return true; }
+      if (!('IntersectionObserver' in window)) { historyGate.onOpen(fire); return true; }
       var fired = false;
       var io = new IntersectionObserver(function (entries) {
         if (fired || !entries[0].isIntersecting) return;
-        fired = true; io.disconnect(); fire();
+        fired = true; io.disconnect();
+        historyGate.onOpen(fire);
       }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
       io.observe(badges[0]);
       return true;
@@ -1745,7 +1747,8 @@
       var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
       var ioDraw = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
-        ioDraw.disconnect(); drawLine();
+        ioDraw.disconnect();
+        historyGate.onOpen(drawLine);
       }, { rootMargin: '0px 0px -80% 0px', threshold: 0 });
       ioDraw.observe(drawTrigger);
 
@@ -1848,6 +1851,25 @@
     trigger.els.forEach(function (el) { io.observe(el); });
   }
 
+  /* ── #helix-history 본문 게이트 (모듈 스코프) ────────────────────
+     타이틀 페이드인 종료 또는 본문 래퍼 깊은 진입 시 open.
+     본문 영역의 IO 트리거(타임라인/standard-font/헬릭스 라인)는
+     onOpen 으로 발동 시점을 미룬다. 이미 open 이면 즉시 실행. */
+  var historyGate = (function () {
+    var open = false, queue = [];
+    return {
+      isOpen: function () { return open; },
+      onOpen: function (cb) { if (open) cb(); else queue.push(cb); },
+      fire: function () {
+        if (open) return;
+        open = true;
+        var q = queue.slice(); queue.length = 0;
+        q.forEach(function (cb) { try { cb(); } catch (e) {} });
+        document.dispatchEvent(new CustomEvent('helix-history-body-gate-open'));
+      }
+    };
+  })();
+
   /* ── #helix-history 타이틀 박스 3줄 순차 페이드인 ────────────────
      구조:
        #helix-history > .about_history_title_box
@@ -1932,6 +1954,7 @@
       fired = true;
       if (window.gsap) gsap.to(el, { opacity: 1, duration: DUR, ease: 'power2.out' });
       else el.style.opacity = '1';
+      historyGate.fire();
     }
 
     document.addEventListener('helix-history-title-done', release, { once: true });
