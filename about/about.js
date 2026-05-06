@@ -1503,45 +1503,22 @@
     setTimeout(neutralize, 300);
     setTimeout(neutralize, 1200);
 
-    /* alphenix 단독 초기 hide — 좌→우 mask 그라디언트 와이프 (소프트 에지) */
-    var MASK_GRAD = 'linear-gradient(90deg, black 0%, black 60%, transparent 100%)';
-    alphenix.style.opacity = '1';
-    alphenix.style.webkitMaskImage = MASK_GRAD;
-    alphenix.style.maskImage = MASK_GRAD;
-    alphenix.style.webkitMaskSize = '250% 100%';
-    alphenix.style.maskSize = '250% 100%';
-    alphenix.style.webkitMaskRepeat = 'no-repeat';
-    alphenix.style.maskRepeat = 'no-repeat';
-    /* mask-position 100% → 가시 영역이 그라디언트의 transparent 끝 → 글자 안 보임 */
-    alphenix.style.webkitMaskPosition = '100% 0';
-    alphenix.style.maskPosition = '100% 0';
-    alphenix.style.transition = '-webkit-mask-position 1.8s cubic-bezier(0.87, 0, 0.13, 1), ' +
-                                'mask-position 1.8s cubic-bezier(0.87, 0, 0.13, 1)';
-    alphenix.style.willChange = 'mask-position';
+    /* alphenix 단독 초기 hide */
+    alphenix.style.opacity = '0';
+    alphenix.style.transition = 'opacity 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
+    alphenix.style.willChange = 'opacity';
 
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
       requestAnimationFrame(function () {
-        /* mask-position 0% → 가시 영역이 그라디언트의 black 영역 → 글자 완전 노출.
-           전이 중: 좌→우 reveal, 우측 끝은 transparent→black 으로 부드럽게 페이드. */
-        alphenix.style.webkitMaskPosition = '0% 0';
-        alphenix.style.maskPosition = '0% 0';
+        alphenix.style.opacity = '1';
       });
       setTimeout(function () {
         alphenix.style.removeProperty('will-change');
-        /* mask 인라인 정리 (sweep 영향 방지) */
-        alphenix.style.removeProperty('-webkit-mask-image');
-        alphenix.style.removeProperty('mask-image');
-        alphenix.style.removeProperty('-webkit-mask-size');
-        alphenix.style.removeProperty('mask-size');
-        alphenix.style.removeProperty('-webkit-mask-repeat');
-        alphenix.style.removeProperty('mask-repeat');
-        alphenix.style.removeProperty('-webkit-mask-position');
-        alphenix.style.removeProperty('mask-position');
         helixShineSweep(alphenix, { peakColor: '0,117,214', peakAlpha: 0.85, bandWidth: 14, duration: 1700 });
-      }, 1900);
+      }, 1700);
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
