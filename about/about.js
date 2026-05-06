@@ -1367,19 +1367,8 @@
      IX2 페이드인이 붙어있을 가능성 → data-w-id 제거 + opacity/transform 강제 해제.
      ─────────────────────────────────────────────────────────── */
   function initHybridQuestionReveal() {
-    /* 헤드라인 인터랙션 강제 무효화 — 텍스트 매칭으로 정확히 그 h2만 잡음.
-       사용자 요청: 흰 블록 fire 시점 대비 +0.3s 뒤로 미뤄 등장 */
-    var hybridHeadings = [];
-    var allH = document.querySelectorAll('h1, h2, h3');
-    Array.prototype.forEach.call(allH, function (h) {
-      var t = (h.textContent || '').replace(/\s+/g, '');
-      if (t.indexOf('왜하이브리드') === -1) return;
-      h.removeAttribute('data-w-id');
-      h.style.setProperty('transform', 'none', 'important');
-      h.style.setProperty('transition', 'opacity 0.6s ease-out', 'important');
-      h.style.setProperty('opacity', '0', 'important');
-      hybridHeadings.push(h);
-    });
+    /* "왜 하이브리드 인가?" 헤드는 절대 건드리지 않음 (사용자 사양).
+       흰 블록과 파란 인용구만 제어. */
 
     /* 사용자 확인 정확한 경로 (다른 곳 절대 매칭 안 됨):
        body > section:nth-child(22) > div.about_contents_grid-3.is-section22-in
@@ -1428,12 +1417,6 @@
       /* double rAF: hide 상태가 1프레임 페인트 된 후 reveal 해야 transition 발화 */
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
-          /* "왜 하이브리드" h2 — 흰 블록 fire 대비 +300ms 뒤 페이드인 */
-          setTimeout(function () {
-            hybridHeadings.forEach(function (h) {
-              h.style.setProperty('opacity', '1', 'important');
-            });
-          }, 300);
           Array.prototype.forEach.call(blocks, function (b, i) {
             setTimeout(function () {
               /* 인라인 제거 → Webflow 네이티브 흰배경/그림자 자동 복귀 */
