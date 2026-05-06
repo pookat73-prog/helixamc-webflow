@@ -1348,9 +1348,14 @@
     io.observe(blocks[0]);
   }
 
-  /* ── Clearframe section 배경 쫀득 페이드인 + 캐논 알페닉스 sweep ─
-     섹션 진입 시 opacity 0→1 (cubic-bezier 0.87,0,0.13,1, 1.6s),
-     완료 후 .official-font_title "캐논 알페닉스" 메인 블루 sweep.
+  /* ── 핵심 장비 섹션 — 캐논 알페닉스만 페이드인 + sweep ──────────
+     사용자 사양: "한글 캐논 알페닉스 페이드인 + 빛반사. 이것만
+     남기고 이 섹션 인터랙션 없어야 해"
+
+     - alphenix h1 단독 페이드 (섹션 전체 페이드 X)
+     - 나머지 (헤드/영문/본문/래퍼/배경) : IX2 / 인라인 페이드 모두 제거
+       후 opacity:1 !important 강제 → 처음부터 그대로 노출
+     - alphenix 페이드 완료 후 helixShineSweep 1회
      ─────────────────────────────────────────────────────────── */
   function initClearframeAlphenixReveal() {
     var titles = document.querySelectorAll('h1.official-font_title');
@@ -1363,24 +1368,50 @@
     log('clearframe alphenix title=' + !!alphenix);
     if (!alphenix) return;
 
-    var sec = alphenix.closest('section.clearframe') ||
-              alphenix.closest('section');
-    if (!sec) return;
+    /* IX2 무력화 범위: BlackFrame_Image(HE) 부모 섹션 또는 ClearFrame.
+       부모 섹션이 있으면 거기까지(배경 포함), 없으면 ClearFrame 만. */
+    var bgFrame = alphenix.closest('section.blackframe_image-he');
+    var clearSec = alphenix.closest('section.clearframe') || alphenix.closest('section');
+    var scope = bgFrame || clearSec;
+    if (!scope) return;
 
-    /* 초기 hide — 인라인으로 박아 다른 룰 간섭 차단 */
-    sec.style.opacity = '0';
-    sec.style.transition = 'opacity 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
-    sec.style.willChange = 'opacity';
+    function neutralize() {
+      var nodes = [scope];
+      var all = scope.querySelectorAll('*');
+      for (var i = 0; i < all.length; i++) nodes.push(all[i]);
+      nodes.forEach(function (el) {
+        if (el === alphenix) return;
+        if (el.hasAttribute && el.hasAttribute('data-w-id')) {
+          el.removeAttribute('data-w-id');
+        }
+        if (!el.style) return;
+        el.style.removeProperty('opacity');
+        el.style.removeProperty('transform');
+        el.style.removeProperty('visibility');
+        el.style.setProperty('opacity',    '1',       'important');
+        el.style.setProperty('visibility', 'visible', 'important');
+        el.style.setProperty('transform',  'none',    'important');
+      });
+    }
+    /* IX2 가 늦게 바인딩해도 덮도록 다중 시점 */
+    neutralize();
+    setTimeout(neutralize, 300);
+    setTimeout(neutralize, 1200);
+
+    /* alphenix 단독 초기 hide */
+    alphenix.style.opacity = '0';
+    alphenix.style.transition = 'opacity 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
+    alphenix.style.willChange = 'opacity';
 
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
       requestAnimationFrame(function () {
-        sec.style.opacity = '1';
+        alphenix.style.opacity = '1';
       });
       setTimeout(function () {
-        sec.style.removeProperty('will-change');
+        alphenix.style.removeProperty('will-change');
         helixShineSweep(alphenix, { peakColor: '0,117,214', peakAlpha: 0.85, bandWidth: 14, duration: 1700 });
       }, 1700);
     }
@@ -1389,7 +1420,7 @@
     var io = new IntersectionObserver(function (es) {
       if (es[0].isIntersecting) { fire(); io.disconnect(); }
     }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
-    io.observe(sec);
+    io.observe(alphenix);
   }
 
   /* ── About Button Glow — LOCKED v4 (CLAUDE.md 사양 그대로) ────
