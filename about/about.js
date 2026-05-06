@@ -1494,10 +1494,12 @@
     setTimeout(neutralize, 300);
     setTimeout(neutralize, 1200);
 
-    /* alphenix 단독 초기 hide */
+    /* alphenix 단독 초기 hide — 좌하단에서 사선 슬라이드 + 페이드인 */
     alphenix.style.opacity = '0';
-    alphenix.style.transition = 'opacity 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
-    alphenix.style.willChange = 'opacity';
+    alphenix.style.transform = 'translate(-30px, 30px)';
+    alphenix.style.transition = 'opacity 1.6s cubic-bezier(0.87, 0, 0.13, 1), ' +
+                                'transform 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
+    alphenix.style.willChange = 'opacity, transform';
 
     var fired = false;
     function fire() {
@@ -1505,6 +1507,7 @@
       fired = true;
       requestAnimationFrame(function () {
         alphenix.style.opacity = '1';
+        alphenix.style.transform = 'translate(0, 0)';
       });
       setTimeout(function () {
         alphenix.style.removeProperty('will-change');
