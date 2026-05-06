@@ -113,6 +113,58 @@ home/
 - 배포 확인: 시크릿 창으로 사이트 열고 DevTools Network에서 파일이 `cdn.jsdelivr.net/gh/.../@<sha>/...` 형태로 로드되는지 확인
 - Actions Summary에서 붙여넣을 head code 다시 볼 수 있음
 
+## ⚠️ About 섹션 1 Hero 폰트 swap 깜빡임 차단 — 건드리지 말 것 (LOCKED v1)
+
+**커밋**: PR #450 (`about/section1: width-metric ground-truth 게이트`)
+
+### 문제 (해결됨)
+
+`.about-heading` 페이드인 중간에 폴백 폰트 → 지정 폰트로 swap 되며 깜빡이던 현상.
+
+### 확정 메커니즘 — `whenHeroFontReady` + `waitFontByMetric` (about/about.js)
+
+페이드인 시작 게이트는 **3중 직렬**:
+
+1. **`whenHeroFontReady()`** — `document.fonts.load()` 다중 호출
+   - hard-coded `HERO_FONT='ds-endendend'` weight 400/700
+   - `.about-heading` / `.about_contents_sub-title` 의 **computed** font-family/weight/style 도 동적 추출해 명시 load (텍스트 인자 포함)
+   - `document.fonts.ready` 까지 대기
+   - `document.fonts.check()` 폴링 (~0.5s 상한)
+   - 2x rAF layout/paint 동기화
+
+2. **`document.fonts.ready`** — 페이지 내 모든 in-use 폰트 대기
+
+3. **`waitFontByMetric()`** — width-metric ground-truth (FontFaceObserver 기법)
+   - `'BESbswy'` 텍스트를 두 off-screen span 에 렌더 (monospace fallback / target+monospace)
+   - 두 span 의 `offsetWidth` 가 달라지는 순간 = target 폰트 실제 적용
+   - `.about-heading` 의 computed family/weight/style 로 측정
+   - 4s 폴링 상한
+
+폴백 타임아웃: **6초** (3중 게이트 모두 실패 시 강제 시작)
+
+### 시도했다가 실패한 방식 (재시도 금지)
+
+- `document.fonts.load('1em "ds-endendend"')` 두 weight 만 트리거 → 헤딩 weight 가 다르면 무용 (PR #447)
+- `document.fonts.ready` 만 추가 → API 자체가 일찍 resolve (PR #447 만으론 부족)
+- `document.fonts.check()` 폴링 추가 → 여전히 false positive 케이스 (PR #448 만으론 부족)
+- computed font-family 동적 추출 → 그래도 swap 잔존 (PR #449 만으론 부족)
+- 폴백 타임아웃을 너무 짧게 (2s 등) → 폰트 로드 느린 환경에서 게이트 무효화
+
+### 변경하면 안 되는 것
+
+- 3중 게이트 중 하나라도 제거 ❌ (각 게이트가 서로의 false positive 를 방어)
+- width-metric 의 'BESbswy' 텍스트 / monospace 폴백 변경 ❌ (FontFaceObserver 정석값)
+- 폴백 타임아웃 6s 단축 ❌
+- `runTextTimeline()` 의 GSAP `gsap.set(allText, { opacity: 0 })` 순서 변경 ❌
+
+### 디버그
+
+`?debug-about=1` 콘솔 로그:
+- `font metric: loaded <family> (<ms>ms)` — 정상
+- `font metric: TIMEOUT <family>` — 4s 안에 swap 감지 못함 → preload `<link>` 처방 검토
+
+---
+
 ## ⚠️ About 핵심 장비 섹션 (캐논 알페닉스) — 건드리지 말 것 (LOCKED v1)
 
 **커밋**: `d7af70a` (about/equipment: 알페닉스만 페이드 + 나머지 IX2 무력화 #445)
