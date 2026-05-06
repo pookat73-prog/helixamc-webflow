@@ -2400,6 +2400,49 @@
 })();
 
 /* ================================================================
+   ABOUT 페이지 — 준비중 토스트 마킹
+   대상: SVIC(.link-block) / 헤더 / 서브헤더 제외한 본문 버튼 전부
+     · .cta_seocho_button, .cta-style — 본문 CTA(블루)
+     · #cert .cert-plus — 인증 카드 "+" 버튼
+   coming-soon.js 가 캡처 단계에서 클릭 가로채고 토스트 노출.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var COMING_SELECTORS = [
+    '.cta_seocho_button',
+    '.cta-style',
+    '#cert .cert-plus'
+  ];
+
+  function mark() {
+    COMING_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (!el.hasAttribute('data-coming-soon')) {
+          el.setAttribute('data-coming-soon', '1');
+        }
+      });
+    });
+  }
+
+  function start() {
+    mark();
+    var n = 0;
+    var iv = setInterval(function () {
+      mark();
+      if (++n >= 20) clearInterval(iv);
+    }, 250);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
    헤더 지점안내 버튼 → 홈 마지막 섹션(#animal-medical-center)로 이동
    ================================================================ */
 (function () {
