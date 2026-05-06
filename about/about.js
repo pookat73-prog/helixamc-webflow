@@ -1325,12 +1325,20 @@
     /* 클래스 기반 CSS 룰(.div-block-175 한정) 의존을 끊고 인라인으로 통제 →
        Webflow 슬러그가 바뀌어도 동작. !important 인라인이 Webflow 네이티브
        background-color/box-shadow 를 확실히 덮어씀. */
-    var TRANSITION = 'background-color 1.2s cubic-bezier(0.42,0,0.58,1), ' +
-                     'box-shadow 1.2s cubic-bezier(0.42,0,0.58,1)';
+    /* Webflow 가 흰 배경을 background-image (gradient) 로 칠하는 케이스도 있어
+       background-color/-image 둘 다 덮음. opacity 도 0→1 로 무조건 페이드 보장. */
+    var TRANSITION = 'opacity 1.2s cubic-bezier(0.42,0,0.58,1), ' +
+                     'background-color 1.2s cubic-bezier(0.42,0,0.58,1), ' +
+                     'background-image 1.2s cubic-bezier(0.42,0,0.58,1), ' +
+                     'box-shadow 1.2s cubic-bezier(0.42,0,0.58,1), ' +
+                     'transform 1.2s cubic-bezier(0.42,0,0.58,1)';
     Array.prototype.forEach.call(blocks, function (b) {
       b.classList.add('helix-fade-pre');
       b.style.transition = TRANSITION;
+      b.style.setProperty('opacity', '0', 'important');
+      b.style.setProperty('transform', 'translateY(20px)', 'important');
       b.style.setProperty('background-color', 'transparent', 'important');
+      b.style.setProperty('background-image', 'none', 'important');
       b.style.setProperty('box-shadow', 'none', 'important');
     });
 
@@ -1338,15 +1346,19 @@
     function fire() {
       if (fired) return;
       fired = true;
-      /* double rAF: 위에서 설정한 transparent 상태가 최소 1프레임 페인트 된 후
-         원래 색으로 돌아가야 transition 이 발화. */
+      try { console.log('[About:hybrid] fire'); } catch (e) {}
+      /* double rAF: pre-state(opacity:0 등)가 최소 1프레임 페인트 된 후
+         원래 상태로 돌아가야 transition 이 발화. */
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           Array.prototype.forEach.call(blocks, function (b, i) {
             setTimeout(function () {
               b.classList.add('is-visible');
-              /* 인라인 hide 스타일 제거 → Webflow 네이티브 화이트/그림자 복귀 */
+              /* 인라인 hide 스타일 모두 제거 → Webflow 네이티브 복귀 */
+              b.style.removeProperty('opacity');
+              b.style.removeProperty('transform');
               b.style.removeProperty('background-color');
+              b.style.removeProperty('background-image');
               b.style.removeProperty('box-shadow');
             }, i * 150);
           });
@@ -1355,10 +1367,21 @@
     }
 
     if (!('IntersectionObserver' in window)) { fire(); return; }
+    /* rootMargin 완화 + 모든 카드 관찰 (첫 카드가 부모 transform 등으로
+       intersect 안 잡히는 케이스 방어). 어느 하나만 보여도 fire. */
     var io = new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting) { fire(); io.disconnect(); }
-    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
-    io.observe(blocks[0]);
+      for (var k = 0; k < es.length; k++) {
+        if (es[k].isIntersecting) {
+          try { console.log('[About:hybrid] IO hit'); } catch (e) {}
+          fire(); io.disconnect(); break;
+        }
+      }
+    }, { rootMargin: '0px', threshold: 0 });
+    Array.prototype.forEach.call(blocks, function (b) { io.observe(b); });
+
+    /* 안전망: 4초 안에 IO 가 발화 못 하면 강제 fire (관찰 대상이 어떤 이유로
+       intersect 신호를 못 보내는 경우 방어) */
+    setTimeout(function () { if (!fired) { try { console.log('[About:hybrid] fallback fire'); } catch (e) {} fire(); } }, 4000);
   }
 
   /* ── Clearframe section 배경 쫀득 페이드인 + 캐논 알페닉스 sweep ─
