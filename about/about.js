@@ -1799,8 +1799,9 @@
         scaleFrom: 0.9
       },
       {
+        /* 사용자 요청: We are here 대비 +0.3s 뒤로 (0.2s → 0.5s) */
         sel: '.about_history_title_new',
-        fadeDur: 0.6, scaleDur: 0.6, ease: 'power2.out', delay: 0.2,
+        fadeDur: 0.6, scaleDur: 0.6, ease: 'power2.out', delay: 0.5,
         scaleFrom: 0.8
       }
     ];
