@@ -1278,23 +1278,77 @@
       h.style.setProperty('transition', 'none', 'important');
     });
 
-    var blocks = document.querySelectorAll('.div-block-175');
+    /* 1차: 기존 클래스 직접 매칭 */
+    var blocks = Array.prototype.slice.call(document.querySelectorAll('.div-block-175'));
+
+    /* 폴백 1: 번호 동그라미(.div-block-177) 의 부모 = 흰 카드.
+       Webflow 가 .div-block-175 슬러그를 바꿔도 177 만 살아있으면 잡힘. */
+    if (!blocks.length) {
+      var nums = document.querySelectorAll('.div-block-177');
+      var seen = [];
+      Array.prototype.forEach.call(nums, function (n) {
+        var card = n.parentElement;
+        if (card && seen.indexOf(card) === -1) seen.push(card);
+      });
+      blocks = seen;
+    }
+
+    /* 폴백 2: "왜 하이브리드" h2 의 가장 가까운 section 안에서
+       3개 이상 반복되는 직계 형제 카드 패턴을 추정. */
+    if (!blocks.length) {
+      var hh = null;
+      var allHs = document.querySelectorAll('h1, h2, h3');
+      Array.prototype.forEach.call(allHs, function (h) {
+        if (hh) return;
+        if ((h.textContent || '').replace(/\s+/g, '').indexOf('왜하이브리드') !== -1) hh = h;
+      });
+      if (hh) {
+        var sec = hh.closest('section') || hh.parentElement;
+        if (sec) {
+          /* 흰 배경(rgb(255,255,255)) 직계 div 후보 추림 */
+          var candidates = sec.querySelectorAll('div');
+          var picked = [];
+          Array.prototype.forEach.call(candidates, function (d) {
+            var bg = getComputedStyle(d).backgroundColor;
+            if (bg === 'rgb(255, 255, 255)' || bg === 'rgba(255, 255, 255, 1)') picked.push(d);
+          });
+          if (picked.length >= 2) blocks = picked;
+        }
+      }
+    }
+
+    /* 진단 로그 — 디버그 플래그 없어도 항상 찍힘 (임시) */
+    try { console.log('[About:hybrid] white blocks resolved=' + blocks.length); } catch (e) {}
     log('hybrid white blocks=' + blocks.length);
     if (!blocks.length) return;
 
-    Array.prototype.forEach.call(blocks, function (b) { b.classList.add('helix-fade-pre'); });
+    /* 클래스 기반 CSS 룰(.div-block-175 한정) 의존을 끊고 인라인으로 통제 →
+       Webflow 슬러그가 바뀌어도 동작. !important 인라인이 Webflow 네이티브
+       background-color/box-shadow 를 확실히 덮어씀. */
+    var TRANSITION = 'background-color 1.2s cubic-bezier(0.42,0,0.58,1), ' +
+                     'box-shadow 1.2s cubic-bezier(0.42,0,0.58,1)';
+    Array.prototype.forEach.call(blocks, function (b) {
+      b.classList.add('helix-fade-pre');
+      b.style.transition = TRANSITION;
+      b.style.setProperty('background-color', 'transparent', 'important');
+      b.style.setProperty('box-shadow', 'none', 'important');
+    });
 
     var fired = false;
     function fire() {
       if (fired) return;
       fired = true;
-      /* double rAF: pre-state(.helix-fade-pre)가 최소 1프레임 페인트 된 후
-         is-visible 을 붙여야 transition 이 발화. 같은 프레임에 두 클래스가
-         붙으면 브라우저가 시작 상태를 건너뛰어 페이드인이 안 보임. */
+      /* double rAF: 위에서 설정한 transparent 상태가 최소 1프레임 페인트 된 후
+         원래 색으로 돌아가야 transition 이 발화. */
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           Array.prototype.forEach.call(blocks, function (b, i) {
-            setTimeout(function () { b.classList.add('is-visible'); }, i * 150);
+            setTimeout(function () {
+              b.classList.add('is-visible');
+              /* 인라인 hide 스타일 제거 → Webflow 네이티브 화이트/그림자 복귀 */
+              b.style.removeProperty('background-color');
+              b.style.removeProperty('box-shadow');
+            }, i * 150);
           });
         });
       });
