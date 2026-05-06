@@ -703,8 +703,9 @@ section.subheader {
   margin-top: -1px;
   /* 아래쪽 sub-pixel 갭 차단 — sticky 가 fractional scroll 위치에서 멈출 때
      브라우저가 element bottom 을 1px 비워 뒤쪽 layer (html bg / fixed navbar)
-     가 비치는 검정 라인 현상. box-shadow 로 같은 색을 1px 더 그려서 덮음. */
-  box-shadow: 0 1px 0 0 rgb(244, 247, 251);
+     가 비치는 검정 라인 현상. padding-bottom 으로 bg 영역을 1px 더 늘려
+     덮음. (box-shadow 는 Webflow 원본 그림자를 덮어쓰므로 사용 ❌) */
+  padding-bottom: 1px;
 }
 
 /* ================================================================
