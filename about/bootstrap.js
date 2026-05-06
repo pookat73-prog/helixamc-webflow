@@ -52,7 +52,10 @@
     'about/about.js',
     /* 연혁 카드덱 (.just-box_card) — home/global 공유 모듈 */
     'home/global/card-stack.css',
-    'home/global/card-stack.js'
+    'home/global/card-stack.js',
+    /* 푸터 인터랙션 — 홈과 동일 (이메일 복사 / SNS 아이콘 새 탭) */
+    'home/global/footer.css',
+    'home/global/footer.js'
   ];
 
   function cdn(ref, path) {
