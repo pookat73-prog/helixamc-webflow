@@ -198,13 +198,13 @@
   ];
 
   /* 클릭형 컨테이너로 간주할 셀렉터 — 이 중 하나에 해당하는
-     가장 가까운 조상에 마킹 */
+     가장 가까운 조상에 마킹. 너무 넓은 [class*=...] 매칭은
+     제목 span 등에까지 마킹돼 부작용 가능성 → 명시적 셀렉터만 사용. */
   var CLICKABLE_ANCESTOR = [
     'a[href]', 'button', '[role="button"]',
     '.bt-box-1', '.bt-box-2', '.bt-box-3', '.bt-box-4',
     '.home_branch-card', '.flex-block-22 > .div-block-151',
-    '.just-box_qqqqqqq', '[class*="branch-card"]',
-    '[class*="cta"]', '[class*="button"]', '[class*="btn"]'
+    '.just-box_qqqqqqq'
   ].join(', ');
 
   function findClickableAncestor(node) {
