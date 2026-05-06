@@ -2398,3 +2398,42 @@
   }
   window.addEventListener('load', start);
 })();
+
+/* ================================================================
+   헤더 지점안내 버튼 → 홈 마지막 섹션(#animal-medical-center)로 이동
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var TARGET = '/#animal-medical-center';
+
+  function bind() {
+    var titles = document.querySelectorAll('.header_branch-button_title');
+    if (!titles.length) return false;
+
+    titles.forEach(function (t) {
+      var anchor = t.closest('a') || t;
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = TARGET;
+      }, true);
+      if (anchor.tagName === 'A') anchor.setAttribute('href', TARGET);
+      anchor.style.cursor = 'pointer';
+    });
+    return true;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind()) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
