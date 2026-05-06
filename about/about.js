@@ -1848,6 +1848,60 @@
     trigger.els.forEach(function (el) { io.observe(el); });
   }
 
+  /* ── #helix-history 타이틀 박스 3줄 순차 페이드인 ────────────────
+     구조:
+       #helix-history > .about_history_title_box
+         ├ h2                  (line 1)
+         └ div
+           ├ h2                (line 2)
+           └ div               (line 3 — 안쪽 h2:nth-child(2) 등에
+                                  기존 인터랙션 존재. 건드리지 않음)
+     세 wrapper 의 opacity 만 0→1 로 순차 페이드. 내부 인터랙션
+     (예: .about_history_title_official-font wash, .about_history_title_new
+     reveal) 은 자기 트리거대로 독립 동작 — opacity 곱셈이라 충돌 없음.
+     ─────────────────────────────────────────────────────────────── */
+  function initHistoryTitleBoxFadeIn() {
+    var box = document.querySelector('#helix-history > div.about_history_title_box');
+    if (!box) { log('history title box: not found'); return; }
+
+    var line1 = box.querySelector(':scope > h2');
+    var inner = box.querySelector(':scope > div');
+    var line2 = inner ? inner.querySelector(':scope > h2') : null;
+    var line3 = inner ? inner.querySelector(':scope > div') : null;
+
+    var lines = [line1, line2, line3].filter(Boolean);
+    if (!lines.length) { log('history title box: no lines'); return; }
+
+    var DUR = 0.8, STEP = 0.35;
+
+    lines.forEach(function (el) {
+      if (window.gsap) gsap.set(el, { opacity: 0 });
+      else {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity ' + DUR + 's ease-out';
+      }
+    });
+
+    function fire() {
+      lines.forEach(function (el, i) {
+        if (window.gsap) {
+          gsap.to(el, { opacity: 1, duration: DUR, ease: 'power2.out', delay: i * STEP });
+        } else {
+          setTimeout(function () { el.style.opacity = '1'; }, i * STEP * 1000);
+        }
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) { fire(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        io.disconnect(); fire(); return;
+      }
+    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(box);
+  }
+
   /* ── .about_hybrid-contents_box 양쪽 펼침 ───────────────────────
      박스 2개: 둘 다 두 박스의 기하 중심점에서 시작 (1번 visible, 2번 invisible).
      스크롤 진입 시 각자 자연 위치로 슬라이드, 2번은 동시에 페이드인.
@@ -1961,6 +2015,7 @@
     initHistoryTimeline();
     initHistoryHelixLine();
     initWeAreHereReveal();
+    initHistoryTitleBoxFadeIn();
     initHybridUnfold();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
