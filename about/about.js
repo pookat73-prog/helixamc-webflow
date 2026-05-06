@@ -1414,8 +1414,11 @@
        흰 블록 fire 시점 + 200ms 딜레이. 그리드 컨테이너로 스코프 한정. */
     var subBlocks = document.querySelectorAll('.about_contents_grid-3 .div-block-178');
     Array.prototype.forEach.call(subBlocks, function (b) {
-      b.style.transition = 'opacity 1.3s cubic-bezier(0.87, 0, 0.13, 1)';
+      b.style.transition = 'opacity 1.3s cubic-bezier(0.87, 0, 0.13, 1), ' +
+                           'transform 1.3s cubic-bezier(0.87, 0, 0.13, 1)';
       b.style.setProperty('opacity', '0', 'important');
+      b.style.setProperty('transform', 'scale(0.9)', 'important');
+      b.style.setProperty('transform-origin', 'center center', 'important');
     });
 
     var fired = false;
@@ -1444,6 +1447,7 @@
           setTimeout(function () {
             Array.prototype.forEach.call(subBlocks, function (b) {
               b.style.removeProperty('opacity');
+              b.style.removeProperty('transform');
             });
           }, 1500);
         });
