@@ -738,29 +738,47 @@ body {
   backface-visibility: hidden;
 }
 
-/* ── 태블릿: 비디오 컨테이너 + 비디오 자체 꽉 채우기 ─────────────
-   컨테이너: height:90vh !important 로 Webflow 우선순위 제압.
-   비디오: object-fit:cover 가 iOS Safari 등에서 미동작하는 케이스 대비,
-   JS 인라인 스타일을 !important 로 뚫고 고전 min-w/min-h 센터링으로 커버.
+/* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
+   [원인 후보 모두 제압]
+   1) 컨테이너 높이 강제 + padding/margin/border 제거 (외곽 새는 영역 차단)
+   2) 비디오를 100vw × 90vh 로 viewport 단위 직접 지정 (% 계산 의존 제거)
+   3) JS 인라인 (width:100% / height:100% / inset:0) 을 !important 로 모두 뚫음
+   4) 부모 overflow:hidden 로 viewport 단위 비디오를 섹션에 클립
    ─────────────────────────────────────────────────────────────── */
 @media (max-width: 991px) and (min-width: 768px) {
   .About_Background,
   .about_background,
   .about-background {
     height: 90vh !important;
+    min-height: 90vh !important;
+    max-height: 90vh !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background-color: transparent !important;
   }
 
   .About_Background video.helix-bg-video,
   .about_background video.helix-bg-video,
-  .about-background video.helix-bg-video {
-    top: 50% !important;
-    left: 50% !important;
+  .about-background video.helix-bg-video,
+  video.helix-bg-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     right: auto !important;
     bottom: auto !important;
-    width: auto !important;
-    height: auto !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
-    transform: translate(-50%, -50%) translateZ(0) !important;
+    width: 100vw !important;
+    height: 90vh !important;
+    min-width: 100vw !important;
+    min-height: 90vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    transform: translateZ(0) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
   }
 }
