@@ -325,6 +325,16 @@
     if (btn.dataset.helixScrollTopInit) return 1;
     btn.dataset.helixScrollTopInit = '1';
 
+    /* 클릭 → 페이지 상단 스크롤. IX2 가 버튼 자체를 위로 이동시키는 잘못된
+       인터랙션을 실행하더라도 transform 을 즉시 리셋해 버튼이 튀지 않도록. */
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      /* IX2 가 transform 으로 버튼을 올린 경우 다음 프레임에 원위치 */
+      requestAnimationFrame(function () {
+        btn.style.setProperty('transform', 'none', 'important');
+      });
+    });
+
     var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     var TWO_REM = 2 * rem;
 
