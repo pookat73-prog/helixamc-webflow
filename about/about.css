@@ -781,4 +781,17 @@ body {
     padding: 0 !important;
     border: 0 !important;
   }
+
+  /* id="1" 인 검정 wrapper 직접 타겟 — DevTools 검사 결과 추적 */
+  #\31 {
+    height: 90vh !important;
+    min-height: 90vh !important;
+    max-height: 90vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background-color: transparent !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
 }
