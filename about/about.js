@@ -2498,8 +2498,22 @@
 (function () {
   'use strict';
 
+  var SELECTORS = [
+    '.navbar-1', '.navbar', '[class*="navbar"]',
+    '.w-nav', '[class*="w-nav"]',
+    'header.header', 'header', 'nav'
+  ];
+
+  function findHeader() {
+    for (var i = 0; i < SELECTORS.length; i++) {
+      var el = document.querySelector(SELECTORS[i]);
+      if (el && el.getBoundingClientRect().height > 0) return el;
+    }
+    return null;
+  }
+
   function syncHeaderHeight() {
-    var hEl = document.querySelector('header.header, header, nav.navbar, nav');
+    var hEl = findHeader();
     if (!hEl) return;
     var h = hEl.getBoundingClientRect().height;
     document.documentElement.style.setProperty('--header-h', h + 'px');
@@ -2507,13 +2521,11 @@
 
   function init() {
     syncHeaderHeight();
-    var hEl = document.querySelector('header.header, header, nav.navbar, nav');
-    if (!hEl) return;
-    if (window.ResizeObserver) {
+    var hEl = findHeader();
+    if (hEl && window.ResizeObserver) {
       new ResizeObserver(syncHeaderHeight).observe(hEl);
-    } else {
-      window.addEventListener('resize', syncHeaderHeight);
     }
+    window.addEventListener('resize', syncHeaderHeight);
   }
 
   if (document.readyState === 'loading') {
