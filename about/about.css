@@ -721,6 +721,18 @@ body {
 }
 
 /* ================================================================
+   about 페이지 — 헤더 항상 고정 (IX2 hide-on-scroll 차단)
+   Webflow IX2 가 스크롤 시 transform: translateY(-100%) 로 헤더를
+   숨기는 동작을 about 페이지에서만 완전히 막음.
+   ================================================================ */
+header.header {
+  position: fixed !important;
+  top: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ================================================================
    섹션 1 hero — bg-video sub-pixel 렌더링 갭 차단.
    - 부모 overflow:hidden 으로 video edge clip 보장
    - video 자체 GPU 합성 promotion (translateZ + backface-visibility) 으로
