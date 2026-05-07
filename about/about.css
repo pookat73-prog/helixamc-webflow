@@ -794,4 +794,40 @@ body {
     overflow: hidden !important;
     position: relative !important;
   }
+
+  /* 극단 specificity — body + tag + id + class 조합으로 어떤 Webflow CSS도 제압 */
+  body section#\31.about_background {
+    height: 90vh !important;
+    min-height: 90vh !important;
+    max-height: 90vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    overflow: hidden !important;
+    position: relative !important;
+    display: block !important;
+  }
+
+  body section#\31.about_background > video.helix-bg-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    transform: translateZ(0) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
 }
