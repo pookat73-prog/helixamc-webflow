@@ -738,15 +738,13 @@ body {
   backface-visibility: hidden;
 }
 
-/* ── 태블릿: 히어로 배경 비디오 섹션 꽉 채우기 ──────────────────
-   태블릿(768~991px)에서 .About_Background 의 height 가 auto 로 내려와
-   video 의 position:absolute + bottom:0 이 동작 안 함.
-   min-height: 100svh 로 부모에 확정 높이를 부여해 video 가 꽉 채우게.
+/* ── 태블릿: 비디오 컨테이너 섹션 높이(90vh)에 맞춤 ─────────────
+   섹션이 90vh인데 컨테이너가 content 높이만 가져가서 위아래 검정 노출.
    ─────────────────────────────────────────────────────────────── */
 @media (max-width: 991px) and (min-width: 768px) {
   .About_Background,
   .about_background,
   .about-background {
-    min-height: 100svh;
+    height: 90vh;
   }
 }
