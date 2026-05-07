@@ -697,7 +697,7 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    ================================================================ */
 section.subheader {
   position: sticky;
-  top: 56px;
+  top: var(--header-h, 56px);
   z-index: 50;
   /* 위쪽 1px 갭으로 body 다크 bg 가 비치는 케이스 차단 */
   margin-top: -1px;

@@ -2489,3 +2489,30 @@
   }
   window.addEventListener('load', start);
 })();
+
+/* ================================================================
+   SUBHEADER — 헤더 높이 CSS 변수 실시간 동기화
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function syncHeaderHeight() {
+    var hEl = document.querySelector('header.header, header, .w-nav, nav');
+    if (!hEl) return;
+    var h = hEl.getBoundingClientRect().height;
+    if (h > 0) {
+      document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+  }
+
+  /* 초기 몇 초간 폴링 — 동적 로드 타이밍 무관하게 확실히 잡음 */
+  var pollCount = 0;
+  var pollTimer = setInterval(function () {
+    syncHeaderHeight();
+    if (++pollCount >= 20) clearInterval(pollTimer);
+  }, 200);
+
+  window.addEventListener('resize', syncHeaderHeight);
+  window.addEventListener('load', syncHeaderHeight);
+  syncHeaderHeight();
+})();
