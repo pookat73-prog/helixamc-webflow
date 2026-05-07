@@ -745,6 +745,6 @@ body {
   .About_Background,
   .about_background,
   .about-background {
-    height: 90vh;
+    height: 90vh !important;
   }
 }
