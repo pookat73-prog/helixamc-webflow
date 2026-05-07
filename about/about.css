@@ -691,17 +691,13 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 }
 
 /* ================================================================
-   닻 메뉴 바 — header 바로 밑에 fixed 고정.
-   sticky → fixed 전환: 부모 섹션 끝에 도달하면 sticky가 풀려 스크롤돼
-   버리는 문제 완전 차단.
+   닻 메뉴 바 — 히어로 섹션 지나 스크롤 시 header 바로 밑에 걸려 고정.
    ================================================================ */
 section.subheader {
-  position: fixed !important;
+  position: sticky !important;
   top: var(--header-h, 56px) !important;
-  left: 0 !important;
-  right: 0 !important;
   z-index: 49 !important;
-  margin-top: 0 !important;
+  margin-top: -1px !important;
 }
 
 /* ================================================================
