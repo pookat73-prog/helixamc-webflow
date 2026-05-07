@@ -2489,3 +2489,37 @@
   }
   window.addEventListener('load', start);
 })();
+
+/* ================================================================
+   SUBHEADER — 헤더 높이 CSS 변수 실시간 동기화
+   창 너비가 변할 때 헤더 높이도 달라지므로 --header-h 를 ResizeObserver
+   로 추적해 section.subheader 의 top 을 정확히 맞춤.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function syncHeaderHeight() {
+    var hEl = document.querySelector('header.header, header, nav.navbar, nav');
+    if (!hEl) return;
+    var h = hEl.getBoundingClientRect().height;
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+
+  function init() {
+    syncHeaderHeight();
+    var hEl = document.querySelector('header.header, header, nav.navbar, nav');
+    if (!hEl) return;
+    if (window.ResizeObserver) {
+      new ResizeObserver(syncHeaderHeight).observe(hEl);
+    } else {
+      window.addEventListener('resize', syncHeaderHeight);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  window.addEventListener('load', syncHeaderHeight);
+})();
