@@ -737,3 +737,14 @@ body {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
+
+/* ── 태블릿: 비디오 컨테이너 섹션 높이(90vh)에 맞춤 ─────────────
+   섹션이 90vh인데 컨테이너가 content 높이만 가져가서 위아래 검정 노출.
+   ─────────────────────────────────────────────────────────────── */
+@media (max-width: 991px) and (min-width: 768px) {
+  .About_Background,
+  .about_background,
+  .about-background {
+    height: 90vh;
+  }
+}
