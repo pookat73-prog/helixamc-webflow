@@ -750,6 +750,15 @@ header.header {
   backface-visibility: hidden;
 }
 
+/* ── Div Block 187 — Webflow IX2 reveal trigger 데스크탑 미작동 무력화 ──
+   tiny 브레이크포인트에선 Webflow CSS 가 display:none 처리하므로 그대로 유지.
+   자식 .about_hybrid-contents_box 는 about.js initHybridUnfold 가 통제. */
+.div-block-187 {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
 /* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
    [원인 후보 모두 제압]
    1) 컨테이너 높이 강제 + padding/margin/border 제거 (외곽 새는 영역 차단)
