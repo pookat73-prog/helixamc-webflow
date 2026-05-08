@@ -1990,7 +1990,11 @@
      data-w-id 제거로 IX2 바인딩을 차단해 race 방지. */
   function initDivBlock187FadeIn() {
     var el = document.querySelector('.div-block-187');
-    if (!el) { log('div-block-187: not found'); return; }
+    if (!el) {
+      console.warn('[About] div-block-187: NOT FOUND in DOM');
+      return;
+    }
+    console.info('[About] div-block-187: found, init fade-in');
 
     function stripIX2(target) {
       target.removeAttribute('data-w-id');
@@ -1999,28 +2003,40 @@
       target.style.removeProperty('visibility');
     }
 
+    function reveal(reason) {
+      if (el.classList.contains('is-visible')) return;
+      stripIX2(el);
+      el.classList.add('is-visible');
+      console.info('[About] div-block-187: is-visible (' + reason + ')');
+    }
+
     /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms */
     stripIX2(el);
     setTimeout(function () { stripIX2(el); }, 300);
     setTimeout(function () { stripIX2(el); }, 1200);
 
     if (!('IntersectionObserver' in window)) {
-      el.classList.add('is-visible');
+      reveal('no-IO');
       return;
     }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
           io.unobserve(e.target);
-          /* IX2 인라인 스타일 제거 후 .is-visible 추가
-             (인라인 opacity:0 이 CSS opacity:1 !important 보다 우선하지 못하도록) */
-          stripIX2(e.target);
-          e.target.classList.add('is-visible');
-          log('div-block-187: is-visible');
+          reveal('IO-intersect');
         }
       });
     }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
     io.observe(el);
+
+    /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출
+       (display:none 부모 / IO 차단 / 측정 실패 등 어떤 케이스에서도 보이게) */
+    setTimeout(function () {
+      if (!el.classList.contains('is-visible')) {
+        try { io.disconnect(); } catch (_) {}
+        reveal('5s-fallback');
+      }
+    }, 5000);
   }
 
   function initHybridUnfold() {
