@@ -733,12 +733,20 @@ header.header {
 .About_Background,
 .about_background,
 .about-background {
-  overflow: hidden;
+  position: relative !important;
+  height: 90vh !important;
+  overflow: hidden !important;
 }
 .About_Background video.helix-bg-video,
 .about_background video.helix-bg-video,
 .about-background video.helix-bg-video {
-  transform: translateZ(0);
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  transform: translateZ(0) !important;
   backface-visibility: hidden;
 }
 
