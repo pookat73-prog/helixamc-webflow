@@ -762,7 +762,7 @@ header.header {
   will-change: opacity;
 }
 .div-block-187.is-visible {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 /* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
