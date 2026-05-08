@@ -1991,8 +1991,19 @@
   function initDivBlock187FadeIn() {
     var el = document.querySelector('.div-block-187');
     if (!el) { log('div-block-187: not found'); return; }
-    /* IX2 바인딩 차단 */
-    el.removeAttribute('data-w-id');
+
+    function stripIX2(target) {
+      target.removeAttribute('data-w-id');
+      target.style.removeProperty('opacity');
+      target.style.removeProperty('transform');
+      target.style.removeProperty('visibility');
+    }
+
+    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms */
+    stripIX2(el);
+    setTimeout(function () { stripIX2(el); }, 300);
+    setTimeout(function () { stripIX2(el); }, 1200);
+
     if (!('IntersectionObserver' in window)) {
       el.classList.add('is-visible');
       return;
@@ -2001,6 +2012,9 @@
       entries.forEach(function (e) {
         if (e.isIntersecting) {
           io.unobserve(e.target);
+          /* IX2 인라인 스타일 제거 후 .is-visible 추가
+             (인라인 opacity:0 이 CSS opacity:1 !important 보다 우선하지 못하도록) */
+          stripIX2(e.target);
           e.target.classList.add('is-visible');
           log('div-block-187: is-visible');
         }
