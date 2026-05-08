@@ -750,13 +750,19 @@ header.header {
   backface-visibility: hidden;
 }
 
-/* ── Div Block 187 — Webflow IX2 reveal trigger 데스크탑 미작동 무력화 ──
-   tiny 브레이크포인트에선 Webflow CSS 가 display:none 처리하므로 그대로 유지.
-   자식 .about_hybrid-contents_box 는 about.js initHybridUnfold 가 통제. */
+/* ── Div Block 187 — IX2 무력화 + 스크롤 페이드인 초기 상태 ──
+   IX2 인라인 opacity:0 / transform 을 덮어써 초기 숨김은 CSS 가 통제.
+   about.js initDivBlock187FadeIn() 가 스크롤 진입 시 .is-visible 추가 → 노출.
+   자식 .about_hybrid-contents_box 는 initHybridUnfold 가 별도 통제. */
 .div-block-187 {
-  opacity: 1 !important;
+  opacity: 0;
   visibility: visible !important;
   transform: none !important;
+  transition: opacity 1.0s ease-out;
+  will-change: opacity;
+}
+.div-block-187.is-visible {
+  opacity: 1;
 }
 
 /* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
