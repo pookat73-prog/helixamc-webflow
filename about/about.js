@@ -1984,6 +1984,31 @@
      박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
+  /* ── Div Block 187 스크롤 페이드인 ────────────────────────────────
+     IX2 가 데스크탑에서 트리거를 발사하지 않아 영구 숨김 상태로 남는 문제 대응.
+     뷰포트 하단 20% 라인에 요소 상단이 닿으면 .is-visible 추가 → CSS 1s 페이드인.
+     data-w-id 제거로 IX2 바인딩을 차단해 race 방지. */
+  function initDivBlock187FadeIn() {
+    var el = document.querySelector('.div-block-187');
+    if (!el) { log('div-block-187: not found'); return; }
+    /* IX2 바인딩 차단 */
+    el.removeAttribute('data-w-id');
+    if (!('IntersectionObserver' in window)) {
+      el.classList.add('is-visible');
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          io.unobserve(e.target);
+          e.target.classList.add('is-visible');
+          log('div-block-187: is-visible');
+        }
+      });
+    }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
+    io.observe(el);
+  }
+
   function initHybridUnfold() {
     var SEL = '.about_hybrid-contents_box';
 
@@ -2093,6 +2118,7 @@
     initWeAreHereReveal();
     initHistoryTitleBoxFadeIn();
     initHistoryBodyGate();
+    initDivBlock187FadeIn();
     initHybridUnfold();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
