@@ -1996,36 +1996,63 @@
     }
     console.info('[About] div-block-187: found, init fade-in');
 
-    function stripIX2(target) {
-      target.removeAttribute('data-w-id');
-      target.style.removeProperty('opacity');
-      target.style.removeProperty('transform');
-      target.style.removeProperty('visibility');
-    }
+    var revealed = false;
 
-    function reveal(reason) {
-      if (el.classList.contains('is-visible')) return;
-      stripIX2(el);
-      el.classList.add('is-visible');
-      console.info('[About] div-block-187: is-visible (' + reason + ')');
-      /* IX2 가 reveal 후 inline opacity 를 재적용하는 케이스 차단.
-         MutationObserver 로 style 변경 감시 → inline opacity 즉시 제거.
-         2초 후 해제 (IX2 가 그 시점엔 더 이상 이 요소를 제어하지 않음). */
-      if ('MutationObserver' in window) {
-        var mo = new MutationObserver(function () {
-          if (el.style.opacity !== '') {
-            el.style.removeProperty('opacity');
-          }
-        });
-        mo.observe(el, { attributes: true, attributeFilter: ['style'] });
-        setTimeout(function () { mo.disconnect(); }, 2000);
+    function forceInitState() {
+      el.removeAttribute('data-w-id');
+      el.style.removeProperty('transform');
+      el.style.setProperty('visibility', 'visible', 'important');
+      /* IX2가 이미 opacity:0을 인라인으로 찍었으면 제거 (CSS opacity:0이 살아남게) */
+      if (el.style.getPropertyValue('opacity') === '0') {
+        el.style.removeProperty('opacity');
       }
     }
 
-    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms */
-    stripIX2(el);
-    setTimeout(function () { stripIX2(el); }, 300);
-    setTimeout(function () { stripIX2(el); }, 1200);
+    /* 초기부터 MO 감시 — IX2가 언제 opacity:0을 찍어도 즉시 제거
+       reveal 후엔 opacity:1 !important 로 덮어씌움 (inline !important끼리는 마지막 쓴 쪽이 이김) */
+    var guardMo = 'MutationObserver' in window ? new MutationObserver(function () {
+      if (!revealed) {
+        /* 아직 reveal 전: IX2가 opacity:0 찍으면 제거해 CSS opacity:0 기본값이 살게 함 */
+        if (el.style.getPropertyValue('opacity') === '0') {
+          el.style.removeProperty('opacity');
+        }
+      } else {
+        /* reveal 후: IX2가 opacity를 0으로 되돌리면 즉시 1로 재강제 */
+        var cur = el.style.getPropertyValue('opacity');
+        if (cur !== '' && cur !== '1') {
+          el.style.setProperty('opacity', '1', 'important');
+        }
+      }
+    }) : null;
+
+    if (guardMo) {
+      guardMo.observe(el, { attributes: true, attributeFilter: ['style'] });
+    }
+
+    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms + 3000ms */
+    forceInitState();
+    setTimeout(function () { forceInitState(); }, 300);
+    setTimeout(function () { forceInitState(); }, 1200);
+    setTimeout(function () { forceInitState(); }, 3000);
+
+    function reveal(reason) {
+      if (revealed) return;
+      revealed = true;
+      console.info('[About] div-block-187: reveal (' + reason + ')');
+      el.classList.add('is-visible');
+      /* opacity:0 !important 고정 후 double-rAF로 1 전환 → CSS transition 발동
+         (@keyframes animation은 !important inline보다 cascade 우선순위가 낮아 동작 안 함) */
+      el.style.setProperty('opacity', '0', 'important');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          el.style.setProperty('opacity', '1', 'important');
+        });
+      });
+      /* 10초 후 MO 해제 — 충분히 길게 잡아 IX2 재개입 차단 */
+      if (guardMo) {
+        setTimeout(function () { guardMo.disconnect(); }, 10000);
+      }
+    }
 
     if (!('IntersectionObserver' in window)) {
       reveal('no-IO');
@@ -2041,10 +2068,9 @@
     }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
     io.observe(el);
 
-    /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출
-       (display:none 부모 / IO 차단 / 측정 실패 등 어떤 케이스에서도 보이게) */
+    /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출 */
     setTimeout(function () {
-      if (!el.classList.contains('is-visible')) {
+      if (!revealed) {
         try { io.disconnect(); } catch (_) {}
         reveal('5s-fallback');
       }

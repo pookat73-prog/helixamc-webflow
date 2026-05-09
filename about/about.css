@@ -751,22 +751,14 @@ header.header {
 }
 
 /* ── Div Block 187 — IX2 무력화 + 스크롤 페이드인 초기 상태 ──
-   IX2 가 inline style !important 로 opacity:0 을 설정하면
-   CSS !important 룰(author 레이어)이 인라인 !important 에 지므로
-   CSS animation 레이어를 사용 — cascade 우선순위: animation > author !important.
-   about.js initDivBlock187FadeIn() 가 스크롤 진입 시 .is-visible 추가 → 노출. */
+   @keyframes 애니메이션은 !important 인라인 스타일보다 cascade 우선순위가 낮아 무효.
+   대신 JS에서 setProperty('opacity','1','important')로 inline !important를 직접 덮어씀.
+   CSS transition이 0→1 부드럽게 연결. about.js initDivBlock187FadeIn() 참조. */
 .div-block-187 {
   opacity: 0;
   visibility: visible !important;
   transform: none !important;
-  will-change: opacity;
-}
-.div-block-187.is-visible {
-  animation: div187FadeIn 1.0s ease-out forwards;
-}
-@keyframes div187FadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  transition: opacity 1.0s ease-out;
 }
 
 /* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
