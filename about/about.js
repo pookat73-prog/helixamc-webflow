@@ -2008,6 +2008,18 @@
       stripIX2(el);
       el.classList.add('is-visible');
       console.info('[About] div-block-187: is-visible (' + reason + ')');
+      /* IX2 가 reveal 후 inline opacity 를 재적용하는 케이스 차단.
+         MutationObserver 로 style 변경 감시 → inline opacity 즉시 제거.
+         2초 후 해제 (IX2 가 그 시점엔 더 이상 이 요소를 제어하지 않음). */
+      if ('MutationObserver' in window) {
+        var mo = new MutationObserver(function () {
+          if (el.style.opacity !== '') {
+            el.style.removeProperty('opacity');
+          }
+        });
+        mo.observe(el, { attributes: true, attributeFilter: ['style'] });
+        setTimeout(function () { mo.disconnect(); }, 2000);
+      }
     }
 
     /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms */
