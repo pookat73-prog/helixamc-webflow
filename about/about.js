@@ -1984,71 +1984,110 @@
      박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
-  /* ── Div Block 187 스크롤 페이드인 ────────────────────────────────
-     IX2 가 데스크탑에서 트리거를 발사하지 않아 영구 숨김 상태로 남는 문제 대응.
-     뷰포트 하단 20% 라인에 요소 상단이 닿으면 .is-visible 추가 → CSS 1s 페이드인.
-     data-w-id 제거로 IX2 바인딩을 차단해 race 방지. */
+  /* ── Div Block 187 노출 ────────────────────────────────────────
+     opacity 외에 display/visibility/height/transform 모두 커버.
+     조상 체인도 진단·강제해 부모 IX2 숨김 차단. */
   function initDivBlock187FadeIn() {
     var el = document.querySelector('.div-block-187');
     if (!el) {
       console.warn('[About] div-block-187: NOT FOUND in DOM');
       return;
     }
-    console.info('[About] div-block-187: found, init fade-in');
+    console.info('[About] div-block-187: found');
 
-    var revealed = false;
-
-    function forceInitState() {
-      el.removeAttribute('data-w-id');
-      el.style.removeProperty('transform');
-      el.style.setProperty('visibility', 'visible', 'important');
-      /* IX2가 이미 opacity:0을 인라인으로 찍었으면 제거 (CSS opacity:0이 살아남게) */
-      if (el.style.getPropertyValue('opacity') === '0') {
-        el.style.removeProperty('opacity');
+    /* 조상 체인 진단 — 콘솔에서 숨김 원인 식별 */
+    function diagnose(label) {
+      var node = el;
+      var depth = 0;
+      while (node && node !== document.body && depth < 10) {
+        var cs = window.getComputedStyle(node);
+        var inl = node.getAttribute('style') || '';
+        console.info('[About] 187 ' + label + ' depth=' + depth,
+          'tag=' + (node.className || node.tagName),
+          'op=' + cs.opacity, 'disp=' + cs.display,
+          'vis=' + cs.visibility, 'h=' + cs.height,
+          'tf=' + cs.transform.substring(0, 20),
+          'inline=[' + inl.substring(0, 60) + ']');
+        node = node.parentElement;
+        depth++;
       }
     }
 
-    /* 초기부터 MO 감시 — IX2가 언제 opacity:0을 찍어도 즉시 제거
-       reveal 후엔 opacity:1 !important 로 덮어씌움 (inline !important끼리는 마지막 쓴 쪽이 이김) */
+    /* 요소 및 조상의 IX2 인라인 숨김 강제 제거
+       display:none / opacity:0 / visibility:hidden / height:0 모두 대응 */
+    function forceChainVisible(finalOpacity) {
+      /* 요소 자신 */
+      el.removeAttribute('data-w-id');
+      el.style.setProperty('display', 'block', 'important');
+      el.style.setProperty('visibility', 'visible', 'important');
+      el.style.setProperty('height', 'auto', 'important');
+      el.style.setProperty('overflow', 'visible', 'important');
+      el.style.setProperty('transform', 'none', 'important');
+      el.style.setProperty('clip-path', 'none', 'important');
+      if (finalOpacity !== undefined) {
+        el.style.setProperty('opacity', String(finalOpacity), 'important');
+      } else {
+        /* 아직 reveal 전: IX2가 opacity:0 인라인을 찍었으면 제거해 CSS 0 유지 */
+        if (el.style.getPropertyValue('opacity') !== '') {
+          el.style.removeProperty('opacity');
+        }
+      }
+
+      /* 조상 — IX2가 인라인으로 숨긴 경우만 제거 (CSS 레이아웃 건드리지 않음) */
+      var node = el.parentElement;
+      var depth = 0;
+      while (node && node !== document.body && depth < 8) {
+        node.removeAttribute('data-w-id');
+        var inlOp = node.style.getPropertyValue('opacity');
+        var inlDisp = node.style.getPropertyValue('display');
+        var inlVis = node.style.getPropertyValue('visibility');
+        if (inlOp === '0') { node.style.removeProperty('opacity'); }
+        if (inlDisp === 'none') { node.style.removeProperty('display'); }
+        if (inlVis === 'hidden') { node.style.removeProperty('visibility'); }
+        node = node.parentElement;
+        depth++;
+      }
+    }
+
+    var revealed = false;
+
+    /* 초기부터 MO — el 자신의 inline style 변경 감시 */
     var guardMo = 'MutationObserver' in window ? new MutationObserver(function () {
       if (!revealed) {
-        /* 아직 reveal 전: IX2가 opacity:0 찍으면 제거해 CSS opacity:0 기본값이 살게 함 */
-        if (el.style.getPropertyValue('opacity') === '0') {
+        if (el.style.getPropertyValue('opacity') !== '') {
           el.style.removeProperty('opacity');
         }
       } else {
-        /* reveal 후: IX2가 opacity를 0으로 되돌리면 즉시 1로 재강제 */
         var cur = el.style.getPropertyValue('opacity');
-        if (cur !== '' && cur !== '1') {
+        if (cur !== '' && parseFloat(cur) < 0.5) {
           el.style.setProperty('opacity', '1', 'important');
         }
       }
     }) : null;
-
     if (guardMo) {
       guardMo.observe(el, { attributes: true, attributeFilter: ['style'] });
     }
 
-    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms + 3000ms */
-    forceInitState();
-    setTimeout(function () { forceInitState(); }, 300);
-    setTimeout(function () { forceInitState(); }, 1200);
-    setTimeout(function () { forceInitState(); }, 3000);
+    forceChainVisible();
+    setTimeout(function () { forceChainVisible(); }, 300);
+    setTimeout(function () { forceChainVisible(); }, 1200);
+    setTimeout(function () { forceChainVisible(); }, 3000);
+
+    /* 2초 시점에 진단 로그 (IX2 초기화 완료 후) */
+    setTimeout(function () { diagnose('2s-check'); }, 2000);
 
     function reveal(reason) {
       if (revealed) return;
       revealed = true;
       console.info('[About] div-block-187: reveal (' + reason + ')');
-      el.classList.add('is-visible');
-      /* opacity:0 !important 고정 후 double-rAF로 1 전환 → CSS transition 발동
-         (@keyframes animation은 !important inline보다 cascade 우선순위가 낮아 동작 안 함) */
-      el.style.setProperty('opacity', '0', 'important');
+      /* opacity:0 고정 후 double-rAF로 1 전환 → CSS transition 발동 */
+      forceChainVisible(0);
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
-          el.style.setProperty('opacity', '1', 'important');
+          forceChainVisible(1);
+          diagnose('post-reveal');
         });
       });
-      /* 10초 후 MO 해제 — 충분히 길게 잡아 IX2 재개입 차단 */
       if (guardMo) {
         setTimeout(function () { guardMo.disconnect(); }, 10000);
       }
@@ -2068,7 +2107,7 @@
     }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
     io.observe(el);
 
-    /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출 */
+    /* 안전 폴백: 5초 */
     setTimeout(function () {
       if (!revealed) {
         try { io.disconnect(); } catch (_) {}
