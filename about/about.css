@@ -750,15 +750,10 @@ header.header {
   backface-visibility: hidden;
 }
 
-/* ── Div Block 187 — IX2 무력화 + 스크롤 페이드인 초기 상태 ──
-   @keyframes 애니메이션은 !important 인라인 스타일보다 cascade 우선순위가 낮아 무효.
-   대신 JS에서 setProperty('opacity','1','important')로 inline !important를 직접 덮어씀.
-   CSS transition이 0→1 부드럽게 연결. about.js initDivBlock187FadeIn() 참조. */
+/* ── Div Block 187 — 스크롤 페이드인 (IX2 없음, 순수 JS 제어) */
 .div-block-187 {
   opacity: 0;
-  visibility: visible !important;
-  transform: none !important;
-  transition: opacity 1.0s ease-out;
+  transition: opacity 0.9s ease-out;
 }
 
 /* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
