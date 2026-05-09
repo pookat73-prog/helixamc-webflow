@@ -1984,136 +1984,29 @@
      박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
-  /* ── Div Block 187 노출 ────────────────────────────────────────
-     opacity 외에 display/visibility/height/transform 모두 커버.
-     조상 체인도 진단·강제해 부모 IX2 숨김 차단. */
+  /* ── Div Block 187 스크롤 페이드인 ──────────────────────────────
+     IX2 없음. CSS opacity:0 → IO 진입 시 opacity:1 전환.
+     10초 폴백으로 스크롤 없이도 항상 노출 보장. */
   function initDivBlock187FadeIn() {
     var el = document.querySelector('.div-block-187');
-    if (!el) {
-      console.warn('[About] div-block-187: NOT FOUND in DOM');
-      return;
-    }
-    console.info('[About] div-block-187: found');
+    if (!el) return;
 
-    /* 조상 체인 진단 — 콘솔에서 숨김 원인 식별 */
-    function diagnose(label) {
-      var node = el;
-      var depth = 0;
-      while (node && node !== document.body && depth < 10) {
-        var cs = window.getComputedStyle(node);
-        var inl = node.getAttribute('style') || '';
-        console.info('[About] 187 ' + label + ' depth=' + depth,
-          'tag=' + (node.className || node.tagName),
-          'op=' + cs.opacity, 'disp=' + cs.display,
-          'vis=' + cs.visibility, 'h=' + cs.height,
-          'tf=' + cs.transform.substring(0, 20),
-          'inline=[' + inl.substring(0, 60) + ']');
-        node = node.parentElement;
-        depth++;
-      }
+    function show() {
+      el.style.opacity = '1';
     }
 
-    /* 요소 및 조상의 IX2 인라인 숨김 강제 제거
-       display:none / opacity:0 / visibility:hidden / height:0 모두 대응 */
-    function forceChainVisible(finalOpacity) {
-      /* 요소 자신 */
-      el.removeAttribute('data-w-id');
-      el.style.setProperty('display', 'block', 'important');
-      el.style.setProperty('visibility', 'visible', 'important');
-      el.style.setProperty('height', 'auto', 'important');
-      el.style.setProperty('overflow', 'visible', 'important');
-      el.style.setProperty('transform', 'none', 'important');
-      el.style.setProperty('clip-path', 'none', 'important');
-      if (finalOpacity !== undefined) {
-        el.style.setProperty('opacity', String(finalOpacity), 'important');
-      } else {
-        /* 아직 reveal 전: IX2가 opacity:0 인라인을 찍었으면 제거해 CSS 0 유지 */
-        if (el.style.getPropertyValue('opacity') !== '') {
-          el.style.removeProperty('opacity');
-        }
-      }
+    if (!('IntersectionObserver' in window)) { show(); return; }
 
-      /* 조상 — IX2가 인라인으로 숨긴 경우만 제거 (CSS 레이아웃 건드리지 않음) */
-      var node = el.parentElement;
-      var depth = 0;
-      while (node && node !== document.body && depth < 8) {
-        node.removeAttribute('data-w-id');
-        var inlOp = node.style.getPropertyValue('opacity');
-        var inlDisp = node.style.getPropertyValue('display');
-        var inlVis = node.style.getPropertyValue('visibility');
-        if (inlOp === '0') { node.style.removeProperty('opacity'); }
-        if (inlDisp === 'none') { node.style.removeProperty('display'); }
-        if (inlVis === 'hidden') { node.style.removeProperty('visibility'); }
-        node = node.parentElement;
-        depth++;
-      }
-    }
-
-    var revealed = false;
-
-    /* 초기부터 MO — el 자신의 inline style 변경 감시 */
-    var guardMo = 'MutationObserver' in window ? new MutationObserver(function () {
-      if (!revealed) {
-        if (el.style.getPropertyValue('opacity') !== '') {
-          el.style.removeProperty('opacity');
-        }
-      } else {
-        var cur = el.style.getPropertyValue('opacity');
-        if (cur !== '' && parseFloat(cur) < 0.5) {
-          el.style.setProperty('opacity', '1', 'important');
-        }
-      }
-    }) : null;
-    if (guardMo) {
-      guardMo.observe(el, { attributes: true, attributeFilter: ['style'] });
-    }
-
-    forceChainVisible();
-    setTimeout(function () { forceChainVisible(); }, 300);
-    setTimeout(function () { forceChainVisible(); }, 1200);
-    setTimeout(function () { forceChainVisible(); }, 3000);
-
-    /* 2초 시점에 진단 로그 (IX2 초기화 완료 후) */
-    setTimeout(function () { diagnose('2s-check'); }, 2000);
-
-    function reveal(reason) {
-      if (revealed) return;
-      revealed = true;
-      console.info('[About] div-block-187: reveal (' + reason + ')');
-      /* opacity:0 고정 후 double-rAF로 1 전환 → CSS transition 발동 */
-      forceChainVisible(0);
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          forceChainVisible(1);
-          diagnose('post-reveal');
-        });
-      });
-      if (guardMo) {
-        setTimeout(function () { guardMo.disconnect(); }, 10000);
-      }
-    }
-
-    if (!('IntersectionObserver' in window)) {
-      reveal('no-IO');
-      return;
-    }
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          io.unobserve(e.target);
-          reveal('IO-intersect');
-        }
-      });
-    }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
+      if (entries[0].isIntersecting) {
+        io.disconnect();
+        show();
+      }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
     io.observe(el);
 
-    /* 안전 폴백: 5초 */
-    setTimeout(function () {
-      if (!revealed) {
-        try { io.disconnect(); } catch (_) {}
-        reveal('5s-fallback');
-      }
-    }, 5000);
+    /* 10초 폴백: 스크롤 위치와 무관하게 항상 노출 */
+    setTimeout(function () { io.disconnect(); show(); }, 10000);
   }
 
   function initHybridUnfold() {
