@@ -2040,12 +2040,12 @@
   function initHybridUnfold() {
     var SEL = '.about_hybrid-contents_box';
 
-    function build() {
-      var nodes = document.querySelectorAll(SEL);
-      if (nodes.length < 2) { log('hybrid: nodes=' + nodes.length); return false; }
+    /* 한 그룹(같은 부모) 의 boxes 를 처리 — 기존 로직 그대로 */
+    function processGroup(boxes) {
+      if (!boxes.length) return false;
 
       /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 좌→우 */
-      var boxes = Array.prototype.slice.call(nodes).sort(function (a, b) {
+      boxes.sort(function (a, b) {
         return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
       });
       if (!boxes[0].getBoundingClientRect().width) return false;
@@ -2053,11 +2053,15 @@
       var rects = boxes.map(function (b) { return b.getBoundingClientRect(); });
 
       /* anchorCx 결정.
+         - 1개 → 그냥 페이드인 (anchor 가 자기 자신, slide 없음)
          - 2개 → 두 박스 중심의 평균 (둘 다 그 점에서 출발해 양쪽으로 펼침)
          - 3+개 → 시각상 가운데 박스 중심 (그 박스는 고정 anchor) */
       var anchorCx;
       var anchorIdx = -1;          /* 슬라이드만, 페이드 없음. -1 이면 모두 페이드인 */
-      if (boxes.length === 2) {
+      if (boxes.length === 1) {
+        anchorCx = rects[0].left + rects[0].width / 2;
+        anchorIdx = 0;
+      } else if (boxes.length === 2) {
         anchorCx = (rects[0].left + rects[0].width / 2 +
                     rects[1].left + rects[1].width / 2) / 2;
         /* 1번(좌측 박스, 사용자 설명상 '가운데에서 시작하고 보이는') 은
@@ -2097,7 +2101,7 @@
             b.style.opacity    = '1';
           }
         });
-        log('hybrid unfold play (delay ' + PRE_DELAY + 's)');
+        log('hybrid unfold play (delay ' + PRE_DELAY + 's, count=' + boxes.length + ')');
       }
 
       /* 트리거는 anchor 박스 (또는 첫 박스) — 스크롤 진입 감지 */
@@ -2111,8 +2115,37 @@
         });
       }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
       io.observe(triggerEl);
-      log('hybrid unfold ready, count=' + boxes.length + ' anchorIdx=' + anchorIdx);
+      /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출
+         (display:none 부모 / 트리거 측정 실패 케이스 모두 대응) */
+      setTimeout(function () { play(); }, 5000);
       return true;
+    }
+
+    /* 부모별로 그룹핑 — 동일 클래스의 박스가 페이지 내 여러 섹션에 흩어져
+       있을 때 각 섹션 단독으로 unfold (예: div-block-187 안의 새 레이아웃). */
+    function build() {
+      var nodes = document.querySelectorAll(SEL);
+      if (!nodes.length) { log('hybrid: nodes=0'); return false; }
+
+      var byParent = [];
+      var parents = [];
+      Array.prototype.forEach.call(nodes, function (b) {
+        var p = b.parentElement;
+        var idx = parents.indexOf(p);
+        if (idx === -1) { parents.push(p); byParent.push([b]); }
+        else byParent[idx].push(b);
+      });
+
+      /* boxes[0] 가 layout 안 잡힌 상태면 한 그룹이라도 false → 재시도 */
+      var allReady = true;
+      var anyProcessed = false;
+      byParent.forEach(function (boxes) {
+        var ok = processGroup(boxes);
+        if (ok) anyProcessed = true;
+        else allReady = false;
+      });
+      log('hybrid groups=' + byParent.length + ' allReady=' + allReady);
+      return anyProcessed && allReady;
     }
 
     if (build()) return;
