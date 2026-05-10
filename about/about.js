@@ -1985,10 +1985,10 @@
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
   /* ── Div Block 187 — IX2 무력화로 노출 보장 ────────────────────
-     페이드인 시도가 IO/폴백 race 로 영구 숨김 사고를 반복해 폐기.
-     Webflow IX2 가 인라인으로 opacity:0 / visibility:hidden 을 유지할
-     가능성을 차단 — data-w-id 제거 + 인라인 hide 스타일 제거.
-     CSS 에서 opacity/visibility !important 로 노출 강제. */
+     페이드인 시도 (#497~#506) 가 IO/폴백 race 로 영구 숨김 사고를 반복해
+     폐기. Webflow IX2 가 인라인으로 opacity:0 / visibility:hidden 을
+     유지할 가능성을 차단 — data-w-id 제거 + 인라인 hide 스타일 제거.
+     CSS 에서 opacity/visibility !important + animation 레이어로 노출 강제. */
   function initDivBlock187FadeIn() {
     var el = document.querySelector('.div-block-187');
     if (!el) return;
