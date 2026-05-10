@@ -1985,28 +1985,36 @@
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
   /* ── Div Block 187 스크롤 페이드인 ──────────────────────────────
-     IX2 없음. CSS opacity:0 → IO 진입 시 opacity:1 전환.
-     10초 폴백으로 스크롤 없이도 항상 노출 보장. */
+     JS-first 패턴: JS가 즉시 숨기고, IO 진입 시 보여줌.
+     JS 미실행 시 CSS에 opacity:0 없으므로 기본적으로 보임(안전 폴백). */
   function initDivBlock187FadeIn() {
     var el = document.querySelector('.div-block-187');
     if (!el) return;
 
+    /* JS가 직접 숨김 — CSS에는 opacity:0 없음 */
+    el.style.opacity = '0';
+
     function show() {
+      el.style.transition = 'opacity 0.9s ease-out';
       el.style.opacity = '1';
     }
 
     if (!('IntersectionObserver' in window)) { show(); return; }
 
+    var shown = false;
     var io = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) {
+      if (entries[0].isIntersecting && !shown) {
+        shown = true;
         io.disconnect();
         show();
       }
-    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
     io.observe(el);
 
-    /* 10초 폴백: 스크롤 위치와 무관하게 항상 노출 */
-    setTimeout(function () { io.disconnect(); show(); }, 10000);
+    /* 3초 폴백 */
+    setTimeout(function () {
+      if (!shown) { shown = true; io.disconnect(); show(); }
+    }, 3000);
   }
 
   function initHybridUnfold() {

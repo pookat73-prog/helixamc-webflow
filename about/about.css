@@ -750,9 +750,8 @@ header.header {
   backface-visibility: hidden;
 }
 
-/* ── Div Block 187 — 스크롤 페이드인 (IX2 없음, 순수 JS 제어) */
+/* ── Div Block 187 — 스크롤 페이드인 transition (JS가 opacity 제어) */
 .div-block-187 {
-  opacity: 0;
   transition: opacity 0.9s ease-out;
 }
 
