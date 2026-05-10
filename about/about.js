@@ -1984,71 +1984,40 @@
      박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
-  /* ── Div Block 187 스크롤 페이드인 ────────────────────────────────
-     IX2 가 데스크탑에서 트리거를 발사하지 않아 영구 숨김 상태로 남는 문제 대응.
-     뷰포트 하단 20% 라인에 요소 상단이 닿으면 .is-visible 추가 → CSS 1s 페이드인.
-     data-w-id 제거로 IX2 바인딩을 차단해 race 방지. */
+  /* ── Div Block 187 — IX2 무력화로 노출 보장 ────────────────────
+     페이드인 시도가 IO/폴백 race 로 영구 숨김 사고를 반복해 폐기.
+     Webflow IX2 가 인라인으로 opacity:0 / visibility:hidden 을 유지할
+     가능성을 차단 — data-w-id 제거 + 인라인 hide 스타일 제거.
+     CSS 에서 opacity/visibility !important 로 노출 강제. */
   function initDivBlock187FadeIn() {
     var el = document.querySelector('.div-block-187');
-    if (!el) {
-      console.warn('[About] div-block-187: NOT FOUND in DOM');
-      return;
-    }
-    console.info('[About] div-block-187: found, init fade-in');
+    if (!el) return;
 
-    function stripIX2(target) {
-      target.removeAttribute('data-w-id');
-      target.style.removeProperty('opacity');
-      target.style.removeProperty('transform');
-      target.style.removeProperty('visibility');
+    function stripHide() {
+      el.removeAttribute('data-w-id');
+      el.style.removeProperty('opacity');
+      el.style.removeProperty('visibility');
+      el.style.removeProperty('transform');
+      el.style.removeProperty('display');
     }
 
-    function reveal(reason) {
-      if (el.classList.contains('is-visible')) return;
-      stripIX2(el);
-      el.classList.add('is-visible');
-      console.info('[About] div-block-187: is-visible (' + reason + ')');
-      /* IX2 가 reveal 후 inline opacity 를 재적용하는 케이스 차단.
-         MutationObserver 로 style 변경 감시 → inline opacity 즉시 제거.
-         2초 후 해제 (IX2 가 그 시점엔 더 이상 이 요소를 제어하지 않음). */
-      if ('MutationObserver' in window) {
-        var mo = new MutationObserver(function () {
-          if (el.style.opacity !== '') {
-            el.style.removeProperty('opacity');
-          }
-        });
-        mo.observe(el, { attributes: true, attributeFilter: ['style'] });
-        setTimeout(function () { mo.disconnect(); }, 2000);
-      }
-    }
+    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms + 3000ms */
+    stripHide();
+    setTimeout(stripHide, 300);
+    setTimeout(stripHide, 1200);
+    setTimeout(stripHide, 3000);
 
-    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms */
-    stripIX2(el);
-    setTimeout(function () { stripIX2(el); }, 300);
-    setTimeout(function () { stripIX2(el); }, 1200);
-
-    if (!('IntersectionObserver' in window)) {
-      reveal('no-IO');
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          io.unobserve(e.target);
-          reveal('IO-intersect');
+    /* IX2 가 reveal 후 다시 인라인 hide 를 거는 케이스 차단 */
+    if ('MutationObserver' in window) {
+      var mo = new MutationObserver(function () {
+        var s = el.style;
+        if (s.opacity === '0' || s.visibility === 'hidden' || s.display === 'none') {
+          stripHide();
         }
       });
-    }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
-    io.observe(el);
-
-    /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출
-       (display:none 부모 / IO 차단 / 측정 실패 등 어떤 케이스에서도 보이게) */
-    setTimeout(function () {
-      if (!el.classList.contains('is-visible')) {
-        try { io.disconnect(); } catch (_) {}
-        reveal('5s-fallback');
-      }
-    }, 5000);
+      mo.observe(el, { attributes: true, attributeFilter: ['style'] });
+      setTimeout(function () { mo.disconnect(); }, 5000);
+    }
   }
 
   function initHybridUnfold() {
