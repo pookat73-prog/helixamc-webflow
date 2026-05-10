@@ -1988,12 +1988,17 @@
      페이드인 시도 (#497~#506) 가 IO/폴백 race 로 영구 숨김 사고를 반복해
      폐기. Webflow IX2 가 인라인으로 opacity:0 / visibility:hidden 을
      유지할 가능성을 차단 — data-w-id 제거 + 인라인 hide 스타일 제거.
-     CSS 에서 opacity/visibility !important + animation 레이어로 노출 강제. */
-  function initDivBlock187FadeIn() {
-    var el = document.querySelector('.div-block-187');
-    if (!el) return;
+     CSS 에서 opacity/visibility !important + animation 레이어로 노출 강제.
 
-    function stripHide() {
+     ※ 데스크탑/모바일 레이아웃 분리로 .div-block-187 가 복수 존재할 수
+       있음 (Webflow display 설정으로 한쪽이 viewport 별 숨김).
+       querySelectorAll 로 모두 적용 — Webflow 의 responsive display 는
+       CSS 미디어쿼리라 인라인 display 제거가 영향 없음. */
+  function initDivBlock187FadeIn() {
+    var els = document.querySelectorAll('.div-block-187');
+    if (!els.length) return;
+
+    function stripHide(el) {
       el.removeAttribute('data-w-id');
       el.style.removeProperty('opacity');
       el.style.removeProperty('visibility');
@@ -2001,22 +2006,34 @@
       el.style.removeProperty('display');
     }
 
+    function stripAll() {
+      for (var i = 0; i < els.length; i++) stripHide(els[i]);
+    }
+
     /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms + 3000ms */
-    stripHide();
-    setTimeout(stripHide, 300);
-    setTimeout(stripHide, 1200);
-    setTimeout(stripHide, 3000);
+    stripAll();
+    setTimeout(stripAll, 300);
+    setTimeout(stripAll, 1200);
+    setTimeout(stripAll, 3000);
 
     /* IX2 가 reveal 후 다시 인라인 hide 를 거는 케이스 차단 */
     if ('MutationObserver' in window) {
-      var mo = new MutationObserver(function () {
-        var s = el.style;
-        if (s.opacity === '0' || s.visibility === 'hidden' || s.display === 'none') {
-          stripHide();
-        }
-      });
-      mo.observe(el, { attributes: true, attributeFilter: ['style'] });
-      setTimeout(function () { mo.disconnect(); }, 5000);
+      var observers = [];
+      for (var j = 0; j < els.length; j++) {
+        (function (el) {
+          var mo = new MutationObserver(function () {
+            var s = el.style;
+            if (s.opacity === '0' || s.visibility === 'hidden' || s.display === 'none') {
+              stripHide(el);
+            }
+          });
+          mo.observe(el, { attributes: true, attributeFilter: ['style'] });
+          observers.push(mo);
+        })(els[j]);
+      }
+      setTimeout(function () {
+        for (var k = 0; k < observers.length; k++) observers[k].disconnect();
+      }, 5000);
     }
   }
 
