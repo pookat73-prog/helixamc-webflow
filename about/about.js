@@ -1984,82 +1984,68 @@
      박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
-  /* ── Div Block 187 스크롤 페이드인 ────────────────────────────────
-     IX2 가 데스크탑에서 트리거를 발사하지 않아 영구 숨김 상태로 남는 문제 대응.
-     뷰포트 하단 20% 라인에 요소 상단이 닿으면 .is-visible 추가 → CSS 1s 페이드인.
-     data-w-id 제거로 IX2 바인딩을 차단해 race 방지. */
+  /* ── Div Block 187 — IX2 무력화로 노출 보장 ────────────────────
+     페이드인 시도 (#497~#506) 가 IO/폴백 race 로 영구 숨김 사고를 반복해
+     폐기. Webflow IX2 가 인라인으로 opacity:0 / visibility:hidden 을
+     유지할 가능성을 차단 — data-w-id 제거 + 인라인 hide 스타일 제거.
+     CSS 에서 opacity/visibility !important + animation 레이어로 노출 강제.
+
+     ※ 데스크탑/모바일 레이아웃 분리로 .div-block-187 가 복수 존재할 수
+       있음 (Webflow display 설정으로 한쪽이 viewport 별 숨김).
+       querySelectorAll 로 모두 적용 — Webflow 의 responsive display 는
+       CSS 미디어쿼리라 인라인 display 제거가 영향 없음. */
   function initDivBlock187FadeIn() {
-    var el = document.querySelector('.div-block-187');
-    if (!el) {
-      console.warn('[About] div-block-187: NOT FOUND in DOM');
-      return;
-    }
-    console.info('[About] div-block-187: found, init fade-in');
+    var els = document.querySelectorAll('.div-block-187');
+    if (!els.length) return;
 
-    function stripIX2(target) {
-      target.removeAttribute('data-w-id');
-      target.style.removeProperty('opacity');
-      target.style.removeProperty('transform');
-      target.style.removeProperty('visibility');
+    function stripHide(el) {
+      el.removeAttribute('data-w-id');
+      el.style.removeProperty('opacity');
+      el.style.removeProperty('visibility');
+      el.style.removeProperty('transform');
+      el.style.removeProperty('display');
     }
 
-    function reveal(reason) {
-      if (el.classList.contains('is-visible')) return;
-      stripIX2(el);
-      el.classList.add('is-visible');
-      console.info('[About] div-block-187: is-visible (' + reason + ')');
-      /* IX2 가 reveal 후 inline opacity 를 재적용하는 케이스 차단.
-         MutationObserver 로 style 변경 감시 → inline opacity 즉시 제거.
-         2초 후 해제 (IX2 가 그 시점엔 더 이상 이 요소를 제어하지 않음). */
-      if ('MutationObserver' in window) {
-        var mo = new MutationObserver(function () {
-          if (el.style.opacity !== '') {
-            el.style.removeProperty('opacity');
-          }
-        });
-        mo.observe(el, { attributes: true, attributeFilter: ['style'] });
-        setTimeout(function () { mo.disconnect(); }, 2000);
+    function stripAll() {
+      for (var i = 0; i < els.length; i++) stripHide(els[i]);
+    }
+
+    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms + 3000ms */
+    stripAll();
+    setTimeout(stripAll, 300);
+    setTimeout(stripAll, 1200);
+    setTimeout(stripAll, 3000);
+
+    /* IX2 가 reveal 후 다시 인라인 hide 를 거는 케이스 차단 */
+    if ('MutationObserver' in window) {
+      var observers = [];
+      for (var j = 0; j < els.length; j++) {
+        (function (el) {
+          var mo = new MutationObserver(function () {
+            var s = el.style;
+            if (s.opacity === '0' || s.visibility === 'hidden' || s.display === 'none') {
+              stripHide(el);
+            }
+          });
+          mo.observe(el, { attributes: true, attributeFilter: ['style'] });
+          observers.push(mo);
+        })(els[j]);
       }
+      setTimeout(function () {
+        for (var k = 0; k < observers.length; k++) observers[k].disconnect();
+      }, 5000);
     }
-
-    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms */
-    stripIX2(el);
-    setTimeout(function () { stripIX2(el); }, 300);
-    setTimeout(function () { stripIX2(el); }, 1200);
-
-    if (!('IntersectionObserver' in window)) {
-      reveal('no-IO');
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          io.unobserve(e.target);
-          reveal('IO-intersect');
-        }
-      });
-    }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
-    io.observe(el);
-
-    /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출
-       (display:none 부모 / IO 차단 / 측정 실패 등 어떤 케이스에서도 보이게) */
-    setTimeout(function () {
-      if (!el.classList.contains('is-visible')) {
-        try { io.disconnect(); } catch (_) {}
-        reveal('5s-fallback');
-      }
-    }, 5000);
   }
 
   function initHybridUnfold() {
     var SEL = '.about_hybrid-contents_box';
 
-    function build() {
-      var nodes = document.querySelectorAll(SEL);
-      if (nodes.length < 2) { log('hybrid: nodes=' + nodes.length); return false; }
+    /* 한 그룹(같은 부모) 의 boxes 를 처리 — 기존 로직 그대로 */
+    function processGroup(boxes) {
+      if (!boxes.length) return false;
 
       /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 좌→우 */
-      var boxes = Array.prototype.slice.call(nodes).sort(function (a, b) {
+      boxes.sort(function (a, b) {
         return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
       });
       if (!boxes[0].getBoundingClientRect().width) return false;
@@ -2067,11 +2053,15 @@
       var rects = boxes.map(function (b) { return b.getBoundingClientRect(); });
 
       /* anchorCx 결정.
+         - 1개 → 그냥 페이드인 (anchor 가 자기 자신, slide 없음)
          - 2개 → 두 박스 중심의 평균 (둘 다 그 점에서 출발해 양쪽으로 펼침)
          - 3+개 → 시각상 가운데 박스 중심 (그 박스는 고정 anchor) */
       var anchorCx;
       var anchorIdx = -1;          /* 슬라이드만, 페이드 없음. -1 이면 모두 페이드인 */
-      if (boxes.length === 2) {
+      if (boxes.length === 1) {
+        anchorCx = rects[0].left + rects[0].width / 2;
+        anchorIdx = 0;
+      } else if (boxes.length === 2) {
         anchorCx = (rects[0].left + rects[0].width / 2 +
                     rects[1].left + rects[1].width / 2) / 2;
         /* 1번(좌측 박스, 사용자 설명상 '가운데에서 시작하고 보이는') 은
@@ -2111,7 +2101,7 @@
             b.style.opacity    = '1';
           }
         });
-        log('hybrid unfold play (delay ' + PRE_DELAY + 's)');
+        log('hybrid unfold play (delay ' + PRE_DELAY + 's, count=' + boxes.length + ')');
       }
 
       /* 트리거는 anchor 박스 (또는 첫 박스) — 스크롤 진입 감지 */
@@ -2125,8 +2115,37 @@
         });
       }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
       io.observe(triggerEl);
-      log('hybrid unfold ready, count=' + boxes.length + ' anchorIdx=' + anchorIdx);
+      /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출
+         (display:none 부모 / 트리거 측정 실패 케이스 모두 대응) */
+      setTimeout(function () { play(); }, 5000);
       return true;
+    }
+
+    /* 부모별로 그룹핑 — 동일 클래스의 박스가 페이지 내 여러 섹션에 흩어져
+       있을 때 각 섹션 단독으로 unfold (예: div-block-187 안의 새 레이아웃). */
+    function build() {
+      var nodes = document.querySelectorAll(SEL);
+      if (!nodes.length) { log('hybrid: nodes=0'); return false; }
+
+      var byParent = [];
+      var parents = [];
+      Array.prototype.forEach.call(nodes, function (b) {
+        var p = b.parentElement;
+        var idx = parents.indexOf(p);
+        if (idx === -1) { parents.push(p); byParent.push([b]); }
+        else byParent[idx].push(b);
+      });
+
+      /* boxes[0] 가 layout 안 잡힌 상태면 한 그룹이라도 false → 재시도 */
+      var allReady = true;
+      var anyProcessed = false;
+      byParent.forEach(function (boxes) {
+        var ok = processGroup(boxes);
+        if (ok) anyProcessed = true;
+        else allReady = false;
+      });
+      log('hybrid groups=' + byParent.length + ' allReady=' + allReady);
+      return anyProcessed && allReady;
     }
 
     if (build()) return;
