@@ -1130,7 +1130,12 @@
      좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    var containers = document.querySelectorAll('.about_contents_grid-3');
+    /* 데스크탑 wrapper = .about_contents_grid-3
+       모바일 복제본 wrapper = .about_contents_grid-3m
+         (Webflow "About_Contents_Grid 3(M)") — Webflow 가 (M) 을 떼고 m 만 남김 */
+    var containers = document.querySelectorAll(
+      '.about_contents_grid-3, .about_contents_grid-3m'
+    );
     log('section2-2 reveal containers=' + containers.length);
     if (!containers.length) return;
 
