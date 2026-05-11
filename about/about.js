@@ -1124,15 +1124,19 @@
     io.observe(el);
   }
 
-  /* ── Section 2-2 (.about_contents_grid-3 / -3m) — fade-in 트리거 ────
-     데스크탑: 가로 3 컬럼. wrapper 진입 시 한 번에 발사 + 컬럼별 stagger.
-     모바일 (.about_contents_grid-3m): 세로 스택. 각 컬럼(.div-block-176)
-       마다 IO 따로 → 컬럼이 뷰포트 진입할 때 데스크탑 동일 시퀀스 발사
-       (영문 키워드 페이드인 → 0.5s 뒤 흰 박스 페이드인).
+  /* ── Section 2-2 — fade-in 트리거 ───────────────────────────────
+     데스크탑 (.about_contents_grid-3): 가로 3 컬럼. wrapper 진입 시
+       .is-section22-in → 영문 키워드 동시 페이드인 + .div-block-175
+       컬럼별 stagger.
+     모바일 (Webflow "About_Contents_Grid 3(M)" 등 별도 wrapper): 세로 스택.
+       wrapper 실제 CSS 클래스명이 Webflow 변환으로 어떻게 되는지 불확실해
+       (class*= 매칭도 빗나간 사례 있음) wrapper 클래스 의존 안 함.
+       대신 .div-block-176 컬럼이 데스크탑 wrapper 안인지 여부로 판별 →
+       바깥쪽 컬럼은 모바일 복제본으로 간주, 컬럼별 IO 부착.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    var BASE = 0.5;  /* 흰 박스 페이드 시작 딜레이 (s) — 영문 키워드 fade 와 거의 함께 */
-    var STEP = 0.18; /* 데스크탑 컬럼별 stagger 간격 (s) — 모바일 per-column 발사에선 적용 안 함 */
+    var BASE = 0.5;
+    var STEP = 0.18;
 
     function attachIO(target, onEnter, rootBottomPct) {
       if (!('IntersectionObserver' in window)) { onEnter(); return; }
@@ -1142,7 +1146,19 @@
       io.observe(target);
     }
 
-    /* 데스크탑 — wrapper 진입 1회, 컬럼별 stagger */
+    /* IX2 native 인터랙션 무력화 helper — Webflow Designer 가 본문 등에
+       슬라이드 페이드인 IX2 를 붙여 놓은 경우, data-w-id 만 떼면 바인딩이
+       끊겨 인라인 opacity/transform 이 더 이상 갱신되지 않음. */
+    function neutralizeIX2(el) {
+      if (!el) return;
+      el.removeAttribute('data-w-id');
+      el.style.removeProperty('opacity');
+      el.style.removeProperty('transform');
+      el.style.removeProperty('filter');
+      el.style.removeProperty('visibility');
+    }
+
+    /* 데스크탑 — wrapper 진입 1회, .div-block-175 컬럼별 stagger */
     var desktopWrappers = document.querySelectorAll('.about_contents_grid-3');
     Array.prototype.forEach.call(desktopWrappers, function (container) {
       var blocks = container.querySelectorAll('.div-block-175');
@@ -1156,21 +1172,28 @@
       }, '-35%');
     });
 
-    /* 모바일 — 컬럼별 개별 IO. 각 컬럼의 흰 박스는 BASE 고정 딜레이. */
-    var mobileWrappers = document.querySelectorAll('.about_contents_grid-3m');
+    /* 모바일 — 데스크탑 wrapper 바깥의 .div-block-176 컬럼들에만 per-column IO.
+       .div-block-176 은 섹션 2-2 컬럼 전용 클래스라 다른 섹션 오염 없음. */
+    var allCols = document.querySelectorAll('.div-block-176');
     var mobileColCount = 0;
-    Array.prototype.forEach.call(mobileWrappers, function (container) {
-      var cols = container.querySelectorAll('.div-block-176');
-      mobileColCount += cols.length;
-      Array.prototype.forEach.call(cols, function (col) {
-        var box = col.querySelector('.div-block-175');
-        if (box) box.style.transitionDelay = BASE + 's';
-        attachIO(col, function () {
-          if (col.dataset.s22Done) return;
-          col.dataset.s22Done = '1';
-          col.classList.add('is-section22-in');
-        }, '-20%');
-      });
+    Array.prototype.forEach.call(allCols, function (col) {
+      if (col.closest('.about_contents_grid-3')) return; /* 데스크탑 컬럼 — 위에서 처리 */
+      if (!col.querySelector('.about_point-title_blue_whrite')) return; /* 안전망 */
+
+      mobileColCount++;
+      var box = col.querySelector('.div-block-175');
+      if (box) box.style.transitionDelay = BASE + 's';
+
+      /* 본문 슬라이드-블러-페이드인은 빼야 함. Webflow IX2 가 인라인으로
+         밀어넣을 가능성도 있어 data-w-id 도 제거. */
+      var bodies = col.querySelectorAll('.about_three_contents-box');
+      Array.prototype.forEach.call(bodies, neutralizeIX2);
+
+      attachIO(col, function () {
+        if (col.dataset.s22Done) return;
+        col.dataset.s22Done = '1';
+        col.classList.add('is-section22-in');
+      }, '-20%');
     });
 
     log('section2-2 reveal desktop=' + desktopWrappers.length +
