@@ -325,6 +325,29 @@
     if (btn.dataset.helixScrollTopInit) return 1;
     btn.dataset.helixScrollTopInit = '1';
 
+    /* 클릭 → 최상단으로 부드럽게. Webflow 기본 앵커 동작(찔끔 스크롤) 차단. */
+    var clickTargets = [btn];
+    var innerAnchor = btn.querySelector('a[href]');
+    if (innerAnchor) clickTargets.push(innerAnchor);
+    if (btn.tagName === 'A') { /* btn 자체가 a 인 경우 이미 포함됨 */ }
+    btn.style.cursor = 'pointer';
+    btn.setAttribute('role', 'button');
+    btn.setAttribute('aria-label', '맨 위로');
+
+    function scrollTopHandler(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      } catch (_) {
+        window.scrollTo(0, 0);
+      }
+      dbg('scroll-top click → top');
+    }
+
+    clickTargets.forEach(function (t) {
+      t.addEventListener('click', scrollTopHandler, true);
+    });
+
     var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
     var TWO_REM = 2 * rem;
 
