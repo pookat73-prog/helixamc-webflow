@@ -1521,12 +1521,62 @@
     var scope = bgFrame || clearSec;
     if (!scope) return;
 
+    /* alphenix 와 그 조상 체인 보호 마킹 — CSS nuke 룰 :not() 에서 제외.
+       (조상 체인까지 보호해야 alphenix 가 inheriting transition/animation 영향 안 받음) */
+    alphenix.setAttribute('data-helix-protect', '1');
+    var anc = alphenix.parentElement;
+    while (anc && anc !== scope.parentElement) {
+      anc.setAttribute('data-helix-protect-anc', '1');
+      anc = anc.parentElement;
+    }
+
+    /* CSS nuke — 인라인 !important 로도 못 잡는 transition/animation 까지 강제 차단.
+       :not([data-helix-protect]) → 알페닉스 본인 제외
+       조상 체인은 transform/opacity 만 강제, transition/animation 은 자유 (alphenix 내부 영향 차단) */
+    if (!document.getElementById('helix-equipment-nuke')) {
+      var st = document.createElement('style');
+      st.id = 'helix-equipment-nuke';
+      st.textContent =
+        /* 알페닉스 본인 + 조상 체인이 아닌 모든 요소 — 페이드/이동/애니메이션 전부 차단 */
+        'section.blackframe_image-he *:not([data-helix-protect]):not([data-helix-protect-anc]),' +
+        'section.clearframe *:not([data-helix-protect]):not([data-helix-protect-anc]) {' +
+        '  opacity: 1 !important;' +
+        '  transform: none !important;' +
+        '  visibility: visible !important;' +
+        '  animation: none !important;' +
+        '  transition: none !important;' +
+        '}' +
+        /* 섹션 자체 + 조상 체인 — 가시성만 보장, transition/animation 은 그대로 (alphenix 내부 동작 영향 X) */
+        'section.blackframe_image-he,' +
+        'section.clearframe,' +
+        'section.blackframe_image-he [data-helix-protect-anc],' +
+        'section.clearframe [data-helix-protect-anc] {' +
+        '  opacity: 1 !important;' +
+        '  visibility: visible !important;' +
+        '  transform: none !important;' +
+        '}';
+      document.head.appendChild(st);
+    }
+
     function neutralize() {
       var nodes = [scope];
       var all = scope.querySelectorAll('*');
       for (var i = 0; i < all.length; i++) nodes.push(all[i]);
       nodes.forEach(function (el) {
         if (el === alphenix) return;
+        if (el.hasAttribute && el.hasAttribute('data-helix-protect-anc')) {
+          /* 조상 체인 — transition/animation 건드리지 않음 (alphenix 영향 차단) */
+          if (el.hasAttribute('data-w-id')) el.removeAttribute('data-w-id');
+          if (el.style) {
+            el.style.removeProperty('opacity');
+            el.style.removeProperty('transform');
+            el.style.removeProperty('visibility');
+            el.style.setProperty('opacity',    '1',       'important');
+            el.style.setProperty('visibility', 'visible', 'important');
+            el.style.setProperty('transform',  'none',    'important');
+          }
+          return;
+        }
         if (el.hasAttribute && el.hasAttribute('data-w-id')) {
           el.removeAttribute('data-w-id');
         }
@@ -1534,15 +1584,32 @@
         el.style.removeProperty('opacity');
         el.style.removeProperty('transform');
         el.style.removeProperty('visibility');
+        el.style.removeProperty('animation');
+        el.style.removeProperty('transition');
         el.style.setProperty('opacity',    '1',       'important');
         el.style.setProperty('visibility', 'visible', 'important');
         el.style.setProperty('transform',  'none',    'important');
+        el.style.setProperty('animation',  'none',    'important');
+        el.style.setProperty('transition', 'none',    'important');
       });
     }
-    /* IX2 가 늦게 바인딩해도 덮도록 다중 시점 */
+    /* IX2 가 늦게 바인딩해도 덮도록 다중 시점 + MutationObserver */
     neutralize();
     setTimeout(neutralize, 300);
     setTimeout(neutralize, 1200);
+    setTimeout(neutralize, 3000);
+
+    /* MutationObserver — IX2 가 attribute(스타일) 변경하면 즉시 다시 무력화 */
+    if ('MutationObserver' in window) {
+      var mo = new MutationObserver(function () { neutralize(); });
+      mo.observe(scope, {
+        attributes: true,
+        attributeFilter: ['style', 'data-w-id'],
+        subtree: true
+      });
+      /* 10초 후 해제 — 이후 IX2 안 건드림 */
+      setTimeout(function () { mo.disconnect(); }, 10000);
+    }
 
     /* alphenix 단독 초기 hide */
     alphenix.style.opacity = '0';
