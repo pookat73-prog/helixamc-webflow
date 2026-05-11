@@ -1124,44 +1124,57 @@
     io.observe(el);
   }
 
-  /* ── Section 2-2 (.about_contents_grid-3) — column 단위 stagger 페이드인 ─
-     각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
-     + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 로 한 번에 등장.
-     좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
+  /* ── Section 2-2 (.about_contents_grid-3 / -3m) — fade-in 트리거 ────
+     데스크탑: 가로 3 컬럼. wrapper 진입 시 한 번에 발사 + 컬럼별 stagger.
+     모바일 (.about_contents_grid-3m): 세로 스택. 각 컬럼(.div-block-176)
+       마다 IO 따로 → 컬럼이 뷰포트 진입할 때 데스크탑 동일 시퀀스 발사
+       (영문 키워드 페이드인 → 0.5s 뒤 흰 박스 페이드인).
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    /* 데스크탑 wrapper = .about_contents_grid-3
-       모바일 복제본 wrapper = .about_contents_grid-3m
-         (Webflow "About_Contents_Grid 3(M)") — Webflow 가 (M) 을 떼고 m 만 남김 */
-    var containers = document.querySelectorAll(
-      '.about_contents_grid-3, .about_contents_grid-3m'
-    );
-    log('section2-2 reveal containers=' + containers.length);
-    if (!containers.length) return;
+    var BASE = 0.5;  /* 흰 박스 페이드 시작 딜레이 (s) — 영문 키워드 fade 와 거의 함께 */
+    var STEP = 0.18; /* 데스크탑 컬럼별 stagger 간격 (s) — 모바일 per-column 발사에선 적용 안 함 */
 
-    /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
-       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
-    var BASE = 0.5;  /* 파란 필기체 fade 와 거의 함께 시작 (s) */
-    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
+    function attachIO(target, onEnter, rootBottomPct) {
+      if (!('IntersectionObserver' in window)) { onEnter(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { onEnter(); io.disconnect(); }
+      }, { rootMargin: '0px 0px ' + rootBottomPct + ' 0px', threshold: 0 });
+      io.observe(target);
+    }
 
-    Array.prototype.forEach.call(containers, function (container) {
+    /* 데스크탑 — wrapper 진입 1회, 컬럼별 stagger */
+    var desktopWrappers = document.querySelectorAll('.about_contents_grid-3');
+    Array.prototype.forEach.call(desktopWrappers, function (container) {
       var blocks = container.querySelectorAll('.div-block-175');
       Array.prototype.forEach.call(blocks, function (b, i) {
         b.style.transitionDelay = (BASE + i * STEP) + 's';
       });
-
-      function trigger() {
+      attachIO(container, function () {
         if (container.dataset.s22Done) return;
         container.dataset.s22Done = '1';
         container.classList.add('is-section22-in');
-      }
-
-      if (!('IntersectionObserver' in window)) { trigger(); return; }
-      var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
-      }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
-      io.observe(container);
+      }, '-35%');
     });
+
+    /* 모바일 — 컬럼별 개별 IO. 각 컬럼의 흰 박스는 BASE 고정 딜레이. */
+    var mobileWrappers = document.querySelectorAll('.about_contents_grid-3m');
+    var mobileColCount = 0;
+    Array.prototype.forEach.call(mobileWrappers, function (container) {
+      var cols = container.querySelectorAll('.div-block-176');
+      mobileColCount += cols.length;
+      Array.prototype.forEach.call(cols, function (col) {
+        var box = col.querySelector('.div-block-175');
+        if (box) box.style.transitionDelay = BASE + 's';
+        attachIO(col, function () {
+          if (col.dataset.s22Done) return;
+          col.dataset.s22Done = '1';
+          col.classList.add('is-section22-in');
+        }, '-20%');
+      });
+    });
+
+    log('section2-2 reveal desktop=' + desktopWrappers.length +
+        ' mobile-cols=' + mobileColCount);
   }
 
   /* ── About History 표제 페이드인 ─────────────────────────────────
