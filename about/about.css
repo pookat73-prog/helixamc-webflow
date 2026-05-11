@@ -557,24 +557,30 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
    - 내부 요소들의 자체 fade/slide/scaleX 인터랙션은 모두 무력화 →
      상위 column 페이드가 단일 통제.
    - transition-delay 는 about.js 의 initSection22Reveal 이 인덱스별 부착.
+   - 모바일 복제본 wrapper = .about_contents_grid-3m
+     (Webflow 클래스명 "About_Contents_Grid 3(M)")
    ================================================================ */
-.about_contents_grid-3 .about_point-title_blue_whrite {
+.about_contents_grid-3 .about_point-title_blue_whrite,
+.about_contents_grid-3m .about_point-title_blue_whrite {
   opacity: 0;
   /* 3개 동시 페이드인 1.8s — 시작 딜레이 없음 (그림자보다 먼저) */
   transition: opacity 1.8s ease;
 }
-.about_contents_grid-3.is-section22-in .about_point-title_blue_whrite {
+.about_contents_grid-3.is-section22-in .about_point-title_blue_whrite,
+.about_contents_grid-3m.is-section22-in .about_point-title_blue_whrite {
   opacity: 1;
 }
 
 /* 흰 블록 자체 opacity 페이드인 — 그림자 + 안쪽 서브텍스트 / h3 / 디바이더
    까지 부모 opacity 에 편승해 한 번에 등장. (안쪽 자식들 opacity: 1 강제는
    아래 그룹 규칙에서 유지 — 부모 opacity 0 → 1 이 자식 가시성 통제) */
-.about_contents_grid-3 .div-block-175 {
+.about_contents_grid-3 .div-block-175,
+.about_contents_grid-3m .div-block-175 {
   opacity: 0;
   transition: opacity 1.2s ease;
 }
-.about_contents_grid-3.is-section22-in .div-block-175 {
+.about_contents_grid-3.is-section22-in .div-block-175,
+.about_contents_grid-3m.is-section22-in .div-block-175 {
   opacity: 1;
 }
 
@@ -583,7 +589,11 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 .about_contents_grid-3 .about_three_contents-box,
 .about_contents_grid-3 .about_contents-title,
 .about_contents_grid-3 .divider_blue_grad_no-spacing-1,
-.about_contents_grid-3 .divider_blue_grad_no-spacing {
+.about_contents_grid-3 .divider_blue_grad_no-spacing,
+.about_contents_grid-3m .about_three_contents-box,
+.about_contents_grid-3m .about_contents-title,
+.about_contents_grid-3m .divider_blue_grad_no-spacing-1,
+.about_contents_grid-3m .divider_blue_grad_no-spacing {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
