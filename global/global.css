@@ -11,6 +11,22 @@ body {
   overflow-wrap: break-word;
   hyphens: none;
   -webkit-hyphens: none;
+  -ms-hyphens: none;
+}
+
+/* ── 헤딩·히어로 슬로건은 Webflow Designer 내부 룰/인라인 스타일이
+       body 룰을 덮을 수 있어 !important 로 못박음.
+       "중/심" 처럼 단어 중간 줄바꿈 + 자동 하이픈 둘 다 차단. */
+h1, h2, h3, h4, h5, h6,
+.home_slogan, .home_slogan *,
+.div-block-150, .div-block-150 *,
+.about-heading, .about_contents_sub-title,
+.parag_title-w, .official-font_title, .official-font_title_en {
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+  -ms-hyphens: none !important;
 }
 
 /* ── 헤더 메뉴 ── */
