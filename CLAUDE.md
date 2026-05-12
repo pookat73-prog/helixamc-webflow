@@ -10,6 +10,7 @@
 ### ⚠️ 절대 지킬 것
 - **사용자 승인 없이 `main` 에 직접 머지 금지**
 - 예외: bootstrap.js 자체의 구조 변경 (main 에서 로드되므로 main 직접 반영)
+- **feature 브랜치는 항상 `origin/staging` 기준으로 시작** — main 기반이면 staging PR 시 충돌. `.claude/hooks/session-start.sh` 가 세션 시작 시 자동 재배치 (자체 커밋 없을 때만, 안전).
 
 ### 브랜치 ↔ 도메인 매핑
 | 브랜치 | 도메인 | 용도 |
