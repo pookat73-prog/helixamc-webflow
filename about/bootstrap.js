@@ -33,6 +33,20 @@
         console.warn('[about-bootstrap] card-stack 미가동 → cards visibility 강제 해제');
       }
     }, 3000);
+    /* 안전망: 10초 안에 about.js init() 이 실행되지 않으면 (스크립트 로드 실패
+       / 모바일 캐시 꼬임 등) Hero 텍스트를 강제 노출. 정상 로드된 경우
+       window.__helixAboutInited 가 true 라 스킵 — GSAP 타임라인 6s 폴백을
+       방해하지 않도록 여유 있게 10s 로 설정. */
+    setTimeout(function () {
+      if (window.__helixAboutInited) return;
+      var fix = document.createElement('style');
+      fix.textContent =
+        '.about-heading,.about_contents_sub-title,img.image-23,' +
+        '.about_contents-title,.about_three_contents-box' +
+        '{opacity:1!important;visibility:visible!important}';
+      document.head.appendChild(fix);
+      console.warn('[about-bootstrap] about.js 미가동 10s → Hero 텍스트 강제 노출');
+    }, 10000);
   } catch (e) {}
 
   var OWNER  = 'pookat73-prog';

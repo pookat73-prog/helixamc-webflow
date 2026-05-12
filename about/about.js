@@ -251,6 +251,30 @@
       if (!z || z < 2) child.style.zIndex = '2';
     });
 
+    /* iOS Safari + Low Power Mode / 자동재생 차단 사용자: <video autoplay>
+       속성만으로는 동적 주입 비디오가 재생 안 되는 케이스가 있음.
+       명시적 .play() 호출 + Promise rejection 시 첫 사용자 입력에서 재시도.
+       canplay 시 한 번 더 시도해 readyState 0 시점 race 도 커버. */
+    function tryPlay() {
+      try {
+        var p = v.play();
+        if (p && typeof p.then === 'function') {
+          p.catch(function (err) {
+            log('autoplay blocked, resume on user interaction:', err && err.name);
+            var resume = function () {
+              try { v.play().catch(function () {}); } catch (e) {}
+              document.removeEventListener('touchstart', resume, true);
+              document.removeEventListener('click', resume, true);
+            };
+            document.addEventListener('touchstart', resume, true);
+            document.addEventListener('click', resume, true);
+          });
+        }
+      } catch (e) {}
+    }
+    tryPlay();
+    v.addEventListener('canplay', tryPlay, { once: true });
+
     log('bg video injected:', src);
     return v;
   }
@@ -2263,6 +2287,10 @@
 
   function init() {
     log('init');
+    /* about/bootstrap.js FOUC 가드 안전망 비콘 — init 이 돌았음을 알림.
+       bootstrap 의 ~10s 폴백이 이 플래그를 보면 강제 노출을 스킵함
+       (정상 로드 중 GSAP 타임라인을 끊지 않기 위함). */
+    try { window.__helixAboutInited = true; } catch (e) {}
     /* TEMP HOLD — 헥사 모션그래픽 잠시 비활성화 (사용자 요청)
     renderHexDiagram();
     initHexAnimations();
