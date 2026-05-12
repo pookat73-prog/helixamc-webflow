@@ -1511,11 +1511,12 @@
     log('clearframe alphenix title=' + !!alphenix);
     if (!alphenix) return;
 
-    /* IX2 무력화 범위: BlackFrame_Image(HE) 부모 섹션 또는 ClearFrame.
-       부모 섹션이 있으면 거기까지(배경 포함), 없으면 ClearFrame 만. */
-    var bgFrame = alphenix.closest('section.blackframe_image-he');
-    var clearSec = alphenix.closest('section.clearframe') || alphenix.closest('section');
-    var scope = bgFrame || clearSec;
+    /* IX2 무력화 범위: 알페닉스의 부모 section (BlackFrame_Image(HE) 또는
+       그 자체). closest 로 직접 잡아 다른 페이지 section.clearframe 에는
+       영향 없도록 보장. */
+    var scope = alphenix.closest('section.blackframe_image-he') ||
+                alphenix.closest('section.clearframe') ||
+                alphenix.closest('section');
     if (!scope) return;
 
     /* alphenix 와 그 조상 체인 보호 마킹 — CSS nuke 룰 :not() 에서 제외.
