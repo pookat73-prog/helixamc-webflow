@@ -1449,15 +1449,20 @@
       b.style.setProperty('box-shadow', 'none', 'important');
     });
 
-    /* .div-block-178 (흰 블록 바로 아래 요소) — 3개 동시 페이드인,
-       흰 블록 fire 시점 + 200ms 딜레이. 그리드 컨테이너로 스코프 한정. */
+    /* .div-block-178 (본문) — 페이드 인터랙션 제거 (사용자 요청).
+       Webflow IX2 가 별도로 페이드 걸어도 무력화. */
     var subBlocks = document.querySelectorAll('.about_contents_grid-3 .div-block-178');
     Array.prototype.forEach.call(subBlocks, function (b) {
-      b.style.transition = 'opacity 1.3s cubic-bezier(0.87, 0, 0.13, 1), ' +
-                           'transform 1.3s cubic-bezier(0.87, 0, 0.13, 1)';
-      b.style.setProperty('opacity', '0', 'important');
-      b.style.setProperty('transform', 'scale(0.9)', 'important');
-      b.style.setProperty('transform-origin', 'center center', 'important');
+      if (b.hasAttribute('data-w-id')) b.removeAttribute('data-w-id');
+      b.style.removeProperty('opacity');
+      b.style.removeProperty('transform');
+      b.style.removeProperty('transition');
+      b.style.removeProperty('animation');
+      b.style.setProperty('opacity',    '1',       'important');
+      b.style.setProperty('transform',  'none',    'important');
+      b.style.setProperty('animation',  'none',    'important');
+      b.style.setProperty('transition', 'none',    'important');
+      b.style.setProperty('visibility', 'visible', 'important');
     });
 
     var fired = false;
@@ -1475,14 +1480,6 @@
               b.style.removeProperty('box-shadow');
             }, i * 150);
           });
-          /* div-block-178 — 흰 블록 인터 완료 후 시작.
-             흰 블록 stagger 마지막(2*150=300ms) + transition 1.2s = 1500ms. */
-          setTimeout(function () {
-            Array.prototype.forEach.call(subBlocks, function (b) {
-              b.style.removeProperty('opacity');
-              b.style.removeProperty('transform');
-            });
-          }, 1500);
         });
       });
     }
