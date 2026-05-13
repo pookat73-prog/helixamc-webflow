@@ -550,48 +550,40 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 }
 
 /* ================================================================
-   Section 2-2 — fade-in 트리거
-   - 데스크탑 (.about_contents_grid-3): wrapper 진입 시 .is-section22-in
-     부착 → 영문 키워드 3개 동시 + .div-block-175 컬럼별 stagger.
-   - 모바일 (Webflow "About_Contents_Grid 3(M)" 등 wrapper): 컬럼별 개별
-     .is-section22-in 부착. wrapper 클래스 의존 안 하고 컬럼(.div-block-176)
-     자체에 클래스를 붙여 발사 — 모바일 wrapper 의 Webflow 변환 클래스명이
-     불확실해도 동작 보장.
-   - .about_point-title_blue_whrite / .div-block-175 는 섹션 2-2 전용
-     클래스라 안전하게 글로벌 초기 상태 적용 가능.
-   - transition-delay 는 about.js 가 부착 (데스크탑 BASE+i*STEP / 모바일 BASE 고정).
+   Section 2-2 (.about_contents_grid-3) — column 단위 stagger 페이드인
+   - 각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
+     + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 페이드.
+   - 좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
+   - 내부 요소들의 자체 fade/slide/scaleX 인터랙션은 모두 무력화 →
+     상위 column 페이드가 단일 통제.
+   - transition-delay 는 about.js 의 initSection22Reveal 이 인덱스별 부착.
    ================================================================ */
-.about_point-title_blue_whrite {
+.about_contents_grid-3 .about_point-title_blue_whrite {
   opacity: 0;
+  /* 3개 동시 페이드인 1.8s — 시작 딜레이 없음 (그림자보다 먼저) */
   transition: opacity 1.8s ease;
 }
-.about_contents_grid-3.is-section22-in .about_point-title_blue_whrite,
-.div-block-176.is-section22-in .about_point-title_blue_whrite {
+.about_contents_grid-3.is-section22-in .about_point-title_blue_whrite {
   opacity: 1;
 }
 
 /* 흰 블록 자체 opacity 페이드인 — 그림자 + 안쪽 서브텍스트 / h3 / 디바이더
-   까지 부모 opacity 에 편승해 한 번에 등장. */
-.div-block-175 {
+   까지 부모 opacity 에 편승해 한 번에 등장. (안쪽 자식들 opacity: 1 강제는
+   아래 그룹 규칙에서 유지 — 부모 opacity 0 → 1 이 자식 가시성 통제) */
+.about_contents_grid-3 .div-block-175 {
   opacity: 0;
   transition: opacity 1.2s ease;
 }
-.about_contents_grid-3.is-section22-in .div-block-175,
-.div-block-176.is-section22-in .div-block-175 {
+.about_contents_grid-3.is-section22-in .div-block-175 {
   opacity: 1;
 }
 
-/* 섹션 2-2 한정 — 본문박스/타이틀/디바이더 자체 인터랙션 비활성화
-   (스크롤 reveal 은 영문 키워드 + 흰 블록 페이드인만).
-   .div-block-176 은 섹션 2-2 컬럼 전용이라 다른 섹션 안전. */
+/* 섹션 2-2 한정 — 본문박스/타이틀/디바이더 인터랙션 비활성화
+   (스크롤 reveal 은 파란 필기체 + 흰 블록 그림자만) */
 .about_contents_grid-3 .about_three_contents-box,
 .about_contents_grid-3 .about_contents-title,
 .about_contents_grid-3 .divider_blue_grad_no-spacing-1,
-.about_contents_grid-3 .divider_blue_grad_no-spacing,
-.div-block-176 .about_three_contents-box,
-.div-block-176 .about_contents-title,
-.div-block-176 .divider_blue_grad_no-spacing-1,
-.div-block-176 .divider_blue_grad_no-spacing {
+.about_contents_grid-3 .divider_blue_grad_no-spacing {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
@@ -699,13 +691,21 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 }
 
 /* ================================================================
-   닻 메뉴 바 — 히어로 섹션 지나 스크롤 시 header 바로 밑에 걸려 고정.
+   닻 메뉴 바 (헬릭스, 치료의 철학 등) — fixed header 바로 밑에 sticky.
+   header 높이 56px 아래에 붙어 스크롤 중 항상 보이며 본문이 그 사이로
+   비치는 갭을 차단. 솔리드 bg(rgb 244,247,251) 는 Webflow 가 이미 박아둠.
    ================================================================ */
 section.subheader {
-  position: sticky !important;
-  top: var(--header-h, 56px) !important;
-  z-index: 49 !important;
-  margin-top: -1px !important;
+  position: sticky;
+  top: 56px;
+  z-index: 50;
+  /* 위쪽 1px 갭으로 body 다크 bg 가 비치는 케이스 차단 */
+  margin-top: -1px;
+  /* 아래쪽 sub-pixel 갭 차단 — sticky 가 fractional scroll 위치에서 멈출 때
+     브라우저가 element bottom 을 1px 비워 뒤쪽 layer (html bg / fixed navbar)
+     가 비치는 검정 라인 현상. padding-bottom 으로 bg 영역을 1px 더 늘려
+     덮음. (box-shadow 는 Webflow 원본 그림자를 덮어쓰므로 사용 ❌) */
+  padding-bottom: 1px;
 }
 
 /* ================================================================
@@ -721,18 +721,6 @@ body {
 }
 
 /* ================================================================
-   about 페이지 — 헤더 항상 고정 (IX2 hide-on-scroll 차단)
-   Webflow IX2 가 스크롤 시 transform: translateY(-100%) 로 헤더를
-   숨기는 동작을 about 페이지에서만 완전히 막음.
-   ================================================================ */
-header.header {
-  position: fixed !important;
-  top: 0 !important;
-  transform: none !important;
-  transition: none !important;
-}
-
-/* ================================================================
    섹션 1 hero — bg-video sub-pixel 렌더링 갭 차단.
    - 부모 overflow:hidden 으로 video edge clip 보장
    - video 자체 GPU 합성 promotion (translateZ + backface-visibility) 으로
@@ -741,129 +729,24 @@ header.header {
 .About_Background,
 .about_background,
 .about-background {
-  position: relative !important;
-  height: 90vh !important;
-  overflow: hidden !important;
+  overflow: hidden;
 }
 .About_Background video.helix-bg-video,
 .about_background video.helix-bg-video,
 .about-background video.helix-bg-video {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center center !important;
-  transform: translateZ(0) !important;
+  transform: translateZ(0);
   backface-visibility: hidden;
 }
 
-/* ── Div Block 187 — Webflow 기본 노출 보장 ──
-   페이드인 인터랙션 (#497~#506) 이 IO/폴백/IX2 race 로 영구 숨김 사고를
-   반복해 폐기. IX2 가 inline opacity:0 / visibility:hidden 을 걸어둘
-   가능성을 모두 차단 — author !important 가 인라인 !important 를 못 이기는
-   케이스 대비 animation 레이어 동시 적용 (cascade: animation > author !important). */
-.div-block-187 {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
-  animation: div187ForceShow 0.01s linear forwards;
-}
-@keyframes div187ForceShow {
-  from { opacity: 1; visibility: visible; }
-  to   { opacity: 1; visibility: visible; }
-}
-
-/* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
-   [원인 후보 모두 제압]
-   1) 컨테이너 높이 강제 + padding/margin/border 제거 (외곽 새는 영역 차단)
-   2) 비디오를 100vw × 90vh 로 viewport 단위 직접 지정 (% 계산 의존 제거)
-   3) JS 인라인 (width:100% / height:100% / inset:0) 을 !important 로 모두 뚫음
-   4) 부모 overflow:hidden 로 viewport 단위 비디오를 섹션에 클립
+/* ── 태블릿: 히어로 배경 비디오 섹션 꽉 채우기 ──────────────────
+   태블릿(768~991px)에서 .About_Background 의 height 가 auto 로 내려와
+   video 의 position:absolute + bottom:0 이 동작 안 함.
+   min-height: 100svh 로 부모에 확정 높이를 부여해 video 가 꽉 채우게.
    ─────────────────────────────────────────────────────────────── */
 @media (max-width: 991px) and (min-width: 768px) {
   .About_Background,
   .about_background,
   .about-background {
-    height: 90vh !important;
-    min-height: 90vh !important;
-    max-height: 90vh !important;
-    padding: 0 !important;
-    border: 0 !important;
-    overflow: hidden !important;
-    position: relative !important;
-    background-color: transparent !important;
-  }
-
-  .About_Background video.helix-bg-video,
-  .about_background video.helix-bg-video,
-  .about-background video.helix-bg-video,
-  video.helix-bg-video {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: 100vw !important;
-    height: 90vh !important;
-    min-width: 100vw !important;
-    min-height: 90vh !important;
-    max-width: none !important;
-    max-height: none !important;
-    object-fit: cover !important;
-    object-position: center center !important;
-    transform: translateZ(0) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-  }
-
-  /* id="1" 인 검정 wrapper 직접 타겟 — DevTools 검사 결과 추적 */
-  #\31 {
-    height: 90vh !important;
-    min-height: 90vh !important;
-    max-height: 90vh !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: 0 !important;
-    background-color: transparent !important;
-    overflow: hidden !important;
-    position: relative !important;
-  }
-
-  /* 극단 specificity — body + tag + id + class 조합으로 어떤 Webflow CSS도 제압 */
-  body section#\31.about_background {
-    height: 90vh !important;
-    min-height: 90vh !important;
-    max-height: 90vh !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background: transparent !important;
-    background-color: transparent !important;
-    background-image: none !important;
-    overflow: hidden !important;
-    position: relative !important;
-    display: block !important;
-  }
-
-  body section#\31.about_background > video.helix-bg-video {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
-    max-width: none !important;
-    max-height: none !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    transform: translateZ(0) !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
+    min-height: 100svh;
   }
 }

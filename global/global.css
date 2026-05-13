@@ -9,8 +9,6 @@
 body {
   word-break: keep-all;
   overflow-wrap: break-word;
-  hyphens: none;
-  -webkit-hyphens: none;
 }
 
 /* ── 헤더 메뉴 ── */
