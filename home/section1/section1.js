@@ -61,56 +61,6 @@
 
   var started = false;
 
-  /* 슬로건 안 모든 텍스트 노드의 단어(공백 단위)를
-       <span data-helix-nowrap style="white-space:nowrap"> 로 감싼다.
-
-       CSS `word-break: keep-all` 만으로는 "단어 폭 > 컨테이너 폭"일 때
-       단어가 강제로 끊기는 케이스를 막을 수 없어, 모바일 좁은 폭에서
-       "중심" 같은 두 글자 한국어 단어가 "중" / "심" 두 줄로 갈리던 문제
-       정면 차단. 단어가 컨테이너보다 크면 단어 전체가 다음 줄로 넘어감
-       (overflow 발생 X — wrap span 은 inline 이라 다음 줄 가능).
-
-       detachWithGhost 의 cloneNode(true) 가 wrap 결과를 함께 복제하므로
-       ghost 측정 폭과 slogan 자연 폭이 일치 → width lock 정확. */
-  function wrapKoreanWords(root) {
-    if (!root || root.dataset.helixWrapped === '1') return;
-    var walker = document.createTreeWalker(
-      root,
-      NodeFilter.SHOW_TEXT,
-      {
-        acceptNode: function (node) {
-          if (!node.nodeValue || !/\S/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
-          if (node.parentNode && node.parentNode.getAttribute &&
-              node.parentNode.getAttribute('data-helix-nowrap') === '1') {
-            return NodeFilter.FILTER_REJECT;
-          }
-          return NodeFilter.FILTER_ACCEPT;
-        }
-      }
-    );
-    var textNodes = [];
-    while (walker.nextNode()) textNodes.push(walker.currentNode);
-    textNodes.forEach(function (textNode) {
-      var parts = textNode.nodeValue.split(/(\s+)/);
-      var frag = document.createDocumentFragment();
-      parts.forEach(function (part) {
-        if (!part) return;
-        if (/^\s+$/.test(part)) {
-          frag.appendChild(document.createTextNode(part));
-        } else {
-          var span = document.createElement('span');
-          span.setAttribute('data-helix-nowrap', '1');
-          span.style.whiteSpace = 'nowrap';
-          span.style.wordBreak = 'keep-all';
-          span.textContent = part;
-          frag.appendChild(span);
-        }
-      });
-      if (textNode.parentNode) textNode.parentNode.replaceChild(frag, textNode);
-    });
-    root.dataset.helixWrapped = '1';
-  }
-
   /* Virtual placeholder: clone el as ghost, move el out to targetParent */
   function detachWithGhost(el, targetParent) {
     var origParent = el.parentNode;
@@ -171,9 +121,6 @@
     }
 
     var slogan = document.querySelector('.home_slogan');
-    /* 슬로건 안 한국어 단어 단위 nowrap 적용 — detach/fade 전에 한 번만.
-       모바일 좁은 폭에서 "중심" 같은 두 글자 단어가 한 글자씩 끊기던 문제 차단. */
-    if (slogan) wrapKoreanWords(slogan);
     /* bg section: legacy .div-block-150 → new BlackFrame_Image(Hero).
        Attribute selector covers paren-escape and casing variants. */
     var bg     = document.querySelector('.div-block-150') ||
