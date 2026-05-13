@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - main
-      - staging
     paths:
       - 'home/**'
       - 'about/**'
       - 'global/**'
-      - '.github/workflows/webflow-deploy.yml'
   workflow_dispatch:
 
 jobs:
@@ -19,19 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Determine target branch
-        id: ref
-        run: |
-          # push 트리거면 push 된 브랜치, workflow_dispatch 면 main 디폴트
-          BRANCH="${GITHUB_REF_NAME:-main}"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -z "$BRANCH" ]; then
-            BRANCH="main"
-          fi
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-          echo "→ target branch: $BRANCH"
-
       - name: Build reference head code (bootstrap loader)
-        if: steps.ref.outputs.branch == 'main'
         run: |
           # Bootstrap pattern: head code references bootstrap.js at @main.
           # Bootstrap fetches the latest commit SHA from GitHub API at runtime
@@ -47,81 +33,53 @@ jobs:
           cat /tmp/head_cdn.txt
           echo "---"
 
-      - name: Purge jsDelivr cache
+      - name: Purge jsDelivr cache for bootstrap.js
         run: |
-          BRANCH="${{ steps.ref.outputs.branch }}"
-          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${BRANCH}"
-          # @SHA URL 은 immutable 이라 퍼지 불필요. 단 mutable @branch URL 은
-          # bootstrap.js 가 SHA 로드 실패 시 fallback 경로로 사용 + bootstrap.js
-          # 자체도 @branch 로 로드되므로 모두 퍼지 필요.
+          # Only bootstrap.js references @main (everything else loads via commit SHA).
+          # So this is the only file that actually needs cache purging.
+          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main"
           FILES=(
             "home/bootstrap.js"
+            "home/bootstrap-v2.js"
+            "home/bootstrap-v3.js"
             "about/bootstrap.js"
-            "about/about.css"
-            "about/about.js"
+            "global/bootstrap.js"
             "about/bg-video.mp4"
-            "global/global.css"
-            "home/section1/section1.css"
-            "home/section1/section1.js"
-            "home/section-divider/divider.css"
-            "home/section-divider/divider.js"
-            "home/global/buttons.css"
-            "home/global/buttons.js"
-            "home/global/sections-animations.css"
-            "home/global/sections-animations.js"
-            "home/global/coming-soon.css"
-            "home/global/coming-soon.js"
-            "home/global/hamburger.css"
-            "home/global/hamburger.js"
-            "home/global/card-stack.css"
-            "home/global/card-stack.js"
-            "home/global/footer.css"
-            "home/global/footer.js"
-            "home/equipment/equipment.js"
           )
-          echo "Purging @${BRANCH} (${#FILES[@]} files)…"
           FAILED=0
           for f in "${FILES[@]}"; do
-            printf "  /%s → " "$f"
+            printf "Purging /%s → " "$f"
             code=$(curl -s -o /tmp/purge_out.txt -w "%{http_code}" "${BASE}/${f}")
             echo "HTTP $code"
             if [ "$code" != "200" ]; then
-              echo "    body: $(cat /tmp/purge_out.txt)"
+              echo "  body: $(cat /tmp/purge_out.txt)"
               FAILED=$((FAILED + 1))
             fi
           done
           if [ $FAILED -gt 0 ]; then
-            echo "⚠️ $FAILED files failed purge — bootstrap fallback may serve stale until TTL expires"
+            echo "⚠️ 퍼지 실패 — bootstrap.js는 드물게 변경되므로 보통 괜찮음"
           else
-            echo "✅ @${BRANCH} 캐시 퍼지 완료"
+            echo "✅ bootstrap.js 캐시 퍼지 완료"
           fi
 
       - name: Summary
         if: always()
         run: |
-          BRANCH="${{ steps.ref.outputs.branch }}"
           {
-            echo "## ✅ CDN Auto Deploy — \`${BRANCH}\`"
+            echo "## ✅ CDN Auto Deploy (Bootstrap Mode)"
             echo ""
             echo "커밋: \`${{ github.sha }}\`"
             echo ""
-            if [ "$BRANCH" = "main" ]; then
-              echo "정식 사이트 (커스텀 도메인) — jsDelivr \`@main\` 캐시 퍼지 완료."
-            else
-              echo "스테이징 사이트 (.webflow.io) — jsDelivr \`@${BRANCH}\` 캐시 퍼지 완료."
-            fi
             echo "bootstrap.js가 런타임에 GitHub API로 최신 커밋 SHA를 조회 → immutable commit URL로 파일 로드."
             echo "브라우저에서 새로고침만 하면 항상 최신 버전이 뜹니다."
-            if [ "$BRANCH" = "main" ]; then
-              echo ""
-              echo "---"
-              echo ""
-              echo "### 📌 **최초 1회만** 아래 두 줄을 Webflow 홈 페이지 → Page Settings → Inside \`<head>\` tag 에 붙여넣으세요"
-              echo ""
-              echo '```html'
-              cat /tmp/head_cdn.txt
-              echo '```'
-              echo ""
-              echo "붙여넣은 후 Webflow에서 **한 번만 Publish**. 이후 코드 수정은 푸시만 하면 자동 반영."
-            fi
+            echo ""
+            echo "---"
+            echo ""
+            echo "### 📌 **최초 1회만** 아래 두 줄을 Webflow 홈 페이지 → Page Settings → Inside \`<head>\` tag 에 붙여넣으세요"
+            echo ""
+            echo '```html'
+            cat /tmp/head_cdn.txt
+            echo '```'
+            echo ""
+            echo "붙여넣은 후 Webflow에서 **한 번만 Publish**. 이후 코드 수정은 푸시만 하면 자동 반영."
           } >> $GITHUB_STEP_SUMMARY
