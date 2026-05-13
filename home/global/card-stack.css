@@ -95,15 +95,10 @@
   right: -64px;
 }
 
+/* 모바일: 화살표 숨김 — 스와이프로 카드 넘김.
+   `right: -44px` 가 뷰포트 밖으로 삐져나가 가로 스크롤 유발하던 이슈 차단. */
 @media (max-width: 600px) {
   .helix-deck-arrow {
-    width: 40px;
-    height: 40px;
+    display: none !important;
   }
-  .helix-deck-arrow svg {
-    width: 20px;
-    height: 20px;
-  }
-  .helix-deck-arrow-left  { left: -44px; }
-  .helix-deck-arrow-right { right: -44px; }
 }
