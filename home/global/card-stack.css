@@ -102,3 +102,49 @@
     display: none !important;
   }
 }
+
+/* ============================================================
+   SWIPE HINT — host 우측 상단 ›››
+   모바일에서만 표시. 좌→우로 흐르는 시퀀셜 페이드로 "오른쪽으로
+   스와이프" 의도를 시각화. 첫 사용자 인터랙션 시 페이드아웃 후 제거.
+   ============================================================ */
+.helix-deck-swipe-hint {
+  position: absolute;
+  top: -28px;
+  right: 4px;
+  display: none;  /* 데스크는 미표시 */
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  z-index: 60;
+  font-size: 22px;
+  line-height: 1;
+  color: #0075d6;
+  font-weight: 700;
+  transition: opacity 0.4s ease;
+}
+
+.helix-deck-swipe-hint.is-dismissed {
+  opacity: 0;
+}
+
+.helix-deck-chev {
+  display: inline-block;
+  opacity: 0.2;
+  animation: helix-deck-chev-flow 1.6s ease-in-out infinite;
+}
+
+.helix-deck-chev-1 { animation-delay: 0s;    }
+.helix-deck-chev-2 { animation-delay: 0.2s;  }
+.helix-deck-chev-3 { animation-delay: 0.4s;  }
+
+@keyframes helix-deck-chev-flow {
+  0%, 60%, 100% { opacity: 0.2; transform: translateX(0); }
+  30%           { opacity: 1.0; transform: translateX(2px); }
+}
+
+@media (max-width: 600px) {
+  .helix-deck-swipe-hint {
+    display: inline-flex;
+  }
+}

@@ -379,6 +379,27 @@
     host.appendChild(leftArrow);
     host.appendChild(rightArrow);
 
+    /* 모바일 스와이프 힌트 — host 우측 상단에 > > > 시퀀셜 페이드.
+       사용자가 처음 카드 넘기면 자동 사라짐. CSS @media 로 모바일에서만 표시. */
+    var hint = document.createElement('div');
+    hint.className = 'helix-deck-swipe-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    hint.innerHTML =
+      '<span class="helix-deck-chev helix-deck-chev-1">›</span>' +
+      '<span class="helix-deck-chev helix-deck-chev-2">›</span>' +
+      '<span class="helix-deck-chev helix-deck-chev-3">›</span>';
+    host.appendChild(hint);
+
+    function dismissHint() {
+      if (!hint || hint.dataset.helixDismissed) return;
+      hint.dataset.helixDismissed = '1';
+      hint.classList.add('is-dismissed');
+    }
+    /* 첫 사용자 인터랙션(스와이프 시작 또는 화살표 클릭) 에서 dismiss */
+    host.addEventListener('pointerdown', dismissHint, { once: true, capture: true });
+    leftArrow.addEventListener('click', dismissHint, { once: true });
+    rightArrow.addEventListener('click', dismissHint, { once: true });
+
     /* 리사이즈 시 host 크기 재측정 */
     var resizeTimer = null;
     window.addEventListener('resize', function () {
