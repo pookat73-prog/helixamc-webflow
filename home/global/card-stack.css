@@ -110,8 +110,10 @@
    ============================================================ */
 .helix-deck-swipe-hint {
   position: absolute;
-  top: -28px;
-  right: 4px;
+  /* 카드 안쪽 우측 상단. "2019" 같은 카드 본문 텍스트의 좌측 패딩과
+     대칭이 되도록 동일 간격을 우측·상단에 부여. */
+  top: 28px;
+  right: 28px;
   display: none;  /* 데스크는 미표시 */
   align-items: center;
   gap: 2px;
