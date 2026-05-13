@@ -37,8 +37,8 @@
   /* 안전장치: 강제로 진단 모드 켜고 싶을 땐 URL 에 ?deck-dry=1 */
   var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
   var VISIBLE        = 4;        /* 동시에 보이는 카드 수 */
-  var STACK_OFFSET_Y = 8;        /* 카드 간 y 오프셋 (px) — 촘촘하게 */
-  var STACK_OFFSET_X = 8;        /* 카드 간 x 오프셋 (px) */
+  var STACK_OFFSET_Y = 4;        /* 카드 간 y 오프셋 (px) — 촘촘하게 */
+  var STACK_OFFSET_X = 4;        /* 카드 간 x 오프셋 (px) */
   var STACK_TILT     = 0;        /* 회전 없음 */
   var STACK_SCALE    = 0;        /* 스케일 변화 없음 */
   var FLY_THRESHOLD = 0.25;     /* 카드 너비의 25% 드래그 시 날아감 */

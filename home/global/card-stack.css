@@ -18,11 +18,14 @@
    화살표(.helix-deck-arrow)는 host 자식이지만 카드 규칙에서 제외 */
 .helix-deck-host > .just-box_qqqqqqq,
 .helix-deck-host > .just-box_card,
-.helix-deck-host > *:not(.helix-deck-arrow) {
+.helix-deck-host > *:not(.helix-deck-arrow):not(.helix-deck-swipe-hint) {
   position: absolute !important;
   left: 50%;
   top: 0;
   margin: 0 !important;
+  /* JS 가 width/height 를 inline px 로 강제하므로 Webflow padding 이
+     border-box 기준으로 안쪽에 정확히 적용되도록 명시. */
+  box-sizing: border-box !important;
   transform-origin: 50% 50%;
   will-change: transform, opacity;
   cursor: grab;
