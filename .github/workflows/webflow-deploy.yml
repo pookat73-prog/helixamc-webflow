@@ -62,6 +62,65 @@ jobs:
             echo "✅ bootstrap.js 캐시 퍼지 완료"
           fi
 
+      - name: Warm up jsDelivr for new commit SHA
+        run: |
+          # jsDelivr indexes a commit SHA lazily (on first request).
+          # If users hit the site before indexing completes, those file loads fail.
+          # Pre-fetching every content file here forces jsDelivr to index them
+          # before any user sees the page.
+          SHA="${{ github.sha }}"
+          BASE="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${SHA}"
+          FILES=(
+            "global/global.css"
+            "home/section1/section1.css"
+            "home/section1/section1.js"
+            "home/section-divider/divider.css"
+            "home/section-divider/divider.js"
+            "home/global/buttons.css"
+            "home/global/buttons.js"
+            "home/global/sections-animations.css"
+            "home/global/sections-animations.js"
+            "home/global/coming-soon.css"
+            "home/global/coming-soon.js"
+            "home/global/hamburger.css"
+            "home/global/hamburger.js"
+            "home/global/footer.css"
+            "home/global/footer.js"
+            "home/global/card-stack.css"
+            "home/global/card-stack.js"
+            "home/equipment/equipment.js"
+            "about/about.css"
+            "about/about.js"
+          )
+          FAILED=0
+          for f in "${FILES[@]}"; do
+            printf "Warming /%s → " "$f"
+            code=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/${f}")
+            echo "HTTP $code"
+            if [ "$code" != "200" ]; then
+              FAILED=$((FAILED + 1))
+            fi
+          done
+          if [ $FAILED -gt 0 ]; then
+            echo "⚠️ $FAILED 파일 워밍업 실패 — jsDelivr 인덱싱 지연일 수 있음. 재시도..."
+            sleep 15
+            FAILED2=0
+            for f in "${FILES[@]}"; do
+              code=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/${f}")
+              if [ "$code" != "200" ]; then
+                echo "  여전히 실패: $f (HTTP $code)"
+                FAILED2=$((FAILED2 + 1))
+              fi
+            done
+            if [ $FAILED2 -gt 0 ]; then
+              echo "⚠️ 재시도 후에도 $FAILED2 파일 미인덱싱 — 사용자 측에서 잠깐 fallback @main 이 동작할 수 있음"
+            else
+              echo "✅ 재시도 후 워밍업 완료"
+            fi
+          else
+            echo "✅ 모든 콘텐츠 파일 jsDelivr 워밍업 완료"
+          fi
+
       - name: Summary
         if: always()
         run: |
