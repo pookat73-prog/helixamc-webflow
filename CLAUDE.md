@@ -1,23 +1,7 @@
 # Helix AMC Webflow — Claude 작업 가이드
 
-## 워크플로우 — Staging / Production 2단계
-
-### 기본 흐름
-1. 작업 완료 → 커밋 · 푸시 → **`staging` 브랜치로 PR 생성 · 자동 머지**
-2. 스테이징 사이트(`.webflow.io`)에서 사용자 검증
-3. 사용자가 **"정식 반영해"** 라고 하면 → Claude 가 `staging → main` PR 생성 · 자동 머지
-
-### ⚠️ 절대 지킬 것
-- **사용자 승인 없이 `main` 에 직접 머지 금지**
-- 예외: bootstrap.js 자체의 구조 변경 (main 에서 로드되므로 main 직접 반영)
-
-### 브랜치 ↔ 도메인 매핑
-| 브랜치 | 도메인 | 용도 |
-|---|---|---|
-| `staging` | `.webflow.io` | 검증 |
-| `main` | 커스텀 도메인 | 정식 서비스 |
-
-bootstrap.js 가 `location.hostname`으로 `.webflow.io` 여부를 판별해 자동 분기.
+## 워크플로우
+- 작업 완료(커밋·푸시) 후 자동으로 PR 생성, 자동 머지까지 수행.
 
 ## 프로젝트 개요
 Webflow로 만든 Helix 동물병원(helix-amc) 사이트의 커스텀 CSS/JS를

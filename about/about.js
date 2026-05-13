@@ -1124,80 +1124,39 @@
     io.observe(el);
   }
 
-  /* ── Section 2-2 — fade-in 트리거 ───────────────────────────────
-     데스크탑 (.about_contents_grid-3): 가로 3 컬럼. wrapper 진입 시
-       .is-section22-in → 영문 키워드 동시 페이드인 + .div-block-175
-       컬럼별 stagger.
-     모바일 (Webflow "About_Contents_Grid 3(M)" 등 별도 wrapper): 세로 스택.
-       wrapper 실제 CSS 클래스명이 Webflow 변환으로 어떻게 되는지 불확실해
-       (class*= 매칭도 빗나간 사례 있음) wrapper 클래스 의존 안 함.
-       대신 .div-block-176 컬럼이 데스크탑 wrapper 안인지 여부로 판별 →
-       바깥쪽 컬럼은 모바일 복제본으로 간주, 컬럼별 IO 부착.
+  /* ── Section 2-2 (.about_contents_grid-3) — column 단위 stagger 페이드인 ─
+     각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
+     + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 로 한 번에 등장.
+     좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    var BASE = 0.5;
-    var STEP = 0.18;
+    var containers = document.querySelectorAll('.about_contents_grid-3');
+    log('section2-2 reveal containers=' + containers.length);
+    if (!containers.length) return;
 
-    function attachIO(target, onEnter, rootBottomPct) {
-      if (!('IntersectionObserver' in window)) { onEnter(); return; }
-      var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) { onEnter(); io.disconnect(); }
-      }, { rootMargin: '0px 0px ' + rootBottomPct + ' 0px', threshold: 0 });
-      io.observe(target);
-    }
+    /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
+       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
+    var BASE = 0.5;  /* 파란 필기체 fade 와 거의 함께 시작 (s) */
+    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
 
-    /* IX2 native 인터랙션 무력화 helper — Webflow Designer 가 본문 등에
-       슬라이드 페이드인 IX2 를 붙여 놓은 경우, data-w-id 만 떼면 바인딩이
-       끊겨 인라인 opacity/transform 이 더 이상 갱신되지 않음. */
-    function neutralizeIX2(el) {
-      if (!el) return;
-      el.removeAttribute('data-w-id');
-      el.style.removeProperty('opacity');
-      el.style.removeProperty('transform');
-      el.style.removeProperty('filter');
-      el.style.removeProperty('visibility');
-    }
-
-    /* 데스크탑 — wrapper 진입 1회, .div-block-175 컬럼별 stagger */
-    var desktopWrappers = document.querySelectorAll('.about_contents_grid-3');
-    Array.prototype.forEach.call(desktopWrappers, function (container) {
+    Array.prototype.forEach.call(containers, function (container) {
       var blocks = container.querySelectorAll('.div-block-175');
       Array.prototype.forEach.call(blocks, function (b, i) {
         b.style.transitionDelay = (BASE + i * STEP) + 's';
       });
-      attachIO(container, function () {
+
+      function trigger() {
         if (container.dataset.s22Done) return;
         container.dataset.s22Done = '1';
         container.classList.add('is-section22-in');
-      }, '-35%');
+      }
+
+      if (!('IntersectionObserver' in window)) { trigger(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+      }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
+      io.observe(container);
     });
-
-    /* 모바일 — 데스크탑 wrapper 바깥의 .div-block-176 컬럼들에만 per-column IO.
-       .div-block-176 은 섹션 2-2 컬럼 전용 클래스라 다른 섹션 오염 없음. */
-    var allCols = document.querySelectorAll('.div-block-176');
-    var mobileColCount = 0;
-    Array.prototype.forEach.call(allCols, function (col) {
-      if (col.closest('.about_contents_grid-3')) return; /* 데스크탑 컬럼 — 위에서 처리 */
-      if (!col.querySelector('.about_point-title_blue_whrite')) return; /* 안전망 */
-
-      mobileColCount++;
-      var box = col.querySelector('.div-block-175');
-      if (box) box.style.transitionDelay = BASE + 's';
-
-      /* 본문 슬라이드-블러-페이드인은 빼야 함. Webflow IX2 가 인라인으로
-         밀어넣을 가능성도 있어 data-w-id 도 제거. */
-      var bodies = col.querySelectorAll('.about_three_contents-box');
-      Array.prototype.forEach.call(bodies, neutralizeIX2);
-
-      attachIO(col, function () {
-        if (col.dataset.s22Done) return;
-        col.dataset.s22Done = '1';
-        col.classList.add('is-section22-in');
-      }, '-20%');
-    });
-
-    log('section2-2 reveal desktop=' + desktopWrappers.length +
-        ' mobile-cols=' + mobileColCount);
   }
 
   /* ── About History 표제 페이드인 ─────────────────────────────────
@@ -1449,20 +1408,15 @@
       b.style.setProperty('box-shadow', 'none', 'important');
     });
 
-    /* .div-block-178 (본문) — 페이드 인터랙션 제거 (사용자 요청).
-       Webflow IX2 가 별도로 페이드 걸어도 무력화. */
+    /* .div-block-178 (흰 블록 바로 아래 요소) — 3개 동시 페이드인,
+       흰 블록 fire 시점 + 200ms 딜레이. 그리드 컨테이너로 스코프 한정. */
     var subBlocks = document.querySelectorAll('.about_contents_grid-3 .div-block-178');
     Array.prototype.forEach.call(subBlocks, function (b) {
-      if (b.hasAttribute('data-w-id')) b.removeAttribute('data-w-id');
-      b.style.removeProperty('opacity');
-      b.style.removeProperty('transform');
-      b.style.removeProperty('transition');
-      b.style.removeProperty('animation');
-      b.style.setProperty('opacity',    '1',       'important');
-      b.style.setProperty('transform',  'none',    'important');
-      b.style.setProperty('animation',  'none',    'important');
-      b.style.setProperty('transition', 'none',    'important');
-      b.style.setProperty('visibility', 'visible', 'important');
+      b.style.transition = 'opacity 1.3s cubic-bezier(0.87, 0, 0.13, 1), ' +
+                           'transform 1.3s cubic-bezier(0.87, 0, 0.13, 1)';
+      b.style.setProperty('opacity', '0', 'important');
+      b.style.setProperty('transform', 'scale(0.9)', 'important');
+      b.style.setProperty('transform-origin', 'center center', 'important');
     });
 
     var fired = false;
@@ -1480,6 +1434,14 @@
               b.style.removeProperty('box-shadow');
             }, i * 150);
           });
+          /* div-block-178 — 흰 블록 인터 완료 후 시작.
+             흰 블록 stagger 마지막(2*150=300ms) + transition 1.2s = 1500ms. */
+          setTimeout(function () {
+            Array.prototype.forEach.call(subBlocks, function (b) {
+              b.style.removeProperty('opacity');
+              b.style.removeProperty('transform');
+            });
+          }, 1500);
         });
       });
     }
@@ -1511,50 +1473,12 @@
     log('clearframe alphenix title=' + !!alphenix);
     if (!alphenix) return;
 
-    /* IX2 무력화 범위: 알페닉스의 부모 section (BlackFrame_Image(HE) 또는
-       그 자체). closest 로 직접 잡아 다른 페이지 section.clearframe 에는
-       영향 없도록 보장. */
-    var scope = alphenix.closest('section.blackframe_image-he') ||
-                alphenix.closest('section.clearframe') ||
-                alphenix.closest('section');
+    /* IX2 무력화 범위: BlackFrame_Image(HE) 부모 섹션 또는 ClearFrame.
+       부모 섹션이 있으면 거기까지(배경 포함), 없으면 ClearFrame 만. */
+    var bgFrame = alphenix.closest('section.blackframe_image-he');
+    var clearSec = alphenix.closest('section.clearframe') || alphenix.closest('section');
+    var scope = bgFrame || clearSec;
     if (!scope) return;
-
-    /* alphenix 와 그 조상 체인 보호 마킹 — CSS nuke 룰 :not() 에서 제외.
-       (조상 체인까지 보호해야 alphenix 가 inheriting transition/animation 영향 안 받음) */
-    alphenix.setAttribute('data-helix-protect', '1');
-    var anc = alphenix.parentElement;
-    while (anc && anc !== scope.parentElement) {
-      anc.setAttribute('data-helix-protect-anc', '1');
-      anc = anc.parentElement;
-    }
-
-    /* CSS nuke — 인라인 !important 로도 못 잡는 transition/animation 까지 강제 차단.
-       :not([data-helix-protect]) → 알페닉스 본인 제외
-       조상 체인은 transform/opacity 만 강제, transition/animation 은 자유 (alphenix 내부 영향 차단) */
-    if (!document.getElementById('helix-equipment-nuke')) {
-      var st = document.createElement('style');
-      st.id = 'helix-equipment-nuke';
-      st.textContent =
-        /* 알페닉스 본인 + 조상 체인이 아닌 모든 요소 — 페이드/이동/애니메이션 전부 차단 */
-        'section.blackframe_image-he *:not([data-helix-protect]):not([data-helix-protect-anc]),' +
-        'section.clearframe *:not([data-helix-protect]):not([data-helix-protect-anc]) {' +
-        '  opacity: 1 !important;' +
-        '  transform: none !important;' +
-        '  visibility: visible !important;' +
-        '  animation: none !important;' +
-        '  transition: none !important;' +
-        '}' +
-        /* 섹션 자체 + 조상 체인 — 가시성만 보장, transition/animation 은 그대로 (alphenix 내부 동작 영향 X) */
-        'section.blackframe_image-he,' +
-        'section.clearframe,' +
-        'section.blackframe_image-he [data-helix-protect-anc],' +
-        'section.clearframe [data-helix-protect-anc] {' +
-        '  opacity: 1 !important;' +
-        '  visibility: visible !important;' +
-        '  transform: none !important;' +
-        '}';
-      document.head.appendChild(st);
-    }
 
     function neutralize() {
       var nodes = [scope];
@@ -1562,19 +1486,6 @@
       for (var i = 0; i < all.length; i++) nodes.push(all[i]);
       nodes.forEach(function (el) {
         if (el === alphenix) return;
-        if (el.hasAttribute && el.hasAttribute('data-helix-protect-anc')) {
-          /* 조상 체인 — transition/animation 건드리지 않음 (alphenix 영향 차단) */
-          if (el.hasAttribute('data-w-id')) el.removeAttribute('data-w-id');
-          if (el.style) {
-            el.style.removeProperty('opacity');
-            el.style.removeProperty('transform');
-            el.style.removeProperty('visibility');
-            el.style.setProperty('opacity',    '1',       'important');
-            el.style.setProperty('visibility', 'visible', 'important');
-            el.style.setProperty('transform',  'none',    'important');
-          }
-          return;
-        }
         if (el.hasAttribute && el.hasAttribute('data-w-id')) {
           el.removeAttribute('data-w-id');
         }
@@ -1582,32 +1493,15 @@
         el.style.removeProperty('opacity');
         el.style.removeProperty('transform');
         el.style.removeProperty('visibility');
-        el.style.removeProperty('animation');
-        el.style.removeProperty('transition');
         el.style.setProperty('opacity',    '1',       'important');
         el.style.setProperty('visibility', 'visible', 'important');
         el.style.setProperty('transform',  'none',    'important');
-        el.style.setProperty('animation',  'none',    'important');
-        el.style.setProperty('transition', 'none',    'important');
       });
     }
-    /* IX2 가 늦게 바인딩해도 덮도록 다중 시점 + MutationObserver */
+    /* IX2 가 늦게 바인딩해도 덮도록 다중 시점 */
     neutralize();
     setTimeout(neutralize, 300);
     setTimeout(neutralize, 1200);
-    setTimeout(neutralize, 3000);
-
-    /* MutationObserver — IX2 가 attribute(스타일) 변경하면 즉시 다시 무력화 */
-    if ('MutationObserver' in window) {
-      var mo = new MutationObserver(function () { neutralize(); });
-      mo.observe(scope, {
-        attributes: true,
-        attributeFilter: ['style', 'data-w-id'],
-        subtree: true
-      });
-      /* 10초 후 해제 — 이후 IX2 안 건드림 */
-      setTimeout(function () { mo.disconnect(); }, 10000);
-    }
 
     /* alphenix 단독 초기 hide */
     alphenix.style.opacity = '0';
@@ -2090,68 +1984,15 @@
      박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
      center 에서 펼쳐지는 방식 유지.
      ─────────────────────────────────────────────────────────────── */
-  /* ── Div Block 187 — IX2 무력화로 노출 보장 ────────────────────
-     페이드인 시도 (#497~#506) 가 IO/폴백 race 로 영구 숨김 사고를 반복해
-     폐기. Webflow IX2 가 인라인으로 opacity:0 / visibility:hidden 을
-     유지할 가능성을 차단 — data-w-id 제거 + 인라인 hide 스타일 제거.
-     CSS 에서 opacity/visibility !important + animation 레이어로 노출 강제.
-
-     ※ 데스크탑/모바일 레이아웃 분리로 .div-block-187 가 복수 존재할 수
-       있음 (Webflow display 설정으로 한쪽이 viewport 별 숨김).
-       querySelectorAll 로 모두 적용 — Webflow 의 responsive display 는
-       CSS 미디어쿼리라 인라인 display 제거가 영향 없음. */
-  function initDivBlock187FadeIn() {
-    var els = document.querySelectorAll('.div-block-187');
-    if (!els.length) return;
-
-    function stripHide(el) {
-      el.removeAttribute('data-w-id');
-      el.style.removeProperty('opacity');
-      el.style.removeProperty('visibility');
-      el.style.removeProperty('transform');
-      el.style.removeProperty('display');
-    }
-
-    function stripAll() {
-      for (var i = 0; i < els.length; i++) stripHide(els[i]);
-    }
-
-    /* IX2 늦은 바인딩 커버 — 즉시 + 300ms + 1200ms + 3000ms */
-    stripAll();
-    setTimeout(stripAll, 300);
-    setTimeout(stripAll, 1200);
-    setTimeout(stripAll, 3000);
-
-    /* IX2 가 reveal 후 다시 인라인 hide 를 거는 케이스 차단 */
-    if ('MutationObserver' in window) {
-      var observers = [];
-      for (var j = 0; j < els.length; j++) {
-        (function (el) {
-          var mo = new MutationObserver(function () {
-            var s = el.style;
-            if (s.opacity === '0' || s.visibility === 'hidden' || s.display === 'none') {
-              stripHide(el);
-            }
-          });
-          mo.observe(el, { attributes: true, attributeFilter: ['style'] });
-          observers.push(mo);
-        })(els[j]);
-      }
-      setTimeout(function () {
-        for (var k = 0; k < observers.length; k++) observers[k].disconnect();
-      }, 5000);
-    }
-  }
-
   function initHybridUnfold() {
     var SEL = '.about_hybrid-contents_box';
 
-    /* 한 그룹(같은 부모) 의 boxes 를 처리 — 기존 로직 그대로 */
-    function processGroup(boxes) {
-      if (!boxes.length) return false;
+    function build() {
+      var nodes = document.querySelectorAll(SEL);
+      if (nodes.length < 2) { log('hybrid: nodes=' + nodes.length); return false; }
 
       /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 좌→우 */
-      boxes.sort(function (a, b) {
+      var boxes = Array.prototype.slice.call(nodes).sort(function (a, b) {
         return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
       });
       if (!boxes[0].getBoundingClientRect().width) return false;
@@ -2159,15 +2000,11 @@
       var rects = boxes.map(function (b) { return b.getBoundingClientRect(); });
 
       /* anchorCx 결정.
-         - 1개 → 그냥 페이드인 (anchor 가 자기 자신, slide 없음)
          - 2개 → 두 박스 중심의 평균 (둘 다 그 점에서 출발해 양쪽으로 펼침)
          - 3+개 → 시각상 가운데 박스 중심 (그 박스는 고정 anchor) */
       var anchorCx;
       var anchorIdx = -1;          /* 슬라이드만, 페이드 없음. -1 이면 모두 페이드인 */
-      if (boxes.length === 1) {
-        anchorCx = rects[0].left + rects[0].width / 2;
-        anchorIdx = 0;
-      } else if (boxes.length === 2) {
+      if (boxes.length === 2) {
         anchorCx = (rects[0].left + rects[0].width / 2 +
                     rects[1].left + rects[1].width / 2) / 2;
         /* 1번(좌측 박스, 사용자 설명상 '가운데에서 시작하고 보이는') 은
@@ -2207,7 +2044,7 @@
             b.style.opacity    = '1';
           }
         });
-        log('hybrid unfold play (delay ' + PRE_DELAY + 's, count=' + boxes.length + ')');
+        log('hybrid unfold play (delay ' + PRE_DELAY + 's)');
       }
 
       /* 트리거는 anchor 박스 (또는 첫 박스) — 스크롤 진입 감지 */
@@ -2221,37 +2058,8 @@
         });
       }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
       io.observe(triggerEl);
-      /* 안전 폴백: 5초 안에 IO 가 발사되지 않으면 강제 노출
-         (display:none 부모 / 트리거 측정 실패 케이스 모두 대응) */
-      setTimeout(function () { play(); }, 5000);
+      log('hybrid unfold ready, count=' + boxes.length + ' anchorIdx=' + anchorIdx);
       return true;
-    }
-
-    /* 부모별로 그룹핑 — 동일 클래스의 박스가 페이지 내 여러 섹션에 흩어져
-       있을 때 각 섹션 단독으로 unfold (예: div-block-187 안의 새 레이아웃). */
-    function build() {
-      var nodes = document.querySelectorAll(SEL);
-      if (!nodes.length) { log('hybrid: nodes=0'); return false; }
-
-      var byParent = [];
-      var parents = [];
-      Array.prototype.forEach.call(nodes, function (b) {
-        var p = b.parentElement;
-        var idx = parents.indexOf(p);
-        if (idx === -1) { parents.push(p); byParent.push([b]); }
-        else byParent[idx].push(b);
-      });
-
-      /* boxes[0] 가 layout 안 잡힌 상태면 한 그룹이라도 false → 재시도 */
-      var allReady = true;
-      var anyProcessed = false;
-      byParent.forEach(function (boxes) {
-        var ok = processGroup(boxes);
-        if (ok) anyProcessed = true;
-        else allReady = false;
-      });
-      log('hybrid groups=' + byParent.length + ' allReady=' + allReady);
-      return anyProcessed && allReady;
     }
 
     if (build()) return;
@@ -2285,7 +2093,6 @@
     initWeAreHereReveal();
     initHistoryTitleBoxFadeIn();
     initHistoryBodyGate();
-    initDivBlock187FadeIn();
     initHybridUnfold();
     var video = injectBgVideo();
     var videoReadyP = whenVideoReady(video);
@@ -2681,31 +2488,4 @@
     start();
   }
   window.addEventListener('load', start);
-})();
-
-/* ================================================================
-   HEADER 높이 → --header-h CSS 변수 동기화
-   section.subheader 가 fixed 로 변경됐으므로 top 값만 맞추면 됨.
-   ================================================================ */
-(function () {
-  'use strict';
-
-  function sync() {
-    var hEl = document.querySelector('header.header, header, .w-nav, nav');
-    if (!hEl) return;
-    var h = hEl.getBoundingClientRect().height;
-    if (h > 0) {
-      document.documentElement.style.setProperty('--header-h', h + 'px');
-    }
-  }
-
-  var pollCount = 0;
-  var pollTimer = setInterval(function () {
-    sync();
-    if (++pollCount >= 20) clearInterval(pollTimer);
-  }, 200);
-
-  window.addEventListener('resize', sync);
-  window.addEventListener('load', sync);
-  sync();
 })();
