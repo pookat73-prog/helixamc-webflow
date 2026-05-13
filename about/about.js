@@ -2489,3 +2489,30 @@
   }
   window.addEventListener('load', start);
 })();
+
+/* ================================================================
+   HEADER 높이 → --header-h CSS 변수 동기화
+   section.subheader 가 fixed 로 변경됐으므로 top 값만 맞추면 됨.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function sync() {
+    var hEl = document.querySelector('header.header, header, .w-nav, nav');
+    if (!hEl) return;
+    var h = hEl.getBoundingClientRect().height;
+    if (h > 0) {
+      document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+  }
+
+  var pollCount = 0;
+  var pollTimer = setInterval(function () {
+    sync();
+    if (++pollCount >= 20) clearInterval(pollTimer);
+  }, 200);
+
+  window.addEventListener('resize', sync);
+  window.addEventListener('load', sync);
+  sync();
+})();
