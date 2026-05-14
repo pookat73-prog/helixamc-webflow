@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER
+   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.1)
    Webflow About 페이지 head에 한 번만 붙여두면 됨.
    항상 최신 커밋 기준으로 about.css / about.js 를 로드.
    ================================================================ */
@@ -37,7 +37,9 @@
 
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
-  var BRANCH = 'main';
+  /* staging / production 분리 (home/bootstrap.js 와 동일 정책):
+     *.webflow.io → @staging, 그 외 → @main */
+  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
     /* 헤더 + 햄버거 메뉴 — 홈과 동일 사양

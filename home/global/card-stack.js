@@ -37,8 +37,8 @@
   /* 안전장치: 강제로 진단 모드 켜고 싶을 땐 URL 에 ?deck-dry=1 */
   var DRY_RUN          = /[?&]deck-dry=1/.test(location.search);
   var VISIBLE        = 4;        /* 동시에 보이는 카드 수 */
-  var STACK_OFFSET_Y = 8;        /* 카드 간 y 오프셋 (px) — 촘촘하게 */
-  var STACK_OFFSET_X = 8;        /* 카드 간 x 오프셋 (px) */
+  var STACK_OFFSET_Y = 4;        /* 카드 간 y 오프셋 (px) — 촘촘하게 */
+  var STACK_OFFSET_X = 4;        /* 카드 간 x 오프셋 (px) */
   var STACK_TILT     = 0;        /* 회전 없음 */
   var STACK_SCALE    = 0;        /* 스케일 변화 없음 */
   var FLY_THRESHOLD = 0.25;     /* 카드 너비의 25% 드래그 시 날아감 */
@@ -379,6 +379,54 @@
     host.appendChild(leftArrow);
     host.appendChild(rightArrow);
 
+    /* 모바일 스와이프 힌트 — host 우측 상단에 > > > 시퀀셜 페이드.
+       사용자가 처음 카드 넘기면 자동 사라짐. CSS @media 로 모바일에서만 표시. */
+    var hint = document.createElement('div');
+    hint.className = 'helix-deck-swipe-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    hint.innerHTML =
+      '<span class="helix-deck-chev helix-deck-chev-1">›</span>' +
+      '<span class="helix-deck-chev helix-deck-chev-2">›</span>' +
+      '<span class="helix-deck-chev helix-deck-chev-3">›</span>';
+    host.appendChild(hint);
+
+    /* 힌트 Y 위치를 첫 카드 안 '년도' (= 첫 heading 또는 첫 자식 텍스트) 의
+       세로 중앙에 맞춤. translateY(-50%) 로 진정한 센터 정렬. */
+    function alignHintY() {
+      var top = deck[0];
+      if (!top || !hint) return;
+      var year = top.querySelector('h1, h2, h3, h4, h5, h6, [class*="heading" i], [class*="title" i], [class*="year" i]');
+      if (!year || !year.offsetParent) {
+        /* fallback: 카드의 첫 visible 자식 요소 */
+        var kids = top.children;
+        for (var i = 0; i < kids.length; i++) {
+          if (kids[i].offsetParent) { year = kids[i]; break; }
+        }
+      }
+      if (!year) return;
+      var cardRect = top.getBoundingClientRect();
+      var yearRect = year.getBoundingClientRect();
+      var centerY = yearRect.top + yearRect.height / 2 - cardRect.top;
+      hint.style.top = centerY + 'px';
+    }
+    /* 초기 + 폰트 로드 + 리사이즈 시 재정렬 */
+    alignHintY();
+    requestAnimationFrame(alignHintY);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(alignHintY);
+    }
+    setTimeout(alignHintY, 600);  /* 늦은 레이아웃 안전망 */
+
+    function dismissHint() {
+      if (!hint || hint.dataset.helixDismissed) return;
+      hint.dataset.helixDismissed = '1';
+      hint.classList.add('is-dismissed');
+    }
+    /* 첫 사용자 인터랙션(스와이프 시작 또는 화살표 클릭) 에서 dismiss */
+    host.addEventListener('pointerdown', dismissHint, { once: true, capture: true });
+    leftArrow.addEventListener('click', dismissHint, { once: true });
+    rightArrow.addEventListener('click', dismissHint, { once: true });
+
     /* 리사이즈 시 host 크기 재측정 */
     var resizeTimer = null;
     window.addEventListener('resize', function () {
@@ -396,6 +444,7 @@
           host.style.width  = cardW + 'px';
           host.style.height = (cardH + (deck.length - 1) * STACK_OFFSET_Y) + 'px';
           applyTransforms(false);
+          alignHintY();
         }
       }, 150);
     });
