@@ -10,12 +10,28 @@ on:
       - 'global/**'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync staging → main (idempotent)
+        run: |
+          # 원천 해결: 매 main 푸시 후 staging 브랜치를 main 으로 강제 동기.
+          # Webflow 스테이징 사이트가 @staging 을 가리키든 @main 을 가리키든
+          # 두 ref 가 항상 동일 내용 → 환경 간 분기 가능성 0.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git push origin HEAD:refs/heads/staging --force
+          echo "✅ staging 브랜치를 main(${GITHUB_SHA::7}) 으로 동기화"
 
       - name: Build reference head code (bootstrap loader)
         run: |
@@ -33,11 +49,11 @@ jobs:
           cat /tmp/head_cdn.txt
           echo "---"
 
-      - name: Purge jsDelivr cache for bootstrap.js
+      - name: Purge jsDelivr cache for bootstrap.js (both @main and @staging)
         run: |
-          # Only bootstrap.js references @main (everything else loads via commit SHA).
-          # So this is the only file that actually needs cache purging.
-          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main"
+          # bootstrap.js 는 @main / @staging 두 ref 모두에서 참조될 수 있으므로
+          # 둘 다 퍼지. (콘텐츠 파일은 @<SHA> immutable 이라 퍼지 불요)
+          REFS=("main" "staging")
           FILES=(
             "home/bootstrap.js"
             "home/bootstrap-v2.js"
@@ -46,20 +62,24 @@ jobs:
             "global/bootstrap.js"
             "about/bg-video.mp4"
           )
-          FAILED=0
-          for f in "${FILES[@]}"; do
-            printf "Purging /%s → " "$f"
-            code=$(curl -s -o /tmp/purge_out.txt -w "%{http_code}" "${BASE}/${f}")
-            echo "HTTP $code"
-            if [ "$code" != "200" ]; then
-              echo "  body: $(cat /tmp/purge_out.txt)"
-              FAILED=$((FAILED + 1))
-            fi
+          TOTAL_FAILED=0
+          for ref in "${REFS[@]}"; do
+            BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${ref}"
+            echo "--- Purging @${ref} ---"
+            for f in "${FILES[@]}"; do
+              printf "Purging /%s → " "$f"
+              code=$(curl -s -o /tmp/purge_out.txt -w "%{http_code}" "${BASE}/${f}")
+              echo "HTTP $code"
+              if [ "$code" != "200" ]; then
+                echo "  body: $(cat /tmp/purge_out.txt)"
+                TOTAL_FAILED=$((TOTAL_FAILED + 1))
+              fi
+            done
           done
-          if [ $FAILED -gt 0 ]; then
-            echo "⚠️ 퍼지 실패 — bootstrap.js는 드물게 변경되므로 보통 괜찮음"
+          if [ $TOTAL_FAILED -gt 0 ]; then
+            echo "⚠️ 퍼지 실패 ${TOTAL_FAILED}건 — bootstrap.js는 드물게 변경되므로 보통 괜찮음"
           else
-            echo "✅ bootstrap.js 캐시 퍼지 완료"
+            echo "✅ bootstrap.js 캐시 퍼지 완료 (@main + @staging)"
           fi
 
       - name: Warm up jsDelivr for new commit SHA
