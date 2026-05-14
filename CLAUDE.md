@@ -1,7 +1,27 @@
 # Helix AMC Webflow — Claude 작업 가이드
 
-## 워크플로우
-- 작업 완료(커밋·푸시) 후 자동으로 PR 생성, 자동 머지까지 수행.
+## 워크플로우 — **staging 우선 배포** (LOCKED v1, PR #546)
+
+### 브랜치 전략
+- `main` = 정식 사이트 (`helixamc.com` 등)
+- `staging` = Webflow 스테이징 사이트 (`*.webflow.io`)
+- `claude/*` = 작업 브랜치
+
+### 배포 흐름
+1. 작업 완료 → 커밋·푸시 → PR 생성. **PR base 는 항상 `staging`**.
+2. PR 자동 머지 → `staging` 브랜치 갱신 → 워크플로우가 `@staging` 캐시 퍼지 → 스테이징 사이트에만 반영 (정식 무영향)
+3. 사용자가 스테이징에서 검증 후 OK 라고 하면, 그 때 `staging → main` PR 생성·머지 → 정식 반영
+
+### 절대 금지
+- ❌ PR base 를 `main` 으로 직접 만들기 (긴급 hotfix 외)
+- ❌ `staging` 검증 없이 main 직진
+- ❌ 워크플로우에 staging↔main 자동 동기화 재도입 (분리 의미 소실)
+
+### 메커니즘
+- `home/bootstrap.js` + `about/bootstrap.js`: `var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';`
+- `*.webflow.io` 도메인 → `@staging` 브랜치 콘텐츠 로드
+- 정식 도메인 → `@main` 브랜치 콘텐츠 로드
+- 워크플로우 (`.github/workflows/webflow-deploy.yml`): `main` / `staging` 푸시 둘 다 트리거, **푸시된 ref 의 캐시만** 퍼지/워밍업
 
 ## 프로젝트 개요
 Webflow로 만든 Helix 동물병원(helix-amc) 사이트의 커스텀 CSS/JS를
