@@ -23,9 +23,6 @@
   left: 50%;
   top: 0;
   margin: 0 !important;
-  /* JS 가 width/height 를 inline px 로 강제하므로 Webflow padding 이
-     border-box 기준으로 안쪽에 정확히 적용되도록 명시. */
-  box-sizing: border-box !important;
   transform-origin: 50% 50%;
   will-change: transform, opacity;
   cursor: grab;
