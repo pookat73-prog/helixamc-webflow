@@ -390,6 +390,33 @@
       '<span class="helix-deck-chev helix-deck-chev-3">›</span>';
     host.appendChild(hint);
 
+    /* 힌트 Y 위치를 첫 카드 안 '년도' (= 첫 heading 또는 첫 자식 텍스트) 의
+       세로 중앙에 맞춤. translateY(-50%) 로 진정한 센터 정렬. */
+    function alignHintY() {
+      var top = deck[0];
+      if (!top || !hint) return;
+      var year = top.querySelector('h1, h2, h3, h4, h5, h6, [class*="heading" i], [class*="title" i], [class*="year" i]');
+      if (!year || !year.offsetParent) {
+        /* fallback: 카드의 첫 visible 자식 요소 */
+        var kids = top.children;
+        for (var i = 0; i < kids.length; i++) {
+          if (kids[i].offsetParent) { year = kids[i]; break; }
+        }
+      }
+      if (!year) return;
+      var cardRect = top.getBoundingClientRect();
+      var yearRect = year.getBoundingClientRect();
+      var centerY = yearRect.top + yearRect.height / 2 - cardRect.top;
+      hint.style.top = centerY + 'px';
+    }
+    /* 초기 + 폰트 로드 + 리사이즈 시 재정렬 */
+    alignHintY();
+    requestAnimationFrame(alignHintY);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(alignHintY);
+    }
+    setTimeout(alignHintY, 600);  /* 늦은 레이아웃 안전망 */
+
     function dismissHint() {
       if (!hint || hint.dataset.helixDismissed) return;
       hint.dataset.helixDismissed = '1';
@@ -417,6 +444,7 @@
           host.style.width  = cardW + 'px';
           host.style.height = (cardH + (deck.length - 1) * STACK_OFFSET_Y) + 'px';
           applyTransforms(false);
+          alignHintY();
         }
       }, 150);
     });
