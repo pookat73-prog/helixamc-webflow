@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - staging
     paths:
       - 'home/**'
       - 'about/**'
@@ -17,11 +18,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build reference head code (bootstrap loader)
+      - name: Determine target ref
+        id: ref
         run: |
-          # Bootstrap pattern: head code references bootstrap.js at @main.
-          # Bootstrap fetches the latest commit SHA from GitHub API at runtime
-          # and loads all content files from commit-specific URLs (immutable).
+          # 푸시된 브랜치 이름 추출. workflow_dispatch 면 main 기본.
+          BRANCH="${GITHUB_REF_NAME:-main}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -z "$BRANCH" ]; then
+            BRANCH="main"
+          fi
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "→ deploying for branch: $BRANCH"
+
+      - name: Build reference head code (main only)
+        if: steps.ref.outputs.branch == 'main'
+        run: |
+          # 정식 페이지에 붙일 head code (요약 출력용).
+          # bootstrap.js 가 hostname 기반으로 @staging / @main 분기하므로
+          # head code 는 한 종류만 두 환경에 그대로 사용 가능.
           cat > /tmp/head_cdn.txt <<'EOF'
           <!-- GSAP -->
           <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -33,11 +46,12 @@ jobs:
           cat /tmp/head_cdn.txt
           echo "---"
 
-      - name: Purge jsDelivr cache for bootstrap.js
+      - name: Purge jsDelivr cache for bootstrap.js (target ref only)
         run: |
-          # Only bootstrap.js references @main (everything else loads via commit SHA).
-          # So this is the only file that actually needs cache purging.
-          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main"
+          # 푸시된 ref(main 또는 staging) 의 bootstrap.js 만 캐시 퍼지.
+          # 콘텐츠 파일은 @<SHA> immutable 이라 퍼지 불요.
+          REF="${{ steps.ref.outputs.branch }}"
+          BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${REF}"
           FILES=(
             "home/bootstrap.js"
             "home/bootstrap-v2.js"
@@ -48,7 +62,7 @@ jobs:
           )
           FAILED=0
           for f in "${FILES[@]}"; do
-            printf "Purging /%s → " "$f"
+            printf "Purging @${REF}/%s → " "$f"
             code=$(curl -s -o /tmp/purge_out.txt -w "%{http_code}" "${BASE}/${f}")
             echo "HTTP $code"
             if [ "$code" != "200" ]; then
@@ -57,29 +71,98 @@ jobs:
             fi
           done
           if [ $FAILED -gt 0 ]; then
-            echo "⚠️ 퍼지 실패 — bootstrap.js는 드물게 변경되므로 보통 괜찮음"
+            echo "⚠️ 퍼지 실패 ${FAILED}건 — bootstrap.js는 드물게 변경되므로 보통 괜찮음"
           else
-            echo "✅ bootstrap.js 캐시 퍼지 완료"
+            echo "✅ bootstrap.js 캐시 퍼지 완료 (@${REF})"
+          fi
+
+      - name: Warm up jsDelivr for new commit SHA
+        run: |
+          # jsDelivr 은 SHA URL 을 lazy 인덱싱. 사용자 도달 전 미리 fetch 해서
+          # 즉시 200 OK 보장.
+          SHA="${{ github.sha }}"
+          BASE="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${SHA}"
+          FILES=(
+            "global/global.css"
+            "home/section1/section1.css"
+            "home/section1/section1.js"
+            "home/section-divider/divider.css"
+            "home/section-divider/divider.js"
+            "home/global/buttons.css"
+            "home/global/buttons.js"
+            "home/global/sections-animations.css"
+            "home/global/sections-animations.js"
+            "home/global/coming-soon.css"
+            "home/global/coming-soon.js"
+            "home/global/hamburger.css"
+            "home/global/hamburger.js"
+            "home/global/footer.css"
+            "home/global/footer.js"
+            "home/global/card-stack.css"
+            "home/global/card-stack.js"
+            "home/equipment/equipment.js"
+            "about/about.css"
+            "about/about.js"
+          )
+          FAILED=0
+          for f in "${FILES[@]}"; do
+            printf "Warming /%s → " "$f"
+            code=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/${f}")
+            echo "HTTP $code"
+            if [ "$code" != "200" ]; then
+              FAILED=$((FAILED + 1))
+            fi
+          done
+          if [ $FAILED -gt 0 ]; then
+            echo "⚠️ $FAILED 파일 워밍업 실패 — 재시도..."
+            sleep 15
+            FAILED2=0
+            for f in "${FILES[@]}"; do
+              code=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/${f}")
+              if [ "$code" != "200" ]; then
+                echo "  여전히 실패: $f (HTTP $code)"
+                FAILED2=$((FAILED2 + 1))
+              fi
+            done
+            if [ $FAILED2 -gt 0 ]; then
+              echo "⚠️ 재시도 후에도 $FAILED2 파일 미인덱싱"
+            else
+              echo "✅ 재시도 후 워밍업 완료"
+            fi
+          else
+            echo "✅ 모든 콘텐츠 파일 jsDelivr 워밍업 완료"
           fi
 
       - name: Summary
         if: always()
         run: |
+          REF="${{ steps.ref.outputs.branch }}"
           {
-            echo "## ✅ CDN Auto Deploy (Bootstrap Mode)"
+            echo "## ✅ Webflow CDN Auto Deploy"
             echo ""
-            echo "커밋: \`${{ github.sha }}\`"
+            echo "**대상 ref**: \`@${REF}\`"
+            echo "**커밋**: \`${{ github.sha }}\`"
             echo ""
-            echo "bootstrap.js가 런타임에 GitHub API로 최신 커밋 SHA를 조회 → immutable commit URL로 파일 로드."
-            echo "브라우저에서 새로고침만 하면 항상 최신 버전이 뜹니다."
+            if [ "$REF" = "staging" ]; then
+              echo "→ Webflow 스테이징 사이트(\`*.webflow.io\`)에만 반영됨. 정식 사이트는 무영향."
+            else
+              echo "→ 정식 사이트에 반영됨."
+            fi
             echo ""
             echo "---"
             echo ""
-            echo "### 📌 **최초 1회만** 아래 두 줄을 Webflow 홈 페이지 → Page Settings → Inside \`<head>\` tag 에 붙여넣으세요"
+            echo "### 📌 배포 흐름"
+            echo ""
+            echo "- 개발 작업 → \`staging\` 브랜치 머지 → 스테이징 사이트 검증"
+            echo "- 검증 OK → \`staging\` → \`main\` 머지(PR) → 정식 반영"
+            echo ""
+            echo "bootstrap.js 가 hostname 으로 분기:"
+            echo "- \`*.webflow.io\` (스테이징 도메인) → \`@staging\` 로드"
+            echo "- 그 외 (정식 도메인) → \`@main\` 로드"
+            echo ""
+            echo "### 📌 **최초 1회만** Webflow 양 사이트 모두 동일 head code 사용:"
             echo ""
             echo '```html'
-            cat /tmp/head_cdn.txt
+            cat /tmp/head_cdn.txt 2>/dev/null || echo "<!-- main 배포 시 생성됨 -->"
             echo '```'
-            echo ""
-            echo "붙여넣은 후 Webflow에서 **한 번만 Publish**. 이후 코드 수정은 푸시만 하면 자동 반영."
           } >> $GITHUB_STEP_SUMMARY

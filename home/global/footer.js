@@ -312,51 +312,18 @@
   }
 
   /* ============================================================
-     SCROLL-TO-TOP BUTTON (.div-block-141) — 모바일 전용
-     스크롤로 페이지 끝까지 내렸을 때 푸터를 침범하지 않도록 버튼 bottom
-     좌표를 동적으로 끌어올림. 기본 위치 (Webflow CSS 의 bottom 값) 는
-     유지하되, 푸터가 뷰포트로 들어오면 '푸터 top - 2rem' 위치까지만 옴.
-       button.bottomEdge_viewport ≤ footer.top - 2rem
-       → CSS bottom = viewportH - footer.top + 2rem  (defaultBottom 와 max 비교)
+     SCROLL-TO-TOP BUTTON (.div-block-141) — JS 위치 제어 제거
+     이전엔 푸터 진입 시 bottom 값을 동적 갱신했지만, 인라인 px 계산이
+     뷰포트 밖으로 버튼을 밀어내는 회귀(스테이징 invisible / 정식 가로
+     스크롤)를 일으켜 전면 제거. Webflow CSS 의 단순 fixed 포지션
+     (bottom: 5vw 등) 에 위임. 클릭 → 최상단 스크롤 핸들러는 Webflow
+     인터랙션이 그대로 처리.
   ============================================================ */
   function initScrollTopBtn(footer) {
     var btn = document.querySelector('.div-block-141');
     if (!btn) { dbg('scroll-top btn (.div-block-141) not found'); return 0; }
-    if (btn.dataset.helixScrollTopInit) return 1;
-    btn.dataset.helixScrollTopInit = '1';
-
-    var rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    var TWO_REM = 2 * rem;
-
-    /* 인라인 override 없는 깨끗한 상태에서 기본 bottom 읽기 */
+    /* 과거 인라인 bottom override 가 남아있을 수 있음 — 제거 */
     btn.style.removeProperty('bottom');
-    var defaultBottom = parseFloat(getComputedStyle(btn).bottom);
-    if (isNaN(defaultBottom)) defaultBottom = 24;
-
-    var rafPending = false;
-    function update() {
-      rafPending = false;
-      if (window.innerWidth > 767) {
-        btn.style.removeProperty('bottom');  /* 데스크는 손대지 않음 */
-        return;
-      }
-      var footerTop = footer.getBoundingClientRect().top;
-      var viewportH = window.innerHeight;
-      var minBottom = viewportH - footerTop + TWO_REM;
-      var newBottom = Math.max(defaultBottom, minBottom);
-      btn.style.setProperty('bottom', newBottom + 'px', 'important');
-    }
-    function schedule() {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(update);
-    }
-
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
-    schedule();
-
-    dbg('scroll-top btn tracking: defaultBottom=' + defaultBottom + 'px TWO_REM=' + TWO_REM);
     return 1;
   }
 
