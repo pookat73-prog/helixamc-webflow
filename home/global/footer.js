@@ -311,26 +311,9 @@
     return 1;
   }
 
-  /* ============================================================
-     SCROLL-TO-TOP BUTTON (.div-block-141) — JS 위치 제어 전면 제거 (v4)
-
-     이전 v1~v3 시도 모두 회귀 발생 (Webflow IX2 의 inline transform/opacity
-     과 경합). 학습: 이 버튼은 Webflow IX2 가 통제하는 영역이므로 JS 가
-     건드릴수록 깨짐. JS 는 전혀 손대지 않음.
-
-     '푸터 침범 방지' 가 필요하면 Webflow Designer 측에서 IX2 또는 CSS 로
-     처리하시는 게 안전 (예: 푸터 진입 시 IX2 로 페이드아웃, 또는 footer
-     안에 absolute 자리 만들기 등).
-  ============================================================ */
-  function initScrollTopBtn(footer) {
-    var btn = document.querySelector('.div-block-141');
-    if (!btn) { dbg('scroll-top btn (.div-block-141) not found'); return 0; }
-    /* 과거 잔존 인라인 override 클린업 (이전 버전 호환) */
-    btn.style.removeProperty('bottom');
-    btn.style.removeProperty('transform');
-    btn.style.removeProperty('transition');
-    return 1;
-  }
+  /* SCROLL-TO-TOP BUTTON (.div-block-141) — JS 관여 0
+     이 버튼은 Webflow Designer (IX2 / Sticky 등) 에서 통제. footer.js 는
+     아무 것도 안 함. v1~v3 시도 모두 IX2 와 경합으로 회귀했던 학습 결과. */
 
   /* ============================================================
      초기화 — 푸터 요소가 늦게 들어오는 경우 대비 retry + observer
@@ -398,12 +381,11 @@
     var snsImgs = findSnsImages(footer);
     var sns    = bindSnsImages(snsImgs);
     var logo   = initLogoLink(footer, snsImgs);
-    var stopBtn = initScrollTopBtn(footer);
     var links  = protectFooterLinks(footer);
 
-    if (emails || sns || logo || stopBtn || links) {
+    if (emails || sns || logo || links) {
       initialized = true;
-      log('initialized (email=' + emails + ', sns=' + sns + ', logo=' + logo + ', scrollTop=' + stopBtn + ', links=' + links + ', footerFound=' + !!footer + ')');
+      log('initialized (email=' + emails + ', sns=' + sns + ', logo=' + logo + ', links=' + links + ', footerFound=' + !!footer + ')');
       return true;
     }
     return false;
