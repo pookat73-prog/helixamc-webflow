@@ -312,87 +312,23 @@
   }
 
   /* ============================================================
-     SCROLL-TO-TOP BUTTON (.div-block-141) — 푸터 침범 방지 (transform 리프트)
+     SCROLL-TO-TOP BUTTON (.div-block-141) — JS 위치 제어 전면 제거 (v4)
 
-     안전 설계:
-       1) `bottom` / `right` / `position` 등 Webflow CSS 는 일절 안 건드림.
-          오직 `transform: translateY(-N px)` 만 사용 → 부작용 최소화.
-       2) 푸터가 뷰포트 밖일 때 버튼의 자연 위치(natural bottom Y)를 한 번
-          샘플링해 캐시. 매 프레임 측정 안 함 → 측정 노이즈 0.
-       3) 리프트 = max(0, naturalBottom - (footerTop - clearance)).
-          항상 0 이상 → 버튼이 뷰포트 위로 튀는 사고 원천 차단.
-       4) 푸터가 뷰포트 안에 들어올 때만 리프트 발동, 그 외엔 transform=''.
-       5) 리스너는 scroll/resize → RAF 스로틀.
+     이전 v1~v3 시도 모두 회귀 발생 (Webflow IX2 의 inline transform/opacity
+     과 경합). 학습: 이 버튼은 Webflow IX2 가 통제하는 영역이므로 JS 가
+     건드릴수록 깨짐. JS 는 전혀 손대지 않음.
 
-     클리어런스: 4vw (사용자 요청 "약간만 위로").
-     CSS transition 으로 부드럽게 따라옴.
+     '푸터 침범 방지' 가 필요하면 Webflow Designer 측에서 IX2 또는 CSS 로
+     처리하시는 게 안전 (예: 푸터 진입 시 IX2 로 페이드아웃, 또는 footer
+     안에 absolute 자리 만들기 등).
   ============================================================ */
   function initScrollTopBtn(footer) {
     var btn = document.querySelector('.div-block-141');
     if (!btn) { dbg('scroll-top btn (.div-block-141) not found'); return 0; }
-    if (btn.dataset.helixScrollTopInit) return 1;
-    btn.dataset.helixScrollTopInit = '1';
-
-    /* 과거 잔존 인라인 bottom override 클린업 (이전 버전 호환) */
+    /* 과거 잔존 인라인 override 클린업 (이전 버전 호환) */
     btn.style.removeProperty('bottom');
-    /* 부드러운 리프트 전환 (transform 만 transition, 다른 속성 영향 X) */
-    btn.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
-
-    var naturalBottomFromViewportBottom = null;  /* 한 번만 샘플링 */
-
-    function tryCalibrate() {
-      if (naturalBottomFromViewportBottom !== null) return;
-      /* MY transform 만 제거하고 (Webflow IX2 transform 은 보존) 측정 → 자연 위치
-         확보. 그 후 즉시 복원. */
-      var origTransform = btn.style.transform;
-      btn.style.transform = '';
-      var rect = btn.getBoundingClientRect();
-      btn.style.transform = origTransform;
-      /* 버튼이 보일 때만 (height >= 1). Webflow IX2 가 fade-in 전엔 height 0
-         이거나 화면 밖에 있을 수 있음 → 보이는 시점까지 대기. */
-      if (rect.height < 1) return;
-      naturalBottomFromViewportBottom = window.innerHeight - rect.bottom;
-      dbg('scroll-top calibrated: naturalBottom=' + rect.bottom + 'px, fromViewportBottom=' + naturalBottomFromViewportBottom + 'px');
-    }
-
-    var rafPending = false;
-    function update() {
-      rafPending = false;
-      tryCalibrate();
-      if (naturalBottomFromViewportBottom === null) return;
-      var fTop = footer.getBoundingClientRect().top;
-      var vh = window.innerHeight;
-      /* 푸터가 아예 안 보이면 리프트 0 */
-      if (fTop >= vh) {
-        btn.style.removeProperty('transform');
-        return;
-      }
-      var naturalBottomY = vh - naturalBottomFromViewportBottom;
-      var clearance = window.innerWidth * 0.04;  /* 4vw */
-      var desiredBottomY = fTop - clearance;
-      var lift = Math.max(0, naturalBottomY - desiredBottomY);
-      if (lift > 0) {
-        /* !important 로 Webflow IX2 의 inline transform override 가능성 차단 */
-        btn.style.setProperty('transform', 'translateY(' + (-lift) + 'px)', 'important');
-      } else {
-        btn.style.removeProperty('transform');
-      }
-    }
-    function schedule() {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(update);
-    }
-
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', function () {
-      /* 뷰포트 크기 변하면 naturalBottom 도 재샘플링 */
-      naturalBottomFromViewportBottom = null;
-      schedule();
-    });
-    schedule();
-
-    log('scroll-top btn tracking enabled (transform-lift v3, clearance 4vw)');
+    btn.style.removeProperty('transform');
+    btn.style.removeProperty('transition');
     return 1;
   }
 
