@@ -342,17 +342,17 @@
 
     function tryCalibrate() {
       if (naturalBottomFromViewportBottom !== null) return;
-      var fTop = footer.getBoundingClientRect().top;
-      /* 푸터가 뷰포트 아래로 충분히 떨어져 있을 때만 측정 */
-      if (fTop < window.innerHeight + 50) return;
+      /* MY transform 만 제거하고 (Webflow IX2 transform 은 보존) 측정 → 자연 위치
+         확보. 그 후 즉시 복원. */
       var origTransform = btn.style.transform;
       btn.style.transform = '';
       var rect = btn.getBoundingClientRect();
       btn.style.transform = origTransform;
-      if (rect.height > 0) {
-        naturalBottomFromViewportBottom = window.innerHeight - rect.bottom;
-        dbg('scroll-top calibrated: naturalBottom=' + rect.bottom + 'px, fromViewportBottom=' + naturalBottomFromViewportBottom + 'px');
-      }
+      /* 버튼이 보일 때만 (height >= 1). Webflow IX2 가 fade-in 전엔 height 0
+         이거나 화면 밖에 있을 수 있음 → 보이는 시점까지 대기. */
+      if (rect.height < 1) return;
+      naturalBottomFromViewportBottom = window.innerHeight - rect.bottom;
+      dbg('scroll-top calibrated: naturalBottom=' + rect.bottom + 'px, fromViewportBottom=' + naturalBottomFromViewportBottom + 'px');
     }
 
     var rafPending = false;
@@ -364,14 +364,19 @@
       var vh = window.innerHeight;
       /* 푸터가 아예 안 보이면 리프트 0 */
       if (fTop >= vh) {
-        btn.style.transform = '';
+        btn.style.removeProperty('transform');
         return;
       }
       var naturalBottomY = vh - naturalBottomFromViewportBottom;
       var clearance = window.innerWidth * 0.04;  /* 4vw */
       var desiredBottomY = fTop - clearance;
       var lift = Math.max(0, naturalBottomY - desiredBottomY);
-      btn.style.transform = lift > 0 ? 'translateY(' + (-lift) + 'px)' : '';
+      if (lift > 0) {
+        /* !important 로 Webflow IX2 의 inline transform override 가능성 차단 */
+        btn.style.setProperty('transform', 'translateY(' + (-lift) + 'px)', 'important');
+      } else {
+        btn.style.removeProperty('transform');
+      }
     }
     function schedule() {
       if (rafPending) return;
@@ -387,7 +392,7 @@
     });
     schedule();
 
-    dbg('scroll-top btn tracking enabled (transform-lift, clearance 4vw)');
+    log('scroll-top btn tracking enabled (transform-lift v3, clearance 4vw)');
     return 1;
   }
 
