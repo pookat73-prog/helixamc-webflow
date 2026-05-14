@@ -46,7 +46,11 @@
 
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
-  var BRANCH = 'main';
+  /* staging / production 분리:
+     - *.webflow.io (Webflow 스테이징 도메인) → @staging 브랜치 로드
+     - 그 외 (정식 도메인) → @main 브랜치 로드
+     덕분에 staging 에서 먼저 검증 → 안전하면 main 으로 promote */
+  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
     /* 사이트 전역 (헤더 메뉴, 한글 줄바꿈 정책 등) */
