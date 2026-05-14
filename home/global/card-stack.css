@@ -23,6 +23,11 @@
   left: 50%;
   top: 0;
   margin: 0 !important;
+  /* JS 가 c.style.width = cardW(border-box 측정값) 을 강제하므로,
+     Webflow 가 content-box 일 경우 카드가 paddingX 만큼 추가로 넓어져
+     호스트 밖으로 삐져나감 → 가로 스크롤 + 힌트 가려짐. border-box
+     명시로 측정값과 렌더 폭 일치시킴. */
+  box-sizing: border-box !important;
   transform-origin: 50% 50%;
   will-change: transform, opacity;
   cursor: grab;
