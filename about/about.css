@@ -164,23 +164,14 @@
   transform: scaleX(1) !important;
 }
 
-/* About 본문 박스 — 왼→오 슬라이드 + 페이드인 (느릿-슉-느릿)
-   easing cubic-bezier(0.87, 0, 0.13, 1): easeInOutExpo, 극단적 S-커브.
-   초반 거의 정지 → 중반 폭발적 가속 → 후반 부드러운 감속 */
+/* About 본문 박스 — 페이드인만 (이동 없음) */
 .about_three_contents-box {
   opacity: 0;
-  transform: translateX(-40px);
-  filter: blur(4px);
-  transition:
-    opacity 0.9s cubic-bezier(0.87, 0, 0.13, 1) 0.1s,
-    transform 1.1s cubic-bezier(0.87, 0, 0.13, 1) 0.1s,
-    filter 0.8s cubic-bezier(0.87, 0, 0.13, 1) 0.1s;
-  will-change: opacity, transform, filter;
+  transition: opacity 0.9s cubic-bezier(0.87, 0, 0.13, 1) 0.1s;
+  will-change: opacity;
 }
 .about_three_contents-box.is-visible {
   opacity: 1;
-  transform: translateX(0);
-  filter: blur(0);
 }
 
 
