@@ -312,18 +312,82 @@
   }
 
   /* ============================================================
-     SCROLL-TO-TOP BUTTON (.div-block-141) — JS 위치 제어 제거
-     이전엔 푸터 진입 시 bottom 값을 동적 갱신했지만, 인라인 px 계산이
-     뷰포트 밖으로 버튼을 밀어내는 회귀(스테이징 invisible / 정식 가로
-     스크롤)를 일으켜 전면 제거. Webflow CSS 의 단순 fixed 포지션
-     (bottom: 5vw 등) 에 위임. 클릭 → 최상단 스크롤 핸들러는 Webflow
-     인터랙션이 그대로 처리.
+     SCROLL-TO-TOP BUTTON (.div-block-141) — 푸터 침범 방지 (transform 리프트)
+
+     안전 설계:
+       1) `bottom` / `right` / `position` 등 Webflow CSS 는 일절 안 건드림.
+          오직 `transform: translateY(-N px)` 만 사용 → 부작용 최소화.
+       2) 푸터가 뷰포트 밖일 때 버튼의 자연 위치(natural bottom Y)를 한 번
+          샘플링해 캐시. 매 프레임 측정 안 함 → 측정 노이즈 0.
+       3) 리프트 = max(0, naturalBottom - (footerTop - clearance)).
+          항상 0 이상 → 버튼이 뷰포트 위로 튀는 사고 원천 차단.
+       4) 푸터가 뷰포트 안에 들어올 때만 리프트 발동, 그 외엔 transform=''.
+       5) 리스너는 scroll/resize → RAF 스로틀.
+
+     클리어런스: 4vw (사용자 요청 "약간만 위로").
+     CSS transition 으로 부드럽게 따라옴.
   ============================================================ */
   function initScrollTopBtn(footer) {
     var btn = document.querySelector('.div-block-141');
     if (!btn) { dbg('scroll-top btn (.div-block-141) not found'); return 0; }
-    /* 과거 인라인 bottom override 가 남아있을 수 있음 — 제거 */
+    if (btn.dataset.helixScrollTopInit) return 1;
+    btn.dataset.helixScrollTopInit = '1';
+
+    /* 과거 잔존 인라인 bottom override 클린업 (이전 버전 호환) */
     btn.style.removeProperty('bottom');
+    /* 부드러운 리프트 전환 (transform 만 transition, 다른 속성 영향 X) */
+    btn.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+
+    var naturalBottomFromViewportBottom = null;  /* 한 번만 샘플링 */
+
+    function tryCalibrate() {
+      if (naturalBottomFromViewportBottom !== null) return;
+      var fTop = footer.getBoundingClientRect().top;
+      /* 푸터가 뷰포트 아래로 충분히 떨어져 있을 때만 측정 */
+      if (fTop < window.innerHeight + 50) return;
+      var origTransform = btn.style.transform;
+      btn.style.transform = '';
+      var rect = btn.getBoundingClientRect();
+      btn.style.transform = origTransform;
+      if (rect.height > 0) {
+        naturalBottomFromViewportBottom = window.innerHeight - rect.bottom;
+        dbg('scroll-top calibrated: naturalBottom=' + rect.bottom + 'px, fromViewportBottom=' + naturalBottomFromViewportBottom + 'px');
+      }
+    }
+
+    var rafPending = false;
+    function update() {
+      rafPending = false;
+      tryCalibrate();
+      if (naturalBottomFromViewportBottom === null) return;
+      var fTop = footer.getBoundingClientRect().top;
+      var vh = window.innerHeight;
+      /* 푸터가 아예 안 보이면 리프트 0 */
+      if (fTop >= vh) {
+        btn.style.transform = '';
+        return;
+      }
+      var naturalBottomY = vh - naturalBottomFromViewportBottom;
+      var clearance = window.innerWidth * 0.04;  /* 4vw */
+      var desiredBottomY = fTop - clearance;
+      var lift = Math.max(0, naturalBottomY - desiredBottomY);
+      btn.style.transform = lift > 0 ? 'translateY(' + (-lift) + 'px)' : '';
+    }
+    function schedule() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', function () {
+      /* 뷰포트 크기 변하면 naturalBottom 도 재샘플링 */
+      naturalBottomFromViewportBottom = null;
+      schedule();
+    });
+    schedule();
+
+    dbg('scroll-top btn tracking enabled (transform-lift, clearance 4vw)');
     return 1;
   }
 
