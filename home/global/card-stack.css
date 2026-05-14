@@ -113,10 +113,11 @@
    ============================================================ */
 .helix-deck-swipe-hint {
   position: absolute;
-  /* 카드 안쪽 우측 상단. "2019" 같은 카드 본문 텍스트의 좌측 패딩과
-     대칭이 되도록 동일 간격을 우측·상단에 부여. */
-  top: 28px;
+  /* JS 가 top 을 첫 카드 안 '년도' 요소의 세로 중앙으로 설정 →
+     translateY(-50%) 로 hint 자체를 그 지점에 진정 센터 정렬. */
+  top: 28px;  /* JS 가 즉시 override 함; alignHintY 실패 시 fallback */
   right: 28px;
+  transform: translateY(-50%);
   display: none;  /* 데스크는 미표시 */
   align-items: center;
   gap: 2px;
