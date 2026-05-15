@@ -1131,51 +1131,58 @@
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
     var DESKTOP_SEL = '.about_contents_grid-3';
-    var MOBILE_SELS = ['.about_contents_grid-3m', '.about_contents_grid-3-for-m'];
+    var MOBILE_SELS = '.about_contents_grid-3m, .about_contents_grid-3-for-m';
+    /* 두 가지 자식 구조 모두 카드로 인식:
+       A) .div-block-176 — Strategy/System/Structure 패턴 (wrapper 직계)
+       B) [class*="row-left"] — 무중단/Seamless 패턴 (.row-left2/3/4...) */
+    var CARD_SEL = '.div-block-176, [class*="row-left"]';
 
     var desktopWrappers = document.querySelectorAll(DESKTOP_SEL);
-    var mobileWrappers = document.querySelectorAll(MOBILE_SELS.join(','));
+    var mobileWrappers = document.querySelectorAll(MOBILE_SELS);
     log('section2-2 reveal desktop=' + desktopWrappers.length +
         ' mobile=' + mobileWrappers.length);
 
-    function fireAllCols(wrapper) {
+    function findCards(wrapper) {
+      return wrapper.querySelectorAll(CARD_SEL);
+    }
+
+    function fireAllCards(wrapper) {
       if (wrapper.dataset.s22Done) return;
       wrapper.dataset.s22Done = '1';
-      var cols = wrapper.querySelectorAll(':scope > .div-block-176');
-      Array.prototype.forEach.call(cols, function (col) {
-        col.classList.add('is-col-in');
+      Array.prototype.forEach.call(findCards(wrapper), function (card) {
+        card.classList.add('is-col-in');
       });
     }
 
-    function fireCol(col) {
-      if (col.dataset.s22ColDone) return;
-      col.dataset.s22ColDone = '1';
-      col.classList.add('is-col-in');
+    function fireCard(card) {
+      if (card.dataset.s22ColDone) return;
+      card.dataset.s22ColDone = '1';
+      card.classList.add('is-col-in');
     }
 
-    /* 데스크탑 — wrapper 단일 IO, 모든 컬럼 동시 발사 */
+    /* 데스크탑 — wrapper 단일 IO, 모든 카드 동시 발사 */
     Array.prototype.forEach.call(desktopWrappers, function (wrapper) {
-      if (!('IntersectionObserver' in window)) { fireAllCols(wrapper); return; }
+      if (!('IntersectionObserver' in window)) { fireAllCards(wrapper); return; }
       var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) { fireAllCols(wrapper); io.disconnect(); }
+        if (entries[0].isIntersecting) { fireAllCards(wrapper); io.disconnect(); }
       }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
       io.observe(wrapper);
     });
 
-    /* 모바일 — 컬럼별 개별 IO, 스크롤 진입 시 컬럼 단위 발사 */
+    /* 모바일 — 카드별 개별 IO, 스크롤 진입 시 카드 단위 발사 */
     Array.prototype.forEach.call(mobileWrappers, function (wrapper) {
-      var cols = wrapper.querySelectorAll(':scope > .div-block-176');
-      if (!cols.length) return;
+      var cards = findCards(wrapper);
+      if (!cards.length) return;
       if (!('IntersectionObserver' in window)) {
-        Array.prototype.forEach.call(cols, function (c) { fireCol(c); });
+        Array.prototype.forEach.call(cards, function (c) { fireCard(c); });
         return;
       }
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { fireCol(e.target); io.unobserve(e.target); }
+          if (e.isIntersecting) { fireCard(e.target); io.unobserve(e.target); }
         });
       }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
-      Array.prototype.forEach.call(cols, function (c) { io.observe(c); });
+      Array.prototype.forEach.call(cards, function (c) { io.observe(c); });
     });
   }
 
