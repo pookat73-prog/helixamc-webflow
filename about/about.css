@@ -164,18 +164,14 @@
   transform: scaleX(1) !important;
 }
 
-/* About 본문 박스 — 페이드인만 (이동 없음)
-   Webflow IX2 가 transform/filter 인라인을 박을 수 있어 !important 로 무력화.
-   opacity 는 우리 .is-visible 토글이 통제. */
-.about_three_contents-box {
-  opacity: 0;
+/* About 본문 박스 — 인터랙션 전면 제거 (항상 표시, 이동/페이드 없음)
+   Webflow IX2 가 opacity/transform/filter 인라인을 박을 수 있어 모두 !important 로 무력화. */
+.about_three_contents-box,
+.about_three_contents-box.is-visible {
+  opacity: 1 !important;
   transform: none !important;
   filter: none !important;
-  transition: opacity 0.9s cubic-bezier(0.87, 0, 0.13, 1) 0.1s;
-  will-change: opacity;
-}
-.about_three_contents-box.is-visible {
-  opacity: 1;
+  transition: none !important;
 }
 
 
