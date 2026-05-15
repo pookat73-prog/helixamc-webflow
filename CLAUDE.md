@@ -1,7 +1,27 @@
 # Helix AMC Webflow — Claude 작업 가이드
 
-## 워크플로우
-- 작업 완료(커밋·푸시) 후 자동으로 PR 생성, 자동 머지까지 수행.
+## 워크플로우 — **staging 우선 배포** (LOCKED v1, PR #546)
+
+### 브랜치 전략
+- `main` = 정식 사이트 (`helixamc.com` 등)
+- `staging` = Webflow 스테이징 사이트 (`*.webflow.io`)
+- `claude/*` = 작업 브랜치
+
+### 배포 흐름
+1. 작업 완료 → 커밋·푸시 → PR 생성. **PR base 는 항상 `staging`**.
+2. PR 자동 머지 → `staging` 브랜치 갱신 → 워크플로우가 `@staging` 캐시 퍼지 → 스테이징 사이트에만 반영 (정식 무영향)
+3. 사용자가 스테이징에서 검증 후 OK 라고 하면, 그 때 `staging → main` PR 생성·머지 → 정식 반영
+
+### 절대 금지
+- ❌ PR base 를 `main` 으로 직접 만들기 (긴급 hotfix 외)
+- ❌ `staging` 검증 없이 main 직진
+- ❌ 워크플로우에 staging↔main 자동 동기화 재도입 (분리 의미 소실)
+
+### 메커니즘
+- `home/bootstrap.js` + `about/bootstrap.js`: `var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';`
+- `*.webflow.io` 도메인 → `@staging` 브랜치 콘텐츠 로드
+- 정식 도메인 → `@main` 브랜치 콘텐츠 로드
+- 워크플로우 (`.github/workflows/webflow-deploy.yml`): `main` / `staging` 푸시 둘 다 트리거, **푸시된 ref 의 캐시만** 퍼지/워밍업
 
 ## 프로젝트 개요
 Webflow로 만든 Helix 동물병원(helix-amc) 사이트의 커스텀 CSS/JS를
@@ -273,6 +293,51 @@ section.blackframe_image-he             ← 배경 (인터랙션 없음)
 **복원 방법**: `git revert d94c9d4` (현재) → `828e698`로 돌아옴
 
 ---
+
+---
+
+## ⚠️ About 본문 박스 (.about_three_contents-box) — 건드리지 말 것 (LOCKED v1)
+
+**커밋**: PR #553 → #554 → #555 (staging) → 본 PR 로 정식
+
+### 확정 사양
+
+대상: `.about_three_contents-box` (about 페이지 섹션 2 본문 박스 3개)
+
+**인터랙션 전면 제거 — 항상 처음부터 그대로 표시.** 슬라이드 X, 페이드인 X, blur X.
+
+### 확정 메커니즘
+
+`about/about.css`:
+```css
+.about_three_contents-box,
+.about_three_contents-box.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+```
+
+`about/bootstrap.js` FOUC 가드: `.about_three_contents-box` **제외**
+(초기 `opacity:0` 박지 않음. 안 그러면 FOUC 가드 0 이 잠깐 보임).
+
+### 시도했다가 실패한 방식 (재시도 금지)
+
+- CSS 의 `translateX(-40px)` + `blur(4px)` 만 제거하고 opacity 페이드 유지 (PR #553) → 슬라이드 자체는 Webflow IX2 인라인 transform 이 박혀서 여전히 좌→우 이동
+- `transform: none !important` 추가하되 opacity 페이드 유지 (PR #554) → 슬라이드는 멎었으나 페이드인 깜빡임이 남음
+- about.js 에서 `.is-visible` 토글 코드를 건드리는 방식 → `initViewport60FadeIn` 이 `.about_contents-title` 등 다른 요소와 같은 셀렉터 묶음으로 처리해서 분리 어려움. CSS 측 `!important` 무력화가 더 깔끔.
+
+### 변경하면 안 되는 것
+
+- `.about_three_contents-box` 에 다시 페이드/슬라이드/blur 추가 ❌
+- bootstrap FOUC 가드에 `.about_three_contents-box` 다시 포함 ❌
+- 인터랙션 추가 요구가 와도, **사용자가 명시적으로 LOCKED v1 해제 지시** 하기 전까지 절대 손대지 말 것
+- 다른 about 인터랙션 (헥사, history, 알페닉스 등) 수정 중에 이 박스의 `!important` 들을 약화시키지 말 것
+
+### 참고 — Webflow IX2 인라인 transform
+
+이 박스는 Webflow Designer 에서 `data-w-id` 인터랙션이 걸려 있어 페이지 진입 시 IX2 가 인라인 `transform: translateX(...)` 를 박음. CSS `!important` 가 IX2 인라인을 이기는 패턴 — IX2 가 인라인 `!important` 까지 박는 회귀가 발생하면 `about.js` 에서 박스의 `data-w-id` 를 제거하는 방식으로 에스컬레이션 (알페닉스 LOCKED v1 패턴).
 
 ---
 

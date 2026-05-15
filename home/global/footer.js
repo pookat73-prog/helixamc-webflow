@@ -311,21 +311,9 @@
     return 1;
   }
 
-  /* ============================================================
-     SCROLL-TO-TOP BUTTON (.div-block-141) — JS 위치 제어 제거
-     이전엔 푸터 진입 시 bottom 값을 동적 갱신했지만, 인라인 px 계산이
-     뷰포트 밖으로 버튼을 밀어내는 회귀(스테이징 invisible / 정식 가로
-     스크롤)를 일으켜 전면 제거. Webflow CSS 의 단순 fixed 포지션
-     (bottom: 5vw 등) 에 위임. 클릭 → 최상단 스크롤 핸들러는 Webflow
-     인터랙션이 그대로 처리.
-  ============================================================ */
-  function initScrollTopBtn(footer) {
-    var btn = document.querySelector('.div-block-141');
-    if (!btn) { dbg('scroll-top btn (.div-block-141) not found'); return 0; }
-    /* 과거 인라인 bottom override 가 남아있을 수 있음 — 제거 */
-    btn.style.removeProperty('bottom');
-    return 1;
-  }
+  /* SCROLL-TO-TOP BUTTON (.div-block-141) — JS 관여 0
+     이 버튼은 Webflow Designer (IX2 / Sticky 등) 에서 통제. footer.js 는
+     아무 것도 안 함. v1~v3 시도 모두 IX2 와 경합으로 회귀했던 학습 결과. */
 
   /* ============================================================
      초기화 — 푸터 요소가 늦게 들어오는 경우 대비 retry + observer
@@ -393,12 +381,11 @@
     var snsImgs = findSnsImages(footer);
     var sns    = bindSnsImages(snsImgs);
     var logo   = initLogoLink(footer, snsImgs);
-    var stopBtn = initScrollTopBtn(footer);
     var links  = protectFooterLinks(footer);
 
-    if (emails || sns || logo || stopBtn || links) {
+    if (emails || sns || logo || links) {
       initialized = true;
-      log('initialized (email=' + emails + ', sns=' + sns + ', logo=' + logo + ', scrollTop=' + stopBtn + ', links=' + links + ', footerFound=' + !!footer + ')');
+      log('initialized (email=' + emails + ', sns=' + sns + ', logo=' + logo + ', links=' + links + ', footerFound=' + !!footer + ')');
       return true;
     }
     return false;

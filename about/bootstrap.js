@@ -13,7 +13,7 @@
     var s = document.createElement('style');
     s.id = 'helix-about-fouc-guard';
     s.textContent =
-      '.about-heading,.about_contents_sub-title,img.image-23,.about_contents-title,.about_three_contents-box{opacity:0}' +
+      '.about-heading,.about_contents_sub-title,img.image-23,.about_contents-title{opacity:0}' +
       /* 연혁 카드덱: init 전엔 모두 가려둠 (스크롤로 펼쳐지는 사고 방지).
          card-stack.js 가 .helix-deck-host 안으로 옮긴 뒤 다시 보이게.
          홈 카드덱과 클래스 분리됨: 홈=.just-box_qqqqqqq, about=.just-box_card */
