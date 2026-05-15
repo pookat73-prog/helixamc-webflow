@@ -310,13 +310,13 @@
    box-shadow 가 부드럽게 켜지도록 transition.
    blur/spread/alpha 모두 0 → max 로 동시 보간 → 후광이 자연스럽게 발화.
    ─────────────────────────────────────────────────────────────── */
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108 {
+.div-block-108 {
   /* 초기: 후광 무시 (Webflow 가 박은 box-shadow 가 있어도 강제로 끔) */
   box-shadow: 0 0 0 0 rgba(0, 117, 214, 0) !important;
   /* 큰 ease-in (easeInExpo) — 거의 정지하다가 막판에 폭발적으로 켜짐 */
   transition: box-shadow 1.6s cubic-bezier(0.7, 0, 0.84, 0) !important;
 }
-#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108.is-burning {
+.div-block-108.is-burning {
   /* 점화 완료: 원본 Webflow 비율 가깝게, 과장 줄임 */
   box-shadow: 0 -0.7vw 1.0vw -0.25vw rgba(0, 117, 214, 0.7) !important;
 }
