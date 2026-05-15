@@ -1989,13 +1989,17 @@
 
     function build() {
       var nodes = document.querySelectorAll(SEL);
-      if (nodes.length < 2) { log('hybrid: nodes=' + nodes.length); return false; }
+      /* 데스크탑/모바일 듀얼 마크업: display:none 인 반대편 박스는 제외.
+         (안 그러면 width=0 박스가 boxes[0] 로 와서 build 가 영영 false 리턴) */
+      var visibleNodes = Array.prototype.filter.call(nodes, function (n) {
+        return n.getBoundingClientRect().width > 0;
+      });
+      if (visibleNodes.length < 2) { log('hybrid: visible nodes=' + visibleNodes.length + '/' + nodes.length); return false; }
 
       /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 좌→우 */
-      var boxes = Array.prototype.slice.call(nodes).sort(function (a, b) {
+      var boxes = visibleNodes.sort(function (a, b) {
         return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
       });
-      if (!boxes[0].getBoundingClientRect().width) return false;
 
       var rects = boxes.map(function (b) { return b.getBoundingClientRect(); });
 
