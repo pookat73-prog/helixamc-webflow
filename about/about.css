@@ -320,6 +320,17 @@
   /* 점화 완료: 원본 Webflow 비율 가깝게, 과장 줄임 */
   box-shadow: 0 -0.7vw 1.0vw -0.25vw rgba(0, 117, 214, 0.7) !important;
 }
+/* 모바일: vw 단위가 너무 작아져 블러가 좁게 보이므로 확대 */
+@media screen and (max-width: 767px) {
+  .div-block-108.is-burning {
+    box-shadow: 0 -2vw 3.2vw -0.6vw rgba(0, 117, 214, 0.7) !important;
+  }
+}
+@media screen and (max-width: 479px) {
+  .div-block-108.is-burning {
+    box-shadow: 0 -2.5vw 4.5vw -0.8vw rgba(0, 117, 214, 0.7) !important;
+  }
+}
 
 /* ── 표 wrapper 투명도 마스크 ──────────────────────────────────
    .lkujjghlbkjb 가 깔린 하단 영역에서 표가 비치지 않도록
