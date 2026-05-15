@@ -296,6 +296,51 @@ section.blackframe_image-he             ← 배경 (인터랙션 없음)
 
 ---
 
+## ⚠️ About 본문 박스 (.about_three_contents-box) — 건드리지 말 것 (LOCKED v1)
+
+**커밋**: PR #553 → #554 → #555 (staging) → 본 PR 로 정식
+
+### 확정 사양
+
+대상: `.about_three_contents-box` (about 페이지 섹션 2 본문 박스 3개)
+
+**인터랙션 전면 제거 — 항상 처음부터 그대로 표시.** 슬라이드 X, 페이드인 X, blur X.
+
+### 확정 메커니즘
+
+`about/about.css`:
+```css
+.about_three_contents-box,
+.about_three_contents-box.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+```
+
+`about/bootstrap.js` FOUC 가드: `.about_three_contents-box` **제외**
+(초기 `opacity:0` 박지 않음. 안 그러면 FOUC 가드 0 이 잠깐 보임).
+
+### 시도했다가 실패한 방식 (재시도 금지)
+
+- CSS 의 `translateX(-40px)` + `blur(4px)` 만 제거하고 opacity 페이드 유지 (PR #553) → 슬라이드 자체는 Webflow IX2 인라인 transform 이 박혀서 여전히 좌→우 이동
+- `transform: none !important` 추가하되 opacity 페이드 유지 (PR #554) → 슬라이드는 멎었으나 페이드인 깜빡임이 남음
+- about.js 에서 `.is-visible` 토글 코드를 건드리는 방식 → `initViewport60FadeIn` 이 `.about_contents-title` 등 다른 요소와 같은 셀렉터 묶음으로 처리해서 분리 어려움. CSS 측 `!important` 무력화가 더 깔끔.
+
+### 변경하면 안 되는 것
+
+- `.about_three_contents-box` 에 다시 페이드/슬라이드/blur 추가 ❌
+- bootstrap FOUC 가드에 `.about_three_contents-box` 다시 포함 ❌
+- 인터랙션 추가 요구가 와도, **사용자가 명시적으로 LOCKED v1 해제 지시** 하기 전까지 절대 손대지 말 것
+- 다른 about 인터랙션 (헥사, history, 알페닉스 등) 수정 중에 이 박스의 `!important` 들을 약화시키지 말 것
+
+### 참고 — Webflow IX2 인라인 transform
+
+이 박스는 Webflow Designer 에서 `data-w-id` 인터랙션이 걸려 있어 페이지 진입 시 IX2 가 인라인 `transform: translateX(...)` 를 박음. CSS `!important` 가 IX2 인라인을 이기는 패턴 — IX2 가 인라인 `!important` 까지 박는 회귀가 발생하면 `about.js` 에서 박스의 `data-w-id` 를 제거하는 방식으로 에스컬레이션 (알페닉스 LOCKED v1 패턴).
+
+---
+
 ## ⚠️ 헬릭스 라인 — 건드리지 말 것 (LOCKED v14)
 
 **커밋**: `9f83866` (divider: erase end 25%→40%)
