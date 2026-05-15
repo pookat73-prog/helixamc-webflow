@@ -1098,30 +1098,27 @@
      JS 는 IO 진입 시 .is-burning 부착.
      ─────────────────────────────────────────────────────────── */
   function initBurnGlow() {
-    var SEL = '#w-node-_5aa01e07-0ac7-cd46-9cc7-c5935c3c48a8-e0c16bc5 > div.div-block-108';
-    var el = document.querySelector(SEL);
-    /* 무조건 console — 디버깅용 (target=false 면 selector 가 안 잡히는 것) */
-    console.log('[burn-glow] target=' + !!el, 'sel=' + SEL);
-    /* selector 가 안 잡히면 div-block-108 만이라도 모든 인스턴스 찾기 */
-    if (!el) {
-      var fallback = document.querySelectorAll('.div-block-108');
-      console.log('[burn-glow] fallback .div-block-108 count=' + fallback.length);
-      if (fallback.length) el = fallback[0];
-    }
-    if (!el) return;
+    /* 데스크탑/모바일 듀얼 마크업으로 .div-block-108 이 페이지에 2개 존재.
+       특정 w-node id 셀렉터는 Webflow 재생성 시 깨지므로 클래스 기반.
+       보이는 쪽만 어차피 화면에 노출되니 둘 다 .is-burning 부착. */
+    var els = document.querySelectorAll('.div-block-108');
+    console.log('[burn-glow] count=' + els.length);
+    if (!els.length) return;
 
-    function trigger() {
-      if (el.dataset.burnDone) return;
-      el.dataset.burnDone = '1';
-      el.classList.add('is-burning');
-      console.log('[burn-glow] is-burning added on', el);
-    }
+    Array.prototype.forEach.call(els, function (el) {
+      function trigger() {
+        if (el.dataset.burnDone) return;
+        el.dataset.burnDone = '1';
+        el.classList.add('is-burning');
+        console.log('[burn-glow] is-burning added on', el);
+      }
 
-    if (!('IntersectionObserver' in window)) { trigger(); return; }
-    var io = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
-    }, { rootMargin: '0px 0px 25% 0px', threshold: 0 });
-    io.observe(el);
+      if (!('IntersectionObserver' in window)) { trigger(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+      }, { rootMargin: '0px 0px 25% 0px', threshold: 0 });
+      io.observe(el);
+    });
   }
 
   /* ── Section 2-2 (.about_contents_grid-3) — column 단위 stagger 페이드인 ─
