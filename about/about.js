@@ -1121,38 +1121,61 @@
     });
   }
 
-  /* ── Section 2-2 (.about_contents_grid-3) — column 단위 stagger 페이드인 ─
-     각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
-     + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 로 한 번에 등장.
-     좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
+  /* ── Section 2-2 컬럼 reveal — 그림자 박스 → 0.1s 갭 → 파란 세리프 ─
+     데스크탑 wrapper: 단일 IO → 내부 모든 .div-block-176 에 동시 .is-col-in
+       (3 그림자 동시 + 3 세리프 동시)
+     모바일 wrapper:   컬럼별 개별 IO → 위→아래 자연 순차 발사
+
+     타이밍/순서는 about.css 의 컬럼 reveal 규칙이 통제 (delay 1.1s 갭).
+     이 함수는 .is-col-in 토글만 담당.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    var containers = document.querySelectorAll('.about_contents_grid-3');
-    log('section2-2 reveal containers=' + containers.length);
-    if (!containers.length) return;
+    var DESKTOP_SEL = '.about_contents_grid-3';
+    var MOBILE_SELS = ['.about_contents_grid-3m', '.about_contents_grid-3-for-m'];
 
-    /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
-       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
-    var BASE = 0.5;  /* 파란 필기체 fade 와 거의 함께 시작 (s) */
-    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
+    var desktopWrappers = document.querySelectorAll(DESKTOP_SEL);
+    var mobileWrappers = document.querySelectorAll(MOBILE_SELS.join(','));
+    log('section2-2 reveal desktop=' + desktopWrappers.length +
+        ' mobile=' + mobileWrappers.length);
 
-    Array.prototype.forEach.call(containers, function (container) {
-      var blocks = container.querySelectorAll('.div-block-175');
-      Array.prototype.forEach.call(blocks, function (b, i) {
-        b.style.transitionDelay = (BASE + i * STEP) + 's';
+    function fireAllCols(wrapper) {
+      if (wrapper.dataset.s22Done) return;
+      wrapper.dataset.s22Done = '1';
+      var cols = wrapper.querySelectorAll(':scope > .div-block-176');
+      Array.prototype.forEach.call(cols, function (col) {
+        col.classList.add('is-col-in');
       });
+    }
 
-      function trigger() {
-        if (container.dataset.s22Done) return;
-        container.dataset.s22Done = '1';
-        container.classList.add('is-section22-in');
-      }
+    function fireCol(col) {
+      if (col.dataset.s22ColDone) return;
+      col.dataset.s22ColDone = '1';
+      col.classList.add('is-col-in');
+    }
 
-      if (!('IntersectionObserver' in window)) { trigger(); return; }
+    /* 데스크탑 — wrapper 단일 IO, 모든 컬럼 동시 발사 */
+    Array.prototype.forEach.call(desktopWrappers, function (wrapper) {
+      if (!('IntersectionObserver' in window)) { fireAllCols(wrapper); return; }
       var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
-      }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
-      io.observe(container);
+        if (entries[0].isIntersecting) { fireAllCols(wrapper); io.disconnect(); }
+      }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+      io.observe(wrapper);
+    });
+
+    /* 모바일 — 컬럼별 개별 IO, 스크롤 진입 시 컬럼 단위 발사 */
+    Array.prototype.forEach.call(mobileWrappers, function (wrapper) {
+      var cols = wrapper.querySelectorAll(':scope > .div-block-176');
+      if (!cols.length) return;
+      if (!('IntersectionObserver' in window)) {
+        Array.prototype.forEach.call(cols, function (c) { fireCol(c); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { fireCol(e.target); io.unobserve(e.target); }
+        });
+      }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
+      Array.prototype.forEach.call(cols, function (c) { io.observe(c); });
     });
   }
 
