@@ -4,20 +4,6 @@
    - SNS 아이콘 호버 (살짝 밝아짐 + 살짝 위로)
    ================================================================ */
 
-/* ============================================================
-   위로가기 버튼 (.div-block-141) — 흐름에서 빼서 갭 제거
-   Webflow Designer 에서 in-flow block 으로 들어가 있어 스빅 카드와
-   푸터 사이에 버튼 높이만큼 빈 띠가 생기던 회귀를 CSS-only 로 제거.
-   JS 는 LOCKED v4 (PR #552) 로 손대지 않음. fixed 로 우하단 고정만 부여.
-   ============================================================ */
-.div-block-141 {
-  position: fixed !important;
-  right: 5vw;
-  bottom: 5vw;
-  z-index: 50;
-}
-
-
 /* 이메일 텍스트 — 클릭 가능 시각 힌트 */
 .footer-email-clickable {
   transition: color 0.2s ease, opacity 0.2s ease;
