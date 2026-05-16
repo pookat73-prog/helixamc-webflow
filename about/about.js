@@ -1244,11 +1244,18 @@
         if (e.isIntersecting) {
           var t = e.target;
           io.unobserve(t);
-          historyGate.onOpen(function () { t.classList.add('is-visible'); });
+          /* gate 의존 제거 — 모바일 듀얼 마크업에서 gate 가 안 열리는 케이스 회피 */
+          t.classList.add('is-visible');
         }
       });
     }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
     fadeTargets.forEach(function (el) { io.observe(el); });
+    /* 안전망: 8초 후에도 노출 안 됐으면 강제 노출 (IO 가 한 번도 안 fire 한 케이스) */
+    setTimeout(function () {
+      fadeTargets.forEach(function (el) {
+        if (!el.classList.contains('is-visible')) el.classList.add('is-visible');
+      });
+    }, 8000);
   }
 
   /* ── 사선 빛 반사 sweep (한 번 통과, 루프 X) ─────────────────────
