@@ -872,3 +872,24 @@ header.header {
     border: 0 !important;
   }
 }
+
+/* ── .ht 하단 페이드아웃 — .div-block-112 와의 밑변 겹침 방지 ─────
+   .ht 의 아래쪽 끝을 그라데이션 마스크로 페이드아웃 시켜
+   바로 아래 .div-block-112 와 시각적으로 겹치는 띠를 제거.
+   ─────────────────────────────────────────────────────────────── */
+.ht {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 75%,
+    rgba(0, 0, 0, 0) 100%);
+          mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 75%,
+    rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+}
