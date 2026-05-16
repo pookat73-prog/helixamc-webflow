@@ -1215,7 +1215,7 @@
      "포기하지 않는 진료…" 는 같은 클래스지만 페이드 대상 아님 → 즉시 표시.
      ─────────────────────────────────────────────────────────── */
   function initAboutHistoryStandardFontFade() {
-    var els = document.querySelectorAll('.about_history_title_standard-font');
+    var els = document.querySelectorAll('[class*="about_history_title_standard-font"]');
     log('history standard-font fade scan=' + els.length);
     if (!els.length) return;
     var fadeTargets = [];
@@ -1244,11 +1244,18 @@
         if (e.isIntersecting) {
           var t = e.target;
           io.unobserve(t);
-          historyGate.onOpen(function () { t.classList.add('is-visible'); });
+          /* gate 의존 제거 — 모바일 듀얼 마크업에서 gate 가 안 열리는 케이스 회피 */
+          t.classList.add('is-visible');
         }
       });
     }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
     fadeTargets.forEach(function (el) { io.observe(el); });
+    /* 안전망: 8초 후에도 노출 안 됐으면 강제 노출 (IO 가 한 번도 안 fire 한 케이스) */
+    setTimeout(function () {
+      fadeTargets.forEach(function (el) {
+        if (!el.classList.contains('is-visible')) el.classList.add('is-visible');
+      });
+    }, 8000);
   }
 
   /* ── 사선 빛 반사 sweep (한 번 통과, 루프 X) ─────────────────────
@@ -1995,7 +2002,15 @@
      ─────────────────────────────────────────────────────────────── */
   function initHistoryBodyGate() {
     var sel = '#helix-history > div.w-layout-vflex.flex-block-42 > div';
-    var el = document.querySelector(sel);
+    /* 데스크탑/모바일 듀얼 마크업: 숨겨진 쪽 wrapper 를 잡으면 IO 가 영영
+       intersect 못 해 gate 가 안 열림 → standard-font 등 게이트 의존 요소가
+       모바일에서 미노출. 가시 wrapper (rect.width > 0) 우선 선택. */
+    var candidates = document.querySelectorAll(sel);
+    var el = null;
+    for (var i = 0; i < candidates.length; i++) {
+      if (candidates[i].getBoundingClientRect().width > 0) { el = candidates[i]; break; }
+    }
+    if (!el) el = candidates[0] || null;
     if (!el) { log('history body gate: not found'); return; }
 
     var DUR = 0.9;

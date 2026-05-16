@@ -251,12 +251,12 @@
    "헬릭스는 끊임없이, 진화하고 있습니다." 만 페이드 대상.
    "포기하지 않는 진료…" 는 about.js 가 즉시 .is-visible 부착해 노출.
    ─────────────────────────────────────────────────────────────── */
-.about_history_title_standard-font {
+[class*="about_history_title_standard-font"] {
   opacity: 0;
   transition: opacity 1.2s ease-out;
   will-change: opacity;
 }
-.about_history_title_standard-font.is-visible {
+[class*="about_history_title_standard-font"].is-visible {
   opacity: 1;
 }
 
@@ -435,11 +435,23 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
   inherits: false;
 }
 #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(1),
-#w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(2) {
+#w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(2),
+/* 모바일 — Webflow 가 별도 DOM 으로 렌더링해 w-node ID 가 다른 경우 fallback */
+.div-block-116 > div:nth-child(1),
+.div-block-116 > div:nth-child(2) {
   --pulse-blue-a: 0.32;
   box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, var(--pulse-blue-a)) !important;
   animation: divBlock116InnerPulse 3.6s linear infinite;
   will-change: --pulse-blue-a;
+}
+/* 모바일: vw 단위가 너무 작아 인너 글로우가 안 보이므로 확대 */
+@media screen and (max-width: 767px) {
+  #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(1),
+  #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(2),
+  .div-block-116 > div:nth-child(1),
+  .div-block-116 > div:nth-child(2) {
+    box-shadow: inset 0 0 4vw 1.2vw rgba(0, 117, 214, var(--pulse-blue-a)) !important;
+  }
 }
 /* 비대칭 이즈인아웃: 부드럽게 솟아 (ease-in-out) → 길게 천천히 꺼짐 (ease-out)
    → 길게 쉼. 키프레임 사이에 timing-function 직접 박아서 곡선 분리. */
@@ -871,4 +883,28 @@ header.header {
     padding: 0 !important;
     border: 0 !important;
   }
+}
+
+/* ── .div-block-112 아래쪽 페이드아웃 — .ht 글씨와 겹치는 선 제거 ──
+   박스 아래쪽 (위에 얹힌 .ht 글씨와 겹치는 영역) 을 선형 그라데이션
+   마스크로 투명화. 위 → 아래 방향으로 자연스럽게 사라져 글씨와
+   겹치는 선이 보이지 않음.
+   ─────────────────────────────────────────────────────────────── */
+.div-block-112 {
+  -webkit-mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 8%,
+    rgba(0, 0, 0, 1) 25%,
+    rgba(0, 0, 0, 1) 100%);
+          mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 8%,
+    rgba(0, 0, 0, 1) 25%,
+    rgba(0, 0, 0, 1) 100%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
 }
