@@ -9,13 +9,20 @@
 
 ### 배포 흐름
 1. 작업 완료 → 커밋·푸시 → PR 생성. **PR base 는 항상 `staging`**.
-2. PR 자동 머지 → `staging` 브랜치 갱신 → 워크플로우가 `@staging` 캐시 퍼지 → 스테이징 사이트에만 반영 (정식 무영향)
+2. **PR 생성 직후 Claude 가 즉시 머지** (squash) → `staging` 브랜치 갱신 → 워크플로우가 `@staging` 캐시 퍼지 → 스테이징 사이트에만 반영 (정식 무영향)
 3. 사용자가 스테이징에서 검증 후 OK 라고 하면, 그 때 `staging → main` PR 생성·머지 → 정식 반영
+
+### 머지 자동화 — 사용자 별도 지시 없어도 기본값 (LOCKED)
+- `claude/* → staging` PR 은 **사용자 확인 대기 없이 즉시 머지**. 머지하지 않으면 스테이징 사이트에 반영이 안 돼 사용자가 검증할 수 없음.
+- 도구: `mcp__github__merge_pull_request` (`merge_method: "squash"`).
+- 머지 실패 (CI 실패, 충돌 등) 시에만 사용자에게 보고. 성공 시 PR 번호·머지 SHA 만 짧게 알림.
+- `staging → main` PR 은 **사용자가 명시적으로 "main 으로 올려" 라고 지시할 때만** 생성·머지. 자동 머지 금지.
 
 ### 절대 금지
 - ❌ PR base 를 `main` 으로 직접 만들기 (긴급 hotfix 외)
 - ❌ `staging` 검증 없이 main 직진
 - ❌ 워크플로우에 staging↔main 자동 동기화 재도입 (분리 의미 소실)
+- ❌ `claude/* → staging` PR 을 만들어 놓고 머지 안 하기 — 사용자 검증 불가
 
 ### 메커니즘
 - `home/bootstrap.js` + `about/bootstrap.js`: `var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';`
