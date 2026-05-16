@@ -1121,38 +1121,92 @@
     });
   }
 
-  /* ── Section 2-2 (.about_contents_grid-3) — column 단위 stagger 페이드인 ─
-     각 column (.div-block-176) 이 점박스 + 영문타이틀 + 흰블록(그림자)
-     + 본문 텍스트를 모두 포함. column 자체 opacity 0→1 로 한 번에 등장.
-     좌→우 0.12s stagger (차차착 빠른 리듬), per-column 0.45s.
+  /* ── Section 2-2 컬럼 reveal — 그림자 박스 → 0.1s 갭 → 파란 세리프 ─
+     데스크탑 wrapper: 단일 IO → 내부 모든 .div-block-176 에 동시 .is-col-in
+       (3 그림자 동시 + 3 세리프 동시)
+     모바일 wrapper:   컬럼별 개별 IO → 위→아래 자연 순차 발사
+
+     타이밍/순서는 about.css 의 컬럼 reveal 규칙이 통제 (delay 1.1s 갭).
+     이 함수는 .is-col-in 토글만 담당.
      ─────────────────────────────────────────────────────────── */
   function initSection22Reveal() {
-    var containers = document.querySelectorAll('.about_contents_grid-3');
-    log('section2-2 reveal containers=' + containers.length);
-    if (!containers.length) return;
+    var DESKTOP_SEL = '.about_contents_grid-3';
+    var MOBILE_SELS = '.about_contents_grid-3m, .about_contents_grid-3-for-m';
+    /* 두 가지 자식 구조 모두 카드로 인식:
+       A) .div-block-176 — Strategy/System/Structure 패턴 (wrapper 직계)
+       B) [class*="row-left"] — 무중단/Seamless 패턴 (.row-left2/3/4...) */
+    var CARD_SEL = '.div-block-176, [class*="row-left"]';
 
-    /* 시퀀스: 파란 필기체 1.8s 페이드인 (delay 0) → 그림자 좌→우 stagger
-       그림자 base 딜레이 = 파란 필기체 fade 끝나는 시점(1.8s) */
-    var BASE = 0.5;  /* 파란 필기체 fade 와 거의 함께 시작 (s) */
-    var STEP = 0.18; /* 흰 블록 좌→우 stagger 간격 (s) — 차자작 빠른 시간차 */
+    var desktopWrappers = document.querySelectorAll(DESKTOP_SEL);
+    var mobileWrappers = document.querySelectorAll(MOBILE_SELS);
+    log('section2-2 reveal desktop=' + desktopWrappers.length +
+        ' mobile=' + mobileWrappers.length);
 
-    Array.prototype.forEach.call(containers, function (container) {
-      var blocks = container.querySelectorAll('.div-block-175');
-      Array.prototype.forEach.call(blocks, function (b, i) {
-        b.style.transitionDelay = (BASE + i * STEP) + 's';
+    function findCards(wrapper) {
+      return wrapper.querySelectorAll(CARD_SEL);
+    }
+
+    function fireAllCards(wrapper) {
+      if (wrapper.dataset.s22Done) return;
+      wrapper.dataset.s22Done = '1';
+      Array.prototype.forEach.call(findCards(wrapper), function (card) {
+        card.classList.add('is-col-in');
       });
+    }
 
-      function trigger() {
-        if (container.dataset.s22Done) return;
-        container.dataset.s22Done = '1';
-        container.classList.add('is-section22-in');
-      }
+    function fireCard(card) {
+      if (card.dataset.s22ColDone) return;
+      card.dataset.s22ColDone = '1';
+      card.classList.add('is-col-in');
+    }
 
-      if (!('IntersectionObserver' in window)) { trigger(); return; }
+    /* 데스크탑 — wrapper 단일 IO, 모든 카드 동시 발사 */
+    Array.prototype.forEach.call(desktopWrappers, function (wrapper) {
+      if (!('IntersectionObserver' in window)) { fireAllCards(wrapper); return; }
       var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
-      }, { rootMargin: '0px 0px -35% 0px', threshold: 0 });
-      io.observe(container);
+        if (entries[0].isIntersecting) { fireAllCards(wrapper); io.disconnect(); }
+      }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+      io.observe(wrapper);
+    });
+
+    /* 모바일 — 카드별 IO 발사 + 시리얼 큐 (한 카드 사이클 끝나야 다음 카드).
+       카드 3개가 viewport 에 거의 동시에 들어와도 (그림자→세리프) × 3 으로
+       순차 재생되도록 큐로 직렬화. 동일 callback 안 다중 entry 는 화면
+       위→아래 순서로 정렬해 큐 진입. */
+    var CARD_CYCLE_MS = 2400; /* CSS: 그림자 1.0s + 갭 0.1s + 세리프 1.2s = 2.3s + α */
+    var queue = { items: [], running: false };
+    function drain() {
+      if (queue.running) return;
+      var next = queue.items.shift();
+      if (!next) return;
+      queue.running = true;
+      fireCard(next);
+      setTimeout(function () { queue.running = false; drain(); }, CARD_CYCLE_MS);
+    }
+    function enqueue(card) {
+      if (card.dataset.s22Queued) return;
+      card.dataset.s22Queued = '1';
+      queue.items.push(card);
+      drain();
+    }
+
+    Array.prototype.forEach.call(mobileWrappers, function (wrapper) {
+      var cards = findCards(wrapper);
+      if (!cards.length) return;
+      if (!('IntersectionObserver' in window)) {
+        Array.prototype.forEach.call(cards, function (c) { enqueue(c); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        /* 같은 콜백 안 여러 entry 는 화면 상단부터 정렬해 큐 진입 */
+        var hits = entries.filter(function (e) { return e.isIntersecting; });
+        hits.sort(function (a, b) {
+          return a.target.getBoundingClientRect().top -
+                 b.target.getBoundingClientRect().top;
+        });
+        hits.forEach(function (e) { io.unobserve(e.target); enqueue(e.target); });
+      }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
+      Array.prototype.forEach.call(cards, function (c) { io.observe(c); });
     });
   }
 
