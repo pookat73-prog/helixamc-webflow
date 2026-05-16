@@ -873,21 +873,28 @@ header.header {
   }
 }
 
-/* ── .ht 하단 페이드아웃 — .div-block-112 와의 밑변 겹침 방지 ─────
-   .ht 의 아래쪽 끝을 그라데이션 마스크로 페이드아웃 시켜
-   바로 아래 .div-block-112 와 시각적으로 겹치는 띠를 제거.
+/* ── .div-block-112 가로선 가운데 끊기 — .ht 글씨와 겹치는 선 제거 ─
+   .div-block-112 의 테두리/배경선이 위에 얹힌 .ht 글씨를 가로질러
+   읽힘을 방해하므로, 가로 방향 그라데이션 마스크로 가운데 구간을
+   투명 처리해 선을 끊어 보이게 함.
    ─────────────────────────────────────────────────────────────── */
-.ht {
+.div-block-112 {
   -webkit-mask-image: linear-gradient(
-    to bottom,
+    to right,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 75%,
-    rgba(0, 0, 0, 0) 100%);
+    rgba(0, 0, 0, 1) 18%,
+    rgba(0, 0, 0, 0) 32%,
+    rgba(0, 0, 0, 0) 68%,
+    rgba(0, 0, 0, 1) 82%,
+    rgba(0, 0, 0, 1) 100%);
           mask-image: linear-gradient(
-    to bottom,
+    to right,
     rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 1) 75%,
-    rgba(0, 0, 0, 0) 100%);
+    rgba(0, 0, 0, 1) 18%,
+    rgba(0, 0, 0, 0) 32%,
+    rgba(0, 0, 0, 0) 68%,
+    rgba(0, 0, 0, 1) 82%,
+    rgba(0, 0, 0, 1) 100%);
   -webkit-mask-repeat: no-repeat;
           mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
