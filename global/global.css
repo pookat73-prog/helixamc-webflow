@@ -28,3 +28,16 @@ body {
 .header_branch-button_title:hover {
   border-color: #0075d6 !important;
 }
+
+/* ================================================================
+   헤더 항상 고정 — 모바일 hide-on-scroll 회귀 차단 (홈/about 공통)
+   Webflow IX2 가 스크롤 시 transform: translateY(-100%) 로 헤더를
+   숨기는 동작을 사이트 전역에서 무력화. about.css 에 동일 룰이
+   있으나 글로벌로 끌어와 홈에서도 적용.
+   ================================================================ */
+header.header {
+  position: fixed !important;
+  top: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
