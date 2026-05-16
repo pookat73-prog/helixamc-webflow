@@ -251,12 +251,12 @@
    "헬릭스는 끊임없이, 진화하고 있습니다." 만 페이드 대상.
    "포기하지 않는 진료…" 는 about.js 가 즉시 .is-visible 부착해 노출.
    ─────────────────────────────────────────────────────────────── */
-.about_history_title_standard-font {
+[class*="about_history_title_standard-font"] {
   opacity: 0;
   transition: opacity 1.2s ease-out;
   will-change: opacity;
 }
-.about_history_title_standard-font.is-visible {
+[class*="about_history_title_standard-font"].is-visible {
   opacity: 1;
 }
 

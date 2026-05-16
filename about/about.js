@@ -1215,7 +1215,7 @@
      "포기하지 않는 진료…" 는 같은 클래스지만 페이드 대상 아님 → 즉시 표시.
      ─────────────────────────────────────────────────────────── */
   function initAboutHistoryStandardFontFade() {
-    var els = document.querySelectorAll('.about_history_title_standard-font');
+    var els = document.querySelectorAll('[class*="about_history_title_standard-font"]');
     log('history standard-font fade scan=' + els.length);
     if (!els.length) return;
     var fadeTargets = [];
