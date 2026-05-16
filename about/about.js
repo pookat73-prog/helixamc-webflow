@@ -1169,18 +1169,42 @@
       io.observe(wrapper);
     });
 
-    /* 모바일 — 카드별 개별 IO, 스크롤 진입 시 카드 단위 발사 */
+    /* 모바일 — 카드별 IO 발사 + 시리얼 큐 (한 카드 사이클 끝나야 다음 카드).
+       카드 3개가 viewport 에 거의 동시에 들어와도 (그림자→세리프) × 3 으로
+       순차 재생되도록 큐로 직렬화. 동일 callback 안 다중 entry 는 화면
+       위→아래 순서로 정렬해 큐 진입. */
+    var CARD_CYCLE_MS = 2400; /* CSS: 그림자 1.0s + 갭 0.1s + 세리프 1.2s = 2.3s + α */
+    var queue = { items: [], running: false };
+    function drain() {
+      if (queue.running) return;
+      var next = queue.items.shift();
+      if (!next) return;
+      queue.running = true;
+      fireCard(next);
+      setTimeout(function () { queue.running = false; drain(); }, CARD_CYCLE_MS);
+    }
+    function enqueue(card) {
+      if (card.dataset.s22Queued) return;
+      card.dataset.s22Queued = '1';
+      queue.items.push(card);
+      drain();
+    }
+
     Array.prototype.forEach.call(mobileWrappers, function (wrapper) {
       var cards = findCards(wrapper);
       if (!cards.length) return;
       if (!('IntersectionObserver' in window)) {
-        Array.prototype.forEach.call(cards, function (c) { fireCard(c); });
+        Array.prototype.forEach.call(cards, function (c) { enqueue(c); });
         return;
       }
       var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) { fireCard(e.target); io.unobserve(e.target); }
+        /* 같은 콜백 안 여러 entry 는 화면 상단부터 정렬해 큐 진입 */
+        var hits = entries.filter(function (e) { return e.isIntersecting; });
+        hits.sort(function (a, b) {
+          return a.target.getBoundingClientRect().top -
+                 b.target.getBoundingClientRect().top;
         });
+        hits.forEach(function (e) { io.unobserve(e.target); enqueue(e.target); });
       }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
       Array.prototype.forEach.call(cards, function (c) { io.observe(c); });
     });
