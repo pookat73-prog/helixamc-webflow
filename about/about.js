@@ -1995,7 +1995,15 @@
      ─────────────────────────────────────────────────────────────── */
   function initHistoryBodyGate() {
     var sel = '#helix-history > div.w-layout-vflex.flex-block-42 > div';
-    var el = document.querySelector(sel);
+    /* 데스크탑/모바일 듀얼 마크업: 숨겨진 쪽 wrapper 를 잡으면 IO 가 영영
+       intersect 못 해 gate 가 안 열림 → standard-font 등 게이트 의존 요소가
+       모바일에서 미노출. 가시 wrapper (rect.width > 0) 우선 선택. */
+    var candidates = document.querySelectorAll(sel);
+    var el = null;
+    for (var i = 0; i < candidates.length; i++) {
+      if (candidates[i].getBoundingClientRect().width > 0) { el = candidates[i]; break; }
+    }
+    if (!el) el = candidates[0] || null;
     if (!el) { log('history body gate: not found'); return; }
 
     var DUR = 0.9;
