@@ -1173,7 +1173,7 @@
        카드 3개가 viewport 에 거의 동시에 들어와도 (그림자→세리프) × 3 으로
        순차 재생되도록 큐로 직렬화. 동일 callback 안 다중 entry 는 화면
        위→아래 순서로 정렬해 큐 진입. */
-    var CARD_CYCLE_MS = 2400; /* CSS: 그림자 1.0s + 갭 0.1s + 세리프 1.2s = 2.3s + α */
+    var CARD_CYCLE_MS = 1400; /* CSS: 그림자/세리프 동시 페이드인 (longest 1.2s) + α */
     var queue = { items: [], running: false };
     function drain() {
       if (queue.running) return;
