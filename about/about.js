@@ -2277,9 +2277,19 @@
     /* CSS grid order 와 DOM 순서가 어긋나서, 시각 좌→우 순서를 명시. */
     var ORDER = ['ts-vet', 'sy-vet', 'hj-vet', 'ys-vet', 'sh-vet', 'si-vet', 'hs-vet', 'hc-vet'];
     var els = [];
+    /* Webflow 가 데스크탑/모바일 별도 DOM 으로 렌더링하면 같은 vet 클래스가
+       두 군데 박혀 있을 수 있음 (한쪽은 현재 breakpoint 에서 display:none).
+       querySelectorAll 로 전부 수집한 뒤, 실제 화면에 보이는(=레이아웃 박스가
+       있는) 요소만 관찰. 그래야 모바일에서 카드가 안 보이는 회귀를 막음. */
     ORDER.forEach(function (cls) {
-      var el = document.querySelector('.' + cls);
-      if (el) els.push(el);
+      var matches = document.querySelectorAll('.' + cls);
+      for (var i = 0; i < matches.length; i++) {
+        var m = matches[i];
+        /* offsetParent === null 이면 display:none (혹은 position:fixed root).
+           getClientRects 가 0 이어도 동일하게 비표시 처리. */
+        if (m.offsetParent === null && m.getClientRects().length === 0) continue;
+        els.push(m);
+      }
     });
     if (!els.length) return false;
 
