@@ -2384,7 +2384,14 @@
       });
     });
 
-    /* 스크롤스파이 — 뷰포트 상단 30% 라인을 통과한 가장 최근 섹션 활성화 */
+    /* 스크롤스파이 — 헤더 + 서브헤더 하단 바로 밑 라인을 통과한
+       "가장 최근 섹션" 을 활성화.
+       spy line: header.bottom + subheader.height + 16px 여유.
+       이전엔 viewport 30% 고정선이라 사용자가 보는 헤더 바로 밑과
+       활성 기준이 어긋남. 또 이전엔 entries 가 scroll 순서라고
+       가정하고 첫 미통과에서 break — DOM 순서와 시각 순서가 다르면
+       잘못 활성. 매 scan 마다 rect.top 기준으로 정렬 후 통과한
+       마지막 항목을 채택해 견고화. */
     var ticking = false;
     function onScroll() {
       if (ticking) return;
@@ -2392,12 +2399,20 @@
       requestAnimationFrame(function () {
         ticking = false;
         if (Date.now() - clickedAt < 700) return;
-        var line = window.innerHeight * 0.3;
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var sub = document.querySelector('.subheader');
+        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var line = headerH + subH + 16;
+        /* 현재 화면상 top 으로 정렬해 시각 순서대로 평가 */
+        var sorted = entries.slice().sort(function (a, b) {
+          return a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top;
+        });
         var current = null;
-        for (var i = 0; i < entries.length; i++) {
-          var rect = entries[i].target.getBoundingClientRect();
-          if (rect.top <= line) current = entries[i].link;
-          else break;
+        for (var i = 0; i < sorted.length; i++) {
+          var top = sorted[i].target.getBoundingClientRect().top;
+          if (top <= line) current = sorted[i].link;
+          /* break 하지 않음 — 다음 섹션이 아직 위에 있을 수도 있음 (안전) */
         }
         if (!current && window.pageYOffset < 50) current = entries[0].link;
         if (current && !current.classList.contains('is-active')) setActive(current);
