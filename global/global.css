@@ -41,3 +41,34 @@ header.header {
   transform: none !important;
   transition: none !important;
 }
+
+/* ================================================================
+   모바일 가로 오버플로우 + fixed/sticky 어긋남 차단 (홈/about 공통)
+   증상: 모바일에서 헤더/서브헤더가 스크롤 따라 같이 올라감 + 가로
+   스크롤 발생 + fixed 위로가기 버튼이 옆으로 밀림.
+   원인: 어떤 자손이 100vw 를 초과 → body 가로 스크롤 가능 + 어떤
+   ancestor 에 transform/filter 가 박혀 새 containing block 생성 →
+   자식의 position:fixed 가 viewport 가 아닌 그 ancestor 기준으로
+   잡혀 함께 스크롤됨.
+   조치:
+   1. html/body 가로 스크롤 자체 차단 — overflow-x:clip 사용
+      (clip 은 hidden 과 달리 overflow-y 를 auto 로 승격시키지 않아
+       자손 position:sticky 가 정상 동작. hidden 쓰면 body 가
+       스크롤 컨테이너가 돼 subheader sticky 가 viewport 가 아닌
+       body 기준이 되며 무력화됨.)
+   2. body / main wrapper 에 transform/filter 인라인 강제 무력화
+      (Webflow IX2 가 박는 transform 회귀까지 커버)
+   ================================================================ */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100vw;
+}
+body,
+body > .page-wrapper,
+body > main,
+body > .main-wrapper {
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
+}
