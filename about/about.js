@@ -2349,26 +2349,45 @@
     var links = document.querySelectorAll('.subheader_click-area');
     if (!links.length) return;
 
-    /* Webflow 가 같은 anchor ID 를 데스크탑/모바일 듀얼 마크업에 중복
-       박는 케이스가 있음. getElementById / querySelector('#id') 는
-       항상 첫 번째(=데스크탑) 만 반환 — 모바일에선 그게 display:none
-       상태라 rect.top 이 0/엉뚱한 값 → spy 가 모두 "통과" 로 잘못 판정.
-       attribute selector 로 같은 ID 다 긁어 와서 실제 화면에 보이는
-       (offsetParent 또는 client rect 가 있는) 요소만 채택. */
-    function findVisibleTarget(href) {
-      if (!href || href.charAt(0) !== '#' || href.length < 2) return null;
-      var id = href.slice(1);
-      var all = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
-      for (var i = 0; i < all.length; i++) {
-        var el = all[i];
-        if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+    /* 타깃 결정 — 우선순위
+       1. href ID 와 일치하는 요소 중 실제 화면에 보이는 것 (Webflow 듀얼
+          마크업에서 같은 ID 가 데스크탑/모바일 양쪽에 있을 때 visible 쪽)
+       2. heuristic: 링크의 .subheader_title 텍스트와 매칭되는 visible 헤딩
+          (h1~h4) 의 가장 가까운 section/main 조상.
+          데스크탑에만 ID 가 박혀 있고 모바일 마크업엔 ID 가 없는 케이스
+          (보호자/의료진 같은 듀얼 섹션) 를 커버.
+       3. null — 클릭 핸들러는 null 이면 native 동작 안 막음. spy 도 무시. */
+    function findVisibleTarget(href, linkEl) {
+      if (href && href.charAt(0) === '#' && href.length >= 2) {
+        var id = href.slice(1);
+        var all = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+        }
       }
-      return all[0] || document.querySelector(href) || null;
+      if (linkEl) {
+        var titleEl = linkEl.querySelector('.subheader_title') || linkEl;
+        var title = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
+        if (title.length >= 2) {
+          var headings = document.querySelectorAll('h1, h2, h3, h4');
+          for (var j = 0; j < headings.length; j++) {
+            var h = headings[j];
+            if (h.offsetParent === null && h.getClientRects().length === 0) continue;
+            var ht = (h.textContent || '').replace(/\s+/g, ' ').trim();
+            if (!ht) continue;
+            if (ht === title || ht.indexOf(title) !== -1 || title.indexOf(ht) !== -1) {
+              return h.closest('section') || h.closest('[class*="section"]') || h;
+            }
+          }
+        }
+      }
+      return null;
     }
 
     var entries = [];
     links.forEach(function (a) {
-      var target = findVisibleTarget(a.getAttribute('href') || '');
+      var target = findVisibleTarget(a.getAttribute('href') || '', a);
       if (target) entries.push({ link: a, target: target });
     });
     if (!entries.length) return;
@@ -2383,8 +2402,10 @@
       a.addEventListener('click', function (e) {
         var href = a.getAttribute('href') || '';
         if (href.charAt(0) !== '#') return;
-        /* 클릭 시점에도 현재 화면에 보이는 타깃을 다시 계산 (resize 케이스). */
-        var t = findVisibleTarget(href);
+        /* 클릭 시점에 visible 타깃 재계산 (resize 케이스). null 이면
+           native 동작 막지 않음 — 잘못된 좌표로 스크롤하느니 안 움직이는 게
+           나음. */
+        var t = findVisibleTarget(href, a);
         if (!t) return;
         e.preventDefault();
         setActive(a);
@@ -2399,14 +2420,15 @@
       });
     });
 
-    /* 스크롤스파이 — 헤더 + 서브헤더 하단 바로 밑 라인을 통과한
-       "가장 최근 섹션" 을 활성화.
-       spy line: header.bottom + subheader.height + 16px 여유.
-       이전엔 viewport 30% 고정선이라 사용자가 보는 헤더 바로 밑과
-       활성 기준이 어긋남. 또 이전엔 entries 가 scroll 순서라고
-       가정하고 첫 미통과에서 break — DOM 순서와 시각 순서가 다르면
-       잘못 활성. 매 scan 마다 rect.top 기준으로 정렬 후 통과한
-       마지막 항목을 채택해 견고화. */
+    /* 스크롤스파이 — "라인을 가장 잘 채우는" 섹션 활성화.
+       spy line: header.bottom + subheader.height + 16px.
+       알고리즘:
+       1. spy line 을 [top, bottom] 안에 품는 (straddle) 섹션이 있으면 그것
+       2. 없으면 line 까지 가장 가까운 섹션 (위/아래 무관)
+       이전 알고리즘 ("라인 통과한 마지막") 은 섹션 사이 빈 공간에서
+       이전 섹션 활성이 계속 유지되는 문제 → 다음 섹션 헤딩이 보이는데도
+       이전 밑줄이 안 빠짐. straddle/closest 방식은 다음 섹션 헤딩이
+       viewport 에 들어오는 순간 부드럽게 전환. */
     var ticking = false;
     function onScroll() {
       if (ticking) return;
@@ -2419,16 +2441,22 @@
         var sub = document.querySelector('.subheader');
         var subH = sub ? sub.getBoundingClientRect().height : 0;
         var line = headerH + subH + 16;
-        /* 현재 화면상 top 으로 정렬해 시각 순서대로 평가 */
-        var sorted = entries.slice().sort(function (a, b) {
-          return a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top;
-        });
-        var current = null;
-        for (var i = 0; i < sorted.length; i++) {
-          var top = sorted[i].target.getBoundingClientRect().top;
-          if (top <= line) current = sorted[i].link;
-          /* break 하지 않음 — 다음 섹션이 아직 위에 있을 수도 있음 (안전) */
+        var straddle = null;
+        var closest = null;
+        var closestDist = Infinity;
+        for (var i = 0; i < entries.length; i++) {
+          var rect = entries[i].target.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) continue;
+          if (rect.top <= line && rect.bottom > line) {
+            straddle = entries[i].link;
+          }
+          var dist;
+          if (rect.bottom < line) dist = line - rect.bottom;
+          else if (rect.top > line) dist = rect.top - line;
+          else dist = 0;
+          if (dist < closestDist) { closestDist = dist; closest = entries[i].link; }
         }
+        var current = straddle || closest;
         if (!current && window.pageYOffset < 50) current = entries[0].link;
         if (current && !current.classList.contains('is-active')) setActive(current);
       });
