@@ -30,6 +30,72 @@
 - 정식 도메인 → `@main` 브랜치 콘텐츠 로드
 - 워크플로우 (`.github/workflows/webflow-deploy.yml`): `main` / `staging` 푸시 둘 다 트리거, **푸시된 ref 의 캐시만** 퍼지/워밍업
 
+## ⚠️ 모바일 viewport 격리 — 건드리지 말 것 (LOCKED v1, PR #586/#587/#588)
+
+**대상 파일**: `global/global.css`
+
+### 확정 규칙
+
+```css
+html, body {
+  overflow-x: clip;          /* ⚠️ hidden 절대 금지 */
+  max-width: 100vw;
+}
+body,
+body > .page-wrapper,
+body > main,
+body > .main-wrapper {
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
+}
+header.header {
+  position: fixed !important;
+  top: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
+```
+
+### 왜 필요한가
+
+모바일 about 에서 (1) 헤더가 스크롤 따라 위로 사라지고 (2) 서브헤더가 헤더 밑에 안 붙고 (3) 가로 스크롤이 생기며 (4) fixed 위로가기 버튼이 옆으로 밀리는 회귀가 반복 발생.
+
+**원인 두 가지**:
+1. 어떤 자손이 100vw 초과 → 가로 스크롤 가능
+2. 어떤 ancestor (body / page wrapper / IX2 가 박은 transform) 에 `transform`/`filter`/`perspective` 가 걸려 새 containing block 생성 → 자식의 `position: fixed` 가 viewport 가 아닌 그 ancestor 기준으로 잡혀 함께 스크롤됨
+
+### ⚠️ overflow-x: hidden 절대 금지 (재시도 금지)
+
+`overflow-x: hidden` 을 쓰면 브라우저가 `overflow-y` 를 `auto` 로 묵시 승격시킴 → **body 가 스크롤 컨테이너로 승격** → 자손의 `position: sticky` 가 viewport 가 아닌 body 기준이 되어 무력화됨 (서브헤더가 헤더 밑에 안 붙는 직접 원인).
+
+`overflow-x: clip` 은 overflow-y 에 영향을 주지 않아 sticky 가 정상 동작. 가로 스크롤 차단 효과는 동일. 현대 브라우저 (iOS Safari 16+ / Chrome 90+ / Firefox 81+) 모두 지원.
+
+### 변경하면 안 되는 것
+
+- ❌ `overflow-x: clip` → `hidden` 으로 회귀 (sticky 즉시 깨짐)
+- ❌ `html, body` 의 `overflow-x` 규칙 제거 (가로 스크롤 회귀)
+- ❌ `body / .page-wrapper / main wrapper` 의 `transform: none !important` 제거 (IX2 가 박는 transform 으로 fixed 어긋남 재발)
+- ❌ `header.header { position: fixed !important; top: 0 !important; transform: none !important }` 의 어느 한 줄도 약화 (모바일 hide-on-scroll 회귀)
+- ❌ `section.subheader { position: sticky !important; top: var(--header-h, 56px) !important }` (about.css) 의 sticky 모드 변경
+
+### 시도했다가 실패한 방식 (재시도 금지)
+
+- PR #586: `overflow-x: hidden !important` → 가로 스크롤은 막혔으나 서브헤더 sticky 동시 파괴 (이 LOCKED 의 핵심 교훈)
+- header 만 fixed 처리, body transform 무력화 누락 → IX2 의 wrapper transform 으로 fixed 어긋남 재발
+
+### 디버그
+
+모바일에서 회귀 의심 시:
+```js
+// DevTools console — body 의 스크롤 컨테이너 여부 확인
+getComputedStyle(document.body).overflowY  // 'visible' 이어야 함. 'auto' 면 sticky 깨짐
+// transform 박힌 ancestor 확인
+[...document.querySelectorAll('body *')].filter(el => getComputedStyle(el).transform !== 'none').slice(0, 5)
+```
+
+---
+
 ## 프로젝트 개요
 Webflow로 만든 Helix 동물병원(helix-amc) 사이트의 커스텀 CSS/JS를
 GitHub에서 관리하고 jsDelivr CDN으로 자동 배포하는 구조.
