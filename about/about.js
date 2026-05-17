@@ -2349,12 +2349,26 @@
     var links = document.querySelectorAll('.subheader_click-area');
     if (!links.length) return;
 
+    /* Webflow 가 같은 anchor ID 를 데스크탑/모바일 듀얼 마크업에 중복
+       박는 케이스가 있음. getElementById / querySelector('#id') 는
+       항상 첫 번째(=데스크탑) 만 반환 — 모바일에선 그게 display:none
+       상태라 rect.top 이 0/엉뚱한 값 → spy 가 모두 "통과" 로 잘못 판정.
+       attribute selector 로 같은 ID 다 긁어 와서 실제 화면에 보이는
+       (offsetParent 또는 client rect 가 있는) 요소만 채택. */
+    function findVisibleTarget(href) {
+      if (!href || href.charAt(0) !== '#' || href.length < 2) return null;
+      var id = href.slice(1);
+      var all = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+      for (var i = 0; i < all.length; i++) {
+        var el = all[i];
+        if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+      }
+      return all[0] || document.querySelector(href) || null;
+    }
+
     var entries = [];
     links.forEach(function (a) {
-      var href = a.getAttribute('href') || '';
-      if (href.charAt(0) !== '#' || href.length < 2) return;
-      var target = document.getElementById(href.slice(1)) ||
-                   document.querySelector(href);
+      var target = findVisibleTarget(a.getAttribute('href') || '');
       if (target) entries.push({ link: a, target: target });
     });
     if (!entries.length) return;
@@ -2369,7 +2383,8 @@
       a.addEventListener('click', function (e) {
         var href = a.getAttribute('href') || '';
         if (href.charAt(0) !== '#') return;
-        var t = document.getElementById(href.slice(1)) || document.querySelector(href);
+        /* 클릭 시점에도 현재 화면에 보이는 타깃을 다시 계산 (resize 케이스). */
+        var t = findVisibleTarget(href);
         if (!t) return;
         e.preventDefault();
         setActive(a);
