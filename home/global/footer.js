@@ -349,10 +349,10 @@
     return 1;
   }
 
-  /* SCROLL-TO-TOP BUTTON — document 전역 위임으로 처리
-     셀렉터: .div-block-141 (래퍼) 또는 그 자손 / 부모 a[href="#"] / a[href="#top"]
-     IX2 인터랙션이 있어도 capture + stopImmediatePropagation 으로 차단,
-     없어도 동일하게 동작. 요소 hydrate 시점 무관. */
+  /* SCROLL-TO-TOP BUTTON — 사용자 지시로 전체 비활성화 (디버그용)
+     문제 분석을 위해 잠시 우리 JS 핸들러 / IX2 무력화 / 셀렉터 위임
+     모든 코드 숨김. 위로가기 버튼은 Webflow 기본 동작(`href="#"`)에 위임. */
+  /*
   var SCROLL_TOP_SELECTORS = [
     '.div-block-141',
     'a[href="#top"]',
@@ -376,7 +376,6 @@
     dbg('scroll-to-top clicked (delegated)');
   }, true);
 
-  /* 보조: 요소가 마운트되면 cursor:pointer + IX2 data-w-id 잔재 제거 */
   function initScrollToTop() {
     var btn = document.querySelector('.div-block-141');
     if (!btn) return false;
@@ -390,6 +389,8 @@
     dbg('scroll-to-top element prepped');
     return true;
   }
+  */
+  function initScrollToTop() { return true; }
 
   /* ============================================================
      초기화 — 푸터 요소가 늦게 들어오는 경우 대비 retry + observer
