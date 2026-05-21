@@ -26,7 +26,10 @@
 
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
-  var BRANCH = 'main';
+  /* staging / production 분리 (bootstrap.js 와 동일 규칙):
+     - *.webflow.io (Webflow 스테이징 도메인) → @staging 브랜치 로드
+     - 그 외 (helixamc.com 등 정식 도메인) → @main 브랜치 로드 */
+  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
     'home/section1/section1.css',
