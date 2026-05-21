@@ -283,22 +283,27 @@
 
         if (!addr) { log('address not found in card'); return; }
 
-        var branchEl = card.querySelector('h1, h2, h3, h4, [class*="branch-card_name"], [class*="branch-card_title"]');
-        var branchName = branchEl ? (branchEl.innerText || '').trim() : '';
+        var cardText = (card.innerText || '') + ' ' + addr;
+        var branchKey = 'other';
+        var branchLabel = '';
+        if (/서초/.test(cardText))      { branchKey = 'seocho'; branchLabel = '서초'; }
+        else if (/일산/.test(cardText)) { branchKey = 'ilsan';  branchLabel = '일산'; }
+
+        var eventName = 'copy_address_' + branchKey;
 
         function trackCopy() {
           try {
             if (typeof window.gtag === 'function') {
-              window.gtag('event', 'copy_click', {
+              window.gtag('event', eventName, {
                 item_type: 'branch_address',
-                item_id: branchName || addr,
+                branch: branchLabel || 'unknown',
                 value: addr
               });
             } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
               window.dataLayer.push({
-                event: 'copy_click',
+                event: eventName,
                 item_type: 'branch_address',
-                item_id: branchName || addr,
+                branch: branchLabel || 'unknown',
                 value: addr
               });
             }

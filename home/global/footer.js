@@ -149,16 +149,14 @@
           showToast('복사완료 · ' + email);
           try {
             if (typeof window.gtag === 'function') {
-              window.gtag('event', 'copy_click', {
+              window.gtag('event', 'copy_email', {
                 item_type: 'footer_email',
-                item_id: email,
                 value: email
               });
             } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
               window.dataLayer.push({
-                event: 'copy_click',
+                event: 'copy_email',
                 item_type: 'footer_email',
-                item_id: email,
                 value: email
               });
             }
@@ -327,40 +325,9 @@
     return 1;
   }
 
-  /* SCROLL-TO-TOP BUTTON (.div-block-141) — 한 번 클릭에 휙 올라가도록
-     JS 가 IX2 를 무력화하고 직접 처리. 사용자 지시로 v4 부활.
-     1) data-w-id 제거 → Webflow IX2 바인딩 차단 (스크롤 중간에 멈추던 원인)
-     2) capture click → preventDefault + window.scrollTo({ behavior: 'smooth' })
-     3) 늦게 hydrate 되는 경우 대비 다중 시점 + MutationObserver */
-  function initScrollToTop() {
-    var btn = document.querySelector('.div-block-141');
-    if (!btn) return false;
-    if (btn.dataset.helixScrollTopBound === '1') return true;
-    btn.dataset.helixScrollTopBound = '1';
-
-    /* IX2 바인딩 차단 — 인라인 transform/opacity 잔재 정리 */
-    if (btn.hasAttribute('data-w-id')) btn.removeAttribute('data-w-id');
-    btn.querySelectorAll('[data-w-id]').forEach(function (el) {
-      el.removeAttribute('data-w-id');
-    });
-
-    btn.style.cursor = 'pointer';
-
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      try {
-        window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'auto' : 'smooth' });
-      } catch (_) {
-        window.scrollTo(0, 0);
-      }
-      dbg('scroll-to-top clicked');
-    }, true);
-
-    dbg('scroll-to-top bound');
-    return true;
-  }
+  /* SCROLL-TO-TOP BUTTON (.div-block-141) — JS 관여 0
+     이 버튼은 Webflow Designer (IX2 / Sticky 등) 에서 통제. footer.js 는
+     아무 것도 안 함. v1~v3 시도 모두 IX2 와 경합으로 회귀했던 학습 결과. */
 
   /* ============================================================
      초기화 — 푸터 요소가 늦게 들어오는 경우 대비 retry + observer
@@ -429,7 +396,6 @@
     var sns    = bindSnsImages(snsImgs);
     var logo   = initLogoLink(footer, snsImgs);
     var links  = protectFooterLinks(footer);
-    initScrollToTop();
 
     if (emails || sns || logo || links) {
       initialized = true;
@@ -442,8 +408,6 @@
   function retry() {
     var n = 0;
     var iv = setInterval(function () {
-      /* scroll-to-top 은 footer 와 무관하게 별도 retry — body 어디에 있든 잡음 */
-      initScrollToTop();
       if (init() || ++n >= 50) clearInterval(iv);
     }, 100);
   }
