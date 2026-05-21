@@ -349,47 +349,11 @@
     return 1;
   }
 
-  /* SCROLL-TO-TOP BUTTON — document 전역 위임으로 처리
-     셀렉터: .div-block-141 (래퍼) 또는 그 자손 / 부모 a[href="#"] / a[href="#top"]
-     IX2 인터랙션이 있어도 capture + stopImmediatePropagation 으로 차단,
-     없어도 동일하게 동작. 요소 hydrate 시점 무관. */
-  var SCROLL_TOP_SELECTORS = [
-    '.div-block-141',
-    'a[href="#top"]',
-    'a[href="#scroll-top"]'
-  ].join(',');
-
-  document.addEventListener('click', function (e) {
-    var t = e.target;
-    if (!t || !t.closest) return;
-    var hit = t.closest(SCROLL_TOP_SELECTORS);
-    if (!hit) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    try {
-      window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'auto' : 'smooth' });
-    } catch (_) {
-      window.scrollTo(0, 0);
-    }
-    dbg('scroll-to-top clicked (delegated)');
-  }, true);
-
-  /* 보조: 요소가 마운트되면 cursor:pointer + IX2 data-w-id 잔재 제거 */
-  function initScrollToTop() {
-    var btn = document.querySelector('.div-block-141');
-    if (!btn) return false;
-    if (btn.dataset.helixScrollTopBound === '1') return true;
-    btn.dataset.helixScrollTopBound = '1';
-    if (btn.hasAttribute('data-w-id')) btn.removeAttribute('data-w-id');
-    btn.querySelectorAll('[data-w-id]').forEach(function (el) {
-      el.removeAttribute('data-w-id');
-    });
-    btn.style.cursor = 'pointer';
-    dbg('scroll-to-top element prepped');
-    return true;
-  }
+  /* SCROLL-TO-TOP BUTTON — 사용자 지시로 전체 비활성화 (디버그용)
+     문제 분석을 위해 잠시 우리 JS 핸들러 / IX2 무력화 / 셀렉터 위임
+     모든 코드 숨김. 위로가기 버튼은 Webflow 기본 동작(`href="#"`)에 위임.
+     initScrollToTop 은 호출부 영향 없게 빈 stub 으로. */
+  function initScrollToTop() { return true; }
 
   /* ============================================================
      초기화 — 푸터 요소가 늦게 들어오는 경우 대비 retry + observer
