@@ -333,6 +333,10 @@
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
+      /* IX2 가 같은 click 에 'scroll to' 액션을 박아두면 매 프레임 scrollTop 을
+         덮어써 찔끔만 올라가는 경합 발생. capture + stopImmediatePropagation
+         으로 IX2 리스너 자체를 차단. Webflow Designer 에서도 인터랙션 제거 권장. */
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       try {
         window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'auto' : 'smooth' });
