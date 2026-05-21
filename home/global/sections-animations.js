@@ -363,31 +363,50 @@
             }
             var telDevice = window.innerWidth <= 767 ? 'mobile' : 'desktop';
             var telEventName = 'tel_call_' + telBranchKey + '_' + telDevice;
-            try {
-              if (typeof window.gtag === 'function') {
-                window.gtag('event', telEventName, {
-                  item_type: 'tel_call',
-                  branch: telBranchLabel || 'unknown',
-                  device: telDevice,
-                  value: link.href
-                });
-              } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
-                window.dataLayer.push({
-                  event: telEventName,
-                  item_type: 'tel_call',
-                  branch: telBranchLabel || 'unknown',
-                  device: telDevice,
-                  value: link.href
-                });
-              }
-            } catch (err) {}
+            var telHref = link.href;
 
             if (navigator.clipboard) {
               navigator.clipboard.writeText(addr).catch(function () { fallbackCopy(addr); });
             } else {
               fallbackCopy(addr);
             }
-            window.location.href = link.href;
+
+            /* 전송 보장: gtag 의 event_callback 안에서 location 이동.
+               beacon 이 끊기지 않도록 GA4 응답 받은 뒤 전화 앱으로 전환.
+               1000ms 안전 타임아웃 — gtag 실패해도 전화는 무조건 연결. */
+            var navigated = false;
+            function goCall() {
+              if (navigated) return;
+              navigated = true;
+              window.location.href = telHref;
+            }
+
+            try {
+              if (typeof window.gtag === 'function') {
+                window.gtag('event', telEventName, {
+                  item_type: 'tel_call',
+                  branch: telBranchLabel || 'unknown',
+                  device: telDevice,
+                  value: telHref,
+                  transport_type: 'beacon',
+                  event_callback: goCall
+                });
+                setTimeout(goCall, 1000);
+              } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+                window.dataLayer.push({
+                  event: telEventName,
+                  item_type: 'tel_call',
+                  branch: telBranchLabel || 'unknown',
+                  device: telDevice,
+                  value: telHref
+                });
+                setTimeout(goCall, 300);
+              } else {
+                goCall();
+              }
+            } catch (err) {
+              goCall();
+            }
           }
           log('tel + copy:', link.href, addr);
         }
