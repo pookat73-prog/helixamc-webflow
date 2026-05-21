@@ -292,7 +292,8 @@
           branchKey = 'ilsan';  branchLabel = '일산';
         }
 
-        var eventName = 'copy_address_' + branchKey;
+        var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+        var eventName = 'copy_address_' + branchKey + '_' + device;
 
         function trackCopy() {
           try {
@@ -300,6 +301,7 @@
               window.gtag('event', eventName, {
                 item_type: 'branch_address',
                 branch: branchLabel || 'unknown',
+                device: device,
                 value: addr
               });
             } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
@@ -307,6 +309,7 @@
                 event: eventName,
                 item_type: 'branch_address',
                 branch: branchLabel || 'unknown',
+                device: device,
                 value: addr
               });
             }
