@@ -148,15 +148,19 @@
         copyText(email).then(function () {
           showToast('복사완료 · ' + email);
           try {
+            var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+            var eventName = 'copy_email_' + device;
             if (typeof window.gtag === 'function') {
-              window.gtag('event', 'copy_email', {
+              window.gtag('event', eventName, {
                 item_type: 'footer_email',
+                device: device,
                 value: email
               });
             } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
               window.dataLayer.push({
-                event: 'copy_email',
+                event: eventName,
                 item_type: 'footer_email',
+                device: device,
                 value: email
               });
             }
