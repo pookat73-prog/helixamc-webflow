@@ -147,6 +147,22 @@
         var email = match[0];
         copyText(email).then(function () {
           showToast('복사완료 · ' + email);
+          try {
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', 'copy_click', {
+                item_type: 'footer_email',
+                item_id: email,
+                value: email
+              });
+            } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+              window.dataLayer.push({
+                event: 'copy_click',
+                item_type: 'footer_email',
+                item_id: email,
+                value: email
+              });
+            }
+          } catch (e) {}
           dbg('email copied:', email);
         });
       }
