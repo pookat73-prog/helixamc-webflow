@@ -353,6 +353,35 @@
           e.preventDefault();
           var confirmed = confirm('전화로 연결하시겠습니까?\n주소도 자동으로 복사됩니다.');
           if (confirmed) {
+            var telCardText = (card.innerText || '') + ' ' + addr + ' ' + (link.href || '');
+            var telBranchKey = 'other';
+            var telBranchLabel = '';
+            if (/서초|2135-9119/.test(telCardText)) {
+              telBranchKey = 'seocho'; telBranchLabel = '서초';
+            } else if (/일산|고양시|덕양구|978-7575/.test(telCardText)) {
+              telBranchKey = 'ilsan';  telBranchLabel = '일산';
+            }
+            var telDevice = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+            var telEventName = 'tel_call_' + telBranchKey + '_' + telDevice;
+            try {
+              if (typeof window.gtag === 'function') {
+                window.gtag('event', telEventName, {
+                  item_type: 'tel_call',
+                  branch: telBranchLabel || 'unknown',
+                  device: telDevice,
+                  value: link.href
+                });
+              } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+                window.dataLayer.push({
+                  event: telEventName,
+                  item_type: 'tel_call',
+                  branch: telBranchLabel || 'unknown',
+                  device: telDevice,
+                  value: link.href
+                });
+              }
+            } catch (err) {}
+
             if (navigator.clipboard) {
               navigator.clipboard.writeText(addr).catch(function () { fallbackCopy(addr); });
             } else {
