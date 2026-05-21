@@ -283,17 +283,47 @@
 
         if (!addr) { log('address not found in card'); return; }
 
+        var cardText = (card.innerText || '') + ' ' + addr;
+        var branchKey = 'other';
+        var branchLabel = '';
+        if (/서초/.test(cardText))      { branchKey = 'seocho'; branchLabel = '서초'; }
+        else if (/일산/.test(cardText)) { branchKey = 'ilsan';  branchLabel = '일산'; }
+
+        var eventName = 'copy_address_' + branchKey;
+
+        function trackCopy() {
+          try {
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', eventName, {
+                item_type: 'branch_address',
+                branch: branchLabel || 'unknown',
+                value: addr
+              });
+            } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+              window.dataLayer.push({
+                event: eventName,
+                item_type: 'branch_address',
+                branch: branchLabel || 'unknown',
+                value: addr
+              });
+            }
+          } catch (e) {}
+        }
+
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(addr).then(function () {
             flashSuccess(btn, '복사완료');
+            trackCopy();
             log('copied:', addr);
           }).catch(function () {
             fallbackCopy(addr);
             flashSuccess(btn, '복사완료');
+            trackCopy();
           });
         } else {
           fallbackCopy(addr);
           flashSuccess(btn, '복사완료');
+          trackCopy();
         }
       });
       btn.style.cursor = 'pointer';

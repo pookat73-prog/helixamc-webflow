@@ -2349,12 +2349,45 @@
     var links = document.querySelectorAll('.subheader_click-area');
     if (!links.length) return;
 
+    /* 타깃 결정 — 우선순위
+       1. href ID 와 일치하는 요소 중 실제 화면에 보이는 것 (Webflow 듀얼
+          마크업에서 같은 ID 가 데스크탑/모바일 양쪽에 있을 때 visible 쪽)
+       2. heuristic: 링크의 .subheader_title 텍스트와 매칭되는 visible 헤딩
+          (h1~h4) 의 가장 가까운 section/main 조상.
+          데스크탑에만 ID 가 박혀 있고 모바일 마크업엔 ID 가 없는 케이스
+          (보호자/의료진 같은 듀얼 섹션) 를 커버.
+       3. null — 클릭 핸들러는 null 이면 native 동작 안 막음. spy 도 무시. */
+    function findVisibleTarget(href, linkEl) {
+      if (href && href.charAt(0) === '#' && href.length >= 2) {
+        var id = href.slice(1);
+        var all = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+        }
+      }
+      if (linkEl) {
+        var titleEl = linkEl.querySelector('.subheader_title') || linkEl;
+        var title = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
+        if (title.length >= 2) {
+          var headings = document.querySelectorAll('h1, h2, h3, h4');
+          for (var j = 0; j < headings.length; j++) {
+            var h = headings[j];
+            if (h.offsetParent === null && h.getClientRects().length === 0) continue;
+            var ht = (h.textContent || '').replace(/\s+/g, ' ').trim();
+            if (!ht) continue;
+            if (ht === title || ht.indexOf(title) !== -1 || title.indexOf(ht) !== -1) {
+              return h.closest('section') || h.closest('[class*="section"]') || h;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
     var entries = [];
     links.forEach(function (a) {
-      var href = a.getAttribute('href') || '';
-      if (href.charAt(0) !== '#' || href.length < 2) return;
-      var target = document.getElementById(href.slice(1)) ||
-                   document.querySelector(href);
+      var target = findVisibleTarget(a.getAttribute('href') || '', a);
       if (target) entries.push({ link: a, target: target });
     });
     if (!entries.length) return;
@@ -2369,7 +2402,10 @@
       a.addEventListener('click', function (e) {
         var href = a.getAttribute('href') || '';
         if (href.charAt(0) !== '#') return;
-        var t = document.getElementById(href.slice(1)) || document.querySelector(href);
+        /* 클릭 시점에 visible 타깃 재계산 (resize 케이스). null 이면
+           native 동작 막지 않음 — 잘못된 좌표로 스크롤하느니 안 움직이는 게
+           나음. */
+        var t = findVisibleTarget(href, a);
         if (!t) return;
         e.preventDefault();
         setActive(a);
@@ -2384,7 +2420,15 @@
       });
     });
 
-    /* 스크롤스파이 — 뷰포트 상단 30% 라인을 통과한 가장 최근 섹션 활성화 */
+    /* 스크롤스파이 — "라인을 가장 잘 채우는" 섹션 활성화.
+       spy line: header.bottom + subheader.height + 16px.
+       알고리즘:
+       1. spy line 을 [top, bottom] 안에 품는 (straddle) 섹션이 있으면 그것
+       2. 없으면 line 까지 가장 가까운 섹션 (위/아래 무관)
+       이전 알고리즘 ("라인 통과한 마지막") 은 섹션 사이 빈 공간에서
+       이전 섹션 활성이 계속 유지되는 문제 → 다음 섹션 헤딩이 보이는데도
+       이전 밑줄이 안 빠짐. straddle/closest 방식은 다음 섹션 헤딩이
+       viewport 에 들어오는 순간 부드럽게 전환. */
     var ticking = false;
     function onScroll() {
       if (ticking) return;
@@ -2392,13 +2436,27 @@
       requestAnimationFrame(function () {
         ticking = false;
         if (Date.now() - clickedAt < 700) return;
-        var line = window.innerHeight * 0.3;
-        var current = null;
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var sub = document.querySelector('.subheader');
+        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var line = headerH + subH + 16;
+        var straddle = null;
+        var closest = null;
+        var closestDist = Infinity;
         for (var i = 0; i < entries.length; i++) {
           var rect = entries[i].target.getBoundingClientRect();
-          if (rect.top <= line) current = entries[i].link;
-          else break;
+          if (rect.width === 0 && rect.height === 0) continue;
+          if (rect.top <= line && rect.bottom > line) {
+            straddle = entries[i].link;
+          }
+          var dist;
+          if (rect.bottom < line) dist = line - rect.bottom;
+          else if (rect.top > line) dist = rect.top - line;
+          else dist = 0;
+          if (dist < closestDist) { closestDist = dist; closest = entries[i].link; }
         }
+        var current = straddle || closest;
         if (!current && window.pageYOffset < 50) current = entries[0].link;
         if (current && !current.classList.contains('is-active')) setActive(current);
       });
