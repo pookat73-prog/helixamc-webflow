@@ -26,8 +26,8 @@
 
   /* SNS 링크 — 푸터 SNS 영역 이미지 순서대로 (좌→우) */
   var SNS_URLS = [
-    { url: 'https://www.instagram.com/helix_amc/', label: 'Instagram' },
-    { url: 'https://blog.naver.com/helix_amc',     label: 'Naver Blog' }
+    { url: 'https://www.instagram.com/helix_amc/', label: 'Instagram',  key: 'instagram' },
+    { url: 'https://blog.naver.com/helix_amc',     label: 'Naver Blog', key: 'blog' }
   ];
 
   var EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
@@ -147,6 +147,24 @@
         var email = match[0];
         copyText(email).then(function () {
           showToast('복사완료 · ' + email);
+          try {
+            var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+            var eventName = 'copy_email_' + device;
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', eventName, {
+                item_type: 'footer_email',
+                device: device,
+                value: email
+              });
+            } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+              window.dataLayer.push({
+                event: eventName,
+                item_type: 'footer_email',
+                device: device,
+                value: email
+              });
+            }
+          } catch (e) {}
           dbg('email copied:', email);
         });
       }
@@ -251,6 +269,26 @@
 
       function go(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
+        try {
+          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var eventName = 'sns_click_' + entry.key + '_' + device;
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, {
+              item_type: 'sns_click',
+              sns: entry.key,
+              device: device,
+              value: entry.url
+            });
+          } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+            window.dataLayer.push({
+              event: eventName,
+              item_type: 'sns_click',
+              sns: entry.key,
+              device: device,
+              value: entry.url
+            });
+          }
+        } catch (err) {}
         window.open(entry.url, '_blank', 'noopener,noreferrer');
         dbg('sns open:', entry.label, entry.url);
       }
