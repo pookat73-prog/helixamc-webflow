@@ -283,17 +283,42 @@
 
         if (!addr) { log('address not found in card'); return; }
 
+        var branchEl = card.querySelector('h1, h2, h3, h4, [class*="branch-card_name"], [class*="branch-card_title"]');
+        var branchName = branchEl ? (branchEl.innerText || '').trim() : '';
+
+        function trackCopy() {
+          try {
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', 'copy_click', {
+                item_type: 'branch_address',
+                item_id: branchName || addr,
+                value: addr
+              });
+            } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+              window.dataLayer.push({
+                event: 'copy_click',
+                item_type: 'branch_address',
+                item_id: branchName || addr,
+                value: addr
+              });
+            }
+          } catch (e) {}
+        }
+
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(addr).then(function () {
             flashSuccess(btn, '복사완료');
+            trackCopy();
             log('copied:', addr);
           }).catch(function () {
             fallbackCopy(addr);
             flashSuccess(btn, '복사완료');
+            trackCopy();
           });
         } else {
           fallbackCopy(addr);
           flashSuccess(btn, '복사완료');
+          trackCopy();
         }
       });
       btn.style.cursor = 'pointer';
