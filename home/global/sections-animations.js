@@ -286,8 +286,11 @@
         var cardText = (card.innerText || '') + ' ' + addr;
         var branchKey = 'other';
         var branchLabel = '';
-        if (/서초/.test(cardText))      { branchKey = 'seocho'; branchLabel = '서초'; }
-        else if (/일산/.test(cardText)) { branchKey = 'ilsan';  branchLabel = '일산'; }
+        if (/서초|2135-9119/.test(cardText)) {
+          branchKey = 'seocho'; branchLabel = '서초';
+        } else if (/일산|고양시|덕양구|978-7575/.test(cardText)) {
+          branchKey = 'ilsan';  branchLabel = '일산';
+        }
 
         var eventName = 'copy_address_' + branchKey;
 
