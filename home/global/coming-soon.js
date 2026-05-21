@@ -177,7 +177,7 @@
   var COMING_SELECTORS = [
     '.bt-box-2',
     '.bt-box-3',
-    '.bt-box-4',
+    /* .bt-box-4 (SVIC CTA) — 사용자 지시로 준비중 해제, Webflow href 그대로 사용 */
     '.home_branch-card',
     '.flex-block-22 > .div-block-151',
     '.just-box_qqqqqqq'
