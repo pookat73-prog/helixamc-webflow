@@ -62,20 +62,20 @@
     });
   }
 
-  /* SVIC CTA 클릭 추적: .bt-box-4 (또는 그 안의 a 태그) 클릭 시 GA4 이벤트 */
-  function initSvicClickTracking() {
+  /* SVICC CTA 클릭 추적: .bt-box-4 (또는 그 안의 a 태그) 클릭 시 GA4 이벤트 */
+  function initSviccClickTracking() {
     document.querySelectorAll('.bt-box-4').forEach(function (el) {
-      if (el.dataset.helixSvicTrack) return;
-      el.dataset.helixSvicTrack = '1';
+      if (el.dataset.helixSviccTrack) return;
+      el.dataset.helixSviccTrack = '1';
       el.addEventListener('click', function () {
         try {
           var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
-          var eventName = 'svic_click_' + device;
+          var eventName = 'svicc_click_' + device;
           var anchor = el.tagName === 'A' ? el : el.querySelector('a');
           var href = anchor ? anchor.href : '';
           if (typeof window.gtag === 'function') {
             window.gtag('event', eventName, {
-              item_type: 'svic_click',
+              item_type: 'svicc_click',
               device: device,
               value: href,
               transport_type: 'beacon'
@@ -83,7 +83,7 @@
           } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
             window.dataLayer.push({
               event: eventName,
-              item_type: 'svic_click',
+              item_type: 'svicc_click',
               device: device,
               value: href
             });
@@ -96,6 +96,6 @@
   window.Webflow = window.Webflow || [];
   window.Webflow.push(function () {
     setTimeout(initButtonGlow, 100);
-    setTimeout(initSvicClickTracking, 100);
+    setTimeout(initSviccClickTracking, 100);
   });
 })();
