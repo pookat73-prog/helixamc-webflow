@@ -349,42 +349,45 @@
     return 1;
   }
 
-  /* SCROLL-TO-TOP BUTTON (.div-block-141) — 한 번 클릭에 휙 올라가도록
-     JS 가 IX2 를 무력화하고 직접 처리. 사용자 지시로 v4 부활.
-     1) data-w-id 제거 → Webflow IX2 바인딩 차단 (스크롤 중간에 멈추던 원인)
-     2) capture click → preventDefault + window.scrollTo({ behavior: 'smooth' })
-     3) 늦게 hydrate 되는 경우 대비 다중 시점 + MutationObserver */
+  /* SCROLL-TO-TOP BUTTON — document 전역 위임으로 처리
+     셀렉터: .div-block-141 (래퍼) 또는 그 자손 / 부모 a[href="#"] / a[href="#top"]
+     IX2 인터랙션이 있어도 capture + stopImmediatePropagation 으로 차단,
+     없어도 동일하게 동작. 요소 hydrate 시점 무관. */
+  var SCROLL_TOP_SELECTORS = [
+    '.div-block-141',
+    'a[href="#top"]',
+    'a[href="#scroll-top"]'
+  ].join(',');
+
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var hit = t.closest(SCROLL_TOP_SELECTORS);
+    if (!hit) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'auto' : 'smooth' });
+    } catch (_) {
+      window.scrollTo(0, 0);
+    }
+    dbg('scroll-to-top clicked (delegated)');
+  }, true);
+
+  /* 보조: 요소가 마운트되면 cursor:pointer + IX2 data-w-id 잔재 제거 */
   function initScrollToTop() {
     var btn = document.querySelector('.div-block-141');
     if (!btn) return false;
     if (btn.dataset.helixScrollTopBound === '1') return true;
     btn.dataset.helixScrollTopBound = '1';
-
-    /* IX2 바인딩 차단 — 인라인 transform/opacity 잔재 정리 */
     if (btn.hasAttribute('data-w-id')) btn.removeAttribute('data-w-id');
     btn.querySelectorAll('[data-w-id]').forEach(function (el) {
       el.removeAttribute('data-w-id');
     });
-
     btn.style.cursor = 'pointer';
-
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      /* IX2 가 같은 click 에 'scroll to' 액션을 박아두면 매 프레임 scrollTop 을
-         덮어써 찔끔만 올라가는 경합 발생. capture + stopImmediatePropagation
-         으로 IX2 리스너 자체를 차단. Webflow Designer 에서도 인터랙션 제거 권장. */
-      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      try {
-        window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'auto' : 'smooth' });
-      } catch (_) {
-        window.scrollTo(0, 0);
-      }
-      dbg('scroll-to-top clicked');
-    }, true);
-
-    dbg('scroll-to-top bound');
+    dbg('scroll-to-top element prepped');
     return true;
   }
 
