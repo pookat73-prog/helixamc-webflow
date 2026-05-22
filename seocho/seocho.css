@@ -44,25 +44,6 @@
   height: 16px;
 }
 
-/* 정보창 (InfoWindow) 내부 스타일 */
-.naver-iw {
-  padding: 12px 14px;
-  min-width: 200px;
-  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-}
-.naver-iw__title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #111;
-  margin: 0 0 4px;
-}
-.naver-iw__addr {
-  font-size: 13px;
-  color: #555;
-  margin: 0;
-  line-height: 1.4;
-}
-
 /* 로드 실패 폴백 메시지 */
 .naver-map-fallback {
   position: absolute;
