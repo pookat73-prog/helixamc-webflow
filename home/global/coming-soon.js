@@ -187,6 +187,35 @@
     'a[href^="tel:"]',
     'a[href^="mailto:"]'
   ];
+  /* 지점 카드 중 "라이브" 처리할 카드 (준비중 해제 + 클릭 시 페이지 이동).
+     식별: 카드 텍스트에 매칭 패턴 포함 시 해당 URL 로 이동. */
+  var LIVE_BRANCH_CARDS = [
+    { match: /서초|2135-9119/, url: '/seoco-bonweon', label: '서초본원' }
+  ];
+  var BRANCH_CARD_SEL = '.home_branch-card, .flex-block-22 > .div-block-151';
+  var LIVE_ATTR = 'data-helix-link';
+
+  function detectLiveBranch(card) {
+    var txt = (card.textContent || '').replace(/\s+/g, ' ');
+    for (var i = 0; i < LIVE_BRANCH_CARDS.length; i++) {
+      if (LIVE_BRANCH_CARDS[i].match.test(txt)) return LIVE_BRANCH_CARDS[i];
+    }
+    return null;
+  }
+
+  function markLiveBranchCards() {
+    document.querySelectorAll(BRANCH_CARD_SEL).forEach(function (card) {
+      var live = detectLiveBranch(card);
+      if (!live) return;
+      /* 준비중 마킹 해제 (혹시 박혔어도 제거) */
+      if (card.hasAttribute('data-coming-soon')) card.removeAttribute('data-coming-soon');
+      /* 라이브 링크 어트리뷰트 + 커서 + 클릭 가능 표시 */
+      if (card.getAttribute(LIVE_ATTR) !== live.url) {
+        card.setAttribute(LIVE_ATTR, live.url);
+        card.style.cursor = 'pointer';
+      }
+    });
+  }
 
   function mark() {
     COMING_SELECTORS.forEach(function (sel) {
@@ -203,7 +232,30 @@
         }
       });
     });
+    /* 라이브 지점 카드는 마킹 직후 해제 (mark 가 박은 data-coming-soon 제거) */
+    markLiveBranchCards();
   }
+
+  /* 라이브 지점 카드 클릭 → 페이지 이동.
+     capture 단계로 등록해 Webflow IX2 click 보다 먼저 처리.
+     단, 카드 내부 exempt 요소(주소 복사 버튼 / tel 링크 / mailto) 는 자기 동작 유지. */
+  function handleLiveCardClick(e) {
+    var el = e.target;
+    while (el && el !== document.body && el.nodeType === 1) {
+      if (el.hasAttribute && el.hasAttribute('data-coming-soon-exempt')) return;
+      if (el.hasAttribute && el.hasAttribute(LIVE_ATTR)) {
+        var url = el.getAttribute(LIVE_ATTR);
+        if (url) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = url;
+        }
+        return;
+      }
+      el = el.parentElement;
+    }
+  }
+  document.addEventListener('click', handleLiveCardClick, true);
 
   function start() {
     mark();
