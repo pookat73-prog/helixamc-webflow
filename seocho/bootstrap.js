@@ -14,7 +14,7 @@
   /* ⚠️ 네이버 클라우드 플랫폼에서 발급받은 Web Dynamic Map Client ID.
      도메인 화이트리스트(helixamc.com, *.webflow.io 등)로 보호되므로
      코드 노출 자체는 안전. 발급 후 아래 값만 교체. */
-  var NAVER_CLIENT_ID = 'REPLACE_WITH_YOUR_NCP_CLIENT_ID';
+  var NAVER_CLIENT_ID = 'nt1rlbecwi';
 
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
