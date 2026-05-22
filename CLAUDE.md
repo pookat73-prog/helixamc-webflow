@@ -1,5 +1,41 @@
 # Helix AMC Webflow — Claude 작업 가이드
 
+## 🔥 새 폴더/페이지 작업 시 — 워크플로우 paths 필터 점검 (LOCKED v1, PR #621~#630 교훈)
+
+**증상**: 코드 푸시 → PR 머지했는데 사이트에 반영 안 됨. "캐시 기다려 주세요" 만 반복하게 됨.
+
+**원인**: `.github/workflows/webflow-deploy.yml` 의 `on.push.paths` 와 퍼지 대상 `FILES` 목록에 해당 폴더가 빠져 있으면, 푸시가 워크플로우를 **아예 트리거 안 함** → jsDelivr `@main`/`@staging` 캐시가 옛 bootstrap 그대로 → 사용자 브라우저에 영영 새 코드 도달 안 함.
+
+### 새 작업 시작 전 BLOCKING CHECK
+
+`{newdir}/` 폴더에서 작업을 시작하기 전, **반드시 먼저** `.github/workflows/webflow-deploy.yml` 을 열어 두 가지를 확인:
+
+1. `on.push.paths` 에 `'{newdir}/**'` 포함되어 있는가?
+2. `Purge jsDelivr cache` 단계의 `FILES=()` 배열에 `{newdir}/bootstrap.js` (또는 그 폴더의 동적 로더 파일) 포함되어 있는가?
+
+둘 중 하나라도 누락이면, **콘텐츠 작업 PR 과 별개로** 먼저 워크플로우 패치 PR 을 만들거나 같은 PR 에 함께 넣어야 함.
+
+### ⚠️ 함정 — 워크플로우 자체 변경은 paths 필터에 안 걸림
+
+`.github/workflows/webflow-deploy.yml` 만 수정한 PR 은 그 자체로 워크플로우를 트리거 안 함 (paths 필터에 `.github/**` 없음). 따라서:
+
+- 워크플로우 paths 를 늘리는 PR 머지 **직후**, 그 폴더 안 파일에 사소한 변경 (예: 헤더 주석의 버전 번호 bump) 을 추가 푸시해서 워크플로우를 실제로 한 번 돌려야 함
+- 혹은 워크플로우 패치와 콘텐츠 변경을 같은 PR 에 넣어 한 번에 처리
+
+### 진단 코맨드
+
+새 폴더 작업 들어가기 전 무조건:
+```bash
+grep -E "paths:|FILES=\(" -A20 .github/workflows/webflow-deploy.yml | head -40
+```
+해당 폴더 보이면 OK, 안 보이면 먼저 워크플로우 패치.
+
+### 실패 사례 (재발 금지)
+
+PR #621 (네이버 SDK 키 파라미터 수정) 머지했는데 사이트 반영 안 됨 → "캐시 기다리세요" 안내 → 사용자 시크릿 창 새로고침 수회 → PR #622 (workflow paths 추가) 머지했는데 그 PR 자체도 트리거 안 됨 → PR #623 (seocho/bootstrap 헤더 bump) 으로 강제 트리거 → 그제서야 반영. 사용자가 "하루종일 뺑이쳤다" 분노. 첫 PR 만들기 전 본 체크 1분만 하면 됐던 일.
+
+---
+
 ## 워크플로우 — **staging 우선 배포** (LOCKED v1, PR #546)
 
 ### 브랜치 전략
