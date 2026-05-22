@@ -17,8 +17,8 @@
     address: '서울특별시 서초구 신반포로 162 르본시티 2층',
     lat: 37.504921,
     lng: 127.002318,
-    /* 네이버 지도 길찾기 URL 용 식별자. lat,lng 만으로도 동작. */
-    naverPlaceQuery: '헬릭스 동물의료센터 서초본원'
+    /* 네이버 지도 플레이스 ID — map.naver.com URL 의 /place/{id} 값. */
+    naverPlaceId: '36786130'
   };
 
   var DEBUG = /[?&]debug-naver=1/.test(location.search);
@@ -107,11 +107,10 @@
     /* InfoWindow 제거 — 병원명/주소는 페이지에 이미 텍스트로 노출되어 중복.
        마커 클릭 시 네이버 지도 검색으로 새 창 오픈 (모바일 대응 포함). */
     naver.maps.Event.addListener(marker, 'click', function () {
-      window.open(
-        'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.naverPlaceQuery || CLINIC.name),
-        '_blank',
-        'noopener'
-      );
+      var url = CLINIC.naverPlaceId
+        ? 'https://map.naver.com/p/entry/place/' + CLINIC.naverPlaceId
+        : 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
+      window.open(url, '_blank', 'noopener');
     });
 
     addDirectionsButton(container);
