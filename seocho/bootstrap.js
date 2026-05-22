@@ -83,7 +83,8 @@
     injectJs(
       'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' +
         encodeURIComponent(NAVER_CLIENT_ID) +
-        '&ncpClientId=' + encodeURIComponent(NAVER_CLIENT_ID),
+        '&ncpClientId=' + encodeURIComponent(NAVER_CLIENT_ID) +
+        '&submodules=geocoder',
       function () { console.log('[seocho-bootstrap] naver maps SDK loaded'); },
       function () { console.warn('[seocho-bootstrap] naver maps SDK load failed'); }
     );

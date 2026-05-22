@@ -116,6 +116,27 @@
 
     addDirectionsButton(container);
     log('initialized at', CLINIC.lat, CLINIC.lng);
+
+    /* 주소 → 좌표 정확 변환 (geocoder submodule 필요).
+       성공 시 마커·지도 중심을 정확한 위치로 이동.
+       Geocoding API 미활성/실패 시 위 fallback 좌표 유지. */
+    if (naver.maps.Service && naver.maps.Service.geocode) {
+      naver.maps.Service.geocode({ query: CLINIC.address }, function (status, response) {
+        if (status !== naver.maps.Service.Status.OK) {
+          log('geocode failed', status);
+          return;
+        }
+        var items = response.v2 && response.v2.addresses;
+        if (!items || !items.length) { log('geocode: no result'); return; }
+        var lat = parseFloat(items[0].y);
+        var lng = parseFloat(items[0].x);
+        if (isNaN(lat) || isNaN(lng)) { log('geocode: invalid lat/lng'); return; }
+        var pos = new naver.maps.LatLng(lat, lng);
+        map.setCenter(pos);
+        marker.setPosition(pos);
+        log('geocoded to', lat, lng);
+      });
+    }
   }
 
   /* SDK 가 늦게 도달할 수 있으므로 다중 시점 시도 */
