@@ -91,7 +91,11 @@
       },
       mapTypeControl: false,
       scaleControl: false,
-      logoControl: true
+      logoControl: true,
+      /* 패닝/줌 시 타일·라벨 등장 지연 최소화 */
+      tileTransition: false,    /* 타일 페이드인 제거 → 즉시 표시 */
+      tileSpare: 4,             /* 뷰포트 밖 타일을 더 많이 선로드 (default 1) */
+      disableKineticPan: false
     });
 
     var marker = new naver.maps.Marker({
