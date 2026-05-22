@@ -9,6 +9,7 @@ on:
       - 'home/**'
       - 'about/**'
       - 'global/**'
+      - 'seocho/**'
   workflow_dispatch:
 
 jobs:
@@ -58,6 +59,7 @@ jobs:
             "home/bootstrap-v3.js"
             "about/bootstrap.js"
             "global/bootstrap.js"
+            "seocho/bootstrap.js"
             "about/bg-video.mp4"
           )
           FAILED=0

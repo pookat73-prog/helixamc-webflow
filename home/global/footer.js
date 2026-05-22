@@ -349,9 +349,11 @@
     return 1;
   }
 
-  /* SCROLL-TO-TOP BUTTON (.div-block-141) — JS 관여 0
-     이 버튼은 Webflow Designer (IX2 / Sticky 등) 에서 통제. footer.js 는
-     아무 것도 안 함. v1~v3 시도 모두 IX2 와 경합으로 회귀했던 학습 결과. */
+  /* SCROLL-TO-TOP BUTTON — 사용자 지시로 전체 비활성화 (디버그용)
+     문제 분석을 위해 잠시 우리 JS 핸들러 / IX2 무력화 / 셀렉터 위임
+     모든 코드 숨김. 위로가기 버튼은 Webflow 기본 동작(`href="#"`)에 위임.
+     initScrollToTop 은 호출부 영향 없게 빈 stub 으로. */
+  function initScrollToTop() { return true; }
 
   /* ============================================================
      초기화 — 푸터 요소가 늦게 들어오는 경우 대비 retry + observer
@@ -420,6 +422,7 @@
     var sns    = bindSnsImages(snsImgs);
     var logo   = initLogoLink(footer, snsImgs);
     var links  = protectFooterLinks(footer);
+    initScrollToTop();
 
     if (emails || sns || logo || links) {
       initialized = true;
@@ -432,6 +435,8 @@
   function retry() {
     var n = 0;
     var iv = setInterval(function () {
+      /* scroll-to-top 은 footer 와 무관하게 별도 retry — body 어디에 있든 잡음 */
+      initScrollToTop();
       if (init() || ++n >= 50) clearInterval(iv);
     }, 100);
   }
