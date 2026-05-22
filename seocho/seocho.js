@@ -100,25 +100,14 @@
       title: CLINIC.name
     });
 
-    var infoHtml =
-      '<div class="naver-iw">' +
-        '<h4 class="naver-iw__title">' + CLINIC.name + '</h4>' +
-        '<p class="naver-iw__addr">' + CLINIC.address + '</p>' +
-      '</div>';
-
-    var infowindow = new naver.maps.InfoWindow({
-      content: infoHtml,
-      borderColor: '#0075d6',
-      borderWidth: 1,
-      anchorSize: new naver.maps.Size(12, 12),
-      pixelOffset: new naver.maps.Point(0, -6)
-    });
-
-    /* 초기 오픈 + 마커 클릭 시 토글 */
-    infowindow.open(map, marker);
+    /* InfoWindow 제거 — 병원명/주소는 페이지에 이미 텍스트로 노출되어 중복.
+       마커 클릭 시 네이버 지도 검색으로 새 창 오픈 (모바일 대응 포함). */
     naver.maps.Event.addListener(marker, 'click', function () {
-      if (infowindow.getMap()) infowindow.close();
-      else infowindow.open(map, marker);
+      window.open(
+        'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.naverPlaceQuery || CLINIC.name),
+        '_blank',
+        'noopener'
+      );
     });
 
     addDirectionsButton(container);
