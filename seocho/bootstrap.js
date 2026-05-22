@@ -81,8 +81,9 @@
   /* 네이버 지도 SDK — Client ID 없으면 경고만 띄우고 스킵 */
   if (NAVER_CLIENT_ID && NAVER_CLIENT_ID !== 'REPLACE_WITH_YOUR_NCP_CLIENT_ID') {
     injectJs(
-      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' +
-        encodeURIComponent(NAVER_CLIENT_ID),
+      'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=' +
+        encodeURIComponent(NAVER_CLIENT_ID) +
+        '&ncpClientId=' + encodeURIComponent(NAVER_CLIENT_ID),
       function () { console.log('[seocho-bootstrap] naver maps SDK loaded'); },
       function () { console.warn('[seocho-bootstrap] naver maps SDK load failed'); }
     );
