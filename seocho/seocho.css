@@ -10,7 +10,7 @@
 section.subheader {
   position: sticky !important;
   top: var(--header-h, 56px) !important;
-  z-index: 49 !important;
+  z-index: 999 !important;
   margin-top: -1px !important;
 }
 
