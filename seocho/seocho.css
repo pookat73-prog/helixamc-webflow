@@ -14,6 +14,21 @@ section.subheader {
   margin-top: -1px !important;
 }
 
+/* ================================================================
+   의료진 분과 탭 메뉴 — 내과~응급의학과 한 줄, 모서리 둥근 직사각형
+   얇은 외곽선(메인 블랙). 콘텐츠는 건드리지 않고 메뉴 바만 감쌈.
+   .tabs-menu = Webflow 커스텀 클래스, .w-tab-menu = Webflow 기본 클래스.
+   ================================================================ */
+.tabs-menu,
+.w-tab-menu {
+  display: inline-flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch;
+  border: 1px solid #0d1117;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
    높이가 0 이면 지도가 렌더 안 되므로 최소 높이 보장.
    Webflow Designer 에서 높이를 따로 줬다면 그 값이 우선. */
