@@ -110,6 +110,9 @@
     var el = node;
     while (el && el !== document.body && el.nodeType === 1) {
       if (el.hasAttribute && el.hasAttribute(EXEMPT_ATTR)) return null;
+      /* 라이브 지점 카드(서초 등 data-helix-link) 는 페이지 이동 전용 —
+         마킹 레이스로 data-coming-soon 이 남아도 토스트는 띄우지 않음 */
+      if (el.hasAttribute && el.hasAttribute('data-helix-link')) return null;
       if (el.hasAttribute && el.hasAttribute(ATTR)) {
         var v = el.getAttribute(ATTR);
         /* 빈 값/"1"/"true"는 활성화로 간주, "0"/"false"는 비활성 */
