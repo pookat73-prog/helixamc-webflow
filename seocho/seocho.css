@@ -22,8 +22,6 @@ section.subheader {
 .tabs-menu,
 .w-tab-menu {
   display: inline-flex !important;
-  flex-wrap: nowrap !important;
-  align-items: flex-start;
   border: 1px solid #0d1117;
   border-radius: 12px;
   overflow: hidden;
