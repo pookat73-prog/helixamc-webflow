@@ -2,6 +2,18 @@
    HELIX AMC - 서초본원 페이지 스타일
    ================================================================ */
 
+/* ================================================================
+   닻 메뉴 바 — header 바로 밑에 빈틈 없이 걸려 고정.
+   about.css 의 LOCKED 패턴과 동일. top 은 seocho.js 가 실제 헤더
+   높이를 --header-h 변수로 동기화해 창 너비 변화 시 갭 제거.
+   ================================================================ */
+section.subheader {
+  position: sticky !important;
+  top: var(--header-h, 56px) !important;
+  z-index: 999 !important;
+  margin-top: -1px !important;
+}
+
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
    높이가 0 이면 지도가 렌더 안 되므로 최소 높이 보장.
    Webflow Designer 에서 높이를 따로 줬다면 그 값이 우선. */
