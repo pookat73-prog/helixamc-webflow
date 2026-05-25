@@ -49,8 +49,11 @@ jobs:
 
       - name: Purge jsDelivr cache for bootstrap.js (target ref only)
         run: |
-          # 푸시된 ref(main 또는 staging) 의 bootstrap.js 만 캐시 퍼지.
-          # 콘텐츠 파일은 @<SHA> immutable 이라 퍼지 불요.
+          # 푸시된 ref(main 또는 staging) 의 bootstrap.js 캐시 퍼지.
+          # ⚠️ 콘텐츠 파일도 일부 퍼지: bootstrap 은 정상 시 @<SHA>(immutable)
+          # 로 로드하지만, GitHub API 한도 초과 등으로 실패하면 @<REF> 브랜치
+          # ref 로 폴백한다. 브랜치 ref 캐시는 최대 12h stale 이므로 폴백 시
+          # 구버전이 떠서, seocho 콘텐츠는 브랜치 ref 캐시도 함께 퍼지한다.
           REF="${{ steps.ref.outputs.branch }}"
           BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${REF}"
           FILES=(
@@ -60,6 +63,8 @@ jobs:
             "about/bootstrap.js"
             "global/bootstrap.js"
             "seocho/bootstrap.js"
+            "seocho/seocho.css"
+            "seocho/seocho.js"
             "about/bg-video.mp4"
           )
           FAILED=0
@@ -105,6 +110,8 @@ jobs:
             "home/equipment/equipment.js"
             "about/about.css"
             "about/about.js"
+            "seocho/seocho.css"
+            "seocho/seocho.js"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
