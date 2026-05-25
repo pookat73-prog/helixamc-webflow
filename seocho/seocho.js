@@ -138,3 +138,31 @@
     waitForSdk();
   }
 })();
+
+/* ================================================================
+   HEADER 높이 → --header-h CSS 변수 동기화
+   section.subheader top 을 실제 헤더 높이에 맞춰 빈틈 제거.
+   (about.js 의 동일 로직 이식)
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function sync() {
+    var hEl = document.querySelector('header.header, header, .w-nav, nav');
+    if (!hEl) return;
+    var h = hEl.getBoundingClientRect().height;
+    if (h > 0) {
+      document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+  }
+
+  var pollCount = 0;
+  var pollTimer = setInterval(function () {
+    sync();
+    if (++pollCount >= 20) clearInterval(pollTimer);
+  }, 200);
+
+  window.addEventListener('resize', sync);
+  window.addEventListener('load', sync);
+  sync();
+})();
