@@ -15,8 +15,8 @@
   var CLINIC = {
     name: '헬릭스 동물의료센터 서초본원',
     address: '서울특별시 서초구 신반포로 162 르본시티 2층',
-    lat: 37.50488862,
-    lng: 127.00228004,
+    lat: 37.5048785,
+    lng: 127.0023317,
     /* 네이버 지도 플레이스 ID — map.naver.com URL 의 /place/{id} 값. */
     naverPlaceId: '36786130'
   };
