@@ -191,6 +191,21 @@
     wrapTextNodes(link);
   }
 
+  /* 인접 분과 탭 사이에 세로 구분선(.helix-tab-sep) 삽입.
+     flex 아이템으로 넣어 양쪽 간격이 동일 → 항상 가운데. */
+  function insertSeparators(menu) {
+    if (!menu || menu.__helixSepDone) return;
+    menu.__helixSepDone = true;
+    var links = [].slice.call(menu.querySelectorAll('.w-tab-link'));
+    for (var i = 0; i < links.length - 1; i++) {
+      var link = links[i];
+      var sep = document.createElement('div');
+      sep.className = 'helix-tab-sep';
+      sep.setAttribute('aria-hidden', 'true');
+      link.parentNode.insertBefore(sep, link.nextSibling);
+    }
+  }
+
   function pinScroll() {
     var x = window.scrollX, y = window.scrollY;
     var restore = function () { window.scrollTo(x, y); };
@@ -209,6 +224,7 @@
 
       wrap.querySelectorAll('.w-tab-pane').forEach(patchPaneFocus);
       wrap.querySelectorAll('.w-tab-menu .w-tab-link').forEach(wrapTabLinkText);
+      insertSeparators(wrap.querySelector('.w-tab-menu'));
 
       var menu = wrap.querySelector('.w-tab-menu') || wrap;
       menu.addEventListener('mousedown', pinScroll, true);
