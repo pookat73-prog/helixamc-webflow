@@ -168,6 +168,29 @@
     };
   }
 
+  /* 활성 탭 형광펜(.w--current ::before) 띠 폭을 텍스트에 정확히 맞추기 위해
+     각 탭 링크의 텍스트 노드를 인라인 span.helix-tab-hl 으로 감싼다.
+     (CSS 의 .helix-tab-hl::before 가 이 span 기준으로 그려짐) */
+  function wrapTextNodes(node) {
+    var kids = [].slice.call(node.childNodes);
+    kids.forEach(function (c) {
+      if (c.nodeType === 3 && c.nodeValue && c.nodeValue.trim()) {
+        var span = document.createElement('span');
+        span.className = 'helix-tab-hl';
+        c.parentNode.replaceChild(span, c);
+        span.appendChild(c);
+      } else if (c.nodeType === 1 && !c.classList.contains('helix-tab-hl')) {
+        wrapTextNodes(c);
+      }
+    });
+  }
+
+  function wrapTabLinkText(link) {
+    if (link.__helixHlWrapped) return;
+    link.__helixHlWrapped = true;
+    wrapTextNodes(link);
+  }
+
   function pinScroll() {
     var x = window.scrollX, y = window.scrollY;
     var restore = function () { window.scrollTo(x, y); };
@@ -185,6 +208,7 @@
       wrap.__helixTabsGuarded = true;
 
       wrap.querySelectorAll('.w-tab-pane').forEach(patchPaneFocus);
+      wrap.querySelectorAll('.w-tab-menu .w-tab-link').forEach(wrapTabLinkText);
 
       var menu = wrap.querySelector('.w-tab-menu') || wrap;
       menu.addEventListener('mousedown', pinScroll, true);

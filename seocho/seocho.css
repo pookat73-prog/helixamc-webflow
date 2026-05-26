@@ -63,6 +63,38 @@ section.subheader {
   transform: none !important;
 }
 
+/* ================================================================
+   의료진 분과 활성 탭 — 메인 블루 형광펜 효과
+   ================================================================
+   활성 탭(.w--current)의 텍스트 뒤에 메인 블루 30% 투명도 형광펜 띠.
+   - 크기(높이)는 텍스트 높이(1em)와 동일, 위치는 약간 아래로
+   - 길이는 텍스트보다 양옆으로 약간만 더 길게
+   - seocho.js 가 각 탭 텍스트를 .helix-tab-hl 인라인 span 으로 감싸므로
+     띠 폭이 텍스트 폭에 정확히 맞음.
+   - ⚠️ 위 LOCKED 탭 높이 정규화와 충돌 금지: 띠는 absolute(레이아웃 밖)
+     이고 span 박스 크기를 늘리지 않아 탭 높이에 영향 없음.
+   ================================================================ */
+.w-tab-menu .w-tab-link.w--current {
+  position: relative !important;
+  z-index: 0 !important; /* 음수 z-index 띠를 가둘 스택 컨텍스트 */
+}
+.w-tab-menu .w-tab-link .helix-tab-hl {
+  position: relative;
+}
+.w-tab-menu .w-tab-link.w--current .helix-tab-hl::before {
+  content: "";
+  position: absolute;
+  left: -0.2em;   /* 텍스트보다 양옆으로 약간 더 길게 */
+  right: -0.2em;
+  top: 50%;
+  height: 1em;     /* 텍스트 높이와 동일 */
+  transform: translateY(calc(-50% + 0.3em)); /* 약간 아래로 */
+  background: #c7e1fd; /* 형광펜 #c7e1fd 100% */
+  border-radius: 0.12em;
+  z-index: -1;     /* 텍스트 뒤 (버튼 배경 위) */
+  pointer-events: none;
+}
+
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
    높이가 0 이면 지도가 렌더 안 되므로 최소 높이 보장.
    Webflow Designer 에서 높이를 따로 줬다면 그 값이 우선. */
