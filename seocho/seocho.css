@@ -89,7 +89,7 @@ section.subheader {
   top: 50%;
   height: 1em;     /* 텍스트 높이와 동일 */
   transform: translateY(calc(-50% + 0.3em)); /* 약간 아래로 */
-  background: rgba(0, 117, 214, 0.2); /* 메인 블루 20% */
+  background: rgba(50, 154, 214, 0.5); /* 광선효과 전용 #329ad6 50% */
   border-radius: 0.12em;
   z-index: -1;     /* 텍스트 뒤 (버튼 배경 위) */
   pointer-events: none;
