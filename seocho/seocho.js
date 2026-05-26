@@ -140,6 +140,85 @@
 })();
 
 /* ================================================================
+   의료진 분과 Webflow Tabs — focus-scroll 점프 차단
+   ================================================================
+   증상: 라이브에서 분과 탭(특히 기본 활성 탭 '내과')을 누르면 페이지가
+   위로 튀어 탭 메뉴가 sticky 서브헤더 밑으로 숨고, 다른 과를 누르면
+   다시 내려오는 것처럼 보임. 디자이너 프리뷰에는 없음.
+
+   원인: Webflow 의 tabs 런타임은 탭 활성화 시 활성 패널(.w-tab-pane)에
+   .focus() 를 건다. 이 페이지엔 sticky 서브헤더가 있어, 브라우저가 focus
+   대상을 보이게 하려 자동 스크롤 → 점프 발생.
+
+   해결: 탭 패널의 focus() 를 preventScroll 로 감싸 스크롤을 원천 차단하고,
+   탭 클릭 전후 스크롤 위치를 몇 프레임 고정해 잔여 점프까지 막는다.
+   (Designer 설정은 건드리지 않음 — 순수 런타임 가드)
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function patchPaneFocus(pane) {
+    if (pane.__helixFocusPatched) return;
+    pane.__helixFocusPatched = true;
+    var nativeFocus = HTMLElement.prototype.focus;
+    pane.focus = function (opts) {
+      var o = opts || {};
+      o.preventScroll = true;
+      return nativeFocus.call(this, o);
+    };
+  }
+
+  function pinScroll() {
+    var x = window.scrollX, y = window.scrollY;
+    var restore = function () { window.scrollTo(x, y); };
+    requestAnimationFrame(restore);
+    requestAnimationFrame(function () { requestAnimationFrame(restore); });
+    setTimeout(restore, 0);
+    setTimeout(restore, 60);
+  }
+
+  function setup() {
+    var tabs = document.querySelectorAll('.w-tabs');
+    if (!tabs.length) return false;
+    tabs.forEach(function (wrap) {
+      if (wrap.__helixTabsGuarded) return;
+      wrap.__helixTabsGuarded = true;
+
+      wrap.querySelectorAll('.w-tab-pane').forEach(patchPaneFocus);
+
+      var menu = wrap.querySelector('.w-tab-menu') || wrap;
+      menu.addEventListener('mousedown', pinScroll, true);
+      menu.addEventListener('click', pinScroll, true);
+      /* 키보드 화살표 이동도 동일 점프 발생 → keydown 가드 */
+      menu.addEventListener('keydown', function (e) {
+        var k = e.key;
+        if (k === 'ArrowLeft' || k === 'ArrowRight' ||
+            k === 'ArrowUp' || k === 'ArrowDown' ||
+            k === 'Home' || k === 'End' || k === 'Enter' || k === ' ') {
+          pinScroll();
+        }
+      }, true);
+    });
+    return true;
+  }
+
+  function init() {
+    if (setup()) return;
+    /* 탭/CMS 가 늦게 렌더될 수 있으므로 다중 시점 재시도 */
+    var tries = 0;
+    var t = setInterval(function () {
+      if (setup() || ++tries >= 25) clearInterval(t);
+    }, 200);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+/* ================================================================
    HEADER 높이 → --header-h CSS 변수 동기화
    section.subheader top 을 실제 헤더 높이에 맞춰 빈틈 제거.
    (about.js 의 동일 로직 이식)

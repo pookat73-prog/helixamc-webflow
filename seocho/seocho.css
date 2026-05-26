@@ -14,6 +14,55 @@ section.subheader {
   margin-top: -1px !important;
 }
 
+/* ================================================================
+   의료진 분과 탭 — 탭 박스 높이 정규화
+   ================================================================
+   증상: 라이브에서 첫 탭(기본 활성) '내과' 선택 시 탭 바가 세로로
+   커지고, 다른 과 선택 시 정상 높이로 줄어드는 흔들림.
+
+   원인: Tabs Menu 가 inline-flex(세로 중앙 정렬)라 행 높이는 가장 키 큰
+   탭에 맞춰지는데, 6개 탭 중 '내과'만 display:inline-block(+vertical-align)
+   이라 텍스트 line-height(strut)까지 높이에 포함돼 flex 탭들보다 키가 큼.
+   디자이너 프리뷰엔 안 보이고 라이브에서만 드러남.
+
+   해결: 모든 탭 링크를 동일한 flex 박스로 정규화해 박스 높이를 일치시킴.
+   (Designer 무수정 — CSS 오버라이드. 페이지에 Tabs 는 이 하나뿐이라
+    .w-tab-menu 직접 겨냥. ⚠️ Webflow 는 클래스명을 소문자로 출력하므로
+    .WhiteFrame 같은 대문자 섹션 셀렉터는 매칭 안 됨 — 쓰지 말 것.)
+   ================================================================ */
+.w-tab-menu .w-tab-link {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  /* 패딩 강제 고정 — 6개 탭 동일값 (활성/비활성/포커스 무관).
+     Webflow 내장 .w-tab-link 기본값(9px 30px) 으로 되돌아가며
+     transition 으로 애니메이션되던 흔들림을 원천 차단. */
+  padding: 0.7vw 0.5vw 0.8vw !important;
+  /* inline-block strut 로 키 커지는 것 차단 */
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  /* 상태 전환 시 패딩/크기 애니메이션 금지 (올라갔다 내려오는 흔들림 제거) */
+  transition: none !important;
+  /* IX2 등이 inline transform 을 박아도 무력화 */
+  transform: none !important;
+}
+/* 내부 래퍼/텍스트도 여분 높이/이동 안 만들도록 고정 */
+.w-tab-menu .w-tab-link > *,
+.w-tab-menu .w-tab-link * {
+  margin: 0 !important;
+  line-height: 1 !important;
+  transform: none !important;
+}
+/* 활성/포커스/호버 상태에서도 패딩·위치 불변 강제 */
+.w-tab-menu .w-tab-link.w--current,
+.w-tab-menu .w-tab-link:focus,
+.w-tab-menu .w-tab-link:hover {
+  padding: 0.7vw 0.5vw 0.8vw !important;
+  transition: none !important;
+  transform: none !important;
+}
+
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
    높이가 0 이면 지도가 렌더 안 되므로 최소 높이 보장.
    Webflow Designer 에서 높이를 따로 줬다면 그 값이 우선. */
