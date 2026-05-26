@@ -95,6 +95,22 @@ section.subheader {
   pointer-events: none;
 }
 
+/* ================================================================
+   분과명 사이 구분선 — 텍스트위계4(#9aaabb) 얇은 작대기
+   ================================================================
+   seocho.js 가 인접 탭 사이에 .helix-tab-sep 요소를 삽입.
+   flex 아이템이라 양쪽 탭과의 간격(gap)이 동일 → 항상 가운데.
+   (탭 가장자리 anchor 방식은 gap 이 한쪽에만 생겨 치우쳐 보였음)
+   높이 1em(텍스트 높이), 1px. align-self center 로 세로 중앙. */
+.w-tab-menu .helix-tab-sep {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 1px;
+  height: 1em;          /* 텍스트 높이와 동일 */
+  background: #9aaabb;  /* 텍스트위계4 */
+  pointer-events: none;
+}
+
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
    높이가 0 이면 지도가 렌더 안 되므로 최소 높이 보장.
    Webflow Designer 에서 높이를 따로 줬다면 그 값이 우선. */
