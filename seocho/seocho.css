@@ -26,9 +26,11 @@ section.subheader {
    디자이너 프리뷰엔 안 보이고 라이브에서만 드러남.
 
    해결: 모든 탭 링크를 동일한 flex 박스로 정규화해 박스 높이를 일치시킴.
-   (Designer 무수정 — CSS 오버라이드. Webflow 의 .w-tab-link 셀렉터 사용)
+   (Designer 무수정 — CSS 오버라이드. 페이지에 Tabs 는 이 하나뿐이라
+    .w-tab-menu 직접 겨냥. ⚠️ Webflow 는 클래스명을 소문자로 출력하므로
+    .WhiteFrame 같은 대문자 섹션 셀렉터는 매칭 안 됨 — 쓰지 말 것.)
    ================================================================ */
-section.WhiteFrame .w-tab-menu .w-tab-link {
+.w-tab-menu .w-tab-link {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -42,18 +44,23 @@ section.WhiteFrame .w-tab-menu .w-tab-link {
   box-sizing: border-box !important;
   /* 상태 전환 시 패딩/크기 애니메이션 금지 (올라갔다 내려오는 흔들림 제거) */
   transition: none !important;
+  /* IX2 등이 inline transform 을 박아도 무력화 */
+  transform: none !important;
 }
-/* 내부 래퍼/텍스트도 여분 높이 안 만들도록 정렬 고정 */
-section.WhiteFrame .w-tab-menu .w-tab-link > * {
+/* 내부 래퍼/텍스트도 여분 높이/이동 안 만들도록 고정 */
+.w-tab-menu .w-tab-link > *,
+.w-tab-menu .w-tab-link * {
   margin: 0 !important;
   line-height: 1 !important;
+  transform: none !important;
 }
-/* 활성/포커스 상태에서도 패딩 불변 강제 */
-section.WhiteFrame .w-tab-menu .w-tab-link.w--current,
-section.WhiteFrame .w-tab-menu .w-tab-link:focus,
-section.WhiteFrame .w-tab-menu .w-tab-link:hover {
+/* 활성/포커스/호버 상태에서도 패딩·위치 불변 강제 */
+.w-tab-menu .w-tab-link.w--current,
+.w-tab-menu .w-tab-link:focus,
+.w-tab-menu .w-tab-link:hover {
   padding: 0.7vw 0.5vw 0.8vw !important;
   transition: none !important;
+  transform: none !important;
 }
 
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
