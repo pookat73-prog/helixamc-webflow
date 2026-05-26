@@ -84,12 +84,12 @@ section.subheader {
 .w-tab-menu .w-tab-link.w--current .helix-tab-hl::before {
   content: "";
   position: absolute;
-  left: -0.32em;   /* 텍스트보다 양옆으로 약간 더 길게 */
-  right: -0.32em;
+  left: -0.2em;   /* 텍스트보다 양옆으로 약간 더 길게 */
+  right: -0.2em;
   top: 50%;
   height: 1em;     /* 텍스트 높이와 동일 */
-  transform: translateY(calc(-50% + 0.16em)); /* 약간 아래로 */
-  background: rgba(0, 117, 214, 0.3); /* 메인 블루 30% */
+  transform: translateY(calc(-50% + 0.4em)); /* 약간 아래로 */
+  background: rgba(0, 117, 214, 0.2); /* 메인 블루 20% */
   border-radius: 0.12em;
   z-index: -1;     /* 텍스트 뒤 (버튼 배경 위) */
   pointer-events: none;
