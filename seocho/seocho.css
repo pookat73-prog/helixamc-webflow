@@ -33,6 +33,27 @@ section.WhiteFrame .w-tab-menu .w-tab-link {
   align-items: center !important;
   justify-content: center !important;
   vertical-align: middle !important;
+  /* 패딩 강제 고정 — 6개 탭 동일값 (활성/비활성/포커스 무관).
+     Webflow 내장 .w-tab-link 기본값(9px 30px) 으로 되돌아가며
+     transition 으로 애니메이션되던 흔들림을 원천 차단. */
+  padding: 0.7vw 0.5vw 0.8vw !important;
+  /* inline-block strut 로 키 커지는 것 차단 */
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  /* 상태 전환 시 패딩/크기 애니메이션 금지 (올라갔다 내려오는 흔들림 제거) */
+  transition: none !important;
+}
+/* 내부 래퍼/텍스트도 여분 높이 안 만들도록 정렬 고정 */
+section.WhiteFrame .w-tab-menu .w-tab-link > * {
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+/* 활성/포커스 상태에서도 패딩 불변 강제 */
+section.WhiteFrame .w-tab-menu .w-tab-link.w--current,
+section.WhiteFrame .w-tab-menu .w-tab-link:focus,
+section.WhiteFrame .w-tab-menu .w-tab-link:hover {
+  padding: 0.7vw 0.5vw 0.8vw !important;
+  transition: none !important;
 }
 
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
