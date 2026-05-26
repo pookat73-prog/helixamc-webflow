@@ -91,6 +91,7 @@ jobs:
           BASE="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${SHA}"
           FILES=(
             "global/global.css"
+            "global/scroll-depth.js"
             "home/section1/section1.css"
             "home/section1/section1.js"
             "home/section-divider/divider.css"
