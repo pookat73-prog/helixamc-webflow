@@ -98,17 +98,13 @@ section.subheader {
 /* ================================================================
    분과명 사이 구분선 — 텍스트위계4(#9aaabb) 얇은 작대기
    ================================================================
-   각 탭(마지막 제외) 오른쪽 끝에 텍스트 높이(1em)·1px 세로 작대기.
-   absolute 라 탭 높이/레이아웃에 영향 없음(LOCKED 정규화 무간섭). */
-.w-tab-menu .w-tab-link {
-  position: relative; /* ::after 구분선 기준 */
-}
-.w-tab-menu .w-tab-link:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+   seocho.js 가 인접 탭 사이에 .helix-tab-sep 요소를 삽입.
+   flex 아이템이라 양쪽 탭과의 간격(gap)이 동일 → 항상 가운데.
+   (탭 가장자리 anchor 방식은 gap 이 한쪽에만 생겨 치우쳐 보였음)
+   높이 1em(텍스트 높이), 1px. align-self center 로 세로 중앙. */
+.w-tab-menu .helix-tab-sep {
+  flex: 0 0 auto;
+  align-self: center;
   width: 1px;
   height: 1em;          /* 텍스트 높이와 동일 */
   background: #9aaabb;  /* 텍스트위계4 */
