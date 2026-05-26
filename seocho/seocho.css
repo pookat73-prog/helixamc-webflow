@@ -123,8 +123,9 @@ section.subheader {
   background: #0d1117; /* 로딩 중 배경 */
 }
 
-/* 태블릿뷰 (Webflow Tablet 브레이크포인트: 768~991px) — 그리드에 맞춰 21vw */
-@media (min-width: 768px) and (max-width: 991px) {
+/* 태블릿(768~991px) + 데스크탑(992px+) — 그리드에 맞춰 유동적 21vw.
+   모바일(<768px)은 위 min-height 420px 유지. */
+@media (min-width: 768px) {
   .map_naver,
   #map_naver {
     height: 21vw !important;
