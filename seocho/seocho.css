@@ -117,7 +117,8 @@ section.subheader {
 .map_naver,
 #map_naver {
   width: 100%;
-  min-height: 420px;
+  height: 21vw !important;       /* 그리드에 맞춘 높이 */
+  min-height: 0 !important;      /* 420px 강제 최소높이 해제 */
   position: relative;
   overflow: hidden;
   background: #0d1117; /* 로딩 중 배경 */
