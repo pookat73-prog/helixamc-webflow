@@ -46,6 +46,8 @@
        (hamburger 의 MENU_COMING_SOON=true 모드에서 클릭 시 토스트를
        띄우는 coming-soon.js 가 함께 로드돼야 동작함) */
     'global/global.css',
+    /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이 25/50/75/100%) */
+    'global/scroll-depth.js',
     'home/global/coming-soon.css',
     'home/global/coming-soon.js',
     'home/global/hamburger.css',

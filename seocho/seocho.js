@@ -285,3 +285,100 @@
   window.addEventListener('load', sync);
   sync();
 })();
+
+/* ================================================================
+   GA4 분석 — 서초본원 페이지 뷰 + 스크롤 깊이
+   ================================================================
+   home/global 의 gtag 패턴과 동일:
+   - gtag 있으면 gtag('event', ...), 없으면 dataLayer.push 폴백
+   - device(mobile/desktop) 구분, branch=서초 고정
+   ① seocho_page_view  : 페이지 진입 시 1회
+   ② seocho_scroll_depth: 25/50/75/100% 도달 시 각 1회
+   디버그: URL 에 ?debug-ga=1
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var DEBUG = /[?&]debug-ga=1/.test(location.search);
+  function log() { if (DEBUG) console.log.apply(console, ['[seocho-ga]'].concat([].slice.call(arguments))); }
+
+  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+
+  function send(eventName, params) {
+    try {
+      var base = { item_type: params.item_type, branch: '서초', device: device() };
+      for (var k in params) { if (params.hasOwnProperty(k)) base[k] = params[k]; }
+      if (typeof window.gtag === 'function') {
+        base.transport_type = 'beacon';
+        window.gtag('event', eventName, base);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        base.event = eventName;
+        window.dataLayer.push(base);
+      }
+      log('sent', eventName, base);
+    } catch (e) { log('send error', e); }
+  }
+
+  /* ① 페이지 뷰 */
+  function trackPageView() {
+    send('seocho_page_view', { item_type: 'page_view', value: location.pathname });
+  }
+
+  /* ② 스크롤 깊이 — 25/50/75/100% 각 1회 */
+  function initScrollDepth() {
+    var thresholds = [25, 50, 75, 100];
+    var fired = {};
+    var ticking = false;
+
+    function check() {
+      ticking = false;
+      var doc = document.documentElement;
+      var body = document.body;
+      var scrollTop = window.scrollY || doc.scrollTop || 0;
+      var winH = window.innerHeight || doc.clientHeight || 0;
+      var docH = Math.max(
+        body ? body.scrollHeight : 0, doc.scrollHeight,
+        body ? body.offsetHeight : 0, doc.offsetHeight
+      );
+      var scrollable = docH - winH;
+      var percent = scrollable <= 0 ? 100 : Math.min(100, (scrollTop / scrollable) * 100);
+
+      for (var i = 0; i < thresholds.length; i++) {
+        var t = thresholds[i];
+        if (percent >= t && !fired[t]) {
+          fired[t] = true;
+          send('seocho_scroll_depth', {
+            item_type: 'scroll_depth',
+            percent_scrolled: t,
+            value: t
+          });
+        }
+      }
+      /* 모두 발사되면 리스너 해제 */
+      if (fired[100]) {
+        window.removeEventListener('scroll', onScroll);
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(check);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    /* 첫 화면에서 이미 일부 도달했거나 페이지가 짧은 경우 즉시 1회 평가 */
+    check();
+  }
+
+  function init() {
+    trackPageView();
+    initScrollDepth();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

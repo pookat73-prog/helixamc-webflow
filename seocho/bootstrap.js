@@ -23,6 +23,8 @@
   var FILES = [
     /* 전역 + 헤더 + 햄버거 (다른 페이지와 동일 사양) */
     'global/global.css',
+    /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이 25/50/75/100%) */
+    'global/scroll-depth.js',
     'home/global/coming-soon.css',
     'home/global/coming-soon.js',
     'home/global/hamburger.css',
