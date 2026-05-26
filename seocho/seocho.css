@@ -117,11 +117,19 @@ section.subheader {
 .map_naver,
 #map_naver {
   width: 100%;
-  height: 21vw !important;       /* 그리드에 맞춘 높이 */
-  min-height: 0 !important;      /* 420px 강제 최소높이 해제 */
+  min-height: 420px;
   position: relative;
   overflow: hidden;
   background: #0d1117; /* 로딩 중 배경 */
+}
+
+/* 태블릿뷰 (Webflow Tablet 브레이크포인트: 768~991px) — 그리드에 맞춰 21vw */
+@media (min-width: 768px) and (max-width: 991px) {
+  .map_naver,
+  #map_naver {
+    height: 21vw !important;
+    min-height: 0 !important;   /* 420px 강제 최소높이 해제 */
+  }
 }
 
 /* 길찾기 버튼 — 지도 우상단 오버레이 */
