@@ -1,0 +1,111 @@
+/* ================================================================
+   HELIX AMC - GLOBAL 공지 팝업 (중앙 모달)
+   전체 페이지 공통. 매 방문마다 노출.
+   문구/색은 global/popup.js 의 CONFIG 에서 제어.
+   ================================================================ */
+
+.helix-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vw;
+  background: rgba(7, 11, 17, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.helix-popup-overlay.is-open {
+  opacity: 1;
+}
+
+.helix-popup-card {
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 40px 32px 32px;
+  border-radius: 16px;
+  background: #0d1117;
+  border: 1px solid rgba(0, 117, 214, 0.4);
+  box-shadow: 0 0 40px rgba(0, 117, 214, 0.25), 0 24px 60px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.helix-popup-overlay.is-open .helix-popup-card {
+  transform: translateY(0) scale(1);
+}
+
+.helix-popup-title {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.helix-popup-body {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #b6c2cf;
+}
+
+.helix-popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #8a97a3;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.helix-popup-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.helix-popup-btn {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  background: #0075d6;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.helix-popup-btn:hover {
+  background: #0086f0;
+  box-shadow: 0 0 16px rgba(0, 117, 214, 0.5);
+}
+
+@media (max-width: 479px) {
+  .helix-popup-card {
+    padding: 36px 22px 26px;
+  }
+  .helix-popup-title {
+    font-size: 1.3rem;
+  }
+}

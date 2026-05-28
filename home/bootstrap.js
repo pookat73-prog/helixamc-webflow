@@ -57,6 +57,9 @@
     'global/global.css',
     /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이 25/50/75/100%) */
     'global/scroll-depth.js',
+    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
+    'global/popup.css',
+    'global/popup.js',
     'home/section1/section1.css',
     'home/section1/section1.js',
     'home/section-divider/divider.css',
