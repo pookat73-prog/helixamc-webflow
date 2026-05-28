@@ -112,15 +112,25 @@ section.subheader {
 }
 
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
-   그리드에 맞춰 전 구간 유동적 21vw (모바일은 추후 세로 레이아웃에서 재설정). */
+   공통 속성 (높이 제외). */
 .map_naver,
 #map_naver {
   width: 100%;
-  height: 21vw !important;
-  min-height: 0 !important;
   position: relative;
   overflow: hidden;
   background: #0d1117; /* 로딩 중 배경 */
+}
+
+/* 높이: 데스크탑~태블릿(≥768) 은 그리드에 맞춰 유동적 21vw 강제.
+   ⚠️ 가로 모바일(≤767) 은 의도적으로 제외 — 그래야 Webflow Designer 의
+   small 브레이크포인트 .map_naver 높이(블록 크기)가 그대로 적용됨.
+   여기에 ≤767 height 규칙을 추가하면 Designer 블록 크기 맞춤이 깨짐. */
+@media (min-width: 768px) {
+  .map_naver,
+  #map_naver {
+    height: 21vw !important;
+    min-height: 0 !important;
+  }
 }
 
 /* 길찾기 버튼 — 지도 우상단 오버레이 */
