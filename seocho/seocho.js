@@ -24,34 +24,9 @@
   var DEBUG = /[?&]debug-naver=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[naver-map]'].concat([].slice.call(arguments))); }
 
-  /* 모듈 스코프 map 참조 — 컨테이너 리사이즈 후 naver maps 재계산 트리거용 */
-  var mapInstance = null;
-
   function findContainer() {
     return document.getElementById('map_naver')
         || document.querySelector('.map_naver');
-  }
-
-  /* 가로 모바일(≤767, landscape)에서만: 지도 컨테이너 높이를 Webflow Designer
-     의 부모 div 박스 높이에 맞춤. 그 외 구간은 인라인 높이를 제거해 CSS 21vw 복귀.
-     CSS 가 height:21vw !important 라서, 이기려면 인라인도 !important 로 박아야 함. */
-  var MOBILE_LANDSCAPE = '(max-width: 767px) and (orientation: landscape)';
-  function syncMapHeightToParent(container) {
-    if (!container) return;
-    var isMobileLandscape = window.matchMedia(MOBILE_LANDSCAPE).matches;
-    if (isMobileLandscape && container.parentElement) {
-      var h = container.parentElement.getBoundingClientRect().height;
-      if (h > 0) {
-        container.style.setProperty('height', h + 'px', 'important');
-        log('synced height to parent box:', h + 'px');
-      }
-    } else {
-      container.style.removeProperty('height'); /* CSS 21vw 복귀 */
-    }
-    /* 컨테이너 크기가 바뀌었으니 naver maps 에 리레이아웃 알림 */
-    if (mapInstance && window.naver && window.naver.maps) {
-      naver.maps.Event.trigger(mapInstance, 'resize');
-    }
   }
 
   function buildDirectionsUrl() {
@@ -105,9 +80,6 @@
       return;
     }
 
-    /* 지도 생성 전에 가로 모바일 높이부터 맞춰 둠 (초기 측정이 부모 박스 기준이 되도록) */
-    syncMapHeightToParent(container);
-
     var center = new naver.maps.LatLng(CLINIC.lat, CLINIC.lng);
     var map = new naver.maps.Map(container, {
       center: center,
@@ -140,17 +112,6 @@
         : 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
       window.open(url, '_blank', 'noopener');
     });
-
-    mapInstance = map;
-
-    /* 회전/리사이즈 시 부모 박스에 다시 맞춤 (debounce) */
-    var rT;
-    function onResize() {
-      clearTimeout(rT);
-      rT = setTimeout(function () { syncMapHeightToParent(container); }, 150);
-    }
-    window.addEventListener('resize', onResize);
-    window.addEventListener('orientationchange', onResize);
 
     addDirectionsButton(container);
     log('initialized at', CLINIC.lat, CLINIC.lng);
