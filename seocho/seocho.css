@@ -132,14 +132,20 @@ section.subheader {
   background: #0d1117; /* 로딩 중 배경 */
 }
 
-/* 높이: 데스크탑~태블릿(≥768) 은 그리드에 맞춰 유동적 21vw 강제.
-   ⚠️ 가로 모바일(≤767) 은 의도적으로 제외 — 그래야 Webflow Designer 의
-   small 브레이크포인트 .map_naver 높이(블록 크기)가 그대로 적용됨.
-   여기에 ≤767 height 규칙을 추가하면 Designer 블록 크기 맞춤이 깨짐. */
+/* 높이: 데스크탑~태블릿(≥768) 은 그리드에 맞춰 유동적 21vw 강제. */
 @media (min-width: 768px) {
   .map_naver,
   #map_naver {
     height: 21vw !important;
+    min-height: 0 !important;
+  }
+}
+
+/* 가로 모바일(480~767) 은 유동적 38vw. */
+@media (min-width: 480px) and (max-width: 767px) {
+  .map_naver,
+  #map_naver {
+    height: 38vw !important;
     min-height: 0 !important;
   }
 }
