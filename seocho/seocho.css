@@ -35,10 +35,6 @@ section.subheader {
   align-items: center !important;
   justify-content: center !important;
   vertical-align: middle !important;
-  /* 패딩 강제 고정 — 6개 탭 동일값 (활성/비활성/포커스 무관).
-     Webflow 내장 .w-tab-link 기본값(9px 30px) 으로 되돌아가며
-     transition 으로 애니메이션되던 흔들림을 원천 차단. */
-  padding: 0.7vw 0.5vw 0.8vw !important;
   /* inline-block strut 로 키 커지는 것 차단 */
   line-height: 1 !important;
   box-sizing: border-box !important;
@@ -54,13 +50,28 @@ section.subheader {
   line-height: 1 !important;
   transform: none !important;
 }
-/* 활성/포커스/호버 상태에서도 패딩·위치 불변 강제 */
+/* 활성/포커스/호버 상태에서도 위치 불변 강제 */
 .w-tab-menu .w-tab-link.w--current,
 .w-tab-menu .w-tab-link:focus,
 .w-tab-menu .w-tab-link:hover {
-  padding: 0.7vw 0.5vw 0.8vw !important;
   transition: none !important;
   transform: none !important;
+}
+
+/* 패딩 강제 고정 — 6개 탭 동일값 (활성/비활성/포커스 무관).
+   Webflow 내장 .w-tab-link 기본값(9px 30px) 으로 되돌아가며
+   transition 으로 애니메이션되던 흔들림을 원천 차단.
+   ⚠️ 데스크탑/태블릿(≥768px) 에만 적용. 가로/세로 모바일(≤767px) 은
+   Designer 의 패딩 설정이 그대로 먹도록 강제 패딩을 걸지 않음
+   (가로 모바일 분과 메뉴 높이가 Designer 설정대로 안 먹던 문제).
+   지도 높이 ≥768 게이트와 동일 패턴. */
+@media (min-width: 768px) {
+  .w-tab-menu .w-tab-link,
+  .w-tab-menu .w-tab-link.w--current,
+  .w-tab-menu .w-tab-link:focus,
+  .w-tab-menu .w-tab-link:hover {
+    padding: 0.7vw 0.5vw 0.8vw !important;
+  }
 }
 
 /* ================================================================
