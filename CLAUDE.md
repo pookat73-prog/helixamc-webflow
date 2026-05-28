@@ -1,5 +1,15 @@
 # Helix AMC Webflow — Claude 작업 가이드
 
+## 🔌 MCP 가 필요할 땐 링크부터 선제시 (LOCKED v1)
+
+Webflow Designer MCP (또는 다른 MCP) 도구를 써야 하는 작업이면, **무작정 먼저 호출해서 실패하고 나서 링크 달라고 하지 말 것.** 사용자가 매번 그 패턴에 지침 사항. 대신:
+
+1. 작업에 MCP 가 필요하다고 판단되는 즉시, **사용자에게 먼저 "이 작업은 Webflow Designer MCP 연결이 필요합니다 → [Designer 열기 링크]" 를 선제시**.
+2. Webflow Designer MCP 도구 (`element_tool`, `style_tool`, `de_*` 등) 는 **Designer 캔버스 세션이 열려 있어야** 동작. 헤드리스로는 실패함.
+   - Designer 열기: `https://webflow.com/design/helix-amc` (Site ID `69d090ea69d828e27d16ea29`) — Designer 우상단 Apps 패널에서 MCP/Companion 활성화.
+3. 링크 제시 후, 사용자가 "열었다" 확인하면 그 때 MCP 호출.
+4. MCP 없이도 가능한 대안 (repo CSS/JS 직접 수정 등) 이 있으면 그 대안도 함께 제시해 사용자가 고르게 함.
+
 ## 🔥 새 폴더/페이지 작업 시 — 워크플로우 paths 필터 점검 (LOCKED v1, PR #621~#630 교훈)
 
 **증상**: 코드 푸시 → PR 머지했는데 사이트에 반영 안 됨. "캐시 기다려 주세요" 만 반복하게 됨.
