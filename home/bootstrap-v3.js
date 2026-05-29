@@ -32,6 +32,9 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
+    'global/popup.css',
+    'global/popup.js',
     'home/section1/section1.css',
     'home/section1/section1.js',
     'home/section-divider/divider.css',

@@ -92,6 +92,8 @@ jobs:
           FILES=(
             "global/global.css"
             "global/scroll-depth.js"
+            "global/popup.css"
+            "global/popup.js"
             "home/section1/section1.css"
             "home/section1/section1.js"
             "home/section-divider/divider.css"
