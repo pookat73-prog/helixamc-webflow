@@ -13,7 +13,9 @@
   display: none;
 }
 
-@media (max-width: 767px) {
+/* 세로 모바일(max-width 767) + 가로 모바일(가로는 너비가 767 넘으므로
+   짧은 높이 + landscape 로 폰을 판별. 태블릿 가로는 높이가 더 커서 제외) */
+@media (max-width: 767px), (orientation: landscape) and (max-height: 600px) {
   .helix-renewal-bar {
     display: flex;
     align-items: center;
