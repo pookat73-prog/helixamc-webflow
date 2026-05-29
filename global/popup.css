@@ -1,7 +1,7 @@
 /* ================================================================
-   HELIX AMC - GLOBAL 공지 팝업 (중앙 모달)
-   전체 페이지 공통. 매 방문마다 노출.
-   문구/색은 global/popup.js 의 CONFIG 에서 제어.
+   HELIX AMC - GLOBAL 공지 팝업 (박스형 중앙 모달, 반응형)
+   전체 페이지 공통. 하단 "오늘 하루 보지 않기 / 닫기" 바.
+   문구는 global/popup.js 의 CONFIG 에서 제어.
    ================================================================ */
 
 .helix-popup-overlay {
@@ -12,6 +12,7 @@
   align-items: center;
   justify-content: center;
   padding: 5vw;
+  box-sizing: border-box;
   background: rgba(7, 11, 17, 0.72);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -25,21 +26,25 @@
 
 .helix-popup-card {
   position: relative;
-  max-width: 420px;
   width: 100%;
+  max-width: 420px;
   box-sizing: border-box;
-  padding: 40px 32px 32px;
   border-radius: 16px;
+  overflow: hidden;
   background: #0d1117;
   border: 1px solid rgba(0, 117, 214, 0.4);
   box-shadow: 0 0 40px rgba(0, 117, 214, 0.25), 0 24px 60px rgba(0, 0, 0, 0.5);
-  text-align: center;
   transform: translateY(16px) scale(0.97);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .helix-popup-overlay.is-open .helix-popup-card {
   transform: translateY(0) scale(1);
+}
+
+.helix-popup-content {
+  padding: 44px 32px 32px;
+  text-align: center;
 }
 
 .helix-popup-title {
@@ -82,30 +87,57 @@
   color: #ffffff;
 }
 
-.helix-popup-btn {
-  display: inline-block;
-  margin-top: 24px;
-  padding: 12px 32px;
-  border: none;
-  border-radius: 8px;
-  background: #0075d6;
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, box-shadow 0.2s ease;
+/* 하단 바 */
+.helix-popup-bar {
+  display: flex;
+  align-items: stretch;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.helix-popup-btn:hover {
-  background: #0086f0;
-  box-shadow: 0 0 16px rgba(0, 117, 214, 0.5);
+.helix-popup-hide,
+.helix-popup-closebtn {
+  flex: 1 1 0;
+  padding: 16px 12px;
+  border: none;
+  background: transparent;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.helix-popup-hide {
+  color: #8a97a3;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.helix-popup-hide:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #b6c2cf;
+}
+
+.helix-popup-closebtn {
+  color: #4aa3ff;
+}
+
+.helix-popup-closebtn:hover {
+  background: rgba(0, 117, 214, 0.12);
+  color: #6fb6ff;
 }
 
 @media (max-width: 479px) {
-  .helix-popup-card {
-    padding: 36px 22px 26px;
+  .helix-popup-content {
+    padding: 40px 22px 26px;
   }
   .helix-popup-title {
     font-size: 1.3rem;
+  }
+  .helix-popup-body {
+    font-size: 0.95rem;
+  }
+  .helix-popup-hide,
+  .helix-popup-closebtn {
+    padding: 15px 10px;
+    font-size: 0.88rem;
   }
 }
