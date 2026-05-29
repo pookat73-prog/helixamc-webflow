@@ -5,7 +5,8 @@
    우측 X 버튼으로 닫으면 같은 세션 동안 다시 안 뜸.
 
    ▼ 문구를 바꾸려면 seocho/renewal-bar.js 의 CONFIG.text 수정.
-   ▼ 노출 브레이크포인트는 아래 @media (max-width: 767px) 로 제어.
+   ▼ 노출 브레이크포인트는 아래 @media (max-width: 850px) 로 제어
+     (폴드폰 펼침 약 820px 포함, 큰 태블릿은 제외).
    ================================================================ */
 
 /* 기본 숨김 — 모바일 브레이크포인트에서만 노출 */
@@ -13,9 +14,10 @@
   display: none;
 }
 
-/* 세로 모바일(max-width 767) + 가로 모바일(가로는 너비가 767 넘으므로
-   짧은 높이 + landscape 로 폰을 판별. 태블릿 가로는 높이가 더 커서 제외) */
-@media (max-width: 767px), (orientation: landscape) and (max-height: 600px) {
+/* 세로 모바일~폴드 펼침(max-width 850, 폴드폰 펼침 약 820px 포함) +
+   가로 모바일(가로는 너비가 850 넘을 수 있어 짧은 높이 + landscape 로 폰 판별.
+   태블릿 가로는 높이가 더 커서 제외) */
+@media (max-width: 850px), (orientation: landscape) and (max-height: 600px) {
   .helix-renewal-bar {
     display: flex;
     align-items: center;
