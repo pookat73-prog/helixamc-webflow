@@ -35,6 +35,9 @@
     /* 서초본원 전용 */
     'seocho/seocho.css',
     'seocho/seocho.js',
+    /* 서초본원 하단 리뉴얼 고정 바 (모바일 전용) */
+    'seocho/renewal-bar.css',
+    'seocho/renewal-bar.js',
     /* 푸터 (홈/about 과 동일) */
     'home/global/footer.css',
     'home/global/footer.js'
