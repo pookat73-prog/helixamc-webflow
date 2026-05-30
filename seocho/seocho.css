@@ -150,6 +150,16 @@ section.subheader {
   }
 }
 
+/* 세로 모바일(≤479) 은 정사각에 가까운 75vw 고정 — 누락 시 높이 0 으로
+   지도가 안 보이던 회귀 차단. */
+@media (max-width: 479px) {
+  .map_naver,
+  #map_naver {
+    height: 75vw !important;
+    min-height: 240px !important;
+  }
+}
+
 /* 길찾기 버튼 — 지도 우상단 오버레이 */
 .naver-map-directions {
   position: absolute;
