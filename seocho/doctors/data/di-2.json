@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "gangyurim",
+    "name": "강유림",
+    "title": "과장",
+    "order": 1,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13d0c4c5e173a625d9e638_%EA%B0%95%EC%9C%A0%EB%A6%BC.jpg",
+    "education": ["건국대학교 수의영상진단과학 석사 졸업"]
+  },
+  {
+    "slug": "eomharim",
+    "name": "엄하림",
+    "title": "과장",
+    "order": 2,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13d0bbbf2a9d6abcc57e57_%EC%97%84%ED%95%98%EB%A6%BC.jpg",
+    "education": ["건국대학교 수의영상진단과학 석사 졸업"]
+  },
+  {
+    "slug": "iyeongeun",
+    "name": "이영은",
+    "title": "과장",
+    "order": 3,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13b772726362a0fe5a1aeb_%EC%9D%B4%EC%98%81%EC%9D%80.jpg",
+    "education": ["건국대학교 수의영상진단과학 석사 졸업"],
+    "memberships": ["한국수의영상의학회 정회원"]
+  }
+]

@@ -119,6 +119,18 @@ jobs:
             "seocho/renewal-bar.js"
             "seocho/doctors/modal.css"
             "seocho/doctors/modal.js"
+            "seocho/doctors/data/im-1.json"
+            "seocho/doctors/data/im-2.json"
+            "seocho/doctors/data/sr-1.json"
+            "seocho/doctors/data/sr-2.json"
+            "seocho/doctors/data/di-1.json"
+            "seocho/doctors/data/di-2.json"
+            "seocho/doctors/data/di-3.json"
+            "seocho/doctors/data/op.json"
+            "seocho/doctors/data/gp-1.json"
+            "seocho/doctors/data/gp-2.json"
+            "seocho/doctors/data/em-1.json"
+            "seocho/doctors/data/is-1.json"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
