@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "hansangjin",
+    "name": "한상진",
+    "title": "과장",
+    "order": 1,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a18fed809bbdf4db7257fac_%ED%95%9C%EC%83%81%EC%A7%84-%EC%9E%AC%EB%AF%B8%EB%82%98%EC%9D%B4ver.jpg",
+    "education": ["충남대학교 수의과대학 졸업"]
+  },
+  {
+    "slug": "gimjonggyeong",
+    "name": "김종경",
+    "title": "과장",
+    "order": 2,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13b924418a4b94fdababbe_%EA%B9%80%EC%A2%85%EA%B2%BD.jpg",
+    "education": ["경북대학교 수의내과학 석사 졸업"]
+  }
+]

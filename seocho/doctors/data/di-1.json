@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "isoyun",
+    "name": "이소윤",
+    "title": "원장",
+    "order": 1,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13b94723be8647e9cdeb2e_%EC%9D%B4%EC%86%8C%EC%9C%A4.jpg",
+    "education": ["건국대학교 수의영상진단과학 석사 졸업"]
+  },
+  {
+    "slug": "jojuhyi",
+    "name": "조주희",
+    "title": "부장",
+    "order": 2,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a18fc84018ef702f3669640_%EC%A1%B0%EC%A3%BC%ED%9D%AC.jpg",
+    "education": ["건국대학교 수의영상진단과학 석사 졸업"]
+  }
+]
