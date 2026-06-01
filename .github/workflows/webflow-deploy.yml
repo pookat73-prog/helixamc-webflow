@@ -127,7 +127,6 @@ jobs:
             "seocho/doctors/data/di-2.json"
             "seocho/doctors/data/di-3.json"
             "seocho/doctors/data/op.json"
-            "seocho/doctors/data/gp-1.json"
             "seocho/doctors/data/gp-2.json"
             "seocho/doctors/data/em-1.json"
             "seocho/doctors/data/is-1.json"

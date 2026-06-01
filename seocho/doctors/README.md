@@ -9,7 +9,7 @@
 | `modal.css` | 모달 스타일 (다크 #0d1117 + 메인 블루 #0075d6) |
 | `modal.js` | 클릭 감지 → JSON fetch → 모달 렌더 |
 | `schema.json` | 데이터 JSON Schema (IDE 자동완성·검증) |
-| `data/<group>.json` (= `seocho/doctors/data/<group>.json`) | 그룹별 의료진 상세 데이터 배열 (12개 + gp-1 빈 배열) |
+| `data/<group>.json` (= `seocho/doctors/data/<group>.json`) | 그룹별 의료진 상세 데이터 배열 (11 그룹) |
 
 ## Webflow 측 설정
 
@@ -24,7 +24,7 @@
 
 ## 그룹 ID
 
-현재 12개 진료과 컬렉션:
+현재 11개 진료과 그룹:
 
 | 그룹 | 의미 |
 |---|---|
@@ -32,7 +32,7 @@
 | `sr-1`, `sr-2` | 외과 (1) / (2) |
 | `di-1`, `di-2`, `di-3` | 영상의학과 (1~3) |
 | `op` | 안과 |
-| `gp-1`, `gp-2` | 일반진료 (1) / (2) |
+| `gp-2` | 일반진료 |
 | `em-1` | 응급의학과 (1) |
 | `is-1` | 내과세부 (1) |
 
