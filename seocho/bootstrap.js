@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.2)
+   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.3 — global top button)
    Webflow 서초본원 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -28,6 +28,9 @@
     /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
     'global/popup.css',
     'global/popup.js',
+    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
+    'global/top-button.css',
+    'global/top-button.js',
     'home/global/coming-soon.css',
     'home/global/coming-soon.js',
     'home/global/hamburger.css',
