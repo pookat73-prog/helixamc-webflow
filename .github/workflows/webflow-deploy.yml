@@ -113,6 +113,8 @@ jobs:
             "home/equipment/equipment.js"
             "about/about.css"
             "about/about.js"
+            "about/doctors/modal.css"
+            "about/doctors/modal.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/renewal-bar.css"
