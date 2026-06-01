@@ -10,6 +10,7 @@
 | `modal.js` | 클릭 감지 → JSON fetch → 모달 렌더 |
 | `schema.json` | 데이터 JSON Schema (IDE 자동완성·검증) |
 | `data/<group>.json` (= `seocho/doctors/data/<group>.json`) | 그룹별 의료진 상세 데이터 배열 (12개 + gp-1 빈 배열) |
+| `data/_template.json` | 신규 그룹 생성 시 복사용 템플릿 |
 
 ## Webflow 측 설정
 
@@ -41,7 +42,7 @@
 ## 데이터 추가/수정 (사용자 워크플로우)
 
 1. GitHub 웹에서 `seocho/doctors/data/<group>.json` 열기 → 연필 아이콘
-2. 객체 추가/수정 (스키마는 `schema.json` 참고, 또는 기존 항목 복사해서 수정)
+2. 객체 추가/수정 (스키마는 `schema.json` 또는 `_template.json` 참고, 또는 기존 항목 복사해서 수정)
 3. 우측 하단 **Commit changes** → **Create a new branch** 체크 → **Propose changes**
 4. PR 생성 페이지에서 base 를 **`staging`** 으로 변경 → **Create pull request**
 5. Claude 가 머지 → 스테이징 사이트 (`*.webflow.io`) 에서 확인
