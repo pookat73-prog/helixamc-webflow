@@ -1,0 +1,233 @@
+/* ================================================================
+   HELIX AMC - 서초본원 의료진 카드 JSON 렌더러 (v1.0)
+
+   동작: 페이지 안에 [data-doctor-group="<group-id>"] 속성이 박힌
+        컨테이너를 찾고, 안에 [data-doctor-template] 가 박힌 카드를
+        템플릿으로 삼아, 그 그룹의 JSON 데이터로 카드 인스턴스를
+        동적으로 복제·삽입.
+
+   데이터: seocho/doctors/data/<group>/_index.json   (slug 표시 순서)
+          seocho/doctors/data/<group>/<slug>.json    (개별 상세)
+
+   페이지에 [data-doctor-group] 컨테이너가 없으면 zero overhead.
+   Phase 1 시점엔 컨테이너가 아직 없어 사실상 no-op — Phase 2 에서
+   Designer 가 컨테이너에 속성 박으면 그때부터 동작.
+
+   클래스 매핑 (Webflow Designer 의 style name → 렌더 클래스):
+     데스크탑 Profile Card:
+       .image-29        프로필 사진 (img)
+       .text-block-29   이름
+       .text-block-30   직책
+       .text-block-31   학력
+       .flex-block-16   학회 1줄 / 학회 2줄 (각 줄 안 .text-block-32)
+       .link-block-2    상세이력 트리거 (data-doctor-open/group 보유)
+
+     모바일 Profile Card_M1:
+       .name_m1         이름
+       .job-title_m1    직책
+       .ab_m1           학력
+       .flex-block-16   학회 1줄 / 학회 2줄
+                          1줄: .text-block-32
+                          2줄: .jh2_m1
+       .link-block-2    상세이력 트리거
+   ================================================================ */
+
+(function () {
+  'use strict';
+
+  var DEBUG = /[?&]debug-doctors=1\b/.test(location.search);
+  function log()  { if (DEBUG) try { console.log.apply(console, ['[CardRender]'].concat([].slice.call(arguments))); } catch (e) {} }
+  function warn() { try { console.warn.apply(console, ['[CardRender]'].concat([].slice.call(arguments))); } catch (e) {} }
+
+  var OWNER = 'pookat73-prog';
+  var REPO  = 'helixamc-webflow';
+
+  function getRef() { return (window.HELIX_REF || 'main'); }
+  function dataUrl(group, slug) {
+    var t = Math.floor(Date.now() / 60000);
+    var file = slug ? (group + '/' + slug + '.json') : (group + '/_index.json');
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
+           '@' + getRef() + '/seocho/doctors/data/' + file + '?t=' + t;
+  }
+
+  /* group + slug → Promise<doctor data> 캐시.
+     modal.js 도 같은 캐시 키를 쓸 수 있도록 window 에 노출. */
+  var CACHE = (window.HELIX_DOCTOR_CACHE = window.HELIX_DOCTOR_CACHE || {});
+
+  function fetchJson(url) {
+    return fetch(url, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + url);
+      return r.json();
+    });
+  }
+  function fetchDoctor(group, slug) {
+    var key = group + '/' + slug;
+    if (CACHE[key]) return CACHE[key];
+    var p = fetchJson(dataUrl(group, slug)).catch(function (e) {
+      delete CACHE[key];
+      throw e;
+    });
+    CACHE[key] = p;
+    return p;
+  }
+  function fetchIndex(group) {
+    return fetchJson(dataUrl(group, null));
+  }
+
+  /* ---- 카드 내부 노드 채우기 ---- */
+
+  function setText(root, selector, value, opts) {
+    var el = root.querySelector(selector);
+    if (!el) return false;
+    if (value == null || value === '') {
+      if (opts && opts.hideEmpty) el.style.display = 'none';
+      else el.textContent = '';
+      return true;
+    }
+    el.textContent = value;
+    el.style.display = '';
+    return true;
+  }
+
+  function setImg(root, selector, url) {
+    var img = root.querySelector(selector);
+    if (!img) return false;
+    if (!url) {
+      img.style.display = 'none';
+      return true;
+    }
+    img.src = url;
+    img.removeAttribute('srcset');
+    img.style.display = '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    return true;
+  }
+
+  function setMembershipRow(root, rowIndex, text) {
+    /* .flex-block-16 첫 번째 = 학회 1줄, 두 번째 = 학회 2줄. */
+    var rows = root.querySelectorAll('.flex-block-16');
+    var row = rows[rowIndex];
+    if (!row) return false;
+    /* 데스크탑/모바일 둘 다 .text-block-32 / .jh2_m1 후보 */
+    var textNode =
+        row.querySelector('.text-block-32') ||
+        row.querySelector('.jh2_m1');
+    if (!textNode) return false;
+    if (!text) {
+      row.style.display = 'none';
+      return true;
+    }
+    textNode.textContent = text;
+    row.style.display = '';
+    return true;
+  }
+
+  function setTriggerAttrs(root, group, slug) {
+    /* .link-block-2 가 모달 트리거 (상세이력 / +버튼) — data-doctor-open, group 박힘 */
+    var link = root.querySelector('.link-block-2') ||
+               root.querySelector('[data-doctor-open]');
+    if (link) {
+      link.setAttribute('data-doctor-open',  slug);
+      link.setAttribute('data-doctor-group', group);
+    }
+    /* 컨테이너 자체에도 group 정보 유지 (모달 조상 탐색용 안전망) */
+  }
+
+  function fillCard(card, group, doctor, isMobile) {
+    /* 이름 / 직책 — 데스크탑·모바일 셀렉터 다름 */
+    if (isMobile) {
+      setText(card, '.name_m1',      doctor.name);
+      setText(card, '.job-title_m1', doctor.title);
+      setText(card, '.ab_m1',        (doctor.education && doctor.education[0]) || '');
+    } else {
+      setText(card, '.text-block-29', doctor.name);
+      setText(card, '.text-block-30', doctor.title);
+      setText(card, '.text-block-31', (doctor.education && doctor.education[0]) || '');
+      setImg (card, '.image-29',     doctor.photo);
+    }
+
+    /* 학회 1·2 — 양쪽 동일 (.flex-block-16 위치 기반) */
+    var memberships = doctor.memberships || [];
+    setMembershipRow(card, 0, memberships[0] || '');
+    setMembershipRow(card, 1, memberships[1] || '');
+
+    /* 모달 트리거 attribute */
+    setTriggerAttrs(card, group, doctor.slug);
+
+    /* 컨테이너 내부 카드의 추가 식별자 */
+    card.setAttribute('data-doctor-slug', doctor.slug);
+    card.removeAttribute('data-doctor-template');
+    card.removeAttribute('hidden');
+    card.style.display = '';
+  }
+
+  /* ---- 그룹 컨테이너 처리 ---- */
+
+  function renderGroup(container) {
+    var group = container.getAttribute('data-doctor-group');
+    if (!group) return;
+
+    var template = container.querySelector('[data-doctor-template]');
+    if (!template) {
+      warn('group', group, 'has no [data-doctor-template] inside — skip');
+      return;
+    }
+
+    /* 모바일/데스크탑 구분 — 템플릿 클래스 검사 */
+    var isMobile =
+      template.classList && (
+        template.classList.contains('profile-card-_m1') ||
+        !!template.querySelector('.name_m1')
+      );
+
+    log('rendering group', group, isMobile ? '(mobile)' : '(desktop)');
+
+    /* 템플릿 자체는 안 보이게 (남아 있어도 무해하도록) */
+    template.style.display = 'none';
+    template.setAttribute('aria-hidden', 'true');
+
+    fetchIndex(group).then(function (entries) {
+      if (!Array.isArray(entries)) {
+        warn('group', group, '_index.json 이 배열이 아님');
+        return;
+      }
+      var slugs = entries
+        .filter(function (e) { return e && e.slug && !e.draft; })
+        .map(function (e) { return e.slug; });
+
+      log(group, 'slugs:', slugs);
+
+      /* 병렬 fetch 후 _index.json 순서대로 append */
+      return Promise.all(slugs.map(function (slug) {
+        return fetchDoctor(group, slug).catch(function (e) {
+          warn('failed', group, slug, e && e.message);
+          return null;
+        });
+      })).then(function (docs) {
+        var frag = document.createDocumentFragment();
+        for (var i = 0; i < docs.length; i++) {
+          var doc = docs[i];
+          if (!doc) continue;
+          var card = template.cloneNode(true);
+          fillCard(card, group, doc, isMobile);
+          frag.appendChild(card);
+        }
+        container.appendChild(frag);
+        log(group, 'rendered', docs.filter(Boolean).length, 'cards');
+      });
+    }).catch(function (e) {
+      warn('group', group, 'render failed', e && e.message);
+    });
+  }
+
+  function start() {
+    var containers = document.querySelectorAll('[data-doctor-group]');
+    if (!containers.length) { log('no [data-doctor-group] containers — idle'); return; }
+    log('found', containers.length, 'containers');
+    containers.forEach(renderGroup);
+  }
+
+  if (document.readyState !== 'loading') start();
+  else document.addEventListener('DOMContentLoaded', start);
+})();

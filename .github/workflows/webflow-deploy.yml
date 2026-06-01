@@ -119,6 +119,7 @@ jobs:
             "seocho/renewal-bar.js"
             "seocho/doctors/modal.css"
             "seocho/doctors/modal.js"
+            "seocho/doctors/card-render.js"
           )
           # 참고: seocho/doctors/data/<group>/<slug>.json (의료진 28명) 은 클릭
           # 시점에 lazy fetch — 페이지 로드 차단 안 함. 첫 클릭 시 jsDelivr lazy
