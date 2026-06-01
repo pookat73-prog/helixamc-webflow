@@ -24,9 +24,26 @@
   var DEBUG = /[?&]debug-naver=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[naver-map]'].concat([].slice.call(arguments))); }
 
+  /* 데스크탑/모바일 섹션이 각각 동일 ID/클래스 (map_naver) 를 갖는 경우가 있어
+     getElementById 는 첫 번째 (보통 데스크탑) 만 반환 → 모바일에서 숨겨진
+     데스크탑 컨테이너에 마운트되고 실제 보이는 모바일 섹션은 빈 채로 남음.
+     모든 후보를 찾아 "현재 보이는" 것만 반환. 둘 다 안 보이면 첫 번째 반환. */
+  function findContainers() {
+    var nodes = document.querySelectorAll('#map_naver, .map_naver');
+    var visible = [];
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var cs = getComputedStyle(el);
+      if (cs.display !== 'none' && cs.visibility !== 'hidden' && el.offsetParent !== null) {
+        visible.push(el);
+      }
+    }
+    if (visible.length) return visible;
+    return nodes.length ? [nodes[0]] : [];
+  }
   function findContainer() {
-    return document.getElementById('map_naver')
-        || document.querySelector('.map_naver');
+    var list = findContainers();
+    return list[0] || null;
   }
 
   function buildDirectionsUrl() {
@@ -69,17 +86,20 @@
   }
 
   function initMap() {
-    var container = findContainer();
-    if (!container) {
+    var containers = findContainers();
+    if (!containers.length) {
       log('container not found (.map_naver / #map_naver)');
       return;
     }
     if (!window.naver || !window.naver.maps) {
       log('naver.maps SDK not loaded');
-      renderFallback(container, '지도 SDK 로드 실패');
+      containers.forEach(function (c) { renderFallback(c, '지도 SDK 로드 실패'); });
       return;
     }
+    containers.forEach(mountMap);
+  }
 
+  function mountMap(container) {
     var center = new naver.maps.LatLng(CLINIC.lat, CLINIC.lng);
     var map = new naver.maps.Map(container, {
       center: center,
