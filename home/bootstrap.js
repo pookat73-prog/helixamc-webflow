@@ -16,6 +16,43 @@
      v3 = footer.css/.js 포함, v2 = 그 이전 */
   console.log('[helix-bootstrap] loader v3 (with footer interactions)');
 
+  /* 첫 화면 이미지 우선 로드 — Webflow 가 모든 <img> 에 loading="lazy" 를
+     자동으로 박아서 hero/상단 이미지가 늦게 뜨는 문제. 첫 ~1.5 화면 분량
+     안에 들어오는 이미지만 eager + fetchpriority:high 로 승격. 아래쪽
+     이미지는 그대로 lazy 유지해 초기 대역폭 보호. */
+  (function eagerLoadAboveFold() {
+    function upgrade(img) {
+      if (!img || img.__helixEager) return;
+      var rect;
+      try { rect = img.getBoundingClientRect(); } catch (e) { return; }
+      var vh = window.innerHeight || 800;
+      if (rect.top < vh * 1.5 && rect.bottom > -100) {
+        img.loading = 'eager';
+        img.setAttribute('fetchpriority', 'high');
+        img.decoding = 'async';
+        img.__helixEager = true;
+      }
+    }
+    function scan() { document.querySelectorAll('img').forEach(upgrade); }
+    if (document.readyState !== 'loading') scan();
+    else document.addEventListener('DOMContentLoaded', scan);
+    try {
+      var mo = new MutationObserver(function (muts) {
+        for (var i = 0; i < muts.length; i++) {
+          var added = muts[i].addedNodes;
+          for (var j = 0; j < added.length; j++) {
+            var n = added[j];
+            if (!n || n.nodeType !== 1) continue;
+            if (n.tagName === 'IMG') upgrade(n);
+            else if (n.querySelectorAll) n.querySelectorAll('img').forEach(upgrade);
+          }
+        }
+      });
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+      setTimeout(function () { mo.disconnect(); }, 5000);
+    } catch (e) {}
+  })();
+
   /* iPad Pro 전용 태블릿 모드 — viewport meta 강제 991px 로 축소
      조건 (모두 만족 시에만 발동, 그 외 기기는 영향 없음):
        · pointer: coarse  → 1차 입력이 터치
