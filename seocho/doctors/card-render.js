@@ -232,9 +232,13 @@
           frag.appendChild(card);
         }
         container.appendChild(frag);
+        /* seocho.css 가 :not([data-doctor-ready]) 로 invisible 시켜둠 — 렌더 끝나면 reveal */
+        container.setAttribute('data-doctor-ready', '');
         log(group, 'rendered', docs.filter(Boolean).length, 'cards');
       });
     }).catch(function (e) {
+      /* 실패해도 사용자가 빈 화면 보지 않게 reveal */
+      container.setAttribute('data-doctor-ready', '');
       warn('group', group, 'render failed', e && e.message);
     });
   }
