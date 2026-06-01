@@ -60,6 +60,9 @@
     /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
     'global/popup.css',
     'global/popup.js',
+    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
+    'global/top-button.css',
+    'global/top-button.js',
     'home/section1/section1.css',
     'home/section1/section1.js',
     'home/section-divider/divider.css',

@@ -1,17 +1,53 @@
 /* ================================================================
-   HELIX AMC — GLOBAL TOP BUTTON
-   Webflow 컴포넌트 "top" (.link-block-11) 은 position:fixed 로 박혀 있음.
-   푸터가 뷰포트에 들어오면 푸터 위 1.5vw 까지만 따라 올라오도록
-   bottom 을 동적 보정. 푸터 침범 방지.
+   HELIX AMC — GLOBAL TOP BUTTON (code-rendered)
+   - body 에 .helix-top-btn 주입 (모든 페이지 공통)
+   - 항상 표시, 클릭 시 smooth scroll to top
+   - 푸터 진입 시 bottom 을 동적으로 올려 푸터 위 1.5vw 까지만 따라옴
+   - 디자이너에 남아있는 legacy .link-block-11 인스턴스는 런타임 제거
    ================================================================ */
 (function () {
   'use strict';
 
   var DEBUG = /[?&]debug-topbtn=1/.test(location.search);
-  function dbg() { if (DEBUG) console.log.apply(console, ['[top-btn]'].concat([].slice.call(arguments))); }
+  function dbg(){ if(DEBUG) console.log.apply(console, ['[top-btn]'].concat([].slice.call(arguments))); }
 
+  var ICON  = 'https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69dc468edccab2e2a301f4d0_%EC%9C%84%EB%A1%9C%EA%B0%80%EA%B8%B0.svg';
   var GAP_VW = 1.5;
-  var BTN_SELECTOR = '.link-block-11';
+
+  var btn = null;
+  var baseBottomPx = 0;
+  var rafId = 0;
+
+  function purgeLegacy() {
+    var nodes = document.querySelectorAll('a.link-block-11, .link-block-11');
+    var n = 0;
+    nodes.forEach(function (el) {
+      if (el.classList && el.classList.contains('helix-top-btn')) return;
+      el.remove();
+      n++;
+    });
+    if (n) dbg('purged legacy nodes:', n);
+  }
+
+  function inject() {
+    if (btn && document.body.contains(btn)) return btn;
+    btn = document.createElement('a');
+    btn.className = 'helix-top-btn';
+    btn.href = '#';
+    btn.setAttribute('aria-label', '맨 위로');
+    btn.innerHTML =
+      '<div class="helix-top-btn__box">' +
+        '<img class="helix-top-btn__icon" src="' + ICON + '" alt="">' +
+        '<div class="helix-top-btn__label">위로가기</div>' +
+      '</div>';
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.body.appendChild(btn);
+    dbg('injected');
+    return btn;
+  }
 
   function findFooter() {
     return (
@@ -23,48 +59,34 @@
     );
   }
 
-  function findButton() {
-    var nodes = document.querySelectorAll(BTN_SELECTOR);
-    for (var i = 0; i < nodes.length; i++) {
-      var el = nodes[i];
-      var s = getComputedStyle(el);
-      if (s.position === 'fixed') return el;
-    }
-    return nodes[0] || null;
-  }
-
-  var btn = null;
-  var footer = null;
-  var baseBottomPx = null;
-  var rafId = 0;
-
-  function readBaseBottom() {
+  function readBase() {
+    if (!btn) return;
     btn.style.bottom = '';
-    var s = getComputedStyle(btn);
-    var v = parseFloat(s.bottom);
+    var v = parseFloat(getComputedStyle(btn).bottom);
     baseBottomPx = isFinite(v) ? v : 0;
     dbg('base bottom=', baseBottomPx + 'px');
   }
 
   function update() {
     rafId = 0;
-    if (!btn || !footer) return;
+    if (!btn) return;
+    var footer = findFooter();
+    if (!footer) { if (btn.style.bottom) btn.style.bottom = ''; return; }
     var vh = window.innerHeight;
     var vw = window.innerWidth;
     var gapPx = (GAP_VW / 100) * vw;
     var fRect = footer.getBoundingClientRect();
-
     if (fRect.top >= vh) {
       if (btn.style.bottom) btn.style.bottom = '';
       return;
     }
     var overlap = vh - fRect.top;
-    var clampedBottom = overlap + gapPx;
-    if (clampedBottom <= baseBottomPx) {
+    var clamped = overlap + gapPx;
+    if (clamped <= baseBottomPx) {
       if (btn.style.bottom) btn.style.bottom = '';
       return;
     }
-    btn.style.bottom = clampedBottom + 'px';
+    btn.style.bottom = clamped + 'px';
   }
 
   function schedule() {
@@ -72,32 +94,26 @@
     rafId = requestAnimationFrame(update);
   }
 
-  var initialized = false;
-  function init() {
-    if (initialized) return true;
-    btn = findButton();
-    footer = findFooter();
-    if (!btn || !footer) return false;
-    initialized = true;
-    readBaseBottom();
+  function boot() {
+    purgeLegacy();
+    inject();
+    readBase();
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', function () { readBaseBottom(); schedule(); });
+    window.addEventListener('resize', function () { readBase(); schedule(); });
     schedule();
-    dbg('initialized');
-    return true;
-  }
-
-  function retry() {
+    /* Webflow IX2 가 늦게 legacy 를 다시 박을 수 있어 짧게 반복 정리 */
     var n = 0;
     var iv = setInterval(function () {
-      if (init() || ++n >= 50) clearInterval(iv);
-    }, 100);
+      purgeLegacy();
+      schedule();
+      if (++n >= 30) clearInterval(iv);
+    }, 200);
+    dbg('initialized');
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', retry);
+    document.addEventListener('DOMContentLoaded', boot);
   } else {
-    retry();
+    boot();
   }
-  window.addEventListener('load', retry);
 })();
