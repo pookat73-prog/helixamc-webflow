@@ -96,10 +96,6 @@
     'home/global/hamburger.js',
     'about/about.css',
     'about/about.js',
-    /* 의료진 상세 모달 — 페이지에 [data-doctor-open] 이 있을 때만 동작.
-       없으면 listen 만 하고 zero overhead. 카드 컴포넌트 자체와 무관. */
-    'about/doctors/modal.css',
-    'about/doctors/modal.js',
     /* 연혁 카드덱 (.just-box_card) — home/global 공유 모듈 */
     'home/global/card-stack.css',
     'home/global/card-stack.js',

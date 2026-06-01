@@ -139,13 +139,18 @@
 
   function render(data) {
     var m = ensureModal();
+    var panel = m.querySelector('.helix-doctor-modal_panel');
     var img = m.querySelector('.helix-doctor-modal_photo');
+    /* 사진은 선택. 빈 값이면 photo-wrap 통째로 숨겨 헤더가 텍스트만으로
+       자연스럽게 정렬되게 함 (회색 빈 박스 보이는 사고 방지). */
     if (data.photo) {
       img.src = data.photo;
       img.alt = data.name || '';
+      panel.classList.remove('has-no-photo');
     } else {
       img.removeAttribute('src');
       img.alt = '';
+      panel.classList.add('has-no-photo');
     }
     m.querySelector('.helix-doctor-modal_title').textContent = data.title || '';
     m.querySelector('.helix-doctor-modal_name').textContent  = data.name  || '';

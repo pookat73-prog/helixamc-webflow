@@ -112,6 +112,15 @@
   opacity: 0;
 }
 
+/* 사진이 없는 의료진: 헤더에서 photo-wrap 통째로 숨김.
+   회색 빈 박스가 보이는 사고 방지. 텍스트만 자연스럽게 정렬됨. */
+.helix-doctor-modal_panel.has-no-photo .helix-doctor-modal_photo-wrap {
+  display: none;
+}
+.helix-doctor-modal_panel.has-no-photo .helix-doctor-modal_header {
+  gap: 0;
+}
+
 .helix-doctor-modal_meta {
   flex: 1 1 auto;
   min-width: 0;
