@@ -103,6 +103,11 @@
     }, SHOW_MS);
   }
 
+  /* 라이브 지점 패턴 — 마킹 레이스/셀렉터 미스매치 폴백.
+     클릭 시점에 카드 텍스트가 이 패턴을 포함하면 토스트 차단 (페이지 이동 전용). */
+  var LIVE_BRANCH_PATTERN = /서초|2135-9119/;
+  var LIVE_BRANCH_CARD_SEL = '.home_branch-card, .flex-block-22 > .div-block-151';
+
   function findBlockedTarget(node) {
     /* click target에서 위로 올라가며 data-coming-soon 마킹된 조상 찾기.
        단, 더 가까운 조상이 data-coming-soon-exempt 면 차단 안 함
@@ -113,6 +118,9 @@
       /* 라이브 지점 카드(서초 등 data-helix-link) 는 페이지 이동 전용 —
          마킹 레이스로 data-coming-soon 이 남아도 토스트는 띄우지 않음 */
       if (el.hasAttribute && el.hasAttribute('data-helix-link')) return null;
+      /* 폴백: 마킹이 안 됐어도 라이브 지점 카드 텍스트면 토스트 차단 */
+      if (el.matches && el.matches(LIVE_BRANCH_CARD_SEL) &&
+          LIVE_BRANCH_PATTERN.test(el.textContent || '')) return null;
       if (el.hasAttribute && el.hasAttribute(ATTR)) {
         var v = el.getAttribute(ATTR);
         /* 빈 값/"1"/"true"는 활성화로 간주, "0"/"false"는 비활성 */
@@ -254,6 +262,16 @@
           window.location.href = url;
         }
         return;
+      }
+      /* 폴백: 마킹이 안 됐어도 라이브 지점 카드 텍스트면 직접 이동 */
+      if (el.matches && el.matches(BRANCH_CARD_SEL)) {
+        var live = detectLiveBranch(el);
+        if (live) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = live.url;
+          return;
+        }
       }
       el = el.parentElement;
     }
