@@ -13,6 +13,7 @@
 
   var FILES = [
     'global/global.css',
+    'global/top-button.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js'
   ];
