@@ -36,7 +36,7 @@
 }
 .helix-top-btn__label {
   position: relative;
-  bottom: 2px;
+  bottom: 3.5px;
   color: #ffffff;
   font-size: 10px;
   line-height: 12px;
@@ -47,11 +47,11 @@
 @media (max-width: 991px) {
   .helix-top-btn__box { width: 7vw; gap: 0.2rem; }
   .helix-top-btn__icon { top: -0.1rem; width: 3vw; }
-  .helix-top-btn__label { bottom: 0.15rem; font-size: 0.6rem; line-height: 0.7rem; }
+  .helix-top-btn__label { bottom: 0.25rem; font-size: 0.6rem; line-height: 0.7rem; }
 }
 
 @media (max-width: 479px) {
   .helix-top-btn__box { width: 3.2rem; gap: 0.2rem; }
   .helix-top-btn__icon { width: 1.5rem; top: -0.1rem; }
-  .helix-top-btn__label { bottom: 0.15rem; font-size: 0.6rem; line-height: 0.7rem; }
+  .helix-top-btn__label { bottom: 0.25rem; font-size: 0.6rem; line-height: 0.7rem; }
 }
