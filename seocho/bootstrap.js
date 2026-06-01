@@ -79,9 +79,13 @@
     'seocho/renewal-bar.js',
     /* 의료진 상세 모달 — 페이지에 [data-doctor-open] 이 있을 때만 동작.
        없으면 listen 만 하고 zero overhead. 카드 컴포넌트 자체와 무관.
-       데이터: seocho/doctors/data/<group>.json */
+       데이터: seocho/doctors/data/<group>/<slug>.json */
     'seocho/doctors/modal.css',
     'seocho/doctors/modal.js',
+    /* 의료진 카드 JSON 렌더러 — 페이지에 [data-doctor-group] 컨테이너가
+       있을 때만 동작. Phase 1 (인프라) 시점엔 컨테이너 없어 no-op.
+       데이터: seocho/doctors/data/<group>/_index.json + <slug>.json */
+    'seocho/doctors/card-render.js',
     /* 푸터 (홈/about 과 동일) */
     'home/global/footer.css',
     'home/global/footer.js'
