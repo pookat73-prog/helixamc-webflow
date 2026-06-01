@@ -164,13 +164,31 @@
 
   /* ---- 그룹 컨테이너 처리 ---- */
 
+  function findTemplate(container) {
+    /* 우선순위 1: 명시적 마커 */
+    var t = container.querySelector('[data-doctor-template]');
+    if (t) return t;
+    /* 우선순위 2: 컨테이너의 첫 element 자식이 카드 (Webflow Component Instance
+       는 root attribute 가 publish 시 항상 propagate 되진 않음 — 마커 의존 X). */
+    var c = container.firstElementChild;
+    while (c) {
+      /* <a> 는 카드 트리거 링크일 수 있으니 건너뜀 */
+      if (c.tagName !== 'A' && c.tagName !== 'SCRIPT' && c.tagName !== 'STYLE') return c;
+      c = c.nextElementSibling;
+    }
+    return null;
+  }
+
   function renderGroup(container) {
     var group = container.getAttribute('data-doctor-group');
     if (!group) return;
+    /* 이미 렌더 끝난 컨테이너는 건너뜀 (재진입 방지) */
+    if (container.__helixDoctorRendered) return;
+    container.__helixDoctorRendered = true;
 
-    var template = container.querySelector('[data-doctor-template]');
+    var template = findTemplate(container);
     if (!template) {
-      warn('group', group, 'has no [data-doctor-template] inside — skip');
+      warn('group', group, '템플릿 카드를 찾을 수 없음 — skip');
       return;
     }
 
@@ -222,9 +240,14 @@
   }
 
   function start() {
-    var containers = document.querySelectorAll('[data-doctor-group]');
-    if (!containers.length) { log('no [data-doctor-group] containers — idle'); return; }
-    log('found', containers.length, 'containers');
+    /* `[data-doctor-group]` 는 카드 트리거 링크 (<a>) 에도 박혀 있음 — 컴포넌트
+       prop 으로 Link Block 의 attribute 에 바인딩되기 때문. 컨테이너만 잡으려고
+       block 류만 통과시킴. */
+    var containers = document.querySelectorAll(
+      'div[data-doctor-group], section[data-doctor-group], main[data-doctor-group]'
+    );
+    if (!containers.length) { log('no container — idle'); return; }
+    log('found', containers.length, 'container(s)');
     containers.forEach(renderGroup);
   }
 
