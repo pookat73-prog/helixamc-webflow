@@ -29,7 +29,7 @@
 }
 .helix-top-btn__label {
   color: #ffffff;
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1;
   text-align: center;
   text-decoration: none;
@@ -45,12 +45,12 @@
 
 @media (max-width: 991px) {
   .helix-top-btn__box { width: 7vw; padding: 0.7rem 0.3rem 0; gap: 0.15rem; }
-  .helix-top-btn__label { font-size: 0.58rem; line-height: 1; }
+  .helix-top-btn__label { font-size: 0.7rem; line-height: 1; }
   .helix-top-btn__icon { width: 3vw; }
 }
 
 @media (max-width: 479px) {
   .helix-top-btn__box { width: 3.2rem; padding: 0.7rem 0.3rem 0; gap: 0.15rem; }
-  .helix-top-btn__label { font-size: 0.58rem; line-height: 1; }
+  .helix-top-btn__label { font-size: 0.7rem; line-height: 1; }
   .helix-top-btn__icon { width: 1.4rem; }
 }
