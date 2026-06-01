@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — 의료진 상세 모달 (about/doctors/modal.js)
+   HELIX AMC — 의료진 상세 모달 (seocho/doctors/modal.js)
    ----------------------------------------------------------------
    사용법 (Webflow 측):
      의료진 프로필 카드 컴포넌트 안의 "상세보기" 버튼에 다음 속성:
@@ -11,7 +11,7 @@
        data-doctor-open="<group>/<slug>"
 
    데이터 위치:
-     about/doctors/data/<group>.json
+     seocho/doctors/data/<group>.json
        → 배열, 각 객체는 schema.json 참고
      모달 콘텐츠 (학술/경력 등) 가 아직 채워지지 않은 사람은 객체에
      해당 필드를 비워두면 그 섹션은 자동 숨김.
@@ -57,7 +57,7 @@
   function dataUrl(group) {
     var t = Math.floor(Date.now() / 60000); /* 60s 버킷 — 브라우저 캐시 살짝 깸 */
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-           '@' + getRef() + '/about/doctors/data/' + group + '.json?t=' + t;
+           '@' + getRef() + '/seocho/doctors/data/' + group + '.json?t=' + t;
   }
 
   function fetchGroup(group) {

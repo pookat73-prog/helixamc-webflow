@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Helix AMC 의료진 그룹 데이터",
-  "description": "about/doctors/data/<group>.json 의 형식. 한 그룹(컬렉션) 단위 배열.",
+  "description": "seocho/doctors/data/<group>.json 의 형식. 한 그룹(컬렉션) 단위 배열.",
   "type": "array",
   "items": {
     "type": "object",

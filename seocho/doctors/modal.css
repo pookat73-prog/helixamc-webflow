@@ -1,7 +1,7 @@
 /* ================================================================
-   HELIX AMC — 의료진 상세 모달 (about/doctors)
+   HELIX AMC — 의료진 상세 모달 (seocho/doctors)
    ----------------------------------------------------------------
-   [data-doctor-open="<slug>"] 버튼 클릭 시 about/doctors/modal.js
+   [data-doctor-open="<slug>"] 버튼 클릭 시 seocho/doctors/modal.js
    가 동적으로 .helix-doctor-modal 을 body 에 주입.
    디자인 톤: 글로벌 popup (global/popup.css) 과 동일 — 다크 #0d1117,
    메인 블루 #0075d6, 백드롭 blur 4px.
