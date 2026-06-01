@@ -109,6 +109,12 @@
   var LIVE_BRANCH_CARD_SEL = '.home_branch-card, .flex-block-22 > .div-block-151';
 
   function findBlockedTarget(node) {
+    /* 업프론트: 클릭 타겟에서 가장 가까운 라이브 지점 카드 조상이 있고
+       텍스트가 라이브 패턴이면 즉시 토스트 차단 (마킹 레이스 무관). */
+    if (node && node.closest) {
+      var liveCard = node.closest(LIVE_BRANCH_CARD_SEL);
+      if (liveCard && LIVE_BRANCH_PATTERN.test(liveCard.textContent || '')) return null;
+    }
     /* click target에서 위로 올라가며 data-coming-soon 마킹된 조상 찾기.
        단, 더 가까운 조상이 data-coming-soon-exempt 면 차단 안 함
        (예: branch-card 의 copy 버튼 / tel 링크는 카드 자체 마킹과 무관하게 동작) */
@@ -251,6 +257,20 @@
      capture 단계로 등록해 Webflow IX2 click 보다 먼저 처리.
      단, 카드 내부 exempt 요소(주소 복사 버튼 / tel 링크 / mailto) 는 자기 동작 유지. */
   function handleLiveCardClick(e) {
+    /* 업프론트 폴백: 가장 가까운 지점 카드 조상 + 라이브 패턴 일치 시 즉시 이동 */
+    if (e.target && e.target.closest) {
+      if (e.target.closest('[data-coming-soon-exempt]')) return;
+      var liveCard = e.target.closest(BRANCH_CARD_SEL);
+      if (liveCard) {
+        var live = detectLiveBranch(liveCard);
+        if (live) {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = live.url;
+          return;
+        }
+      }
+    }
     var el = e.target;
     while (el && el !== document.body && el.nodeType === 1) {
       if (el.hasAttribute && el.hasAttribute('data-coming-soon-exempt')) return;
