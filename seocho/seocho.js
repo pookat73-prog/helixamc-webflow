@@ -402,3 +402,161 @@
     init();
   }
 })();
+
+/* ================================================================
+   예약 안내 전화번호 — 클릭 → 확인창 → 복사 + tel: 연결 + GA4
+   ================================================================
+   대상: section#phone 안의 모든 전화번호 그룹
+     · .branch_phoneno      (예: "02.2135.9")
+     · .branch_phoneno_119  (예: "119")
+   두 헤딩을 같은 부모 (.div-block-206) 에서 합쳐 0221359119 로 정규화.
+   클릭 가능 영역: 그 부모 컨테이너 (헤딩 두 개 모두 포함).
+
+   동작 흐름:
+     1. 사용자 클릭 → confirm("전화로 연결하시겠습니까? 번호도 자동 복사됩니다.")
+     2. 확인 시:
+        a) 번호를 클립보드에 복사 (실패해도 다음 단계 진행)
+        b) GA4 event 전송 — gtag event_callback 안에서 tel: 이동 (beacon 보장)
+        c) 1000ms 안전 타임아웃 — gtag 실패해도 전화는 무조건 연결
+     3. 취소 시: 아무것도 안 함
+
+   GA4 이벤트: seocho_phone_call
+     params: { item_type: 'phone_call', branch: '서초',
+               device: 'mobile'|'desktop', value: '0221359119' }
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var DEBUG = /[?&]debug-phone=1/.test(location.search);
+  function log() { if (DEBUG) console.log.apply(console, ['[seocho-phone]'].concat([].slice.call(arguments))); }
+
+  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+
+  function digitsOnly(s) { return (s || '').replace(/\D+/g, ''); }
+
+  function formatDisplay(d) {
+    /* 0221359119 → 02-2135-9119 (서울 지역번호 02 기준) */
+    if (d.length === 10 && d.indexOf('02') === 0) {
+      return d.slice(0, 2) + '-' + d.slice(2, 6) + '-' + d.slice(6);
+    }
+    if (d.length === 11) {
+      return d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7);
+    }
+    return d;
+  }
+
+  function copyText(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).catch(function () { return fallbackCopy(text); });
+      }
+    } catch (e) {}
+    return Promise.resolve(fallbackCopy(text));
+  }
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function trackCall(digits, cb) {
+    var params = {
+      item_type: 'phone_call',
+      branch: '서초',
+      device: device(),
+      value: digits
+    };
+    var fired = false;
+    function done() { if (fired) return; fired = true; try { cb && cb(); } catch (e) {} }
+    try {
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';
+        params.event_callback = done;
+        window.gtag('event', 'seocho_phone_call', params);
+        /* 안전 타임아웃 — gtag callback 누락 대비 */
+        setTimeout(done, 1000);
+        log('gtag sent', params);
+        return;
+      }
+      if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        var dlParams = {};
+        for (var k in params) { if (params.hasOwnProperty(k) && k !== 'event_callback') dlParams[k] = params[k]; }
+        dlParams.event = 'seocho_phone_call';
+        window.dataLayer.push(dlParams);
+        log('dataLayer pushed', dlParams);
+      }
+    } catch (e) { log('track error', e); }
+    /* gtag 없거나 실패 → 즉시 진행 */
+    setTimeout(done, 0);
+  }
+
+  function bindGroup(container, digits) {
+    if (container.__helixPhoneBound) return;
+    container.__helixPhoneBound = true;
+    container.style.cursor = 'pointer';
+    container.setAttribute('role', 'button');
+    container.setAttribute('tabindex', '0');
+    container.setAttribute('aria-label', '전화 ' + formatDisplay(digits) + ' 로 연결');
+
+    function handler(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var pretty = formatDisplay(digits);
+      var ok = window.confirm(pretty + ' 로 전화 연결하시겠습니까?\n번호가 자동으로 복사됩니다.');
+      if (!ok) { log('user cancelled'); return; }
+
+      copyText(pretty);
+      var telHref = 'tel:' + digits;
+      trackCall(digits, function () {
+        log('navigating', telHref);
+        window.location.href = telHref;
+      });
+    }
+
+    container.addEventListener('click', handler);
+    container.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ') handler(ev);
+    });
+  }
+
+  function initPhoneSection() {
+    var section = document.getElementById('phone');
+    if (!section) { log('section#phone not found'); return; }
+
+    /* .branch_phoneno (메인 번호) 를 기준으로 그룹 식별.
+       같은 부모 안에 .branch_phoneno_119 (뒷자리) 가 있으면 합쳐서 정규화. */
+    var mainNodes = section.querySelectorAll('.branch_phoneno');
+    if (!mainNodes.length) { log('.branch_phoneno not found'); return; }
+
+    Array.prototype.forEach.call(mainNodes, function (mainEl) {
+      /* 119 클래스도 .branch_phoneno 에 매칭되지 않게 정확히 거름. */
+      if (mainEl.classList.contains('branch_phoneno_119')) return;
+
+      var container = mainEl.parentElement;
+      if (!container) return;
+
+      var tailEl = container.querySelector('.branch_phoneno_119');
+      var raw = (mainEl.textContent || '') + (tailEl ? tailEl.textContent : '');
+      var digits = digitsOnly(raw);
+      if (digits.length < 9) { log('invalid digits, skip', raw); return; }
+
+      bindGroup(container, digits);
+      log('bound', digits, container);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPhoneSection);
+  } else {
+    initPhoneSection();
+  }
+  /* Webflow IX2 가 늦게 DOM 을 조작하는 케이스 대비 */
+  window.addEventListener('load', initPhoneSection);
+})();

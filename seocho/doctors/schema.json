@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Helix AMC 의료진 그룹 데이터",
+  "description": "seocho/doctors/data/<group>.json 의 형식. 한 그룹(컬렉션) 단위 배열.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["slug", "name"],
+    "additionalProperties": false,
+    "properties": {
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$",
+        "description": "URL/식별자용 영문 소문자+숫자+하이픈. 그룹 내 유일. 버튼 data-doctor-open 값과 일치해야 함."
+      },
+      "name": {
+        "type": "string",
+        "description": "한글 이름 (예: 김태성)"
+      },
+      "title": {
+        "type": "string",
+        "description": "직책 (예: 원장 / 부장 / 과장 / 진료수의사)"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "카드 표시 순서 (낮을수록 먼저). 카드 렌더는 별개라 정보용. 모달엔 영향 없음."
+      },
+      "photo": {
+        "type": "string",
+        "format": "uri",
+        "description": "프로필 사진 URL (웹플로우 Assets URL 권장)"
+      },
+      "intro": {
+        "type": "string",
+        "description": "헤더 아래 한 줄 소개 (선택)"
+      },
+      "education": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "학력. 줄별 1개. 빈 배열이면 모달에서 섹션 자동 숨김."
+      },
+      "career": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "경력"
+      },
+      "specialty": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "세부 진료 분야"
+      },
+      "memberships": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "학회 / 자격"
+      },
+      "activities": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "학술 활동 (강연, 학회 발표 등)"
+      },
+      "publications": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "논문 / 저서"
+      }
+    }
+  }
+}

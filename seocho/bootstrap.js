@@ -11,6 +11,42 @@
 (function () {
   'use strict';
 
+  /* 첫 화면 이미지 우선 로드 — Webflow 가 모든 <img> 에 loading="lazy" 를
+     자동으로 박아서 hero/상단 이미지가 늦게 뜨는 문제. 첫 ~1.5 화면 분량
+     안에 들어오는 이미지만 eager + fetchpriority:high 로 승격. */
+  (function eagerLoadAboveFold() {
+    function upgrade(img) {
+      if (!img || img.__helixEager) return;
+      var rect;
+      try { rect = img.getBoundingClientRect(); } catch (e) { return; }
+      var vh = window.innerHeight || 800;
+      if (rect.top < vh * 1.5 && rect.bottom > -100) {
+        img.loading = 'eager';
+        img.setAttribute('fetchpriority', 'high');
+        img.decoding = 'async';
+        img.__helixEager = true;
+      }
+    }
+    function scan() { document.querySelectorAll('img').forEach(upgrade); }
+    if (document.readyState !== 'loading') scan();
+    else document.addEventListener('DOMContentLoaded', scan);
+    try {
+      var mo = new MutationObserver(function (muts) {
+        for (var i = 0; i < muts.length; i++) {
+          var added = muts[i].addedNodes;
+          for (var j = 0; j < added.length; j++) {
+            var n = added[j];
+            if (!n || n.nodeType !== 1) continue;
+            if (n.tagName === 'IMG') upgrade(n);
+            else if (n.querySelectorAll) n.querySelectorAll('img').forEach(upgrade);
+          }
+        }
+      });
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+      setTimeout(function () { mo.disconnect(); }, 5000);
+    } catch (e) {}
+  })();
+
   /* ⚠️ 네이버 클라우드 플랫폼에서 발급받은 Web Dynamic Map Client ID.
      도메인 화이트리스트(helixamc.com, *.webflow.io 등)로 보호되므로
      코드 노출 자체는 안전. 발급 후 아래 값만 교체. */
@@ -41,6 +77,11 @@
     /* 서초본원 하단 리뉴얼 고정 바 (모바일 전용) */
     'seocho/renewal-bar.css',
     'seocho/renewal-bar.js',
+    /* 의료진 상세 모달 — 페이지에 [data-doctor-open] 이 있을 때만 동작.
+       없으면 listen 만 하고 zero overhead. 카드 컴포넌트 자체와 무관.
+       데이터: seocho/doctors/data/<group>.json */
+    'seocho/doctors/modal.css',
+    'seocho/doctors/modal.js',
     /* 푸터 (홈/about 과 동일) */
     'home/global/footer.css',
     'home/global/footer.js'
