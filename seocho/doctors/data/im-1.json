@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "gimtaeseong",
+    "name": "김태성",
+    "title": "원장",
+    "order": 1,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13cfb19108cc68c1e5c9ca_%EA%B9%80%ED%83%9C%EC%84%B1.jpg",
+    "education": ["충남대학교 수의과대학 졸업"]
+  },
+  {
+    "slug": "jeonjonghyi",
+    "name": "전종희",
+    "title": "부장",
+    "order": 2,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a18fac8b01673d30caa5ba3_%EC%A0%84%EC%A2%85%ED%9D%AC.jpg",
+    "education": ["경복대학교 수의내과학 석사 졸업"]
+  },
+  {
+    "slug": "seongcanju",
+    "name": "성찬주",
+    "title": "부장",
+    "order": 3,
+    "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13b6c38f34ca7e1224f141_%EC%84%B1%EC%B0%AC%EC%A3%BC.jpg",
+    "education": ["충북대학교 수의내과학 박사 수료"],
+    "memberships": [
+      "한국고양이수의사회 정회원",
+      "한국수의종양의학연구회 정회원"
+    ]
+  }
+]
