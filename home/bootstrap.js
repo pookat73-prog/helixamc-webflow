@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - AUTO BOOTSTRAP LOADER (v3.1 — footer interactions)
+   HELIX AMC - AUTO BOOTSTRAP LOADER (v3.2 — global top button)
    Pasted once in Webflow. Always serves the latest commit.
 
    Strategy:
