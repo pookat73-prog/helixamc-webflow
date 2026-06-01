@@ -119,6 +119,8 @@ jobs:
             "seocho/seocho.js"
             "seocho/renewal-bar.css"
             "seocho/renewal-bar.js"
+            "seocho/doctors/modal.css"
+            "seocho/doctors/modal.js"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
