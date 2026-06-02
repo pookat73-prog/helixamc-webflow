@@ -159,15 +159,6 @@ section.subheader {
    각 탭의 자연 폰트 크기 중 최댓값을 인라인 !important 로 모든 탭에 부여.
    CSS inherit 만으로는 Webflow 의 강한 선언을 못 이기는 환경 대응. */
 
-/* 인터벤션 센터 탭 단독 타깃 — Webflow Designer 클래스 "Text Block 356"
-   (= .text-block-356). 이 탭만 .subheader_title 이 아닌 별도 클래스로
-   박혀 있어 직접 inherit 강제. JS normalize 가 트리거 안 되는 시점
-   (DOM 늦은 삽입 등) 의 안전망 역할. */
-section.subheader .text-block-356,
-section.subheader .text-block-356 * {
-  font-size: inherit !important;
-  line-height: inherit !important;
-}
 
 /* ================================================================
    의료진 분과 미니 헤더 (.helix-mini-tabmenu)
