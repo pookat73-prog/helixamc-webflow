@@ -84,6 +84,7 @@
 .helix-doctor-modal_header {
   display: flex;
   flex-direction: row-reverse;
+  justify-content: flex-end;
   gap: 8px;
   align-items: flex-end;
   padding-bottom: 22px;
