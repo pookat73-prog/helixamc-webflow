@@ -62,6 +62,11 @@
       "type": "array",
       "items": { "type": "string" },
       "description": "논문 / 저서"
+    },
+    "lectures": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "강의 (옵션 — 강의 비중이 큰 분만 별도 섹션으로 분리해 보여줌)"
     }
   }
 }
