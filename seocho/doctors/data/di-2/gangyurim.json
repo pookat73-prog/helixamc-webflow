@@ -1,0 +1,29 @@
+{
+  "slug": "gangyurim",
+  "name": "강유림",
+  "title": "과장",
+  "order": 1,
+  "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13d0c4c5e173a625d9e638_%EA%B0%95%EC%9C%A0%EB%A6%BC.jpg",
+  "education": [
+    "건국대학교 수의과대학 수의영상의학 석사 졸업",
+    "건국대학교 수의과대학 학사 졸업"
+  ],
+  "career": [
+    "현) 헬릭스동물메디컬센터 서초 본원 영상과장",
+    "배곧 스마트동물의료센터 영상과장 근무",
+    "일산 탑케어동물의료원 영상과장 근무",
+    "건국대학교 수의과대학 부속동물병원 영상의학과 진료진 근무",
+    "건국대학교 수의과대학 수의영상의학 로테이션 강사",
+    "건국대학교 수의과대학 수의영상의학 실습조교"
+  ],
+  "activities": [
+    "2022 서울수의임상컨퍼런스 이수",
+    "2023 서울수의임상컨퍼런스 이수",
+    "2024 서울수의임상컨퍼런스 이수",
+    "2025 서울수의임상컨퍼런스 이수",
+    "2025 FASAVA 2025 참여"
+  ],
+  "publications": [
+    "Comparison of Shear-Wave Velocities Obtained with Shear-Wave Elastography of Various Peripheral Lymph Nodes in Healthy Beagles — AVMA Journals, Diagnostic Imaging, 2021"
+  ]
+}

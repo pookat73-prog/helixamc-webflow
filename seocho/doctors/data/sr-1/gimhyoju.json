@@ -1,0 +1,49 @@
+{
+  "slug": "gimhyoju",
+  "name": "김효주",
+  "title": "원장",
+  "order": 1,
+  "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13b9fa37421d3256cc39cc_%EA%B9%80%ED%9A%A8%EC%A3%BC.jpg",
+  "education": [
+    "서울대학교 수의과대학 수의외과학 박사 수료",
+    "서울대학교 수의과대학 수의외과학 석사 졸업",
+    "서울대학교 수의과대학 학부 졸업"
+  ],
+  "career": [
+    "현) 헬릭스동물메디컬센터 서초 본원 원장",
+    "서울대학교 수의과대학 부속동물병원 외과 팀장 근무"
+  ],
+  "memberships": [
+    "서울시수의사회 학술이사 (2023~현)",
+    "한국수의외과학회 일반외과 전공분과위원 (2023~현)"
+  ],
+  "activities": [
+    "AO VET Principles, Advanced, TPLO Course 수료",
+    "Brain Navigation Hands-On Training 수료"
+  ],
+  "lectures": [
+    "2025 서울대학교 학부생 강의 — \"소장 & 대장의 외과적 처치\"",
+    "2025 서울시수의사회 춘계컨퍼런스 — \"고양이 흉복강 질환\"",
+    "2025 한국외과학회 — \"인슐리노마\"",
+    "2024 베터빌 온라인강의 — \"담낭점액종의 이해\"",
+    "2023 서울시수의사회 추계컨퍼런스 — \"담도계 수술 정복하기\"",
+    "2022 베터빌 온라인강의 — \"디스크질환의 분류 및 치료방향 설정하기\"",
+    "2020 서울시수의사회 추계컨퍼런스 — \"전십자인대 파열 교정을 위한 TPLO, A to Z\"",
+    "2019 서울시수의사회 추계컨퍼런스 — \"경추디스크의 외과적 처치\"",
+    "외 다수"
+  ],
+  "publications": [
+    "Bile Culture, Antimicrobial Susceptibility, and Hepatobiliary Pathology in Dogs Undergoing Cholecystectomy for Gallbladder Mucocele (2025)",
+    "외상에 의한 소장의 허혈성 손상 및 요관 파열 증례 (2019)",
+    "경추에 발생한 말초신경집종양의 수술적 처치 증례 (2019)",
+    "췌장 몸통에 발생한 인슐린종의 수술적 처치 증례 (2019)",
+    "고양이 방광에서 발생한 Hemangioma 증례 (2019)",
+    "회음요도루조성술의 복합증과 예방법 (2019)",
+    "개 원발성 흉벽 종양의 수술적 처치 (2018)",
+    "개의 이중 대동맥궁 증례 (2018)",
+    "개 후두의 Granular Cell Tumor 증례 (2018)",
+    "고양이 관골샘 유래 농양 (2018)",
+    "Low-Level Laser Therapy Promotes the Osteogenic Potential of Adipose-Derived Mesenchymal Stem Cells Seeded on an Acellular Dermal Matrix (2013)",
+    "Enhanced Wound Healing Effect of Canine Adipose-Derived Mesenchymal Stem Cells with Low-Level Laser Therapy in Athymic Mice (2012)"
+  ]
+}
