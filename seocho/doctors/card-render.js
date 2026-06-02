@@ -149,6 +149,12 @@
       .replace(/^\s*\d{4}\s+/, '');
   }
 
+  /* 카드 표시용 — 괄호( … ) 메타 정보 제거. 모달은 원본 그대로. */
+  function stripParens(s) {
+    if (typeof s !== 'string') return s;
+    return s.replace(/\s*[\(（][^)）]*[\)）]\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
   function setMembershipRow(root, rowIndex, text) {
     /* .flex-block-16 첫 번째 = 학회 1줄, 두 번째 = 학회 2줄. */
     var rows = root.querySelectorAll('.flex-block-16');
@@ -193,10 +199,11 @@
       setImg (card, '.image-29',     doctor.photo);
     }
 
-    /* 학회 1·2 — 양쪽 동일 (.flex-block-16 위치 기반) */
+    /* 학회 1·2 — 양쪽 동일 (.flex-block-16 위치 기반).
+       JSON 의 괄호 메타(예: "(2023~현)") 는 카드 표시에서 잘라냄 — 모달은 원본. */
     var memberships = doctor.memberships || [];
-    setMembershipRow(card, 0, memberships[0] || '');
-    setMembershipRow(card, 1, memberships[1] || '');
+    setMembershipRow(card, 0, stripParens(memberships[0] || ''));
+    setMembershipRow(card, 1, stripParens(memberships[1] || ''));
 
     /* 모달 트리거 attribute */
     setTriggerAttrs(card, group, doctor.slug);
