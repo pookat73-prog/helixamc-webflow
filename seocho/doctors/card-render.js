@@ -166,6 +166,17 @@
     /* 모달 트리거 attribute */
     setTriggerAttrs(card, group, doctor.slug);
 
+    /* 방사선사 (di-3) 카드는 상세 모달 없음 — "+" 트리거 자체 숨김.
+       클릭 불가 + 시각적으로도 안 보이게. */
+    if (group === 'di-3') {
+      var trig = card.querySelector('.link-block-2');
+      if (trig) {
+        trig.style.display = 'none';
+        trig.removeAttribute('data-doctor-open');
+        trig.removeAttribute('data-doctor-group');
+      }
+    }
+
     /* 컨테이너 내부 카드의 추가 식별자 */
     card.setAttribute('data-doctor-slug', doctor.slug);
     card.removeAttribute('data-doctor-template');
