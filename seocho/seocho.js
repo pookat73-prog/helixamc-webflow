@@ -418,14 +418,11 @@
       }
 
       /* 2) 일단 이전 인라인 제거 후 측정 (resize 후 vw 단위 재계산). */
-      var allTouched = [];
       links.forEach(function (a) {
         a.style.fontSize = '';
         a.querySelectorAll('*').forEach(function (el) {
           el.style.fontSize = '';
-          allTouched.push(el);
         });
-        allTouched.push(a);
       });
 
       /* 3) 각 탭의 leaf 텍스트 요소 중 최대 컴퓨티드 폰트 크기 → 전체 max. */
