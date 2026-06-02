@@ -223,7 +223,7 @@ div[data-doctor-group] .ab_m1 {
   line-height: 1.35;
 }
 
-/* 학력과 자격사항(.flex-block-16 첫 줄) 사이 간격 추가 */
+/* 학력과 자격사항(.flex-block-16 첫 줄) 사이 간격 — 5px 상당 vw 단위 */
 div[data-doctor-group] .flex-block-16:first-of-type {
-  margin-top: 10px;
+  margin-top: 0.35vw;
 }
