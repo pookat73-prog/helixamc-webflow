@@ -123,6 +123,49 @@ section.subheader {
 }
 
 /* ================================================================
+   서브헤더 탭 — 호버 / 스크롤스파이 / 클릭 시 메인 블루 밑줄
+   ================================================================
+   about.css 의 동일 패턴 이식 (about 페이지에서만 로드되어 seocho 에선
+   적용 안 되던 것). seocho.js 가 .is-active 토글로 활성 탭 지정.
+   ================================================================ */
+.subheader_click-area {
+  text-decoration: none !important;
+}
+.subheader_click-area .subheader_title {
+  position: relative;
+  display: inline-block;
+  transition: color 0.2s ease;
+}
+.subheader_click-area .subheader_title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 2px;
+  background: #0075d6;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.subheader_click-area:hover .subheader_title::after,
+.subheader_click-area.is-active .subheader_title::after,
+.subheader_click-area.w--current .subheader_title::after {
+  transform: scaleX(1);
+}
+
+/* 서브헤더 탭 폰트 크기 통일 — "인터벤션 센터" 등 일부 탭만 폰트가
+   다르게 박혀 있던 회귀 차단. 모든 탭 텍스트가 상위(.subheader_click-area)
+   크기를 그대로 상속하도록 강제. */
+section.subheader .subheader_click-area .subheader_title,
+section.subheader .subheader_click-area .subheader_title * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+/* ================================================================
    의료진 분과 미니 헤더 (.helix-mini-tabmenu)
    ================================================================
    body 직속 fixed. 서브헤더 바로 밑(--header-h + --subheader-h)에서
@@ -136,7 +179,10 @@ section.subheader {
   .helix-mini-tabmenu {
     display: inline-flex !important;
     position: fixed !important;
-    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px)) !important;
+    /* 서브헤더 바닥 위로 2px 끼워 넣어 mini 윗 가장자리를 subheader 뒤로 숨김
+       (subheader z-index 999 > mini z-index 998 → 윗 2px 보이지 않음).
+       이전: 서브헤더 바닥의 검은 1px 띠가 mini 윗면에 노출되던 회귀. */
+    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px) - 2px) !important;
     left: 50% !important;
     z-index: 998 !important; /* 서브헤더(999) 바로 밑 — 슬라이드 시 가려지며 등장 */
     width: auto !important;
