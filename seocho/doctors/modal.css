@@ -28,7 +28,7 @@
 .helix-doctor-modal_backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(20, 28, 40, 0.45);
+  background: rgba(7, 11, 17, 0.78);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   cursor: pointer;
@@ -40,16 +40,16 @@
   max-width: 720px;
   max-height: 86vh;
   overflow-y: auto;
-  background: #ffffff;
-  border: 1px solid rgba(0, 117, 214, 0.18);
+  background: #0d1117;
+  border: 1px solid rgba(0, 117, 214, 0.35);
   border-radius: 14px;
   padding: 36px 36px 32px;
   box-sizing: border-box;
-  color: #1a2230;
+  color: #e6edf3;
   font-family: inherit;
   transform: translateY(12px) scale(0.98);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 24px 80px rgba(20, 40, 80, 0.18);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
 }
 
 .helix-doctor-modal.is-open .helix-doctor-modal_panel {
@@ -64,7 +64,7 @@
   height: 36px;
   border: none;
   background: transparent;
-  color: #6b7684;
+  color: #8b949e;
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
@@ -76,18 +76,18 @@
 }
 
 .helix-doctor-modal_close:hover {
-  background: rgba(0, 117, 214, 0.10);
-  color: #1a2230;
+  background: rgba(0, 117, 214, 0.12);
+  color: #e6edf3;
 }
 
 /* ── 헤더: 사진 + 직책/이름/한줄 소개 ─────────────────────────── */
 .helix-doctor-modal_header {
   display: flex;
   gap: 24px;
-  align-items: flex-end;
+  align-items: center;
   padding-bottom: 22px;
   margin-bottom: 22px;
-  border-bottom: 1px solid rgba(20, 40, 80, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .helix-doctor-modal_photo-wrap {
@@ -96,17 +96,14 @@
   height: 120px;
   border-radius: 50%;
   overflow: hidden;
-  background: #eef2f6;
-  border: 1px solid rgba(0, 117, 214, 0.18);
+  background: #161b22;
+  border: 1px solid rgba(0, 117, 214, 0.25);
 }
 
 .helix-doctor-modal_photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 28%;
-  transform: scale(1.12);
-  transform-origin: 50% 35%;
   display: block;
 }
 
@@ -127,26 +124,14 @@
 .helix-doctor-modal_meta {
   flex: 1 1 auto;
   min-width: 0;
-  padding-bottom: 4px;
 }
 
 .helix-doctor-modal_title {
-  font-family: 'ds-endendend', inherit, sans-serif;
-  font-size: 17px;
-  letter-spacing: 0.02em;
+  font-size: 13px;
+  letter-spacing: 0.04em;
   color: #0075d6;
-  font-weight: 400;
-  margin: 0 0 8px;
-}
-
-.helix-doctor-modal_title::after {
-  content: '';
-  display: block;
-  width: 28px;
-  height: 2px;
-  background: #0075d6;
-  margin-top: 6px;
-  border-radius: 2px;
+  font-weight: 500;
+  margin: 0 0 6px;
 }
 
 .helix-doctor-modal_title:empty {
@@ -156,14 +141,14 @@
 .helix-doctor-modal_name {
   font-size: 26px;
   font-weight: 700;
-  color: #0d1117;
+  color: #ffffff;
   margin: 0 0 8px;
   line-height: 1.2;
 }
 
 .helix-doctor-modal_intro {
   font-size: 14px;
-  color: #4a5563;
+  color: #b1bac4;
   line-height: 1.55;
 }
 
@@ -179,7 +164,7 @@
 }
 
 .helix-doctor-modal_section h3 {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   color: #0075d6;
   letter-spacing: 0.03em;
@@ -198,7 +183,7 @@
 .helix-doctor-modal_section li {
   font-size: 15px;
   line-height: 1.55;
-  color: #3a4452;
+  color: #d6dde4;
   padding-left: 14px;
   position: relative;
 }
@@ -206,10 +191,10 @@
 .helix-doctor-modal_section li::before {
   content: '';
   position: absolute;
-  left: 2px;
-  top: 0.78em;
-  width: 3px;
-  height: 3px;
+  left: 0;
+  top: 0.7em;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: rgba(0, 117, 214, 0.75);
 }
