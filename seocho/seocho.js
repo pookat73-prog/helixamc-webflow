@@ -279,19 +279,23 @@
 })();
 
 /* ================================================================
-   HEADER 높이 → --header-h CSS 변수 동기화
+   HEADER / SUBHEADER 높이 → --header-h / --subheader-h CSS 변수 동기화
    section.subheader top 을 실제 헤더 높이에 맞춰 빈틈 제거.
-   (about.js 의 동일 로직 이식)
+   미니 분과 헤더 (아래 LOCKED) 의 top 위치 계산에도 사용됨.
    ================================================================ */
 (function () {
   'use strict';
 
   function sync() {
     var hEl = document.querySelector('header.header, header, .w-nav, nav');
-    if (!hEl) return;
-    var h = hEl.getBoundingClientRect().height;
-    if (h > 0) {
-      document.documentElement.style.setProperty('--header-h', h + 'px');
+    if (hEl) {
+      var h = hEl.getBoundingClientRect().height;
+      if (h > 0) document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+    var sEl = document.querySelector('section.subheader');
+    if (sEl) {
+      var sh = sEl.getBoundingClientRect().height;
+      if (sh > 0) document.documentElement.style.setProperty('--subheader-h', sh + 'px');
     }
   }
 
@@ -304,6 +308,144 @@
   window.addEventListener('resize', sync);
   window.addEventListener('load', sync);
   sync();
+})();
+
+/* ================================================================
+   의료진 분과 미니 헤더 — 스크롤 시 서브헤더 밑에서 슬라이드 다운
+   ================================================================
+   원본 .w-tab-menu 가 viewport 위로 벗어나면, body 직속에 박은
+   클론(.helix-mini-tabmenu) 이 서브헤더 바로 밑에서 슬라이드 다운으로
+   등장. 모양은 위 가장자리 평평·아래 좌우 모서리만 둥근 인덱스 탭.
+
+   - 미니 탭 클릭 → 원본 탭 click() 으로 위임 (Webflow Tabs 가 처리)
+   - 원본 .w--current 클래스 변화 → MutationObserver 로 미니에 동기화
+   - 데스크탑 ~ 가로 모바일 (≥480px) 에서만 동작. 세로 모바일은 미적용.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var MQ = '(min-width: 480px)';
+  var mini = null;
+  var miniLinks = [];
+  var origLinks = [];
+  var origMenu = null;
+  var origMo = null;
+  var visible = false;
+  var rafPending = false;
+
+  function isEligible() { return window.matchMedia(MQ).matches; }
+
+  function buildMini() {
+    if (mini || !origMenu) return;
+    var clone = origMenu.cloneNode(true);
+    clone.className = (clone.className || '') + ' helix-mini-tabmenu';
+    clone.setAttribute('role', 'tablist');
+    clone.setAttribute('aria-label', '의료진 분과 (미니)');
+    /* Webflow Tabs 가 클론을 자기 인스턴스로 오인하지 않도록 식별 attribute 제거 */
+    clone.removeAttribute('data-w-id');
+    clone.querySelectorAll('[data-w-tab]').forEach(function (el) {
+      el.removeAttribute('data-w-id');
+      el.id = ''; /* 원본과 id 충돌 방지 */
+      el.removeAttribute('aria-controls');
+      el.setAttribute('tabindex', '-1');
+    });
+    document.body.appendChild(clone);
+    mini = clone;
+    miniLinks = [].slice.call(clone.querySelectorAll('.w-tab-link'));
+    origLinks = [].slice.call(origMenu.querySelectorAll('.w-tab-link'));
+
+    miniLinks.forEach(function (mLink, i) {
+      mLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var orig = origLinks[i];
+        if (orig) orig.click();
+      });
+    });
+
+    /* 원본 활성 탭 변화 → 미니에 동기화 */
+    origMo = new MutationObserver(syncActive);
+    origLinks.forEach(function (l) {
+      origMo.observe(l, { attributes: true, attributeFilter: ['class', 'aria-selected'] });
+    });
+    syncActive();
+  }
+
+  function syncActive() {
+    if (!miniLinks.length) return;
+    origLinks.forEach(function (o, i) {
+      var m = miniLinks[i];
+      if (!m) return;
+      var on = o.classList.contains('w--current');
+      m.classList.toggle('w--current', on);
+      m.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }
+
+  function destroyMini() {
+    if (origMo) { origMo.disconnect(); origMo = null; }
+    if (mini && mini.parentNode) mini.parentNode.removeChild(mini);
+    mini = null;
+    miniLinks = [];
+    origLinks = [];
+    visible = false;
+  }
+
+  function setVisible(on) {
+    if (!mini || visible === on) return;
+    visible = on;
+    mini.classList.toggle('is-visible', on);
+  }
+
+  function check() {
+    rafPending = false;
+    if (!origMenu) return;
+    if (!isEligible()) { setVisible(false); return; }
+    if (!mini) buildMini();
+    var rect = origMenu.getBoundingClientRect();
+    var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 56;
+    var subH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--subheader-h')) || 0;
+    /* 원본 탭 메뉴의 bottom 이 (헤더 + 서브헤더) 아래로 사라지는 순간 미니 등장 */
+    setVisible(rect.bottom < headerH + subH);
+  }
+
+  function onScroll() {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(check);
+  }
+
+  function onResize() {
+    if (!isEligible()) {
+      if (mini) destroyMini();
+      return;
+    }
+    onScroll();
+  }
+
+  function init() {
+    origMenu = document.querySelector('.w-tabs .w-tab-menu');
+    if (!origMenu) return false;
+    if (isEligible()) buildMini();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    onScroll();
+    return true;
+  }
+
+  function start() {
+    if (init()) return;
+    var tries = 0;
+    var t = setInterval(function () {
+      if (init() || ++tries >= 25) clearInterval(t);
+    }, 200);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 })();
 
 /* ================================================================

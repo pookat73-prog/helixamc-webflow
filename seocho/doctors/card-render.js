@@ -115,6 +115,46 @@
     return true;
   }
 
+  /* 카드 표시용 학력 단순화 — 모달은 원본 그대로, 카드만 통일 표기로.
+     JSON 의 education[0] 을 받아 'OO대학교 수의과대학 [학위] 졸업/수료' 패턴으로 압축.
+     비수의 학과(방사선과·분자생명과학부 등) 는 그대로 통과. */
+  function shortenEducation(s) {
+    if (typeof s !== 'string' || !s) return s;
+    if (!/수의|임상수의/.test(s)) return s;
+    return s
+      /* 수의과대학원 X학 (석사|박사) → 수의과대학 (석사|박사) */
+      .replace(/(\S*대학교)\s+수의과대학원\s+수의[가-힣A-Za-z]+학\s+(석사|박사)\s+(졸업|수료)/,
+               '$1 수의과대학 $2 $3')
+      /* 수의과대학 수의X학 (석사|박사) → 수의과대학 (석사|박사) */
+      .replace(/수의과대학\s+수의[가-힣A-Za-z]+학\s+(석사|박사)/, '수의과대학 $1')
+      /* 수의과대학 수의학과 졸업 → 수의과대학 졸업 */
+      .replace(/수의과대학\s+수의학과\s+졸업/, '수의과대학 졸업')
+      /* 임상수의학 (석사|박사) (졸업|수료)? → 수의과대학 ... */
+      .replace(/(\S*대학교)\s+임상수의학\s+(석사|박사)(?:\s+(졸업|수료))?/,
+               function (_, u, lvl, end) { return u + ' 수의과대학 ' + lvl + ' ' + (end || '졸업'); })
+      /* 수의X학과 (석사|박사) (졸업|수료) → 수의과대학 ... */
+      .replace(/(\S*대학교)\s+수의[가-힣A-Za-z]+학과\s+(석사|박사)\s+(졸업|수료)/,
+               '$1 수의과대학 $2 $3')
+      /* 수의X학과 졸업 → 수의과대학 졸업 */
+      .replace(/(\S*대학교)\s+수의[가-힣A-Za-z]+학과\s+졸업/, '$1 수의과대학 졸업')
+      /* 수의학과 (학사 )?졸업 → 수의과대학 졸업 */
+      .replace(/(\S*대학교)\s+수의학과(?:\s+학사)?\s+졸업/, '$1 수의과대학 졸업')
+      /* 수의과대학 (학사|학부) 졸업 → 수의과대학 졸업 */
+      .replace(/수의과대학\s+(학사|학부)\s+졸업/, '수의과대학 졸업')
+      /* 한주열: 동물병원 정형/신경외과 수련의 수료 → 동물병원 수련의 수료 */
+      .replace(/동물병원\s+정형\/신경외과\s+수련의\s+수료/, '동물병원 수련의 수료')
+      /* 성찬주: 수의학과 내과 박사 수료 → 수의과대학 박사 수료 */
+      .replace(/(\S*대학교)\s+수의학과\s+내과\s+박사\s+수료/, '$1 수의과대학 박사 수료')
+      /* 선두 연도(yyyy ) 제거 — 카드는 학교명부터 보여주기 위함 */
+      .replace(/^\s*\d{4}\s+/, '');
+  }
+
+  /* 카드 표시용 — 괄호( … ) 메타 정보 제거. 모달은 원본 그대로. */
+  function stripParens(s) {
+    if (typeof s !== 'string') return s;
+    return s.replace(/\s*[\(（][^)）]*[\)）]\s*/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
   function setMembershipRow(root, rowIndex, text) {
     /* .flex-block-16 첫 번째 = 학회 1줄, 두 번째 = 학회 2줄. */
     var rows = root.querySelectorAll('.flex-block-16');
@@ -146,32 +186,31 @@
   }
 
   function fillCard(card, group, doctor, isMobile) {
+    var firstEdu = shortenEducation((doctor.education && doctor.education[0]) || '');
     /* 이름 / 직책 — 데스크탑·모바일 셀렉터 다름 */
     if (isMobile) {
       setText(card, '.name_m1',      doctor.name);
       setText(card, '.job-title_m1', doctor.title);
-      setText(card, '.ab_m1',        (doctor.education && doctor.education[0]) || '');
+      setText(card, '.ab_m1',        firstEdu);
     } else {
       setText(card, '.text-block-29', doctor.name);
       setText(card, '.text-block-30', doctor.title);
-      setText(card, '.text-block-31', (doctor.education && doctor.education[0]) || '');
+      setText(card, '.text-block-31', firstEdu);
       setImg (card, '.image-29',     doctor.photo);
     }
 
-    /* 학회 1·2 — 양쪽 동일 (.flex-block-16 위치 기반) */
+    /* 학회 1·2 — 양쪽 동일 (.flex-block-16 위치 기반).
+       JSON 의 괄호 메타(예: "(2023~현)") 는 카드 표시에서 잘라냄 — 모달은 원본. */
     var memberships = doctor.memberships || [];
-    setMembershipRow(card, 0, memberships[0] || '');
-    setMembershipRow(card, 1, memberships[1] || '');
+    setMembershipRow(card, 0, stripParens(memberships[0] || ''));
+    setMembershipRow(card, 1, stripParens(memberships[1] || ''));
 
     /* 모달 트리거 attribute */
     setTriggerAttrs(card, group, doctor.slug);
 
-    /* 방사선사 (di-3) 카드 + 메인(프로덕션) 도메인은 상세 모달 없음 —
-       "+" 트리거 자체 숨김. 클릭 불가 + 시각적으로도 안 보이게.
-       메인은 모달 리뉴얼 검증 끝나기 전까지 트리거 비활성. 스테이징(*.webflow.io)
-       에서만 트리거 노출. */
-    var isStaging = /\.webflow\.io$/i.test(location.hostname);
-    if (group === 'di-3' || !isStaging) {
+    /* 방사선사 (di-3) 카드는 상세 모달 없음 — "+" 트리거 자체 숨김.
+       클릭 불가 + 시각적으로도 안 보이게. */
+    if (group === 'di-3') {
       var trig = card.querySelector('.link-block-2');
       if (trig) {
         trig.style.display = 'none';
