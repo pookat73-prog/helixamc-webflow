@@ -155,15 +155,9 @@ section.subheader {
   transform: scaleX(1);
 }
 
-/* 서브헤더 탭 폰트 크기 통일 — "인터벤션 센터" 등 일부 탭만 폰트가
-   다르게 박혀 있던 회귀 차단. 모든 탭 텍스트가 상위(.subheader_click-area)
-   크기를 그대로 상속하도록 강제. */
-section.subheader .subheader_click-area .subheader_title,
-section.subheader .subheader_click-area .subheader_title * {
-  font-size: inherit !important;
-  line-height: inherit !important;
-  letter-spacing: inherit !important;
-}
+/* 서브헤더 탭 폰트 크기 통일은 seocho.js 의 normalizeFonts() 가 처리.
+   각 탭의 자연 폰트 크기 중 최댓값을 인라인 !important 로 모든 탭에 부여.
+   CSS inherit 만으로는 Webflow 의 강한 선언을 못 이기는 환경 대응. */
 
 /* ================================================================
    의료진 분과 미니 헤더 (.helix-mini-tabmenu)
