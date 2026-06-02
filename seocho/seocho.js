@@ -390,6 +390,39 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     onScroll();
+
+    /* 폰트 크기 통일 — "인터벤션 센터" 처럼 일부 탭만 더 작게 박힌 케이스.
+       CSS inherit 가 Webflow 의 강한 선언을 못 이기는 환경 대응: 런타임에서
+       모든 .subheader_title 의 computed font-size 중 최대값을 모든 탭에
+       인라인으로 강제. (resize 시 vw 단위로 재계산되도록 다시 적용) */
+    function normalizeFonts() {
+      var titles = [];
+      links.forEach(function (a) {
+        var t = a.querySelector('.subheader_title') || a;
+        titles.push(t);
+      });
+      /* 일단 인라인 제거 후 측정 (resize 후 base 폰트 다시 잡기) */
+      titles.forEach(function (t) { t.style.fontSize = ''; });
+      var maxPx = 0;
+      titles.forEach(function (t) {
+        var px = parseFloat(getComputedStyle(t).fontSize) || 0;
+        if (px > maxPx) maxPx = px;
+      });
+      if (maxPx > 0) {
+        titles.forEach(function (t) {
+          t.style.setProperty('font-size', maxPx + 'px', 'important');
+        });
+      }
+    }
+    normalizeFonts();
+    /* 폰트 로드/리사이즈 대응 */
+    window.addEventListener('resize', function () {
+      /* rAF 로 컴포지트 후 측정 */
+      requestAnimationFrame(normalizeFonts);
+    });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(normalizeFonts).catch(function () {});
+    }
     return true;
   }
 
