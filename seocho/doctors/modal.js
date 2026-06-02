@@ -27,6 +27,10 @@
   if (window.__helixDoctorModalInit) return;
   window.__helixDoctorModalInit = true;
 
+  /* 프로덕션(메인) 도메인에서는 모달 전면 비활성. 모달 리뉴얼 검증 끝나기 전까지
+     스테이징(*.webflow.io) 에서만 동작. card-render 도 같은 조건으로 트리거 숨김. */
+  if (!/\.webflow\.io$/i.test(location.hostname)) return;
+
   var DEBUG = /[?&]debug-doctors=1/.test(location.search);
   function log() {
     if (!DEBUG) return;
