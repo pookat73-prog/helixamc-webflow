@@ -227,3 +227,9 @@ div[data-doctor-group] .ab_m1 {
 div[data-doctor-group] .flex-block-16:first-of-type {
   margin-top: 0.35vw;
 }
+
+/* 카드 상단/하단 파란 구분선 — vw 기반이라 카드별 sub-pixel 반올림으로 1px/2px
+   들쑥날쑥 보이던 것 차단. 정확히 1px 로 통일. */
+div[data-doctor-group] .b-divider-long_thin {
+  height: 1px !important;
+}
