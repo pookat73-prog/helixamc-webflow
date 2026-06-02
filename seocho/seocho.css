@@ -216,6 +216,105 @@ section.subheader {
   }
 }
 
+/* ================================================================
+   의료진 분과 미니 헤더 — 모바일 (드롭다운 / 셀렉트 버튼)
+   ================================================================
+   세로 모바일(<480px): 작은 fixed pill 버튼 (활성 분과명 ▾).
+   탭하면 그 아래 패널이 펼쳐져 모든 분과 표시. 한 개 선택 → 닫힘.
+   ================================================================ */
+@media (max-width: 479px) {
+  .helix-mini-tabselect {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: fixed;
+    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px) + 8px);
+    left: 50%;
+    z-index: 998;
+    padding: 7px 14px 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d1117;
+    background: #ffffff;
+    border: 1px solid #d6dee8;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transform: translate(-50%, -160%);
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+    pointer-events: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .helix-mini-tabselect.is-visible {
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+  }
+  .helix-mini-tabselect_caret {
+    display: inline-block;
+    font-size: 10px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+  }
+  .helix-mini-tabselect.is-open .helix-mini-tabselect_caret {
+    transform: rotate(180deg);
+  }
+
+  .helix-mini-tabpanel {
+    position: fixed;
+    /* 버튼 바로 아래 8px gap */
+    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px) + 8px + 40px);
+    left: 50%;
+    z-index: 998;
+    min-width: 180px;
+    max-width: calc(100vw - 24px);
+    padding: 4px 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    transform: translate(-50%, -8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: hidden;
+  }
+  .helix-mini-tabpanel.is-visible.is-open {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
+  .helix-mini-tabpanel_item {
+    display: block;
+    width: 100%;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #0d1117;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .helix-mini-tabpanel_item.is-active {
+    color: #0075d6;
+    background: #eef6ff;
+    font-weight: 700;
+  }
+  .helix-mini-tabpanel_item:active {
+    background: #e1efff;
+  }
+}
+
+/* 데스크탑에서는 모바일 미니 요소 숨김 */
+@media (min-width: 480px) {
+  .helix-mini-tabselect,
+  .helix-mini-tabpanel {
+    display: none !important;
+  }
+}
+
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
    공통 속성 (높이 제외). */
 .map_naver,
