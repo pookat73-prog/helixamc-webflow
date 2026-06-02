@@ -131,21 +131,21 @@
 }
 
 .helix-doctor-modal_title {
-  font-family: 'ds-endendend', inherit, sans-serif;
+  font-family: inherit;
   font-size: 17px;
   letter-spacing: 0.02em;
   color: #0075d6;
   font-weight: 400;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 
 .helix-doctor-modal_title::after {
   content: '';
   display: block;
-  width: 28px;
-  height: 2px;
+  width: 1.5em;
+  height: 3px;
   background: #0075d6;
-  margin-top: 6px;
+  margin-top: 3px;
   border-radius: 2px;
 }
 
