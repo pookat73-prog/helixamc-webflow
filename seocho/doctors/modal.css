@@ -134,7 +134,7 @@
 .helix-doctor-modal_meta {
   flex: 1 1 auto;
   min-width: 0;
-  padding-bottom: 4px;
+  padding-bottom: 0;
 }
 
 .helix-doctor-modal_title {
@@ -164,11 +164,12 @@
   font-size: 26px;
   font-weight: 700;
   color: #0d1117;
-  margin: 0 0 8px;
+  margin: 0;
   line-height: 1.2;
 }
 
 .helix-doctor-modal_intro {
+  margin: 8px 0 0;
   font-size: 14px;
   color: #4a5563;
   line-height: 1.55;
