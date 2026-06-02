@@ -140,10 +140,12 @@
 .helix-doctor-modal_title {
   font-family: inherit;
   font-size: 17px;
+  line-height: 1.2;
   letter-spacing: 0.02em;
   color: #0075d6;
   font-weight: 400;
   margin: 0 0 4px;
+  white-space: nowrap;
 }
 
 .helix-doctor-modal_title::after {
