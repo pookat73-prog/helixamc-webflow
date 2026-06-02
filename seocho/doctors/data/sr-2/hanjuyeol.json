@@ -5,10 +5,28 @@
   "order": 3,
   "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a18fa51c09615aa85466191_%ED%95%9C%EC%A3%BC%EC%97%B4.jpg",
   "education": [
-    "건국대학교 수의외과학 석사 졸업"
+    "서울대학교 수의과대학 수의외과학 석사 졸업",
+    "서울대학교 동물병원 정형/신경외과 수련의 수료",
+    "충북대학교 수의과대학 수의학과 졸업"
+  ],
+  "career": [
+    "현) 헬릭스동물메디컬센터 서초 본원 외과과장",
+    "전) 조이동물의료센터 외과과장",
+    "전) 비엔동물전문의료센터 외과과장"
   ],
   "memberships": [
     "한국수의외과학회 정회원",
-    "국제수의정형외과 학술단체 AOVET 정회원"
+    "국제수의정형외과 학술단체 AOVET 정회원",
+    "ARIX VET Advanced TPLO Hands-on Course 강사"
+  ],
+  "activities": [
+    "AO VET Course — Principle in Small Animal Fracture Management 이수 (2021, Seoul)",
+    "Advanced Neurology Course 이수 (2024, Bristol, UK)",
+    "ARIX VET Hands-On Course — \"3D 수술가이드 이용 뼈기형 교정법 핸즈온 코스\" 이수 (2024, Seoul)",
+    "AO VET Masters Course — Complex Fracture Treatment and MIPO 이수 (2025, Cremona, Italy)",
+    "AO VET Masters Course — Management of Tibial Plateau Leveling Osteotomy 이수 (2025, Seoul)"
+  ],
+  "publications": [
+    "Hyperbaric Gaseous Cryotherapy for Postoperative Rehabilitation Enhances Functional Recovery of Canine Stifle Joint: A Report on a Short-Term Study — Journal of Veterinary Science, 2021"
   ]
 }
