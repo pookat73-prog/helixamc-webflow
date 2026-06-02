@@ -5,10 +5,23 @@
   "order": 2,
   "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a18fc2111c56f2ed134345b_%EC%B5%9C%EC%A7%80%EB%AF%BC.png",
   "education": [
-    "건국대학교 수의외과학 석사 졸업"
+    "건국대학교 수의과대학 수의외과학 석사 졸업",
+    "전남대학교 수의과대학 수의학과 졸업"
+  ],
+  "career": [
+    "현) 헬릭스동물메디컬센터 서초 본원 외과과장",
+    "헬릭스동물메디컬센터 서초 본원 진료과장 근무",
+    "헬릭스동물메디컬센터 서초 본원 인턴과정 수료"
   ],
   "memberships": [
     "한국수의외과학회 정회원",
     "국제수의정형외과 학술단체 AOVET 정회원"
+  ],
+  "activities": [
+    "AO VET Course — Principle in Small Animal Fracture Management 이수 (2023, Seoul)",
+    "소동물 마취 세미나 (V-Academy) 수료"
+  ],
+  "publications": [
+    "Bile Culture, Antimicrobial Susceptibility, and Hepatobiliary Pathology in Dogs Undergoing Cholecystectomy for Gallbladder Mucocele — Animals (MDPI), 2025"
   ]
 }

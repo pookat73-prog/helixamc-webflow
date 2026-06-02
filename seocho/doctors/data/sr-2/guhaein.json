@@ -5,6 +5,25 @@
   "order": 1,
   "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a18f9f6d503d973ad1cf4a3_%EA%B5%AC%ED%95%B4%EC%9D%B8.jpg",
   "education": [
-    "서울대학교 수의외과학 석사 졸업"
+    "서울대학교 수의과대학 수의외과학 석사 졸업",
+    "서울대학교 수의과대학 졸업"
+  ],
+  "career": [
+    "전) 서울대학교 수의과대학 부속동물병원 외과 진료수의사",
+    "전) 서울대학교 수의과대학 부속동물병원 외과 전임수의사"
+  ],
+  "activities": [
+    "2021 대한수의학회 포스터 발표 — \"Acute Nontraumatic Hemoabdomen Due to Adrenal Tumor in a Dog\"",
+    "2022 한국임상수의학회 추계학술대회 우수발표상 수상",
+    "2022 미국수의외과학회 포스터 발표 — \"Evaluation of Serum Level of Hedgehog Signaling Proteins in Canine Mammary Gland Tumors\"",
+    "2019 ACVS (American College of Veterinary Surgeons) 학회 참석",
+    "2023 TPLO Workshop 이수",
+    "2024 AO VET Course — Principles of Small Animal Fracture Management 코스 이수",
+    "2025 V-Academy 소동물 마취 세미나 수료",
+    "2025 한방침치료인증수의사 (CVA) 교육",
+    "2025 VETIS 학술원고 투고 — \"항문낭선암종 절제 후 저칼슘혈증 발생 증례\""
+  ],
+  "publications": [
+    "Usability of Serum Hedgehog Signalling Proteins as Biomarkers in Canine Mammary Carcinomas — BMC Veterinary Research, 2023"
   ]
 }
