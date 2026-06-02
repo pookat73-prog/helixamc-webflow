@@ -174,6 +174,7 @@
       ['세부 진료',  data.specialty],
       ['학회 / 자격', data.memberships],
       ['학술 활동',  data.activities],
+      ['강의',       data.lectures],
       ['논문 / 저서', data.publications]
     ];
     sections.forEach(function (pair) {
