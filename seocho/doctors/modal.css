@@ -80,9 +80,10 @@
   color: #1a2230;
 }
 
-/* ── 헤더: 사진 + 직책/이름/한줄 소개 ─────────────────────────── */
+/* ── 헤더: 직책/이름/한줄 소개 + 사진 (텍스트 좌, 사진 우) ─────── */
 .helix-doctor-modal_header {
   display: flex;
+  flex-direction: row-reverse;
   gap: 24px;
   align-items: flex-end;
   padding-bottom: 22px;
@@ -142,7 +143,7 @@
 .helix-doctor-modal_title::after {
   content: '';
   display: block;
-  width: 1.5em;
+  width: 1em;
   height: 3px;
   background: #0075d6;
   margin-top: 3px;
