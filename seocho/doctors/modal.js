@@ -97,7 +97,7 @@
         '<button type="button" class="helix-doctor-modal_close" aria-label="닫기" data-modal-close="1">×</button>' +
         '<div class="helix-doctor-modal_header">' +
           '<div class="helix-doctor-modal_photo-wrap">' +
-            '<img class="helix-doctor-modal_photo" alt="" />' +
+            '<img class="helix-doctor-modal_photo" alt="" loading="eager" decoding="async" fetchpriority="high" />' +
           '</div>' +
           '<div class="helix-doctor-modal_meta">' +
             '<div class="helix-doctor-modal_title"></div>' +
@@ -134,6 +134,18 @@
     return sec;
   }
 
+  /* Webflow CDN (cdn.prod.website-files.com 등) 은 ?w=N 리사이즈 지원.
+     원본이 수 MB 인 사진을 240px 슬롯에 그대로 받으면 모달 뜬 뒤 사진 자리가
+     한참 빈 채로 남는 문제 해결용. 다른 도메인은 그대로 통과. */
+  function sizedPhoto(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (!/website-files\.com|webflow\.com/i.test(url)) return url;
+    if (/[?&]w=\d+/.test(url)) return url; /* 이미 사이즈 지정돼 있음 */
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = Math.round(240 * dpr); /* 슬롯 120px × 2 retina */
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'w=' + w;
+  }
+
   function render(data) {
     var m = ensureModal();
     var panel = m.querySelector('.helix-doctor-modal_panel');
@@ -141,7 +153,7 @@
     /* 사진은 선택. 빈 값이면 photo-wrap 통째로 숨겨 헤더가 텍스트만으로
        자연스럽게 정렬되게 함 (회색 빈 박스 보이는 사고 방지). */
     if (data.photo) {
-      img.src = data.photo;
+      img.src = sizedPhoto(data.photo);
       img.alt = data.name || '';
       panel.classList.remove('has-no-photo');
     } else {
