@@ -89,6 +89,17 @@
     return true;
   }
 
+  /* Webflow CDN ?w=N 리사이즈 (다른 도메인은 통과).
+     카드 썸네일은 보통 표시 폭 ~200~300px 라 480 정도면 retina 까지 충분. */
+  function sizedPhoto(url, basePx) {
+    if (!url || typeof url !== 'string') return url;
+    if (!/website-files\.com|webflow\.com/i.test(url)) return url;
+    if (/[?&]w=\d+/.test(url)) return url;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = Math.round((basePx || 240) * dpr);
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'w=' + w;
+  }
+
   function setImg(root, selector, url) {
     var img = root.querySelector(selector);
     if (!img) return false;
@@ -96,7 +107,7 @@
       img.style.display = 'none';
       return true;
     }
-    img.src = url;
+    img.src = sizedPhoto(url, 240);
     img.removeAttribute('srcset');
     img.style.display = '';
     img.loading = 'lazy';
