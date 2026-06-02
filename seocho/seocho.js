@@ -396,10 +396,13 @@
        모든 .subheader_title 의 computed font-size 중 최대값을 모든 탭에
        인라인으로 강제. (resize 시 vw 단위로 재계산되도록 다시 적용) */
     function normalizeFonts() {
-      /* 1) 측정 대상: 각 탭의 가장 안쪽 텍스트 요소들.
-         탭 안의 모든 자손을 보고, 실제 텍스트 노드를 직접 가진 요소만 모음.
-         이렇게 해야 "인터벤션 센터" 처럼 inner span 이 자체 font-size 를 박은
-         케이스에서 진짜 렌더링 size 를 잡을 수 있음. */
+      /* "인터벤션 센터" 탭은 .subheader_click-area 클래스가 없어 links 에
+         안 잡힘. → section.subheader 안 모든 텍스트 요소를 통째로 스캔.
+         leaf 텍스트 요소(자식 텍스트 노드를 직접 가진 요소)의 max
+         computed font-size 측정 → 같은 영역의 모든 요소에 인라인 강제. */
+      var subRoot = document.querySelector('section.subheader');
+      if (!subRoot) return;
+
       function leafTextEls(root) {
         var out = [];
         var walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null);
@@ -413,34 +416,24 @@
           if (hasText) out.push(n);
           n = walker.nextNode();
         }
-        if (!out.length) out.push(root);
         return out;
       }
 
-      /* 2) 일단 이전 인라인 제거 후 측정 (resize 후 vw 단위 재계산). */
-      links.forEach(function (a) {
-        a.style.fontSize = '';
-        a.querySelectorAll('*').forEach(function (el) {
-          el.style.fontSize = '';
-        });
-      });
+      var allEls = [].slice.call(subRoot.querySelectorAll('*'));
+      /* 1) 이전 인라인 제거 후 재측정 (resize/vw 대응) */
+      allEls.forEach(function (el) { el.style.fontSize = ''; });
 
-      /* 3) 각 탭의 leaf 텍스트 요소 중 최대 컴퓨티드 폰트 크기 → 전체 max. */
+      /* 2) 진짜 텍스트 leaf 의 최대 폰트 크기 */
       var maxPx = 0;
-      links.forEach(function (a) {
-        leafTextEls(a).forEach(function (el) {
-          var px = parseFloat(getComputedStyle(el).fontSize) || 0;
-          if (px > maxPx) maxPx = px;
-        });
+      leafTextEls(subRoot).forEach(function (el) {
+        var px = parseFloat(getComputedStyle(el).fontSize) || 0;
+        if (px > maxPx) maxPx = px;
       });
 
-      /* 4) 탭 링크 + 모든 자손에 인라인 !important 로 동일 px 강제. */
+      /* 3) 서브헤더 안 모든 요소에 인라인 !important 강제 */
       if (maxPx > 0) {
-        links.forEach(function (a) {
-          a.style.setProperty('font-size', maxPx + 'px', 'important');
-          a.querySelectorAll('*').forEach(function (el) {
-            el.style.setProperty('font-size', maxPx + 'px', 'important');
-          });
+        allEls.forEach(function (el) {
+          el.style.setProperty('font-size', maxPx + 'px', 'important');
         });
       }
     }
