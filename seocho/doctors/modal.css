@@ -84,11 +84,16 @@
 .helix-doctor-modal_header {
   display: flex;
   flex-direction: row-reverse;
-  gap: 24px;
+  gap: 8px;
   align-items: flex-end;
   padding-bottom: 22px;
   margin-bottom: 22px;
   border-bottom: 1px solid rgba(20, 40, 80, 0.08);
+}
+
+/* 텍스트 블록이 늘어나서 사진과 사이가 벌어지는 것 방지 — 내용 폭에 딱 맞춤 */
+.helix-doctor-modal_header .helix-doctor-modal_meta {
+  flex: 0 1 auto;
 }
 
 .helix-doctor-modal_photo-wrap {
