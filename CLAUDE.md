@@ -70,6 +70,53 @@ PR #621 (네이버 SDK 키 파라미터 수정) 머지했는데 사이트 반영
 
 ---
 
+## 🔥 jsDelivr edge 캐시 stale — bootstrap.js FILES 배열 변경 시 (LOCKED v1, PR #703~#713 교훈)
+
+**증상**: 새 폴더 (예: `seocho/doctors/`) 만들고 bootstrap.js 의 `FILES` 배열에 `'seocho/doctors/modal.js'` 등 추가. PR 머지 → 워크플로우 그린 → 사용자 시크릿 창에서도 모달 안 뜸. Network 탭에 modal.js 자체가 안 잡힘.
+
+**원인**: 워크플로우의 `Purge jsDelivr cache for bootstrap.js` 단계가 성공해도, jsDelivr 의 **edge 노드 일부가 여전히 옛 bootstrap.js 를 캐시** 중. 그 옛 bootstrap.js 의 FILES 배열엔 새 modal 등록이 없어, 사용자 브라우저가 modal.js 를 영영 inject 받지 못함.
+
+### 진단 (사용자 콘솔에서)
+
+서초본원 페이지에서 F12 → Console:
+
+```js
+// 1. Webflow Publish OK 인지 (attribute 박혔는지)
+document.querySelectorAll('[data-doctor-open]').length
+// 0 → Publish 안 함 / 1+ → Publish OK
+
+// 2. modal.js 가 init 됐는지
+window.__helixDoctorModalInit
+// undefined → modal.js 미실행 (이게 stale 캐시 신호)
+
+// 3. bootstrap.js 가 stale 캐시인지 확정
+fetch(document.querySelector('script[src*="seocho/bootstrap"]').src + '?cb=' + Date.now())
+  .then(r=>r.text())
+  .then(t=>console.log('modal:', t.includes('seocho/doctors/modal.js'), '| v최신?', t.includes('v1.4')))
+// false false → stale 확정
+```
+
+### 처방 — 강제 퍼지 콘솔 명령 (사용자에게 그대로 안내)
+
+```js
+['seocho/bootstrap.js','seocho/doctors/modal.js','seocho/doctors/modal.css']
+  .forEach(f=>fetch('https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@staging/'+f)
+    .then(r=>r.json())
+    .then(j=>console.log(f, j.status||j)))
+```
+
+각 파일별 `finished` 응답 → 30초 후 Ctrl+Shift+R. main 배포 시엔 URL 의 `@staging` 을 `@main` 으로.
+
+### 예방 — 새 폴더/파일 추가 시 즉시 자동 안내
+
+새 모듈 추가하는 PR 직후 사용자가 검증 못 하는 환경이면, **이 콘솔 명령을 PR 머지 시점에 미리 안내**. 워크플로우의 자동 퍼지만 믿지 말 것.
+
+### 실패 사례 (재발 금지)
+
+`seocho/doctors/` 의료진 모달 인프라 추가 (PR #703~#711) 후 사용자가 스테이징에서 검증 — Webflow Publish OK, attribute 84개 다 박힘, 그러나 모달 안 뜸. 콘솔에 `__helixDoctorModalInit=undefined`. PR #713 으로 bootstrap.js v1.3→v1.4 버전 bump 푸시 — 워크플로우 그린이지만 여전히 jsDelivr edge 캐시 stale. 결국 사용자가 콘솔에서 직접 `purge.jsdelivr.net` 강제 호출 후에야 동작. 사용자 "어휴 진짜". 본 처방 콘솔 명령 한 줄을 처음부터 안내했으면 30초였을 일.
+
+---
+
 ## 워크플로우 — **staging 우선 배포** (LOCKED v1, PR #546)
 
 ### 브랜치 전략

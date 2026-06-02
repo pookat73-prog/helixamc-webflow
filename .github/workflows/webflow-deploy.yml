@@ -119,19 +119,12 @@ jobs:
             "seocho/renewal-bar.js"
             "seocho/doctors/modal.css"
             "seocho/doctors/modal.js"
-            "seocho/doctors/data/im-1.json"
-            "seocho/doctors/data/im-2.json"
-            "seocho/doctors/data/sr-1.json"
-            "seocho/doctors/data/sr-2.json"
-            "seocho/doctors/data/di-1.json"
-            "seocho/doctors/data/di-2.json"
-            "seocho/doctors/data/di-3.json"
-            "seocho/doctors/data/op.json"
-            "seocho/doctors/data/gp-1.json"
-            "seocho/doctors/data/gp-2.json"
-            "seocho/doctors/data/em-1.json"
-            "seocho/doctors/data/is-1.json"
+            "seocho/doctors/card-render.js"
           )
+          # 참고: seocho/doctors/data/<group>/<slug>.json (의료진 28명) 은 클릭
+          # 시점에 lazy fetch — 페이지 로드 차단 안 함. 첫 클릭 시 jsDelivr lazy
+          # 인덱싱 약간 지연 가능하나, 두번째 클릭부터 캐시 hit. 일괄 워밍업
+          # 비용 vs 이득 작아 생략.
           FAILED=0
           for f in "${FILES[@]}"; do
             printf "Warming /%s → " "$f"

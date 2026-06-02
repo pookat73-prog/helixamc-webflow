@@ -208,3 +208,11 @@ section.subheader {
   color: #0075d6;
   text-decoration: underline;
 }
+
+/* 의료진 카드 JSON 렌더러 — FOUC 방지
+   card-render.js 가 fetch 후 클론 append 끝나면 컨테이너에
+   data-doctor-ready attribute 를 박음. 그 전까진 모든 자식 invisible.
+   visibility: hidden → 레이아웃 공간은 유지해서 jump 없음. */
+div[data-doctor-group]:not([data-doctor-ready]) > * {
+  visibility: hidden;
+}

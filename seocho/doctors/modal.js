@@ -41,49 +41,46 @@
   var OWNER = 'pookat73-prog';
   var REPO  = 'helixamc-webflow';
 
-  /* group → Promise<{slug: data}> 캐시. 같은 그룹 두 번째 클릭부터 즉시 응답. */
-  var groupCache = {};
+  /* "group/slug" → Promise<data> 캐시. 같은 의료진 두 번째 클릭부터 즉시. */
+  var doctorCache = {};
   var modalEl = null;
   var lastFocus = null;
 
   function getRef() {
-    /* about/bootstrap.js 가 fetch 후 window.HELIX_REF 에 10자 SHA 를 셋팅.
+    /* seocho/bootstrap.js 가 fetch 후 window.HELIX_REF 에 10자 SHA 를 셋팅.
        SHA 가 있으면 immutable URL 로 데이터도 fetch → 캐시 꼬임 0.
        부트스트랩이 fallback 한 경우(@main/@staging) 도 그대로 따라감. */
     if (window.HELIX_REF) return window.HELIX_REF;
     return /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
   }
 
-  function dataUrl(group) {
+  function doctorUrl(group, slug) {
     var t = Math.floor(Date.now() / 60000); /* 60s 버킷 — 브라우저 캐시 살짝 깸 */
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-           '@' + getRef() + '/seocho/doctors/data/' + group + '.json?t=' + t;
+           '@' + getRef() + '/seocho/doctors/data/' + group + '/' + slug + '.json?t=' + t;
   }
 
-  function fetchGroup(group) {
-    if (groupCache[group]) return groupCache[group];
-    var url = dataUrl(group);
-    log('fetching group', group, url);
+  function fetchDoctor(group, slug) {
+    var key = group + '/' + slug;
+    if (doctorCache[key]) return doctorCache[key];
+    var url = doctorUrl(group, slug);
+    log('fetching', key, url);
     var p = fetch(url, { cache: 'no-store' })
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
-      .then(function (arr) {
-        if (!Array.isArray(arr)) throw new Error('expected array');
-        var map = {};
-        arr.forEach(function (d) {
-          if (d && typeof d.slug === 'string') map[d.slug] = d;
-        });
-        log('group loaded', group, 'count=' + Object.keys(map).length);
-        return map;
+      .then(function (d) {
+        if (!d || typeof d !== 'object') throw new Error('expected object');
+        log('loaded', key, d.name);
+        return d;
       })
       .catch(function (err) {
-        warn('group load failed:', group, err && err.message);
-        delete groupCache[group]; /* 재시도 가능하도록 캐시 무효화 */
-        return {};
+        warn('load failed:', key, err && err.message);
+        delete doctorCache[key]; /* 재시도 가능하도록 캐시 무효화 */
+        return null;
       });
-    groupCache[group] = p;
+    doctorCache[key] = p;
     return p;
   }
 
@@ -255,12 +252,15 @@
     }
 
     log('click open', group + '/' + slug);
-    fetchGroup(group).then(function (map) {
-      var data = map[slug];
+    fetchDoctor(group, slug).then(function (data) {
       if (!data) {
-        warn('slug not found in group:', group, slug, '— available:', Object.keys(map));
-        /* 그래도 모달은 열어서 "정보 없음" 표시 — 사용자가 빈 화면 보고 당황 안 하도록 */
-        data = { name: slug, title: '', intro: '상세 정보 준비 중입니다.' };
+        /* 그래도 모달은 열어서 "정보 없음" 표시 — 빈 화면 보고 당황 안 하도록.
+           파일 자체가 없거나(404) 네트워크 실패 모두 동일 처리. */
+        data = {
+          name: slug,
+          title: '',
+          intro: '상세 정보 준비 중입니다.'
+        };
       }
       open(data);
     });
