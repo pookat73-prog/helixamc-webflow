@@ -388,6 +388,26 @@
      EXEMPT 어트리뷰트를 명시 부여 → 어떤 마킹과도 무관하게 정상 이동.
      mailto/tel/# 링크는 다른 핸들러가 처리하므로 EXEMPT 부여 안 함.
   ============================================================ */
+  /* ============================================================
+     TYPO PATCH — 임시 (Designer 의 푸터 publish 가 prod 도달하면 이 함수 제거)
+     prod 푸터의 "Contect" → "Contact" 교정. text node 만 건드려서 이벤트
+     리스너에 영향 없음. Designer 본 텍스트가 publish 되면 no-match → no-op.
+  ============================================================ */
+  function fixFooterTypo(footer) {
+    var n = 0;
+    var w = document.createTreeWalker(footer, NodeFilter.SHOW_TEXT, null);
+    var node;
+    while ((node = w.nextNode())) {
+      var t = node.textContent || '';
+      if (t.indexOf('Contect') >= 0) {
+        node.textContent = t.replace(/Contect/g, 'Contact');
+        n++;
+      }
+    }
+    if (n) dbg('footer typo patched (Contect → Contact):', n, 'node(s)');
+    return n;
+  }
+
   function protectFooterLinks(footer) {
     var anchors = footer.querySelectorAll('a[href]');
     var n = 0;
@@ -422,6 +442,7 @@
     var sns    = bindSnsImages(snsImgs);
     var logo   = initLogoLink(footer, snsImgs);
     var links  = protectFooterLinks(footer);
+    fixFooterTypo(footer);
     initScrollToTop();
 
     if (emails || sns || logo || links) {
