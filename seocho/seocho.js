@@ -593,8 +593,17 @@
     var rect = origMenu.getBoundingClientRect();
     var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 56;
     var subH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--subheader-h')) || 0;
-    /* 원본 탭 메뉴의 bottom 이 (헤더 + 서브헤더) 아래로 사라지는 순간 미니 등장 */
-    setVisible(rect.bottom < headerH + subH);
+    var line = headerH + subH;
+    /* 원본 탭이 서브헤더 위로 사라졌고, AND 의료진 안내 섹션의 bottom 이
+       아직 서브헤더 아래일 때만 미니 표시. 섹션을 지나치면 다시 슬라이드 업.
+       의료진 섹션 = 원본 .w-tab-menu 의 가장 가까운 <section> 조상. */
+    var section = origMenu.closest('section');
+    var inSection = true;
+    if (section) {
+      var sRect = section.getBoundingClientRect();
+      inSection = sRect.bottom > line;
+    }
+    setVisible(rect.bottom < line && inSection);
   }
 
   function onScroll() {
