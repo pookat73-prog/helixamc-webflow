@@ -279,6 +279,138 @@
 })();
 
 /* ================================================================
+   SUBHEADER — 호버 / 스크롤스파이 / 클릭 시 메인 블루 밑줄
+   ================================================================
+   about.js 의 동일 패턴 이식. 서브헤더 각 탭에:
+   - 스크롤 위치에 따라 해당 섹션의 탭에 .is-active 부착 (파란 밑줄)
+   - 클릭 시 그 섹션으로 부드럽게 스크롤 (헤더 + 서브헤더 높이 보정)
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function init() {
+    var links = document.querySelectorAll('.subheader_click-area');
+    if (!links.length) return false;
+
+    /* 타깃 결정: href ID 우선, 없으면 .subheader_title 텍스트와 매칭되는
+       visible 헤딩의 가장 가까운 section. about.js 와 동일 알고리즘. */
+    function findVisibleTarget(href, linkEl) {
+      if (href && href.charAt(0) === '#' && href.length >= 2) {
+        var id = href.slice(1);
+        var all = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+        }
+      }
+      if (linkEl) {
+        var titleEl = linkEl.querySelector('.subheader_title') || linkEl;
+        var title = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
+        if (title.length >= 2) {
+          var headings = document.querySelectorAll('h1, h2, h3, h4');
+          for (var j = 0; j < headings.length; j++) {
+            var h = headings[j];
+            if (h.offsetParent === null && h.getClientRects().length === 0) continue;
+            var ht = (h.textContent || '').replace(/\s+/g, ' ').trim();
+            if (!ht) continue;
+            if (ht === title || ht.indexOf(title) !== -1 || title.indexOf(ht) !== -1) {
+              return h.closest('section') || h.closest('[class*="section"]') || h;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    var entries = [];
+    links.forEach(function (a) {
+      var target = findVisibleTarget(a.getAttribute('href') || '', a);
+      if (target) entries.push({ link: a, target: target });
+    });
+    if (!entries.length) return false;
+
+    function setActive(link) {
+      links.forEach(function (l) { l.classList.remove('is-active', 'w--current'); });
+      if (link) link.classList.add('is-active');
+    }
+
+    var clickedAt = 0;
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href') || '';
+        if (href.charAt(0) !== '#') return;
+        var t = findVisibleTarget(href, a);
+        if (!t) return;
+        e.preventDefault();
+        setActive(a);
+        clickedAt = Date.now();
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var sub = document.querySelector('.subheader');
+        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        if (history.replaceState) history.replaceState(null, '', href);
+      });
+    });
+
+    /* 스크롤스파이 — spy line(헤더+서브헤더+16px)을 품는 섹션을 활성화.
+       품는 섹션 없으면 line 까지 가장 가까운 섹션. */
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        if (Date.now() - clickedAt < 700) return;
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var sub = document.querySelector('.subheader');
+        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var line = headerH + subH + 16;
+        var straddle = null;
+        var closest = null;
+        var closestDist = Infinity;
+        for (var i = 0; i < entries.length; i++) {
+          var rect = entries[i].target.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) continue;
+          if (rect.top <= line && rect.bottom > line) straddle = entries[i].link;
+          var dist;
+          if (rect.bottom < line) dist = line - rect.bottom;
+          else if (rect.top > line) dist = rect.top - line;
+          else dist = 0;
+          if (dist < closestDist) { closestDist = dist; closest = entries[i].link; }
+        }
+        var current = straddle || closest;
+        if (!current && window.pageYOffset < 50) current = entries[0].link;
+        if (current && !current.classList.contains('is-active')) setActive(current);
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+    return true;
+  }
+
+  function start() {
+    if (init()) return;
+    /* CMS/IX2 가 늦게 DOM 을 채우는 케이스 대비 재시도 */
+    var tries = 0;
+    var t = setInterval(function () {
+      if (init() || ++tries >= 25) clearInterval(t);
+    }, 200);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
    HEADER / SUBHEADER 높이 → --header-h / --subheader-h CSS 변수 동기화
    section.subheader top 을 실제 헤더 높이에 맞춰 빈틈 제거.
    미니 분과 헤더 (아래 LOCKED) 의 top 위치 계산에도 사용됨.
