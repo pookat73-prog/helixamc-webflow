@@ -112,6 +112,11 @@
     tmp.innerHTML = buildOverlayHTML();
     document.body.appendChild(tmp.firstChild);
 
+    /* 안전망: 이전 세션/렌더에서 body.hx-menu-open 가 stuck 으로 남는 경우
+       (GSAP transition 중간 차단, page reload 등) 페이지 스크롤이 영영 잠김.
+       init 시점에 강제로 클리어. */
+    document.body.classList.remove('hx-menu-open');
+
     var overlay  = document.querySelector('.hx-menu-overlay');
     var isOpen   = false;
     var activeEl = null; /* 클릭된 링크 기억 */
