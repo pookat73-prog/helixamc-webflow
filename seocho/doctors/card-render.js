@@ -165,12 +165,17 @@
   /* ---- 그룹 컨테이너 처리 ---- */
 
   function findTemplate(container) {
-    /* 우선순위 1: 명시적 마커 */
-    var t = container.querySelector('[data-doctor-template]');
-    if (t) return t;
-    /* 우선순위 2: 컨테이너의 첫 element 자식이 카드 (Webflow Component Instance
-       는 root attribute 가 publish 시 항상 propagate 되진 않음 — 마커 의존 X). */
+    /* 우선순위 1: 컨테이너의 직접 자식 중 [data-doctor-template] 마커
+       (deep querySelector 쓰면 컴포넌트 안 깊은 곳의 marker 도 잡혀서
+       wrapper 가 아니라 안쪽 카드가 템플릿이 될 수 있음 — 직접 자식만 검사). */
     var c = container.firstElementChild;
+    while (c) {
+      if (c.hasAttribute && c.hasAttribute('data-doctor-template')) return c;
+      c = c.nextElementSibling;
+    }
+    /* 우선순위 2: 컨테이너의 첫 element 자식 (Webflow Component Instance 의
+       root attribute 가 publish 시 항상 propagate 되진 않음 — 마커 의존 X). */
+    c = container.firstElementChild;
     while (c) {
       /* <a> 는 카드 트리거 링크일 수 있으니 건너뜀 */
       if (c.tagName !== 'A' && c.tagName !== 'SCRIPT' && c.tagName !== 'STYLE') return c;
