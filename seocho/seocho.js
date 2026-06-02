@@ -512,7 +512,7 @@
 (function () {
   'use strict';
 
-  var MQ = '(min-width: 480px)';
+  var MQ_DESKTOP = '(min-width: 480px)';
   var mini = null;
   var miniLinks = [];
   var origLinks = [];
@@ -520,36 +520,51 @@
   var origMo = null;
   var visible = false;
   var rafPending = false;
+  var nextSectionEl = null;
+  var mode = null; /* 'desktop' | 'mobile' — 현재 빌드된 미니 헤더 형태 */
+  var miniPanel = null; /* 모바일 드롭다운 패널 */
+  var miniLabel = null; /* 모바일 버튼의 활성 분과명 텍스트 노드 */
 
-  function isEligible() { return window.matchMedia(MQ).matches; }
+  function viewportMode() {
+    return window.matchMedia(MQ_DESKTOP).matches ? 'desktop' : 'mobile';
+  }
+  function isEligible() { return true; /* 모바일도 이제 지원 (드롭다운 형태) */ }
+
+  /* 원본 .w-tab-menu 다음에 오는 서브헤더 앵커의 타깃 섹션을 찾음.
+     서브헤더 anchor link 들의 href=#id 를 순회: origMenu 가 속한 섹션 다음
+     순서의 anchor 가 가리키는 요소가 곧 "다음 섹션". 못 찾으면 null. */
+  function detectNextSection() {
+    if (!origMenu) return null;
+    var anchors = [].slice.call(document.querySelectorAll('.subheader_click-area[href^="#"]'));
+    if (!anchors.length) return null;
+    var targets = anchors.map(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      if (!id) return null;
+      var list = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+      for (var i = 0; i < list.length; i++) {
+        var el = list[i];
+        if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+      }
+      return list[0] || null;
+    });
+    /* origMenu 의 absolute top 기준, 그보다 더 아래에 있는 첫 타깃 = 다음 섹션 */
+    var menuTop = origMenu.getBoundingClientRect().top + window.pageYOffset;
+    var best = null;
+    var bestTop = Infinity;
+    targets.forEach(function (t) {
+      if (!t) return;
+      var top = t.getBoundingClientRect().top + window.pageYOffset;
+      if (top > menuTop + 4 && top < bestTop) { best = t; bestTop = top; }
+    });
+    return best;
+  }
 
   function buildMini() {
     if (mini || !origMenu) return;
-    var clone = origMenu.cloneNode(true);
-    clone.className = (clone.className || '') + ' helix-mini-tabmenu';
-    clone.setAttribute('role', 'tablist');
-    clone.setAttribute('aria-label', '의료진 분과 (미니)');
-    /* Webflow Tabs 가 클론을 자기 인스턴스로 오인하지 않도록 식별 attribute 제거 */
-    clone.removeAttribute('data-w-id');
-    clone.querySelectorAll('[data-w-tab]').forEach(function (el) {
-      el.removeAttribute('data-w-id');
-      el.id = ''; /* 원본과 id 충돌 방지 */
-      el.removeAttribute('aria-controls');
-      el.setAttribute('tabindex', '-1');
-    });
-    document.body.appendChild(clone);
-    mini = clone;
-    miniLinks = [].slice.call(clone.querySelectorAll('.w-tab-link'));
     origLinks = [].slice.call(origMenu.querySelectorAll('.w-tab-link'));
-
-    miniLinks.forEach(function (mLink, i) {
-      mLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var orig = origLinks[i];
-        if (orig) orig.click();
-      });
-    });
+    mode = viewportMode();
+    if (mode === 'desktop') buildDesktopMini();
+    else buildMobileMini();
 
     /* 원본 활성 탭 변화 → 미니에 동기화 */
     origMo = new MutationObserver(syncActive);
@@ -559,51 +574,176 @@
     syncActive();
   }
 
-  function syncActive() {
-    if (!miniLinks.length) return;
-    origLinks.forEach(function (o, i) {
-      var m = miniLinks[i];
-      if (!m) return;
-      var on = o.classList.contains('w--current');
-      m.classList.toggle('w--current', on);
-      m.setAttribute('aria-selected', on ? 'true' : 'false');
+  function buildDesktopMini() {
+    var clone = origMenu.cloneNode(true);
+    clone.className = (clone.className || '') + ' helix-mini-tabmenu';
+    clone.setAttribute('role', 'tablist');
+    clone.setAttribute('aria-label', '의료진 분과 (미니)');
+    clone.removeAttribute('data-w-id');
+    clone.querySelectorAll('[data-w-tab]').forEach(function (el) {
+      el.removeAttribute('data-w-id');
+      el.id = '';
+      el.removeAttribute('aria-controls');
+      el.setAttribute('tabindex', '-1');
     });
+    document.body.appendChild(clone);
+    mini = clone;
+    miniLinks = [].slice.call(clone.querySelectorAll('.w-tab-link'));
+
+    miniLinks.forEach(function (mLink, i) {
+      mLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var orig = origLinks[i];
+        if (orig) orig.click();
+      });
+    });
+  }
+
+  function buildMobileMini() {
+    /* 모바일: 작은 fixed 버튼 + 누르면 펼쳐지는 드롭다운 패널.
+       버튼은 현재 활성 분과명 + ▼ 표시. */
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'helix-mini-tabselect';
+    btn.setAttribute('aria-haspopup', 'listbox');
+    btn.setAttribute('aria-expanded', 'false');
+    var labelSpan = document.createElement('span');
+    labelSpan.className = 'helix-mini-tabselect_label';
+    labelSpan.textContent = '분과 선택';
+    var caret = document.createElement('span');
+    caret.className = 'helix-mini-tabselect_caret';
+    caret.setAttribute('aria-hidden', 'true');
+    caret.textContent = '▾';
+    btn.appendChild(labelSpan);
+    btn.appendChild(caret);
+
+    var panel = document.createElement('div');
+    panel.className = 'helix-mini-tabpanel';
+    panel.setAttribute('role', 'listbox');
+    panel.setAttribute('aria-label', '의료진 분과');
+
+    miniLinks = [];
+    origLinks.forEach(function (orig, i) {
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'helix-mini-tabpanel_item';
+      item.setAttribute('role', 'option');
+      item.textContent = (orig.textContent || '').trim();
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        orig.click();
+        closePanel();
+      });
+      panel.appendChild(item);
+      miniLinks.push(item);
+    });
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var open = btn.classList.toggle('is-open');
+      panel.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    /* 외부 탭 시 닫힘, 스크롤/리사이즈에도 닫힘 */
+    document.addEventListener('click', function (e) {
+      if (!btn.classList.contains('is-open')) return;
+      if (btn.contains(e.target) || panel.contains(e.target)) return;
+      closePanel();
+    }, true);
+    window.addEventListener('scroll', closePanel, { passive: true });
+
+    document.body.appendChild(btn);
+    document.body.appendChild(panel);
+    mini = btn;
+    miniPanel = panel;
+    miniLabel = labelSpan;
+  }
+
+  function closePanel() {
+    if (!mini || mode !== 'mobile') return;
+    mini.classList.remove('is-open');
+    if (miniPanel) miniPanel.classList.remove('is-open');
+    mini.setAttribute('aria-expanded', 'false');
+  }
+
+  function syncActive() {
+    if (!origLinks.length) return;
+    var activeIdx = -1;
+    origLinks.forEach(function (o, i) {
+      if (o.classList.contains('w--current')) activeIdx = i;
+    });
+    if (mode === 'desktop') {
+      if (!miniLinks.length) return;
+      origLinks.forEach(function (o, i) {
+        var m = miniLinks[i];
+        if (!m) return;
+        var on = i === activeIdx;
+        m.classList.toggle('w--current', on);
+        m.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    } else if (mode === 'mobile') {
+      if (miniLabel && activeIdx >= 0) {
+        var t = (origLinks[activeIdx].textContent || '').trim();
+        if (t) miniLabel.textContent = t;
+      }
+      miniLinks.forEach(function (item, i) {
+        var on = i === activeIdx;
+        item.classList.toggle('is-active', on);
+        item.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
   }
 
   function destroyMini() {
     if (origMo) { origMo.disconnect(); origMo = null; }
     if (mini && mini.parentNode) mini.parentNode.removeChild(mini);
+    if (miniPanel && miniPanel.parentNode) miniPanel.parentNode.removeChild(miniPanel);
     mini = null;
+    miniPanel = null;
+    miniLabel = null;
     miniLinks = [];
     origLinks = [];
     visible = false;
+    mode = null;
   }
 
   function setVisible(on) {
     if (!mini || visible === on) return;
     visible = on;
     mini.classList.toggle('is-visible', on);
+    if (miniPanel) {
+      miniPanel.classList.toggle('is-visible', on);
+      if (!on) closePanel();
+    }
   }
 
   function check() {
     rafPending = false;
     if (!origMenu) return;
-    if (!isEligible()) { setVisible(false); return; }
+    /* viewport 모드가 바뀌면 미니 재빌드 */
+    if (mini && mode !== viewportMode()) destroyMini();
     if (!mini) buildMini();
     var rect = origMenu.getBoundingClientRect();
     var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 56;
     var subH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--subheader-h')) || 0;
     var line = headerH + subH;
-    /* 원본 탭이 서브헤더 위로 사라졌고, AND 의료진 안내 섹션의 bottom 이
-       아직 서브헤더 아래일 때만 미니 표시. 섹션을 지나치면 다시 슬라이드 업.
-       의료진 섹션 = 원본 .w-tab-menu 의 가장 가까운 <section> 조상. */
-    var section = origMenu.closest('section');
-    var inSection = true;
-    if (section) {
-      var sRect = section.getBoundingClientRect();
-      inSection = sRect.bottom > line;
+
+    /* 의료진 안내 섹션 안에 있을 때만 미니 표시. 경계 판단:
+       - 원본 탭이 line 위로 사라졌고 (rect.bottom < line) AND
+       - "다음 섹션의 top" 이 아직 line 아래일 때.
+       다음 섹션 = 서브헤더 앵커들 중 원본 탭 다음 순서의 앵커가 가리키는 섹션.
+       (closest('section') 은 탭 래퍼 자체에 잡혀 너무 일찍 사라지는 케이스
+        대응.) 다음 앵커 못 찾으면 끝까지 표시. */
+    var beforeNext = true;
+    if (nextSectionEl) {
+      var nRect = nextSectionEl.getBoundingClientRect();
+      beforeNext = nRect.top > line;
     }
-    setVisible(rect.bottom < line && inSection);
+    setVisible(rect.bottom < line && beforeNext);
   }
 
   function onScroll() {
@@ -613,19 +753,21 @@
   }
 
   function onResize() {
-    if (!isEligible()) {
-      if (mini) destroyMini();
-      return;
-    }
+    if (mini && mode !== viewportMode()) destroyMini();
+    /* nextSection 도 재측정 (DOM 위치 변경 가능) */
+    nextSectionEl = detectNextSection() || nextSectionEl;
     onScroll();
   }
 
   function init() {
     origMenu = document.querySelector('.w-tabs .w-tab-menu');
     if (!origMenu) return false;
-    if (isEligible()) buildMini();
+    nextSectionEl = detectNextSection();
+    /* 서브헤더/CMS 가 늦게 채워질 수 있어 한 번 더 재시도 */
+    if (!nextSectionEl) setTimeout(function () { nextSectionEl = detectNextSection(); }, 600);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
+    window.addEventListener('load', function () { nextSectionEl = detectNextSection() || nextSectionEl; });
     onScroll();
     return true;
   }
