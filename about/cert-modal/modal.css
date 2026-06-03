@@ -27,19 +27,20 @@ html.helix-cert-modal-open body {
 .helix-cert-modal__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(8, 12, 20, 0.78);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.42);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
 
 .helix-cert-modal__card {
   position: relative;
-  width: min(92vw, 1200px);
-  height: min(90vh, 900px);
+  /* 납작한 가로 직사각형 — 가로:세로 ≈ 16:9 */
+  width: min(86vw, 960px);
+  height: min(58vh, 540px);
   background: #0d1117;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
 }
 
 .helix-cert-modal__viewport {
