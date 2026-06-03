@@ -187,7 +187,30 @@
     return DETAIL_SLUGS.indexOf(p) !== -1;
   }
 
+  function markExempt() {
+    /* coming-soon.js (capture 단계) 가 토스트로 가로채지 않도록
+       상세페이지 링크에 exempt 속성 박음. coming-soon 의 findBlockedTarget
+       이 위로 올라가며 EXEMPT_ATTR (data-coming-soon-exempt) 만나면 즉시 중단. */
+    var anchors = document.querySelectorAll('a[href]');
+    Array.prototype.forEach.call(anchors, function (a) {
+      var url;
+      try { url = new URL(a.href, location.href); } catch (_) { return; }
+      if (url.origin !== location.origin) return;
+      if (!isDetailPath(url.pathname)) return;
+      a.setAttribute('data-coming-soon-exempt', '1');
+    });
+  }
+
   function attach() {
+    markExempt();
+    /* Webflow IX2 / 컴포넌트가 늦게 마운트하는 경우 대비 — DOM 변경 감지
+       시 다시 마킹. 5초 후 해제. */
+    try {
+      var mo = new MutationObserver(function () { markExempt(); });
+      mo.observe(document.body, { childList: true, subtree: true });
+      setTimeout(function () { mo.disconnect(); }, 5000);
+    } catch (_) {}
+
     document.addEventListener('click', function (e) {
       /* 컴포넌트 인스턴스 클릭 시 가장 가까운 <a> 가 트리거 */
       var a = e.target.closest('a[href]');
