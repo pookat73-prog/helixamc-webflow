@@ -1787,9 +1787,11 @@
       path.style.strokeDasharray  = len;
       path.style.strokeDashoffset = len;
 
-      var drawnFired = false, erasedFired = false;
+      var drawnFired = false, erasedFired = false, drawStartedAt = 0;
+      var ERASE_MIN_HOLD_MS = 1500;
       function drawLine() {
         if (drawnFired) return; drawnFired = true;
+        drawStartedAt = Date.now();
         if (!window.gsap) {
           path.style.transition = 'stroke-dashoffset 0.55s cubic-bezier(0.65,0,0.35,1)';
           path.style.strokeDashoffset = '0';
@@ -1799,7 +1801,6 @@
       }
       function eraseLine() {
         if (erasedFired) return; erasedFired = true;
-        if (!drawnFired) drawLine();
         if (!window.gsap) {
           path.style.transition = 'stroke-dashoffset 0.5s cubic-bezier(0.65,0,0.35,1)';
           path.style.strokeDashoffset = String(-len);
@@ -1810,26 +1811,32 @@
 
       if (!('IntersectionObserver' in window)) {
         drawLine();
-        setTimeout(eraseLine, 800);
+        setTimeout(eraseLine, 1800);
         return true;
       }
 
-      /* Draw 트리거: 최초의 길 (또는 fallback 으로 top 자체) 가 상단 20%에 들어오면 */
-      var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
+      /* Draw 트리거: 라인 시작 요소(.div-block-163) 가 뷰포트 바닥에서
+         등장 (상단 80% 도달) → 사용자가 섹션 보이기 시작할 때 라인이 그려짐.
+         이전엔 official-font 가 상단 20% 도달해야 발화 → erase 가 먼저
+         발화해버리는 race 발생. */
+      var drawTrigger = top;
       var ioDraw = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
         ioDraw.disconnect();
         historyGate.onOpen(drawLine);
-      }, { rootMargin: '0px 0px -80% 0px', threshold: 0 });
+      }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
       ioDraw.observe(drawTrigger);
 
-      /* Erase: 출발 요소(.div-block-163) 가 뷰포트에서 완전히 사라지는 순간
-         (홈 헬릭스 라인과 동일한 패턴) */
+      /* Erase: 출발 요소(.div-block-163) 가 뷰포트에서 완전히 사라지는 순간.
+         단 (1) draw 가 이미 발화했고 (2) draw 시작 후 최소 1.5s 경과 시에만.
+         그 전엔 발화해도 무시 → 이전의 draw/erase 동시 발화 깜빡 버그 차단. */
       var wasVisible = false;
       var ioErase = new IntersectionObserver(function (entries) {
         var visible = entries[0].isIntersecting;
         if (visible) { wasVisible = true; return; }
         if (!wasVisible) return;
+        if (!drawnFired) return;
+        if (Date.now() - drawStartedAt < ERASE_MIN_HOLD_MS) return;
         ioErase.disconnect(); eraseLine();
       }, { threshold: 0 });
       ioErase.observe(top);
