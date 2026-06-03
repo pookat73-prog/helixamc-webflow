@@ -1487,7 +1487,7 @@
           /* 흰박스 3개 동시 fire. 인용구 3개 동시 fire — 흰박스보다
              0.15s 뒤 (흰박스가 아직 등장 중일 때 인용구가 따라옴).
              세트 간 stagger 없음. */
-          var QUOTE_DELAY = 150;
+          var QUOTE_DELAY = 80;
           Array.prototype.forEach.call(blocks, function (b) {
             b.style.removeProperty('background-color');
             b.style.removeProperty('background-image');
