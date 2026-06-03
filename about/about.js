@@ -1790,65 +1790,16 @@
       svg.appendChild(path);
       document.body.appendChild(svg);
 
-      /* getTotalLength 가 일부 브라우저에서 수직 path 에 0 반환하는
-         케이스 방어 — 0/누락 시 |endY-startY| 로 폴백. */
-      var len = path.getTotalLength();
-      if (!len || !isFinite(len) || len < 1) len = Math.abs(endY - startY);
-      path.style.strokeDasharray  = len;
-      path.style.strokeDashoffset = len;
-      try { console.log('[helix-line] built len=' + len.toFixed(1) +
-        ' start=(' + startX.toFixed(0) + ',' + startY.toFixed(0) + ')' +
-        ' end=(' + endX.toFixed(0) + ',' + endY.toFixed(0) + ')'); } catch (e) {}
-
-      var drawnFired = false, erasedFired = false, drawStartedAt = 0;
-      var ERASE_MIN_HOLD_MS = 1500;
-      function drawLine() {
-        if (drawnFired) return; drawnFired = true;
-        drawStartedAt = Date.now();
-        try { console.log('[helix-line] drawLine() running, gsap=' + !!window.gsap); } catch (e) {}
-        if (!window.gsap) {
-          path.style.transition = 'stroke-dashoffset 0.55s cubic-bezier(0.65,0,0.35,1)';
-          path.style.strokeDashoffset = '0';
-          return;
-        }
-        gsap.to(path, { strokeDashoffset: 0, duration: 0.55, ease: 'power2.inOut' });
-      }
-      function eraseLine() {
-        if (erasedFired) return; erasedFired = true;
-        if (!window.gsap) {
-          path.style.transition = 'stroke-dashoffset 0.5s cubic-bezier(0.65,0,0.35,1)';
-          path.style.strokeDashoffset = String(-len);
-          return;
-        }
-        gsap.to(path, { strokeDashoffset: -len, duration: 0.5, ease: 'power2.inOut', delay: 0.1 });
-      }
-
-      if (!('IntersectionObserver' in window)) {
-        drawLine();
-        setTimeout(eraseLine, 1800);
-        return true;
-      }
-
-      /* Draw 트리거: scroll 리스너 + bounding rect 직접 체크.
-         IO 가 어떤 케이스에서 fire 안 되던 회귀 차단 (PR #776 후 라인 미생성).
-         drawTrigger 의 top 이 뷰포트 상단 60% 안으로 들어오면 draw.
-         erase 는 없음 — 한 번 그려지면 페이지 좌표 고정 유지. */
-      var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
-      try { console.log('[helix-line] trigger=' +
-        (drawTrigger === top ? 'top-fallback' : DRAW_TRIGGER_SEL)); } catch (e) {}
-      function checkDraw() {
-        if (drawnFired) return;
-        var rect = drawTrigger.getBoundingClientRect();
-        var vh = window.innerHeight || document.documentElement.clientHeight;
-        if (rect.top < vh * 0.6 && rect.bottom > 0) {
-          try { console.log('[helix-line] draw fired at rect.top=' +
-            rect.top.toFixed(0) + ' vh=' + vh); } catch (e) {}
-          window.removeEventListener('scroll', checkDraw);
-          drawLine();
-        }
-      }
-      window.addEventListener('scroll', checkDraw, { passive: true });
-      checkDraw();
+      /* 트리거/애니메이션 제거 — 라인 즉시 표시.
+         이전엔 트리거 발화 시 0.55s 그리는 애니메이션이 도는데, 그 사이
+         사용자가 스크롤로 영역 지나쳐버려 다운에서 안 보이는 버그가 있었음.
+         이제 라인은 빌드 시점에 페이지 좌표에 그대로 그려진 상태로 고정. */
+      try {
+        var debugLen = path.getTotalLength();
+        console.log('[helix-line] built (always-on) len=' + debugLen.toFixed(1) +
+          ' start=(' + startX.toFixed(0) + ',' + startY.toFixed(0) + ')' +
+          ' end=(' + endX.toFixed(0) + ',' + endY.toFixed(0) + ')');
+      } catch (e) {}
 
       log('history helix line ready, len=' + len.toFixed(0));
       return true;
