@@ -1455,10 +1455,11 @@
     });
 
     /* 인라인 hide — 정확히 3개 매칭 요소에만 적용. CSS 룰 변경 0,
-       전역 클래스 사용 0 → 다른 요소에 부작용 불가능. */
-    var TRANSITION = 'background-color 1.2s cubic-bezier(0.42,0,0.58,1), ' +
-                     'background-image 1.2s cubic-bezier(0.42,0,0.58,1), ' +
-                     'box-shadow 1.2s cubic-bezier(0.42,0,0.58,1)';
+       전역 클래스 사용 0 → 다른 요소에 부작용 불가능.
+       유지시간 짧게: 1.2s → 0.7s. */
+    var TRANSITION = 'background-color 0.7s cubic-bezier(0.42,0,0.58,1), ' +
+                     'background-image 0.7s cubic-bezier(0.42,0,0.58,1), ' +
+                     'box-shadow 0.7s cubic-bezier(0.42,0,0.58,1)';
     Array.prototype.forEach.call(blocks, function (b) {
       b.style.transition = TRANSITION;
       b.style.setProperty('background-color', 'transparent', 'important');
@@ -1466,12 +1467,11 @@
       b.style.setProperty('box-shadow', 'none', 'important');
     });
 
-    /* .div-block-178 (흰 블록 바로 아래 요소) — 3개 동시 페이드인,
-       흰 블록 fire 시점 + 200ms 딜레이. 그리드 컨테이너로 스코프 한정. */
+    /* .div-block-178 (파란 인용구) — 유지시간 1.3s → 0.7s. */
     var subBlocks = document.querySelectorAll('.about_contents_grid-3 .div-block-178');
     Array.prototype.forEach.call(subBlocks, function (b) {
-      b.style.transition = 'opacity 1.3s cubic-bezier(0.87, 0, 0.13, 1), ' +
-                           'transform 1.3s cubic-bezier(0.87, 0, 0.13, 1)';
+      b.style.transition = 'opacity 0.7s cubic-bezier(0.87, 0, 0.13, 1), ' +
+                           'transform 0.7s cubic-bezier(0.87, 0, 0.13, 1)';
       b.style.setProperty('opacity', '0', 'important');
       b.style.setProperty('transform', 'scale(0.9)', 'important');
       b.style.setProperty('transform-origin', 'center center', 'important');
@@ -1484,30 +1484,21 @@
       /* double rAF: hide 상태가 1프레임 페인트 된 후 reveal 해야 transition 발화 */
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
-          /* 흰박스1 → 인용구1 → 흰박스2 → 인용구2 → 흰박스3 → 인용구3
-             간격 없이 연달아 — 각 transition 종료 시점에 다음 발현.
-             흰박스 transition = 1200ms, 인용구 transition = 1300ms. */
-          var BOX_MS = 1200;
-          var QUOTE_MS = 1300;
-          var t = 0;
-          Array.prototype.forEach.call(blocks, function (b, i) {
-            var boxAt = t;
-            setTimeout(function () {
-              b.style.removeProperty('background-color');
-              b.style.removeProperty('background-image');
-              b.style.removeProperty('box-shadow');
-            }, boxAt);
-            t = boxAt + BOX_MS;
-            var quote = subBlocks[i];
-            if (quote) {
-              var quoteAt = t;
-              setTimeout(function () {
-                quote.style.removeProperty('opacity');
-                quote.style.removeProperty('transform');
-              }, quoteAt);
-              t = quoteAt + QUOTE_MS;
-            }
+          /* 흰박스 3개 동시 fire. 인용구 3개 동시 fire — 흰박스보다
+             0.15s 뒤 (흰박스가 아직 등장 중일 때 인용구가 따라옴).
+             세트 간 stagger 없음. */
+          var QUOTE_DELAY = 80;
+          Array.prototype.forEach.call(blocks, function (b) {
+            b.style.removeProperty('background-color');
+            b.style.removeProperty('background-image');
+            b.style.removeProperty('box-shadow');
           });
+          setTimeout(function () {
+            Array.prototype.forEach.call(subBlocks, function (q) {
+              q.style.removeProperty('opacity');
+              q.style.removeProperty('transform');
+            });
+          }, QUOTE_DELAY);
         });
       });
     }
