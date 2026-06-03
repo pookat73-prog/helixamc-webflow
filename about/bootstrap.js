@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.3 — cert detail modal)
+   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.4 — cache bump for cert modal)
    Webflow About 페이지 head에 한 번만 붙여두면 됨.
    항상 최신 커밋 기준으로 about.css / about.js 를 로드.
    ================================================================ */
