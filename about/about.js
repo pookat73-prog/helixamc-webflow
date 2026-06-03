@@ -1484,22 +1484,30 @@
       /* double rAF: hide 상태가 1프레임 페인트 된 후 reveal 해야 transition 발화 */
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
+          /* 흰박스1 → 인용구1 → 흰박스2 → 인용구2 → 흰박스3 → 인용구3
+             간격 없이 연달아 — 각 transition 종료 시점에 다음 발현.
+             흰박스 transition = 1200ms, 인용구 transition = 1300ms. */
+          var BOX_MS = 1200;
+          var QUOTE_MS = 1300;
+          var t = 0;
           Array.prototype.forEach.call(blocks, function (b, i) {
+            var boxAt = t;
             setTimeout(function () {
-              /* 인라인 제거 → Webflow 네이티브 흰배경/그림자 자동 복귀 */
               b.style.removeProperty('background-color');
               b.style.removeProperty('background-image');
               b.style.removeProperty('box-shadow');
-            }, i * 150);
+            }, boxAt);
+            t = boxAt + BOX_MS;
+            var quote = subBlocks[i];
+            if (quote) {
+              var quoteAt = t;
+              setTimeout(function () {
+                quote.style.removeProperty('opacity');
+                quote.style.removeProperty('transform');
+              }, quoteAt);
+              t = quoteAt + QUOTE_MS;
+            }
           });
-          /* div-block-178 — 흰 블록 인터 완료 후 시작.
-             흰 블록 stagger 마지막(2*150=300ms) + transition 1.2s = 1500ms. */
-          setTimeout(function () {
-            Array.prototype.forEach.call(subBlocks, function (b) {
-              b.style.removeProperty('opacity');
-              b.style.removeProperty('transform');
-            });
-          }, 1500);
         });
       });
     }
@@ -1718,128 +1726,6 @@
     }, 300);
   }
 
-  /* ── History Helix Line ─────────────────────────────────────────
-     "최초의 길" 정중앙 → .about_history_title_sub-font 위까지
-     사인파 헬릭스 라인을 빠르게 draw + erase.
-     ─────────────────────────────────────────────────────────────── */
-  function initHistoryHelixLine() {
-    var TOP_SEL    = '.div-block-163';
-    var BOTTOM_SEL = '.about_history_title_sub-font';
-    /* draw 트리거는 여전히 "최초의 길" 진입 기준으로 — 시각/타이밍 분리 */
-    var DRAW_TRIGGER_SEL = '.about_history_title_official-font';
-    var COLOR      = '#0075d6';
-    var STROKE     = 0.6;
-
-    function build() {
-      var top    = document.querySelector(TOP_SEL);
-      var bottom = document.querySelector(BOTTOM_SEL);
-      if (!top || !bottom) return false;
-
-      var topR    = top.getBoundingClientRect();
-      var botR    = bottom.getBoundingClientRect();
-      var sx      = window.scrollX, sy = window.scrollY;
-      var startX  = topR.left + topR.width / 2 + sx;
-      var startY  = topR.bottom + sy + 8;                  /* 최초 문단 바로 아래 */
-      var endX    = botR.left + botR.width / 2 + sx;
-      var endY    = botR.top  + sy - 8;                    /* sub-font 위에서 끝 */
-
-      if (endY - startY < 50) return false;                /* 너무 가까우면 skip */
-
-      /* SVG 자체는 0×0 으로 두고 overflow:visible 로 path 만 그려지게 함.
-         (큰 width/height 박으면 body 스크롤/레이아웃에 영향 가서 헤더/섹션 사이
-         틈새가 벌어지는 사고가 생김) */
-      var svgNS = 'http://www.w3.org/2000/svg';
-      var svg = document.createElementNS(svgNS, 'svg');
-      svg.setAttribute('xmlns', svgNS);
-      svg.style.position      = 'absolute';
-      svg.style.left          = '0';
-      svg.style.top           = '0';
-      svg.style.width         = '1px';
-      svg.style.height        = '1px';
-      svg.style.pointerEvents = 'none';
-      svg.style.zIndex        = '5';
-      svg.style.overflow      = 'visible';
-      svg.setAttribute('overflow', 'visible');
-
-      /* 직선 path */
-      var d = 'M' + startX.toFixed(1) + ',' + startY.toFixed(1) +
-              ' L' + endX.toFixed(1) + ',' + endY.toFixed(1);
-
-      var path = document.createElementNS(svgNS, 'path');
-      path.setAttribute('d', d);
-      path.setAttribute('stroke', COLOR);
-      path.setAttribute('stroke-width', String(STROKE));
-      path.setAttribute('fill', 'none');
-      path.setAttribute('stroke-linecap', 'round');
-
-      svg.appendChild(path);
-      document.body.appendChild(svg);
-
-      var len = path.getTotalLength();
-      path.style.strokeDasharray  = len;
-      path.style.strokeDashoffset = len;
-
-      var drawnFired = false, erasedFired = false;
-      function drawLine() {
-        if (drawnFired) return; drawnFired = true;
-        if (!window.gsap) {
-          path.style.transition = 'stroke-dashoffset 0.55s cubic-bezier(0.65,0,0.35,1)';
-          path.style.strokeDashoffset = '0';
-          return;
-        }
-        gsap.to(path, { strokeDashoffset: 0, duration: 0.55, ease: 'power2.inOut' });
-      }
-      function eraseLine() {
-        if (erasedFired) return; erasedFired = true;
-        if (!drawnFired) drawLine();
-        if (!window.gsap) {
-          path.style.transition = 'stroke-dashoffset 0.5s cubic-bezier(0.65,0,0.35,1)';
-          path.style.strokeDashoffset = String(-len);
-          return;
-        }
-        gsap.to(path, { strokeDashoffset: -len, duration: 0.5, ease: 'power2.inOut', delay: 0.1 });
-      }
-
-      if (!('IntersectionObserver' in window)) {
-        drawLine();
-        setTimeout(eraseLine, 800);
-        return true;
-      }
-
-      /* Draw 트리거: 최초의 길 (또는 fallback 으로 top 자체) 가 상단 20%에 들어오면 */
-      var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
-      var ioDraw = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        ioDraw.disconnect();
-        historyGate.onOpen(drawLine);
-      }, { rootMargin: '0px 0px -80% 0px', threshold: 0 });
-      ioDraw.observe(drawTrigger);
-
-      /* Erase: 출발 요소(.div-block-163) 가 뷰포트에서 완전히 사라지는 순간
-         (홈 헬릭스 라인과 동일한 패턴) */
-      var wasVisible = false;
-      var ioErase = new IntersectionObserver(function (entries) {
-        var visible = entries[0].isIntersecting;
-        if (visible) { wasVisible = true; return; }
-        if (!wasVisible) return;
-        ioErase.disconnect(); eraseLine();
-      }, { threshold: 0 });
-      ioErase.observe(top);
-
-      log('history helix line ready, len=' + len.toFixed(0));
-      return true;
-    }
-
-    /* layout 안정화 후 시도 + 재시도 */
-    setTimeout(function () {
-      if (build()) return;
-      var tries = 0;
-      var iv = setInterval(function () {
-        if (build() || ++tries > 30) clearInterval(iv);
-      }, 300);
-    }, 800);
-  }
-
   /* ── 스크롤 진입 페이드인 + 스케일 ──────────────────────────────
      .about_we-are-here     — fade 0.8s + scale 2s (power2.out), 동시 시작
      .about_history_title_new — fade 1.5s + scale 1.5s (power2.inOut),
@@ -2037,7 +1923,7 @@
           if (!entries[i].isIntersecting) continue;
           io.disconnect(); release(); return;
         }
-      }, { root: null, rootMargin: '0px 0px -40% 0px', threshold: 0 });
+      }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0 });
       io.observe(el);
     } else {
       release();
@@ -2159,7 +2045,6 @@
     initHybridQuestionReveal();
     initClearframeAlphenixReveal();
     initHistoryTimeline();
-    initHistoryHelixLine();
     initWeAreHereReveal();
     initHistoryTitleBoxFadeIn();
     initHistoryBodyGate();
