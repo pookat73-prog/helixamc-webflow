@@ -108,6 +108,8 @@ jobs:
             "seocho/doctors/data/gp-2/igyeongsu.json"
             "seocho/doctors/data/gp-2/gimjaehyeon.json"
             "about/bg-video.mp4"
+            "about/cert-modal/modal.css"
+            "about/cert-modal/modal.js"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
@@ -155,6 +157,8 @@ jobs:
             "home/equipment/equipment.js"
             "about/about.css"
             "about/about.js"
+            "about/cert-modal/modal.css"
+            "about/cert-modal/modal.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/renewal-bar.css"
