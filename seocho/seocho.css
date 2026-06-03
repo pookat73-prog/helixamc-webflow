@@ -188,7 +188,8 @@ section.subheader {
     padding: 0.35vw 0.9vw !important;
     background: #ffffff;
     border-radius: 0 0 14px 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    /* 외곽선 (그림자) 얇고 부드럽게 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
     /* 위는 평평, 아래 좌·우만 둥근 인덱스 탭 형태 — 위 가장자리는 서브헤더에 붙음 */
     transform: translate(-50%, -120%);
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
@@ -241,9 +242,9 @@ section.subheader {
     font-weight: 600;
     color: #0d1117;
     background: #ffffff;
-    border: 1px solid #d6dee8;
+    border: 0.5px solid #e3e9f0;
     border-radius: 999px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
     cursor: pointer;
     transform: translate(-50%, -200%);
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);

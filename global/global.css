@@ -12,6 +12,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* 글자 모양 더 선명하게 — 한글 자음/모음 조합·커닝 활성화로 깍뚝거림 완화 */
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-variant-ligatures: common-ligatures;
+  font-kerning: normal;
+}
+/* 윈도우 Chrome 등에서도 transform 적용된 픽셀 정렬 텍스트가 흐려지지 않도록.
+   transform/translate3d 가 걸린 컨테이너의 텍스트는 subpixel 위치로 떨어져
+   ClearType 가 회색 띠로 보이는 케이스 완화. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* ── 헤더 메뉴 ── */
