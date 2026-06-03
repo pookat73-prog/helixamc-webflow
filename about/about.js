@@ -1816,19 +1816,22 @@
         return true;
       }
 
-      /* Draw 트리거: official-font 가 뷰포트 상단 60% 도달 시점
-         (이전엔 상단 20% 도달까지 기다려서 erase 가 먼저 발화하는 race 발생).
-         drawTrigger 못 찾으면 top 으로 폴백. */
+      /* Draw 트리거: scroll 리스너 + bounding rect 직접 체크.
+         IO 가 어떤 케이스에서 fire 안 되던 회귀 차단 (PR #776 후 라인 미생성).
+         drawTrigger 의 top 이 뷰포트 상단 60% 안으로 들어오면 draw.
+         erase 는 없음 — 한 번 그려지면 페이지 좌표 고정 유지. */
       var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
-      var ioDraw = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        ioDraw.disconnect();
-        drawLine();
-      }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
-      ioDraw.observe(drawTrigger);
-      /* erase 트리거 제거 — 한 번 그려지면 SVG 가 페이지 좌표에 고정되어
-         스크롤 따라 자연스럽게 보였다 안 보였다 함. 스크롤 업에서 erase 가
-         draw 중에 발화해 라인이 사라지는 버그 차단. */
+      function checkDraw() {
+        if (drawnFired) return;
+        var rect = drawTrigger.getBoundingClientRect();
+        var vh = window.innerHeight || document.documentElement.clientHeight;
+        if (rect.top < vh * 0.6 && rect.bottom > 0) {
+          window.removeEventListener('scroll', checkDraw);
+          drawLine();
+        }
+      }
+      window.addEventListener('scroll', checkDraw, { passive: true });
+      checkDraw();
 
       log('history helix line ready, len=' + len.toFixed(0));
       return true;
