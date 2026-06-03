@@ -174,12 +174,15 @@ section.subheader {
   .helix-mini-tabmenu {
     display: inline-flex !important;
     position: fixed !important;
-    /* 서브헤더 바닥 위로 2px 끼워 넣어 mini 윗 가장자리를 subheader 뒤로 숨김
-       (subheader z-index 999 > mini z-index 998 → 윗 2px 보이지 않음).
-       이전: 서브헤더 바닥의 검은 1px 띠가 mini 윗면에 노출되던 회귀. */
-    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px) - 2px) !important;
+    /* 숨김 위치 (translateY(-100%) 만으로 자기 키만큼만 위로) 가 헤더 바로
+       밑 빈 공간에 노출되는 회귀 차단:
+       - top: 0 으로 두고
+       - hidden: translateY(-100%) → viewport 위로 완전히 사라짐
+       - visible: translateY(서브헤더 바닥 위치) → 정확한 위치
+       서브헤더 바닥 위로 2px 끼워 서브헤더 뒤로 윗 가장자리 숨김 (z 998 < 999). */
+    top: 0 !important;
     left: 50% !important;
-    z-index: 998 !important; /* 서브헤더(999) 바로 밑 — 슬라이드 시 가려지며 등장 */
+    z-index: 998 !important;
     width: auto !important;
     max-width: calc(100vw - 24px);
     padding: 0.35vw 0.9vw !important;
@@ -187,7 +190,7 @@ section.subheader {
     border-radius: 0 0 14px 14px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     /* 위는 평평, 아래 좌·우만 둥근 인덱스 탭 형태 — 위 가장자리는 서브헤더에 붙음 */
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -120%);
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
     pointer-events: none;
@@ -197,7 +200,7 @@ section.subheader {
     gap: 0;
   }
   .helix-mini-tabmenu.is-visible {
-    transform: translate(-50%, 0);
+    transform: translate(-50%, calc(var(--header-h, 56px) + var(--subheader-h, 0px) - 2px));
     pointer-events: auto;
   }
   /* 컴팩트 사이즈 — 원본보다 작은 padding/폰트.
@@ -228,7 +231,9 @@ section.subheader {
     align-items: center;
     gap: 6px;
     position: fixed;
-    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px) + 8px);
+    /* 같은 회귀 차단 (데스크탑 미니와 동일 패턴): top:0 + transform 으로
+       위치/숨김 둘 다 통제. 숨김 시 viewport 위로 완전히 나감. */
+    top: 0;
     left: 50%;
     z-index: 998;
     padding: 7px 14px 7px 16px;
@@ -240,14 +245,14 @@ section.subheader {
     border-radius: 999px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
     cursor: pointer;
-    transform: translate(-50%, -160%);
+    transform: translate(-50%, -200%);
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
     pointer-events: none;
     -webkit-tap-highlight-color: transparent;
   }
   .helix-mini-tabselect.is-visible {
-    transform: translate(-50%, 0);
+    transform: translate(-50%, calc(var(--header-h, 56px) + var(--subheader-h, 0px) + 8px));
     pointer-events: auto;
   }
   .helix-mini-tabselect_caret {
