@@ -1487,8 +1487,8 @@
           /* 세트 단위 stagger — 세트 i = 흰박스 i + 인용구 i.
              세트 간격 150ms (기존 흰박스 stagger 동일).
              세트 안: 흰박스 fire → +300ms 후 인용구 fire. */
-          var SET_GAP = 150;
-          var QUOTE_DELAY = 300;
+          var SET_GAP = 0;
+          var QUOTE_DELAY = 0;
           Array.prototype.forEach.call(blocks, function (b, i) {
             var setStart = i * SET_GAP;
             setTimeout(function () {
