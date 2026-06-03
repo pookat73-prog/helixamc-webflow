@@ -279,6 +279,194 @@
 })();
 
 /* ================================================================
+   SUBHEADER — 호버 / 스크롤스파이 / 클릭 시 메인 블루 밑줄
+   ================================================================
+   about.js 의 동일 패턴 이식. 서브헤더 각 탭에:
+   - 스크롤 위치에 따라 해당 섹션의 탭에 .is-active 부착 (파란 밑줄)
+   - 클릭 시 그 섹션으로 부드럽게 스크롤 (헤더 + 서브헤더 높이 보정)
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function init() {
+    var links = document.querySelectorAll('.subheader_click-area');
+    if (!links.length) return false;
+
+    /* 타깃 결정: href ID 우선, 없으면 .subheader_title 텍스트와 매칭되는
+       visible 헤딩의 가장 가까운 section. about.js 와 동일 알고리즘. */
+    function findVisibleTarget(href, linkEl) {
+      if (href && href.charAt(0) === '#' && href.length >= 2) {
+        var id = href.slice(1);
+        var all = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+        }
+      }
+      if (linkEl) {
+        var titleEl = linkEl.querySelector('.subheader_title') || linkEl;
+        var title = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
+        if (title.length >= 2) {
+          var headings = document.querySelectorAll('h1, h2, h3, h4');
+          for (var j = 0; j < headings.length; j++) {
+            var h = headings[j];
+            if (h.offsetParent === null && h.getClientRects().length === 0) continue;
+            var ht = (h.textContent || '').replace(/\s+/g, ' ').trim();
+            if (!ht) continue;
+            if (ht === title || ht.indexOf(title) !== -1 || title.indexOf(ht) !== -1) {
+              return h.closest('section') || h.closest('[class*="section"]') || h;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    var entries = [];
+    links.forEach(function (a) {
+      var target = findVisibleTarget(a.getAttribute('href') || '', a);
+      if (target) entries.push({ link: a, target: target });
+    });
+    if (!entries.length) return false;
+
+    function setActive(link) {
+      links.forEach(function (l) { l.classList.remove('is-active', 'w--current'); });
+      if (link) link.classList.add('is-active');
+    }
+
+    var clickedAt = 0;
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href') || '';
+        if (href.charAt(0) !== '#') return;
+        var t = findVisibleTarget(href, a);
+        if (!t) return;
+        e.preventDefault();
+        setActive(a);
+        clickedAt = Date.now();
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var sub = document.querySelector('.subheader');
+        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        if (history.replaceState) history.replaceState(null, '', href);
+      });
+    });
+
+    /* 스크롤스파이 — spy line(헤더+서브헤더+16px)을 품는 섹션을 활성화.
+       품는 섹션 없으면 line 까지 가장 가까운 섹션. */
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        if (Date.now() - clickedAt < 700) return;
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var sub = document.querySelector('.subheader');
+        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var line = headerH + subH + 16;
+        var straddle = null;
+        var closest = null;
+        var closestDist = Infinity;
+        for (var i = 0; i < entries.length; i++) {
+          var rect = entries[i].target.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) continue;
+          if (rect.top <= line && rect.bottom > line) straddle = entries[i].link;
+          var dist;
+          if (rect.bottom < line) dist = line - rect.bottom;
+          else if (rect.top > line) dist = rect.top - line;
+          else dist = 0;
+          if (dist < closestDist) { closestDist = dist; closest = entries[i].link; }
+        }
+        var current = straddle || closest;
+        if (!current && window.pageYOffset < 50) current = entries[0].link;
+        if (current && !current.classList.contains('is-active')) setActive(current);
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+
+    /* 폰트 크기 통일 — "인터벤션 센터" 처럼 일부 탭만 더 작게 박힌 케이스.
+       CSS inherit 가 Webflow 의 강한 선언을 못 이기는 환경 대응: 런타임에서
+       모든 .subheader_title 의 computed font-size 중 최대값을 모든 탭에
+       인라인으로 강제. (resize 시 vw 단위로 재계산되도록 다시 적용) */
+    function normalizeFonts() {
+      /* "인터벤션 센터" 탭은 .subheader_click-area 클래스가 없어 links 에
+         안 잡힘. → section.subheader 안 모든 텍스트 요소를 통째로 스캔.
+         leaf 텍스트 요소(자식 텍스트 노드를 직접 가진 요소)의 max
+         computed font-size 측정 → 같은 영역의 모든 요소에 인라인 강제. */
+      var subRoot = document.querySelector('section.subheader');
+      if (!subRoot) return;
+
+      function leafTextEls(root) {
+        var out = [];
+        var walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null);
+        var n = walker.currentNode;
+        while (n) {
+          var hasText = false;
+          for (var i = 0; i < n.childNodes.length; i++) {
+            var c = n.childNodes[i];
+            if (c.nodeType === 3 && c.nodeValue && c.nodeValue.trim()) { hasText = true; break; }
+          }
+          if (hasText) out.push(n);
+          n = walker.nextNode();
+        }
+        return out;
+      }
+
+      var allEls = [].slice.call(subRoot.querySelectorAll('*'));
+      /* 1) 이전 인라인 제거 후 재측정 (resize/vw 대응) */
+      allEls.forEach(function (el) { el.style.fontSize = ''; });
+
+      /* 2) 진짜 텍스트 leaf 의 최대 폰트 크기 */
+      var maxPx = 0;
+      leafTextEls(subRoot).forEach(function (el) {
+        var px = parseFloat(getComputedStyle(el).fontSize) || 0;
+        if (px > maxPx) maxPx = px;
+      });
+
+      /* 3) 서브헤더 안 모든 요소에 인라인 !important 강제 */
+      if (maxPx > 0) {
+        allEls.forEach(function (el) {
+          el.style.setProperty('font-size', maxPx + 'px', 'important');
+        });
+      }
+    }
+    normalizeFonts();
+    /* 폰트 로드/리사이즈 대응 */
+    window.addEventListener('resize', function () {
+      /* rAF 로 컴포지트 후 측정 */
+      requestAnimationFrame(normalizeFonts);
+    });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(normalizeFonts).catch(function () {});
+    }
+    return true;
+  }
+
+  function start() {
+    if (init()) return;
+    /* CMS/IX2 가 늦게 DOM 을 채우는 케이스 대비 재시도 */
+    var tries = 0;
+    var t = setInterval(function () {
+      if (init() || ++tries >= 25) clearInterval(t);
+    }, 200);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
    HEADER / SUBHEADER 높이 → --header-h / --subheader-h CSS 변수 동기화
    section.subheader top 을 실제 헤더 높이에 맞춰 빈틈 제거.
    미니 분과 헤더 (아래 LOCKED) 의 top 위치 계산에도 사용됨.
@@ -324,7 +512,7 @@
 (function () {
   'use strict';
 
-  var MQ = '(min-width: 480px)';
+  var MQ_DESKTOP = '(min-width: 480px)';
   var mini = null;
   var miniLinks = [];
   var origLinks = [];
@@ -332,36 +520,51 @@
   var origMo = null;
   var visible = false;
   var rafPending = false;
+  var nextSectionEl = null;
+  var mode = null; /* 'desktop' | 'mobile' — 현재 빌드된 미니 헤더 형태 */
+  var miniPanel = null; /* 모바일 드롭다운 패널 */
+  var miniLabel = null; /* 모바일 버튼의 활성 분과명 텍스트 노드 */
 
-  function isEligible() { return window.matchMedia(MQ).matches; }
+  function viewportMode() {
+    return window.matchMedia(MQ_DESKTOP).matches ? 'desktop' : 'mobile';
+  }
+  function isEligible() { return true; /* 모바일도 이제 지원 (드롭다운 형태) */ }
+
+  /* 원본 .w-tab-menu 다음에 오는 서브헤더 앵커의 타깃 섹션을 찾음.
+     서브헤더 anchor link 들의 href=#id 를 순회: origMenu 가 속한 섹션 다음
+     순서의 anchor 가 가리키는 요소가 곧 "다음 섹션". 못 찾으면 null. */
+  function detectNextSection() {
+    if (!origMenu) return null;
+    var anchors = [].slice.call(document.querySelectorAll('.subheader_click-area[href^="#"]'));
+    if (!anchors.length) return null;
+    var targets = anchors.map(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      if (!id) return null;
+      var list = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+      for (var i = 0; i < list.length; i++) {
+        var el = list[i];
+        if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+      }
+      return list[0] || null;
+    });
+    /* origMenu 의 absolute top 기준, 그보다 더 아래에 있는 첫 타깃 = 다음 섹션 */
+    var menuTop = origMenu.getBoundingClientRect().top + window.pageYOffset;
+    var best = null;
+    var bestTop = Infinity;
+    targets.forEach(function (t) {
+      if (!t) return;
+      var top = t.getBoundingClientRect().top + window.pageYOffset;
+      if (top > menuTop + 4 && top < bestTop) { best = t; bestTop = top; }
+    });
+    return best;
+  }
 
   function buildMini() {
     if (mini || !origMenu) return;
-    var clone = origMenu.cloneNode(true);
-    clone.className = (clone.className || '') + ' helix-mini-tabmenu';
-    clone.setAttribute('role', 'tablist');
-    clone.setAttribute('aria-label', '의료진 분과 (미니)');
-    /* Webflow Tabs 가 클론을 자기 인스턴스로 오인하지 않도록 식별 attribute 제거 */
-    clone.removeAttribute('data-w-id');
-    clone.querySelectorAll('[data-w-tab]').forEach(function (el) {
-      el.removeAttribute('data-w-id');
-      el.id = ''; /* 원본과 id 충돌 방지 */
-      el.removeAttribute('aria-controls');
-      el.setAttribute('tabindex', '-1');
-    });
-    document.body.appendChild(clone);
-    mini = clone;
-    miniLinks = [].slice.call(clone.querySelectorAll('.w-tab-link'));
     origLinks = [].slice.call(origMenu.querySelectorAll('.w-tab-link'));
-
-    miniLinks.forEach(function (mLink, i) {
-      mLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var orig = origLinks[i];
-        if (orig) orig.click();
-      });
-    });
+    mode = viewportMode();
+    if (mode === 'desktop') buildDesktopMini();
+    else buildMobileMini();
 
     /* 원본 활성 탭 변화 → 미니에 동기화 */
     origMo = new MutationObserver(syncActive);
@@ -371,42 +574,196 @@
     syncActive();
   }
 
-  function syncActive() {
-    if (!miniLinks.length) return;
-    origLinks.forEach(function (o, i) {
-      var m = miniLinks[i];
-      if (!m) return;
-      var on = o.classList.contains('w--current');
-      m.classList.toggle('w--current', on);
-      m.setAttribute('aria-selected', on ? 'true' : 'false');
+  function buildDesktopMini() {
+    var clone = origMenu.cloneNode(true);
+    clone.className = (clone.className || '') + ' helix-mini-tabmenu';
+    clone.setAttribute('role', 'tablist');
+    clone.setAttribute('aria-label', '의료진 분과 (미니)');
+    clone.removeAttribute('data-w-id');
+    clone.querySelectorAll('[data-w-tab]').forEach(function (el) {
+      el.removeAttribute('data-w-id');
+      el.id = '';
+      el.removeAttribute('aria-controls');
+      el.setAttribute('tabindex', '-1');
     });
+    document.body.appendChild(clone);
+    mini = clone;
+    miniLinks = [].slice.call(clone.querySelectorAll('.w-tab-link'));
+
+    miniLinks.forEach(function (mLink, i) {
+      mLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var orig = origLinks[i];
+        if (orig) orig.click();
+      });
+    });
+  }
+
+  function buildMobileMini() {
+    /* 모바일: 작은 fixed 버튼 + 누르면 펼쳐지는 드롭다운 패널.
+       버튼은 현재 활성 분과명 + ▼ 표시. */
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'helix-mini-tabselect';
+    btn.setAttribute('aria-haspopup', 'listbox');
+    btn.setAttribute('aria-expanded', 'false');
+    var labelSpan = document.createElement('span');
+    labelSpan.className = 'helix-mini-tabselect_label';
+    labelSpan.textContent = '분과 선택';
+    var caret = document.createElement('span');
+    caret.className = 'helix-mini-tabselect_caret';
+    caret.setAttribute('aria-hidden', 'true');
+    caret.textContent = '▾';
+    btn.appendChild(labelSpan);
+    btn.appendChild(caret);
+
+    var panel = document.createElement('div');
+    panel.className = 'helix-mini-tabpanel';
+    panel.setAttribute('role', 'listbox');
+    panel.setAttribute('aria-label', '의료진 분과');
+
+    miniLinks = [];
+    origLinks.forEach(function (orig, i) {
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'helix-mini-tabpanel_item';
+      item.setAttribute('role', 'option');
+      item.textContent = (orig.textContent || '').trim();
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        orig.click();
+        closePanel();
+      });
+      panel.appendChild(item);
+      miniLinks.push(item);
+    });
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var open = btn.classList.toggle('is-open');
+      panel.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    /* 외부 탭 시 닫힘, 스크롤/리사이즈에도 닫힘 */
+    document.addEventListener('click', function (e) {
+      if (!btn.classList.contains('is-open')) return;
+      if (btn.contains(e.target) || panel.contains(e.target)) return;
+      closePanel();
+    }, true);
+    window.addEventListener('scroll', closePanel, { passive: true });
+
+    document.body.appendChild(btn);
+    document.body.appendChild(panel);
+    mini = btn;
+    miniPanel = panel;
+    miniLabel = labelSpan;
+  }
+
+  function closePanel() {
+    if (!mini || mode !== 'mobile') return;
+    mini.classList.remove('is-open');
+    if (miniPanel) miniPanel.classList.remove('is-open');
+    mini.setAttribute('aria-expanded', 'false');
+  }
+
+  function syncActive() {
+    if (!origLinks.length) return;
+    var activeIdx = -1;
+    origLinks.forEach(function (o, i) {
+      if (o.classList.contains('w--current')) activeIdx = i;
+    });
+    if (mode === 'desktop') {
+      if (!miniLinks.length) return;
+      origLinks.forEach(function (o, i) {
+        var m = miniLinks[i];
+        if (!m) return;
+        var on = i === activeIdx;
+        m.classList.toggle('w--current', on);
+        m.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    } else if (mode === 'mobile') {
+      if (miniLabel && activeIdx >= 0) {
+        var t = (origLinks[activeIdx].textContent || '').trim();
+        if (t) miniLabel.textContent = t;
+      }
+      miniLinks.forEach(function (item, i) {
+        var on = i === activeIdx;
+        item.classList.toggle('is-active', on);
+        item.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
   }
 
   function destroyMini() {
     if (origMo) { origMo.disconnect(); origMo = null; }
     if (mini && mini.parentNode) mini.parentNode.removeChild(mini);
+    if (miniPanel && miniPanel.parentNode) miniPanel.parentNode.removeChild(miniPanel);
     mini = null;
+    miniPanel = null;
+    miniLabel = null;
     miniLinks = [];
     origLinks = [];
     visible = false;
+    mode = null;
   }
 
   function setVisible(on) {
     if (!mini || visible === on) return;
     visible = on;
     mini.classList.toggle('is-visible', on);
+    if (miniPanel) {
+      miniPanel.classList.toggle('is-visible', on);
+      if (!on) closePanel();
+    }
+  }
+
+  function findVisibleOrigMenu() {
+    var nodes = document.querySelectorAll('.w-tabs .w-tab-menu');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+    }
+    return nodes.length ? nodes[0] : null;
   }
 
   function check() {
     rafPending = false;
+    /* 데스크탑/모바일 듀얼 마크업: viewport 바뀌면 보이는 쪽이 달라짐 →
+       매 check 마다 visible 한 w-tab-menu 재확인. 다른 것으로 바뀌면 미니 재빌드. */
+    var current = findVisibleOrigMenu();
+    if (current && current !== origMenu) {
+      if (mini) destroyMini();
+      origMenu = current;
+      nextSectionEl = detectNextSection() || nextSectionEl;
+    }
     if (!origMenu) return;
-    if (!isEligible()) { setVisible(false); return; }
+    /* viewport 모드가 바뀌면 미니 재빌드 */
+    if (mini && mode !== viewportMode()) destroyMini();
     if (!mini) buildMini();
     var rect = origMenu.getBoundingClientRect();
+    /* 숨겨진 듀얼 마크업 (display:none 등) → rect 0,0 으로 false-positive
+       방지. 보이지 않으면 미니 숨김. */
+    if (rect.width === 0 && rect.height === 0) { setVisible(false); return; }
     var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 56;
     var subH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--subheader-h')) || 0;
-    /* 원본 탭 메뉴의 bottom 이 (헤더 + 서브헤더) 아래로 사라지는 순간 미니 등장 */
-    setVisible(rect.bottom < headerH + subH);
+    var line = headerH + subH;
+
+    /* 의료진 안내 섹션 안에 있을 때만 미니 표시. 경계 판단:
+       - 원본 탭이 line 위로 사라졌고 (rect.bottom < line) AND
+       - "다음 섹션의 top" 이 아직 line 아래일 때.
+       다음 섹션 = 서브헤더 앵커들 중 원본 탭 다음 순서의 앵커가 가리키는 섹션.
+       (closest('section') 은 탭 래퍼 자체에 잡혀 너무 일찍 사라지는 케이스
+        대응.) 다음 앵커 못 찾으면 끝까지 표시. */
+    var beforeNext = true;
+    if (nextSectionEl) {
+      var nRect = nextSectionEl.getBoundingClientRect();
+      beforeNext = nRect.top > line;
+    }
+    setVisible(rect.bottom < line && beforeNext);
   }
 
   function onScroll() {
@@ -416,19 +773,21 @@
   }
 
   function onResize() {
-    if (!isEligible()) {
-      if (mini) destroyMini();
-      return;
-    }
+    if (mini && mode !== viewportMode()) destroyMini();
+    /* nextSection 도 재측정 (DOM 위치 변경 가능) */
+    nextSectionEl = detectNextSection() || nextSectionEl;
     onScroll();
   }
 
   function init() {
-    origMenu = document.querySelector('.w-tabs .w-tab-menu');
+    origMenu = findVisibleOrigMenu();
     if (!origMenu) return false;
-    if (isEligible()) buildMini();
+    nextSectionEl = detectNextSection();
+    /* 서브헤더/CMS 가 늦게 채워질 수 있어 한 번 더 재시도 */
+    if (!nextSectionEl) setTimeout(function () { nextSectionEl = detectNextSection(); }, 600);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
+    window.addEventListener('load', function () { nextSectionEl = detectNextSection() || nextSectionEl; });
     onScroll();
     return true;
   }

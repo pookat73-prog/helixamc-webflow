@@ -123,6 +123,44 @@ section.subheader {
 }
 
 /* ================================================================
+   서브헤더 탭 — 호버 / 스크롤스파이 / 클릭 시 메인 블루 밑줄
+   ================================================================
+   about.css 의 동일 패턴 이식 (about 페이지에서만 로드되어 seocho 에선
+   적용 안 되던 것). seocho.js 가 .is-active 토글로 활성 탭 지정.
+   ================================================================ */
+.subheader_click-area {
+  text-decoration: none !important;
+}
+.subheader_click-area .subheader_title {
+  position: relative;
+  display: inline-block;
+  transition: color 0.2s ease;
+}
+.subheader_click-area .subheader_title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 2px;
+  background: #0075d6;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.subheader_click-area:hover .subheader_title::after,
+.subheader_click-area.is-active .subheader_title::after,
+.subheader_click-area.w--current .subheader_title::after {
+  transform: scaleX(1);
+}
+
+/* 서브헤더 탭 폰트 크기 통일은 seocho.js 의 normalizeFonts() 가 처리.
+   각 탭의 자연 폰트 크기 중 최댓값을 인라인 !important 로 모든 탭에 부여.
+   CSS inherit 만으로는 Webflow 의 강한 선언을 못 이기는 환경 대응. */
+
+
+/* ================================================================
    의료진 분과 미니 헤더 (.helix-mini-tabmenu)
    ================================================================
    body 직속 fixed. 서브헤더 바로 밑(--header-h + --subheader-h)에서
@@ -136,17 +174,24 @@ section.subheader {
   .helix-mini-tabmenu {
     display: inline-flex !important;
     position: fixed !important;
-    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px)) !important;
+    /* 숨김 위치 (translateY(-100%) 만으로 자기 키만큼만 위로) 가 헤더 바로
+       밑 빈 공간에 노출되는 회귀 차단:
+       - top: 0 으로 두고
+       - hidden: translateY(-100%) → viewport 위로 완전히 사라짐
+       - visible: translateY(서브헤더 바닥 위치) → 정확한 위치
+       서브헤더 바닥 위로 2px 끼워 서브헤더 뒤로 윗 가장자리 숨김 (z 998 < 999). */
+    top: 0 !important;
     left: 50% !important;
-    z-index: 998 !important; /* 서브헤더(999) 바로 밑 — 슬라이드 시 가려지며 등장 */
+    z-index: 998 !important;
     width: auto !important;
     max-width: calc(100vw - 24px);
     padding: 0.35vw 0.9vw !important;
     background: #ffffff;
     border-radius: 0 0 14px 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    /* 외곽선 (그림자) 얇고 부드럽게 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
     /* 위는 평평, 아래 좌·우만 둥근 인덱스 탭 형태 — 위 가장자리는 서브헤더에 붙음 */
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -120%);
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
     pointer-events: none;
@@ -156,7 +201,7 @@ section.subheader {
     gap: 0;
   }
   .helix-mini-tabmenu.is-visible {
-    transform: translate(-50%, 0);
+    transform: translate(-50%, calc(var(--header-h, 56px) + var(--subheader-h, 0px) - 2px));
     pointer-events: auto;
   }
   /* 컴팩트 사이즈 — 원본보다 작은 padding/폰트.
@@ -172,6 +217,107 @@ section.subheader {
   /* 미니 안 구분선도 조금 짧게 */
   .helix-mini-tabmenu .helix-tab-sep {
     height: 0.9em;
+  }
+}
+
+/* ================================================================
+   의료진 분과 미니 헤더 — 모바일 (드롭다운 / 셀렉트 버튼)
+   ================================================================
+   세로 모바일(<480px): 작은 fixed pill 버튼 (활성 분과명 ▾).
+   탭하면 그 아래 패널이 펼쳐져 모든 분과 표시. 한 개 선택 → 닫힘.
+   ================================================================ */
+@media (max-width: 479px) {
+  .helix-mini-tabselect {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: fixed;
+    /* 같은 회귀 차단 (데스크탑 미니와 동일 패턴): top:0 + transform 으로
+       위치/숨김 둘 다 통제. 숨김 시 viewport 위로 완전히 나감. */
+    top: 0;
+    left: 50%;
+    z-index: 998;
+    padding: 7px 14px 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d1117;
+    background: #ffffff;
+    border: 0.5px solid #e3e9f0;
+    border-radius: 999px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transform: translate(-50%, -200%);
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+    pointer-events: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .helix-mini-tabselect.is-visible {
+    transform: translate(-50%, calc(var(--header-h, 56px) + var(--subheader-h, 0px) + 8px));
+    pointer-events: auto;
+  }
+  .helix-mini-tabselect_caret {
+    display: inline-block;
+    font-size: 10px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+  }
+  .helix-mini-tabselect.is-open .helix-mini-tabselect_caret {
+    transform: rotate(180deg);
+  }
+
+  .helix-mini-tabpanel {
+    position: fixed;
+    /* 버튼 바로 아래 8px gap */
+    top: calc(var(--header-h, 56px) + var(--subheader-h, 0px) + 8px + 40px);
+    left: 50%;
+    z-index: 998;
+    min-width: 180px;
+    max-width: calc(100vw - 24px);
+    padding: 4px 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    transform: translate(-50%, -8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: hidden;
+  }
+  .helix-mini-tabpanel.is-visible.is-open {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
+  .helix-mini-tabpanel_item {
+    display: block;
+    width: 100%;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #0d1117;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .helix-mini-tabpanel_item.is-active {
+    color: #0075d6;
+    background: #eef6ff;
+    font-weight: 700;
+  }
+  .helix-mini-tabpanel_item:active {
+    background: #e1efff;
+  }
+}
+
+/* 데스크탑에서는 모바일 미니 요소 숨김 */
+@media (min-width: 480px) {
+  .helix-mini-tabselect,
+  .helix-mini-tabpanel {
+    display: none !important;
   }
 }
 
