@@ -25,7 +25,12 @@
       { type: 'css', path: 'home/global/hamburger.css' },
       { type: 'css', path: 'home/global/coming-soon.css' },
       { type: 'js',  path: 'home/global/coming-soon.js' },
-      { type: 'js',  path: 'home/global/hamburger.js' }
+      { type: 'js',  path: 'home/global/hamburger.js' },
+      /* 인증 카드 "+" 상세보기 모달 — about/bootstrap.js@main 이 stale 캐시거나
+         FILES 에 등록 안 됐을 때 폴백 로딩 (main 미적용 환경에서도 staging 테스트
+         가능하게). 이미 로드돼 있으면 querySelector 가드로 스킵. */
+      { type: 'css', path: 'about/cert-modal/modal.css' },
+      { type: 'js',  path: 'about/cert-modal/modal.js' }
     ];
     assets.forEach(function (a) {
       var url = BASE + a.path + '?t=' + t;
