@@ -487,11 +487,18 @@
   'use strict';
 
   function sync() {
-    var hEl = document.querySelector('header.header, header, .w-nav, nav');
-    if (hEl) {
-      var h = hEl.getBoundingClientRect().height;
-      if (h > 0) document.documentElement.style.setProperty('--header-h', h + 'px');
+    /* 데스크탑 헤더 (header.header) 와 모바일 헤더 (header.header_mobile)
+       가 둘 다 DOM 에 있고 미디어쿼리로 한쪽만 보임. 보이지 않는 쪽은 높이
+       0 으로 잡히므로, 모든 후보 중 높이가 가장 큰(=현재 보이는) 것을 채택. */
+    var candidates = document.querySelectorAll(
+      'header.header, header.header_mobile, header, .w-nav, nav[role="banner"]'
+    );
+    var maxH = 0;
+    for (var i = 0; i < candidates.length; i++) {
+      var rect = candidates[i].getBoundingClientRect();
+      if (rect.top <= 1 && rect.height > maxH) maxH = rect.height;
     }
+    if (maxH > 0) document.documentElement.style.setProperty('--header-h', maxH + 'px');
     var sEl = document.querySelector('section.subheader');
     if (sEl) {
       var sh = sEl.getBoundingClientRect().height;
