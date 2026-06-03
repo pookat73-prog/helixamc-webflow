@@ -1815,16 +1815,15 @@
         return true;
       }
 
-      /* Draw 트리거: 라인 시작 요소(.div-block-163) 가 뷰포트 바닥에서
-         등장 (상단 80% 도달) → 사용자가 섹션 보이기 시작할 때 라인이 그려짐.
-         이전엔 official-font 가 상단 20% 도달해야 발화 → erase 가 먼저
-         발화해버리는 race 발생. */
-      var drawTrigger = top;
+      /* Draw 트리거: official-font 가 뷰포트 상단 60% 도달 시점
+         (이전엔 상단 20% 도달까지 기다려서 erase 가 먼저 발화하는 race 발생).
+         drawTrigger 못 찾으면 top 으로 폴백. */
+      var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
       var ioDraw = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
         ioDraw.disconnect();
         historyGate.onOpen(drawLine);
-      }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
+      }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
       ioDraw.observe(drawTrigger);
 
       /* Erase: 출발 요소(.div-block-163) 가 뷰포트에서 완전히 사라지는 순간.
