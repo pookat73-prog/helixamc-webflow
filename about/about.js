@@ -1748,7 +1748,8 @@
       var sx      = window.scrollX, sy = window.scrollY;
       var startX  = topR.left + topR.width / 2 + sx;
       var startY  = topR.bottom + sy + 8;                  /* 최초 문단 바로 아래 */
-      var endX    = botR.left + botR.width / 2 + sx;
+      /* 끝점 X 는 시작점과 동일 — 두 앵커가 가로로 어긋나도 라인은 수직 */
+      var endX    = startX;
       var endY    = botR.top  + sy - 8;                    /* sub-font 위에서 끝 */
 
       if (endY - startY < 50) return false;                /* 너무 가까우면 skip */
@@ -1822,7 +1823,10 @@
       var ioDraw = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
         ioDraw.disconnect();
-        historyGate.onOpen(drawLine);
+        /* historyGate 의존성 제거 — 게이트가 닫혀 있어 큐에만 들어가고
+           실행 안 되는 케이스 차단. draw 트리거 자체가 충분히 늦은 시점
+           (제목이 상단 60% 도달) 이라 본문 페이드인과 시각적 충돌 없음. */
+        drawLine();
       }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
       ioDraw.observe(drawTrigger);
 
