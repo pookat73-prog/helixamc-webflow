@@ -1484,22 +1484,27 @@
       /* double rAF: hide 상태가 1프레임 페인트 된 후 reveal 해야 transition 발화 */
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
+          /* 세트 단위 stagger — 세트 i = 흰박스 i + 인용구 i.
+             세트 간격 150ms (기존 흰박스 stagger 동일).
+             세트 안: 흰박스 fire → +300ms 후 인용구 fire. */
+          var SET_GAP = 150;
+          var QUOTE_DELAY = 300;
           Array.prototype.forEach.call(blocks, function (b, i) {
+            var setStart = i * SET_GAP;
             setTimeout(function () {
               /* 인라인 제거 → Webflow 네이티브 흰배경/그림자 자동 복귀 */
               b.style.removeProperty('background-color');
               b.style.removeProperty('background-image');
               b.style.removeProperty('box-shadow');
-            }, i * 150);
+            }, setStart);
+            var quote = subBlocks[i];
+            if (quote) {
+              setTimeout(function () {
+                quote.style.removeProperty('opacity');
+                quote.style.removeProperty('transform');
+              }, setStart + QUOTE_DELAY);
+            }
           });
-          /* div-block-178 — 흰 블록 인터 완료 후 시작.
-             흰 블록 stagger 마지막(2*150=300ms) + transition 1.2s = 1500ms. */
-          setTimeout(function () {
-            Array.prototype.forEach.call(subBlocks, function (b) {
-              b.style.removeProperty('opacity');
-              b.style.removeProperty('transform');
-            });
-          }, 1500);
         });
       });
     }
