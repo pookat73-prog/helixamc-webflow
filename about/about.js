@@ -1823,26 +1823,12 @@
       var ioDraw = new IntersectionObserver(function (entries) {
         if (!entries[0].isIntersecting) return;
         ioDraw.disconnect();
-        /* historyGate 의존성 제거 — 게이트가 닫혀 있어 큐에만 들어가고
-           실행 안 되는 케이스 차단. draw 트리거 자체가 충분히 늦은 시점
-           (제목이 상단 60% 도달) 이라 본문 페이드인과 시각적 충돌 없음. */
         drawLine();
       }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
       ioDraw.observe(drawTrigger);
-
-      /* Erase: 출발 요소(.div-block-163) 가 뷰포트에서 완전히 사라지는 순간.
-         단 (1) draw 가 이미 발화했고 (2) draw 시작 후 최소 1.5s 경과 시에만.
-         그 전엔 발화해도 무시 → 이전의 draw/erase 동시 발화 깜빡 버그 차단. */
-      var wasVisible = false;
-      var ioErase = new IntersectionObserver(function (entries) {
-        var visible = entries[0].isIntersecting;
-        if (visible) { wasVisible = true; return; }
-        if (!wasVisible) return;
-        if (!drawnFired) return;
-        if (Date.now() - drawStartedAt < ERASE_MIN_HOLD_MS) return;
-        ioErase.disconnect(); eraseLine();
-      }, { threshold: 0 });
-      ioErase.observe(top);
+      /* erase 트리거 제거 — 한 번 그려지면 SVG 가 페이지 좌표에 고정되어
+         스크롤 따라 자연스럽게 보였다 안 보였다 함. 스크롤 업에서 erase 가
+         draw 중에 발화해 라인이 사라지는 버그 차단. */
 
       log('history helix line ready, len=' + len.toFixed(0));
       return true;
