@@ -721,13 +721,33 @@
     }
   }
 
+  function findVisibleOrigMenu() {
+    var nodes = document.querySelectorAll('.w-tabs .w-tab-menu');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+    }
+    return nodes.length ? nodes[0] : null;
+  }
+
   function check() {
     rafPending = false;
+    /* 데스크탑/모바일 듀얼 마크업: viewport 바뀌면 보이는 쪽이 달라짐 →
+       매 check 마다 visible 한 w-tab-menu 재확인. 다른 것으로 바뀌면 미니 재빌드. */
+    var current = findVisibleOrigMenu();
+    if (current && current !== origMenu) {
+      if (mini) destroyMini();
+      origMenu = current;
+      nextSectionEl = detectNextSection() || nextSectionEl;
+    }
     if (!origMenu) return;
     /* viewport 모드가 바뀌면 미니 재빌드 */
     if (mini && mode !== viewportMode()) destroyMini();
     if (!mini) buildMini();
     var rect = origMenu.getBoundingClientRect();
+    /* 숨겨진 듀얼 마크업 (display:none 등) → rect 0,0 으로 false-positive
+       방지. 보이지 않으면 미니 숨김. */
+    if (rect.width === 0 && rect.height === 0) { setVisible(false); return; }
     var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 56;
     var subH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--subheader-h')) || 0;
     var line = headerH + subH;
@@ -760,7 +780,7 @@
   }
 
   function init() {
-    origMenu = document.querySelector('.w-tabs .w-tab-menu');
+    origMenu = findVisibleOrigMenu();
     if (!origMenu) return false;
     nextSectionEl = detectNextSection();
     /* 서브헤더/CMS 가 늦게 채워질 수 있어 한 번 더 재시도 */
