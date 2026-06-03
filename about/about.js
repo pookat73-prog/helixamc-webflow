@@ -1741,7 +1741,10 @@
     function build() {
       var top    = document.querySelector(TOP_SEL);
       var bottom = document.querySelector(BOTTOM_SEL);
-      if (!top || !bottom) return false;
+      if (!top || !bottom) {
+        try { console.log('[helix-line] build skip — top=' + !!top + ' bottom=' + !!bottom); } catch (e) {}
+        return false;
+      }
 
       var topR    = top.getBoundingClientRect();
       var botR    = bottom.getBoundingClientRect();
@@ -1752,7 +1755,10 @@
       var endX    = startX;
       var endY    = botR.top  + sy - 8;                    /* sub-font 위에서 끝 */
 
-      if (endY - startY < 50) return false;                /* 너무 가까우면 skip */
+      if (endY - startY < 50) {
+        try { console.log('[helix-line] build skip — too close. dy=' + (endY - startY).toFixed(0)); } catch (e) {}
+        return false;
+      }
 
       /* SVG 자체는 0×0 으로 두고 overflow:visible 로 path 만 그려지게 함.
          (큰 width/height 박으면 body 스크롤/레이아웃에 영향 가서 헤더/섹션 사이
@@ -1784,15 +1790,22 @@
       svg.appendChild(path);
       document.body.appendChild(svg);
 
+      /* getTotalLength 가 일부 브라우저에서 수직 path 에 0 반환하는
+         케이스 방어 — 0/누락 시 |endY-startY| 로 폴백. */
       var len = path.getTotalLength();
+      if (!len || !isFinite(len) || len < 1) len = Math.abs(endY - startY);
       path.style.strokeDasharray  = len;
       path.style.strokeDashoffset = len;
+      try { console.log('[helix-line] built len=' + len.toFixed(1) +
+        ' start=(' + startX.toFixed(0) + ',' + startY.toFixed(0) + ')' +
+        ' end=(' + endX.toFixed(0) + ',' + endY.toFixed(0) + ')'); } catch (e) {}
 
       var drawnFired = false, erasedFired = false, drawStartedAt = 0;
       var ERASE_MIN_HOLD_MS = 1500;
       function drawLine() {
         if (drawnFired) return; drawnFired = true;
         drawStartedAt = Date.now();
+        try { console.log('[helix-line] drawLine() running, gsap=' + !!window.gsap); } catch (e) {}
         if (!window.gsap) {
           path.style.transition = 'stroke-dashoffset 0.55s cubic-bezier(0.65,0,0.35,1)';
           path.style.strokeDashoffset = '0';
@@ -1821,11 +1834,15 @@
          drawTrigger 의 top 이 뷰포트 상단 60% 안으로 들어오면 draw.
          erase 는 없음 — 한 번 그려지면 페이지 좌표 고정 유지. */
       var drawTrigger = document.querySelector(DRAW_TRIGGER_SEL) || top;
+      try { console.log('[helix-line] trigger=' +
+        (drawTrigger === top ? 'top-fallback' : DRAW_TRIGGER_SEL)); } catch (e) {}
       function checkDraw() {
         if (drawnFired) return;
         var rect = drawTrigger.getBoundingClientRect();
         var vh = window.innerHeight || document.documentElement.clientHeight;
         if (rect.top < vh * 0.6 && rect.bottom > 0) {
+          try { console.log('[helix-line] draw fired at rect.top=' +
+            rect.top.toFixed(0) + ' vh=' + vh); } catch (e) {}
           window.removeEventListener('scroll', checkDraw);
           drawLine();
         }
