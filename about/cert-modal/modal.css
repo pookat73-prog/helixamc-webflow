@@ -65,11 +65,13 @@ html.helix-cert-modal-open body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* 가져온 섹션이 자체 너비/마진을 갖고 있을 수 있어, 모달 안에선 풀폭으로 */
+/* 가져온 섹션은 viewport 기준 vw/vh 단위로 디자인됨 → 모달 폭에 안 따라 작아져
+   답답해 보임. zoom 으로 자손 모두 강제 축소. */
 .helix-cert-modal__slide > section {
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 !important;
+  zoom: 0.6;
 }
 
 .helix-cert-modal__close {
