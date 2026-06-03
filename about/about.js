@@ -1726,95 +1726,6 @@
     }, 300);
   }
 
-  /* ── History Helix Line ─────────────────────────────────────────
-     "최초의 길" 정중앙 → .about_history_title_sub-font 위까지
-     사인파 헬릭스 라인을 빠르게 draw + erase.
-     ─────────────────────────────────────────────────────────────── */
-  function initHistoryHelixLine() {
-    var TOP_SEL    = '.div-block-163';
-    var BOTTOM_SEL = '.about_history_title_sub-font';
-    /* draw 트리거는 여전히 "최초의 길" 진입 기준으로 — 시각/타이밍 분리 */
-    var DRAW_TRIGGER_SEL = '.about_history_title_official-font';
-    var COLOR      = '#0075d6';
-    var STROKE     = 0.6;
-
-    function build() {
-      var top    = document.querySelector(TOP_SEL);
-      var bottom = document.querySelector(BOTTOM_SEL);
-      if (!top || !bottom) {
-        try { console.log('[helix-line] build skip — top=' + !!top + ' bottom=' + !!bottom); } catch (e) {}
-        return false;
-      }
-
-      var topR    = top.getBoundingClientRect();
-      var botR    = bottom.getBoundingClientRect();
-      var sx      = window.scrollX, sy = window.scrollY;
-      var startX  = topR.left + topR.width / 2 + sx;
-      var startY  = topR.bottom + sy + 8;                  /* 최초 문단 바로 아래 */
-      /* 끝점 X 는 시작점과 동일 — 두 앵커가 가로로 어긋나도 라인은 수직 */
-      var endX    = startX;
-      var endY    = botR.top  + sy - 8;                    /* sub-font 위에서 끝 */
-
-      if (endY - startY < 50) {
-        try { console.log('[helix-line] build skip — too close. dy=' + (endY - startY).toFixed(0)); } catch (e) {}
-        return false;
-      }
-
-      /* SVG 자체는 0×0 으로 두고 overflow:visible 로 path 만 그려지게 함.
-         (큰 width/height 박으면 body 스크롤/레이아웃에 영향 가서 헤더/섹션 사이
-         틈새가 벌어지는 사고가 생김) */
-      var svgNS = 'http://www.w3.org/2000/svg';
-      var svg = document.createElementNS(svgNS, 'svg');
-      svg.setAttribute('xmlns', svgNS);
-      svg.style.position      = 'absolute';
-      svg.style.left          = '0';
-      svg.style.top           = '0';
-      svg.style.width         = '1px';
-      svg.style.height        = '1px';
-      svg.style.pointerEvents = 'none';
-      svg.style.zIndex        = '5';
-      svg.style.overflow      = 'visible';
-      svg.setAttribute('overflow', 'visible');
-
-      /* 직선 path */
-      var d = 'M' + startX.toFixed(1) + ',' + startY.toFixed(1) +
-              ' L' + endX.toFixed(1) + ',' + endY.toFixed(1);
-
-      var path = document.createElementNS(svgNS, 'path');
-      path.setAttribute('d', d);
-      path.setAttribute('stroke', COLOR);
-      path.setAttribute('stroke-width', String(STROKE));
-      path.setAttribute('fill', 'none');
-      path.setAttribute('stroke-linecap', 'round');
-
-      svg.appendChild(path);
-      document.body.appendChild(svg);
-
-      /* 트리거/애니메이션 제거 — 라인 즉시 표시.
-         이전엔 트리거 발화 시 0.55s 그리는 애니메이션이 도는데, 그 사이
-         사용자가 스크롤로 영역 지나쳐버려 다운에서 안 보이는 버그가 있었음.
-         이제 라인은 빌드 시점에 페이지 좌표에 그대로 그려진 상태로 고정. */
-      try {
-        var debugLen = path.getTotalLength();
-        console.log('[helix-line] built (always-on) len=' + debugLen.toFixed(1) +
-          ' start=(' + startX.toFixed(0) + ',' + startY.toFixed(0) + ')' +
-          ' end=(' + endX.toFixed(0) + ',' + endY.toFixed(0) + ')');
-      } catch (e) {}
-
-      log('history helix line ready, len=' + len.toFixed(0));
-      return true;
-    }
-
-    /* layout 안정화 후 시도 + 재시도 */
-    setTimeout(function () {
-      if (build()) return;
-      var tries = 0;
-      var iv = setInterval(function () {
-        if (build() || ++tries > 30) clearInterval(iv);
-      }, 300);
-    }, 800);
-  }
-
   /* ── 스크롤 진입 페이드인 + 스케일 ──────────────────────────────
      .about_we-are-here     — fade 0.8s + scale 2s (power2.out), 동시 시작
      .about_history_title_new — fade 1.5s + scale 1.5s (power2.inOut),
@@ -2134,7 +2045,6 @@
     initHybridQuestionReveal();
     initClearframeAlphenixReveal();
     initHistoryTimeline();
-    initHistoryHelixLine();
     initWeAreHereReveal();
     initHistoryTitleBoxFadeIn();
     initHistoryBodyGate();
