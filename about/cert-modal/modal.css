@@ -75,6 +75,13 @@ html.helix-cert-modal-open body {
 .helix-cert-modal__slide > section {
   margin: 0 !important;
   max-width: 100% !important;
+  /* 카드가 디자인보다 큰 뷰포트에선 height 540px 고정 섹션이 카드보다
+     짧아 밑에 검은 공간 발생. 섹션을 카드 가득 채우고, 마지막 자식
+     (divider+logo) 만 바닥으로 고정. 위쪽 컨텐츠는 그대로 위에 쌓임. */
+  height: 100% !important;
+}
+.helix-cert-modal__slide > section > :last-child {
+  margin-top: auto !important;
 }
 
 .helix-cert-modal__close {
