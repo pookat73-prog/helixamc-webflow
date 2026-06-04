@@ -208,24 +208,3 @@ a[href^="tel:"]:hover .home_branch-card_call-number {
   }
 }
 
-/* ============================================================
-   본문 기본 두께 400 → 500 (홈 전용)
-   - 사용자 요구: 홈에서 normal(400) 로 표시되는 글자를 모두 500 으로.
-   - body 한 줄로 상속 기반 400 다 흡수. 헤딩/버튼이 700 으로 명시한
-     건 그대로 유지 (override 안 함).
-   - Webflow Designer 가 특정 요소에 font-weight:400 을 인라인으로
-     박는 케이스까지 잡기 위해 [style*="font-weight: 400"] 도 함께.
-   ============================================================ */
-body,
-body p,
-body div,
-body span,
-body li,
-body a,
-body label {
-  font-weight: 500;
-}
-body [style*="font-weight: 400"],
-body [style*="font-weight:400"] {
-  font-weight: 500 !important;
-}
