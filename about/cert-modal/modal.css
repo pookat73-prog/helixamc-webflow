@@ -98,20 +98,21 @@ html.helix-cert-modal-open body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 48px;
-  height: 64px;
+  width: 40px;
+  height: 40px;
   border: 0;
-  border-radius: 10px;
-  background: rgba(0, 117, 214, 0.85);
-  color: #fff;
-  font-size: 30px;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  font-size: 22px;
   line-height: 1;
+  padding: 0;
   cursor: pointer;
   z-index: 10;
-  transition: background 0.2s ease, opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.15s ease;
 }
 .helix-cert-modal__nav:hover:not(:disabled) {
-  background: #0075d6;
+  transform: translateY(-50%) scale(1.15);
 }
 .helix-cert-modal__nav:disabled {
   opacity: 0.22;
