@@ -908,16 +908,3 @@ header.header {
   -webkit-mask-size: 100% 100%;
           mask-size: 100% 100%;
 }
-
-/* ============================================================
-   [시범 TEST] About 섹션 2-2 (.whiteframe_close) 본문 두께 500
-   - 사용자가 정식 vs 스테이징 비교하기 위한 테스트 범위 한정 룰.
-   - 섹션 root 한 곳에만 적용 → 자식은 상속, 명시 weight (700 등) 박힌
-     건 그대로. div/span 일괄 셀렉터 안 씀 (글자 크기 swap 회귀 방지).
-   - font-variation-settings 'wght' 500 → 가변 폰트에선 연속 보간.
-   - 만족하면 다른 섹션/페이지로 확장, 아니면 이 블록만 제거.
-   ============================================================ */
-.whiteframe_close {
-  font-weight: 500;
-  font-variation-settings: 'wght' 500;
-}

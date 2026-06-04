@@ -16,6 +16,12 @@ body {
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   font-variant-ligatures: common-ligatures;
   font-kerning: normal;
+  /* 본문 기본 두께 400 → 500 (전역). 가변 폰트면 'wght' 500 으로 연속 보간,
+     비가변 폰트면 font-weight 500 면이 있으면 그쪽, 없으면 400 그대로.
+     섹션 root 한 곳에만 적용 → 자식은 상속, 명시 weight (700 등) 박힌 건 유지.
+     div/span 일괄 셀렉터는 쓰지 않음 (글자 크기 swap 회귀 방지). */
+  font-weight: 500;
+  font-variation-settings: 'wght' 500;
 }
 /* 윈도우 Chrome 등에서도 transform 적용된 픽셀 정렬 텍스트가 흐려지지 않도록.
    transform/translate3d 가 걸린 컨테이너의 텍스트는 subpixel 위치로 떨어져
