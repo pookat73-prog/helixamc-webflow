@@ -2535,3 +2535,110 @@
   window.addEventListener('load', sync);
   sync();
 })();
+
+/* ================================================================
+   AAHA 인증 모달 — about 페이지의 AAHA 카드 "+" 클릭 시
+   /yiryojin 페이지를 iframe 으로 띄움.
+   - 3장 인증 카드 중 텍스트에 "AAHA" 포함된 카드만 활성
+   - 나머지 카드는 coming-soon 토스트 유지
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var MODAL_URL = '/yiryojin';
+  var overlayEl = null;
+  var iframeEl = null;
+  var lastFocus = null;
+
+  function buildModal() {
+    if (overlayEl) return;
+    overlayEl = document.createElement('div');
+    overlayEl.className = 'helix-cert-modal-overlay';
+    overlayEl.setAttribute('role', 'dialog');
+    overlayEl.setAttribute('aria-modal', 'true');
+    overlayEl.setAttribute('aria-label', 'AAHA 인증 상세');
+
+    var frame = document.createElement('div');
+    frame.className = 'helix-cert-modal-frame';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'helix-cert-modal-close';
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', '닫기');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', closeModal);
+
+    iframeEl = document.createElement('iframe');
+    iframeEl.className = 'helix-cert-modal-iframe';
+    iframeEl.setAttribute('title', 'AAHA 인증 상세');
+    iframeEl.setAttribute('loading', 'lazy');
+
+    frame.appendChild(closeBtn);
+    frame.appendChild(iframeEl);
+    overlayEl.appendChild(frame);
+
+    overlayEl.addEventListener('click', function (e) {
+      if (e.target === overlayEl) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlayEl.classList.contains('is-open')) {
+        closeModal();
+      }
+    });
+
+    document.body.appendChild(overlayEl);
+  }
+
+  function openModal() {
+    buildModal();
+    lastFocus = document.activeElement;
+    if (iframeEl.src.indexOf(MODAL_URL) === -1) {
+      iframeEl.src = MODAL_URL;
+    }
+    overlayEl.classList.add('is-open');
+    document.documentElement.classList.add('helix-cert-modal-locked');
+  }
+
+  function closeModal() {
+    if (!overlayEl) return;
+    overlayEl.classList.remove('is-open');
+    document.documentElement.classList.remove('helix-cert-modal-locked');
+    if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) {}
+  }
+
+  function bind() {
+    var cards = document.querySelectorAll('#cert .about_contents_box_ahha');
+    if (!cards.length) return false;
+    var found = false;
+    Array.prototype.forEach.call(cards, function (card) {
+      var txt = (card.textContent || '').toUpperCase();
+      if (txt.indexOf('AAHA') === -1) return;
+      var btn = card.querySelector('.cert-plus');
+      if (!btn || btn.__helixAahaBound) return;
+      btn.__helixAahaBound = true;
+      btn.setAttribute('data-coming-soon-exempt', '1');
+      btn.removeAttribute('data-coming-soon');
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openModal();
+      }, true);
+      found = true;
+    });
+    return found;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind() && tries > 5) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
