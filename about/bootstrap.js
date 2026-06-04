@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.2 — global top button)
+   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.4 — cache bump for cert modal)
    Webflow About 페이지 head에 한 번만 붙여두면 됨.
    항상 최신 커밋 기준으로 about.css / about.js 를 로드.
    ================================================================ */
@@ -96,6 +96,10 @@
     'home/global/hamburger.js',
     'about/about.css',
     'about/about.js',
+    /* 인증 카드 "+" 상세보기 모달 — yiryojin / yiryojin-copy / yiryojin-copy-2
+       링크 클릭 가로채서 가운데 카드 모달로 표시, 좌우 화살표로 섹션 순회 */
+    'about/cert-modal/modal.css',
+    'about/cert-modal/modal.js',
     /* 연혁 카드덱 (.just-box_card) — home/global 공유 모듈 */
     'home/global/card-stack.css',
     'home/global/card-stack.js',

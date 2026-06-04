@@ -24,22 +24,14 @@
   var DEBUG = /[?&]debug-naver=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[naver-map]'].concat([].slice.call(arguments))); }
 
-  /* 데스크탑/모바일 섹션이 각각 동일 ID/클래스 (map_naver) 를 갖는 경우가 있어
-     getElementById 는 첫 번째 (보통 데스크탑) 만 반환 → 모바일에서 숨겨진
-     데스크탑 컨테이너에 마운트되고 실제 보이는 모바일 섹션은 빈 채로 남음.
-     모든 후보를 찾아 "현재 보이는" 것만 반환. 둘 다 안 보이면 첫 번째 반환. */
+  /* 데스크탑/모바일 섹션이 각각 동일 ID/클래스 (map_naver) 를 갖는 경우가 있음.
+     초기 가시성 판단은 Webflow 반응형 CSS 적용 타이밍에 따라 잘못된 후보를
+     집어 한쪽 섹션에만 마운트되고 다른 쪽은 빈 검정으로 남는 회귀가 있었음.
+     → 가시성 판단 없이 모든 후보에 마운트. ResizeObserver 가 0→실제 사이즈
+     전환 시점에 naver resize 를 트리거하므로 어느 쪽이 보이든 타일이 그려짐. */
   function findContainers() {
     var nodes = document.querySelectorAll('#map_naver, .map_naver');
-    var visible = [];
-    for (var i = 0; i < nodes.length; i++) {
-      var el = nodes[i];
-      var cs = getComputedStyle(el);
-      if (cs.display !== 'none' && cs.visibility !== 'hidden' && el.offsetParent !== null) {
-        visible.push(el);
-      }
-    }
-    if (visible.length) return visible;
-    return nodes.length ? [nodes[0]] : [];
+    return [].slice.call(nodes);
   }
   function findContainer() {
     var list = findContainers();
@@ -135,6 +127,26 @@
 
     addDirectionsButton(container);
     log('initialized at', CLINIC.lat, CLINIC.lng);
+
+    /* 컨테이너가 처음에 0×0 이거나 미디어쿼리로 늦게 보이는 경우, naver
+       지도는 자동으로 재측정하지 않아 타일이 영영 안 그려짐 (검정 박스).
+       ResizeObserver 로 사이즈 변화 시점에 강제 resize 트리거. */
+    if (typeof ResizeObserver !== 'undefined') {
+      var lastW = container.offsetWidth;
+      var lastH = container.offsetHeight;
+      var ro = new ResizeObserver(function () {
+        var w = container.offsetWidth, h = container.offsetHeight;
+        if (w !== lastW || h !== lastH) {
+          lastW = w; lastH = h;
+          if (w > 0 && h > 0) {
+            naver.maps.Event.trigger(map, 'resize');
+            map.setCenter(center);
+            log('resize triggered', w + 'x' + h);
+          }
+        }
+      });
+      ro.observe(container);
+    }
     /* 핀은 위 CLINIC.lat/lng 정확 좌표에 고정.
        (이전의 주소 재지오코딩 덮어쓰기는 핀을 라벨에서 밀어내 제거) */
   }
@@ -475,11 +487,18 @@
   'use strict';
 
   function sync() {
-    var hEl = document.querySelector('header.header, header, .w-nav, nav');
-    if (hEl) {
-      var h = hEl.getBoundingClientRect().height;
-      if (h > 0) document.documentElement.style.setProperty('--header-h', h + 'px');
+    /* 데스크탑 헤더 (header.header) 와 모바일 헤더 (header.header_mobile)
+       가 둘 다 DOM 에 있고 미디어쿼리로 한쪽만 보임. 보이지 않는 쪽은 높이
+       0 으로 잡히므로, 모든 후보 중 높이가 가장 큰(=현재 보이는) 것을 채택. */
+    var candidates = document.querySelectorAll(
+      'header.header, header.header_mobile, header, .w-nav, nav[role="banner"]'
+    );
+    var maxH = 0;
+    for (var i = 0; i < candidates.length; i++) {
+      var rect = candidates[i].getBoundingClientRect();
+      if (rect.top <= 1 && rect.height > maxH) maxH = rect.height;
     }
+    if (maxH > 0) document.documentElement.style.setProperty('--header-h', maxH + 'px');
     var sEl = document.querySelector('section.subheader');
     if (sEl) {
       var sh = sEl.getBoundingClientRect().height;
