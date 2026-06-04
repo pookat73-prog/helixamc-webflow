@@ -34,9 +34,14 @@ html.helix-cert-modal-open body {
 
 .helix-cert-modal__card {
   position: relative;
-  /* 납작한 가로 직사각형 — 가로:세로 ≈ 16:9 */
-  width: min(86vw, 960px);
-  height: min(58vh, 540px);
+  /* 카드도 섹션 안 vw 폰트와 함께 뷰포트 비례로 스케일.
+     디자인 기준 — Webflow 캔버스 ~1280px 뷰포트에서 섹션 960 wide → 75vw.
+     aspect-ratio 로 16:9 잠금 → 카드 안 모든 vw 단위가 같은 비율로 함께
+     커져서 줄바꿈 위치/패딩 비율이 어느 뷰포트에서나 디자인과 동일.
+     세로가 부족한 환경은 max-height 로 보호 (aspect-ratio 가 가로도 함께 조절). */
+  width: 75vw;
+  aspect-ratio: 960 / 540;
+  max-height: 96vh;
   background: #0d1117;
   border-radius: 16px;
   overflow: hidden;
@@ -70,6 +75,13 @@ html.helix-cert-modal-open body {
 .helix-cert-modal__slide > section {
   margin: 0 !important;
   max-width: 100% !important;
+  /* 카드가 디자인보다 큰 뷰포트에선 height 540px 고정 섹션이 카드보다
+     짧아 밑에 검은 공간 발생. 섹션을 카드 가득 채우고, 마지막 자식
+     (divider+logo) 만 바닥으로 고정. 위쪽 컨텐츠는 그대로 위에 쌓임. */
+  height: 100% !important;
+}
+.helix-cert-modal__slide > section > :last-child {
+  margin-top: auto !important;
 }
 
 .helix-cert-modal__close {
@@ -96,20 +108,21 @@ html.helix-cert-modal-open body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 48px;
-  height: 64px;
+  width: 40px;
+  height: 40px;
   border: 0;
-  border-radius: 10px;
-  background: rgba(0, 117, 214, 0.85);
-  color: #fff;
-  font-size: 30px;
+  border-radius: 0;
+  background: transparent;
+  color: #000;
+  font-size: 22px;
   line-height: 1;
+  padding: 0;
   cursor: pointer;
   z-index: 10;
-  transition: background 0.2s ease, opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.15s ease;
 }
 .helix-cert-modal__nav:hover:not(:disabled) {
-  background: #0075d6;
+  transform: translateY(-50%) scale(1.15);
 }
 .helix-cert-modal__nav:disabled {
   opacity: 0.22;
