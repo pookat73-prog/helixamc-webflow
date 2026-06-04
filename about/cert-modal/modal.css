@@ -34,9 +34,12 @@ html.helix-cert-modal-open body {
 
 .helix-cert-modal__card {
   position: relative;
-  /* 납작한 가로 직사각형 — 가로:세로 ≈ 16:9 */
-  width: min(86vw, 960px);
-  height: min(58vh, 540px);
+  /* 섹션(.cert-modal-frame) 과 1:1 — 960×540 (= 16:9).
+     가로만 뷰포트 클램프, 세로는 aspect-ratio 로 파생 → 비율 항상 유지.
+     세로가 매우 짧은 환경은 max-height 로 마지막 보호. */
+  width: min(92vw, 960px);
+  aspect-ratio: 960 / 540;
+  max-height: 92vh;
   background: #0d1117;
   border-radius: 16px;
   overflow: hidden;
