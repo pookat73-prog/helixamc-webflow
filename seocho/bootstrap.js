@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.9 — card edu normalize 수의과대학 + 비수의 세부전공)
+   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.10 — card edu 전수 통일: 수의과대학 단어 없거나 / 포함 / 학위 누락 케이스도 커버)
    Webflow 서초본원 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
