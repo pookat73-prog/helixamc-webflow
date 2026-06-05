@@ -6,3 +6,16 @@
 [data-emergency-open] {
   cursor: pointer;
 }
+
+/* hover — 살짝 떠오름 + 카드 내부에 옅은 메인블루 inset shadow.
+   Webflow 가 박은 외곽 box-shadow 와 공존하도록 inset 만 사용. */
+.em_card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.em_card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 117, 214, 0.35),
+    inset 0 0 14px rgba(0, 117, 214, 0.12);
+}
