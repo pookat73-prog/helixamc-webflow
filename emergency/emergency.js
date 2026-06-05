@@ -98,16 +98,15 @@
         'display: inline-flex;' +
         'align-items: center;' +
         'justify-content: center;' +
-        'width: 1.6em;' +
-        'height: 1.6em;' +
+        'width: 28px;' +
+        'height: 28px;' +
         'border-radius: 50%;' +
         'background: #0075d6;' +
         'color: #ffffff;' +
-        'margin-right: 0.6em;' +
         'vertical-align: middle;' +
         'flex: 0 0 auto;' +
       '}' +
-      '.helix-em-icon svg { width: 55%; height: 55%; }';
+      '.helix-em-icon svg { width: 14px; height: 14px; }';
     document.head.appendChild(style);
   } catch (e) {}
 })();
