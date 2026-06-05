@@ -7,13 +7,12 @@
   cursor: pointer;
 }
 
-/* hover — 카드 전체 (Webflow 에서 박은 외곽 흰 카드/그림자 포함) 가
-   같이 살짝 떠오름. transform 만 적용해서 외부 box-shadow 가 그대로
-   따라옴. inset/외곽 추가 그림자 없음. */
-.em_card {
+/* hover — 카드 wrapper (.div-block-260) 가 통째로 떠오름. 그 안의
+   em_card 와 외곽 흰 카드/그림자 다 같이 따라옴. */
+.div-block-260 {
   transition: transform 0.25s ease;
 }
 
-.em_card:hover {
+.div-block-260:hover {
   transform: translateY(-6px);
 }
