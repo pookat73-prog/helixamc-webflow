@@ -273,6 +273,7 @@ body.helix-emergency-modal-open {
 }
 
 /* 증상 카드 트리거 — 클릭 가능 힌트 */
-[data-emergency-open] {
+[data-emergency-open],
+.em_card {
   cursor: pointer;
 }
