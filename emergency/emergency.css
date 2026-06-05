@@ -7,15 +7,14 @@
   cursor: pointer;
 }
 
-/* 증상 카드 입체감 — 텍스트위계4(#9aaabb) 드롭섀도우 단일. 그림자가
-   카드 아래에 충분히 spread/blur 로 깔리면 시각적으로 카드 가장자리에
-   자연스러운 흰 여백이 생겨 "흰 띠"처럼 보임. */
+/* 증상 카드 입체감 — about Section 2-2 의 .div-block-175 와 동일 톤
+   (텍스트위계4 #9aaabb, vw 단위 반응형). hover 시 살짝 진하게. */
 .em_card {
-  box-shadow: 0 10px 28px 4px rgba(154, 170, 187, 0.6);
+  box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .em_card:hover {
-  box-shadow: 0 14px 36px 6px rgba(154, 170, 187, 0.75);
+  box-shadow: 0 0.5vw 1vw 0 #9aaabb;
   transform: translateY(-2px);
 }
