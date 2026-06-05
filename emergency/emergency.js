@@ -93,20 +93,27 @@
     var style = document.createElement('style');
     style.textContent =
       '.call.seocho, .call-seocho, .call.ilsan, .call-ilsan,' +
-      '.map.seocho, .map-seocho, .map.ilsan, .map-ilsan { cursor: pointer; }' +
-      '.helix-em-icon {' +
-        'display: inline-flex;' +
+      '.map.seocho, .map-seocho, .map.ilsan, .map-ilsan {' +
+        'cursor: pointer;' +
+        'display: inline-flex !important;' +
         'align-items: center;' +
         'justify-content: center;' +
-        'width: 28px;' +
-        'height: 28px;' +
+        'padding: 0 !important;' +
+        'width: 28px !important;' +
+        'height: 28px !important;' +
+      '}' +
+      '.helix-em-icon {' +
+        'display: flex;' +
+        'align-items: center;' +
+        'justify-content: center;' +
+        'width: 100%;' +
+        'height: 100%;' +
         'border-radius: 50%;' +
         'background: #0075d6;' +
         'color: #ffffff;' +
-        'vertical-align: middle;' +
-        'flex: 0 0 auto;' +
+        'box-sizing: border-box;' +
       '}' +
-      '.helix-em-icon svg { width: 14px; height: 14px; }';
+      '.helix-em-icon svg { width: 50%; height: 50%; }';
     document.head.appendChild(style);
   } catch (e) {}
 })();
