@@ -1080,3 +1080,44 @@
   /* Webflow IX2 가 늦게 DOM 을 조작하는 케이스 대비 */
   window.addEventListener('load', initPhoneSection);
 })();
+
+/* ================================================================
+   Hash anchor fallback — id 가 없고 클래스만 있는 element 에도 anchor
+   동작. 예: /seoco-bonweon#map_naver 로 진입 시 .map_naver 로 스크롤.
+   페이지 진입 직후엔 hero 애니메이션 / IX2 가 scroll 을 0 으로 가로채는
+   경우가 있어 두 시점(600ms / 1500ms) 보강 호출.
+   ================================================================ */
+(function () {
+  'use strict';
+  if (!location.hash || location.hash.length < 2) return;
+
+  var slug = location.hash.slice(1);
+
+  function tryScroll() {
+    /* id 우선, 없으면 같은 이름의 class 로 fallback */
+    var el = document.getElementById(slug) || document.querySelector('.' + slug);
+    if (!el) return false;
+    /* fixed header 가 섹션 위를 가리는 거 회피 — 헤더 높이만큼 offset */
+    var header = document.querySelector('header.header, .header, [class*="navbar"]');
+    var headerH = (header && header.offsetHeight) || 80;
+    var top = el.getBoundingClientRect().top + window.scrollY - headerH - 16;
+    if (top < 0) top = 0;
+    try {
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    } catch (e) {
+      window.scrollTo(0, top);
+    }
+    return true;
+  }
+
+  function run() {
+    setTimeout(tryScroll, 600);
+    setTimeout(tryScroll, 1500);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
