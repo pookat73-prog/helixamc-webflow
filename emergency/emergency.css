@@ -7,20 +7,15 @@
   cursor: pointer;
 }
 
-/* 증상 카드 입체감 — 카드 → 얇은 흰 띠 → 텍스트위계4(#9aaabb) 띠 → 외부 그림자.
-   카드 자체와 그림자 사이에 흰 띠를 둠으로써 카드가 "흰 액자에 끼워진" 느낌. */
+/* 증상 카드 입체감 — 텍스트위계4(#9aaabb) 드롭섀도우 단일. 그림자가
+   카드 아래에 충분히 spread/blur 로 깔리면 시각적으로 카드 가장자리에
+   자연스러운 흰 여백이 생겨 "흰 띠"처럼 보임. */
 .em_card {
-  box-shadow:
-    0 0 0 6px #ffffff,                     /* 카드 바로 밖 6px 흰 띠 */
-    0 0 0 7px rgba(154, 170, 187, 0.55),   /* 그 외부 1px 위계4 색 띠 */
-    0 10px 24px rgba(154, 170, 187, 0.35); /* 외부 부드러운 그림자 (입체감) */
+  box-shadow: 0 10px 28px 4px rgba(154, 170, 187, 0.6);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .em_card:hover {
-  box-shadow:
-    0 0 0 6px #ffffff,
-    0 0 0 7px rgba(154, 170, 187, 0.7),
-    0 14px 32px rgba(154, 170, 187, 0.45);
+  box-shadow: 0 14px 36px 6px rgba(154, 170, 187, 0.75);
   transform: translateY(-2px);
 }
