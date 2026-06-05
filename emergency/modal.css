@@ -1,9 +1,12 @@
 /* ================================================================
    HELIX AMC — 응급 증상 상세 모달 (emergency/modal.css)
    ----------------------------------------------------------------
-   [data-emergency-open="<slug>"] 트리거 클릭 시 emergency/modal.js
-   가 동적으로 .helix-emergency-modal 을 body 에 주입.
-   디자인 톤: doctors 모달과 동일 (다크 백드롭, 화이트 패널, 메인 블루 #0075d6).
+   Figma 디자인 톤:
+     - 흰 패널, 둥근 모서리, 부드러운 그림자
+     - 좌상단 빨간 배지 "지금 바로 와주세요"
+     - 가운데 정렬 핵심 카피 (highlights)
+     - "고양이 특이 증상" 라벨 + 회색 박스 안 파란 점 불릿
+     - 푸터 두 박스: 서초본원 / 일산분원 + 전화 아이콘
    ================================================================ */
 
 .helix-emergency-modal {
@@ -17,6 +20,7 @@
   box-sizing: border-box;
   opacity: 0;
   transition: opacity 0.28s ease;
+  font-family: inherit;
 }
 
 .helix-emergency-modal.is-open {
@@ -36,16 +40,14 @@
 .helix-emergency-modal_panel {
   position: relative;
   width: 100%;
-  max-width: 720px;
-  max-height: 86vh;
+  max-width: 460px;
+  max-height: 90vh;
   overflow-y: auto;
   background: #ffffff;
-  border: 1px solid rgba(0, 117, 214, 0.18);
-  border-radius: 14px;
-  padding: 36px 36px 32px;
+  border-radius: 18px;
+  padding: 56px 32px 28px;
   box-sizing: border-box;
   color: #1a2230;
-  font-family: inherit;
   transform: translateY(12px) scale(0.98);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: 0 24px 80px rgba(20, 40, 80, 0.18);
@@ -55,17 +57,17 @@
   transform: translateY(0) scale(1);
 }
 
+/* 닫기 X — 우상단 */
 .helix-emergency-modal_close {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
   width: 36px;
   height: 36px;
   border: none;
   background: transparent;
-  color: #6b7684;
-  font-size: 22px;
-  line-height: 1;
+  color: #8a96a8;
+  padding: 0;
   cursor: pointer;
   border-radius: 50%;
   display: flex;
@@ -73,121 +75,178 @@
   justify-content: center;
   transition: background 0.18s ease, color 0.18s ease;
 }
-
 .helix-emergency-modal_close:hover {
   background: rgba(0, 117, 214, 0.10);
   color: #1a2230;
 }
-
-/* ── 헤더 ─────────────────────────────────────────────────────── */
-.helix-emergency-modal_header {
-  padding-bottom: 22px;
-  margin-bottom: 22px;
-  border-bottom: 1px solid rgba(20, 40, 80, 0.08);
+.helix-emergency-modal_close svg {
+  width: 20px;
+  height: 20px;
 }
 
-.helix-emergency-modal_title {
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 1.2;
-  letter-spacing: 0.04em;
-  color: #0075d6;
-  font-weight: 500;
-  margin: 0 0 8px;
-  text-transform: uppercase;
-}
-
-.helix-emergency-modal_title:empty {
-  display: none;
-}
-
+/* 증상 이름 — 가운데 큰 글씨 */
 .helix-emergency-modal_name {
-  font-size: 26px;
+  margin: 0 0 18px;
+  font-size: 28px;
   font-weight: 700;
   color: #0d1117;
-  margin: 0;
+  text-align: center;
   line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* 배지 + 안내문구 행 */
+.helix-emergency-modal_badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #eef0f4;
+}
+
+.helix-emergency-modal_badge {
+  flex: 0 0 auto;
+  display: inline-block;
+  padding: 5px 12px;
+  background: #fde9e9;
+  color: #d63838;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .helix-emergency-modal_intro {
-  margin: 10px 0 0;
-  font-size: 15px;
-  color: #4a5563;
-  line-height: 1.6;
-}
-
-.helix-emergency-modal_intro:empty {
-  display: none;
-}
-
-/* 응급도 배지 — title 좌측에 색 점 (urgency 클래스 있을 때만) */
-.helix-emergency-modal_panel.urgency-high .helix-emergency-modal_title,
-.helix-emergency-modal_panel.urgency-mid  .helix-emergency-modal_title,
-.helix-emergency-modal_panel.urgency-low  .helix-emergency-modal_title {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.helix-emergency-modal_panel.urgency-high .helix-emergency-modal_title::before,
-.helix-emergency-modal_panel.urgency-mid  .helix-emergency-modal_title::before,
-.helix-emergency-modal_panel.urgency-low  .helix-emergency-modal_title::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.helix-emergency-modal_panel.urgency-high { /* 빨강 */ }
-.helix-emergency-modal_panel.urgency-high .helix-emergency-modal_title { color: #d63838; }
-.helix-emergency-modal_panel.urgency-mid  .helix-emergency-modal_title { color: #d68a00; }
-.helix-emergency-modal_panel.urgency-low  .helix-emergency-modal_title { color: #0075d6; }
-
-/* ── 본문 섹션 ───────────────────────────────────────────────── */
-.helix-emergency-modal_body {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.helix-emergency-modal_section h3 {
-  font-size: 15px;
-  font-weight: 600;
-  color: #0075d6;
-  letter-spacing: 0.03em;
-  margin: 0 0 10px;
-}
-
-.helix-emergency-modal_section ul {
-  list-style: none;
-  padding: 0;
   margin: 0;
+  font-size: 13px;
+  color: #4a5563;
+  line-height: 1.45;
+}
+
+/* 핵심 응급 처치 카피 (1~2줄) — 가운데 정렬 강조 */
+.helix-emergency-modal_highlights {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0;
+  text-align: center;
+}
+.helix-emergency-modal_highlights li {
+  font-size: 19px;
+  font-weight: 700;
+  color: #0d1117;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+.helix-emergency-modal_highlights li + li {
+  margin-top: 6px;
+}
+
+/* 고양이 특이 증상 박스 */
+.helix-emergency-modal_notes {
+  background: #f5f7fa;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 0 0 22px;
+}
+
+.helix-emergency-modal_notes-label {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7684;
+  letter-spacing: -0.01em;
+}
+
+.helix-emergency-modal_notes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
-.helix-emergency-modal_section li {
-  font-size: 15px;
-  line-height: 1.6;
-  color: #3a4452;
-  padding-left: 14px;
+.helix-emergency-modal_notes-list li {
   position: relative;
+  padding-left: 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #3a4452;
 }
-
-.helix-emergency-modal_section li::before {
+.helix-emergency-modal_notes-list li::before {
   content: '';
   position: absolute;
   left: 2px;
-  top: 0.78em;
-  width: 3px;
-  height: 3px;
+  top: 0.62em;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: rgba(0, 117, 214, 0.75);
+  background: #0075d6;
 }
 
-/* ── 모바일 ──────────────────────────────────────────────────── */
+/* 푸터 — 서초/일산 두 박스 */
+.helix-emergency-modal_branches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.helix-emergency-modal_branch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f5f7fa;
+  border-radius: 10px;
+  color: #1a2230;
+  text-decoration: none;
+  transition: background 0.18s ease;
+}
+.helix-emergency-modal_branch:hover {
+  background: #eaeef3;
+}
+
+.helix-emergency-modal_branch-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.helix-emergency-modal_branch-brand {
+  font-size: 10px;
+  color: #6b7684;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.helix-emergency-modal_branch-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0075d6;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+.helix-emergency-modal_branch-phone {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #0075d6;
+  color: #ffffff;
+}
+.helix-emergency-modal_phone-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* 모바일 */
 @media screen and (max-width: 600px) {
   .helix-emergency-modal {
     padding: 0;
@@ -197,16 +256,23 @@
     max-height: 100vh;
     height: 100vh;
     border-radius: 0;
-    padding: 60px 22px 28px;
-    border: none;
+    padding: 60px 22px 24px;
   }
   .helix-emergency-modal_name {
-    font-size: 22px;
+    font-size: 24px;
+  }
+  .helix-emergency-modal_highlights li {
+    font-size: 17px;
   }
 }
 
-/* ── 모달 열린 동안 배경 스크롤 잠금 ──────────────────────────── */
+/* 모달 열린 동안 배경 스크롤 잠금 */
 html.helix-emergency-modal-open,
 body.helix-emergency-modal-open {
   overflow: hidden !important;
+}
+
+/* 증상 카드 트리거 — 클릭 가능 힌트 */
+[data-emergency-open] {
+  cursor: pointer;
 }

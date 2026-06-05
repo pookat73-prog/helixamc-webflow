@@ -2,26 +2,20 @@
    HELIX AMC — 응급 증상 상세 모달 (emergency/modal.js)
    ----------------------------------------------------------------
    사용법 (Webflow 측):
-     증상 카드/블록의 트리거 요소에 다음 속성:
-       data-emergency-open="<slug>"   (필수)
+     증상 카드 (EM_card 인스턴스) 에 다음 속성:
+       data-emergency-open="<slug>"
 
    데이터 위치:
      emergency/data/<slug>.json
        → 객체. 스키마:
          {
-           "title":   "<태그/카테고리 표시 — 선택>",
-           "name":    "<증상 이름>",
-           "intro":   "<한 줄 요약 — 선택>",
-           "urgency": "high" | "mid" | "low" (선택, 헤더 배지 색)
-           "sections": [
-             { "label": "이런 증상이라면",      "items": ["...","..."] },
-             { "label": "집에서 응급 대처",    "items": ["..."] },
-             { "label": "바로 병원에 와야 할 신호", "items": ["..."] }
-           ]
+           "name":      "<증상 이름>",                    (필수)
+           "highlights": ["<핵심 응급 처치 카피1>", "<카피2>"],   (필수, 1~2줄)
+           "catNotes":   ["<고양이 특이 증상1>", "<2>", "<3>"]    (선택)
          }
 
-   페이지에 [data-emergency-open] 이 하나도 없으면 모달 코드는 listen
-   만 걸고 아무 동작 안 함 (zero overhead).
+   "지금 바로 와주세요" 배지, 안내 문구, 분원 푸터 (서초/일산 전화) 는
+   모든 증상 공통이라 템플릿에 하드코딩.
    ================================================================ */
 
 (function () {
@@ -43,6 +37,12 @@
 
   var OWNER = 'pookat73-prog';
   var REPO  = 'helixamc-webflow';
+
+  /* 분원 전화 — 디자인의 푸터 두 박스. 번호 변경 시 여기만 수정. */
+  var BRANCHES = [
+    { key: 'seocho', name: '서초본원', tel: '02-2135-9119' },
+    { key: 'ilsan',  name: '일산분원', tel: '031-978-7575' }
+  ];
 
   var dataCache = {};
   var modalEl = null;
@@ -81,6 +81,24 @@
     return p;
   }
 
+  /* 전화 아이콘 SVG — 인라인 (외부 자원 0) */
+  var PHONE_SVG =
+    '<svg class="helix-emergency-modal_phone-icon" viewBox="0 0 24 24" ' +
+    'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 ' +
+    '19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 ' +
+    '12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 ' +
+    '0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>' +
+    '</svg>';
+
+  /* 닫기 X SVG */
+  var CLOSE_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>' +
+    '</svg>';
+
   function ensureModal() {
     if (modalEl) return modalEl;
     modalEl = document.createElement('div');
@@ -88,69 +106,84 @@
     modalEl.setAttribute('role', 'dialog');
     modalEl.setAttribute('aria-modal', 'true');
     modalEl.setAttribute('aria-labelledby', 'helix-emergency-modal-name');
+
+    var branchesHtml = BRANCHES.map(function (b) {
+      var digits = b.tel.replace(/\D/g, '');
+      return '<a class="helix-emergency-modal_branch" href="tel:' + digits + '" ' +
+             'data-branch="' + b.key + '" data-tel="' + b.tel + '">' +
+               '<span class="helix-emergency-modal_branch-text">' +
+                 '<span class="helix-emergency-modal_branch-brand">헬릭스동물메디컬센터</span>' +
+                 '<span class="helix-emergency-modal_branch-name">' + b.name + '</span>' +
+               '</span>' +
+               '<span class="helix-emergency-modal_branch-phone">' + PHONE_SVG + '</span>' +
+             '</a>';
+    }).join('');
+
     modalEl.innerHTML =
       '<div class="helix-emergency-modal_backdrop" data-modal-close="1" aria-hidden="true"></div>' +
       '<div class="helix-emergency-modal_panel" role="document">' +
-        '<button type="button" class="helix-emergency-modal_close" aria-label="닫기" data-modal-close="1">×</button>' +
-        '<div class="helix-emergency-modal_header">' +
-          '<div class="helix-emergency-modal_title"></div>' +
-          '<h2 class="helix-emergency-modal_name" id="helix-emergency-modal-name"></h2>' +
-          '<div class="helix-emergency-modal_intro"></div>' +
+        '<button type="button" class="helix-emergency-modal_close" aria-label="닫기" data-modal-close="1">' + CLOSE_SVG + '</button>' +
+        '<h2 class="helix-emergency-modal_name" id="helix-emergency-modal-name"></h2>' +
+        '<div class="helix-emergency-modal_badge-row">' +
+          '<span class="helix-emergency-modal_badge">지금 바로 와주세요</span>' +
+          '<p class="helix-emergency-modal_intro">다음 사항에 유의하며 즉시 반려동물 응급실로 내원하세요.</p>' +
         '</div>' +
-        '<div class="helix-emergency-modal_body"></div>' +
+        '<ul class="helix-emergency-modal_highlights"></ul>' +
+        '<section class="helix-emergency-modal_notes">' +
+          '<h3 class="helix-emergency-modal_notes-label">고양이 특이 증상</h3>' +
+          '<ul class="helix-emergency-modal_notes-list"></ul>' +
+        '</section>' +
+        '<div class="helix-emergency-modal_branches">' + branchesHtml + '</div>' +
       '</div>';
+
     document.body.appendChild(modalEl);
 
     modalEl.addEventListener('click', function (e) {
-      if (e.target.closest('[data-modal-close]')) close();
+      var closer = e.target.closest && e.target.closest('[data-modal-close]');
+      if (closer) {
+        e.preventDefault();
+        close();
+        return;
+      }
+      /* 분원 전화 클릭 — 확인창 → tel: 전환 (다른 페이지의 전화 핸들러와 동일 톤) */
+      var branch = e.target.closest && e.target.closest('.helix-emergency-modal_branch');
+      if (branch) {
+        var tel = branch.getAttribute('data-tel') || '';
+        if (tel) {
+          var ok = window.confirm(tel + ' 로 전화 연결하시겠습니까?');
+          if (!ok) e.preventDefault();
+        }
+      }
     });
     return modalEl;
   }
 
-  function buildSection(label, items) {
-    if (!Array.isArray(items) || !items.length) return null;
-    var sec = document.createElement('section');
-    sec.className = 'helix-emergency-modal_section';
-    if (label) {
-      var h = document.createElement('h3');
-      h.textContent = label;
-      sec.appendChild(h);
-    }
-    var ul = document.createElement('ul');
+  function fillList(ul, items) {
+    ul.innerHTML = '';
+    if (!Array.isArray(items)) return;
     items.forEach(function (s) {
       if (s == null) return;
       var li = document.createElement('li');
       li.textContent = String(s);
       ul.appendChild(li);
     });
-    if (!ul.childNodes.length) return null;
-    sec.appendChild(ul);
-    return sec;
   }
 
   function render(data) {
     var m = ensureModal();
+    m.querySelector('.helix-emergency-modal_name').textContent = data.name || '';
+    fillList(m.querySelector('.helix-emergency-modal_highlights'), data.highlights);
+
+    var notesSection = m.querySelector('.helix-emergency-modal_notes');
+    var notesList = notesSection.querySelector('.helix-emergency-modal_notes-list');
+    if (Array.isArray(data.catNotes) && data.catNotes.length) {
+      notesSection.style.display = '';
+      fillList(notesList, data.catNotes);
+    } else {
+      notesSection.style.display = 'none';
+    }
+
     var panel = m.querySelector('.helix-emergency-modal_panel');
-
-    m.querySelector('.helix-emergency-modal_title').textContent = data.title || '';
-    m.querySelector('.helix-emergency-modal_name').textContent  = data.name  || '';
-    m.querySelector('.helix-emergency-modal_intro').textContent = data.intro || '';
-
-    panel.classList.remove('urgency-high', 'urgency-mid', 'urgency-low');
-    if (data.urgency === 'high' || data.urgency === 'mid' || data.urgency === 'low') {
-      panel.classList.add('urgency-' + data.urgency);
-    }
-
-    var body = m.querySelector('.helix-emergency-modal_body');
-    body.innerHTML = '';
-    if (Array.isArray(data.sections)) {
-      data.sections.forEach(function (sec) {
-        if (!sec) return;
-        var el = buildSection(sec.label, sec.items);
-        if (el) body.appendChild(el);
-      });
-    }
-
     if (panel) panel.scrollTop = 0;
   }
 
@@ -206,8 +239,8 @@
       if (!data) {
         data = {
           name: slug,
-          title: '',
-          intro: '상세 정보 준비 중입니다.'
+          highlights: ['상세 정보 준비 중입니다.'],
+          catNotes: []
         };
       }
       open(data);
