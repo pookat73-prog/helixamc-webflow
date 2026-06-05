@@ -1097,10 +1097,15 @@
     /* id 우선, 없으면 같은 이름의 class 로 fallback */
     var el = document.getElementById(slug) || document.querySelector('.' + slug);
     if (!el) return false;
+    /* fixed header 가 섹션 위를 가리는 거 회피 — 헤더 높이만큼 offset */
+    var header = document.querySelector('header.header, .header, [class*="navbar"]');
+    var headerH = (header && header.offsetHeight) || 80;
+    var top = el.getBoundingClientRect().top + window.scrollY - headerH - 16;
+    if (top < 0) top = 0;
     try {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: top, behavior: 'smooth' });
     } catch (e) {
-      el.scrollIntoView();
+      window.scrollTo(0, top);
     }
     return true;
   }
