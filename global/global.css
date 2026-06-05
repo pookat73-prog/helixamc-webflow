@@ -92,3 +92,30 @@ body > .main-wrapper {
   filter: none !important;
   perspective: none !important;
 }
+
+/* ================================================================
+   텍스트 무단 복사 방지 (LOCKED v1)
+   - 일반 사용자가 드래그해서 긁어 복사하는 동작을 차단.
+   - user-select: none → 선택 자체가 안 되니 Ctrl+C / 우클릭 복사도 빈 클립보드.
+   - HTML 본문은 그대로 살아 있으므로 검색엔진 (구글·네이버) 색인에는 영향 없음.
+   - 입력 필드 (input/textarea/contenteditable) 는 예외 — 예약·문의 폼에서 붙여넣기/수정 가능해야 함.
+   - 작정한 사용자가 개발자도구로 보는 것까지는 브라우저 구조상 막을 수 없음.
+   ================================================================ */
+html, body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none; /* iOS Safari 의 길게 눌러 복사 메뉴 차단 */
+}
+input,
+textarea,
+select,
+[contenteditable="true"],
+[contenteditable=""] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
