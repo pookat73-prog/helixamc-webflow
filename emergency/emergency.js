@@ -18,8 +18,17 @@
     { selector: '.call.ilsan, .call-ilsan',   tel: '031-978-7575' }
   ];
 
+  /* "map seocho" / "map ilsan" 블록 클릭 → 지점 상세 페이지의 오시는길
+     섹션(#map_naver) 으로 이동. 페이지 진입 시 anchor 가 viewport 맨
+     위에 오도록 브라우저 기본 동작 활용. */
+  var MAP_BLOCKS = [
+    { selector: '.map.seocho, .map-seocho', href: '/seoco-bonweon#map_naver' },
+    { selector: '.map.ilsan, .map-ilsan',   href: '/seoco-bonweon-copy#map_naver' }
+  ];
+
   document.addEventListener('click', function (e) {
     if (!e.target || !e.target.closest) return;
+    /* 전화 블록 */
     for (var i = 0; i < CALL_BLOCKS.length; i++) {
       var hit = e.target.closest(CALL_BLOCKS[i].selector);
       if (!hit) continue;
@@ -31,9 +40,17 @@
       }
       return;
     }
+    /* 지도 블록 — 지점 상세 페이지 #map_naver 로 이동 */
+    for (var j = 0; j < MAP_BLOCKS.length; j++) {
+      var mhit = e.target.closest(MAP_BLOCKS[j].selector);
+      if (!mhit) continue;
+      e.preventDefault();
+      location.href = MAP_BLOCKS[j].href;
+      return;
+    }
   });
 
-  /* 전화 아이콘 SVG 주입 — 두 블록 안에 한 번만 prepend */
+  /* 전화 아이콘 SVG */
   var PHONE_SVG =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
@@ -43,16 +60,27 @@
     '0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>' +
     '</svg>';
 
-  function injectIcons() {
-    CALL_BLOCKS.forEach(function (b) {
-      document.querySelectorAll(b.selector).forEach(function (el) {
-        if (el.querySelector('.helix-call-icon')) return;
-        var span = document.createElement('span');
-        span.className = 'helix-call-icon';
-        span.innerHTML = PHONE_SVG;
-        el.insertBefore(span, el.firstChild);
-      });
+  /* 위치 핀 SVG */
+  var MAP_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+    '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>' +
+    '<circle cx="12" cy="10" r="3"/>' +
+    '</svg>';
+
+  function injectIcon(selector, svg, iconClass) {
+    document.querySelectorAll(selector).forEach(function (el) {
+      if (el.querySelector('.' + iconClass)) return;
+      var span = document.createElement('span');
+      span.className = 'helix-em-icon ' + iconClass;
+      span.innerHTML = svg;
+      el.insertBefore(span, el.firstChild);
     });
+  }
+
+  function injectIcons() {
+    CALL_BLOCKS.forEach(function (b) { injectIcon(b.selector, PHONE_SVG, 'helix-call-icon'); });
+    MAP_BLOCKS.forEach(function (b)  { injectIcon(b.selector, MAP_SVG,   'helix-map-icon');  });
   }
 
   if (document.readyState !== 'loading') injectIcons();
@@ -60,12 +88,13 @@
   /* Webflow IX2 가 늦게 wrapper 갈아끼우는 경우 대비 — 한 번 더 */
   setTimeout(injectIcons, 800);
 
-  /* 클릭 가능 힌트 + 아이콘 스타일 (둘 다 셀렉터 커버) */
+  /* 클릭 가능 힌트 + 아이콘 스타일 */
   try {
     var style = document.createElement('style');
     style.textContent =
-      '.call.seocho, .call-seocho, .call.ilsan, .call-ilsan { cursor: pointer; }' +
-      '.helix-call-icon {' +
+      '.call.seocho, .call-seocho, .call.ilsan, .call-ilsan,' +
+      '.map.seocho, .map-seocho, .map.ilsan, .map-ilsan { cursor: pointer; }' +
+      '.helix-em-icon {' +
         'display: inline-flex;' +
         'align-items: center;' +
         'justify-content: center;' +
@@ -78,7 +107,7 @@
         'vertical-align: middle;' +
         'flex: 0 0 auto;' +
       '}' +
-      '.helix-call-icon svg { width: 55%; height: 55%; }';
+      '.helix-em-icon svg { width: 55%; height: 55%; }';
     document.head.appendChild(style);
   } catch (e) {}
 })();
