@@ -44,6 +44,23 @@
     { key: 'ilsan',  name: '일산분원', tel: '031-978-7575' }
   ];
 
+  /* Webflow 컴포넌트 인스턴스에 data-emergency-open 을 박을 수 없어서
+     (인스턴스 레벨 attribute 미지원), 카드 wrapper(.em_card) 안의 증상
+     이름 텍스트로 슬러그 자동 매핑. 향후 카드 추가 시 여기 매핑만 늘리면 됨. */
+  var NAME_TO_SLUG = [
+    ['온몸에 힘이 없음', 'collapse'],
+    ['극심한 통증',     'severe-pain'],
+    ['안구돌출',        'proptosis'],
+    ['과다출혈',        'hemorrhage'],
+    ['호흡곤란',        'dyspnea'],
+    ['고체온',          'hyperthermia'],
+    ['저체온',          'hypothermia'],
+    ['발작',            'seizure'],
+    ['실신',            'syncope'],
+    ['쇼크',            'shock'],
+    ['마비',            'paralysis']
+  ];
+
   var dataCache = {};
   var modalEl = null;
   var lastFocus = null;
@@ -227,10 +244,21 @@
   });
 
   document.addEventListener('click', function (e) {
-    var trigger = e.target && e.target.closest && e.target.closest('[data-emergency-open]');
-    if (!trigger) return;
-
-    var slug = (trigger.getAttribute('data-emergency-open') || '').trim();
+    if (!e.target || !e.target.closest) return;
+    /* 1순위: data-emergency-open attribute (수동 박힌 경우 — 컴포넌트 외 element 용)
+       2순위: .em_card wrapper → 카드 내부 텍스트로 슬러그 자동 매핑 */
+    var trigger = e.target.closest('[data-emergency-open]');
+    var slug = '';
+    if (trigger) {
+      slug = (trigger.getAttribute('data-emergency-open') || '').trim();
+    } else {
+      var card = e.target.closest('.em_card');
+      if (!card) return;
+      var text = card.textContent || '';
+      for (var i = 0; i < NAME_TO_SLUG.length; i++) {
+        if (text.indexOf(NAME_TO_SLUG[i][0]) >= 0) { slug = NAME_TO_SLUG[i][1]; break; }
+      }
+    }
     if (!slug) return;
     e.preventDefault();
 
