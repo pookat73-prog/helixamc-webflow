@@ -1097,10 +1097,10 @@
     /* id 우선, 없으면 같은 이름의 class 로 fallback */
     var el = document.getElementById(slug) || document.querySelector('.' + slug);
     if (!el) return false;
-    /* fixed header 가 섹션 위를 가리는 거 회피 — 헤더 높이 + 5vw 여유 */
+    /* fixed header 가 섹션 위를 가리는 거 회피 — 헤더 높이 + 11vw 여유 */
     var header = document.querySelector('header.header, .header, [class*="navbar"]');
     var headerH = (header && header.offsetHeight) || 80;
-    var offsetVw = 5 * window.innerWidth / 100;
+    var offsetVw = 11 * window.innerWidth / 100;
     var top = el.getBoundingClientRect().top + window.scrollY - headerH - offsetVw;
     if (top < 0) top = 0;
     try {
