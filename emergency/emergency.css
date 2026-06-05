@@ -6,15 +6,3 @@
 [data-emergency-open] {
   cursor: pointer;
 }
-
-/* 증상 카드 입체감 — about Section 2-2 의 .div-block-175 와 동일 톤
-   (텍스트위계4 #9aaabb, vw 단위 반응형). hover 시 살짝 진하게. */
-.em_card {
-  box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.em_card:hover {
-  box-shadow: 0 0.5vw 1vw 0 #9aaabb;
-  transform: translateY(-2px);
-}
