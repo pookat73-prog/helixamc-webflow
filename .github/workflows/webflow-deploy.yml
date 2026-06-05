@@ -10,6 +10,7 @@ on:
       - 'about/**'
       - 'global/**'
       - 'seocho/**'
+      - 'emergency/**'
   workflow_dispatch:
 
 jobs:
@@ -63,6 +64,22 @@ jobs:
             "about/bootstrap.js"
             "global/bootstrap.js"
             "seocho/bootstrap.js"
+            "emergency/bootstrap.js"
+            "emergency/emergency.css"
+            "emergency/emergency.js"
+            "emergency/modal.css"
+            "emergency/modal.js"
+            "emergency/data/dyspnea.json"
+            "emergency/data/seizure.json"
+            "emergency/data/paralysis.json"
+            "emergency/data/collapse.json"
+            "emergency/data/hyperthermia.json"
+            "emergency/data/hypothermia.json"
+            "emergency/data/syncope.json"
+            "emergency/data/shock.json"
+            "emergency/data/severe-pain.json"
+            "emergency/data/hemorrhage.json"
+            "emergency/data/proptosis.json"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/card-render.js"
@@ -166,6 +183,10 @@ jobs:
             "seocho/doctors/modal.css"
             "seocho/doctors/modal.js"
             "seocho/doctors/card-render.js"
+            "emergency/emergency.css"
+            "emergency/emergency.js"
+            "emergency/modal.css"
+            "emergency/modal.js"
           )
           # 참고: seocho/doctors/data/<group>/<slug>.json (의료진 28명) 은 클릭
           # 시점에 lazy fetch — 페이지 로드 차단 안 함. 첫 클릭 시 jsDelivr lazy
