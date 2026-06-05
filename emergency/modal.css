@@ -1,0 +1,212 @@
+/* ================================================================
+   HELIX AMC — 응급 증상 상세 모달 (emergency/modal.css)
+   ----------------------------------------------------------------
+   [data-emergency-open="<slug>"] 트리거 클릭 시 emergency/modal.js
+   가 동적으로 .helix-emergency-modal 을 body 에 주입.
+   디자인 톤: doctors 모달과 동일 (다크 백드롭, 화이트 패널, 메인 블루 #0075d6).
+   ================================================================ */
+
+.helix-emergency-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 4vw;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+
+.helix-emergency-modal.is-open {
+  display: flex;
+  opacity: 1;
+}
+
+.helix-emergency-modal_backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 28, 40, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.helix-emergency-modal_panel {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  max-height: 86vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid rgba(0, 117, 214, 0.18);
+  border-radius: 14px;
+  padding: 36px 36px 32px;
+  box-sizing: border-box;
+  color: #1a2230;
+  font-family: inherit;
+  transform: translateY(12px) scale(0.98);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 24px 80px rgba(20, 40, 80, 0.18);
+}
+
+.helix-emergency-modal.is-open .helix-emergency-modal_panel {
+  transform: translateY(0) scale(1);
+}
+
+.helix-emergency-modal_close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: #6b7684;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.helix-emergency-modal_close:hover {
+  background: rgba(0, 117, 214, 0.10);
+  color: #1a2230;
+}
+
+/* ── 헤더 ─────────────────────────────────────────────────────── */
+.helix-emergency-modal_header {
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(20, 40, 80, 0.08);
+}
+
+.helix-emergency-modal_title {
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: #0075d6;
+  font-weight: 500;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.helix-emergency-modal_title:empty {
+  display: none;
+}
+
+.helix-emergency-modal_name {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0d1117;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.helix-emergency-modal_intro {
+  margin: 10px 0 0;
+  font-size: 15px;
+  color: #4a5563;
+  line-height: 1.6;
+}
+
+.helix-emergency-modal_intro:empty {
+  display: none;
+}
+
+/* 응급도 배지 — title 좌측에 색 점 (urgency 클래스 있을 때만) */
+.helix-emergency-modal_panel.urgency-high .helix-emergency-modal_title,
+.helix-emergency-modal_panel.urgency-mid  .helix-emergency-modal_title,
+.helix-emergency-modal_panel.urgency-low  .helix-emergency-modal_title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.helix-emergency-modal_panel.urgency-high .helix-emergency-modal_title::before,
+.helix-emergency-modal_panel.urgency-mid  .helix-emergency-modal_title::before,
+.helix-emergency-modal_panel.urgency-low  .helix-emergency-modal_title::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.helix-emergency-modal_panel.urgency-high { /* 빨강 */ }
+.helix-emergency-modal_panel.urgency-high .helix-emergency-modal_title { color: #d63838; }
+.helix-emergency-modal_panel.urgency-mid  .helix-emergency-modal_title { color: #d68a00; }
+.helix-emergency-modal_panel.urgency-low  .helix-emergency-modal_title { color: #0075d6; }
+
+/* ── 본문 섹션 ───────────────────────────────────────────────── */
+.helix-emergency-modal_body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.helix-emergency-modal_section h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0075d6;
+  letter-spacing: 0.03em;
+  margin: 0 0 10px;
+}
+
+.helix-emergency-modal_section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.helix-emergency-modal_section li {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #3a4452;
+  padding-left: 14px;
+  position: relative;
+}
+
+.helix-emergency-modal_section li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.78em;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(0, 117, 214, 0.75);
+}
+
+/* ── 모바일 ──────────────────────────────────────────────────── */
+@media screen and (max-width: 600px) {
+  .helix-emergency-modal {
+    padding: 0;
+  }
+  .helix-emergency-modal_panel {
+    max-width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0;
+    padding: 60px 22px 28px;
+    border: none;
+  }
+  .helix-emergency-modal_name {
+    font-size: 22px;
+  }
+}
+
+/* ── 모달 열린 동안 배경 스크롤 잠금 ──────────────────────────── */
+html.helix-emergency-modal-open,
+body.helix-emergency-modal-open {
+  overflow: hidden !important;
+}
