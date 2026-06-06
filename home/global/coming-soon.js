@@ -234,6 +234,25 @@
     });
   }
 
+  /* Webflow Designer 컴포넌트 정의/인스턴스에 custom attribute 로 박혀 있는
+     data-coming-soon 을 떼어내야 하는 라이브 셀렉터.
+     셀렉터에 매칭되는 element 와 그 자손 anchor 의 data-coming-soon 제거. */
+  var FORCE_RELEASE_SELECTORS = [
+    '.bt-box-3',  /* 응급내원이 필요한 증상 CTA — 컴포넌트 정의에 박힌 attr */
+    '.bt-box-4'   /* SVIC CTA — 동일 컴포넌트 사용 */
+  ];
+
+  function forceRelease() {
+    FORCE_RELEASE_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (el.hasAttribute('data-coming-soon')) el.removeAttribute('data-coming-soon');
+        el.querySelectorAll('[data-coming-soon]').forEach(function (sub) {
+          sub.removeAttribute('data-coming-soon');
+        });
+      });
+    });
+  }
+
   function mark() {
     COMING_SELECTORS.forEach(function (sel) {
       document.querySelectorAll(sel).forEach(function (el) {
@@ -242,6 +261,8 @@
         }
       });
     });
+    /* Webflow Designer 에서 박은 attribute 강제 해제 (mark 뒤에 실행) */
+    forceRelease();
     EXEMPT_SELECTORS.forEach(function (sel) {
       document.querySelectorAll(sel).forEach(function (el) {
         if (!el.hasAttribute('data-coming-soon-exempt')) {
