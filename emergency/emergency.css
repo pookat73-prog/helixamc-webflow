@@ -35,6 +35,14 @@
   section:has([data-emergency-open]):not(.helix-em-fit-done) {
     visibility: hidden;
   }
+  /* 안전 폴백 — JS 가 어떤 이유로든 600ms 안에 클래스를 못 박으면
+     CSS 애니메이션이 강제로 보이게 만듦. 영원히 가려지는 사고 방지. */
+  section:has([data-emergency-open]) {
+    animation: helix-em-reveal-fallback 0s linear 600ms forwards;
+  }
+}
+@keyframes helix-em-reveal-fallback {
+  to { visibility: visible; }
 }
 
 /* ─────────────────────────────────────────────────────────────
