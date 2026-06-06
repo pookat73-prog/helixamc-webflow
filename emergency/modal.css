@@ -87,7 +87,7 @@
 /* 증상 이름 — 가운데 큰 글씨 */
 .helix-emergency-modal_name {
   margin: 0 0 18px;
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 700;
   color: #0d1117;
   text-align: center;
@@ -111,12 +111,13 @@
 .helix-emergency-modal_badge {
   flex: 0 0 auto;
   display: inline-block;
-  padding: 5px 12px;
+  padding: 2px 12px;
   background: #fde9e9;
   color: #d63838;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
+  line-height: 1.4;
   white-space: nowrap;
   letter-spacing: -0.01em;
 }
@@ -146,12 +147,15 @@
   margin-top: 6px;
 }
 
-/* 고양이 특이 증상 박스 */
+/* 고양이 특이 증상 박스 — 흰 바탕 + 드롭섀도 (텍스트 위계 4) */
 .helix-emergency-modal_notes {
-  background: #f5f7fa;
+  background: #ffffff;
   border-radius: 12px;
   padding: 18px 20px;
   margin: 0 0 22px;
+  box-shadow:
+    0 10px 24px rgba(20, 40, 80, 0.10),
+    0 2px 6px rgba(20, 40, 80, 0.06);
 }
 
 .helix-emergency-modal_notes-label {
@@ -201,16 +205,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #f5f7fa;
+  gap: 4px;
+  padding: 12px 14px;
+  background: #ffffff;
   border-radius: 10px;
   color: #1a2230;
   text-decoration: none;
-  transition: background 0.18s ease;
+  box-shadow:
+    0 10px 24px rgba(20, 40, 80, 0.10),
+    0 2px 6px rgba(20, 40, 80, 0.06);
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
 }
 .helix-emergency-modal_branch:hover {
-  background: #eaeef3;
+  box-shadow:
+    0 14px 32px rgba(20, 40, 80, 0.14),
+    0 3px 8px rgba(20, 40, 80, 0.08);
+  transform: translateY(-1px);
 }
 
 /* 분원 표시 이미지 (자산 9/10 — 헬릭스동물메디컬센터 + 분원명) */
@@ -219,7 +229,7 @@
   flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
-  height: 28px;
+  height: 40px;
   width: auto;
   object-fit: contain;
   object-position: left center;
@@ -227,8 +237,8 @@
 
 .helix-emergency-modal_branch-phone {
   flex: 0 0 auto;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -237,8 +247,8 @@
   color: #ffffff;
 }
 .helix-emergency-modal_phone-icon {
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
 }
 
 /* 모바일 */
@@ -254,7 +264,7 @@
     padding: 60px 22px 24px;
   }
   .helix-emergency-modal_name {
-    font-size: 24px;
+    font-size: 28px;
   }
   .helix-emergency-modal_highlights li {
     font-size: 20px;
