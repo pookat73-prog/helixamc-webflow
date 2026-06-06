@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.8 — modal release to main)
+   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.12 — 의료진 데이터 _all.json 단일 번들 fetch)
    Webflow 서초본원 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

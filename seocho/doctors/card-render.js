@@ -49,6 +49,11 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
            '@' + getRef() + '/seocho/doctors/data/' + file + '?t=' + t;
   }
+  function bundleUrl() {
+    var t = Math.floor(Date.now() / 60000);
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
+           '@' + getRef() + '/seocho/doctors/data/_all.json?t=' + t;
+  }
 
   /* group + slug → Promise<doctor data> 캐시.
      modal.js 도 같은 캐시 키를 쓸 수 있도록 window 에 노출. */
@@ -60,6 +65,31 @@
       return r.json();
     });
   }
+
+  /* 번들 한 방 로드 — 성공 시 39회 라운드트립 → 1회. 실패 시 개별 fetch 폴백. */
+  var BUNDLE_PROMISE = null;
+  function fetchBundle() {
+    if (BUNDLE_PROMISE) return BUNDLE_PROMISE;
+    BUNDLE_PROMISE = fetchJson(bundleUrl()).then(function (b) {
+      if (!b || !b.groups) throw new Error('bundle malformed');
+      /* 개별 doctor 캐시도 미리 채워 modal.js 가 즉시 사용 가능하게 */
+      Object.keys(b.groups).forEach(function (g) {
+        var grp = b.groups[g];
+        if (!grp || !grp.doctors) return;
+        Object.keys(grp.doctors).forEach(function (slug) {
+          CACHE[g + '/' + slug] = Promise.resolve(grp.doctors[slug]);
+        });
+      });
+      window.HELIX_DOCTOR_BUNDLE = b;
+      return b;
+    }).catch(function (e) {
+      log('bundle load failed, fallback to per-file fetch:', e && e.message);
+      BUNDLE_PROMISE = null; /* 폴백 모드에서 다시 시도 안 함 */
+      return null;
+    });
+    return BUNDLE_PROMISE;
+  }
+
   function fetchDoctor(group, slug) {
     var key = group + '/' + slug;
     if (CACHE[key]) return CACHE[key];
@@ -71,6 +101,11 @@
     return p;
   }
   function fetchIndex(group) {
+    /* 번들이 이미 와 있으면 거기서 즉시 */
+    var b = window.HELIX_DOCTOR_BUNDLE;
+    if (b && b.groups && b.groups[group] && Array.isArray(b.groups[group].order)) {
+      return Promise.resolve(b.groups[group].order.map(function (s) { return { slug: s }; }));
+    }
     return fetchJson(dataUrl(group, null));
   }
 
@@ -120,13 +155,23 @@
      비수의 학과(방사선과·분자생명과학부 등) 는 그대로 통과. */
   function shortenEducation(s) {
     if (typeof s !== 'string' || !s) return s;
+    /* 예외 (확정) — 김유진 '서울대학교 수의과대학 수의안과/치과학 석사' 는 원문 유지 */
+    if (/수의안과\/치과학/.test(s)) return s;
+    /* 방사선사 — '방사선과' 표기를 '방사선학과' 로 통일 */
+    s = s.replace(/방사선과\s+졸업/, '방사선학과 졸업');
     if (!/수의|임상수의/.test(s)) return s;
     return s
-      /* 수의과대학원 X학 (석사|박사) → 수의과대학 (석사|박사) */
-      .replace(/(\S*대학교)\s+수의과대학원\s+수의[가-힣A-Za-z]+학\s+(석사|박사)\s+(졸업|수료)/,
+      /* 수의과대학원 <세부전공>학 (석사|박사) → 수의과대학 (석사|박사) */
+      .replace(/(\S*대학교)\s+수의과대학원\s+[가-힣A-Za-z]+학\s+(석사|박사)\s+(졸업|수료)/,
                '$1 수의과대학 $2 $3')
-      /* 수의과대학 수의X학 (석사|박사) → 수의과대학 (석사|박사) */
-      .replace(/수의과대학\s+수의[가-힣A-Za-z]+학\s+(석사|박사)/, '수의과대학 $1')
+      /* 수의과대학 <세부전공>학 (석사|박사) → 수의과대학 (석사|박사)
+         세부전공이 '수의외과학' 처럼 '수의' 로 시작하지 않고 '소동물내과학' 처럼
+         다른 접두사여도, 또 '수의안과/치과학' 처럼 '/' 가 섞여 있어도 통일되게 잘라냄 */
+      .replace(/수의과대학\s+[가-힣A-Za-z\/]+학\s+(석사|박사)/, '수의과대학 $1')
+      /* '수의과대학' 이라는 단어 자체가 없고 학과명만 '수의XXX학' 인 경우
+         (예: '건국대학교 수의영상진단과학 석사 졸업') 도 '수의과대학' 로 통일 */
+      .replace(/(\S*대학교)\s+수의[가-힣A-Za-z]+학\s+(석사|박사)\s+(졸업|수료)/,
+               '$1 수의과대학 $2 $3')
       /* 수의과대학 수의학과 졸업 → 수의과대학 졸업 */
       .replace(/수의과대학\s+수의학과\s+졸업/, '수의과대학 졸업')
       /* 임상수의학 (석사|박사) (졸업|수료)? → 수의과대학 ... */
@@ -146,7 +191,10 @@
       /* 성찬주: 수의학과 내과 박사 수료 → 수의과대학 박사 수료 */
       .replace(/(\S*대학교)\s+수의학과\s+내과\s+박사\s+수료/, '$1 수의과대학 박사 수료')
       /* 선두 연도(yyyy ) 제거 — 카드는 학교명부터 보여주기 위함 */
-      .replace(/^\s*\d{4}\s+/, '');
+      .replace(/^\s*\d{4}\s+/, '')
+      /* 최종 안전망 — 정규화 후 '...수의과대학 석사|박사' 로 끝나면 '졸업' 보강
+         (예: 김유진 '서울대학교 수의과대학 수의안과/치과학 석사' → '졸업' 누락) */
+      .replace(/(수의과대학\s+(석사|박사))\s*$/, '$1 졸업');
   }
 
   /* 카드 표시용 — 괄호( … ) 메타 정보 제거. 모달은 원본 그대로. */
@@ -321,7 +369,11 @@
     );
     if (!containers.length) { log('no container — idle'); return; }
     log('found', containers.length, 'container(s)');
-    containers.forEach(renderGroup);
+    /* 번들 1회 fetch → 모든 그룹이 그 결과를 공유. 폴백(번들 null)이어도
+       renderGroup 안에서 fetchIndex 가 알아서 개별 fetch 로 떨어짐. */
+    fetchBundle().then(function () {
+      containers.forEach(renderGroup);
+    });
   }
 
   if (document.readyState !== 'loading') start();
