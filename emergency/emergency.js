@@ -23,8 +23,24 @@
      위에 오도록 브라우저 기본 동작 활용. */
   var MAP_BLOCKS = [
     { selector: '.map.seocho, .map-seocho', href: '/seoco-bonweon#map_naver' },
-    { selector: '.map.ilsan, .map-ilsan',   href: '/seoco-bonweon-copy#map_naver' }
+    /* 일산분원 방문안내 상세 페이지 미완성 — 이동 차단, 토스트만. */
+    { selector: '.map.ilsan, .map-ilsan',   pending: true }
   ];
+
+  function showPendingToast(msg) {
+    var t = document.createElement('div');
+    t.className = 'helix-em-toast';
+    t.textContent = msg || '준비중입니다';
+    document.body.appendChild(t);
+    /* 다음 프레임에 visible 클래스 부여 → fade-in */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { t.classList.add('is-visible'); });
+    });
+    setTimeout(function () {
+      t.classList.remove('is-visible');
+      setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 350);
+    }, 1800);
+  }
 
   document.addEventListener('click', function (e) {
     if (!e.target || !e.target.closest) return;
@@ -45,7 +61,11 @@
       var mhit = e.target.closest(MAP_BLOCKS[j].selector);
       if (!mhit) continue;
       e.preventDefault();
-      location.href = MAP_BLOCKS[j].href;
+      if (MAP_BLOCKS[j].pending) {
+        showPendingToast('준비중입니다');
+      } else {
+        location.href = MAP_BLOCKS[j].href;
+      }
       return;
     }
   });
@@ -113,7 +133,29 @@
         'color: #ffffff;' +
         'box-sizing: border-box;' +
       '}' +
-      '.helix-em-icon svg { width: 50%; height: 50%; }';
+      '.helix-em-icon svg { width: 50%; height: 50%; }' +
+      '.helix-em-toast {' +
+        'position: fixed;' +
+        'left: 50%;' +
+        'bottom: 80px;' +
+        'transform: translate(-50%, 10px);' +
+        'background: rgba(13, 17, 23, 0.92);' +
+        'color: #fff;' +
+        'padding: 12px 20px;' +
+        'border-radius: 999px;' +
+        'font-size: 14px;' +
+        'font-weight: 500;' +
+        'letter-spacing: 0.02em;' +
+        'box-shadow: 0 4px 20px rgba(0,0,0,0.3);' +
+        'z-index: 99999;' +
+        'opacity: 0;' +
+        'pointer-events: none;' +
+        'transition: opacity 0.3s ease, transform 0.3s ease;' +
+      '}' +
+      '.helix-em-toast.is-visible {' +
+        'opacity: 1;' +
+        'transform: translate(-50%, 0);' +
+      '}';
     document.head.appendChild(style);
   } catch (e) {}
 })();
