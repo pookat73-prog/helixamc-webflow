@@ -18,19 +18,14 @@
 }
 
 /* ================================================================
-   데스크탑 전용 — 한 화면 안에 컨텐츠 다 들어가게 (스크롤 차단)
+   데스크탑 전용 — 컨텐츠 섹션이 푸터 위로 침범 안 하게 (한 화면 안에)
    ----------------------------------------------------------------
-   모바일/태블릿 (<992px) 은 영향 없음.
-   helix-em-locked 클래스는 emergency.js 가 데스크탑일 때만 박음.
+   - 페이지 자체 스크롤은 유지 (푸터 보러 내려갈 수 있어야 함)
+   - 메인 컨텐츠 섹션만 viewport 안에 맞춤. 넘치면 zoom 축소.
+   - 모바일/태블릿 (<992px) 은 영향 없음.
    ================================================================ */
 @media (min-width: 992px) {
-  html.helix-em-locked,
-  html.helix-em-locked body {
-    height: 100dvh !important;
-    max-height: 100dvh !important;
-    overflow: hidden !important;
-  }
-  /* zoom 이 적용될 컨텐츠 wrapper — 가로 폭 보존 위해 transform-origin 위쪽 중앙 */
+  /* zoom 적용 섹션의 origin 만 정렬. body 스크롤 잠금 없음. */
   html.helix-em-locked .helix-em-fit-root {
     transform-origin: top center;
   }
