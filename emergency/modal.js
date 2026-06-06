@@ -38,10 +38,13 @@
   var OWNER = 'pookat73-prog';
   var REPO  = 'helixamc-webflow';
 
-  /* 분원 전화 — 디자인의 푸터 두 박스. 번호 변경 시 여기만 수정. */
+  /* 분원 전화 — 디자인의 푸터 두 박스. 번호/이미지 변경 시 여기만 수정.
+     img: Webflow 에셋 (자산 9/10 — 헬릭스동물메디컬센터 + 분원명 통합 이미지) */
   var BRANCHES = [
-    { key: 'seocho', name: '서초본원', tel: '02-2135-9119' },
-    { key: 'ilsan',  name: '일산분원', tel: '031-978-7575' }
+    { key: 'seocho', name: '서초본원', tel: '02-2135-9119',
+      img: 'https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d39160537239833ee5ed2d_%EC%9E%90%EC%82%B0%209.png' },
+    { key: 'ilsan',  name: '일산분원', tel: '031-978-7575',
+      img: 'https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d39160a58d7071c8161446_%EC%9E%90%EC%82%B0%2010.png' }
   ];
 
   /* Webflow 컴포넌트 인스턴스에 data-emergency-open 을 박을 수 없어서
@@ -128,10 +131,8 @@
       var digits = b.tel.replace(/\D/g, '');
       return '<a class="helix-emergency-modal_branch" href="tel:' + digits + '" ' +
              'data-branch="' + b.key + '" data-tel="' + b.tel + '">' +
-               '<span class="helix-emergency-modal_branch-text">' +
-                 '<span class="helix-emergency-modal_branch-brand">헬릭스동물메디컬센터</span>' +
-                 '<span class="helix-emergency-modal_branch-name">' + b.name + '</span>' +
-               '</span>' +
+               '<img class="helix-emergency-modal_branch-img" src="' + b.img + '" ' +
+                 'alt="헬릭스동물메디컬센터 ' + b.name + '" loading="lazy" decoding="async" />' +
                '<span class="helix-emergency-modal_branch-phone">' + PHONE_SVG + '</span>' +
              '</a>';
     }).join('');
