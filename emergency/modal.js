@@ -244,35 +244,55 @@
     }
   });
 
-  document.addEventListener('click', function (e) {
-    if (!e.target || !e.target.closest) return;
-    /* 1순위: data-emergency-open attribute (수동 박힌 경우 — 컴포넌트 외 element 용)
-       2순위: .em_card wrapper → 카드 내부 텍스트로 슬러그 자동 매핑 */
-    var trigger = e.target.closest('[data-emergency-open]');
-    var slug = '';
+  /* 카드 → {slug, name} 추출. 우선순위는 click 핸들러와 동일. */
+  function resolveTarget(el) {
+    if (!el || !el.closest) return null;
+    var trigger = el.closest('[data-emergency-open]');
     if (trigger) {
-      slug = (trigger.getAttribute('data-emergency-open') || '').trim();
-    } else {
-      var card = e.target.closest('.em_card');
-      if (!card) return;
-      var text = card.textContent || '';
-      for (var i = 0; i < NAME_TO_SLUG.length; i++) {
-        if (text.indexOf(NAME_TO_SLUG[i][0]) >= 0) { slug = NAME_TO_SLUG[i][1]; break; }
+      var s = (trigger.getAttribute('data-emergency-open') || '').trim();
+      if (!s) return null;
+      var n = '';
+      for (var j = 0; j < NAME_TO_SLUG.length; j++) {
+        if (NAME_TO_SLUG[j][1] === s) { n = NAME_TO_SLUG[j][0]; break; }
+      }
+      return { slug: s, name: n };
+    }
+    var card = el.closest('.em_card');
+    if (!card) return null;
+    var text = card.textContent || '';
+    for (var i = 0; i < NAME_TO_SLUG.length; i++) {
+      if (text.indexOf(NAME_TO_SLUG[i][0]) >= 0) {
+        return { slug: NAME_TO_SLUG[i][1], name: NAME_TO_SLUG[i][0] };
       }
     }
-    if (!slug) return;
-    e.preventDefault();
+    return null;
+  }
 
-    log('click open', slug);
-    fetchSymptom(slug).then(function (data) {
+  /* 카드에 손가락 닿는/마우스 누르는 순간 미리 JSON 받아오기 — 클릭 떨어질 때쯤 도착 */
+  function prefetch(e) {
+    if (!e.target) return;
+    var t = resolveTarget(e.target);
+    if (t && t.slug) fetchSymptom(t.slug);
+  }
+  document.addEventListener('pointerdown', prefetch, { passive: true });
+  document.addEventListener('pointerenter', prefetch, true);
+
+  document.addEventListener('click', function (e) {
+    var t = resolveTarget(e.target);
+    if (!t || !t.slug) return;
+    e.preventDefault();
+    log('click open', t.slug);
+
+    /* 즉시 모달 셸 표시 — 이름은 카드 텍스트에서 바로 꺼내 채움.
+       상세 내용은 fetch 끝나면 채워넣음. */
+    open({ name: t.name || t.slug, highlights: [], catNotes: [] });
+
+    fetchSymptom(t.slug).then(function (data) {
+      if (!modalEl || !modalEl.classList.contains('is-open')) return;
       if (!data) {
-        data = {
-          name: slug,
-          highlights: ['상세 정보 준비 중입니다.'],
-          catNotes: []
-        };
+        data = { name: t.name || t.slug, highlights: ['상세 정보 준비 중입니다.'], catNotes: [] };
       }
-      open(data);
+      render(data);
     });
   });
 
