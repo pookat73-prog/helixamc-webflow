@@ -108,6 +108,91 @@
   /* Webflow IX2 가 늦게 wrapper 갈아끼우는 경우 대비 — 한 번 더 */
   setTimeout(injectIcons, 800);
 
+  /* ==============================================================
+     데스크탑 전용 — 컨텐츠 한 화면에 맞추기 (스크롤 차단)
+     --------------------------------------------------------------
+     ≥992px 에서만 동작. 컨텐츠 wrapper 의 scrollHeight 가 viewport 보다
+     크면 zoom 으로 축소해서 딱 맞춤. 모달은 position:fixed 라 무영향.
+     ============================================================== */
+  var DESKTOP_MIN = 992;
+  var fitRoot = null;
+
+  function findFitRoot() {
+    if (fitRoot && document.contains(fitRoot)) return fitRoot;
+    fitRoot =
+      document.querySelector('body > .page-wrapper') ||
+      document.querySelector('body > .main-wrapper') ||
+      document.querySelector('body > main') ||
+      document.body.firstElementChild;
+    if (fitRoot) fitRoot.classList.add('helix-em-fit-root');
+    return fitRoot;
+  }
+
+  function clearFit(root) {
+    if (!root) return;
+    root.style.zoom = '';
+    root.style.transform = '';
+    root.style.width = '';
+  }
+
+  function applyFit() {
+    var root = findFitRoot();
+    if (!root) return;
+
+    /* 모바일/태블릿 — 락 해제 */
+    if (window.innerWidth < DESKTOP_MIN) {
+      document.documentElement.classList.remove('helix-em-locked');
+      clearFit(root);
+      return;
+    }
+
+    document.documentElement.classList.add('helix-em-locked');
+    /* 초기화 후 한 프레임 뒤 측정 */
+    clearFit(root);
+    requestAnimationFrame(function () {
+      var winH = window.innerHeight;
+      var contentH = root.scrollHeight;
+      if (contentH <= winH + 1) return;
+      var z = winH / contentH;
+      /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
+      if (z < 0.7) z = 0.7;
+      /* Firefox 가 zoom 을 늦게 지원해서 transform 폴백도 함께 */
+      if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
+        root.style.zoom = z;
+      } else {
+        root.style.transform = 'scale(' + z + ')';
+        root.style.width = (100 / z) + '%';
+      }
+    });
+  }
+
+  /* 첫 적용 — load 시점 (이미지 크기 확정 후) */
+  if (document.readyState === 'complete') {
+    applyFit();
+  } else {
+    window.addEventListener('load', applyFit);
+  }
+  /* 폰트/이미지 늦게 로드되는 케이스 대비 */
+  setTimeout(applyFit, 1200);
+  setTimeout(applyFit, 2500);
+
+  /* 리사이즈 debounce */
+  var resizeT;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(applyFit, 120);
+  });
+
+  /* DOM 변화 (Webflow IX2 wrapper 교체 등) 대응 */
+  try {
+    var mo = new MutationObserver(function () {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(applyFit, 200);
+    });
+    mo.observe(document.body, { childList: true, subtree: false });
+    setTimeout(function () { mo.disconnect(); }, 8000);
+  } catch (e) {}
+
   /* 클릭 가능 힌트 + 아이콘 스타일 */
   try {
     var style = document.createElement('style');
