@@ -121,20 +121,15 @@
   function findFitRoot() {
     if (fitRoot && document.contains(fitRoot)) return fitRoot;
     /* 응급 카드가 들어있는 가장 가까운 section 을 fit 대상으로 잡음.
-       카드 한 장이라도 있어야 의미 있음 (없으면 NO-OP). */
+       카드 한 장이라도 있어야 의미 있음 (없으면 NO-OP).
+       선제 숨김은 CSS (:has) 가 담당 — inline visibility 안 박음. */
     var card = document.querySelector('[data-emergency-open]');
     if (!card) return null;
     fitRoot = card.closest('section') ||
               card.closest('.section') ||
               card.closest('main > div') ||
               card.parentElement;
-    if (fitRoot) {
-      fitRoot.classList.add('helix-em-fit-root');
-      /* 데스크탑이면 측정 끝날 때까지 일단 가려서 큰 상태로 잠깐 보이는 깜빡임 차단 */
-      if (window.innerWidth >= DESKTOP_MIN) {
-        fitRoot.style.visibility = 'hidden';
-      }
-    }
+    if (fitRoot) fitRoot.classList.add('helix-em-fit-root');
     return fitRoot;
   }
 
@@ -162,8 +157,6 @@
     }
 
     document.documentElement.classList.add('helix-em-locked');
-    /* 측정 동안 가려둠 (큰 상태로 잠깐 보이는 깜빡임 차단) */
-    root.style.visibility = 'hidden';
     /* 적용된 fit 값 초기화 (자연 높이 재측정 위해) */
     root.style.zoom = '';
     root.style.transform = '';
@@ -171,34 +164,31 @@
     root.style.maxHeight = '';
     root.style.overflow = '';
     root.style.boxSizing = '';
-    requestAnimationFrame(function () {
-      /* 헤더가 fixed 라 가시 영역 = viewport - header. global.css 변수 사용. */
-      var headerH = parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue('--header-h'), 10
-      ) || 56;
-      var targetH = window.innerHeight - headerH;
-      var natural = root.scrollHeight;
+    /* 헤더가 fixed 라 가시 영역 = viewport - header. global.css 변수 사용. */
+    var headerH = parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue('--header-h'), 10
+    ) || 56;
+    var targetH = window.innerHeight - headerH;
+    var natural = root.scrollHeight;
 
-      root.style.boxSizing = 'border-box';
-      root.style.maxHeight = targetH + 'px';
-      root.style.overflow = 'hidden';
+    root.style.boxSizing = 'border-box';
+    root.style.maxHeight = targetH + 'px';
+    root.style.overflow = 'hidden';
 
-      if (natural > targetH + 1) {
-        var z = targetH / natural;
-        /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
-        if (z < 0.7) z = 0.7;
-        if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
-          root.style.zoom = z;
-        } else {
-          root.style.transform = 'scale(' + z + ')';
-          root.style.width = (100 / z) + '%';
-        }
+    if (natural > targetH + 1) {
+      var z = targetH / natural;
+      /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
+      if (z < 0.7) z = 0.7;
+      if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
+        root.style.zoom = z;
+      } else {
+        root.style.transform = 'scale(' + z + ')';
+        root.style.width = (100 / z) + '%';
       }
+    }
 
-      /* 측정/적용 끝 — 보이기 (CSS :has 선제 숨김 해제) */
-      root.style.visibility = '';
-      root.classList.add('helix-em-fit-done');
-    });
+    /* 측정/적용 끝 — 보이기 (CSS :has 선제 숨김 해제) */
+    root.classList.add('helix-em-fit-done');
   }
 
   /* 첫 적용 — DOMContentLoaded 시점에 즉시 (이미지 로드 안 기다림) */
