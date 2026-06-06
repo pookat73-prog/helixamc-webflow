@@ -49,6 +49,11 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
            '@' + getRef() + '/seocho/doctors/data/' + file + '?t=' + t;
   }
+  function bundleUrl() {
+    var t = Math.floor(Date.now() / 60000);
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
+           '@' + getRef() + '/seocho/doctors/data/_all.json?t=' + t;
+  }
 
   /* group + slug → Promise<doctor data> 캐시.
      modal.js 도 같은 캐시 키를 쓸 수 있도록 window 에 노출. */
@@ -60,6 +65,31 @@
       return r.json();
     });
   }
+
+  /* 번들 한 방 로드 — 성공 시 39회 라운드트립 → 1회. 실패 시 개별 fetch 폴백. */
+  var BUNDLE_PROMISE = null;
+  function fetchBundle() {
+    if (BUNDLE_PROMISE) return BUNDLE_PROMISE;
+    BUNDLE_PROMISE = fetchJson(bundleUrl()).then(function (b) {
+      if (!b || !b.groups) throw new Error('bundle malformed');
+      /* 개별 doctor 캐시도 미리 채워 modal.js 가 즉시 사용 가능하게 */
+      Object.keys(b.groups).forEach(function (g) {
+        var grp = b.groups[g];
+        if (!grp || !grp.doctors) return;
+        Object.keys(grp.doctors).forEach(function (slug) {
+          CACHE[g + '/' + slug] = Promise.resolve(grp.doctors[slug]);
+        });
+      });
+      window.HELIX_DOCTOR_BUNDLE = b;
+      return b;
+    }).catch(function (e) {
+      log('bundle load failed, fallback to per-file fetch:', e && e.message);
+      BUNDLE_PROMISE = null; /* 폴백 모드에서 다시 시도 안 함 */
+      return null;
+    });
+    return BUNDLE_PROMISE;
+  }
+
   function fetchDoctor(group, slug) {
     var key = group + '/' + slug;
     if (CACHE[key]) return CACHE[key];
@@ -71,6 +101,11 @@
     return p;
   }
   function fetchIndex(group) {
+    /* 번들이 이미 와 있으면 거기서 즉시 */
+    var b = window.HELIX_DOCTOR_BUNDLE;
+    if (b && b.groups && b.groups[group] && Array.isArray(b.groups[group].order)) {
+      return Promise.resolve(b.groups[group].order.map(function (s) { return { slug: s }; }));
+    }
     return fetchJson(dataUrl(group, null));
   }
 
@@ -334,7 +369,11 @@
     );
     if (!containers.length) { log('no container — idle'); return; }
     log('found', containers.length, 'container(s)');
-    containers.forEach(renderGroup);
+    /* 번들 1회 fetch → 모든 그룹이 그 결과를 공유. 폴백(번들 null)이어도
+       renderGroup 안에서 fetchIndex 가 알아서 개별 fetch 로 떨어짐. */
+    fetchBundle().then(function () {
+      containers.forEach(renderGroup);
+    });
   }
 
   if (document.readyState !== 'loading') start();
