@@ -1,9 +1,9 @@
 /* ================================================================
-   HELIX AMC - 서초본원 하단 리뉴얼 고정 바 (모바일 전용)
+   HELIX AMC - 응급 페이지 하단 리뉴얼 고정 바 (모바일 전용)
    ----------------------------------------------------------------
    하단에서 슬라이드 업 → 계속 유지. 우측 X 로 닫기.
-   노출 여부(브레이크포인트)는 seocho/renewal-bar.css 의
-   @media (max-width: 767px) 가 제어 — JS 는 DOM 만 주입.
+   노출 여부(브레이크포인트)는 emergency/renewal-bar.css 의
+   @media (max-width: 850px) 가 제어 — JS 는 DOM 만 주입.
    닫으면 같은 세션 동안 다시 안 뜸 (sessionStorage).
 
    ▼ 문구는 아래 CONFIG.text 수정.
@@ -12,7 +12,7 @@
   'use strict';
 
   var CONFIG = {
-    text: '서초 본원 페이지는 현재 리뉴얼 중입니다.'
+    text: '응급 페이지는 현재 리뉴얼 중입니다.'
   };
 
   var DISMISS_KEY = 'helixRenewalBarDismissed';
