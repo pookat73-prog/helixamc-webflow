@@ -156,9 +156,10 @@
 
 .helix-emergency-modal_notes-label {
   margin: 0 0 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7684;
+  font-family: 'ds-endendend', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #0d1117;
   letter-spacing: -0.01em;
 }
 
@@ -172,21 +173,18 @@
 }
 .helix-emergency-modal_notes-list li {
   position: relative;
-  padding-left: 16px;
-  font-family: 'ds-endendend', sans-serif;
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 1.5;
+  padding-left: 14px;
+  font-size: 13px;
+  line-height: 1.55;
   color: #3a4452;
-  letter-spacing: -0.01em;
 }
 .helix-emergency-modal_notes-list li::before {
   content: '';
   position: absolute;
   left: 2px;
-  top: 0.7em;
-  width: 5px;
-  height: 5px;
+  top: 0.62em;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: #0075d6;
 }
@@ -260,8 +258,8 @@
   .helix-emergency-modal_highlights li {
     font-size: 20px;
   }
-  .helix-emergency-modal_notes-list li {
-    font-size: 16px;
+  .helix-emergency-modal_notes-label {
+    font-size: 18px;
   }
 }
 
