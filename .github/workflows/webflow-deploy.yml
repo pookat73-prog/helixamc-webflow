@@ -91,6 +91,8 @@ jobs:
             "emergency/modal.js"
             "emergency/renewal-bar.css"
             "emergency/renewal-bar.js"
+            "emergency/branch-cta.css"
+            "emergency/branch-cta.js"
             "emergency/data/dyspnea.json"
             "emergency/data/seizure.json"
             "emergency/data/paralysis.json"

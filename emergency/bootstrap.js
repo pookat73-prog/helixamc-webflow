@@ -71,6 +71,9 @@
     /* 응급 페이지 하단 리뉴얼 고정 바 (모바일 전용) */
     'emergency/renewal-bar.css',
     'emergency/renewal-bar.js',
+    /* 응급 페이지 하단 지점 CTA 접이식 칩 (세로 모바일 전용) */
+    'emergency/branch-cta.css',
+    'emergency/branch-cta.js',
     /* 푸터 */
     'home/global/footer.css',
     'home/global/footer.js'
