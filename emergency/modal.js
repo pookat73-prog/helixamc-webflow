@@ -187,6 +187,16 @@
     });
   }
 
+  /* 스켈레톤 — fetch 가 늦을 때 화면이 비어 보이지 않게 펄스 바 채움 */
+  function fillSkeleton(ul, lines) {
+    ul.innerHTML = '';
+    for (var i = 0; i < lines; i++) {
+      var li = document.createElement('li');
+      li.className = 'helix-emergency-modal_skeleton';
+      ul.appendChild(li);
+    }
+  }
+
   function render(data) {
     var m = ensureModal();
     m.querySelector('.helix-emergency-modal_name').textContent = data.name || '';
@@ -284,8 +294,13 @@
     log('click open', t.slug);
 
     /* 즉시 모달 셸 표시 — 이름은 카드 텍스트에서 바로 꺼내 채움.
-       상세 내용은 fetch 끝나면 채워넣음. */
+       상세 내용은 fetch 끝나면 채워넣음. 그 사이엔 스켈레톤. */
     open({ name: t.name || t.slug, highlights: [], catNotes: [] });
+    var mNow = ensureModal();
+    fillSkeleton(mNow.querySelector('.helix-emergency-modal_highlights'), 2);
+    var notesSection = mNow.querySelector('.helix-emergency-modal_notes');
+    notesSection.style.display = '';
+    fillSkeleton(notesSection.querySelector('.helix-emergency-modal_notes-list'), 3);
 
     fetchSymptom(t.slug).then(function (data) {
       if (!modalEl || !modalEl.classList.contains('is-open')) return;
