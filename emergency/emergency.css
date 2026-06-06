@@ -35,3 +35,25 @@
     transform-origin: top center;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   가로모바일 — 지점 CTA 묶음 (.div-block-247) 안 아이콘 간격
+   ─────────────────────────────────────────────────────────────
+   구조: .div-block-247 > [지점 이미지] + .map.* + .call.* + ...
+   - .map.* (이미지 다음 첫 아이콘) margin-left → 지점 이미지에서 멀어짐
+   - .call.* (두 번째 아이콘) margin-left → map 과의 간격 ↑
+*/
+@media (orientation: landscape) and (max-height: 500px) {
+  .div-block-247 .map.seocho,
+  .div-block-247 .map-seocho,
+  .div-block-247 .map.ilsan,
+  .div-block-247 .map-ilsan {
+    margin-left: 16px !important;
+  }
+  .div-block-247 .call.seocho,
+  .div-block-247 .call-seocho,
+  .div-block-247 .call.ilsan,
+  .div-block-247 .call-ilsan {
+    margin-left: 10px !important;
+  }
+}
