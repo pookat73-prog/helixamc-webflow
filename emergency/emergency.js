@@ -109,22 +109,32 @@
   setTimeout(injectIcons, 800);
 
   /* ==============================================================
-     데스크탑 전용 — 컨텐츠 한 화면에 맞추기 (스크롤 차단)
+     데스크탑 전용 — 컨텐츠 섹션이 푸터로 침범 안 하게
      --------------------------------------------------------------
-     ≥992px 에서만 동작. 컨텐츠 wrapper 의 scrollHeight 가 viewport 보다
-     크면 zoom 으로 축소해서 딱 맞춤. 모달은 position:fixed 라 무영향.
+     ≥992px 에서만 동작. 페이지 자체 스크롤은 살리고 (푸터 접근 가능),
+     응급 카드가 들어있는 섹션 1 개만 측정해서, viewport(헤더 제외) 보다
+     크면 zoom 으로 축소해 한 화면에 맞춤. 푸터/외 섹션 무영향.
      ============================================================== */
   var DESKTOP_MIN = 992;
   var fitRoot = null;
 
   function findFitRoot() {
     if (fitRoot && document.contains(fitRoot)) return fitRoot;
-    fitRoot =
-      document.querySelector('body > .page-wrapper') ||
-      document.querySelector('body > .main-wrapper') ||
-      document.querySelector('body > main') ||
-      document.body.firstElementChild;
-    if (fitRoot) fitRoot.classList.add('helix-em-fit-root');
+    /* 응급 카드가 들어있는 가장 가까운 section 을 fit 대상으로 잡음.
+       카드 한 장이라도 있어야 의미 있음 (없으면 NO-OP). */
+    var card = document.querySelector('[data-emergency-open]');
+    if (!card) return null;
+    fitRoot = card.closest('section') ||
+              card.closest('.section') ||
+              card.closest('main > div') ||
+              card.parentElement;
+    if (fitRoot) {
+      fitRoot.classList.add('helix-em-fit-root');
+      /* 데스크탑이면 측정 끝날 때까지 일단 가려서 큰 상태로 잠깐 보이는 깜빡임 차단 */
+      if (window.innerWidth >= DESKTOP_MIN) {
+        fitRoot.style.visibility = 'hidden';
+      }
+    }
     return fitRoot;
   }
 
@@ -133,48 +143,73 @@
     root.style.zoom = '';
     root.style.transform = '';
     root.style.width = '';
+    root.style.maxHeight = '';
+    root.style.overflow = '';
+    root.style.boxSizing = '';
+    root.style.visibility = '';
   }
 
   function applyFit() {
     var root = findFitRoot();
     if (!root) return;
 
-    /* 모바일/태블릿 — 락 해제 */
+    /* 모바일/태블릿 — 락 해제 + 선제 숨김 해제 */
     if (window.innerWidth < DESKTOP_MIN) {
       document.documentElement.classList.remove('helix-em-locked');
       clearFit(root);
+      root.classList.add('helix-em-fit-done');
       return;
     }
 
     document.documentElement.classList.add('helix-em-locked');
-    /* 초기화 후 한 프레임 뒤 측정 */
-    clearFit(root);
+    /* 측정 동안 가려둠 (큰 상태로 잠깐 보이는 깜빡임 차단) */
+    root.style.visibility = 'hidden';
+    /* 적용된 fit 값 초기화 (자연 높이 재측정 위해) */
+    root.style.zoom = '';
+    root.style.transform = '';
+    root.style.width = '';
+    root.style.maxHeight = '';
+    root.style.overflow = '';
+    root.style.boxSizing = '';
     requestAnimationFrame(function () {
-      var winH = window.innerHeight;
-      var contentH = root.scrollHeight;
-      if (contentH <= winH + 1) return;
-      var z = winH / contentH;
-      /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
-      if (z < 0.7) z = 0.7;
-      /* Firefox 가 zoom 을 늦게 지원해서 transform 폴백도 함께 */
-      if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
-        root.style.zoom = z;
-      } else {
-        root.style.transform = 'scale(' + z + ')';
-        root.style.width = (100 / z) + '%';
+      /* 헤더가 fixed 라 가시 영역 = viewport - header. global.css 변수 사용. */
+      var headerH = parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue('--header-h'), 10
+      ) || 56;
+      var targetH = window.innerHeight - headerH;
+      var natural = root.scrollHeight;
+
+      root.style.boxSizing = 'border-box';
+      root.style.maxHeight = targetH + 'px';
+      root.style.overflow = 'hidden';
+
+      if (natural > targetH + 1) {
+        var z = targetH / natural;
+        /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
+        if (z < 0.7) z = 0.7;
+        if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
+          root.style.zoom = z;
+        } else {
+          root.style.transform = 'scale(' + z + ')';
+          root.style.width = (100 / z) + '%';
+        }
       }
+
+      /* 측정/적용 끝 — 보이기 (CSS :has 선제 숨김 해제) */
+      root.style.visibility = '';
+      root.classList.add('helix-em-fit-done');
     });
   }
 
-  /* 첫 적용 — load 시점 (이미지 크기 확정 후) */
-  if (document.readyState === 'complete') {
+  /* 첫 적용 — DOMContentLoaded 시점에 즉시 (이미지 로드 안 기다림) */
+  if (document.readyState !== 'loading') {
     applyFit();
   } else {
-    window.addEventListener('load', applyFit);
+    document.addEventListener('DOMContentLoaded', applyFit);
   }
-  /* 폰트/이미지 늦게 로드되는 케이스 대비 */
-  setTimeout(applyFit, 1200);
-  setTimeout(applyFit, 2500);
+  /* 이미지/폰트 늦게 들어오면 높이 바뀔 수 있어 한 번 더 */
+  window.addEventListener('load', applyFit);
+  setTimeout(applyFit, 1500);
 
   /* 리사이즈 debounce */
   var resizeT;
