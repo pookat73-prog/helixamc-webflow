@@ -214,26 +214,16 @@
   background: #eaeef3;
 }
 
-.helix-emergency-modal_branch-text {
-  display: flex;
-  flex-direction: column;
+/* 분원 표시 이미지 (자산 9/10 — 헬릭스동물메디컬센터 + 분원명) */
+.helix-emergency-modal_branch-img {
+  display: block;
+  flex: 1 1 auto;
   min-width: 0;
-}
-.helix-emergency-modal_branch-brand {
-  font-size: 10px;
-  color: #6b7684;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.helix-emergency-modal_branch-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #0075d6;
-  line-height: 1.3;
-  margin-top: 2px;
+  max-width: 100%;
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .helix-emergency-modal_branch-phone {
