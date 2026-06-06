@@ -46,6 +46,29 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
+   세로 모바일 — 지점 CTA 카드 (.div-block-247) 아래에서 등장
+   ─────────────────────────────────────────────────────────────
+   페이지 진입 시 살짝 아래(translateY 40px) + 투명에서
+   제자리 + 불투명으로 부드럽게 올라옴. CSS only — JS 게이트 없음.
+   세로 모바일에만 적용 (가로/태블릿/데스크탑 무영향). */
+@media (orientation: portrait) and (max-width: 767px) {
+  .div-block-247 {
+    animation: helix-em-cta-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+    will-change: transform, opacity;
+  }
+}
+@keyframes helix-em-cta-rise {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    가로모바일 — 지점 CTA 묶음 (.div-block-247) 안 아이콘 간격
    ─────────────────────────────────────────────────────────────
    구조: .div-block-247 > [지점 이미지] + .map.* + .call.* + ...
