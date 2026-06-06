@@ -177,7 +177,7 @@
 }
 .helix-emergency-modal_notes-list li {
   position: relative;
-  padding-left: 16px;
+  padding-left: 20px;
   font-size: 15px;
   line-height: 1.55;
   color: #3a4452;
@@ -186,9 +186,9 @@
   content: '';
   position: absolute;
   left: 2px;
-  top: 0.5em;
-  width: 7px;
-  height: 7px;
+  top: 0.42em;
+  width: 11px;
+  height: 11px;
   box-sizing: border-box;
   border: 1.5px solid #0075d6;
   background: transparent;
