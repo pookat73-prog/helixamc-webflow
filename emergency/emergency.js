@@ -128,7 +128,13 @@
               card.closest('.section') ||
               card.closest('main > div') ||
               card.parentElement;
-    if (fitRoot) fitRoot.classList.add('helix-em-fit-root');
+    if (fitRoot) {
+      fitRoot.classList.add('helix-em-fit-root');
+      /* 데스크탑이면 측정 끝날 때까지 일단 가려서 큰 상태로 잠깐 보이는 깜빡임 차단 */
+      if (window.innerWidth >= DESKTOP_MIN) {
+        fitRoot.style.visibility = 'hidden';
+      }
+    }
     return fitRoot;
   }
 
@@ -140,22 +146,31 @@
     root.style.maxHeight = '';
     root.style.overflow = '';
     root.style.boxSizing = '';
+    root.style.visibility = '';
   }
 
   function applyFit() {
     var root = findFitRoot();
     if (!root) return;
 
-    /* 모바일/태블릿 — 락 해제 */
+    /* 모바일/태블릿 — 락 해제 + 선제 숨김 해제 */
     if (window.innerWidth < DESKTOP_MIN) {
       document.documentElement.classList.remove('helix-em-locked');
       clearFit(root);
+      root.classList.add('helix-em-fit-done');
       return;
     }
 
     document.documentElement.classList.add('helix-em-locked');
-    /* 초기화 후 한 프레임 뒤 측정 (자연 높이) */
-    clearFit(root);
+    /* 측정 동안 가려둠 (큰 상태로 잠깐 보이는 깜빡임 차단) */
+    root.style.visibility = 'hidden';
+    /* 적용된 fit 값 초기화 (자연 높이 재측정 위해) */
+    root.style.zoom = '';
+    root.style.transform = '';
+    root.style.width = '';
+    root.style.maxHeight = '';
+    root.style.overflow = '';
+    root.style.boxSizing = '';
     requestAnimationFrame(function () {
       /* 헤더가 fixed 라 가시 영역 = viewport - header. global.css 변수 사용. */
       var headerH = parseInt(
@@ -168,29 +183,33 @@
       root.style.maxHeight = targetH + 'px';
       root.style.overflow = 'hidden';
 
-      if (natural <= targetH + 1) return;
-
-      var z = targetH / natural;
-      /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
-      if (z < 0.7) z = 0.7;
-      if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
-        root.style.zoom = z;
-      } else {
-        root.style.transform = 'scale(' + z + ')';
-        root.style.width = (100 / z) + '%';
+      if (natural > targetH + 1) {
+        var z = targetH / natural;
+        /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
+        if (z < 0.7) z = 0.7;
+        if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
+          root.style.zoom = z;
+        } else {
+          root.style.transform = 'scale(' + z + ')';
+          root.style.width = (100 / z) + '%';
+        }
       }
+
+      /* 측정/적용 끝 — 보이기 (CSS :has 선제 숨김 해제) */
+      root.style.visibility = '';
+      root.classList.add('helix-em-fit-done');
     });
   }
 
-  /* 첫 적용 — load 시점 (이미지 크기 확정 후) */
-  if (document.readyState === 'complete') {
+  /* 첫 적용 — DOMContentLoaded 시점에 즉시 (이미지 로드 안 기다림) */
+  if (document.readyState !== 'loading') {
     applyFit();
   } else {
-    window.addEventListener('load', applyFit);
+    document.addEventListener('DOMContentLoaded', applyFit);
   }
-  /* 폰트/이미지 늦게 로드되는 케이스 대비 */
-  setTimeout(applyFit, 1200);
-  setTimeout(applyFit, 2500);
+  /* 이미지/폰트 늦게 들어오면 높이 바뀔 수 있어 한 번 더 */
+  window.addEventListener('load', applyFit);
+  setTimeout(applyFit, 1500);
 
   /* 리사이즈 debounce */
   var resizeT;

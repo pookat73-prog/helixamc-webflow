@@ -29,6 +29,12 @@
   html.helix-em-locked .helix-em-fit-root {
     transform-origin: top center;
   }
+  /* CSS 가 JS 보다 먼저 도착하더라도 섹션을 선제 숨겨서
+     큰 상태로 잠깐 보이는 깜빡임 차단. JS 측정 끝나면
+     .helix-em-fit-done 클래스를 박아 보이게 함. */
+  section:has([data-emergency-open]):not(.helix-em-fit-done) {
+    visibility: hidden;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
