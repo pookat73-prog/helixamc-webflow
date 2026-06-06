@@ -68,6 +68,9 @@
        없으면 listen 만 하고 zero overhead. 데이터: emergency/data/<slug>.json */
     'emergency/modal.css',
     'emergency/modal.js',
+    /* 응급 페이지 하단 리뉴얼 고정 바 (모바일 전용) */
+    'emergency/renewal-bar.css',
+    'emergency/renewal-bar.js',
     /* 푸터 */
     'home/global/footer.css',
     'home/global/footer.js'
