@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 응급 증상 안내 페이지 BOOTSTRAP LOADER (v1.1 — cache bust)
+   HELIX AMC - 응급 증상 안내 페이지 BOOTSTRAP LOADER (v1.2 — renewal-bar 포함)
    Webflow 응급 증상 안내 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
