@@ -173,7 +173,7 @@
   border-radius: 12px;
   padding: 18px 20px;
   margin: 0 0 22px;
-  box-shadow: 0 0 10px rgba(20, 40, 80, 0.10);
+  box-shadow: 0 0 6px 4px rgba(20, 40, 80, 0.18);
 }
 
 .helix-emergency-modal_notes-label {

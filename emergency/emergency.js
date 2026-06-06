@@ -129,7 +129,13 @@
               card.closest('.section') ||
               card.closest('main > div') ||
               card.parentElement;
-    if (fitRoot) fitRoot.classList.add('helix-em-fit-root');
+    if (fitRoot) {
+      fitRoot.classList.add('helix-em-fit-root');
+      /* 데스크탑이면 측정 끝날 때까지 일단 가려서 큰 상태로 잠깐 보이는 깜빡임 차단 */
+      if (window.innerWidth >= DESKTOP_MIN) {
+        fitRoot.style.visibility = 'hidden';
+      }
+    }
     return fitRoot;
   }
 

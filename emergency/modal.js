@@ -285,7 +285,17 @@
     if (t && t.slug) fetchSymptom(t.slug);
   }
   document.addEventListener('pointerdown', prefetch, { passive: true });
-  document.addEventListener('pointerenter', prefetch, true);
+
+  /* 페이지 로드 직후 11개 증상 JSON 전부 병렬 프리페치 — 클릭 시점엔 메모리 캐시 hit.
+     idle 콜백으로 띄워서 페이지 초기 페인트 방해 안 함. */
+  function prefetchAll() {
+    NAME_TO_SLUG.forEach(function (pair) { fetchSymptom(pair[1]); });
+  }
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(prefetchAll, { timeout: 1500 });
+  } else {
+    setTimeout(prefetchAll, 400);
+  }
 
   document.addEventListener('click', function (e) {
     var t = resolveTarget(e.target);
