@@ -147,6 +147,26 @@
   margin-top: 6px;
 }
 
+/* 스켈레톤 — fetch 가 끝나기 전 펄스 바로 자리 잡아 화면 안 비게 */
+.helix-emergency-modal_skeleton {
+  display: block;
+  height: 1.1em;
+  margin: 8px auto;
+  width: 70%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #eef0f4 0%, #f7f8fa 50%, #eef0f4 100%);
+  background-size: 200% 100%;
+  animation: helixEmergencySkeleton 1.2s ease-in-out infinite;
+}
+.helix-emergency-modal_notes-list .helix-emergency-modal_skeleton {
+  width: 100%;
+  margin: 6px 0;
+}
+@keyframes helixEmergencySkeleton {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
 /* 고양이 특이 증상 박스 — 흰 바탕 + 사방 균등 드롭섀도 */
 .helix-emergency-modal_notes {
   background: #ffffff;
