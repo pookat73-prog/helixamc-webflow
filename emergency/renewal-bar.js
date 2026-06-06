@@ -12,7 +12,7 @@
   'use strict';
 
   var CONFIG = {
-    text: '응급 페이지는 현재 리뉴얼 중입니다.'
+    text: '이 페이지는 현재 리뉴얼 중입니다.'
   };
 
   var DISMISS_KEY = 'helixRenewalBarDismissed';
