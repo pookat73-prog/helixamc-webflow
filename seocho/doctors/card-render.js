@@ -66,11 +66,18 @@
     });
   }
 
-  /* 번들 한 방 로드 — 성공 시 39회 라운드트립 → 1회. 실패 시 개별 fetch 폴백. */
+  /* 번들 한 방 로드 — 성공 시 39회 라운드트립 → 1회. 실패 시 개별 fetch 폴백.
+     bootstrap.js 가 미리 fetch 해둔 promise (window.HELIX_DOCTOR_BUNDLE_PROMISE)
+     가 있으면 그걸 채택해 추가 네트워크 0회. */
   var BUNDLE_PROMISE = null;
   function fetchBundle() {
     if (BUNDLE_PROMISE) return BUNDLE_PROMISE;
-    BUNDLE_PROMISE = fetchJson(bundleUrl()).then(function (b) {
+    var prefetched = window.HELIX_DOCTOR_BUNDLE_PROMISE;
+    var src = prefetched ? prefetched.then(function (b) {
+      if (!b || !b.groups) throw new Error('prefetched bundle empty');
+      return b;
+    }) : fetchJson(bundleUrl());
+    BUNDLE_PROMISE = src.then(function (b) {
       if (!b || !b.groups) throw new Error('bundle malformed');
       /* 개별 doctor 캐시도 미리 채워 modal.js 가 즉시 사용 가능하게 */
       Object.keys(b.groups).forEach(function (g) {

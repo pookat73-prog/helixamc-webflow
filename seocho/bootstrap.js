@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.12 — 의료진 데이터 _all.json 단일 번들 fetch)
+   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.13 — SHA 라운드트립 제거 + 번들 선제 fetch)
    Webflow 서초본원 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -148,24 +148,20 @@
     console.warn('[seocho-bootstrap] NAVER_CLIENT_ID 미설정 — seocho/bootstrap.js 의 상수를 교체하세요.');
   }
 
-  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
-            '?t=' + Date.now();
+  /* SHA 라운드트립 제거 — 워크플로우가 push 마다 자동 퍼지 + 워밍업 하므로
+     @branch 직접 로드해도 stale 사실상 없음. 이전 SHA 패턴 대비 ~300ms 단축. */
+  window.HELIX_REF = BRANCH;
+  injectAll(BRANCH);
 
-  fetch(api, {
-    headers: { 'Accept': 'application/vnd.github+json' },
-    cache: 'no-store'
-  })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (data) {
-      var sha = (data.sha || '').substring(0, 10);
-      if (!sha) throw new Error('no sha in response');
-      console.log('[seocho-bootstrap] loading commit', sha);
-      window.HELIX_REF = sha;
-      injectAll(sha);
-    })
-    .catch(function (err) {
-      console.warn('[seocho-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
-      window.HELIX_REF = BRANCH;
-      injectAll(BRANCH);
-    });
+  /* 의료진 카드 번들 선제 fetch — bootstrap 실행 즉시 시작해서, card-render.js
+     가 로드되어 실행될 때쯤이면 이미 도착해 있도록. card-render 는
+     window.HELIX_DOCTOR_BUNDLE_PROMISE 가 있으면 그걸 우선 await. */
+  try {
+    var bundleUrl = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
+                    '@' + BRANCH + '/seocho/doctors/data/_all.json?t=' +
+                    Math.floor(Date.now() / 60000);
+    window.HELIX_DOCTOR_BUNDLE_PROMISE = fetch(bundleUrl, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  } catch (e) {}
 })();
