@@ -109,21 +109,25 @@
   setTimeout(injectIcons, 800);
 
   /* ==============================================================
-     데스크탑 전용 — 컨텐츠 한 화면에 맞추기 (스크롤 차단)
+     데스크탑 전용 — 컨텐츠 섹션이 푸터로 침범 안 하게
      --------------------------------------------------------------
-     ≥992px 에서만 동작. 컨텐츠 wrapper 의 scrollHeight 가 viewport 보다
-     크면 zoom 으로 축소해서 딱 맞춤. 모달은 position:fixed 라 무영향.
+     ≥992px 에서만 동작. 페이지 자체 스크롤은 살리고 (푸터 접근 가능),
+     응급 카드가 들어있는 섹션 1 개만 측정해서, viewport(헤더 제외) 보다
+     크면 zoom 으로 축소해 한 화면에 맞춤. 푸터/외 섹션 무영향.
      ============================================================== */
   var DESKTOP_MIN = 992;
   var fitRoot = null;
 
   function findFitRoot() {
     if (fitRoot && document.contains(fitRoot)) return fitRoot;
-    fitRoot =
-      document.querySelector('body > .page-wrapper') ||
-      document.querySelector('body > .main-wrapper') ||
-      document.querySelector('body > main') ||
-      document.body.firstElementChild;
+    /* 응급 카드가 들어있는 가장 가까운 section 을 fit 대상으로 잡음.
+       카드 한 장이라도 있어야 의미 있음 (없으면 NO-OP). */
+    var card = document.querySelector('[data-emergency-open]');
+    if (!card) return null;
+    fitRoot = card.closest('section') ||
+              card.closest('.section') ||
+              card.closest('main > div') ||
+              card.parentElement;
     if (fitRoot) fitRoot.classList.add('helix-em-fit-root');
     return fitRoot;
   }
@@ -133,6 +137,9 @@
     root.style.zoom = '';
     root.style.transform = '';
     root.style.width = '';
+    root.style.maxHeight = '';
+    root.style.overflow = '';
+    root.style.boxSizing = '';
   }
 
   function applyFit() {
@@ -147,16 +154,25 @@
     }
 
     document.documentElement.classList.add('helix-em-locked');
-    /* 초기화 후 한 프레임 뒤 측정 */
+    /* 초기화 후 한 프레임 뒤 측정 (자연 높이) */
     clearFit(root);
     requestAnimationFrame(function () {
-      var winH = window.innerHeight;
-      var contentH = root.scrollHeight;
-      if (contentH <= winH + 1) return;
-      var z = winH / contentH;
+      /* 헤더가 fixed 라 가시 영역 = viewport - header. global.css 변수 사용. */
+      var headerH = parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue('--header-h'), 10
+      ) || 56;
+      var targetH = window.innerHeight - headerH;
+      var natural = root.scrollHeight;
+
+      root.style.boxSizing = 'border-box';
+      root.style.maxHeight = targetH + 'px';
+      root.style.overflow = 'hidden';
+
+      if (natural <= targetH + 1) return;
+
+      var z = targetH / natural;
       /* 너무 작아지면 가독성 박살 — 0.7 이하로는 안 줄임 */
       if (z < 0.7) z = 0.7;
-      /* Firefox 가 zoom 을 늦게 지원해서 transform 폴백도 함께 */
       if ('zoom' in root.style || CSS.supports('zoom', '0.5')) {
         root.style.zoom = z;
       } else {
