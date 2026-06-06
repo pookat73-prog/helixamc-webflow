@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.10 — card edu 전수 통일: 수의과대학 단어 없거나 / 포함 / 학위 누락 케이스도 커버)
+   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.11 — 김유진 예외 유지 + 방사선과→방사선학과)
    Webflow 서초본원 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
