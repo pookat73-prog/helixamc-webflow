@@ -182,7 +182,8 @@
   font-size: 15px;
   line-height: 1.55;
   color: #3a4452;
-  text-align: center;
+  text-align: left;
+  max-width: 100%;
 }
 .helix-emergency-modal_notes-list li::before {
   content: '';
