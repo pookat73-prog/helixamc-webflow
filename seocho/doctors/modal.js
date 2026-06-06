@@ -67,6 +67,16 @@
   function fetchDoctor(group, slug) {
     var key = group + '/' + slug;
     if (doctorCache[key]) return doctorCache[key];
+    /* card-render.js 가 미리 받아둔 번들에 있으면 즉시 반환 (네트워크 0회) */
+    var shared = window.HELIX_DOCTOR_CACHE && window.HELIX_DOCTOR_CACHE[key];
+    if (shared) { doctorCache[key] = shared; return shared; }
+    var bundle = window.HELIX_DOCTOR_BUNDLE;
+    if (bundle && bundle.groups && bundle.groups[group] &&
+        bundle.groups[group].doctors && bundle.groups[group].doctors[slug]) {
+      var p0 = Promise.resolve(bundle.groups[group].doctors[slug]);
+      doctorCache[key] = p0;
+      return p0;
+    }
     var url = doctorUrl(group, slug);
     log('fetching', key, url);
     var p = fetch(url, { cache: 'no-store' })
