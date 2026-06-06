@@ -14,10 +14,8 @@
   display: none;
 }
 
-/* 세로 모바일~폴드 펼침(max-width 850, 폴드폰 펼침 약 820px 포함) +
-   가로 모바일(가로는 너비가 850 넘을 수 있어 짧은 높이 + landscape 로 폰 판별.
-   태블릿 가로는 높이가 더 커서 제외) */
-@media (max-width: 850px), (orientation: landscape) and (max-height: 600px) {
+/* 데스크탑 (≥992px, Webflow 표준) 미만의 모든 뷰 — 태블릿 / 폴드 / 모바일 세로·가로 전부 노출. */
+@media (max-width: 991px) {
   .helix-renewal-bar {
     display: flex;
     align-items: center;
