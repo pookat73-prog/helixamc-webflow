@@ -17,6 +17,25 @@
   transform: translateY(-6px);
 }
 
+/* ================================================================
+   데스크탑 전용 — 한 화면 안에 컨텐츠 다 들어가게 (스크롤 차단)
+   ----------------------------------------------------------------
+   모바일/태블릿 (<992px) 은 영향 없음.
+   helix-em-locked 클래스는 emergency.js 가 데스크탑일 때만 박음.
+   ================================================================ */
+@media (min-width: 992px) {
+  html.helix-em-locked,
+  html.helix-em-locked body {
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+  /* zoom 이 적용될 컨텐츠 wrapper — 가로 폭 보존 위해 transform-origin 위쪽 중앙 */
+  html.helix-em-locked .helix-em-fit-root {
+    transform-origin: top center;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────
    가로모바일 — 지점 CTA 묶음 (.div-block-247) 안 아이콘 간격
    ─────────────────────────────────────────────────────────────
