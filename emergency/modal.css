@@ -50,7 +50,7 @@
   color: #1a2230;
   transform: translateY(12px) scale(0.98);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 24px 80px rgba(20, 40, 80, 0.18);
+  box-shadow: 0 12px 32px rgba(20, 40, 80, 0.14);
 }
 
 .helix-emergency-modal.is-open .helix-emergency-modal_panel {
@@ -147,15 +147,13 @@
   margin-top: 6px;
 }
 
-/* 고양이 특이 증상 박스 — 흰 바탕 + 드롭섀도 (텍스트 위계 4) */
+/* 고양이 특이 증상 박스 — 흰 바탕 + 사방 균등 드롭섀도 */
 .helix-emergency-modal_notes {
   background: #ffffff;
   border-radius: 12px;
   padding: 18px 20px;
   margin: 0 0 22px;
-  box-shadow:
-    0 10px 24px rgba(20, 40, 80, 0.10),
-    0 2px 6px rgba(20, 40, 80, 0.06);
+  box-shadow: 0 0 10px rgba(20, 40, 80, 0.10);
 }
 
 .helix-emergency-modal_notes-label {
@@ -211,15 +209,11 @@
   border-radius: 10px;
   color: #1a2230;
   text-decoration: none;
-  box-shadow:
-    0 10px 24px rgba(20, 40, 80, 0.10),
-    0 2px 6px rgba(20, 40, 80, 0.06);
+  box-shadow: 0 4px 10px rgba(20, 40, 80, 0.08);
   transition: box-shadow 0.18s ease, transform 0.18s ease;
 }
 .helix-emergency-modal_branch:hover {
-  box-shadow:
-    0 14px 32px rgba(20, 40, 80, 0.14),
-    0 3px 8px rgba(20, 40, 80, 0.08);
+  box-shadow: 0 6px 14px rgba(20, 40, 80, 0.12);
   transform: translateY(-1px);
 }
 
