@@ -12,6 +12,21 @@
 (function () {
   'use strict';
 
+  /* STAGING SELF-REDIRECT — Webflow head 는 @main 으로 고정이라
+     새 파일을 FILES 에 추가하는 변경은 main 머지 전엔 staging 에
+     안 들어왔던 문제. 스테이징 도메인이면 @staging bootstrap 을
+     재로드해서 그쪽 FILES 로 실행한다. 2회차는 flag 보고 skip. */
+  if (!window.__helixHomeBootstrapRedirected &&
+      /\.webflow\.io$/i.test(location.hostname)) {
+    window.__helixHomeBootstrapRedirected = true;
+    var __s = document.createElement('script');
+    __s.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@staging/home/bootstrap.js?t=' +
+              Math.floor(Date.now() / 60000);
+    __s.async = false;
+    document.head.appendChild(__s);
+    return;
+  }
+
   /* 진단용 로그 — 어떤 bootstrap 버전이 로드됐는지 콘솔로 확인 가능
      v3 = footer.css/.js 포함, v2 = 그 이전 */
   console.log('[helix-bootstrap] loader v3 (with footer interactions)');
