@@ -1,157 +1,182 @@
 /* ================================================================
-   HELIX AMC — 응급 페이지 하단 지점 CTA (접이식)
+   HELIX AMC — 응급 페이지 하단 지점 CTA (접이식 카드)
    ----------------------------------------------------------------
-   기본은 하단 우측에 작은 칩 ("지점 전화 ▲") 으로 떠 있다가,
-   탭하면 위로 패널이 펴지며 서초본원 / 일산분원 두 버튼이 나타남.
-   다시 탭 (또는 패널 안 ▼) 하면 칩으로 접힘.
+   Webflow Designer 의 데스크탑 지점 카드 (Div Block 249) 디자인을
+   그대로 가져와 모바일 세로 화면 하단에 고정. 두 가지 상태:
 
-   세로 모바일 (≤991px portrait) 한정 노출.
-   다른 뷰에서는 완전히 숨김.
+     1) 펼침 (.is-expanded — 기본): "24시 응급 진료" 헤더 +
+        서초본원/일산분원 두 행 (helix 로고 이미지 + 분원명 + 전화 아이콘).
+        하단 가운데에 아래 꺽쇠 ▾ → 누르면 접힘.
+     2) 접힘 (.is-collapsed): "24시 응급 진료" 한 줄짜리 컴팩트 바 +
+        위 꺽쇠 ▴ → 누르면 다시 펼침.
+
+     페이지 진입 시 화면 밖에서 슬라이드 업 (is-mounted).
+     세로 모바일 (orientation portrait + ≤991px) 한정 노출.
    ================================================================ */
 
-.helix-branch-cta {
-  display: none;
-}
+.helix-branch-cta { display: none; }
 
 @media (orientation: portrait) and (max-width: 991px) {
   .helix-branch-cta {
     display: block;
     position: fixed;
-    right: 14px;
-    /* 리뉴얼 바가 떠 있으면 그 위로, 없으면 화면 하단에 붙음.
-       리뉴얼 바 높이 ~ 56px + safe-area. JS 가 --helix-branch-cta-bottom
-       을 동적으로 갱신해서 정확한 오프셋 부여. */
-    bottom: calc(var(--helix-branch-cta-bottom, 16px) + env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    right: auto;
+    bottom: calc(var(--helix-branch-cta-bottom, 14px) + env(safe-area-inset-bottom, 0px));
     z-index: 99997;
-    /* 칩/패널이 화면 밖에서 진입 — 페이지 로드 시 슬라이드 업 */
-    transform: translateY(140%);
+    width: min(360px, calc(100% - 24px));
+    transform: translate(-50%, 140%);
     transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
   }
-
   .helix-branch-cta.is-mounted {
-    transform: translateY(0);
+    transform: translate(-50%, 0);
     pointer-events: auto;
   }
 
-  /* 토글 칩 — 접힌 기본 상태 */
-  .helix-branch-cta__toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px 10px 12px;
-    background: rgba(13, 17, 23, 0.96);
-    color: #ffffff;
-    border: 1px solid rgba(0, 117, 214, 0.6);
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    transition: background 0.2s ease, box-shadow 0.2s ease;
-  }
-  .helix-branch-cta__toggle:hover {
-    background: rgba(0, 117, 214, 0.92);
-  }
-
-  .helix-branch-cta__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #0075d6;
-    color: #ffffff;
-  }
-  .helix-branch-cta__icon svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  .helix-branch-cta__label {
-    line-height: 1;
-  }
-
-  .helix-branch-cta__chevron {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-right: 2px solid currentColor;
-    border-top: 2px solid currentColor;
-    transform: rotate(-45deg);
-    transition: transform 0.25s ease;
-    margin-left: 2px;
-  }
-  .helix-branch-cta.is-open .helix-branch-cta__chevron {
-    transform: rotate(135deg);
-  }
-
-  /* 펼침 패널 — 칩 위로 솟아 오름 */
-  .helix-branch-cta__panel {
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 10px);
-    min-width: 240px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
-    background: rgba(13, 17, 23, 0.97);
-    border: 1px solid rgba(0, 117, 214, 0.45);
+  /* ───────── 펼침 카드 ───────── */
+  .helix-branch-cta__card {
+    background: #ffffff;
     border-radius: 14px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-    transform-origin: bottom right;
-    pointer-events: none;
-    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    padding: 12px 14px 6px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28),
+                0 2px 6px rgba(0, 0, 0, 0.10);
+    overflow: hidden;
+    transform-origin: bottom center;
+    transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .helix-branch-cta.is-open .helix-branch-cta__panel {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
+  .helix-branch-cta.is-collapsed .helix-branch-cta__card {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    pointer-events: none;
+    position: absolute;
+    inset: auto 0 0 0;
   }
 
-  .helix-branch-cta__title {
-    margin: 0 2px 2px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #8a97a3;
-    letter-spacing: 0.04em;
+  .helix-branch-cta__header {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #d63838;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
 
   .helix-branch-cta__row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 10px;
-    padding: 10px 12px;
-    background: #ffffff;
+    padding: 8px 4px;
     color: #1a2230;
-    border-radius: 10px;
     text-decoration: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    border-radius: 8px;
+    transition: background 0.15s ease;
   }
-  .helix-branch-cta__row:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+  .helix-branch-cta__row + .helix-branch-cta__row {
+    border-top: 1px solid #eef0f4;
+  }
+  .helix-branch-cta__row:hover,
+  .helix-branch-cta__row:active {
+    background: #f5f8fc;
   }
 
-  .helix-branch-cta__name {
+  .helix-branch-cta__logo {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 28px;
+    width: auto;
+    max-width: calc(100% - 80px);
+    object-fit: contain;
+    object-position: left center;
+    display: block;
+  }
+
+  .helix-branch-cta__icons {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .helix-branch-cta__icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #0075d6;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .helix-branch-cta__icon-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ───────── 카드 하단 — 접기 꺽쇠 ───────── */
+  .helix-branch-cta__collapse {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+    padding: 4px 0 2px;
+    background: transparent;
+    border: none;
+    color: #8a97a3;
+    cursor: pointer;
+  }
+  .helix-branch-cta__collapse:hover {
+    color: #0075d6;
+  }
+  .helix-branch-cta__chevron {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+  }
+
+  /* ───────── 접힘 컴팩트 바 ───────── */
+  .helix-branch-cta__compact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    position: absolute;
+    inset: auto 0 0 0;
+    transition: opacity 0.28s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .helix-branch-cta.is-collapsed .helix-branch-cta__compact {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    position: relative;
+    inset: auto;
+  }
+  .helix-branch-cta__compact-label {
+    flex: 1 1 auto;
+    text-align: center;
     font-size: 14px;
     font-weight: 700;
+    color: #d63838;
+    letter-spacing: -0.01em;
   }
-  .helix-branch-cta__tel {
-    font-size: 13px;
-    font-weight: 600;
-    color: #0075d6;
-    letter-spacing: 0.02em;
+  .helix-branch-cta__compact .helix-branch-cta__chevron {
+    transform: rotate(-135deg);
   }
 }
