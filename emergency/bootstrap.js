@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 응급 증상 안내 페이지 BOOTSTRAP LOADER (v1.2 — renewal-bar 포함)
+   HELIX AMC - 응급 증상 안내 페이지 BOOTSTRAP LOADER (v1.3 — renewal-bar 끔)
    Webflow 응급 증상 안내 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -92,8 +92,10 @@
        없으면 listen 만 하고 zero overhead. 데이터: emergency/data/<slug>.json */
     'emergency/modal.css',
     'emergency/modal.js',
-    /* 응급 페이지 하단 리뉴얼 고정 바 (모바일 전용) — 안내문 끔.
-       파일은 보존, 다음 페이지에서 다시 활성화하려면 아래 두 줄 주석 해제. */
+    /* 리뉴얼 고정 바 — 끔. 파일은 보존, 다음 페이지에서 켜려면:
+       1) 두 줄 주석 해제
+       2) 페이지 head 에 <script>window.HELIX_RENEWAL_BAR_ENABLE=true;</script>
+          를 본 bootstrap 보다 먼저 선언 (안 켜면 스크립트 자체가 no-op). */
     // 'emergency/renewal-bar.css',
     // 'emergency/renewal-bar.js',
     /* 응급 페이지 하단 지점 CTA 접이식 칩 (세로 모바일 전용) */

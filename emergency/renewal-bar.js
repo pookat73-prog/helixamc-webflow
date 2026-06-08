@@ -11,6 +11,13 @@
 (function () {
   'use strict';
 
+  /* OPT-IN — 명시적으로 켜지 않으면 no-op. 옛 bootstrap 캐시가 본 스크립트를
+     로드해도 DOM 에 박지 않음. 다음 페이지에서 켜려면 페이지 head 또는
+     해당 페이지 bootstrap 에서:
+       window.HELIX_RENEWAL_BAR_ENABLE = true;
+     를 본 스크립트 로드 전에 선언. */
+  if (!window.HELIX_RENEWAL_BAR_ENABLE) return;
+
   var CONFIG = {
     text: '업데이트 작업 중입니다.'
   };
