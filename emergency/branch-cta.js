@@ -77,7 +77,7 @@
     root.innerHTML =
       '<div class="helix-branch-cta__card" role="region" aria-label="24시 응급 진료 안내">' +
         '<p class="helix-branch-cta__header">24시 응급 진료</p>' +
-        '<div class="helix-branch-cta__rows">' + rowsHtml + '</div>' +
+        rowsHtml +
         '<button type="button" class="helix-branch-cta__collapse" data-toggle="collapse" aria-label="접기">' +
           '<span class="helix-branch-cta__chevron" aria-hidden="true"></span>' +
         '</button>' +
