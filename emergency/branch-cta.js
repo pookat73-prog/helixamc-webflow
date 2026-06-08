@@ -176,9 +176,33 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', build);
-  } else {
+  /* 리뉴얼 바가 열려 있으면 등장 보류 — 사용자가 X 로 닫으면 그때 빌드.
+     리뉴얼 바 dismiss 는 같은 세션 동안 sessionStorage 로 기억되므로
+     2회 차 이후 방문에선 즉시 빌드. */
+  function isRenewalActive() {
+    return !!document.querySelector('.helix-renewal-bar');
+  }
+
+  function tryBuild() {
+    if (isRenewalActive()) {
+      /* 리뉴얼 바 DOM 사라질 때까지 polling — JS 가 X 누르면 setTimeout 으로
+         350ms 후 remove 함. 가벼운 간격 체크. */
+      var iv = setInterval(function () {
+        if (!isRenewalActive()) {
+          clearInterval(iv);
+          build();
+        }
+      }, 250);
+      /* 안전망: 60초 후에도 안 사라지면 그냥 빌드 (강제 노출) */
+      setTimeout(function () { clearInterval(iv); if (!document.querySelector('.helix-branch-cta')) build(); }, 60000);
+      return;
+    }
     build();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryBuild);
+  } else {
+    tryBuild();
   }
 })();
