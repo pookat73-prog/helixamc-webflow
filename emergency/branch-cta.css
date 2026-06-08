@@ -1,0 +1,157 @@
+/* ================================================================
+   HELIX AMC — 응급 페이지 하단 지점 CTA (접이식)
+   ----------------------------------------------------------------
+   기본은 하단 우측에 작은 칩 ("지점 전화 ▲") 으로 떠 있다가,
+   탭하면 위로 패널이 펴지며 서초본원 / 일산분원 두 버튼이 나타남.
+   다시 탭 (또는 패널 안 ▼) 하면 칩으로 접힘.
+
+   세로 모바일 (≤991px portrait) 한정 노출.
+   다른 뷰에서는 완전히 숨김.
+   ================================================================ */
+
+.helix-branch-cta {
+  display: none;
+}
+
+@media (orientation: portrait) and (max-width: 991px) {
+  .helix-branch-cta {
+    display: block;
+    position: fixed;
+    right: 14px;
+    /* 리뉴얼 바가 떠 있으면 그 위로, 없으면 화면 하단에 붙음.
+       리뉴얼 바 높이 ~ 56px + safe-area. JS 가 --helix-branch-cta-bottom
+       을 동적으로 갱신해서 정확한 오프셋 부여. */
+    bottom: calc(var(--helix-branch-cta-bottom, 16px) + env(safe-area-inset-bottom, 0px));
+    z-index: 99997;
+    /* 칩/패널이 화면 밖에서 진입 — 페이지 로드 시 슬라이드 업 */
+    transform: translateY(140%);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .helix-branch-cta.is-mounted {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* 토글 칩 — 접힌 기본 상태 */
+  .helix-branch-cta__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px 10px 12px;
+    background: rgba(13, 17, 23, 0.96);
+    color: #ffffff;
+    border: 1px solid rgba(0, 117, 214, 0.6);
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+  }
+  .helix-branch-cta__toggle:hover {
+    background: rgba(0, 117, 214, 0.92);
+  }
+
+  .helix-branch-cta__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #0075d6;
+    color: #ffffff;
+  }
+  .helix-branch-cta__icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .helix-branch-cta__label {
+    line-height: 1;
+  }
+
+  .helix-branch-cta__chevron {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid currentColor;
+    border-top: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 0.25s ease;
+    margin-left: 2px;
+  }
+  .helix-branch-cta.is-open .helix-branch-cta__chevron {
+    transform: rotate(135deg);
+  }
+
+  /* 펼침 패널 — 칩 위로 솟아 오름 */
+  .helix-branch-cta__panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: rgba(13, 17, 23, 0.97);
+    border: 1px solid rgba(0, 117, 214, 0.45);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+    transform-origin: bottom right;
+    pointer-events: none;
+    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .helix-branch-cta.is-open .helix-branch-cta__panel {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .helix-branch-cta__title {
+    margin: 0 2px 2px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8a97a3;
+    letter-spacing: 0.04em;
+  }
+
+  .helix-branch-cta__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #ffffff;
+    color: #1a2230;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .helix-branch-cta__row:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+  }
+
+  .helix-branch-cta__name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .helix-branch-cta__tel {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0075d6;
+    letter-spacing: 0.02em;
+  }
+}

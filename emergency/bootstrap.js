@@ -9,6 +9,30 @@
 (function () {
   'use strict';
 
+  /* ─────────────────────────────────────────────────────────────
+     STAGING SELF-REDIRECT
+     ─────────────────────────────────────────────────────────────
+     Webflow 페이지 head 는 항상 @main/emergency/bootstrap.js 를
+     로드한다. 그래서 새 파일을 FILES 에 추가하는 변경은 @main 까지
+     머지해야 staging 에서도 동작했다 — staging 의미 무력화 문제.
+
+     이 블록이: 스테이징 도메인 (*.webflow.io) 이면 @staging 의 같은
+     bootstrap 을 한 번 더 불러서 그쪽 (최신 FILES) 로 실행한다.
+     두 번째 실행 (= @staging 에서 로드된 자기 자신) 은 플래그 보고
+     redirect 를 skip → 정상 진행. 결과적으로 staging 도메인에서는
+     @staging 의 bootstrap + FILES 배열이 작동.
+     ───────────────────────────────────────────────────────────── */
+  if (!window.__helixEmergencyBootstrapRedirected &&
+      /\.webflow\.io$/i.test(location.hostname)) {
+    window.__helixEmergencyBootstrapRedirected = true;
+    var __s = document.createElement('script');
+    __s.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@staging/emergency/bootstrap.js?t=' +
+              Math.floor(Date.now() / 60000);
+    __s.async = false;
+    document.head.appendChild(__s);
+    return;
+  }
+
   /* 첫 화면 이미지 우선 로드 — Webflow 가 모든 <img> 에 loading="lazy" 를
      자동으로 박아서 hero/상단 이미지가 늦게 뜨는 문제. */
   (function eagerLoadAboveFold() {
@@ -71,6 +95,9 @@
     /* 응급 페이지 하단 리뉴얼 고정 바 (모바일 전용) */
     'emergency/renewal-bar.css',
     'emergency/renewal-bar.js',
+    /* 응급 페이지 하단 지점 CTA 접이식 칩 (세로 모바일 전용) */
+    'emergency/branch-cta.css',
+    'emergency/branch-cta.js',
     /* 푸터 */
     'home/global/footer.css',
     'home/global/footer.js'

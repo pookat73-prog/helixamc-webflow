@@ -291,6 +291,33 @@
   }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   세로 모바일 — 지점 CTA 카드 (서초/일산) 모달 열릴 때 아래에서 등장
+   ─────────────────────────────────────────────────────────────
+   모달 패널은 위 .helix-emergency-modal.is-open 트랜지션으로 페이드/스케일
+   되고, 그 안 두 지점 박스만 추가로 아래→제자리 슬라이드 + 페이드인.
+   두 박스는 살짝 시차 (0.06s 스태거). 세로 모바일 (orientation portrait
+   + ≤767px) 한정 — 가로/태블릿/데스크탑 무영향. */
+@media (orientation: portrait) and (max-width: 767px) {
+  .helix-emergency-modal.is-open .helix-emergency-modal_branch {
+    animation: helix-em-branch-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
+    will-change: transform, opacity;
+  }
+  .helix-emergency-modal.is-open .helix-emergency-modal_branch:nth-child(2) {
+    animation-delay: 0.24s;
+  }
+}
+@keyframes helix-em-branch-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* 모달 열린 동안 배경 스크롤 잠금 */
 html.helix-emergency-modal-open,
 body.helix-emergency-modal-open {
