@@ -12,31 +12,14 @@
   'use strict';
 
   var CONFIG = {
-    text: '이 페이지는 현재 리뉴얼 중입니다.'
+    text: '업데이트 작업 중입니다.'
   };
-
-  var DISMISS_KEY = 'helixRenewalBarDismissed';
 
   /* 중복 주입 가드 */
   if (window.__helixRenewalBarInit) return;
   window.__helixRenewalBarInit = true;
 
-  function dismissed() {
-    try {
-      return window.sessionStorage.getItem(DISMISS_KEY) === '1';
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function setDismissed() {
-    try {
-      window.sessionStorage.setItem(DISMISS_KEY, '1');
-    } catch (e) {}
-  }
-
   function build() {
-    if (dismissed()) return;
     if (document.querySelector('.helix-renewal-bar')) return;
 
     var bar = document.createElement('div');
@@ -49,22 +32,7 @@
     text.textContent = CONFIG.text;
     bar.appendChild(text);
 
-    var close = document.createElement('button');
-    close.className = 'helix-renewal-bar__close';
-    close.setAttribute('type', 'button');
-    close.setAttribute('aria-label', '닫기');
-    close.innerHTML = '&times;';
-    bar.appendChild(close);
-
     document.body.appendChild(bar);
-
-    close.addEventListener('click', function () {
-      bar.classList.remove('is-open');
-      setDismissed();
-      setTimeout(function () {
-        if (bar.parentNode) bar.parentNode.removeChild(bar);
-      }, 450);
-    });
 
     /* 다음 프레임에 is-open 부여 → 하단에서 스르륵 슬라이드 업 */
     requestAnimationFrame(function () {
