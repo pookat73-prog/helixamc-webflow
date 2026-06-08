@@ -92,9 +92,10 @@
        없으면 listen 만 하고 zero overhead. 데이터: emergency/data/<slug>.json */
     'emergency/modal.css',
     'emergency/modal.js',
-    /* 응급 페이지 하단 리뉴얼 고정 바 (모바일 전용) */
-    'emergency/renewal-bar.css',
-    'emergency/renewal-bar.js',
+    /* 응급 페이지 하단 리뉴얼 고정 바 (모바일 전용) — 안내문 끔.
+       파일은 보존, 다음 페이지에서 다시 활성화하려면 아래 두 줄 주석 해제. */
+    // 'emergency/renewal-bar.css',
+    // 'emergency/renewal-bar.js',
     /* 응급 페이지 하단 지점 CTA 접이식 칩 (세로 모바일 전용) */
     'emergency/branch-cta.css',
     'emergency/branch-cta.js',
