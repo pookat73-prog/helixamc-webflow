@@ -7,6 +7,21 @@
 (function () {
   'use strict';
 
+  /* STAGING SELF-REDIRECT — Webflow head 는 @main 으로 고정이라
+     새 파일을 FILES 에 추가하는 변경은 main 머지 전엔 staging 에
+     안 들어왔던 문제. 스테이징 도메인이면 @staging bootstrap 을
+     재로드해서 그쪽 FILES 로 실행한다. 2회차는 flag 보고 skip. */
+  if (!window.__helixAboutBootstrapRedirected &&
+      /\.webflow\.io$/i.test(location.hostname)) {
+    window.__helixAboutBootstrapRedirected = true;
+    var __s = document.createElement('script');
+    __s.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@staging/about/bootstrap.js?t=' +
+              Math.floor(Date.now() / 60000);
+    __s.async = false;
+    document.head.appendChild(__s);
+    return;
+  }
+
   /* 첫 화면 이미지 우선 로드 — Webflow 가 모든 <img> 에 loading="lazy" 를
      자동으로 박아서 hero/상단 이미지가 늦게 뜨는 문제. 첫 ~1.5 화면 분량
      안에 들어오는 이미지만 eager + fetchpriority:high 로 승격. */
