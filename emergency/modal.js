@@ -64,6 +64,45 @@
     ['마비',            'paralysis']
   ];
 
+  /* 11개 증상 데이터 인라인 — 클릭 시 네트워크 0회로 즉시 모달 표시.
+     전체 합쳐도 ~3.7KB 라 bootstrap 부담 없음. 데이터 수정 시 여기 + data/*.json 둘 다 갱신.
+     (data/*.json 은 인라인에 없는 slug 들어와도 동작하도록 fallback 으로 유지) */
+  var INLINE_DATA = {
+    'collapse': { name: '온몸에 힘이 없음',
+      highlights: ['억지로 세우거나 걷게 하지 말기', '목·가슴 압박 금지'],
+      catNotes: ['소리 없이 갑자기 주저앉거나 몸에 힘없이 늘어짐', '고개를 들기 어려워함', '일시적으로 회복돼도 재발 가능성이 높아 즉시 내원 필요'] },
+    'severe-pain': { name: '극심한 통증',
+      highlights: ['사람용 진통제 절대 금지', '조심히 이동'],
+      catNotes: ['울음 없이 조용해지는 것 자체가 심한 통증 신호', '빠르고 얕은 호흡, 몸을 말고 숨어버리는 행동', '만지면 으르렁거리거나 갑작스러운 공격성 증가'] },
+    'proptosis': { name: '안구돌출',
+      highlights: ['안구를 눌러 넣으려고 하지 말기', '생리식염수 적신 거즈로 안구 보호'],
+      catNotes: ['발생 빈도는 낮지만 조직 손상이 더 빠르게 진행됨', '안구 주변 피하출혈이 심하게 나타남', '통증으로 발로 눈을 긁다 악화될 수 있어 즉각적 보호 필요'] },
+    'hemorrhage': { name: '과다출혈',
+      highlights: ['깨끗한 천으로 압박', '출혈 부위를 위로 향하기'],
+      catNotes: ['적은 출혈에도 빠르게 빈혈이 진행될 수 있음', '행동이 갑자기 조용해지거나 호흡이 빨라짐', '겉으로 보이지 않는 내부 출혈 가능성도 고려 필요'] },
+    'dyspnea': { name: '호흡곤란',
+      highlights: ['가슴·목 압박 금지', '불필요한 자극 최소화'],
+      catNotes: ['가슴과 복부가 크게 들썩이는 복식호흡', '앞다리를 벌리고 선 자세', '숨소리 없이 조용히 숨 차하는 모습'] },
+    'hyperthermia': { name: '고체온',
+      highlights: ['체온 서서히 낮추기', '얼음물 사용 금지'],
+      catNotes: ['헐떡임 없이 조용히 진행되는 고체온', '호흡이 약간 빨라지거나 몸을 바닥에 깊게 늘어뜨림', '차 안이나 좁은 공간에 장시간 있었던 경우 특히 위험'] },
+    'hypothermia': { name: '저체온',
+      highlights: ['담요로 체온 서서히 올리기', '핫팩은 수건에 감싸 간접 사용'],
+      catNotes: ['떨림 없이 바로 무기력해지고 움직임이 줄어듦', '몸을 둥글게 말고 꼼짝 않는 자세 유지', '잇몸·혀가 창백하거나 차가움'] },
+    'seizure': { name: '발작',
+      highlights: ['억지로 잡거나 입에 손 넣지 말기', '발작 시간 기록'],
+      catNotes: ['짧은 멍해짐, 시선 고정, 턱 떨림', '갑자기 깜짝 놀란 듯 뛰어오르는 동작', '발작 후 일시적 공격성 증가'] },
+    'syncope': { name: '실신',
+      highlights: ['가능하면 실신 순간 영상 확보', '물·음식 즉시 섭취 금지'],
+      catNotes: ['심장 관련 부정맥과 연관된 경우가 많음', '짧게 회복돼도 매우 위험', '허탈·구토·급격한 불안 동반 가능'] },
+    'shock': { name: '쇼크',
+      highlights: ['담요 등으로 체온 유지', '과한 움직임 금지'],
+      catNotes: ["심박수가 정상이거나 오히려 낮아지는 '숨은 쇼크'", '과도하게 얕은 호흡, 몸을 말고 숨어버리는 행동', '잇몸이 창백하거나 노란빛을 띰'] },
+    'paralysis': { name: '마비',
+      highlights: ['억지로 걷게 하지 말기', '최대한 움직임 최소화해 이동'],
+      catNotes: ['갑작스러운 뒷다리 마비와 비명에 가까운 통증', '뒷다리 발바닥이 차갑고 창백함', '호흡 곤란'] }
+  };
+
   var dataCache = {};
   var modalEl = null;
   var lastFocus = null;
@@ -81,6 +120,12 @@
 
   function fetchSymptom(slug) {
     if (dataCache[slug]) return dataCache[slug];
+    /* 인라인 데이터 — 네트워크 없이 즉시 resolve */
+    if (INLINE_DATA[slug]) {
+      var inlined = Promise.resolve(INLINE_DATA[slug]);
+      dataCache[slug] = inlined;
+      return inlined;
+    }
     var url = dataUrl(slug);
     log('fetching', slug, url);
     var p = fetch(url, { cache: 'no-store' })
@@ -303,8 +348,12 @@
     e.preventDefault();
     log('click open', t.slug);
 
-    /* 즉시 모달 셸 표시 — 이름은 카드 텍스트에서 바로 꺼내 채움.
-       상세 내용은 fetch 끝나면 채워넣음. 그 사이엔 스켈레톤. */
+    /* 인라인 데이터가 있으면 바로 풀 렌더 — 스켈레톤 플래시 없음.
+       없는 slug 만 스켈레톤 → fetch 폴백. */
+    if (INLINE_DATA[t.slug]) {
+      open(INLINE_DATA[t.slug]);
+      return;
+    }
     open({ name: t.name || t.slug, highlights: [], catNotes: [] });
     var mNow = ensureModal();
     fillSkeleton(mNow.querySelector('.helix-emergency-modal_highlights'), 2);
