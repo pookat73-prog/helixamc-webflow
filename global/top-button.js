@@ -67,21 +67,45 @@
     dbg('base bottom=', baseBottomPx + 'px');
   }
 
+  /* 다른 플로팅 요소들 (리뉴얼 바, 지점 CTA 카드 등) 과도 겹치지 않게.
+     화면 하단에 떠 있는 임의의 fixed 요소 위로 항상 GAP_VW 띄움. */
+  var FLOATING_SELECTORS = [
+    '.helix-renewal-bar.is-open',
+    '.helix-branch-cta.is-mounted'
+  ];
+
   function update() {
     rafId = 0;
     if (!btn) return;
-    var footer = findFooter();
-    if (!footer) { if (btn.style.bottom) btn.style.bottom = ''; return; }
     var vh = window.innerHeight;
     var vw = window.innerWidth;
     var gapPx = (GAP_VW / 100) * vw;
-    var fRect = footer.getBoundingClientRect();
-    if (fRect.top >= vh) {
+
+    /* 1) 푸터 overlap */
+    var maxOverlap = 0;
+    var footer = findFooter();
+    if (footer) {
+      var fRect = footer.getBoundingClientRect();
+      if (fRect.top < vh) maxOverlap = Math.max(maxOverlap, vh - fRect.top);
+    }
+
+    /* 2) 다른 플로팅 요소들 — 본인 제외, 화면 안에 있는 것만 */
+    FLOATING_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (el === btn || btn.contains(el)) return;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) return;
+        if (r.top >= vh) return;
+        var occupy = vh - r.top;
+        if (occupy > maxOverlap) maxOverlap = occupy;
+      });
+    });
+
+    if (maxOverlap === 0) {
       if (btn.style.bottom) btn.style.bottom = '';
       return;
     }
-    var overlap = vh - fRect.top;
-    var clamped = overlap + gapPx;
+    var clamped = maxOverlap + gapPx;
     if (clamped <= baseBottomPx) {
       if (btn.style.bottom) btn.style.bottom = '';
       return;
@@ -101,6 +125,18 @@
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', function () { readBase(); schedule(); });
     schedule();
+
+    /* 플로팅 요소 (리뉴얼 바, 지점 CTA, 그 안 펼침/접힘) 가 변할 때
+       오프셋 갱신. body 의 자식 추가/제거 + class 변경 감지. */
+    try {
+      var mo2 = new MutationObserver(schedule);
+      mo2.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style']
+      });
+    } catch (e) {}
     /* Webflow IX2 가 늦게 legacy 를 다시 박을 수 있어 짧게 반복 정리 */
     var n = 0;
     var iv = setInterval(function () {
