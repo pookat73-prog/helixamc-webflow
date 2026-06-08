@@ -32,7 +32,23 @@
     text.textContent = CONFIG.text;
     bar.appendChild(text);
 
+    /* X 닫기 — 현재 페이지뷰 동안만 숨김. 새로고침/재방문 시 다시 등장
+       (세션 지속성 없음 — 사용자 요청). */
+    var close = document.createElement('button');
+    close.className = 'helix-renewal-bar__close';
+    close.setAttribute('type', 'button');
+    close.setAttribute('aria-label', '닫기');
+    close.innerHTML = '&times;';
+    bar.appendChild(close);
+
     document.body.appendChild(bar);
+
+    close.addEventListener('click', function () {
+      bar.classList.remove('is-open');
+      setTimeout(function () {
+        if (bar.parentNode) bar.parentNode.removeChild(bar);
+      }, 450);
+    });
 
     /* 다음 프레임에 is-open 부여 → 하단에서 스르륵 슬라이드 업 */
     requestAnimationFrame(function () {

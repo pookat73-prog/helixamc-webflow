@@ -155,7 +155,8 @@
       }
     });
 
-    /* 리뉴얼 바 충돌 회피 */
+    /* 리뉴얼 바 충돌 회피 — 리뉴얼 바가 떠 있으면 그 위로 자리.
+       리뉴얼 바가 늦게 들어오거나 사용자가 X 로 닫는 변화 모두 반응. */
     function syncBottomOffset() {
       var renewal = document.querySelector('.helix-renewal-bar.is-open');
       var base = 14;
@@ -169,6 +170,19 @@
     setTimeout(syncBottomOffset, 600);
     setTimeout(syncBottomOffset, 1500);
     window.addEventListener('resize', syncBottomOffset);
+
+    /* DOM 변화 (리뉴얼 바 늦은 등장 / 닫힘 / class 변화) 즉시 반영 */
+    try {
+      var mo = new MutationObserver(function () {
+        syncBottomOffset();
+      });
+      mo.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style']
+      });
+    } catch (e) {}
 
     /* 진입 슬라이드 업 */
     requestAnimationFrame(function () {
