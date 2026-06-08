@@ -54,48 +54,55 @@
   }
 
   .helix-branch-cta__header {
-    margin: 0 0 8px;
+    margin: 0 0 10px;
     font-size: 14px;
     font-weight: 700;
     color: #d63838;
     letter-spacing: -0.01em;
     line-height: 1.2;
+    text-align: center;
+  }
+
+  /* 두 지점을 2컬럼 1로우로 배치. 각 지점은 세로 (로고 위, 아이콘 아래). */
+  .helix-branch-cta__rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
   .helix-branch-cta__row {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     gap: 10px;
-    padding: 8px 4px;
+    padding: 10px 6px;
     color: #1a2230;
     text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.15s ease;
-  }
-  .helix-branch-cta__row + .helix-branch-cta__row {
-    border-top: 1px solid #eef0f4;
+    border-radius: 10px;
+    background: #f7f9fc;
+    transition: background 0.15s ease, transform 0.15s ease;
   }
   .helix-branch-cta__row:hover,
   .helix-branch-cta__row:active {
-    background: #f5f8fc;
+    background: #eef3f9;
+    transform: translateY(-1px);
   }
 
   .helix-branch-cta__logo {
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 28px;
-    width: auto;
-    max-width: calc(100% - 80px);
-    object-fit: contain;
-    object-position: left center;
     display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 30px;
+    object-fit: contain;
+    object-position: center;
   }
 
   .helix-branch-cta__icons {
-    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 8px;
   }
   .helix-branch-cta__icon-btn {
     width: 30px;
