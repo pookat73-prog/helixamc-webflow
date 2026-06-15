@@ -31,6 +31,17 @@
      v3 = footer.css/.js 포함, v2 = 그 이전 */
   console.log('[helix-bootstrap] loader v3 (with footer interactions)');
 
+  /* 네이버 서치어드바이저 소유확인 — 무료 플랜이라 Webflow 커스텀 코드가
+     막혀 메타 태그를 head 에 못 박는 상황. JS 로 주입 시도 (네이버 크롤러가
+     JS 실행 안 하면 실패할 수 있음 — 그 경우 유료 플랜 일시 전환 필요). */
+  (function injectNaverVerification() {
+    if (document.querySelector('meta[name="naver-site-verification"]')) return;
+    var m = document.createElement('meta');
+    m.name = 'naver-site-verification';
+    m.content = 'd93dd7cdb7042860f56a85a6f80dfa5a';
+    (document.head || document.documentElement).appendChild(m);
+  })();
+
   /* 첫 화면 이미지 우선 로드 — Webflow 가 모든 <img> 에 loading="lazy" 를
      자동으로 박아서 hero/상단 이미지가 늦게 뜨는 문제. 첫 ~1.5 화면 분량
      안에 들어오는 이미지만 eager + fetchpriority:high 로 승격. 아래쪽
