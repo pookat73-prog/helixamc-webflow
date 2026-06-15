@@ -38,7 +38,7 @@
     if (document.querySelector('meta[name="naver-site-verification"]')) return;
     var m = document.createElement('meta');
     m.name = 'naver-site-verification';
-    m.content = '313fcbc845e658a162bb63ad899c9ad62be1b3e3';
+    m.content = '9407eafa782f0831db21ef8fda85d42d654c53a8';
     (document.head || document.documentElement).appendChild(m);
   })();
 
