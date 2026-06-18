@@ -39,16 +39,13 @@
   }
 
   function buildDirectionsUrl() {
-    /* 네이버 지도 모바일 앱/웹 공통 길찾기 URL.
-       slat/slng 없이 dlat/dlng/dname 만 주면 출발지를 사용자 현 위치로 잡음. */
-    var params = new URLSearchParams({
-      dlat: String(CLINIC.lat),
-      dlng: String(CLINIC.lng),
-      dname: CLINIC.name
-    });
-    return 'https://map.naver.com/p/directions/-/' +
-           encodeURIComponent(CLINIC.lat + ',' + CLINIC.lng + ',' + CLINIC.name) +
-           '/-/transit?' + params.toString();
+    /* 사용자 요청: "길찾기" 버튼이 실제 길찾기 화면이 아니라
+       네이버 지도의 서초 본원 플레이스(업체) 페이지로 가야 함.
+       플레이스 페이지 안에 영업정보·리뷰·길찾기 버튼이 다 들어 있어
+       사용자가 원하는 정보를 원스톱으로 봄. */
+    return CLINIC.naverPlaceId
+      ? 'https://map.naver.com/p/entry/place/' + CLINIC.naverPlaceId
+      : 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
   }
 
   function renderFallback(container, msg) {
