@@ -28,7 +28,42 @@
         "@type": "MedicalAudience",
         "audienceType": "Patient"
       },
-      "lastReviewed": "2026-06-18"
+      "lastReviewed": "2026-06-18",
+      "mainEntity": [
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-collapse"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-dyspnea"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-hemorrhage"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-hyperthermia"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-hypothermia"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-paralysis"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-proptosis"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-seizure"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-severe-pain"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-shock"
+        },
+        {
+          "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-syncope"
+        }
+      ]
     },
     {
       "@type": "EmergencyService",
@@ -62,6 +97,380 @@
       "description": "응급진료 24시간 연중무휴 · 야간응급진료 21:00~익일 09:00 · 외래진료 09:00~21:00"
     },
     {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-collapse",
+      "name": "온몸에 힘이 없음",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "collapse"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "억지로 세우거나 걷게 하지 말기"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "목·가슴 압박 금지"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "소리 없이 갑자기 주저앉거나 몸에 힘없이 늘어짐"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "고개를 들기 어려워함"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "일시적으로 회복돼도 재발 가능성이 높아 즉시 내원 필요"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-dyspnea",
+      "name": "호흡곤란",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "dyspnea"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "가슴·목 압박 금지"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "불필요한 자극 최소화"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "가슴과 복부가 크게 들썩이는 복식호흡"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "앞다리를 벌리고 선 자세"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "숨소리 없이 조용히 숨 차하는 모습"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-hemorrhage",
+      "name": "과다출혈",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "hemorrhage"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "깨끗한 천으로 압박"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "출혈 부위를 위로 향하기"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "적은 출혈에도 빠르게 빈혈이 진행될 수 있음"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "행동이 갑자기 조용해지거나 호흡이 빨라짐"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "겉으로 보이지 않는 내부 출혈 가능성도 고려 필요"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-hyperthermia",
+      "name": "고체온",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "hyperthermia"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "체온 서서히 낮추기"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "얼음물 사용 금지"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "헐떡임 없이 조용히 진행되는 고체온"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "호흡이 약간 빨라지거나 몸을 바닥에 깊게 늘어뜨림"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "차 안이나 좁은 공간에 장시간 있었던 경우 특히 위험"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-hypothermia",
+      "name": "저체온",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "hypothermia"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "담요로 체온 서서히 올리기"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "핫팩은 수건에 감싸 간접 사용"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "떨림 없이 바로 무기력해지고 움직임이 줄어듦"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "몸을 둥글게 말고 꼼짝 않는 자세 유지"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "잇몸·혀가 창백하거나 차가움"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-paralysis",
+      "name": "마비",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "paralysis"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "억지로 걷게 하지 말기"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "최대한 움직임 최소화해 이동"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "갑작스러운 뒷다리 마비와 비명에 가까운 통증"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "뒷다리 발바닥이 차갑고 창백함"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "호흡 곤란"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-proptosis",
+      "name": "안구돌출",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "proptosis"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "안구를 눌러 넣으려고 하지 말기"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "생리식염수 적신 거즈로 안구 보호"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "발생 빈도는 낮지만 조직 손상이 더 빠르게 진행됨"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "안구 주변 피하출혈이 심하게 나타남"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "통증으로 발로 눈을 긁다 악화될 수 있어 즉각적 보호 필요"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-seizure",
+      "name": "발작",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "seizure"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "억지로 잡거나 입에 손 넣지 말기"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "발작 시간 기록"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "짧은 멍해짐, 시선 고정, 턱 떨림"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "갑자기 깜짝 놀란 듯 뛰어오르는 동작"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "발작 후 일시적 공격성 증가"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-severe-pain",
+      "name": "극심한 통증",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "severe-pain"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "사람용 진통제 절대 금지"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "조심히 이동"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "울음 없이 조용해지는 것 자체가 심한 통증 신호"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "빠르고 얕은 호흡, 몸을 말고 숨어버리는 행동"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "만지면 으르렁거리거나 갑작스러운 공격성 증가"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-shock",
+      "name": "쇼크",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "shock"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "담요 등으로 체온 유지"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "과한 움직임 금지"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "심박수가 정상이거나 오히려 낮아지는 '숨은 쇼크'"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "과도하게 얕은 호흡, 몸을 말고 숨어버리는 행동"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "잇몸이 창백하거나 노란빛을 띰"
+        }
+      ]
+    },
+    {
+      "@type": "MedicalCondition",
+      "@id": "https://helix-amc.com/eunggeub-jeungsang#condition-syncope",
+      "name": "실신",
+      "code": {
+        "@type": "MedicalCode",
+        "codingSystem": "helix-emergency",
+        "codeValue": "syncope"
+      },
+      "possibleTreatment": [
+        {
+          "@type": "MedicalTherapy",
+          "name": "가능하면 실신 순간 영상 확보"
+        },
+        {
+          "@type": "MedicalTherapy",
+          "name": "물·음식 즉시 섭취 금지"
+        }
+      ],
+      "signOrSymptom": [
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "심장 관련 부정맥과 연관된 경우가 많음"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "짧게 회복돼도 매우 위험"
+        },
+        {
+          "@type": "MedicalSignOrSymptom",
+          "name": "허탈·구토·급격한 불안 동반 가능"
+        }
+      ]
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -83,5 +492,5 @@
 </script>
 <div hidden aria-hidden="true" data-seo-fallback>
   <h2>야간응급 안내</h2>
-  <ul><li>응급 전화: 02-2135-9119</li><li>야간응급: 매일 21:00 ~ 익일 09:00</li><li>외래: 매일 09:00 ~ 21:00</li><li>위치: 서울특별시 서초구 신반포로 162, 르본시티 2층</li><li>※ 증상별 응급 판단 가이드는 페이지 본문 참조</li></ul>
+  <ul><li>응급 전화: 02-2135-9119</li><li>야간응급: 매일 21:00 ~ 익일 09:00</li><li>외래: 매일 09:00 ~ 21:00</li><li>위치: 서울특별시 서초구 신반포로 162, 르본시티 2층</li><li></li><li>응급증상 안내 (병원 도착 전 대처 요령):</li><li>· 온몸에 힘이 없음 — 증상: 소리 없이 갑자기 주저앉거나 몸에 힘없이 늘어짐, 고개를 들기 어려워함, 일시적으로 회복돼도 재발 가능성이 높아 즉시 내원 필요 / 대처: 억지로 세우거나 걷게 하지 말기, 목·가슴 압박 금지</li><li>· 호흡곤란 — 증상: 가슴과 복부가 크게 들썩이는 복식호흡, 앞다리를 벌리고 선 자세, 숨소리 없이 조용히 숨 차하는 모습 / 대처: 가슴·목 압박 금지, 불필요한 자극 최소화</li><li>· 과다출혈 — 증상: 적은 출혈에도 빠르게 빈혈이 진행될 수 있음, 행동이 갑자기 조용해지거나 호흡이 빨라짐, 겉으로 보이지 않는 내부 출혈 가능성도 고려 필요 / 대처: 깨끗한 천으로 압박, 출혈 부위를 위로 향하기</li><li>· 고체온 — 증상: 헐떡임 없이 조용히 진행되는 고체온, 호흡이 약간 빨라지거나 몸을 바닥에 깊게 늘어뜨림, 차 안이나 좁은 공간에 장시간 있었던 경우 특히 위험 / 대처: 체온 서서히 낮추기, 얼음물 사용 금지</li><li>· 저체온 — 증상: 떨림 없이 바로 무기력해지고 움직임이 줄어듦, 몸을 둥글게 말고 꼼짝 않는 자세 유지, 잇몸·혀가 창백하거나 차가움 / 대처: 담요로 체온 서서히 올리기, 핫팩은 수건에 감싸 간접 사용</li><li>· 마비 — 증상: 갑작스러운 뒷다리 마비와 비명에 가까운 통증, 뒷다리 발바닥이 차갑고 창백함, 호흡 곤란 / 대처: 억지로 걷게 하지 말기, 최대한 움직임 최소화해 이동</li><li>· 안구돌출 — 증상: 발생 빈도는 낮지만 조직 손상이 더 빠르게 진행됨, 안구 주변 피하출혈이 심하게 나타남, 통증으로 발로 눈을 긁다 악화될 수 있어 즉각적 보호 필요 / 대처: 안구를 눌러 넣으려고 하지 말기, 생리식염수 적신 거즈로 안구 보호</li><li>· 발작 — 증상: 짧은 멍해짐, 시선 고정, 턱 떨림, 갑자기 깜짝 놀란 듯 뛰어오르는 동작, 발작 후 일시적 공격성 증가 / 대처: 억지로 잡거나 입에 손 넣지 말기, 발작 시간 기록</li><li>· 극심한 통증 — 증상: 울음 없이 조용해지는 것 자체가 심한 통증 신호, 빠르고 얕은 호흡, 몸을 말고 숨어버리는 행동, 만지면 으르렁거리거나 갑작스러운 공격성 증가 / 대처: 사람용 진통제 절대 금지, 조심히 이동</li><li>· 쇼크 — 증상: 심박수가 정상이거나 오히려 낮아지는 &#39;숨은 쇼크&#39;, 과도하게 얕은 호흡, 몸을 말고 숨어버리는 행동, 잇몸이 창백하거나 노란빛을 띰 / 대처: 담요 등으로 체온 유지, 과한 움직임 금지</li><li>· 실신 — 증상: 심장 관련 부정맥과 연관된 경우가 많음, 짧게 회복돼도 매우 위험, 허탈·구토·급격한 불안 동반 가능 / 대처: 가능하면 실신 순간 영상 확보, 물·음식 즉시 섭취 금지</li></ul>
 </div>

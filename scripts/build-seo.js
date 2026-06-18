@@ -41,6 +41,7 @@ const HOSPITAL = {
   sameAs: [
     'https://www.instagram.com/helix_amc/',
     'https://blog.naver.com/helix_amc',
+    'https://map.naver.com/p/entry/place/36786130',
   ],
   /* 인증 */
   certifications: [
@@ -80,7 +81,18 @@ const SEOCHO_BRANCH = {
 
 const ROOT = path.resolve(__dirname, '..');
 const DOCTORS_JSON = path.join(ROOT, 'seocho', 'doctors', 'data', '_all.json');
+const EMERGENCY_DIR = path.join(ROOT, 'emergency', 'data');
 const OUT_DIR = path.join(ROOT, 'seo-snippets');
+
+function loadEmergencyConditions() {
+  if (!fs.existsSync(EMERGENCY_DIR)) return [];
+  const files = fs.readdirSync(EMERGENCY_DIR).filter(f => f.endsWith('.json')).sort();
+  return files.map(f => {
+    const slug = f.replace(/\.json$/, '');
+    const d = JSON.parse(fs.readFileSync(path.join(EMERGENCY_DIR, f), 'utf8'));
+    return { slug, ...d };
+  });
+}
 
 function loadDoctors() {
   const data = JSON.parse(fs.readFileSync(DOCTORS_JSON, 'utf8'));
@@ -354,7 +366,27 @@ function buildSeocho(doctors) {
   return wrapJsonLd(jsonld) + '\n' + fallback;
 }
 
-function buildEmergency() {
+function conditionNode(url, c) {
+  const node = {
+    '@type': 'MedicalCondition',
+    '@id': `${url}#condition-${c.slug}`,
+    name: c.name,
+    code: { '@type': 'MedicalCode', codingSystem: 'helix-emergency', codeValue: c.slug },
+  };
+  if (Array.isArray(c.highlights) && c.highlights.length) {
+    node.possibleTreatment = c.highlights.map(t => ({
+      '@type': 'MedicalTherapy', name: t,
+    }));
+  }
+  if (Array.isArray(c.catNotes) && c.catNotes.length) {
+    node.signOrSymptom = c.catNotes.map(s => ({
+      '@type': 'MedicalSignOrSymptom', name: s,
+    }));
+  }
+  return node;
+}
+
+function buildEmergency(conditions) {
   const url = HOSPITAL.origin + '/eunggeub-jeungsang';
   const graph = [
     {
@@ -368,6 +400,7 @@ function buildEmergency() {
       isPartOf: { '@id': `${HOSPITAL.origin}/#website` },
       audience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
       lastReviewed: new Date().toISOString().slice(0, 10),
+      mainEntity: conditions.map(c => ({ '@id': `${url}#condition-${c.slug}` })),
     },
     {
       '@type': 'EmergencyService',
@@ -385,19 +418,27 @@ function buildEmergency() {
       ],
       description: '응급진료 24시간 연중무휴 · 야간응급진료 21:00~익일 09:00 · 외래진료 09:00~21:00',
     },
+    ...conditions.map(c => conditionNode(url, c)),
     breadcrumb([
       { name: '홈', url: HOSPITAL.origin },
       { name: '응급증상', url },
     ]),
   ];
   const jsonld = { '@context': 'https://schema.org', '@graph': graph };
-  const fallback = fallbackHtmlBlock('야간응급 안내', [
+  const fallbackItems = [
     `응급 전화: ${HOSPITAL.phoneDisplay}`,
     `야간응급: 매일 21:00 ~ 익일 09:00`,
     `외래: 매일 09:00 ~ 21:00`,
     `위치: ${SEOCHO_BRANCH.address.addressRegion} ${SEOCHO_BRANCH.address.addressLocality} ${SEOCHO_BRANCH.address.streetAddress}`,
-    `※ 증상별 응급 판단 가이드는 페이지 본문 참조`,
-  ]);
+    '',
+    '응급증상 안내 (병원 도착 전 대처 요령):',
+    ...conditions.map(c => {
+      const sx = (c.catNotes || []).join(', ');
+      const tx = (c.highlights || []).join(', ');
+      return `· ${c.name}${sx ? ' — 증상: ' + sx : ''}${tx ? ' / 대처: ' + tx : ''}`;
+    }),
+  ];
+  const fallback = fallbackHtmlBlock('야간응급 안내', fallbackItems);
   return wrapJsonLd(jsonld) + '\n' + fallback;
 }
 
@@ -405,13 +446,14 @@ function buildEmergency() {
 
 function main() {
   const doctors = loadDoctors();
+  const conditions = loadEmergencyConditions();
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
   const pages = {
     'home.html':              buildHome(),
     'discover-helix.html':    buildAbout(),
     'seoco-bonweon.html':     buildSeocho(doctors),
-    'eunggeub-jeungsang.html': buildEmergency(),
+    'eunggeub-jeungsang.html': buildEmergency(conditions),
   };
 
   for (const [file, content] of Object.entries(pages)) {
@@ -424,7 +466,7 @@ function main() {
     fs.writeFileSync(path.join(OUT_DIR, file), header + content + '\n');
     console.log(`✓ seo-snippets/${file} (${Buffer.byteLength(content, 'utf8')} bytes)`);
   }
-  console.log(`\n총 의료진 ${doctors.length}명 처리됨.`);
+  console.log(`\n총 의료진 ${doctors.length}명 · 응급증상 ${conditions.length}건 처리됨.`);
 }
 
 main();
