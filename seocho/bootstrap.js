@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.13 — SHA 라운드트립 제거 + 번들 선제 fetch)
+   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.14 — 의료진 모달 정식 도메인 활성화)
    Webflow 서초본원 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
