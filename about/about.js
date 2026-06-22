@@ -2422,16 +2422,17 @@
    ABOUT 페이지 — 준비중 토스트 마킹
    대상: SVIC(.link-block) / 헤더 / 서브헤더 제외한 본문 버튼 전부
      · .cta_seocho_button, .cta-style — 본문 CTA(블루)
-     · #cert .cert-plus — 인증 카드 "+" 버튼
    coming-soon.js 가 캡처 단계에서 클릭 가로채고 토스트 노출.
+
+   NOTE: #cert .cert-plus 는 의도적으로 제외 — about/cert-modal/modal.js 가
+   클릭을 가로채 인증 상세 모달을 띄움.
    ================================================================ */
 (function () {
   'use strict';
 
   var COMING_SELECTORS = [
     '.cta_seocho_button',
-    '.cta-style',
-    '#cert .cert-plus'
+    '.cta-style'
   ];
 
   function isInFooter(el) {
