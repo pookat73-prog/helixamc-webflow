@@ -27,8 +27,10 @@
        이벤트 가로채기에서 슬러그 화이트리스트로 한 번 더 거른다. */
   }
 
-  /* 모달이 가로챌 상세페이지 슬러그 (about 페이지의 + 버튼 링크 대상) */
-  var DETAIL_SLUGS = ['/yiryojin', '/yiryojin-copy', '/yiryojin-copy-2'];
+  /* 모달이 가로챌 상세페이지 슬러그 (about 페이지의 + 버튼 링크 대상)
+     - /cert-aaha: AAHA 인증 카드 (구 /yiryojin 슬러그에서 변경)
+     - /yiryojin-copy, /yiryojin-copy-2: 나머지 두 장 */
+  var DETAIL_SLUGS = ['/cert-aaha', '/yiryojin', '/yiryojin-copy', '/yiryojin-copy-2'];
 
   var cache = Object.create(null);  // slug → string[] (section outerHTML 배열)
   var overlay = null;
