@@ -65,12 +65,17 @@
           '<p class="hx-fcta-form__done-desc">빠른 시간 내에 연락드리겠습니다.<br>감사합니다.</p>',
         '</div>',
 
+        /* 헤더 밑 안내문구 */
+        '<p class="hx-fcta-form__intro" id="hxFctaIntro">',
+          '신청해 주시면 확인 후 빠르게 연락드리겠습니다.',
+        '</p>',
+
         /* 폼 */
         '<form class="hx-fcta-form" id="hxFctaForm" novalidate>',
           '<div class="hx-fcta-form__group">',
             '<label class="hx-fcta-form__label" for="hxFcta_owner">',
-              '보호자 이름<span aria-hidden="true">*</span></label>',
-            '<input class="hx-fcta-form__input" id="hxFcta_owner" name="보호자이름"',
+              '보호자님 성함<span aria-hidden="true">*</span></label>',
+            '<input class="hx-fcta-form__input" id="hxFcta_owner" name="보호자성함"',
               ' type="text" placeholder="홍길동" required autocomplete="name">',
           '</div>',
           '<div class="hx-fcta-form__group">',
@@ -97,6 +102,34 @@
             '</div>',
           '</div>',
           '<div class="hx-fcta-form__group">',
+            '<label class="hx-fcta-form__label" for="hxFcta_age">나이</label>',
+            '<div class="hx-fcta-form__inline">',
+              '<input class="hx-fcta-form__input" id="hxFcta_age" name="나이"',
+                ' type="text" placeholder="예) 3살 / 6개월">',
+              '<label class="hx-fcta-form__radio-label hx-fcta-form__age-unknown">',
+                '<input type="checkbox" id="hxFcta_age_unknown"> 모름',
+              '</label>',
+            '</div>',
+          '</div>',
+          '<div class="hx-fcta-form__group">',
+            '<p class="hx-fcta-form__label" id="hxFcta_sex_label">성별</p>',
+            '<div class="hx-fcta-form__radio-group" role="radiogroup"',
+              ' aria-labelledby="hxFcta_sex_label">',
+              '<label class="hx-fcta-form__radio-label">',
+                '<input type="radio" name="성별" value="남"> 남',
+              '</label>',
+              '<label class="hx-fcta-form__radio-label">',
+                '<input type="radio" name="성별" value="여"> 여',
+              '</label>',
+              '<label class="hx-fcta-form__radio-label">',
+                '<input type="radio" name="성별" value="중성화 남"> 중성화 남',
+              '</label>',
+              '<label class="hx-fcta-form__radio-label">',
+                '<input type="radio" name="성별" value="중성화 여"> 중성화 여',
+              '</label>',
+            '</div>',
+          '</div>',
+          '<div class="hx-fcta-form__group">',
             '<label class="hx-fcta-form__label" for="hxFcta_condition">기저질환</label>',
             '<input class="hx-fcta-form__input" id="hxFcta_condition" name="기저질환"',
               ' type="text" placeholder="없으면 비워두세요">',
@@ -110,7 +143,7 @@
             '<div class="hx-fcta-form__privacy">',
               '<div class="hx-fcta-form__privacy-text">',
                 '개인정보 수집·이용 동의<br><br>',
-                '수집 항목: 보호자 이름, 연락처, 반려동물 이름·종, 기저질환, 증상<br>',
+                '수집 항목: 보호자님 성함, 연락처, 반려동물 이름·종·나이·성별, 기저질환, 증상<br>',
                 '수집 목적: 상담 신청 접수 및 회신<br>',
                 '보유 기간: 상담 완료 후 1년<br>',
                 '귀하는 개인정보 수집·이용을 거부할 권리가 있으며,',
@@ -146,6 +179,16 @@
   var form     = document.getElementById('hxFctaForm');
   var submitBtn= document.getElementById('hxFctaSubmit');
   var done     = document.getElementById('hxFctaDone');
+
+  /* ── 나이 '모름' 체크 시 입력칸 비활성화 ── */
+  var ageInput   = document.getElementById('hxFcta_age');
+  var ageUnknown = document.getElementById('hxFcta_age_unknown');
+  if (ageUnknown && ageInput) {
+    ageUnknown.addEventListener('change', function () {
+      ageInput.disabled = ageUnknown.checked;
+      if (ageUnknown.checked) ageInput.value = '';
+    });
+  }
 
   /* ── 패널 열기·닫기 ── */
   var panelOpen = false;
@@ -252,13 +295,19 @@
       name:           'floating-cta-form',
       source:         location.href,
       'email-subject': '[상담신청] ' + ownerVal,
-      '보호자이름':   ownerVal,
+      '보호자성함':   ownerVal,
       '연락처':       phoneVal,
       '반려동물이름': document.getElementById('hxFcta_pet').value.trim(),
       '종':           (form.querySelector('input[name="종"]:checked') || {}).value || '',
+      '나이':         document.getElementById('hxFcta_age_unknown').checked
+                        ? '모름'
+                        : document.getElementById('hxFcta_age').value.trim(),
+      '성별':         (form.querySelector('input[name="성별"]:checked') || {}).value || '',
       '기저질환':     document.getElementById('hxFcta_condition').value.trim(),
       '증상':         document.getElementById('hxFcta_symptom').value.trim(),
       '개인정보동의': '동의'
+      /* TODO(차후): 사진 첨부 — '사진': <업로드된 파일 URL>. 입력 UI 는
+         .hx-fcta-form__group 패턴으로 추가, 업로드 후 URL 을 여기 포함. */
     };
 
     fetch('https://webflow.com/api/v1/form/' + SITE_ID, {
