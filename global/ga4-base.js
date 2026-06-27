@@ -27,10 +27,23 @@
 
   var GA_ID = 'G-PWCB5MVC32';
 
+  /* Webflow Site Settings 의 GA4 통합이 켜져 있으면 Webflow 가 이미 동일
+     gtag.js 를 inject 한 상태. 그 경우 우리는 page_view 중복 발사 방지를
+     위해 본체 inject 와 config 호출은 skip 하고, gtag 함수 / dataLayer 만
+     보장 (커스텀 이벤트 코드가 안전하게 gtag 호출 가능하도록). */
+  var alreadyInjected = !!document.querySelector(
+    'script[src*="googletagmanager.com/gtag/js?id=' + GA_ID + '"]'
+  );
+
   /* dataLayer + gtag stub 동기 정의 — 이후 모든 gtag 호출 안전 큐잉 */
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
   window.gtag = window.gtag || gtag;
+
+  if (alreadyInjected) {
+    console.log('[helix-ga4] Webflow 통합 GA 감지 — 중복 inject skip');
+    return;
+  }
 
   window.gtag('js', new Date());
   window.gtag('config', GA_ID);
