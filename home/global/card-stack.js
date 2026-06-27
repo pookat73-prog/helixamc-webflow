@@ -18,12 +18,14 @@
 (function () {
   'use strict';
 
-  /* 스크립트 로드 즉시 마커 — bootstrap 이 정상적으로 이 파일을 가져왔는지
-     확인용. [Deck] 로그가 아예 안 보이면 이 파일 자체가 로드 안 된 것. */
-  console.log('[Deck] card-stack.js loaded');
+  /* 디버그 로그는 ?debug-deck=1 일 때만. 카드덱이 없는 페이지(홈 등)에서
+     재시도 로그가 콘솔을 도배하던 문제 — 게이트로 복원. */
+  var DECK_DEBUG = /[?&]debug-deck=1/.test(location.search);
 
-  /* 디버그: 항상 켜둠 (안정화 후 다시 ?debug-deck=1 게이트로 복원) */
+  if (DECK_DEBUG) console.log('[Deck] card-stack.js loaded');
+
   function log() {
+    if (!DECK_DEBUG) return;
     console.log.apply(console, ['[Deck]'].concat([].slice.call(arguments)));
   }
 
