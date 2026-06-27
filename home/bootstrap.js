@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - AUTO BOOTSTRAP LOADER (v3.2 — global top button)
+   HELIX AMC - AUTO BOOTSTRAP LOADER (v3.3 — floating CTA, cache refresh)
    Pasted once in Webflow. Always serves the latest commit.
 
    Strategy:
