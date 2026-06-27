@@ -1,29 +1,64 @@
 /* ================================================================
-   HELIX AMC - home/bootstrap-v3.js (REDIRECT SHIM)
+   HELIX AMC - home/bootstrap-v3.js (SHA-RESOLVING ENTRY)
    ================================================================
-   호환성 shim. Webflow head 에 옛 v3 src 가 박혀 있는 페이지가
-   있어, 이 파일은 본체 home/bootstrap.js 를 한 번 더 fetch 해서
-   실행함. 결과적으로 FILES 배열은 본체 한 곳에서만 관리.
+   Webflow head 에 박힌 진입점 스크립트.
 
-   - staging / production 분기는 본체와 동일 (hostname 기반)
-   - 중복 실행 가드 (__HELIX_BOOTSTRAP_V3_REDIRECTED)
-   - 캐시버스트: 분 단위 timestamp
+   [예전 방식의 문제]
+   본체 bootstrap.js 를 @staging / @main "브랜치 주소" 로 불렀음.
+   jsDelivr 는 브랜치 주소를 최대 12시간 캐시 → FILES 배열에 새 파일을
+   추가해도 옛 bootstrap 이 떠서 "사이트에 반영 안 됨" 이 반복됐다.
+   (다른 CSS/JS 는 전부 @<SHA> 변경불가 주소라 신선했고, 오직 bootstrap
+    파일 자체만 브랜치 주소라 stale 의 유일한 진원지였음.)
 
-   Webflow head 의 src 를 home/bootstrap.js 로 교체할 수 있으면
-   본 파일은 사실상 무용지물이지만, 교체 누락 페이지의 안전망으로
-   유지함.
+   [근본 해결]
+   진입점이 먼저 GitHub API 로 해당 브랜치의 최신 커밋 SHA 를 알아낸 뒤,
+   변경 불가능한 @<SHA> 주소로 본체 bootstrap.js 를 로드한다.
+   → 본체도 항상 신선. 브랜치 캐시 stale 문제 원천 제거.
+
+   - staging / main 분기: hostname 기반 (*.webflow.io → staging)
+   - 알아낸 SHA 는 window.__helixCommitSha 로 본체에 넘겨 API 중복 호출 0
+   - window.__helixHomeBootstrapRedirected=true 로 본체의 옛 self-redirect 차단
+   - API 실패 시 @<branch> 폴백 (안전망)
+   - 중복 실행 가드
    ================================================================ */
 (function () {
   'use strict';
   if (window.__HELIX_BOOTSTRAP_V3_REDIRECTED) return;
   window.__HELIX_BOOTSTRAP_V3_REDIRECTED = true;
 
-  console.log('[helix-bootstrap] v3 shim → 본체 home/bootstrap.js 로 redirect');
+  /* 본체 bootstrap.js 의 자체 staging self-redirect 를 막음
+     (진입점이 이미 올바른 SHA 본체를 로드하므로 중복 로드 불필요) */
+  window.__helixHomeBootstrapRedirected = true;
 
-  var ref = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
-  var s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref +
-          '/home/bootstrap.js?t=' + Math.floor(Date.now() / 60000);
-  s.async = false;
-  (document.head || document.documentElement).appendChild(s);
+  var OWNER  = 'pookat73-prog';
+  var REPO   = 'helixamc-webflow';
+  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
+  var bust   = '?t=' + Math.floor(Date.now() / 60000);
+
+  function load(src) {
+    var s = document.createElement('script');
+    s.src   = src;
+    s.async = false;
+    (document.head || document.documentElement).appendChild(s);
+  }
+  function bodyUrl(ref) {
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/home/bootstrap.js' + bust;
+  }
+
+  console.log('[helix-bootstrap] v3 entry → resolving latest SHA of @' + BRANCH);
+
+  fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH,
+        { headers: { 'Accept': 'application/vnd.github+json' } })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (d) {
+      var sha = (d.sha || '').substring(0, 40);
+      if (!sha) throw new Error('no sha');
+      window.__helixCommitSha = sha;
+      console.log('[helix-bootstrap] v3 → loading bootstrap @' + sha.substring(0, 10) + ' (immutable)');
+      load(bodyUrl(sha));
+    })
+    .catch(function (err) {
+      console.warn('[helix-bootstrap] v3 SHA resolve failed, fallback @' + BRANCH, err);
+      load(bodyUrl(BRANCH));
+    });
 })();
