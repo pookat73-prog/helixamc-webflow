@@ -248,17 +248,25 @@
     }
   });
 
-  fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (data) {
-      var sha = (data.sha || '').substring(0, 10);
-      if (!sha) throw new Error('no sha in response');
-      console.log('[helix-bootstrap] loading commit', sha);
-      injectAll(sha);
-    })
-    .catch(function (err) {
-      console.warn('[helix-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
-      injectAll(BRANCH);
-    });
+  /* 진입점(bootstrap-v3.js)이 이미 최신 SHA 를 알아내 넘겨줬으면 재사용
+     → GitHub API 중복 호출 제거 (rate limit 보호) */
+  if (window.__helixCommitSha) {
+    var shaFromEntry = window.__helixCommitSha.substring(0, 10);
+    console.log('[helix-bootstrap] reusing SHA from entry:', shaFromEntry);
+    injectAll(shaFromEntry);
+  } else {
+    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (data) {
+        var sha = (data.sha || '').substring(0, 10);
+        if (!sha) throw new Error('no sha in response');
+        console.log('[helix-bootstrap] loading commit', sha);
+        injectAll(sha);
+      })
+      .catch(function (err) {
+        console.warn('[helix-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
+        injectAll(BRANCH);
+      });
+  }
 })();
 
