@@ -122,6 +122,9 @@
     'global/ga4-base.js',
     /* 사이트 전역 (헤더 메뉴, 한글 줄바꿈 정책 등) */
     'global/global.css',
+    /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
+    'global/floating-cta.css',
+    'global/floating-cta.js',
     /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이 25/50/75/100%) */
     'global/scroll-depth.js',
     /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
