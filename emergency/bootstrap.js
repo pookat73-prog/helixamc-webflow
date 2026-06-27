@@ -73,6 +73,10 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* GA4 base loader — gtag.js 본체. 반드시 scroll-depth.js 보다 먼저 로드.
+       다른 모든 페이지 모듈의 gtag('event', ...) 호출이 안전하게 큐잉되도록
+       FILES 배열의 가장 첫 줄에 둠. */
+    'global/ga4-base.js',
     /* 전역 (다른 페이지와 동일 사양) */
     'global/global.css',
     'global/scroll-depth.js',

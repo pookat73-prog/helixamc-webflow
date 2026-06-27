@@ -176,6 +176,7 @@ jobs:
           SHA="${{ github.sha }}"
           BASE="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${SHA}"
           FILES=(
+            "global/ga4-base.js"
             "global/global.css"
             "global/scroll-depth.js"
             "global/popup.css"
