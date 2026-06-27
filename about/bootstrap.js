@@ -97,6 +97,9 @@
        다른 모든 페이지 모듈의 gtag('event', ...) 호출이 안전하게 큐잉되도록
        FILES 배열의 가장 첫 줄에 둠. */
     'global/ga4-base.js',
+    /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
+    'global/floating-cta.css',
+    'global/floating-cta.js',
     /* 헤더 + 햄버거 메뉴 — 홈과 동일 사양
        (hamburger 의 MENU_COMING_SOON=true 모드에서 클릭 시 토스트를
        띄우는 coming-soon.js 가 함께 로드돼야 동작함) */

@@ -71,7 +71,8 @@
      화면 하단에 떠 있는 임의의 fixed 요소 위로 항상 GAP_VW 띄움. */
   var FLOATING_SELECTORS = [
     '.helix-renewal-bar.is-open',
-    '.helix-branch-cta.is-mounted'
+    '.helix-branch-cta.is-mounted',
+    '.hx-fcta-btn'              /* 플로팅 상담 버튼 — 항상 떠 있음. 위로가기를 그 위로 */
   ];
 
   function update() {

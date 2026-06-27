@@ -13,6 +13,8 @@
 
   var FILES = [
     'global/global.css',
+    'global/floating-cta.css',
+    'global/floating-cta.js',
     'global/top-button.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js'

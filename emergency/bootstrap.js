@@ -79,6 +79,9 @@
     'global/ga4-base.js',
     /* 전역 (다른 페이지와 동일 사양) */
     'global/global.css',
+    /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
+    'global/floating-cta.css',
+    'global/floating-cta.js',
     'global/scroll-depth.js',
     'global/popup.css',
     'global/popup.js',
