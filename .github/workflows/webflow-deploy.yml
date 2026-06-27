@@ -152,6 +152,8 @@ jobs:
             "about/bg-video.mp4"
             "about/cert-modal/modal.css"
             "about/cert-modal/modal.js"
+            "global/floating-cta.css"
+            "global/floating-cta.js"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
@@ -178,6 +180,8 @@ jobs:
           FILES=(
             "global/ga4-base.js"
             "global/global.css"
+            "global/floating-cta.css"
+            "global/floating-cta.js"
             "global/scroll-depth.js"
             "global/popup.css"
             "global/popup.js"
