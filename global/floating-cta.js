@@ -8,6 +8,15 @@
   if (window.__helixFloatingCtaInit) return;
   window.__helixFloatingCtaInit = true;
 
+  function boot() { if (document.body) run(); }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  function run() {
+
   var PHONE     = 'tel:0221359119';
   var PHONE_LABEL = '02-2135-9119';
   var SITE_ID   = '69d090ea69d828e27d16ea29';
@@ -276,5 +285,7 @@
     done.classList.add('is-visible');
     ga('cta_form_submit', { location: 'seocho', source: 'floating_cta' });
   }
+
+  } // end run()
 
 })();
