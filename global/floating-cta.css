@@ -103,6 +103,12 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* flex 안에서 텍스트가 줄어들어 두 줄 되는 것 방지 */
+.hx-fcta-panel__item > span {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .hx-fcta-panel__item-icon {
   font-size: 18px;
   flex-shrink: 0;
