@@ -3,11 +3,14 @@
    전 페이지 오른쪽 하단 고정 노출
    ================================================================ */
 
-/* ── 토글 버튼 ── */
+/* ── 토글 버튼 ──
+   right 는 위로가기(.helix-top-btn, right:3vw)와 같은 기준선에 맞춰
+   세로 정렬. 위로가기는 top-button.js 의 회피 로직이 이 버튼을 감지해
+   자동으로 위로 올라감(겹침 방지). */
 .hx-fcta-btn {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  right: 3vw;
   z-index: 9000;
   width: 60px;
   height: 60px;
@@ -55,7 +58,7 @@
 .hx-fcta-panel {
   position: fixed;
   bottom: 94px;
-  right: 24px;
+  right: 3vw;
   z-index: 9000;
   background: #0D1117;
   border-radius: 14px;
@@ -380,12 +383,12 @@
 @media (max-width: 599px) {
   .hx-fcta-btn {
     bottom: 20px;
-    right: 16px;
+    right: 3vw;        /* 위로가기와 같은 기준선 유지 */
     width: 56px;
     height: 56px;
   }
   .hx-fcta-panel {
     bottom: 86px;
-    right: 16px;
+    right: 3vw;
   }
 }
