@@ -93,7 +93,8 @@
             '<label class="hx-fcta-form__label" for="hxFcta_phone">',
               '연락처<span aria-hidden="true">*</span></label>',
             '<input class="hx-fcta-form__input" id="hxFcta_phone" name="연락처"',
-              ' type="tel" placeholder="010-0000-0000" required autocomplete="tel">',
+              ' type="tel" inputmode="numeric" maxlength="11" placeholder="01012345678"',
+              ' required autocomplete="tel">',
           '</div>',
           '<div class="hx-fcta-form__group">',
             '<label class="hx-fcta-form__label" for="hxFcta_pet">반려동물 이름</label>',
@@ -199,6 +200,15 @@
     ageUnknown.addEventListener('change', function () {
       ageInput.disabled = ageUnknown.checked;
       if (ageUnknown.checked) ageInput.value = '';
+    });
+  }
+
+  /* ── 연락처: 숫자만, 최대 11자리 ── */
+  var phoneInput = document.getElementById('hxFcta_phone');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', function () {
+      var digits = phoneInput.value.replace(/\D/g, '').slice(0, 11);
+      if (phoneInput.value !== digits) phoneInput.value = digits;
     });
   }
 
