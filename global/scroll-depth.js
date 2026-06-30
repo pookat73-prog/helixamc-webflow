@@ -26,9 +26,13 @@
 
   /* 페이지 식별 — DOM 마커 우선(슬러그 변경에 강함), 경로는 보조 */
   function pageKey() {
+    var p = (location.pathname || '/').toLowerCase();
+    /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
+       about DOM 마커(.about-heading 등)를 가질 수 있다. DOM 마커보다 경로를
+       먼저 가려야 디스커버 트래픽이 about 으로 섞이지 않는다. */
+    if (/discover/.test(p)) return 'discover';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
-    var p = (location.pathname || '/').toLowerCase();
     if (/seocho|서초/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
     return 'home';
