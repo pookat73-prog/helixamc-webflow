@@ -2609,7 +2609,7 @@
       else if (/서초/.test(L))             send('about_seocho_cta',    { label: L, value: hrefOf(cta) });
       else if (/응급|증상/.test(L))        send('about_emergency_cta', { label: L, value: hrefOf(cta) });
       else if (/일산/.test(L))             return;  /* 일산 분원 — 측정 제외 (요청) */
-      else if (/특화/.test(L))             send('about_specialty_cta', { label: L, value: hrefOf(cta) });
+      else if (/특화/.test(L))             return;  /* 특화진료 CTA — 측정 제외 (요청) */
       else                                 send('about_cta',           { label: L, value: hrefOf(cta) });
       return;
     }
