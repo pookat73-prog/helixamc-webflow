@@ -12,49 +12,52 @@
   bottom: 24px;
   right: 3vw;
   z-index: 9000;
-  display: flex;
-  flex-direction: column-reverse;  /* 마스코트(위) + 상담 문의(아래) 한 덩어리 */
-  align-items: center;
-  gap: 2px;
-  padding: 11px 22px 13px;
-  border-radius: 26px;          /* 쿠키 (둥근) — 모양 추후 조정 */
-  background: #ffffff;           /* 한 쿠키: 마스코트와 같은 흰색 */
-  color: #0a4a86;
+  display: block;
+  width: 118px;                 /* 쿠키 폭 */
+  padding: 0;
   border: none;
+  background: transparent;       /* 쿠키 자체는 이미지(다이컷 윤곽) */
   cursor: pointer;
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);  /* 쿠키 한 덩어리 그림자(마스코트 개별 X) */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   outline: none;
+  transition: transform 0.2s ease;
 }
 
 .hx-fcta-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 117, 214, 0.36);
 }
 
 .hx-fcta-btn:focus-visible {
   outline: 2px solid #0075d6;
   outline-offset: 3px;
+  border-radius: 20px;
 }
 
-/* 마스코트 — 쿠키 안에 담겨 가운데 앉아있음(드롭섀도 없음 → 버튼과 한 쿠키).
-   박스 안에 contained 라 위로가기 회피가 마스코트까지 계산 → 안 겹침. */
+/* 마스코트 = 쿠키 전체(마스코트 윤곽 윗부분 + 바닥 바, 하나의 다이컷).
+   이미지가 버튼 박스를 채우므로 위로가기 회피가 쿠키 전체를 계산 → 안 겹침. */
 .hx-fcta-btn__mascot {
-  width: 88px;
+  display: block;
+  width: 100%;
   height: auto;
-  margin-bottom: -3px;          /* 라벨에 가깝게, 전체적으로 살짝 위로 */
   pointer-events: none;
+  filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.18));  /* 한 쿠키 그림자 */
 }
 
+/* '상담 문의' — 쿠키 아래 평평한 바 영역 위에 얹힘 */
 .hx-fcta-btn__label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 15px;
+  z-index: 2;            /* 마스코트 이미지(drop-shadow 필터) 위에 글자가 오도록 */
+  text-align: center;
   font-size: 14px;
+  font-weight: 800;
+  color: #0a4a86;
   line-height: 1;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ── 선택 패널 ── */
