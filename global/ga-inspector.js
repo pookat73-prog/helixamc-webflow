@@ -1,0 +1,381 @@
+/* ================================================================
+   HELIX AMC - GA 측정 점검 오버레이 (GA Inspector)
+   ================================================================
+   URL 에 ?ga-inspect=1 (또는 ?debug-ga=1) 을 붙이고 들어오면, 이 페이지
+   어디에 구글 애널리틱스(GA) 측정이 걸려 있는지 화면 위에 바로 보여준다.
+
+   두 가지를 동시에 표시한다:
+
+   ① 측정이 걸린 자리에 형광 테두리 + 배지
+      "여기를 누르면 무슨 이벤트가 발사되는지" 를 클릭 전에 눈으로 확인.
+      (플로팅 상담 버튼, 푸터 이메일·SNS, 지점 주소복사·전화, 서초 전화 등)
+
+   ② 실시간 발사 로그 패널 (오른쪽 아래)
+      gtag 호출을 가로채서, 어떤 측정이든 발사되는 순간 패널에 한 줄씩
+      쌓인다. 페이지뷰·스크롤 깊이처럼 특정 버튼이 아니라 페이지 전체에
+      걸린 측정도 여기 다 뜬다. 클릭으로 발사된 거면 그 자리 테두리가
+      잠깐 초록으로 번쩍인다.
+
+   평소(쿼리 파라미터 없을 때)에는 아무 것도 하지 않는다 — 일반 방문자
+   에겐 완전히 투명. FILES 배열에서 ga4-base.js 바로 다음에 로드해
+   다른 모듈들이 gtag 를 부르기 전에 가로채기를 걸어 둔다.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  /* 켜는 스위치 — URL 에 ?ga-inspect=1 또는 ?debug-ga=1 있을 때만 동작 */
+  if (!/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
+
+  /* 중복 주입 가드 */
+  if (window.__helixGaInspectorInit) return;
+  window.__helixGaInspectorInit = true;
+
+  var GA_ID = 'G-PWCB5MVC32';
+
+  /* ── 페이지 식별 (scroll-depth.js 와 동일 규칙) ── */
+  function pageKey() {
+    if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
+    if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
+    var p = (location.pathname || '/').toLowerCase();
+    if (/seocho|서초/.test(p)) return 'seocho';
+    if (/about/.test(p)) return 'about';
+    if (/emergency|응급/.test(p)) return 'emergency';
+    return 'home';
+  }
+  var PAGE = pageKey();
+
+  /* ================================================================
+     측정이 걸린 자리 목록 (코드에서 실제로 gtag 가 묶이는 셀렉터)
+     selector 가 화면에 있으면 그 자리에 테두리+배지를 그린다.
+     event 는 사람이 읽을 라벨(실제 이벤트명은 device/지점에 따라 _* 변동).
+  ================================================================ */
+  var TARGETS = [
+    /* 전 페이지 공통 — 플로팅 상담 CTA */
+    { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
+    { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
+    { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
+    /* 푸터 (홈 등) */
+    { sel: '.footer-email-clickable', label: '푸터 · 이메일 복사', event: 'copy_email_*' },
+    { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
+    /* 홈 지점 카드 */
+    { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
+    { sel: 'a[href^="tel:"]',       label: '지점 · 전화번호',     event: 'tel_copy_*' },
+    /* 홈 SVICC 버튼 */
+    { sel: '.bt-box-4',             label: 'SVICC 버튼',          event: 'svicc_click_*' },
+    /* 서초 전화 */
+    { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_call' }
+  ];
+
+  /* 페이지 단위 측정(특정 버튼 아님) — 안내용 칩 */
+  var PAGE_LEVEL = [
+    PAGE + '_page_view  (페이지 진입 1회)',
+    PAGE + '_scroll_depth  (스크롤 25 / 50 / 75 / 100%)'
+  ];
+
+  /* ── 클릭 직후 발사된 이벤트를 그 자리에 연결하기 위한 최근 클릭 기록 ── */
+  var lastClick = { el: null, t: 0 };
+  document.addEventListener('click', function (e) {
+    lastClick.el = e.target;
+    lastClick.t = Date.now();
+  }, true);
+
+  /* ================================================================
+     gtag / dataLayer 가로채기 — 어떤 측정이든 발사되면 패널에 기록
+     ga4-base.js 가 이미 window.gtag 와 dataLayer 를 정의해 둔 상태.
+     원본 함수를 보존하고 감싼다(측정 자체는 그대로 GA 로 전송됨).
+  ================================================================ */
+  var events = [];   /* {name, params, time, fromClick} */
+
+  function record(name, params) {
+    var fresh = (Date.now() - lastClick.t) < 1200;
+    var entry = {
+      name: name,
+      params: params || {},
+      time: nowStr(),
+      el: fresh ? lastClick.el : null
+    };
+    events.push(entry);
+    if (events.length > 200) events.shift();
+    renderLog();
+    if (entry.el) flashElement(entry.el);
+  }
+
+  function wrap() {
+    /* gtag('event', name, params) 만 골라 기록 (config/js/set 은 무시) */
+    var origGtag = window.gtag;
+    window.gtag = function () {
+      try {
+        if (arguments[0] === 'event') record(arguments[1], arguments[2]);
+      } catch (e) {}
+      if (typeof origGtag === 'function') return origGtag.apply(this, arguments);
+    };
+    /* dataLayer.push 폴백 경로도 가로채기 */
+    try {
+      window.dataLayer = window.dataLayer || [];
+      var origPush = window.dataLayer.push.bind(window.dataLayer);
+      window.dataLayer.push = function () {
+        try {
+          var a = arguments[0];
+          if (a && a.event && !a['gtm.start']) record(a.event, a);
+        } catch (e) {}
+        return origPush.apply(null, arguments);
+      };
+    } catch (e) {}
+  }
+
+  function nowStr() {
+    var d = new Date();
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+  }
+
+  /* ================================================================
+     UI — 스타일 주입
+  ================================================================ */
+  function injectStyle() {
+    if (document.getElementById('hx-gai-style')) return;
+    var s = document.createElement('style');
+    s.id = 'hx-gai-style';
+    s.textContent = [
+      /* 측정 자리 오버레이 레이어 (클릭 방해 안 하도록 pointer-events:none) */
+      '#hx-gai-overlay{position:fixed;inset:0;z-index:2147483600;pointer-events:none}',
+      '.hx-gai-box{position:absolute;border:2px solid #00e5ff;border-radius:6px;' +
+        'box-shadow:0 0 0 2px rgba(0,229,255,.25),0 0 12px rgba(0,229,255,.4);' +
+        'background:rgba(0,229,255,.06);transition:border-color .2s,box-shadow .2s}',
+      '.hx-gai-box.flash{border-color:#39ff88;' +
+        'box-shadow:0 0 0 3px rgba(57,255,136,.45),0 0 18px rgba(57,255,136,.7)}',
+      '.hx-gai-tag{position:absolute;top:-11px;left:-2px;max-width:240px;' +
+        'font:600 11px/1.4 -apple-system,system-ui,sans-serif;color:#001016;' +
+        'background:#00e5ff;padding:1px 7px;border-radius:5px;white-space:nowrap;' +
+        'overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 4px rgba(0,0,0,.3)}',
+      /* 패널 */
+      '#hx-gai-panel{position:fixed;right:14px;bottom:14px;width:340px;max-width:92vw;' +
+        'max-height:62vh;display:flex;flex-direction:column;z-index:2147483640;' +
+        'background:#0d1117;color:#e6edf3;border:1px solid #1f6feb;border-radius:12px;' +
+        'box-shadow:0 10px 40px rgba(0,0,0,.55);font:13px/1.5 -apple-system,system-ui,sans-serif;' +
+        'overflow:hidden}',
+      '#hx-gai-panel.min{max-height:none}',
+      '#hx-gai-panel.min .hx-gai-body,#hx-gai-panel.min .hx-gai-sub{display:none}',
+      '.hx-gai-head{display:flex;align-items:center;gap:8px;padding:10px 12px;' +
+        'background:#161b22;border-bottom:1px solid #21262d;cursor:default}',
+      '.hx-gai-dot{width:8px;height:8px;border-radius:50%;background:#39ff88;flex:0 0 auto;' +
+        'box-shadow:0 0 8px #39ff88}',
+      '.hx-gai-title{font-weight:700;font-size:13px}',
+      '.hx-gai-title small{display:block;font-weight:400;color:#8b949e;font-size:11px;margin-top:1px}',
+      '.hx-gai-head .hx-gai-spacer{flex:1}',
+      '.hx-gai-btn{cursor:pointer;border:1px solid #30363d;background:#21262d;color:#e6edf3;' +
+        'border-radius:6px;padding:3px 8px;font-size:11px;line-height:1.4}',
+      '.hx-gai-btn:hover{background:#30363d}',
+      '.hx-gai-btn.on{background:#1f6feb;border-color:#1f6feb;color:#fff}',
+      '.hx-gai-sub{padding:8px 12px;border-bottom:1px solid #21262d;background:#0d1117}',
+      '.hx-gai-sub b{color:#58a6ff;font-weight:600}',
+      '.hx-gai-chip{display:inline-block;margin:3px 4px 0 0;padding:1px 7px;border-radius:5px;' +
+        'background:#161b22;border:1px solid #30363d;color:#adbac7;font-size:11px}',
+      '.hx-gai-body{overflow-y:auto;padding:6px 0}',
+      '.hx-gai-empty{padding:14px 12px;color:#8b949e;font-size:12px}',
+      '.hx-gai-row{padding:7px 12px;border-bottom:1px solid #161b22}',
+      '.hx-gai-row .nm{font-weight:600;color:#7ee787;word-break:break-all}',
+      '.hx-gai-row .mt{color:#8b949e;font-size:11px;margin-top:1px}',
+      '.hx-gai-row .pm{color:#adbac7;font-size:11px;margin-top:2px;word-break:break-all}',
+      '.hx-gai-row .pm span{color:#79c0ff}'
+    ].join('');
+    (document.head || document.documentElement).appendChild(s);
+  }
+
+  /* ── 오버레이 레이어 + 패널 생성 ── */
+  var overlay, panel, body, badgeBtn;
+  var showBadges = true;
+  var boxMap = [];   /* {target, box, tag, el} */
+
+  function buildUI() {
+    injectStyle();
+
+    overlay = document.createElement('div');
+    overlay.id = 'hx-gai-overlay';
+    document.body.appendChild(overlay);
+
+    panel = document.createElement('div');
+    panel.id = 'hx-gai-panel';
+    panel.innerHTML =
+      '<div class="hx-gai-head">' +
+        '<span class="hx-gai-dot"></span>' +
+        '<div class="hx-gai-title">GA 측정 점검' +
+          '<small>' + GA_ID + ' · ' + PAGE + ' 페이지</small></div>' +
+        '<span class="hx-gai-spacer"></span>' +
+        '<button class="hx-gai-btn on" data-act="badges">측정 위치</button>' +
+        '<button class="hx-gai-btn" data-act="clear">지우기</button>' +
+        '<button class="hx-gai-btn" data-act="min">_</button>' +
+      '</div>' +
+      '<div class="hx-gai-sub">' +
+        '<b>페이지 단위 측정</b>' +
+        PAGE_LEVEL.map(function (t) { return '<span class="hx-gai-chip">' + esc(t) + '</span>'; }).join('') +
+      '</div>' +
+      '<div class="hx-gai-body"></div>';
+    document.body.appendChild(panel);
+    body = panel.querySelector('.hx-gai-body');
+    badgeBtn = panel.querySelector('[data-act="badges"]');
+
+    panel.addEventListener('click', function (e) {
+      var b = e.target.closest('.hx-gai-btn');
+      if (!b) return;
+      var act = b.getAttribute('data-act');
+      if (act === 'badges') {
+        showBadges = !showBadges;
+        b.classList.toggle('on', showBadges);
+        overlay.style.display = showBadges ? '' : 'none';
+      } else if (act === 'clear') {
+        events.length = 0;
+        renderLog();
+      } else if (act === 'min') {
+        panel.classList.toggle('min');
+        b.textContent = panel.classList.contains('min') ? '▢' : '_';
+      }
+    });
+
+    renderLog();
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  /* ── 발사 로그 렌더 ── */
+  function renderLog() {
+    if (!body) return;
+    if (!events.length) {
+      body.innerHTML = '<div class="hx-gai-empty">아직 발사된 측정이 없습니다.<br>' +
+        '버튼을 누르거나 스크롤하면 여기에 실시간으로 쌓입니다.</div>';
+      return;
+    }
+    var html = '';
+    for (var i = events.length - 1; i >= 0; i--) {
+      var ev = events[i];
+      html += '<div class="hx-gai-row">' +
+        '<div class="nm">' + esc(ev.name) + '</div>' +
+        '<div class="mt">' + ev.time + (ev.el ? ' · 클릭 발사' : ' · 자동') + '</div>' +
+        '<div class="pm">' + paramStr(ev.params) + '</div>' +
+      '</div>';
+    }
+    body.innerHTML = html;
+  }
+
+  function paramStr(p) {
+    if (!p || typeof p !== 'object') return '';
+    var out = [];
+    for (var k in p) {
+      if (!p.hasOwnProperty(k)) continue;
+      if (k === 'event' || k === 'transport_type') continue;
+      out.push('<span>' + esc(k) + '</span>:' + esc(String(p[k])).slice(0, 60));
+    }
+    return out.join(' &nbsp; ');
+  }
+
+  /* ================================================================
+     측정 자리 테두리/배지 — 화면 좌표로 그려 레이아웃 영향 0
+  ================================================================ */
+  function scanTargets() {
+    if (!overlay) return;
+    /* 현재 살아있는 박스 제거 후 다시 그림 (DOM 변동/스크롤 대응) */
+    overlay.innerHTML = '';
+    boxMap = [];
+    TARGETS.forEach(function (t) {
+      var nodes = document.querySelectorAll(t.sel);
+      nodes.forEach(function (el) {
+        if (!isVisible(el)) return;
+        var box = document.createElement('div');
+        box.className = 'hx-gai-box';
+        var tag = document.createElement('div');
+        tag.className = 'hx-gai-tag';
+        tag.textContent = t.label + ' › ' + t.event;
+        box.appendChild(tag);
+        overlay.appendChild(box);
+        boxMap.push({ el: el, box: box });
+      });
+    });
+    position();
+  }
+
+  function isVisible(el) {
+    if (!el || !el.getBoundingClientRect) return false;
+    var r = el.getBoundingClientRect();
+    if (r.width === 0 && r.height === 0) return false;
+    var st = getComputedStyle(el);
+    return st.display !== 'none' && st.visibility !== 'hidden' && st.opacity !== '0';
+  }
+
+  function position() {
+    for (var i = 0; i < boxMap.length; i++) {
+      var m = boxMap[i];
+      var r = m.el.getBoundingClientRect();
+      m.box.style.left = r.left + 'px';
+      m.box.style.top = r.top + 'px';
+      m.box.style.width = r.width + 'px';
+      m.box.style.height = r.height + 'px';
+    }
+  }
+
+  /* 클릭으로 측정이 발사되면 그 자리 박스를 잠깐 초록으로 번쩍 */
+  function flashElement(el) {
+    for (var i = 0; i < boxMap.length; i++) {
+      var m = boxMap[i];
+      if (m.el === el || m.el.contains(el) || (el.contains && el.contains(m.el))) {
+        m.box.classList.add('flash');
+        (function (box) {
+          setTimeout(function () { box.classList.remove('flash'); }, 900);
+        })(m.box);
+      }
+    }
+  }
+
+  /* ── 위치 갱신 루프 (스크롤/리사이즈 시 rAF 로 따라감) ── */
+  var rafPending = false;
+  function onMove() {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(function () { rafPending = false; position(); });
+  }
+
+  /* ================================================================
+     기동
+  ================================================================ */
+  function start() {
+    buildUI();
+    scanTargets();
+
+    window.addEventListener('scroll', onMove, { passive: true });
+    window.addEventListener('resize', function () { scanTargets(); }, { passive: true });
+
+    /* 푸터·플로팅 CTA 등은 DOMContentLoaded 이후 늦게 주입됨 → 재스캔 */
+    var rescans = [400, 1000, 2000, 3500];
+    rescans.forEach(function (ms) { setTimeout(scanTargets, ms); });
+
+    /* DOM 변동도 감지해 재스캔 (과도 호출 방지 위해 디바운스) */
+    try {
+      var deb;
+      var mo = new MutationObserver(function () {
+        clearTimeout(deb);
+        deb = setTimeout(scanTargets, 250);
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+      setTimeout(function () { mo.disconnect(); }, 8000);
+    } catch (e) {}
+
+    console.log('[helix-ga-inspect] 측정 점검 ON · page=' + PAGE + ' · 측정자리 ' +
+      boxMap.length + '개 표시');
+  }
+
+  /* gtag 가로채기는 최대한 빨리(다른 모듈이 부르기 전) */
+  wrap();
+
+  if (document.body) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
+    }
+  } else {
+    document.addEventListener('DOMContentLoaded', start);
+  }
+})();
