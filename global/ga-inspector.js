@@ -76,6 +76,19 @@
     { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' }
   ];
 
+  /* about(=/discover-helix) 페이지 전용 — .cta-style / .link-block 등은 다른
+     페이지에도 존재하므로 이 페이지에서만 표시(오표시 방지). 의료진 지점 버튼은
+     텍스트 매칭이라 정적 셀렉터로 안 잡지만, 클릭 시 실시간 로그에 뜸. */
+  if (PAGE === 'about' || PAGE === 'discover') {
+    TARGETS = TARGETS.concat([
+      { sel: '.cta_seocho_button', label: '소개 · 서초본원 CTA', event: 'about_seocho_cta_*' },
+      { sel: '.cta-style',         label: '소개 · 본문 CTA',     event: 'about_cta_*' },
+      { sel: '.link-block',        label: '소개 · 스빅(SVIC)',   event: 'about_svic_cta_*' },
+      { sel: '.helix-deck-arrow-left, .helix-deck-arrow-right', label: '소개 · 연혁 화살표', event: 'history_deck_nav_*' },
+      { sel: '#cert .cert-plus',   label: '소개 · 인증 카드(+)', event: 'cert_modal_open_*' }
+    ]);
+  }
+
   /* 페이지 단위 측정(특정 버튼 아님) — 안내용 칩 */
   var PAGE_LEVEL = [
     PAGE + '_page_view  (페이지 진입 1회)',

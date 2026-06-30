@@ -111,6 +111,19 @@
     if (!overlay) buildOverlay();
     overlay.classList.add('is-open');
     document.documentElement.classList.add('helix-cert-modal-open');
+
+    /* GA4 — 인증 상세 모달 열림 측정 (어떤 인증 카드가 열렸는지 slug 로 구분) */
+    try {
+      var __dev = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var __p = { item_type: 'cert_modal', cert: slug, device: __dev };
+      if (typeof window.gtag === 'function') {
+        __p.transport_type = 'beacon';
+        window.gtag('event', 'cert_modal_open_' + __dev, __p);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        __p.event = 'cert_modal_open_' + __dev;
+        window.dataLayer.push(__p);
+      }
+    } catch (e) {}
     track.innerHTML = '<div class="helix-cert-modal__loading">불러오는 중...</div>';
     track.style.transform = 'translateX(0)';
     dotsEl.innerHTML = '';
