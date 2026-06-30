@@ -67,9 +67,16 @@
 
         /* 완료 메시지 */
         '<div class="hx-fcta-form__done" id="hxFctaDone" aria-live="polite">',
-          '<div class="hx-fcta-form__done-icon">✅</div>',
-          '<p class="hx-fcta-form__done-title">상담 신청이 완료되었습니다</p>',
-          '<p class="hx-fcta-form__done-desc">빠른 시간 내에 연락드리겠습니다.<br>감사합니다.</p>',
+          '<div class="hx-fcta-form__done-badge">',
+            '<svg class="hx-fcta-form__done-check" viewBox="0 0 52 52" aria-hidden="true">',
+              '<circle class="hx-fcta-form__done-check-circle" cx="26" cy="26" r="24" fill="none"/>',
+              '<path class="hx-fcta-form__done-check-mark" fill="none" d="M15 27l7.5 7.5L37 19"/>',
+            '</svg>',
+          '</div>',
+          '<p class="hx-fcta-form__done-title">상담 신청이 접수되었습니다</p>',
+          '<p class="hx-fcta-form__done-desc">확인 후 가능한 빠르게 연락드리겠습니다.<br>',
+            '소중한 가족의 건강, 헬릭스동물메디컬센터가 함께하겠습니다.</p>',
+          '<button class="hx-fcta-form__done-close" id="hxFctaDoneClose" type="button">확인</button>',
         '</div>',
 
         /* 헤더 밑 안내문구 */
@@ -186,6 +193,7 @@
   var form     = document.getElementById('hxFctaForm');
   var submitBtn= document.getElementById('hxFctaSubmit');
   var done     = document.getElementById('hxFctaDone');
+  var doneClose= document.getElementById('hxFctaDoneClose');
 
   /* ── 나이 '모름' 체크 시 입력칸 비활성화 ── */
   var ageInput   = document.getElementById('hxFcta_age');
@@ -226,6 +234,15 @@
 
   /* ── 모달 열기·닫기 ── */
   function openModal() {
+    /* 직전에 완료 화면이 떠 있었으면(이미 한 번 제출 완료) 폼을 초기 상태로 되돌림 */
+    if (done.classList.contains('is-visible')) {
+      form.reset();
+      form.style.display = '';
+      done.classList.remove('is-visible');
+      submitBtn.disabled = false;
+      submitBtn.textContent = '상담 신청하기';
+      if (ageInput) ageInput.disabled = false;
+    }
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -241,6 +258,7 @@
 
   backdrop.addEventListener('click', closeModal);
   closeBtn.addEventListener('click', closeModal);
+  if (doneClose) doneClose.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
