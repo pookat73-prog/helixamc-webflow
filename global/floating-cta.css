@@ -13,8 +13,8 @@
   right: 3vw;
   z-index: 9000;
   display: block;
-  width: 150px;
-  height: 116px;
+  width: 156px;
+  height: 90px;
   padding: 0;
   border: none;
   background: transparent;
@@ -36,7 +36,6 @@
   height: 50px;
   background: #ffffff;
   border-radius: 28px;
-  box-shadow: 0 -5px 11px rgba(0, 0, 0, 0.30);
   z-index: 0;
 }
 
@@ -53,10 +52,10 @@
 /* 마스코트 = 바 위 중앙에 앉은 다이컷(흰 실루엣 + 원래 색 악센트). 바와 같은 흰색 → 한 쿠키 */
 .hx-fcta-btn__mascot {
   position: absolute;
-  top: 2px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 106px;
+  width: 142px;
   height: auto;
   z-index: 1;
   pointer-events: none;
