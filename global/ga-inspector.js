@@ -88,9 +88,8 @@
       { sel: '.subheader_click-area', label: '소개 · 서브헤더 링크', event: 'subheader_nav_*' },
       { sel: CTA_FAM, label: '소개 · 서초본원 CTA', event: 'about_seocho_cta_*', match: hasText(/서초/) },
       { sel: CTA_FAM, label: '소개 · 응급증상 CTA', event: 'about_emergency_cta_*', match: hasText(/응급|증상/) },
-      { sel: CTA_FAM, label: '소개 · 일산분원 CTA', event: 'about_ilsan_cta_*', match: hasText(/일산/) },
       { sel: CTA_FAM, label: '소개 · 특화 CTA',     event: 'about_specialty_cta_*', match: hasText(/특화/) },
-      { sel: CTA_FAM, label: '소개 · 본문 CTA',     event: 'about_cta_*' },
+      { sel: CTA_FAM, label: '소개 · 본문 CTA',     event: 'about_cta_*', match: function (el) { return !/일산/.test(el.innerText || ''); } },
       { sel: '.link-block',        label: '소개 · 스빅(SVIC)',   event: 'about_svic_cta_*' },
       { sel: '.helix-deck-arrow-left, .helix-deck-arrow-right', label: '소개 · 연혁 화살표', event: 'history_deck_nav_*' },
       { sel: '#cert .cert-plus',   label: '소개 · 인증 카드(+)', event: 'cert_modal_open_*' },
@@ -104,7 +103,8 @@
   /* 의료진 카드의 지점 버튼인지 — 짧은 지점명 정확 매칭 + 헤더/푸터/CTA 제외 */
   function isDoctorBranchEl(el) {
     var s = (el.innerText || '').replace(/\s+/g, ' ').trim();
-    if (!/^(서초\s*본원|일산\s*분원|서울동물영상종양센터)$/.test(s)) return false;
+    /* 일산 분원은 측정 제외 (요청) */
+    if (!/^(서초\s*본원|서울동물영상종양센터)$/.test(s)) return false;
     if (el.closest('header, .header, nav, .subheader, footer, .footer, [class*="header" i], [class*="footer" i]')) return false;
     if (el.closest('.cta_seocho_button, .cta-style, .link-block')) return false;
     return true;

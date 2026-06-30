@@ -2560,7 +2560,8 @@
   function isDoctorBranchEl(el) {
     if (!el || !el.closest) return false;
     var s = ((el.innerText || '')).replace(/\s+/g, ' ').trim();
-    if (!/^(서초\s*본원|일산\s*분원|서울동물영상종양센터)$/.test(s)) return false;
+    /* 일산 분원은 측정 제외 (요청) — 매칭 목록에서 뺌 */
+    if (!/^(서초\s*본원|서울동물영상종양센터)$/.test(s)) return false;
     if (el.closest('header, .header, nav, .subheader, footer, .footer, [class*="header" i], [class*="footer" i]')) return false;
     if (el.closest('.cta_seocho_button, .cta-style, .link-block')) return false;
     return true;
@@ -2607,7 +2608,7 @@
       if (cta.matches('.link-block'))      send('about_svic_cta',      { label: L, value: hrefOf(cta) });
       else if (/서초/.test(L))             send('about_seocho_cta',    { label: L, value: hrefOf(cta) });
       else if (/응급|증상/.test(L))        send('about_emergency_cta', { label: L, value: hrefOf(cta) });
-      else if (/일산/.test(L))             send('about_ilsan_cta',     { label: L, value: hrefOf(cta) });
+      else if (/일산/.test(L))             return;  /* 일산 분원 — 측정 제외 (요청) */
       else if (/특화/.test(L))             send('about_specialty_cta', { label: L, value: hrefOf(cta) });
       else                                 send('about_cta',           { label: L, value: hrefOf(cta) });
       return;
@@ -2618,8 +2619,7 @@
     var dEl = t.closest('a, button, [role="button"], [class*="button" i], [class*="btn" i]') || t;
     if (isDoctorBranchEl(dEl)) {
       var ds = txt(dEl);
-      var br = /서울동물영상종양/.test(ds) ? '서울동물영상종양센터'
-             : /일산/.test(ds) ? '일산' : '서초';
+      var br = /서울동물영상종양/.test(ds) ? '서울동물영상종양센터' : '서초';
       send('doctor_branch_click', { branch: br, label: ds });
       return;
     }
