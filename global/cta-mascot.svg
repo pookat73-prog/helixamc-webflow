@@ -3,7 +3,7 @@
   <defs>
     <style>
       .cls-1 {
-        fill: #edf0f8;
+        fill: #ffffff;
       }
 
       .cls-2 {
@@ -11,7 +11,7 @@
       }
 
       .cls-3 {
-        fill: #b8cdea;
+        fill: #ffffff;
       }
 
       .cls-4 {
@@ -31,14 +31,21 @@
         <polygon class="cls-4" points="14.39 181.35 7.28 181.35 1.58 144.49 7.98 130.82 58.79 89.41 136.93 101.34 158.49 111.4 152.3 127.27 124.12 141.5 81.64 146.62 42.14 140.22 14.39 181.35"/>
       </g>
     </mask>
-    <!-- 다이컷(아이싱 쿠키/아크릴 스탠드 굿즈) — 실루엣을 굵게 dilate 해서
-         흰색으로 깔고 원본을 위에 얹어 도톰한 흰 외곽선을 만든다. -->
-    <filter id="diecut" color-interpolation-filters="sRGB">
-      <feMorphology in="SourceAlpha" operator="dilate" radius="16" result="dilated"/>
-      <feFlood flood-color="#ffffff" result="white"/>
-      <feComposite in="white" in2="dilated" operator="in" result="outline"/>
+    <!-- 다이컷(아이싱 쿠키/아크릴 스탠드 굿즈) — 솔리드 채움 버전.
+         1) close(dilate→erode)로 내부 빈 구멍을 메운 솔리드 실루엣 생성
+         2) 그 실루엣을 흰색으로 채워 베이스(안쪽 꽉 참)
+         3) 베이스를 더 dilate 해 도톰한 흰 외곽선
+         4) 외곽선 → 솔리드 베이스 → 원본 아트 순으로 합성 -->
+    <filter id="diecut" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="22" result="c1"/>
+      <feMorphology in="c1" operator="erode" radius="22" result="filled"/>
+      <feFlood flood-color="#ffffff" result="w"/>
+      <feComposite in="w" in2="filled" operator="in" result="base"/>
+      <feMorphology in="filled" operator="dilate" radius="14" result="outl"/>
+      <feComposite in="w" in2="outl" operator="in" result="outline"/>
       <feMerge>
         <feMergeNode in="outline"/>
+        <feMergeNode in="base"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>

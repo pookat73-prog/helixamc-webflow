@@ -14,12 +14,12 @@
   z-index: 9000;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 12px 22px;
-  border-radius: 18px;          /* 모서리 살짝 둥근 사각형 */
-  background: #bcd9fb;          /* 파스텔 메인블루 */
+  justify-content: flex-start;
+  padding: 12px 24px 12px 78px;  /* 왼쪽은 마스코트 자리, 글자는 오른쪽 */
+  border-radius: 0 18px 18px 18px; /* 좌상단만 각지고 나머지 셋 둥글게 */
+  background: #ffffff;           /* 마스코트 채운색과 동일(흰색) */
   color: #0a4a86;
-  border: none;
+  border: 1.5px solid #dbe6f4;
   cursor: pointer;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
@@ -42,16 +42,16 @@
   outline-offset: 3px;
 }
 
-/* 마스코트 — 다이컷(흰 외곽선 내장). 바 윗변에 서 있는 모양으로 위로 삐져나옴 */
+/* 마스코트 — 다이컷(흰 외곽선 내장). 바 왼쪽 끝에 '서 있고' 위로 크게 삐져나옴(ㄴ자).
+   왼쪽 배치라 오른쪽 위에 쌓이는 위로가기 버튼과 안 겹침. */
 .hx-fcta-btn__mascot {
   position: absolute;
-  left: 50%;
-  bottom: calc(100% - 16px);    /* 바 안으로 16px 걸쳐 '서 있게' */
-  transform: translateX(-50%);
-  width: 92px;
+  left: 6px;                    /* 바 안 왼쪽 (바가 마스코트 끝까지 받침) */
+  bottom: calc(100% - 8px);     /* 바 안으로 8px 만 걸치고 대부분 위로 튀어나옴 */
+  width: 72px;                  /* 더 작게 */
   height: auto;
   pointer-events: none;
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.16));  /* 굿즈처럼 살짝 떠 보이게 */
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.13));  /* 굿즈처럼 살짝 떠 보이게 */
 }
 
 .hx-fcta-btn__label {
