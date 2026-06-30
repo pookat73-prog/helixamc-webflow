@@ -154,7 +154,7 @@
 .hx-fcta-modal__box {
   position: relative;
   z-index: 1;
-  background: #fff;
+  background: #F4F7FB;   /* 메인 화이트 (살짝 푸른기 도는 브랜드 화이트) */
   border-radius: 20px 20px 0 0;
   width: 100%;
   max-width: 520px;
