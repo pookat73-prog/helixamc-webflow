@@ -37,6 +37,7 @@
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     var p = (location.pathname || '/').toLowerCase();
+    if (/discover/.test(p)) return 'discover';
     if (/seocho|서초/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
     if (/emergency|응급/.test(p)) return 'emergency';

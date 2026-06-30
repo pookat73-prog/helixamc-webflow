@@ -11,6 +11,7 @@ on:
       - 'global/**'
       - 'seocho/**'
       - 'emergency/**'
+      - 'discover/**'
   workflow_dispatch:
 
 permissions:
@@ -85,6 +86,7 @@ jobs:
             "global/bootstrap.js"
             "seocho/bootstrap.js"
             "emergency/bootstrap.js"
+            "discover/bootstrap.js"
             "emergency/emergency.css"
             "emergency/emergency.js"
             "emergency/modal.css"
@@ -186,6 +188,7 @@ jobs:
             "global/scroll-depth.js"
             "global/popup.css"
             "global/popup.js"
+            "discover/bootstrap.js"
             "home/bootstrap-v3.js"
             "home/section1/section1.css"
             "home/section1/section1.js"
