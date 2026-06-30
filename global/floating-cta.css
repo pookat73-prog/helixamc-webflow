@@ -7,16 +7,15 @@
    right 는 위로가기(.helix-top-btn, right:3vw)와 같은 기준선에 맞춰
    세로 정렬. 위로가기는 top-button.js 의 회피 로직이 이 버튼을 감지해
    자동으로 위로 올라감(겹침 방지). */
-/* 위: 마스코트 쿠키(아이싱 다이컷 SVG — 바디+삐져나온 마스코트+도톰 외곽선) /
-   아래: 글자 바. 큰 겹침으로 하나의 실루엣. */
+/* 쿠키 SVG(마스코트+바+글로우 테두리) 통째 이미지 + 바 위에 '상담 문의하기' 글자 오버레이.
+   위로가기 버튼(64px)의 약 1.8배(116px). JS 가 자동 주입(웹플로우 작업 불필요). */
 .hx-fcta-btn {
   position: fixed;
   bottom: 24px;
   right: 3vw;
   z-index: 9000;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
+  display: block;
+  width: 116px;
   padding: 0;
   border: none;
   background: transparent;
@@ -37,33 +36,29 @@
   border-radius: 22px;
 }
 
-/* 위 도형: 아이싱 쿠키(마스코트 바디+삐져나온 부분 도톰 외곽선). SVG가 흰색·라운드·그림자 모두 포함 */
+/* 쿠키 그림 전체 */
 .hx-fcta-btn__mascot {
   display: block;
-  width: 152px;
+  width: 100%;
   height: auto;
-  z-index: 0;
   pointer-events: none;
 }
 
-/* 아래 도형: 글자 바 — 넓은 흰 알약(앞). 쿠키 아랫부분에 크게 겹쳐 하나의 실루엣으로 이어짐 */
+/* '상담 문의하기' — 쿠키 아래 바 위에 얹힘 */
 .hx-fcta-btn__label {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
   z-index: 1;
-  margin-top: -40px;            /* 쿠키 바디 아래에 크게 겹침 */
-  width: 156px;
-  height: 50px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  border-radius: 25px;
-  font-size: 16px;
+  text-align: center;
+  font-size: 13px;
   font-weight: 800;
-  color: #0075d6;
-  letter-spacing: -0.3px;
+  color: #1b2330;               /* 메인 블랙 (블루로 바꾸려면 #0075d6) */
+  letter-spacing: -0.02em;
+  line-height: 1;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ── 선택 패널 ── */
