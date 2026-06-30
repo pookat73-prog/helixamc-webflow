@@ -76,6 +76,8 @@
           '<img class="hx-fcta-form__done-illust" src="' + DONE_IMG + '"',
             ' alt="" aria-hidden="true">',
           '<p class="hx-fcta-form__done-title">상담 신청이 접수되었습니다</p>',
+          '<p class="hx-fcta-form__done-desc">문의 주셔서 감사합니다. 확인하는 대로 가능한 빨리 연락드리겠습니다.<br>',
+            '소중한 가족의 건강, 헬릭스동물메디컬센터가 함께하겠습니다.</p>',
           '<button class="hx-fcta-form__done-close" id="hxFctaDoneClose" type="button">확인</button>',
         '</div>',
 
