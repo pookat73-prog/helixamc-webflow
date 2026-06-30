@@ -21,6 +21,20 @@
   var PHONE_LABEL = '02-2135-9119';
   var SITE_ID   = '69d090ea69d828e27d16ea29';
 
+  /* ── 마케팅 데시보드(Firebase 실시간 DB) 상담 leads 적재 ──
+     실장님 데시보드(Helixamc_pm)가 읽는 leads 경로에 직접 한 부 더 쌓는다.
+     REST 방식 POST 라 Firebase SDK 로드 불필요. */
+  var LEADS_URL = 'https://helixamc-pm-default-rtdb.firebaseio.com/leads.json';
+  var UTM_LABEL = { meta: '메타', google: '구글', daangn: '당근',
+                    kakao: '카카오', tiktok: '틱톡', naver: '네이버' };
+
+  /* 완료 화면 일러스트(정적 에셋). 진입점이 넘긴 커밋 SHA 가 있으면 그
+     immutable 주소로, 없으면 호스트 기반 브랜치(@staging/@main)로 로드. */
+  var ASSET_REF = window.__helixCommitSha ||
+    (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
+  var DONE_IMG  = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
+                  ASSET_REF + '/global/cta-done.svg';
+
   /* ── HTML 주입 ── */
   var html = [
     /* 오버레이 */
@@ -49,26 +63,23 @@
 
     /* 상담 신청 모달 */
     '<div class="hx-fcta-modal" id="hxFctaModal" role="dialog"',
-      ' aria-modal="true" aria-labelledby="hxFctaModalTitle" aria-hidden="true">',
+      ' aria-modal="true" aria-label="상담 신청" aria-hidden="true">',
       '<div class="hx-fcta-modal__backdrop" id="hxFctaModalBackdrop"></div>',
       '<div class="hx-fcta-modal__box">',
         '<div class="hx-fcta-modal__header">',
-          '<h2 class="hx-fcta-modal__title" id="hxFctaModalTitle">상담 신청</h2>',
           '<button class="hx-fcta-modal__close" id="hxFctaModalClose" type="button"',
             ' aria-label="모달 닫기">✕</button>',
         '</div>',
 
         /* 완료 메시지 */
         '<div class="hx-fcta-form__done" id="hxFctaDone" aria-live="polite">',
-          '<div class="hx-fcta-form__done-icon">✅</div>',
-          '<p class="hx-fcta-form__done-title">상담 신청이 완료되었습니다</p>',
-          '<p class="hx-fcta-form__done-desc">빠른 시간 내에 연락드리겠습니다.<br>감사합니다.</p>',
+          '<img class="hx-fcta-form__done-illust" src="' + DONE_IMG + '"',
+            ' alt="" aria-hidden="true">',
+          '<p class="hx-fcta-form__done-title">상담 신청이 접수되었습니다</p>',
+          '<p class="hx-fcta-form__done-desc">문의해 주셔서 감사합니다. 확인 후 빠르게 연락드릴게요.<br>',
+            '소중한 가족의 건강, 헬릭스가 함께하겠습니다.</p>',
+          '<button class="hx-fcta-form__done-close" id="hxFctaDoneClose" type="button">확인</button>',
         '</div>',
-
-        /* 헤더 밑 안내문구 */
-        '<p class="hx-fcta-form__intro" id="hxFctaIntro">',
-          '신청해 주시면 확인 후 빠르게 연락드리겠습니다.',
-        '</p>',
 
         /* 폼 */
         '<form class="hx-fcta-form" id="hxFctaForm" novalidate>',
@@ -179,6 +190,7 @@
   var form     = document.getElementById('hxFctaForm');
   var submitBtn= document.getElementById('hxFctaSubmit');
   var done     = document.getElementById('hxFctaDone');
+  var doneClose= document.getElementById('hxFctaDoneClose');
 
   /* ── 나이 '모름' 체크 시 입력칸 비활성화 ── */
   var ageInput   = document.getElementById('hxFcta_age');
@@ -219,6 +231,15 @@
 
   /* ── 모달 열기·닫기 ── */
   function openModal() {
+    /* 직전에 완료 화면이 떠 있었으면(이미 한 번 제출 완료) 폼을 초기 상태로 되돌림 */
+    if (done.classList.contains('is-visible')) {
+      form.reset();
+      form.style.display = '';
+      done.classList.remove('is-visible');
+      submitBtn.disabled = false;
+      submitBtn.textContent = '상담 신청하기';
+      if (ageInput) ageInput.disabled = false;
+    }
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -234,6 +255,7 @@
 
   backdrop.addEventListener('click', closeModal);
   closeBtn.addEventListener('click', closeModal);
+  if (doneClose) doneClose.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
@@ -289,6 +311,59 @@
 
     submitBtn.disabled = true;
     submitBtn.textContent = '전송 중…';
+
+    /* ── 마케팅 데시보드(Firebase leads)로도 한 부 적재 ──
+       반려동물이름·성별·기저질환은 데시보드에 전용 칸이 없어
+       증상(inquiry) 안에 괄호로 묶어 합쳐 넣는다. */
+    try {
+      var ageVal = document.getElementById('hxFcta_age_unknown').checked
+        ? '모름'
+        : document.getElementById('hxFcta_age').value.trim();
+
+      var petName = document.getElementById('hxFcta_pet').value.trim();
+      var sexVal  = (form.querySelector('input[name="성별"]:checked') || {}).value || '';
+      var condVal = document.getElementById('hxFcta_condition').value.trim();
+      var symptom = document.getElementById('hxFcta_symptom').value.trim();
+
+      var extras = [];
+      if (petName) extras.push('반려동물: ' + petName);
+      if (sexVal)  extras.push('성별: ' + sexVal);
+      if (condVal) extras.push('기저질환: ' + condVal);
+
+      var inquiryText = symptom;
+      if (extras.length) {
+        inquiryText = (symptom ? symptom + '\n' : '') + '(' + extras.join(' / ') + ')';
+      }
+
+      var qp   = new URLSearchParams(location.search);
+      var utmS = qp.get('utm_source') || '직접유입';
+
+      var lead = {
+        name:         ownerVal,
+        phone:        phoneVal,
+        petType:      (form.querySelector('input[name="종"]:checked') || {}).value || '미선택',
+        petBreed:     '',
+        petAge:       ageVal,
+        inquiry:      inquiryText,
+        submittedAt:  new Date().toISOString(),
+        userAgent:    navigator.userAgent,
+        utm_source:   utmS,
+        utm_medium:   qp.get('utm_medium')   || '',
+        utm_campaign: qp.get('utm_campaign') || '',
+        utm_content:  qp.get('utm_content')  || '',
+        media:        UTM_LABEL[utmS] || utmS
+      };
+
+      fetch(LEADS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead)
+      }).catch(function (err) {
+        console.error('[floating-cta] dashboard lead error:', err);
+      });
+    } catch (err) {
+      console.error('[floating-cta] dashboard lead build error:', err);
+    }
 
     /* Webflow 폼 엔드포인트로 제출 */
     var payload = {

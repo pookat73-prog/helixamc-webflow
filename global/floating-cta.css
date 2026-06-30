@@ -154,7 +154,7 @@
 .hx-fcta-modal__box {
   position: relative;
   z-index: 1;
-  background: #eef5fd;   /* 메인 블루(#0075d6) 아주 옅게 */
+  background: #F4F7FB;   /* 메인 화이트 (살짝 푸른기 도는 브랜드 화이트) */
   border-radius: 20px 20px 0 0;
   width: 100%;
   max-width: 520px;
@@ -186,7 +186,7 @@
 .hx-fcta-modal__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 8px;
 }
 
@@ -379,36 +379,63 @@
 .hx-fcta-form__submit:hover { background: #003f7a; }
 .hx-fcta-form__submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* ── 완료/에러 메시지 ── */
+/* ── 완료 메시지 ── */
 .hx-fcta-form__done {
   display: none;
   text-align: center;
-  padding: 32px 16px;
+  padding: 44px 24px 32px;
 }
 
 .hx-fcta-form__done.is-visible {
   display: block;
+  animation: hxFctaDoneIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.hx-fcta-form__done-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
+@keyframes hxFctaDoneIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hx-fcta-form__done-illust {
+  display: block;
+  width: 150px;
+  max-width: 55%;
+  height: auto;
+  margin: 0 auto 18px;
 }
 
 .hx-fcta-form__done-title {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   color: #0D1117;
-  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
 }
 
 .hx-fcta-form__done-desc {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
-  color: #555;
-  margin: 0;
+  line-height: 1.65;
+  color: #5a6270;
+  margin: 0 0 26px;
 }
+
+.hx-fcta-form__done-close {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: #0075d6;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 44px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.hx-fcta-form__done-close:hover { background: #005fb0; }
+.hx-fcta-form__done-close:active { transform: scale(0.97); }
 
 /* ── 모바일 하단 여백 (고정 버튼에 콘텐츠 가리지 않도록) ── */
 @media (max-width: 599px) {
