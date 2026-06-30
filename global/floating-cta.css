@@ -154,7 +154,7 @@
 .hx-fcta-modal__box {
   position: relative;
   z-index: 1;
-  background: #eef5fd;   /* 메인 블루(#0075d6) 아주 옅게 */
+  background: #fff;
   border-radius: 20px 20px 0 0;
   width: 100%;
   max-width: 520px;
@@ -186,7 +186,7 @@
 .hx-fcta-modal__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 8px;
 }
 
@@ -398,10 +398,10 @@
 
 .hx-fcta-form__done-illust {
   display: block;
-  width: 210px;
-  max-width: 72%;
+  width: 150px;
+  max-width: 55%;
   height: auto;
-  margin: 0 auto 20px;
+  margin: 0 auto 18px;
 }
 
 .hx-fcta-form__done-title {
@@ -410,15 +410,7 @@
   font-weight: 700;
   color: #0D1117;
   letter-spacing: -0.01em;
-  margin: 0 0 10px;
-}
-
-.hx-fcta-form__done-desc {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  line-height: 1.65;
-  color: #5a6270;
-  margin: 0 0 26px;
+  margin: 0 0 24px;
 }
 
 .hx-fcta-form__done-close {

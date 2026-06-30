@@ -63,11 +63,10 @@
 
     /* 상담 신청 모달 */
     '<div class="hx-fcta-modal" id="hxFctaModal" role="dialog"',
-      ' aria-modal="true" aria-labelledby="hxFctaModalTitle" aria-hidden="true">',
+      ' aria-modal="true" aria-label="상담 신청" aria-hidden="true">',
       '<div class="hx-fcta-modal__backdrop" id="hxFctaModalBackdrop"></div>',
       '<div class="hx-fcta-modal__box">',
         '<div class="hx-fcta-modal__header">',
-          '<h2 class="hx-fcta-modal__title" id="hxFctaModalTitle">상담 신청</h2>',
           '<button class="hx-fcta-modal__close" id="hxFctaModalClose" type="button"',
             ' aria-label="모달 닫기">✕</button>',
         '</div>',
@@ -77,8 +76,6 @@
           '<img class="hx-fcta-form__done-illust" src="' + DONE_IMG + '"',
             ' alt="" aria-hidden="true">',
           '<p class="hx-fcta-form__done-title">상담 신청이 접수되었습니다</p>',
-          '<p class="hx-fcta-form__done-desc">확인 후 가능한 빠르게 연락드리겠습니다.<br>',
-            '소중한 가족의 건강, 헬릭스동물메디컬센터가 함께하겠습니다.</p>',
           '<button class="hx-fcta-form__done-close" id="hxFctaDoneClose" type="button">확인</button>',
         '</div>',
 
