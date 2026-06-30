@@ -79,11 +79,6 @@
           '<button class="hx-fcta-form__done-close" id="hxFctaDoneClose" type="button">확인</button>',
         '</div>',
 
-        /* 헤더 밑 안내문구 */
-        '<p class="hx-fcta-form__intro" id="hxFctaIntro">',
-          '신청해 주시면 확인 후 빠르게 연락드리겠습니다.',
-        '</p>',
-
         /* 폼 */
         '<form class="hx-fcta-form" id="hxFctaForm" novalidate>',
           '<div class="hx-fcta-form__group">',
