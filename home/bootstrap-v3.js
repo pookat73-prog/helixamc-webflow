@@ -47,8 +47,12 @@
 
   console.log('[helix-bootstrap] v3 entry → resolving latest SHA of @' + BRANCH);
 
-  fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH,
-        { headers: { 'Accept': 'application/vnd.github+json' } })
+  /* ?t=Date.now() + no-store: GitHub API 의 CDN 엣지/브라우저 캐시가 옛 커밋
+     SHA 를 내주는 stale 문제 차단. 매 요청을 고유 주소로 만들어 항상 최신
+     브랜치 HEAD 를 받는다. (about/emergency bootstrap 과 동일 패턴) */
+  fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
+        '?t=' + Date.now(),
+        { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
     .then(function (d) {
       var sha = (d.sha || '').substring(0, 40);
