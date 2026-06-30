@@ -65,7 +65,10 @@
     /* 홈 SVICC 버튼 */
     { sel: '.bt-box-4',             label: 'SVICC 버튼',          event: 'svicc_click_*' },
     /* 서초 전화 */
-    { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_call' }
+    { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_call' },
+    /* 응급 페이지 하단 24시 응급 진료 CTA */
+    { sel: '.helix-branch-cta__row', label: '응급 · 지점 전화',   event: 'emergency_call_*' },
+    { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' }
   ];
 
   /* 페이지 단위 측정(특정 버튼 아님) — 안내용 칩 */

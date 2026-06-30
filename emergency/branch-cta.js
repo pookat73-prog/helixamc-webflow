@@ -58,6 +58,28 @@
     try { window.sessionStorage.setItem(STATE_KEY, s); } catch (e) {}
   }
 
+  /* ── GA4 헬퍼 — 응급 내원 CTA 클릭 측정 ──
+     gtag 있으면 gtag('event'), 없으면 dataLayer.push 폴백 (사이트 공통 패턴) */
+  function gaSend(eventName, branch, value) {
+    try {
+      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var params = {
+        item_type: 'emergency_cta',
+        branch: branch || 'unknown',
+        device: device,
+        value: value || ''
+      };
+      var name = eventName + '_' + device;
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';
+        window.gtag('event', name, params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = name;
+        window.dataLayer.push(params);
+      }
+    } catch (e) {}
+  }
+
   function build() {
     if (document.querySelector('.helix-branch-cta')) return;
 
@@ -130,10 +152,12 @@
         if (!branch) return;
         var act = iconBtn.getAttribute('data-action');
         if (act === 'call') {
+          gaSend('emergency_call', branch.name, branch.tel);
           if (window.confirm(branch.tel + ' 로 전화 연결하시겠습니까?')) {
             location.href = 'tel:' + branch.tel.replace(/\D/g, '');
           }
         } else if (act === 'map') {
+          gaSend('emergency_map_click', branch.name, branch.mapHref || '');
           if (branch.mapPending) {
             alert('일산분원 방문 안내 페이지는 준비 중입니다.');
           } else if (branch.mapHref) {
@@ -149,8 +173,11 @@
         e.preventDefault();
         var k = rowEl.getAttribute('data-branch');
         var br = BRANCHES.filter(function (b) { return b.key === k; })[0];
-        if (br && window.confirm(br.tel + ' 로 전화 연결하시겠습니까?')) {
-          location.href = 'tel:' + br.tel.replace(/\D/g, '');
+        if (br) {
+          gaSend('emergency_call', br.name, br.tel);
+          if (window.confirm(br.tel + ' 로 전화 연결하시겠습니까?')) {
+            location.href = 'tel:' + br.tel.replace(/\D/g, '');
+          }
         }
       }
     });
