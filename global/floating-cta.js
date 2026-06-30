@@ -34,6 +34,9 @@
     (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
   var DONE_IMG  = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
                   ASSET_REF + '/global/cta-done.svg';
+  /* 버튼 전용 다이컷 마스코트(흰 외곽선 내장). 완료화면용(cta-done.svg)과 별도. */
+  var MASCOT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
+                   ASSET_REF + '/global/cta-mascot.svg';
 
   /* ── HTML 주입 ── */
   var html = [
@@ -57,8 +60,8 @@
     /* 토글 버튼 */
     '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
       ' aria-label="상담 메뉴 열기" aria-expanded="false" aria-controls="hxFctaPanel">',
-      '<img class="hx-fcta-btn__mascot" src="' + DONE_IMG + '" alt="" aria-hidden="true">',
       '<span class="hx-fcta-btn__label">상담 문의</span>',
+      '<img class="hx-fcta-btn__mascot" src="' + MASCOT_IMG + '" alt="" aria-hidden="true">',
     '</button>',
 
     /* 상담 신청 모달 */
