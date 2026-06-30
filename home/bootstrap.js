@@ -120,6 +120,9 @@
        다른 모든 페이지 모듈의 gtag('event', ...) 호출이 안전하게 큐잉되도록
        FILES 배열의 가장 첫 줄에 둠. */
     'global/ga4-base.js',
+    /* GA 측정 점검 오버레이 — ?ga-inspect=1 일 때만 동작 (평소 무해).
+       ga4-base 바로 다음에 둬 다른 모듈보다 먼저 gtag 가로채기 설치. */
+    'global/ga-inspector.js',
     /* 사이트 전역 (헤더 메뉴, 한글 줄바꿈 정책 등) */
     'global/global.css',
     /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
