@@ -13,15 +13,31 @@
   right: 3vw;
   z-index: 9000;
   display: block;
-  width: 118px;                 /* 쿠키 폭 */
+  width: 150px;
+  height: 116px;
   padding: 0;
   border: none;
-  background: transparent;       /* 쿠키 자체는 이미지(다이컷 윤곽) */
+  background: transparent;
   cursor: pointer;
   font-family: 'Noto Sans KR', sans-serif;
   -webkit-tap-highlight-color: transparent;
   outline: none;
   transition: transform 0.2s ease;
+}
+
+/* 아래 넓은 흰 알약 바 = 버튼 본체. 위로 향한 그림자로 마스코트가 앞에 앉은 깊이감.
+   (마스코트보다 넓어 '버튼이 더 큰' 느낌, 마스코트와 같은 흰색이라 한 쿠키) */
+.hx-fcta-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 -5px 11px rgba(0, 0, 0, 0.30);
+  z-index: 0;
 }
 
 .hx-fcta-btn:hover {
@@ -34,28 +50,31 @@
   border-radius: 20px;
 }
 
-/* 마스코트 = 쿠키 전체(마스코트 윤곽 윗부분 + 바닥 바, 하나의 다이컷).
-   이미지가 버튼 박스를 채우므로 위로가기 회피가 쿠키 전체를 계산 → 안 겹침. */
+/* 마스코트 = 바 위 중앙에 앉은 다이컷(흰 실루엣 + 원래 색 악센트). 바와 같은 흰색 → 한 쿠키 */
 .hx-fcta-btn__mascot {
-  display: block;
-  width: 100%;
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 106px;
   height: auto;
+  z-index: 1;
   pointer-events: none;
-  filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.18));  /* 한 쿠키 그림자 */
 }
 
-/* '상담 문의' — 쿠키 아래 평평한 바 영역 위에 얹힘 */
+/* '상담 문의하기' — 바 위에 얹힘 (피그마 블루) */
 .hx-fcta-btn__label {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 15px;
-  z-index: 2;            /* 마스코트 이미지(drop-shadow 필터) 위에 글자가 오도록 */
+  bottom: 16px;
+  z-index: 2;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
-  color: #0a4a86;
+  color: #0075d6;
   line-height: 1;
+  letter-spacing: -0.3px;
   white-space: nowrap;
   pointer-events: none;
 }
