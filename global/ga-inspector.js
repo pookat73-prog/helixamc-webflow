@@ -62,6 +62,8 @@
     { sel: 'a[href^="tel:"]',       label: '지점 · 전화번호',     event: 'tel_copy_*' },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },
+    /* 홈 "응급상황인가요?" 응급증상 CTA */
+    { sel: '.bt-box-3',             label: '홈 · 응급증상 CTA',   event: 'emergency_symptom_cta_*' },
     /* 홈 SVICC 버튼 */
     { sel: '.bt-box-4',             label: 'SVICC 버튼',          event: 'svicc_click_*' },
     /* 서초 전화 */

@@ -130,10 +130,47 @@
     });
   }
 
+  /* 홈 "우리 아이가 응급상황인가요?" 섹션 응급증상 CTA 클릭 추적: .bt-box-3
+     (응급내원이 필요한 증상 CTA). 글로우는 sections-animations.js 가 통제 —
+     여긴 클릭 측정만 별도로 붙임. */
+  function initEmergencyCtaClickTracking() {
+    document.querySelectorAll('.bt-box-3').forEach(function (el) {
+      if (el.dataset.helixEmgTrack) return;
+      el.dataset.helixEmgTrack = '1';
+      el.addEventListener('click', function () {
+        try {
+          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var eventName = 'emergency_symptom_cta_' + device;
+          var anchor = el.tagName === 'A' ? el : el.querySelector('a');
+          var href = anchor ? anchor.href : '';
+          var label = (el.innerText || '').trim().slice(0, 40);
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, {
+              item_type: 'emergency_symptom_cta',
+              device: device,
+              label: label,
+              value: href,
+              transport_type: 'beacon'
+            });
+          } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+            window.dataLayer.push({
+              event: eventName,
+              item_type: 'emergency_symptom_cta',
+              device: device,
+              label: label,
+              value: href
+            });
+          }
+        } catch (err) {}
+      });
+    });
+  }
+
   window.Webflow = window.Webflow || [];
   window.Webflow.push(function () {
     setTimeout(initButtonGlow, 100);
     setTimeout(initSviccClickTracking, 100);
     setTimeout(initHeroCtaClickTracking, 100);
+    setTimeout(initEmergencyCtaClickTracking, 100);
   });
 })();
