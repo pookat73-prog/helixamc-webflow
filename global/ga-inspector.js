@@ -76,6 +76,39 @@
     { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' }
   ];
 
+  /* about(=/discover-helix) 페이지 전용 — .cta-style / .link-block 등은 다른
+     페이지에도 존재하므로 이 페이지에서만 표시(오표시 방지). 의료진 지점 버튼은
+     텍스트 매칭이라 정적 셀렉터로 안 잡지만, 클릭 시 실시간 로그에 뜸. */
+  if (PAGE === 'about' || PAGE === 'discover') {
+    /* 섹션 CTA(서초본원·일산·특화·응급)는 .cta_seocho_button/.cta-style 클래스를
+       공유 → 클래스만으로는 구분 불가(이중·오라벨). 텍스트로 가려 버튼마다 1개씩. */
+    var CTA_FAM = '.cta_seocho_button, .cta-style';
+    function hasText(re) { return function (el) { return re.test((el.innerText || '')); }; }
+    TARGETS = TARGETS.concat([
+      { sel: '.subheader_click-area', label: '소개 · 서브헤더 링크', event: 'subheader_nav_*' },
+      { sel: CTA_FAM, label: '소개 · 서초본원 CTA', event: 'about_seocho_cta_*', match: hasText(/서초/) },
+      { sel: CTA_FAM, label: '소개 · 응급증상 CTA', event: 'about_emergency_cta_*', match: hasText(/응급|증상/) },
+      { sel: CTA_FAM, label: '소개 · 본문 CTA',     event: 'about_cta_*', match: function (el) { var s = el.innerText || ''; return !/일산|특화/.test(s); } },
+      { sel: '.link-block',        label: '소개 · 스빅(SVIC)',   event: 'about_svic_cta_*' },
+      { sel: '.helix-deck-arrow-left, .helix-deck-arrow-right', label: '소개 · 연혁 화살표', event: 'history_deck_nav_*' },
+      { sel: '#cert .cert-plus',   label: '소개 · 인증 카드(+)', event: 'cert_modal_open_*' },
+      /* 의료진 지점 버튼 — 고정 클래스가 없어 본문(헤더/푸터 제외)의 짧은
+         지점명 버튼을 텍스트로 식별. */
+      { sel: 'a, button, [role="button"], [class*="button" i], [class*="btn" i]',
+        label: '소개 · 의료진 지점버튼', event: 'doctor_branch_click_*', match: isDoctorBranchEl }
+    ]);
+  }
+
+  /* 의료진 카드의 지점 버튼인지 — 짧은 지점명 정확 매칭 + 헤더/푸터/CTA 제외 */
+  function isDoctorBranchEl(el) {
+    var s = (el.innerText || '').replace(/\s+/g, ' ').trim();
+    /* 일산 분원은 측정 제외 (요청) */
+    if (!/^(서초\s*본원|서울동물영상종양센터)$/.test(s)) return false;
+    if (el.closest('header, .header, nav, .subheader, footer, .footer, [class*="header" i], [class*="footer" i]')) return false;
+    if (el.closest('.cta_seocho_button, .cta-style, .link-block')) return false;
+    return true;
+  }
+
   /* 페이지 단위 측정(특정 버튼 아님) — 안내용 칩 */
   var PAGE_LEVEL = [
     PAGE + '_page_view  (페이지 진입 1회)',
@@ -301,10 +334,14 @@
     /* 현재 살아있는 박스 제거 후 다시 그림 (DOM 변동/스크롤 대응) */
     overlay.innerHTML = '';
     boxMap = [];
+    var seen = [];   /* 한 요소엔 배지 1개만 — 여러 셀렉터에 걸려도 이중 표시 방지 */
     TARGETS.forEach(function (t) {
       var nodes = document.querySelectorAll(t.sel);
       nodes.forEach(function (el) {
         if (!isVisible(el)) return;
+        if (t.match && !t.match(el)) return;   /* 텍스트 등 추가 필터 */
+        if (seen.indexOf(el) !== -1) return;    /* 이미 배지 달린 요소면 skip */
+        seen.push(el);
         var box = document.createElement('div');
         box.className = 'hx-gai-box';
         var tag = document.createElement('div');

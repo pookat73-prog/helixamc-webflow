@@ -2536,3 +2536,99 @@
   window.addEventListener('load', sync);
   sync();
 })();
+
+/* ================================================================
+   ABOUT(=/discover-helix) 페이지 — GA 클릭 측정
+   ----------------------------------------------------------------
+   - 섹션3 서초본원 CTA  : .cta_seocho_button   → about_seocho_cta
+   - 스빅(SVIC) 버튼     : .link-block          → about_svic_cta
+   - 본문 CTA(섹션4 응급) : .cta-style           → about_emergency_cta / about_cta
+   - 연혁 카드덱 화살표   : .helix-deck-arrow-*  → history_deck_nav
+   - 의료진 카드 지점버튼 : 카드 내 "서초"/"서울동물영상종양센터" 텍스트
+                                                → doctor_branch_click
+   측정 전용 — preventDefault/stopPropagation 을 절대 하지 않아 원래 동작
+   (coming-soon 토스트 / cert 모달 / 외부 링크 이동) 그대로. window 캡처
+   단계로 들어 다른 가로채기보다 먼저 1회만 기록.
+   ================================================================ */
+(function () {
+  'use strict';
+  if (window.__helixAboutGaClicksInit) return;
+  window.__helixAboutGaClicksInit = true;
+
+  /* 의료진 카드 지점 버튼인지 — 헤더/푸터/CTA 제외, 본문의 짧은 지점명 정확 매칭.
+     "서초 본원" 알약 버튼 등. (고정 클래스가 없어 텍스트로 식별) */
+  function isDoctorBranchEl(el) {
+    if (!el || !el.closest) return false;
+    var s = ((el.innerText || '')).replace(/\s+/g, ' ').trim();
+    /* 일산 분원은 측정 제외 (요청) — 매칭 목록에서 뺌 */
+    if (!/^(서초\s*본원|서울동물영상종양센터)$/.test(s)) return false;
+    if (el.closest('header, .header, nav, .subheader, footer, .footer, [class*="header" i], [class*="footer" i]')) return false;
+    if (el.closest('.cta_seocho_button, .cta-style, .link-block')) return false;
+    return true;
+  }
+
+  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function txt(el) { return ((el && el.innerText) || '').replace(/\s+/g, ' ').trim().slice(0, 60); }
+  function hrefOf(el) {
+    var a = el && (el.tagName === 'A' ? el : (el.querySelector && el.querySelector('a')));
+    return a ? a.href : '';
+  }
+  function send(base, extra) {
+    try {
+      var d = device();
+      var p = { item_type: base, device: d };
+      if (extra) { for (var k in extra) { if (extra.hasOwnProperty(k)) p[k] = extra[k]; } }
+      var name = base + '_' + d;
+      if (typeof window.gtag === 'function') {
+        p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        p.event = name;
+        window.dataLayer.push(p);
+      }
+    } catch (e) {}
+  }
+
+  window.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+
+    /* 0) 서브헤더 섹션 링크 — 각 섹션으로 점프하는 네비 (어느 섹션 눌렀는지 라벨) */
+    var subnav = t.closest('.subheader_click-area');
+    if (subnav) {
+      send('subheader_nav', { label: txt(subnav), value: subnav.getAttribute('href') || hrefOf(subnav) });
+      return;
+    }
+
+    /* 1) 섹션 CTA 패밀리(.cta_seocho_button / .cta-style / .link-block) — 클래스를
+          공유(서초본원·일산·특화·응급) → 텍스트로 구분해 버튼마다 정확히 1개 이벤트. */
+    var cta = t.closest('.cta_seocho_button, .cta-style, .link-block');
+    if (cta) {
+      var L = txt(cta);
+      if (cta.matches('.link-block'))      send('about_svic_cta',      { label: L, value: hrefOf(cta) });
+      else if (/서초/.test(L))             send('about_seocho_cta',    { label: L, value: hrefOf(cta) });
+      else if (/응급|증상/.test(L))        send('about_emergency_cta', { label: L, value: hrefOf(cta) });
+      else if (/일산/.test(L))             return;  /* 일산 분원 — 측정 제외 (요청) */
+      else if (/특화/.test(L))             return;  /* 특화진료 CTA — 측정 제외 (요청) */
+      else                                 send('about_cta',           { label: L, value: hrefOf(cta) });
+      return;
+    }
+
+    /* 2) 의료진 카드 지점 버튼 — 고정 클래스가 없어 본문(헤더/푸터/CTA 제외)의
+          짧은 지점명 버튼을 텍스트로 식별. CTA 체크 다음에 둬 섹션 CTA 와 분리. */
+    var dEl = t.closest('a, button, [role="button"], [class*="button" i], [class*="btn" i]') || t;
+    if (isDoctorBranchEl(dEl)) {
+      var ds = txt(dEl);
+      var br = /서울동물영상종양/.test(ds) ? '서울동물영상종양센터' : '서초';
+      send('doctor_branch_click', { branch: br, label: ds });
+      return;
+    }
+
+    /* 5) 연혁 카드덱 좌우 화살표 */
+    var arrow = t.closest('.helix-deck-arrow-left, .helix-deck-arrow-right');
+    if (arrow) {
+      send('history_deck_nav', { dir: arrow.classList.contains('helix-deck-arrow-left') ? 'prev' : 'next' });
+      return;
+    }
+  }, true);
+})();

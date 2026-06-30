@@ -12,31 +12,29 @@
   bottom: 24px;
   right: 3vw;
   z-index: 9000;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #0D1117;
-  color: #F4F7FB;
-  border: none;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  gap: 3px;
+  padding: 12px 22px;
+  border-radius: 18px;          /* 모서리 살짝 둥근 사각형 */
+  background: #bcd9fb;          /* 파스텔 메인블루 */
+  color: #0a4a86;
+  border: none;
+  cursor: pointer;
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   letter-spacing: -0.3px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 117, 214, 0.28);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   outline: none;
+  overflow: visible;            /* 마스코트가 바 위로 삐져나오게 */
 }
 
 .hx-fcta-btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 117, 214, 0.36);
 }
 
 .hx-fcta-btn:focus-visible {
@@ -44,14 +42,22 @@
   outline-offset: 3px;
 }
 
-.hx-fcta-btn__icon {
-  font-size: 18px;
-  line-height: 1;
+/* 마스코트 — 다이컷(흰 외곽선 내장). 바 윗변에 서 있는 모양으로 위로 삐져나옴 */
+.hx-fcta-btn__mascot {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 16px);    /* 바 안으로 16px 걸쳐 '서 있게' */
+  transform: translateX(-50%);
+  width: 92px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.16));  /* 굿즈처럼 살짝 떠 보이게 */
 }
 
 .hx-fcta-btn__label {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1;
+  white-space: nowrap;
 }
 
 /* ── 선택 패널 ── */
@@ -441,12 +447,18 @@
 @media (max-width: 599px) {
   .hx-fcta-btn {
     bottom: 20px;
-    right: 3vw;        /* 위로가기와 같은 기준선 유지 */
-    width: 56px;
-    height: 56px;
+    right: 3vw;
+    padding: 10px 16px;
+    border-radius: 15px;
+    font-size: 13px;
+  }
+  .hx-fcta-btn__label { font-size: 13px; }
+  .hx-fcta-btn__mascot {
+    width: 74px;
+    bottom: calc(100% - 13px);
   }
   .hx-fcta-panel {
-    bottom: 86px;
+    bottom: 100px;
     right: 3vw;
   }
 }
