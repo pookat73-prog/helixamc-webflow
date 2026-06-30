@@ -57,8 +57,8 @@
     /* 토글 버튼 */
     '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
       ' aria-label="상담 메뉴 열기" aria-expanded="false" aria-controls="hxFctaPanel">',
-      '<span class="hx-fcta-btn__icon" aria-hidden="true">💬</span>',
-      '<span class="hx-fcta-btn__label">상담</span>',
+      '<img class="hx-fcta-btn__mascot" src="' + DONE_IMG + '" alt="" aria-hidden="true">',
+      '<span class="hx-fcta-btn__label">상담 문의</span>',
     '</button>',
 
     /* 상담 신청 모달 */
