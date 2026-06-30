@@ -7,16 +7,16 @@
    right 는 위로가기(.helix-top-btn, right:3vw)와 같은 기준선에 맞춰
    세로 정렬. 위로가기는 top-button.js 의 회피 로직이 이 버튼을 감지해
    자동으로 위로 올라감(겹침 방지). */
-/* 피그마 시안 실측 비율(1019:2944) 스케일 0.351 적용:
-   바 444×143(r풀, 넓고 앞) + 마스코트 쿠키 326×312(r104, 좁고 높게 뒤) 큰 겹침 → 하나의 실루엣 */
+/* 위: 마스코트 쿠키(아이싱 다이컷 SVG — 바디+삐져나온 마스코트+도톰 외곽선) /
+   아래: 글자 바. 큰 겹침으로 하나의 실루엣. */
 .hx-fcta-btn {
   position: fixed;
   bottom: 24px;
   right: 3vw;
   z-index: 9000;
-  display: block;
-  width: 156px;
-  height: 120px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
   padding: 0;
   border: none;
   background: transparent;
@@ -37,31 +37,23 @@
   border-radius: 22px;
 }
 
-/* 위 도형: 마스코트 쿠키 — 좁고 높은 흰 둥근 사각형(뒤). 마스코트는 윗부분, 아래로 그림자(SVG) */
+/* 위 도형: 아이싱 쿠키(마스코트 바디+삐져나온 부분 도톰 외곽선). SVG가 흰색·라운드·그림자 모두 포함 */
 .hx-fcta-btn__mascot {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 114px;
-  height: 110px;
-  object-fit: contain;
-  object-position: center top;
-  background: #ffffff;
-  border-radius: 37px;
-  box-sizing: border-box;
+  display: block;
+  width: 152px;
+  height: auto;
   z-index: 0;
   pointer-events: none;
 }
 
-/* 아래 도형: 글자 바 — 넓은 흰 알약(앞). 쿠키 아랫부분을 덮어 하나의 실루엣으로 이어짐 */
+/* 아래 도형: 글자 바 — 넓은 흰 알약(앞). 쿠키 아랫부분에 크게 겹쳐 하나의 실루엣으로 이어짐 */
 .hx-fcta-btn__label {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 50px;
+  position: relative;
   z-index: 1;
+  margin-top: -40px;            /* 쿠키 바디 아래에 크게 겹침 */
+  width: 156px;
+  height: 50px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
