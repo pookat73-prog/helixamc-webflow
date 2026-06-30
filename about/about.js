@@ -2555,7 +2555,16 @@
   if (window.__helixAboutGaClicksInit) return;
   window.__helixAboutGaClicksInit = true;
 
-  var VET_SEL = '.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet, .div-block-72';
+  /* 의료진 카드 지점 버튼인지 — 헤더/푸터/CTA 제외, 본문의 짧은 지점명 정확 매칭.
+     "서초 본원" 알약 버튼 등. (고정 클래스가 없어 텍스트로 식별) */
+  function isDoctorBranchEl(el) {
+    if (!el || !el.closest) return false;
+    var s = ((el.innerText || '')).replace(/\s+/g, ' ').trim();
+    if (!/^(서초\s*본원|일산\s*분원|서울동물영상종양센터)$/.test(s)) return false;
+    if (el.closest('header, .header, nav, .subheader, footer, .footer, [class*="header" i], [class*="footer" i]')) return false;
+    if (el.closest('.cta_seocho_button, .cta-style, .link-block')) return false;
+    return true;
+  }
 
   function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
   function txt(el) { return ((el && el.innerText) || '').replace(/\s+/g, ' ').trim().slice(0, 60); }
@@ -2590,36 +2599,28 @@
       return;
     }
 
-    /* 1) 의료진 카드 지점 버튼 — 카드 안에서 "서초"/"서울동물영상종양센터" 텍스트.
-          (link-block/cta 일반 체크보다 먼저 가려 오분류 방지) */
-    var card = t.closest(VET_SEL);
-    if (card) {
-      var clickable = t.closest('a, button, [role="button"], [class*="button" i], [class*="btn" i]') || t;
-      var ct = txt(clickable);
-      /* 버튼류 짧은 텍스트만 — 카드 본문(긴 경력 텍스트에 "서초" 포함)을 눌러도
-         오발사되지 않도록 길이 가드. "서초 본원" 알약 버튼이 대상. */
-      if (ct.length <= 25) {
-        var branch = /서울동물영상종양|영상종양|svic/i.test(ct) ? '서울동물영상종양센터'
-                   : /서초/.test(ct) ? '서초' : null;
-        if (branch) { send('doctor_branch_click', { branch: branch, label: ct }); return; }
-      }
-      /* 매칭 안 되면 아래 일반 CTA 체크로 진행 */
+    /* 1) 섹션 CTA 패밀리(.cta_seocho_button / .cta-style / .link-block) — 클래스를
+          공유(서초본원·일산·특화·응급) → 텍스트로 구분해 버튼마다 정확히 1개 이벤트. */
+    var cta = t.closest('.cta_seocho_button, .cta-style, .link-block');
+    if (cta) {
+      var L = txt(cta);
+      if (cta.matches('.link-block'))      send('about_svic_cta',      { label: L, value: hrefOf(cta) });
+      else if (/서초/.test(L))             send('about_seocho_cta',    { label: L, value: hrefOf(cta) });
+      else if (/응급|증상/.test(L))        send('about_emergency_cta', { label: L, value: hrefOf(cta) });
+      else if (/일산/.test(L))             send('about_ilsan_cta',     { label: L, value: hrefOf(cta) });
+      else if (/특화/.test(L))             send('about_specialty_cta', { label: L, value: hrefOf(cta) });
+      else                                 send('about_cta',           { label: L, value: hrefOf(cta) });
+      return;
     }
 
-    /* 2) 서초본원 CTA (블루) */
-    var seocho = t.closest('.cta_seocho_button');
-    if (seocho) { send('about_seocho_cta', { label: txt(seocho), value: hrefOf(seocho) }); return; }
-
-    /* 3) 스빅 SVIC (퍼플 외부 링크) */
-    var svic = t.closest('.link-block');
-    if (svic) { send('about_svic_cta', { label: txt(svic), value: hrefOf(svic) }); return; }
-
-    /* 4) 본문 CTA — 섹션4 응급증상 등. 텍스트에 응급/증상 있으면 응급 이벤트로 분리 */
-    var cta = t.closest('.cta-style');
-    if (cta) {
-      var label = txt(cta);
-      if (/응급|증상/.test(label)) send('about_emergency_cta', { label: label, value: hrefOf(cta) });
-      else send('about_cta', { label: label, value: hrefOf(cta) });
+    /* 2) 의료진 카드 지점 버튼 — 고정 클래스가 없어 본문(헤더/푸터/CTA 제외)의
+          짧은 지점명 버튼을 텍스트로 식별. CTA 체크 다음에 둬 섹션 CTA 와 분리. */
+    var dEl = t.closest('a, button, [role="button"], [class*="button" i], [class*="btn" i]') || t;
+    if (isDoctorBranchEl(dEl)) {
+      var ds = txt(dEl);
+      var br = /서울동물영상종양/.test(ds) ? '서울동물영상종양센터'
+             : /일산/.test(ds) ? '일산' : '서초';
+      send('doctor_branch_click', { branch: br, label: ds });
       return;
     }
 
