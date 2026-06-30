@@ -238,7 +238,9 @@
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
-  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH;
+  /* ?t=Date.now(): GitHub API CDN 엣지 stale SHA 방지 (고유 주소화) */
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
+            '?t=' + Date.now();
 
   /* Load ScrollTrigger plugin for GSAP animations */
   var scrollTriggerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
@@ -255,7 +257,7 @@
     console.log('[helix-bootstrap] reusing SHA from entry:', shaFromEntry);
     injectAll(shaFromEntry);
   } else {
-    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' } })
+    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function (data) {
         var sha = (data.sha || '').substring(0, 10);
