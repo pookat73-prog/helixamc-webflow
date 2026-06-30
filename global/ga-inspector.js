@@ -140,10 +140,21 @@
       /* 측정 자리 오버레이 레이어 (클릭 방해 안 하도록 pointer-events:none) */
       '#hx-gai-overlay{position:fixed;inset:0;z-index:2147483600;pointer-events:none}',
       '.hx-gai-box{position:absolute;border:2px solid #00e5ff;border-radius:6px;' +
-        'box-shadow:0 0 0 2px rgba(0,229,255,.25),0 0 12px rgba(0,229,255,.4);' +
-        'background:rgba(0,229,255,.06);transition:border-color .2s,box-shadow .2s}',
-      '.hx-gai-box.flash{border-color:#39ff88;' +
-        'box-shadow:0 0 0 3px rgba(57,255,136,.45),0 0 18px rgba(57,255,136,.7)}',
+        'background:rgba(0,229,255,.06);' +
+        'animation:hx-gai-pulse 1.6s ease-in-out infinite}',
+      /* 상시 번쩍 루프 — 클릭 안 해도 측정 걸린 자리가 바로 보이게 */
+      '@keyframes hx-gai-pulse{' +
+        '0%,100%{box-shadow:0 0 0 2px rgba(0,229,255,.22),0 0 9px rgba(0,229,255,.3)}' +
+        '50%{box-shadow:0 0 0 4px rgba(0,229,255,.5),0 0 22px rgba(0,229,255,.7)}}',
+      /* 클릭으로 실제 발사된 순간엔 초록으로 강조(루프 잠깐 정지) */
+      '.hx-gai-box.flash{border-color:#39ff88;animation:none;' +
+        'box-shadow:0 0 0 3px rgba(57,255,136,.5),0 0 20px rgba(57,255,136,.8)}',
+      /* 귀퉁이 점 — 측정 지점 마커 */
+      '.hx-gai-corner{position:absolute;top:-6px;right:-6px;width:13px;height:13px;' +
+        'border-radius:50%;background:#00e5ff;box-shadow:0 0 0 2px #0d1117,0 0 10px #00e5ff;' +
+        'animation:hx-gai-dot 1.6s ease-in-out infinite}',
+      '@keyframes hx-gai-dot{0%,100%{transform:scale(1);opacity:.85}' +
+        '50%{transform:scale(1.5);opacity:1}}',
       '.hx-gai-tag{position:absolute;top:-11px;left:-2px;max-width:240px;' +
         'font:600 11px/1.4 -apple-system,system-ui,sans-serif;color:#001016;' +
         'background:#00e5ff;padding:1px 7px;border-radius:5px;white-space:nowrap;' +
@@ -290,6 +301,9 @@
         tag.className = 'hx-gai-tag';
         tag.textContent = t.label + ' › ' + t.event;
         box.appendChild(tag);
+        var corner = document.createElement('div');
+        corner.className = 'hx-gai-corner';
+        box.appendChild(corner);
         overlay.appendChild(box);
         boxMap.push({ el: el, box: box });
       });
