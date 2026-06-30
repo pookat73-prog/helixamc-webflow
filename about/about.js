@@ -2583,16 +2583,27 @@
     var t = e.target;
     if (!t || !t.closest) return;
 
+    /* 0) 서브헤더 섹션 링크 — 각 섹션으로 점프하는 네비 (어느 섹션 눌렀는지 라벨) */
+    var subnav = t.closest('.subheader_click-area');
+    if (subnav) {
+      send('subheader_nav', { label: txt(subnav), value: subnav.getAttribute('href') || hrefOf(subnav) });
+      return;
+    }
+
     /* 1) 의료진 카드 지점 버튼 — 카드 안에서 "서초"/"서울동물영상종양센터" 텍스트.
           (link-block/cta 일반 체크보다 먼저 가려 오분류 방지) */
     var card = t.closest(VET_SEL);
     if (card) {
-      var clickable = t.closest('a, button, [role="button"]') || t;
+      var clickable = t.closest('a, button, [role="button"], [class*="button" i], [class*="btn" i]') || t;
       var ct = txt(clickable);
-      var branch = /서울동물영상종양|영상종양|svic/i.test(ct) ? '서울동물영상종양센터'
-                 : /서초/.test(ct) ? '서초' : null;
-      if (branch) { send('doctor_branch_click', { branch: branch, label: ct }); return; }
-      /* 텍스트 매칭 안 되면 아래 일반 CTA 체크로 진행 */
+      /* 버튼류 짧은 텍스트만 — 카드 본문(긴 경력 텍스트에 "서초" 포함)을 눌러도
+         오발사되지 않도록 길이 가드. "서초 본원" 알약 버튼이 대상. */
+      if (ct.length <= 25) {
+        var branch = /서울동물영상종양|영상종양|svic/i.test(ct) ? '서울동물영상종양센터'
+                   : /서초/.test(ct) ? '서초' : null;
+        if (branch) { send('doctor_branch_click', { branch: branch, label: ct }); return; }
+      }
+      /* 매칭 안 되면 아래 일반 CTA 체크로 진행 */
     }
 
     /* 2) 서초본원 CTA (블루) */
