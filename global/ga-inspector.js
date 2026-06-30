@@ -81,6 +81,7 @@
      텍스트 매칭이라 정적 셀렉터로 안 잡지만, 클릭 시 실시간 로그에 뜸. */
   if (PAGE === 'about' || PAGE === 'discover') {
     TARGETS = TARGETS.concat([
+      { sel: '.subheader_click-area', label: '소개 · 서브헤더 링크', event: 'subheader_nav_*' },
       { sel: '.cta_seocho_button', label: '소개 · 서초본원 CTA', event: 'about_seocho_cta_*' },
       { sel: '.cta-style',         label: '소개 · 본문 CTA',     event: 'about_cta_*' },
       { sel: '.link-block',        label: '소개 · 스빅(SVIC)',   event: 'about_svic_cta_*' },
