@@ -28,6 +28,13 @@
   var UTM_LABEL = { meta: '메타', google: '구글', daangn: '당근',
                     kakao: '카카오', tiktok: '틱톡', naver: '네이버' };
 
+  /* 완료 화면 일러스트(정적 에셋). 진입점이 넘긴 커밋 SHA 가 있으면 그
+     immutable 주소로, 없으면 호스트 기반 브랜치(@staging/@main)로 로드. */
+  var ASSET_REF = window.__helixCommitSha ||
+    (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
+  var DONE_IMG  = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
+                  ASSET_REF + '/global/cta-done.svg';
+
   /* ── HTML 주입 ── */
   var html = [
     /* 오버레이 */
@@ -67,12 +74,8 @@
 
         /* 완료 메시지 */
         '<div class="hx-fcta-form__done" id="hxFctaDone" aria-live="polite">',
-          '<div class="hx-fcta-form__done-badge">',
-            '<svg class="hx-fcta-form__done-check" viewBox="0 0 52 52" aria-hidden="true">',
-              '<circle class="hx-fcta-form__done-check-circle" cx="26" cy="26" r="24" fill="none"/>',
-              '<path class="hx-fcta-form__done-check-mark" fill="none" d="M15 27l7.5 7.5L37 19"/>',
-            '</svg>',
-          '</div>',
+          '<img class="hx-fcta-form__done-illust" src="' + DONE_IMG + '"',
+            ' alt="" aria-hidden="true">',
           '<p class="hx-fcta-form__done-title">상담 신청이 접수되었습니다</p>',
           '<p class="hx-fcta-form__done-desc">확인 후 가능한 빠르게 연락드리겠습니다.<br>',
             '소중한 가족의 건강, 헬릭스동물메디컬센터가 함께하겠습니다.</p>',
