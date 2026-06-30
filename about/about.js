@@ -2536,3 +2536,87 @@
   window.addEventListener('load', sync);
   sync();
 })();
+
+/* ================================================================
+   ABOUT(=/discover-helix) 페이지 — GA 클릭 측정
+   ----------------------------------------------------------------
+   - 섹션3 서초본원 CTA  : .cta_seocho_button   → about_seocho_cta
+   - 스빅(SVIC) 버튼     : .link-block          → about_svic_cta
+   - 본문 CTA(섹션4 응급) : .cta-style           → about_emergency_cta / about_cta
+   - 연혁 카드덱 화살표   : .helix-deck-arrow-*  → history_deck_nav
+   - 의료진 카드 지점버튼 : 카드 내 "서초"/"서울동물영상종양센터" 텍스트
+                                                → doctor_branch_click
+   측정 전용 — preventDefault/stopPropagation 을 절대 하지 않아 원래 동작
+   (coming-soon 토스트 / cert 모달 / 외부 링크 이동) 그대로. window 캡처
+   단계로 들어 다른 가로채기보다 먼저 1회만 기록.
+   ================================================================ */
+(function () {
+  'use strict';
+  if (window.__helixAboutGaClicksInit) return;
+  window.__helixAboutGaClicksInit = true;
+
+  var VET_SEL = '.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet, .div-block-72';
+
+  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function txt(el) { return ((el && el.innerText) || '').replace(/\s+/g, ' ').trim().slice(0, 60); }
+  function hrefOf(el) {
+    var a = el && (el.tagName === 'A' ? el : (el.querySelector && el.querySelector('a')));
+    return a ? a.href : '';
+  }
+  function send(base, extra) {
+    try {
+      var d = device();
+      var p = { item_type: base, device: d };
+      if (extra) { for (var k in extra) { if (extra.hasOwnProperty(k)) p[k] = extra[k]; } }
+      var name = base + '_' + d;
+      if (typeof window.gtag === 'function') {
+        p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        p.event = name;
+        window.dataLayer.push(p);
+      }
+    } catch (e) {}
+  }
+
+  window.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+
+    /* 1) 의료진 카드 지점 버튼 — 카드 안에서 "서초"/"서울동물영상종양센터" 텍스트.
+          (link-block/cta 일반 체크보다 먼저 가려 오분류 방지) */
+    var card = t.closest(VET_SEL);
+    if (card) {
+      var clickable = t.closest('a, button, [role="button"]') || t;
+      var ct = txt(clickable);
+      var branch = /서울동물영상종양|영상종양|svic/i.test(ct) ? '서울동물영상종양센터'
+                 : /서초/.test(ct) ? '서초' : null;
+      if (branch) { send('doctor_branch_click', { branch: branch, label: ct }); return; }
+      /* 텍스트 매칭 안 되면 아래 일반 CTA 체크로 진행 */
+    }
+
+    /* 2) 서초본원 CTA (블루) */
+    var seocho = t.closest('.cta_seocho_button');
+    if (seocho) { send('about_seocho_cta', { label: txt(seocho), value: hrefOf(seocho) }); return; }
+
+    /* 3) 스빅 SVIC (퍼플 외부 링크) */
+    var svic = t.closest('.link-block');
+    if (svic) { send('about_svic_cta', { label: txt(svic), value: hrefOf(svic) }); return; }
+
+    /* 4) 본문 CTA — 섹션4 응급증상 등. 텍스트에 응급/증상 있으면 응급 이벤트로 분리 */
+    var cta = t.closest('.cta-style');
+    if (cta) {
+      var label = txt(cta);
+      if (/응급|증상/.test(label)) send('about_emergency_cta', { label: label, value: hrefOf(cta) });
+      else send('about_cta', { label: label, value: hrefOf(cta) });
+      return;
+    }
+
+    /* 5) 연혁 카드덱 좌우 화살표 */
+    var arrow = t.closest('.helix-deck-arrow-left, .helix-deck-arrow-right');
+    if (arrow) {
+      send('history_deck_nav', { dir: arrow.classList.contains('helix-deck-arrow-left') ? 'prev' : 'next' });
+      return;
+    }
+  }, true);
+})();
