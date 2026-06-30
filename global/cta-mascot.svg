@@ -37,8 +37,8 @@
          3) 베이스를 더 dilate 해 도톰한 흰 외곽선
          4) 외곽선 → 솔리드 베이스 → 원본 아트 순으로 합성 -->
     <filter id="diecut" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
-      <feMorphology in="SourceAlpha" operator="dilate" radius="22" result="c1"/>
-      <feMorphology in="c1" operator="erode" radius="22" result="filled"/>
+      <feMorphology in="SourceAlpha" operator="dilate" radius="30" result="c1"/>
+      <feMorphology in="c1" operator="erode" radius="30" result="filled"/>
       <feFlood flood-color="#ffffff" result="w"/>
       <feComposite in="w" in2="filled" operator="in" result="base"/>
       <feMorphology in="filled" operator="dilate" radius="14" result="outl"/>

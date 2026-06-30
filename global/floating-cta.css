@@ -13,23 +13,23 @@
   right: 3vw;
   z-index: 9000;
   display: flex;
+  flex-direction: column-reverse;  /* 마스코트(위) + 상담 문의(아래) 한 덩어리 */
   align-items: center;
-  justify-content: flex-start;
-  padding: 12px 24px 12px 78px;  /* 왼쪽은 마스코트 자리, 글자는 오른쪽 */
-  border-radius: 0 18px 18px 18px; /* 좌상단만 각지고 나머지 셋 둥글게 */
-  background: #ffffff;           /* 마스코트 채운색과 동일(흰색) */
+  gap: 2px;
+  padding: 11px 22px 13px;
+  border-radius: 26px;          /* 쿠키 (둥근) — 모양 추후 조정 */
+  background: #ffffff;           /* 한 쿠키: 마스코트와 같은 흰색 */
   color: #0a4a86;
-  border: 1.5px solid #dbe6f4;
+  border: none;
   cursor: pointer;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 800;
   letter-spacing: -0.3px;
-  box-shadow: 0 6px 18px rgba(0, 117, 214, 0.28);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);  /* 쿠키 한 덩어리 그림자(마스코트 개별 X) */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-  overflow: visible;            /* 마스코트가 바 위로 삐져나오게 */
 }
 
 .hx-fcta-btn:hover {
@@ -42,16 +42,13 @@
   outline-offset: 3px;
 }
 
-/* 마스코트 — 다이컷(흰 외곽선 내장). 바 왼쪽 끝에 '서 있고' 위로 크게 삐져나옴(ㄴ자).
-   왼쪽 배치라 오른쪽 위에 쌓이는 위로가기 버튼과 안 겹침. */
+/* 마스코트 — 쿠키 안에 담겨 가운데 앉아있음(드롭섀도 없음 → 버튼과 한 쿠키).
+   박스 안에 contained 라 위로가기 회피가 마스코트까지 계산 → 안 겹침. */
 .hx-fcta-btn__mascot {
-  position: absolute;
-  left: 6px;                    /* 바 안 왼쪽 (바가 마스코트 끝까지 받침) */
-  bottom: calc(100% - 8px);     /* 바 안으로 8px 만 걸치고 대부분 위로 튀어나옴 */
-  width: 72px;                  /* 더 작게 */
+  width: 88px;
   height: auto;
+  margin-bottom: -3px;          /* 라벨에 가깝게, 전체적으로 살짝 위로 */
   pointer-events: none;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.13));  /* 굿즈처럼 살짝 떠 보이게 */
 }
 
 .hx-fcta-btn__label {
