@@ -3,34 +3,32 @@
    전 페이지 오른쪽 하단 고정 노출
    ================================================================ */
 
-/* ── 토글 버튼 (상담 문의 SVG 일러스트) ──
+/* ── 토글 버튼 (상담 문의 SVG 일러스트 + 라벨) ──
    right 는 위로가기(.helix-top-btn, right:3vw)와 같은 기준선에 맞춰
    세로 정렬. 위로가기는 top-button.js 의 회피 로직이 이 버튼을 감지해
    자동으로 위로 올라감(겹침 방지).
-   높이는 위로가기(64px)의 1.5배 = 96px. 원본 SVG 비율(407.88:371.28) 유지. */
+   일러스트 높이는 위로가기(64px)의 1.5배 = 96px. 원본 SVG 비율 유지.
+   그 아래 '상담 문의하기' 라벨(메인 블랙 + 공식 폰트). */
 .hx-fcta-btn {
   position: fixed;
   bottom: 24px;
   right: 3vw;
   z-index: 9000;
-  height: 96px;                    /* 위로가기 64px × 1.5 */
-  width: auto;
-  aspect-ratio: 407.88 / 371.28;   /* 원본 SVG 뷰박스 비율 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   padding: 0;
   border: none;
-  border-radius: 14px;
   background: transparent;
   cursor: pointer;
-  display: block;
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: transform 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
 
 .hx-fcta-btn:hover {
   transform: scale(1.06);
-  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.34));
 }
 
 .hx-fcta-btn:focus-visible {
@@ -39,17 +37,30 @@
 }
 
 .hx-fcta-btn__img {
-  width: 100%;
-  height: 100%;
+  height: 96px;                    /* 위로가기 64px × 1.5 */
+  width: auto;
+  aspect-ratio: 407.88 / 371.28;   /* 원본 SVG 뷰박스 비율 */
   display: block;
   object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
+}
+
+.hx-fcta-btn__label {
+  font-family: 'ds-endendend', sans-serif;   /* 메인 공식 폰트 */
+  color: #0d1117;                             /* 메인 블랙 */
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
   pointer-events: none;
 }
 
 /* ── 선택 패널 ── */
 .hx-fcta-panel {
   position: fixed;
-  bottom: 132px;      /* 버튼(bottom:24px + height:96px = top 120px) 위로 12px 띄움 */
+  bottom: 150px;      /* 버튼(일러스트 96 + 라벨 ≈ 17, bottom:24px) 위로 띄움 */
   right: 3vw;
   z-index: 9000;
   background: #0D1117;
@@ -432,9 +443,10 @@
 /* ── 모바일 하단 여백 (고정 버튼에 콘텐츠 가리지 않도록) ──
    높이는 각 브레이크포인트의 위로가기 크기 × 1.5 로 유지. */
 @media (max-width: 991px) {
-  /* 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
-  .hx-fcta-btn { height: 13.5vw; }
-  .hx-fcta-panel { bottom: calc(13.5vw + 36px); }
+  /* 일러스트 높이 = 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
+  .hx-fcta-btn__img { height: 13.5vw; }
+  .hx-fcta-btn__label { font-size: 12px; }
+  .hx-fcta-panel { bottom: calc(13.5vw + 52px); }
 }
 
 @media (max-width: 599px) {
@@ -446,7 +458,8 @@
 }
 
 @media (max-width: 479px) {
-  /* 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
-  .hx-fcta-btn { height: 6.3rem; }
-  .hx-fcta-panel { bottom: calc(6.3rem + 32px); }
+  /* 일러스트 높이 = 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
+  .hx-fcta-btn__img { height: 6.3rem; }
+  .hx-fcta-btn__label { font-size: 11px; }
+  .hx-fcta-panel { bottom: calc(6.3rem + 46px); }
 }

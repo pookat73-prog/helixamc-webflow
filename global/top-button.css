@@ -16,12 +16,12 @@
 .helix-top-btn__box {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;  /* 위 정렬 — 아이콘 anchor 가 위, 비율 고정한 채 아래로 성장 */
+  justify-content: center;  /* 라벨+아이콘을 원 안에서 세로 가운데 정렬 */
   align-items: center;
-  gap: 0;
-  width: 56px;             /* '위로가기'→'위로' 로 줄면서 원도 약간 축소 (64→56) */
+  gap: 2px;
+  width: 50px;             /* '위로' 라벨에 맞춰 원 추가 축소 (56→50) */
   aspect-ratio: 1 / 1;
-  padding: 13px 4px 0;     /* 원만 키우고 라벨/아이콘 크기 유지 — 시각적 중앙 정렬용 top padding */
+  padding: 0 4px;          /* 가운데 정렬이라 상하 패딩 제거 */
   border: 1px solid #ffffff;
   border-radius: 100vw;
   background: #0d1117;
@@ -44,13 +44,13 @@
 }
 
 @media (max-width: 991px) {
-  .helix-top-btn__box { width: 8vw; padding: 0.9rem 0.3rem 0; gap: 0; }
+  .helix-top-btn__box { width: 7vw; padding: 0 0.3rem; gap: 2px; }
   .helix-top-btn__label { font-size: 0.7rem; line-height: 1; }
   .helix-top-btn__icon { width: 3vw; }
 }
 
 @media (max-width: 479px) {
-  .helix-top-btn__box { width: 3.7rem; padding: 0.9rem 0.3rem 0; gap: 0; }
+  .helix-top-btn__box { width: 3.3rem; padding: 0 0.3rem; gap: 2px; }
   .helix-top-btn__label { font-size: 0.7rem; line-height: 1; }
   .helix-top-btn__icon { width: 1.4rem; }
 }
