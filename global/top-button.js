@@ -37,7 +37,7 @@
     btn.setAttribute('aria-label', '맨 위로');
     btn.innerHTML =
       '<div class="helix-top-btn__box">' +
-        '<div class="helix-top-btn__label">위로가기</div>' +
+        '<div class="helix-top-btn__label">위로</div>' +
         '<img class="helix-top-btn__icon" src="' + ICON + '" alt="">' +
       '</div>';
     btn.addEventListener('click', function (e) {
