@@ -61,6 +61,7 @@
   ================================================================ */
   var TARGETS = [
     /* 전 페이지 공통 — 플로팅 상담 CTA */
+    { sel: '#hxFctaToggle',         label: '플로팅 · 상담 문의하기', event: 'cta_open' },
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
