@@ -15,42 +15,27 @@
 }
 .helix-top-btn__box {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;  /* 위 정렬 — 아이콘 anchor 가 위, 비율 고정한 채 아래로 성장 */
   align-items: center;
-  gap: 0;
-  width: 64px;
+  justify-content: center;  /* 아이콘만 정중앙 (글자 제거) */
+  width: 44px;              /* 글자 뺀 김에 원 축소 (50→44) */
   aspect-ratio: 1 / 1;
-  padding: 16px 4px 0;     /* 원만 키우고 라벨/아이콘 크기 유지 — 시각적 중앙 정렬용 top padding */
   border: 1px solid #ffffff;
   border-radius: 100vw;
   background: #0d1117;
   box-sizing: border-box;
 }
-.helix-top-btn__label {
-  color: #ffffff;
-  font-size: 11px;
-  line-height: 1;
-  text-align: center;
-  text-decoration: none;
-  flex-shrink: 0;
-}
 .helix-top-btn__icon {
-  width: 22px;            /* 키움. 비율 1:1 유지, 위에서 anchor 되어 아래로 늘어남 */
-  height: auto;
-  aspect-ratio: 1 / 1;
+  width: 20px;
+  height: 20px;
   display: block;
-  flex-shrink: 0;
 }
 
 @media (max-width: 991px) {
-  .helix-top-btn__box { width: 9vw; padding: 1.1rem 0.3rem 0; gap: 0; }
-  .helix-top-btn__label { font-size: 0.7rem; line-height: 1; }
-  .helix-top-btn__icon { width: 3vw; }
+  .helix-top-btn__box { width: 6.2vw; }
+  .helix-top-btn__icon { width: 2.9vw; height: 2.9vw; }
 }
 
 @media (max-width: 479px) {
-  .helix-top-btn__box { width: 4.2rem; padding: 1.1rem 0.3rem 0; gap: 0; }
-  .helix-top-btn__label { font-size: 0.7rem; line-height: 1; }
-  .helix-top-btn__icon { width: 1.4rem; }
+  .helix-top-btn__box { width: 2.9rem; }
+  .helix-top-btn__icon { width: 1.3rem; height: 1.3rem; }
 }

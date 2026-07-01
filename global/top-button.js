@@ -11,7 +11,8 @@
   var DEBUG = /[?&]debug-topbtn=1/.test(location.search);
   function dbg(){ if(DEBUG) console.log.apply(console, ['[top-btn]'].concat([].slice.call(arguments))); }
 
-  var ICON  = 'https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69dc468edccab2e2a301f4d0_%EC%9C%84%EB%A1%9C%EA%B0%80%EA%B8%B0.svg';
+  /* 화살표는 인라인 SVG(대칭·뷰박스 정중앙)로 렌더 — 외부 애셋 내부가
+     비대칭이라 라벨과 어긋나 보이던 문제 제거 + CDN 의존 제거 */
   var GAP_VW = 1.5;
 
   var btn = null;
@@ -35,11 +36,15 @@
     btn.className = 'helix-top-btn';
     btn.href = '#';
     btn.setAttribute('aria-label', '맨 위로');
+    /* 아이콘만(글자 제거) — '맨 위로' 의미의 바+화살표. 접근성은 앵커의
+       aria-label="맨 위로" 로 유지. */
     btn.innerHTML =
       '<div class="helix-top-btn__box">' +
-        '<div class="helix-top-btn__label">위로가기</div>' +
-        '<img class="helix-top-btn__icon" src="' + ICON + '" alt="">' +
-      '</div>';
+        '<svg class="helix-top-btn__icon" viewBox="0 0 24 24" fill="none"' +
+          ' stroke="#ffffff" stroke-width="2" stroke-linecap="round"' +
+          ' stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M7 5.4H17"/><path d="M12 19V9.2"/><path d="M7.4 13.6L12 9l4.6 4.6"/>' +
+        '</svg>';
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });

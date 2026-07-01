@@ -25,8 +25,6 @@
      실장님 데시보드(Helixamc_pm)가 읽는 leads 경로에 직접 한 부 더 쌓는다.
      REST 방식 POST 라 Firebase SDK 로드 불필요. */
   var LEADS_URL = 'https://helixamc-pm-default-rtdb.firebaseio.com/leads.json';
-  var UTM_LABEL = { meta: '메타', google: '구글', daangn: '당근',
-                    kakao: '카카오', tiktok: '틱톡', naver: '네이버' };
 
   /* 완료 화면 일러스트(정적 에셋). 진입점이 넘긴 커밋 SHA 가 있으면 그
      immutable 주소로, 없으면 호스트 기반 브랜치(@staging/@main)로 로드. */
@@ -34,6 +32,9 @@
     (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
   var DONE_IMG  = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
                   ASSET_REF + '/global/cta-done.svg';
+  /* 플로팅 토글 버튼 얼굴 — 상담 문의 일러스트(SVG). */
+  var CONSULT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
+                   ASSET_REF + '/global/cta-consult.svg';
 
   /* ── HTML 주입 ── */
   var html = [
@@ -56,9 +57,9 @@
 
     /* 토글 버튼 */
     '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
-      ' aria-label="상담 메뉴 열기" aria-expanded="false" aria-controls="hxFctaPanel">',
-      '<span class="hx-fcta-btn__icon" aria-hidden="true">💬</span>',
-      '<span class="hx-fcta-btn__label">상담</span>',
+      ' aria-label="상담 문의하기" aria-expanded="false" aria-controls="hxFctaPanel">',
+      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
+      '<span class="hx-fcta-btn__label">상담 문의하기</span>',
     '</button>',
 
     /* 상담 신청 모달 */
@@ -345,8 +346,7 @@
         inquiryText = (symptom ? symptom + '\n' : '') + '(' + extras.join(' / ') + ')';
       }
 
-      var qp   = new URLSearchParams(location.search);
-      var utmS = qp.get('utm_source') || '직접유입';
+      var qp = new URLSearchParams(location.search);
 
       var lead = {
         name:         ownerVal,
@@ -357,11 +357,11 @@
         inquiry:      inquiryText,
         submittedAt:  new Date().toISOString(),
         userAgent:    navigator.userAgent,
-        utm_source:   utmS,
+        utm_source:   qp.get('utm_source')   || '',
         utm_medium:   qp.get('utm_medium')   || '',
         utm_campaign: qp.get('utm_campaign') || '',
         utm_content:  qp.get('utm_content')  || '',
-        media:        UTM_LABEL[utmS] || utmS
+        media:        '홈페이지'
       };
 
       fetch(LEADS_URL, {
