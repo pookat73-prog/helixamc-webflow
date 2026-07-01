@@ -419,6 +419,72 @@
       });
     });
 
+    /* ──────────────────────────────────────────────────────────
+       7. 지점 카드 → 상세페이지 이동 링크 (사진 / 이름 클릭)
+         홈 맨 밑 지점 섹션의 각 카드 안에는 상세페이지로 넘어가는
+         a 태그(사진 썸네일 + "서초 본원" 이름)가 들어 있음. 그 클릭을
+         GA4 로 잡는다. 복사(.copy-text-button)·전화(tel:) 는 위에서
+         이미 stopPropagation 으로 분리돼 있어 여기 안 걸린다.
+
+         핵심: 이 a 태그는 클릭 즉시 페이지를 떠나므로 preventDefault
+         하지 않고 그대로 이동시킨다. gtag 는 transport_type:'beacon'
+         (GA4 기본) 으로 navigator.sendBeacon 을 써 언로드 중에도
+         측정이 전송된다.
+    ────────────────────────────────────────────────────────── */
+    document.querySelectorAll('.home_branch-card').forEach(function (card) {
+      var cardText = card.innerText || '';
+      var dBranchKey = 'other';
+      var dBranchLabel = '';
+      if (/서초|2135-9119/.test(cardText)) {
+        dBranchKey = 'seocho'; dBranchLabel = '서초';
+      } else if (/일산|고양시|덕양구|978-7575/.test(cardText)) {
+        dBranchKey = 'ilsan';  dBranchLabel = '일산';
+      }
+
+      card.querySelectorAll('a[href]').forEach(function (a) {
+        /* 중복 부착 가드 */
+        if (a.__helixDetailTracked) return;
+
+        var href = a.getAttribute('href') || '';
+        /* tel:/mailto:/앵커/js: 제외 — 실제 페이지 이동만 대상 */
+        if (/^(tel:|mailto:|#|javascript:)/i.test(href.trim())) return;
+
+        var url;
+        try { url = new URL(a.href, location.href); } catch (e) { return; }
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+        /* 같은 사이트 안의 "다른" 페이지로 가는 링크만 (외부 지도 링크·
+           현재 페이지 자기참조 제외) */
+        if (url.origin !== location.origin) return;
+        if (url.pathname === location.pathname) return;
+
+        a.__helixDetailTracked = true;
+
+        a.addEventListener('click', function () {
+          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          /* 사진(img/picture) 을 품은 링크면 'image', 아니면 'text' */
+          var clickArea = a.querySelector('img, picture') ? 'image' : 'text';
+          var eventName = 'open_detail_' + dBranchKey + '_' + device;
+          var payload = {
+            item_type: 'branch_detail_link',
+            branch: dBranchLabel || 'unknown',
+            device: device,
+            click_area: clickArea,
+            value: url.pathname,
+            transport_type: 'beacon'
+          };
+          try {
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', eventName, payload);
+            } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+              payload.event = eventName;
+              window.dataLayer.push(payload);
+            }
+          } catch (e) {}
+          log('branch detail click:', eventName, clickArea, url.pathname);
+        });
+      });
+    });
+
     initialized = true;
     log('all sections initialized');
     return true;

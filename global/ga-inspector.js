@@ -63,6 +63,7 @@
     /* 홈 지점 카드 */
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
     { sel: 'a[href^="tel:"]',       label: '지점 · 전화번호',     event: 'tel_copy_*' },
+    { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },
     /* 홈 "응급상황인가요?" 응급증상 CTA */
@@ -97,6 +98,19 @@
       { sel: 'a, button, [role="button"], [class*="button" i], [class*="btn" i]',
         label: '소개 · 의료진 지점버튼', event: 'doctor_branch_click_*', match: isDoctorBranchEl }
     ]);
+  }
+
+  /* 지점 카드 안에서 상세페이지로 실제 이동하는 링크인지 — sections-animations.js
+     의 open_detail 트래커와 동일 판정 (tel/mailto/앵커/외부/자기참조 제외). */
+  function isBranchDetailLink(el) {
+    var href = el.getAttribute('href') || '';
+    if (/^(tel:|mailto:|#|javascript:)/i.test(href.trim())) return false;
+    var url;
+    try { url = new URL(el.href, location.href); } catch (e) { return false; }
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+    if (url.origin !== location.origin) return false;
+    if (url.pathname === location.pathname) return false;
+    return true;
   }
 
   /* 의료진 카드의 지점 버튼인지 — 짧은 지점명 정확 매칭 + 헤더/푸터/CTA 제외 */
