@@ -70,7 +70,10 @@
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
     /* 홈 지점 카드 */
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
-    { sel: 'a[href^="tel:"]',       label: '지점 · 전화번호',     event: 'tel_copy_*' },
+    /* tel_copy 는 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
+       .home_branch-card 로 한정하지 않으면 응급 모달 분원 전화(tel: 링크) 등
+       사이트 전역 tel: 링크에 오배지됨. */
+    { sel: '.home_branch-card a[href^="tel:"]', label: '지점 · 전화번호', event: 'tel_copy_*' },
     { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },
@@ -381,6 +384,7 @@
       var nodes = document.querySelectorAll(t.sel);
       nodes.forEach(function (el) {
         if (!isVisible(el)) return;
+        if (isOccluded(el)) return;             /* 모달 등에 가려진 요소엔 배지 안 그림 */
         if (t.match && !t.match(el)) return;   /* 텍스트 등 추가 필터 */
         if (seen.indexOf(el) !== -1) return;    /* 이미 배지 달린 요소면 skip */
         seen.push(el);
@@ -398,6 +402,23 @@
       });
     });
     position();
+  }
+
+  /* 모달/오버레이 등에 실제로 가려진 요소인지 — 중심점을 히트테스트.
+     중심이 뷰포트 밖이면(스크롤로 화면 밖) 판정 skip → 아래쪽 배지는
+     스크롤하면 position() 이 따라가므로 그대로 유지. 점검기 오버레이는
+     pointer-events:none 라 elementFromPoint 가 무시(배지가 방해 안 함). */
+  function isOccluded(el) {
+    try {
+      var r = el.getBoundingClientRect();
+      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      var vw = window.innerWidth, vh = window.innerHeight;
+      if (cx < 0 || cy < 0 || cx > vw || cy > vh) return false; /* 뷰포트 밖 → 가림 판정 안 함 */
+      var top = document.elementFromPoint(cx, cy);
+      if (!top) return false;
+      if (top === el || el.contains(top) || top.contains(el)) return false;
+      return true; /* 다른 요소(모달 등)가 위를 덮음 */
+    } catch (e) { return false; }
   }
 
   function isVisible(el) {
