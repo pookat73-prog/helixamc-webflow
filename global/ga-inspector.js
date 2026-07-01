@@ -85,7 +85,7 @@
     { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' },
     /* 응급 페이지 증상 카드 + 카드 옆/모달 CTA (모두 응급 페이지에만 존재하는 셀렉터).
        카드 옆·모달 CTA 는 일산 제외(서초만) — data-branch/클래스로 서초만 배지. */
-    { sel: '[data-emergency-open]', label: '응급 · 증상 카드', event: 'emergency_symptom_open_*' },
+    { sel: '.em_card, [data-emergency-open]', label: '응급 · 증상 카드', event: 'emergency_symptom_open_*' },
     { sel: '.call.seocho, .call-seocho', label: '응급 · 서초 전화(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.map.seocho, .map-seocho',   label: '응급 · 서초 오시는길(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' }
@@ -451,15 +451,13 @@
     window.addEventListener('resize', function () { scanTargets(); }, { passive: true });
 
     /* 탭 전환 시 배지 재스캔 — Webflow 탭은 활성 탭만 표시(display:none)라,
-       숨은 탭(외과·정형외과 등) 의 측정 자리는 그 탭이 활성화돼 보일 때
-       비로소 배지를 그릴 수 있음. 탭류 클릭 직후 재스캔해 배지가 탭을 따라감.
-       (측정 자체는 페이지 전체 위임이라 탭과 무관하게 항상 발사됨.) */
-    document.addEventListener('click', function (e) {
-      if (e.target && e.target.closest &&
-          e.target.closest('.w-tab-link, .w-tabs, [data-w-tab], [role="tab"], .helix-mini-tabmenu, .helix-mini-tabpanel_item, .helix-mini-tabselect')) {
-        setTimeout(scanTargets, 60);
-        setTimeout(scanTargets, 300);
-      }
+       숨은 탭(외과·정형외과 등) 의 측정 자리, 클릭으로 열리는 모달(증상
+       상세·의료진 상세) 안 CTA, 아코디언 등 — 클릭으로 UI 가 바뀌면 그 요소가
+       비로소 보이므로 재스캔해야 배지가 따라감. 디버그 오버레이라 매 클릭
+       재스캔해도 부담 없음(디바운스). (측정 자체는 위임이라 항상 발사됨.) */
+    document.addEventListener('click', function () {
+      setTimeout(scanTargets, 60);
+      setTimeout(scanTargets, 340);
     }, true);
 
     /* 푸터·플로팅 CTA 등은 DOMContentLoaded 이후 늦게 주입됨 → 재스캔 */
