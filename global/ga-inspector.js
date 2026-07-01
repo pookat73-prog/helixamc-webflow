@@ -26,6 +26,13 @@
   /* 켜는 스위치 — URL 에 ?ga-inspect=1 또는 ?debug-ga=1 있을 때만 동작 */
   if (!/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
 
+  /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징(*.webflow.io)에선 측정
+     자체가 꺼져 있으므로, 점검 오버레이(테두리·배지·실시간 로그)도 표시 안 함. */
+  if (/\.webflow\.io$/i.test(location.hostname)) {
+    console.log('[helix-ga-inspector] staging(*.webflow.io) — 측정 비활성 상태라 점검기 미표시');
+    return;
+  }
+
   /* 중복 주입 가드 */
   if (window.__helixGaInspectorInit) return;
   window.__helixGaInspectorInit = true;
