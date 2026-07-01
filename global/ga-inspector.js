@@ -26,6 +26,13 @@
   /* 켜는 스위치 — URL 에 ?ga-inspect=1 또는 ?debug-ga=1 있을 때만 동작 */
   if (!/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
 
+  /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징(*.webflow.io)에선 측정
+     자체가 꺼져 있으므로, 점검 오버레이(테두리·배지·실시간 로그)도 표시 안 함. */
+  if (/\.webflow\.io$/i.test(location.hostname)) {
+    console.log('[helix-ga-inspector] staging(*.webflow.io) — 측정 비활성 상태라 점검기 미표시');
+    return;
+  }
+
   /* 중복 주입 가드 */
   if (window.__helixGaInspectorInit) return;
   window.__helixGaInspectorInit = true;
@@ -63,6 +70,7 @@
     /* 홈 지점 카드 */
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
     { sel: 'a[href^="tel:"]',       label: '지점 · 전화번호',     event: 'tel_copy_*' },
+    { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },
     /* 홈 "응급상황인가요?" 응급증상 CTA */
@@ -97,6 +105,19 @@
       { sel: 'a, button, [role="button"], [class*="button" i], [class*="btn" i]',
         label: '소개 · 의료진 지점버튼', event: 'doctor_branch_click_*', match: isDoctorBranchEl }
     ]);
+  }
+
+  /* 지점 카드 안에서 상세페이지로 실제 이동하는 링크인지 — sections-animations.js
+     의 open_detail 트래커와 동일 판정 (tel/mailto/앵커/외부/자기참조 제외). */
+  function isBranchDetailLink(el) {
+    var href = el.getAttribute('href') || '';
+    if (/^(tel:|mailto:|#|javascript:)/i.test(href.trim())) return false;
+    var url;
+    try { url = new URL(el.href, location.href); } catch (e) { return false; }
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return false;
+    if (url.origin !== location.origin) return false;
+    if (url.pathname === location.pathname) return false;
+    return true;
   }
 
   /* 의료진 카드의 지점 버튼인지 — 짧은 지점명 정확 매칭 + 헤더/푸터/CTA 제외 */

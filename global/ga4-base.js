@@ -25,6 +25,19 @@
   if (window.__helixGA4Init) return;
   window.__helixGA4Init = true;
 
+  /* ⚠️ 측정은 정식 사이트(main)에서만.
+     스테이징(*.webflow.io)은 실사용 사이트가 아니므로, 여기서 측정을 쏘면
+     정식 GA4 속성(G-PWCB5MVC32)에 테스트 트래픽이 섞여 데이터가 오염됨.
+     → 스테이징 도메인이면 gtag.js 본체 inject / config 를 건너뛰고,
+        다른 모듈의 gtag('event', ...) 호출이 조용히 아무 것도 안 하도록
+        no-op gtag stub 만 정의하고 즉시 종료. */
+  if (/\.webflow\.io$/i.test(location.hostname)) {
+    window.dataLayer = window.dataLayer || [];
+    if (typeof window.gtag !== 'function') { window.gtag = function () {}; }
+    console.log('[helix-ga4] staging(*.webflow.io) 감지 — 측정 비활성화');
+    return;
+  }
+
   var GA_ID = 'G-PWCB5MVC32';
 
   /* Webflow Site Settings 의 GA4 통합이 켜져 있으면 Webflow 가 이미 동일
