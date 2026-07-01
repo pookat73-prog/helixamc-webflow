@@ -1057,11 +1057,12 @@
     } catch (e) { return false; }
   }
 
-  function trackCall(digits, cb) {
+  function trackCall(digits, sectionLabel, cb) {
     var params = {
       item_type: 'phone_call',
       branch: '서초',
       device: device(),
+      section: sectionLabel || 'unknown',
       value: digits
     };
     var fired = false;
@@ -1088,7 +1089,7 @@
     setTimeout(done, 0);
   }
 
-  function bindGroup(container, digits) {
+  function bindGroup(container, digits, sectionLabel) {
     if (container.__helixPhoneBound) return;
     container.__helixPhoneBound = true;
     container.style.cursor = 'pointer';
@@ -1105,7 +1106,7 @@
 
       copyText(pretty);
       var telHref = 'tel:' + digits;
-      trackCall(digits, function () {
+      trackCall(digits, sectionLabel, function () {
         log('navigating', telHref);
         window.location.href = telHref;
       });
@@ -1138,18 +1139,46 @@
       var digits = digitsOnly(raw);
       if (digits.length < 9) { log('invalid digits, skip', raw); return; }
 
-      bindGroup(container, digits);
+      bindGroup(container, digits, 'reservation');
       log('bound', digits, container);
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPhoneSection);
-  } else {
+  /* ── 첫 섹션(인트로) 전화번호 ───────────────────────────────
+     대상: section.intro_backgra / .intro_backgra_m / .intro_backgra_m2
+           (데스크탑 + 모바일 반응형 변형) 안의 H1.heading-2 = "02-2135-9119".
+     .heading-2 는 Webflow 자동 클래스라 흔하므로, 인트로 섹션 안 + 전화번호
+     텍스트(숫자 9자리+) 로 좁혀 오검출 방지. 예약 섹션과 동일 동작
+     (확인창 → 복사 → tel: 연결 → GA4). section='hero' 로 구분 집계. */
+  function initHeroPhone() {
+    var introSecs = document.querySelectorAll('section[class*="intro_backgra"]');
+    if (!introSecs.length) { log('intro section not found'); return; }
+
+    Array.prototype.forEach.call(introSecs, function (sec) {
+      var cands = sec.querySelectorAll('.heading-2');
+      Array.prototype.forEach.call(cands, function (el) {
+        /* 자식 요소 없는(=텍스트 리프) 노드만, 전화번호 형태만 */
+        if (el.children.length) return;
+        var digits = digitsOnly(el.textContent || '');
+        if (digits.length < 9 || digits.length > 11) return;
+        bindGroup(el, digits, 'hero');
+        log('hero phone bound', digits, el);
+      });
+    });
+  }
+
+  function initAllPhones() {
     initPhoneSection();
+    initHeroPhone();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllPhones);
+  } else {
+    initAllPhones();
   }
   /* Webflow IX2 가 늦게 DOM 을 조작하는 케이스 대비 */
-  window.addEventListener('load', initPhoneSection);
+  window.addEventListener('load', initAllPhones);
 })();
 
 /* ================================================================
