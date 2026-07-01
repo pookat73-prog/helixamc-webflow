@@ -443,6 +443,18 @@
     window.addEventListener('scroll', onMove, { passive: true });
     window.addEventListener('resize', function () { scanTargets(); }, { passive: true });
 
+    /* 탭 전환 시 배지 재스캔 — Webflow 탭은 활성 탭만 표시(display:none)라,
+       숨은 탭(외과·정형외과 등) 의 측정 자리는 그 탭이 활성화돼 보일 때
+       비로소 배지를 그릴 수 있음. 탭류 클릭 직후 재스캔해 배지가 탭을 따라감.
+       (측정 자체는 페이지 전체 위임이라 탭과 무관하게 항상 발사됨.) */
+    document.addEventListener('click', function (e) {
+      if (e.target && e.target.closest &&
+          e.target.closest('.w-tab-link, .w-tabs, [data-w-tab], [role="tab"], .helix-mini-tabmenu, .helix-mini-tabpanel_item, .helix-mini-tabselect')) {
+        setTimeout(scanTargets, 60);
+        setTimeout(scanTargets, 300);
+      }
+    }, true);
+
     /* 푸터·플로팅 CTA 등은 DOMContentLoaded 이후 늦게 주입됨 → 재스캔 */
     var rescans = [400, 1000, 2000, 3500];
     rescans.forEach(function (ms) { setTimeout(scanTargets, ms); });
