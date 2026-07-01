@@ -107,6 +107,20 @@
     ]);
   }
 
+  /* 서초본원 페이지 전용 */
+  if (PAGE === 'seocho') {
+    TARGETS = TARGETS.concat([
+      /* 첫 섹션(인트로) 전화 — .heading-2 는 흔한 클래스라 인트로 섹션 안 +
+         전화번호 텍스트만 배지. (예약 섹션 전화는 위 .branch_phoneno 배지) */
+      { sel: 'section[class*="intro_backgra"] .heading-2', label: '서초 · 첫섹션 전화', event: 'seocho_phone_call',
+        match: function (el) { return !el.children.length && /\d{2,3}[.\- ]?\d{3,4}[.\- ]?\d{4}/.test(el.innerText || el.textContent || ''); } },
+      { sel: '.subheader_click-area',   label: '서초 · 서브헤더 링크',  event: 'seocho_subheader_nav_*' },
+      { sel: '.w-tab-menu .w-tab-link', label: '서초 · 분과 탭',       event: 'seocho_dept_tab_*' },
+      { sel: '[data-doctor-open]',      label: '서초 · 의료진 상세(+)', event: 'seocho_doctor_detail_*' },
+      { sel: '.naver-map-directions',   label: '서초 · 길찾기',        event: 'seocho_directions_*' }
+    ]);
+  }
+
   /* 지점 카드 안에서 상세페이지로 실제 이동하는 링크인지 — sections-animations.js
      의 open_detail 트래커와 동일 판정 (tel/mailto/앵커/외부/자기참조 제외). */
   function isBranchDetailLink(el) {

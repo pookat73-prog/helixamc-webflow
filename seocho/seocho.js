@@ -71,6 +71,29 @@
         '<circle cx="12" cy="9" r="2.5"/>' +
       '</svg>' +
       '<span>길찾기</span>';
+
+    /* GA4 — 길찾기(네이버 플레이스) 클릭. target=_blank 라 페이지는 유지되지만
+       안전하게 beacon 전송. 지도 마커 클릭이 아니라 명시적 "길찾기" 버튼만 집계. */
+    a.addEventListener('click', function () {
+      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var payload = {
+        item_type: 'directions',
+        branch: '서초',
+        device: device,
+        value: a.href,
+        transport_type: 'beacon'
+      };
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'seocho_directions_' + device, payload);
+        } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+          payload.event = 'seocho_directions_' + device;
+          window.dataLayer.push(payload);
+        }
+      } catch (e) {}
+      log('directions click', device);
+    });
+
     container.appendChild(a);
   }
 
@@ -255,6 +278,33 @@
       wrap.querySelectorAll('.w-tab-menu .w-tab-link').forEach(wrapTabLinkText);
       insertSeparators(wrap.querySelector('.w-tab-menu'));
 
+      /* GA4 — 의료진 분과 탭 클릭. 원본 .w-tab-link 에만 부착.
+         (스크롤 시 뜨는 미니 탭 메뉴/모바일 드롭다운은 결국 orig.click() 을
+         호출해 이 핸들러를 재발화 → 한 번만 집계, 중복 없음.) preventDefault
+         하지 않아 Webflow 탭 전환은 그대로 동작. */
+      wrap.querySelectorAll('.w-tab-menu .w-tab-link').forEach(function (tabLink) {
+        if (tabLink.__helixTabTracked) return;
+        tabLink.__helixTabTracked = true;
+        tabLink.addEventListener('click', function () {
+          var dept = (tabLink.textContent || '').replace(/\s+/g, ' ').trim();
+          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var payload = {
+            item_type: 'doctor_dept_tab',
+            branch: '서초',
+            device: device,
+            dept: dept || 'unknown'
+          };
+          try {
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', 'seocho_dept_tab_' + device, payload);
+            } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+              payload.event = 'seocho_dept_tab_' + device;
+              window.dataLayer.push(payload);
+            }
+          } catch (e) {}
+        });
+      });
+
       var menu = wrap.querySelector('.w-tab-menu') || wrap;
       menu.addEventListener('mousedown', pinScroll, true);
       menu.addEventListener('click', pinScroll, true);
@@ -353,6 +403,30 @@
         e.preventDefault();
         setActive(a);
         clickedAt = Date.now();
+
+        /* GA4 — 서브헤더 메뉴 클릭 (섹션 이동). 같은 페이지 내 스크롤이라
+           페이지 언로드 없음 → 일반 gtag 로 충분. */
+        (function () {
+          var titleEl = a.querySelector('.subheader_title') || a;
+          var menu = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
+          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var payload = {
+            item_type: 'subheader_nav',
+            branch: '서초',
+            device: device,
+            menu: menu || 'unknown',
+            value: href
+          };
+          try {
+            if (typeof window.gtag === 'function') {
+              window.gtag('event', 'seocho_subheader_nav_' + device, payload);
+            } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+              payload.event = 'seocho_subheader_nav_' + device;
+              window.dataLayer.push(payload);
+            }
+          } catch (e) {}
+        })();
+
         var hEl = document.querySelector('header.header, header, nav');
         var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
         var sub = document.querySelector('.subheader');
@@ -983,11 +1057,12 @@
     } catch (e) { return false; }
   }
 
-  function trackCall(digits, cb) {
+  function trackCall(digits, sectionLabel, cb) {
     var params = {
       item_type: 'phone_call',
       branch: '서초',
       device: device(),
+      section: sectionLabel || 'unknown',
       value: digits
     };
     var fired = false;
@@ -1014,7 +1089,7 @@
     setTimeout(done, 0);
   }
 
-  function bindGroup(container, digits) {
+  function bindGroup(container, digits, sectionLabel) {
     if (container.__helixPhoneBound) return;
     container.__helixPhoneBound = true;
     container.style.cursor = 'pointer';
@@ -1031,7 +1106,7 @@
 
       copyText(pretty);
       var telHref = 'tel:' + digits;
-      trackCall(digits, function () {
+      trackCall(digits, sectionLabel, function () {
         log('navigating', telHref);
         window.location.href = telHref;
       });
@@ -1064,18 +1139,46 @@
       var digits = digitsOnly(raw);
       if (digits.length < 9) { log('invalid digits, skip', raw); return; }
 
-      bindGroup(container, digits);
+      bindGroup(container, digits, 'reservation');
       log('bound', digits, container);
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPhoneSection);
-  } else {
+  /* ── 첫 섹션(인트로) 전화번호 ───────────────────────────────
+     대상: section.intro_backgra / .intro_backgra_m / .intro_backgra_m2
+           (데스크탑 + 모바일 반응형 변형) 안의 H1.heading-2 = "02-2135-9119".
+     .heading-2 는 Webflow 자동 클래스라 흔하므로, 인트로 섹션 안 + 전화번호
+     텍스트(숫자 9자리+) 로 좁혀 오검출 방지. 예약 섹션과 동일 동작
+     (확인창 → 복사 → tel: 연결 → GA4). section='hero' 로 구분 집계. */
+  function initHeroPhone() {
+    var introSecs = document.querySelectorAll('section[class*="intro_backgra"]');
+    if (!introSecs.length) { log('intro section not found'); return; }
+
+    Array.prototype.forEach.call(introSecs, function (sec) {
+      var cands = sec.querySelectorAll('.heading-2');
+      Array.prototype.forEach.call(cands, function (el) {
+        /* 자식 요소 없는(=텍스트 리프) 노드만, 전화번호 형태만 */
+        if (el.children.length) return;
+        var digits = digitsOnly(el.textContent || '');
+        if (digits.length < 9 || digits.length > 11) return;
+        bindGroup(el, digits, 'hero');
+        log('hero phone bound', digits, el);
+      });
+    });
+  }
+
+  function initAllPhones() {
     initPhoneSection();
+    initHeroPhone();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllPhones);
+  } else {
+    initAllPhones();
   }
   /* Webflow IX2 가 늦게 DOM 을 조작하는 케이스 대비 */
-  window.addEventListener('load', initPhoneSection);
+  window.addEventListener('load', initAllPhones);
 })();
 
 /* ================================================================
