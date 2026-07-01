@@ -58,7 +58,8 @@
     /* 토글 버튼 */
     '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
       ' aria-label="상담 문의하기" aria-expanded="false" aria-controls="hxFctaPanel">',
-      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="상담 문의하기">',
+      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
+      '<span class="hx-fcta-btn__label">상담 문의하기</span>',
     '</button>',
 
     /* 상담 신청 모달 */
