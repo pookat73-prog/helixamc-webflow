@@ -40,7 +40,7 @@
   display: block;
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.10)) drop-shadow(0 4px 9px rgba(0, 0, 0, 0.13));
 }
 
 /* 흰 카드 빈칸 '가운데'에 겹치는 라벨 — 메인 블랙 / 공식 폰트.

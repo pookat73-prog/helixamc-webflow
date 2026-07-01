@@ -23,6 +23,8 @@
   border-radius: 100vw;
   background: #0d1117;
   box-sizing: border-box;
+  /* 바짝 붙는 은은한 드롭섀도 (상담 버튼과 동일 톤) */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 4px 9px rgba(0, 0, 0, 0.15);
 }
 .helix-top-btn__icon {
   width: 20px;
