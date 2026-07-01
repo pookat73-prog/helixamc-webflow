@@ -177,6 +177,17 @@ fetch(document.querySelector('script[src*="seocho/bootstrap"]').src + '?cb=' + D
 
 측정(gtag 이벤트)을 새로 붙이는 모듈은, 위 세 파일의 게이트에 편승(대개 `ga4-base.js` 의 no-op stub 이 알아서 무시)하므로 별도 조치 불필요. 단 **자체적으로 gtag.js 를 직접 로드하는 새 진입점**을 만들면 반드시 같은 도메인 게이트를 넣을 것.
 
+### 🚩 측정 변경은 스테이징 안 거치고 main 으로 직행 (LOCKED v1, 사용자 지시)
+
+**방침 (사용자 확정)**: 측정(GA4) 관련 변경은 **staging 을 거치지 않고 PR base 를 `main` 으로 직접** 만들어 정식에 바로 반영. 스테이징 사이트는 실사용이 아니고 도메인 게이트로 어차피 측정이 꺼져 있어, staging 에서 검증할 것이 없음 → staging 라운드트립은 무의미.
+
+- ✅ 측정 PR: `claude/* → main` 직접 (일반 `→ staging` 규칙의 예외)
+- ✅ 측정과 무관한 일반 작업은 기존대로 `→ staging` 우선
+- ⚠️ 이 때문에 측정 코드를 품은 파일(예: `seocho.js`, `floating-cta.js`, `sections-animations.js`)은 main 이 staging 보다 앞설 수 있음. 나중에 그 파일의 **비측정** 변경을 staging 으로 올려 `staging → main` 승격할 때 충돌 나면, **측정 코드는 main 쪽을 살리고** 병합.
+- ❌ 측정 변경을 staging 에 올려두고 "검증해 달라" 하지 말 것 (사용자가 명시적으로 지침 반복함: "스테이징엔 측정 관련한건 안 붙이기로 했잖아")
+
+> 도메인 게이트(위)는 그대로 유지 — 혹시 측정 코드가 feature 파일 편승으로 staging 에 섞여 들어가도 실제 발사는 정식에서만 되도록 하는 안전장치.
+
 ## ⚠️ 모바일 viewport 격리 — 건드리지 말 것 (LOCKED v1, PR #586/#587/#588)
 
 **대상 파일**: `global/global.css`
