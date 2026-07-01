@@ -226,6 +226,9 @@
     overlay.classList.add('is-open');
     toggle.setAttribute('aria-expanded', 'true');
     toggle.setAttribute('aria-label', '상담 메뉴 닫기');
+    /* "상담 문의하기" 버튼 눌러 상담 메뉴를 연 순간 = 상담 의향.
+       (닫기 클릭은 집계 안 함.) ga 헬퍼가 page 를 자동 부착. */
+    ga('cta_open', { source: 'floating_cta' });
   }
 
   function closePanel() {
@@ -279,16 +282,34 @@
     }
   });
 
-  /* ── GA4 헬퍼 ── */
+  /* ── 페이지 식별 (scroll-depth.js 와 동일 규칙) ──
+     상담 CTA 는 전 페이지 공통이므로, 어느 페이지에서 눌렀는지 page
+     파라미터로 구분 집계. (기존엔 location:'seocho' 하드코딩이라 다른
+     페이지에서 눌러도 서초로 찍히던 문제 해결.) */
+  function ctaPage() {
+    var p = (location.pathname || '/').toLowerCase();
+    if (/discover/.test(p)) return 'discover';
+    if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
+    if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
+    if (/seocho|서초|seoco/.test(p)) return 'seocho';
+    if (/about/.test(p)) return 'about';
+    if (/emergency|응급/.test(p)) return 'emergency';
+    return 'home';
+  }
+  var CTA_PAGE = ctaPage();
+
+  /* ── GA4 헬퍼 — 모든 상담 CTA 이벤트에 page 자동 부착 ── */
   function ga(eventName, params) {
     if (typeof window.gtag === 'function') {
-      window.gtag('event', eventName, params);
+      var p = params || {};
+      p.page = CTA_PAGE;
+      window.gtag('event', eventName, p);
     }
   }
 
   /* ── 전화 클릭 ── */
   callBtn.addEventListener('click', function () {
-    ga('cta_call', { location: 'seocho', source: 'floating_cta' });
+    ga('cta_call', { source: 'floating_cta' });
     closePanel();
   });
 
@@ -421,7 +442,7 @@
   function onSubmitSuccess() {
     form.style.display = 'none';
     done.classList.add('is-visible');
-    ga('cta_form_submit', { location: 'seocho', source: 'floating_cta' });
+    ga('cta_form_submit', { source: 'floating_cta' });
   }
 
   } // end run()
