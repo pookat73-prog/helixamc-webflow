@@ -3,21 +3,18 @@
    전 페이지 오른쪽 하단 고정 노출
    ================================================================ */
 
-/* ── 토글 버튼 (상담 문의 SVG 일러스트 + 라벨) ──
+/* ── 토글 버튼 (상담 문의 SVG 일러스트) ──
    right 는 위로가기(.helix-top-btn, right:3vw)와 같은 기준선에 맞춰
    세로 정렬. 위로가기는 top-button.js 의 회피 로직이 이 버튼을 감지해
    자동으로 위로 올라감(겹침 방지).
    일러스트 높이는 위로가기(64px)의 1.5배 = 96px. 원본 SVG 비율 유지.
-   그 아래 '상담 문의하기' 라벨(메인 블랙 + 공식 폰트). */
+   '상담 문의하기' 라벨은 일러스트 하단 흰 카드 빈칸 위에 겹쳐 표시. */
 .hx-fcta-btn {
   position: fixed;
   bottom: 24px;
   right: 3vw;
   z-index: 9000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  display: block;              /* 이미지가 크기 정의, 라벨은 absolute 오버레이 */
   padding: 0;
   border: none;
   background: transparent;
@@ -46,10 +43,15 @@
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
 }
 
+/* 흰 카드 빈칸 위에 겹치는 라벨 — 볼드 / 메인 블랙 / 공식 폰트 */
 .hx-fcta-btn__label {
+  position: absolute;
+  left: 50%;
+  bottom: 11%;                 /* 일러스트 하단 흰 카드 안쪽 */
+  transform: translateX(-50%);
   font-family: 'ds-endendend', sans-serif;   /* 메인 공식 폰트 */
   color: #0d1117;                             /* 메인 블랙 */
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.02em;
@@ -60,7 +62,7 @@
 /* ── 선택 패널 ── */
 .hx-fcta-panel {
   position: fixed;
-  bottom: 150px;      /* 버튼(일러스트 96 + 라벨 ≈ 17, bottom:24px) 위로 띄움 */
+  bottom: 132px;      /* 버튼(일러스트 96px, bottom:24px = top 120px) 위로 띄움 */
   right: 3vw;
   z-index: 9000;
   background: #0D1117;
@@ -445,8 +447,8 @@
 @media (max-width: 991px) {
   /* 일러스트 높이 = 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
   .hx-fcta-btn__img { height: 13.5vw; }
-  .hx-fcta-btn__label { font-size: 12px; }
-  .hx-fcta-panel { bottom: calc(13.5vw + 52px); }
+  .hx-fcta-btn__label { font-size: 11px; }
+  .hx-fcta-panel { bottom: calc(13.5vw + 36px); }
 }
 
 @media (max-width: 599px) {
@@ -460,6 +462,6 @@
 @media (max-width: 479px) {
   /* 일러스트 높이 = 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
   .hx-fcta-btn__img { height: 6.3rem; }
-  .hx-fcta-btn__label { font-size: 11px; }
-  .hx-fcta-panel { bottom: calc(6.3rem + 46px); }
+  .hx-fcta-btn__label { font-size: 10px; }
+  .hx-fcta-panel { bottom: calc(6.3rem + 32px); }
 }
