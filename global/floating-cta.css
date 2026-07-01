@@ -34,7 +34,7 @@
 }
 
 .hx-fcta-btn__img {
-  height: 96px;                    /* 위로가기 64px × 1.5 */
+  height: 128px;                   /* 데스크탑 상담 버튼 크기 */
   width: auto;
   aspect-ratio: 407.88 / 371.28;   /* 원본 SVG 뷰박스 비율 */
   display: block;
@@ -53,7 +53,7 @@
   transform: translateX(-50%);
   font-family: 'ds-endendend', sans-serif;   /* 메인 공식 폰트 */
   color: #0d1117;                             /* 메인 블랙 */
-  font-size: 13px;
+  font-size: 17px;             /* 데스크탑 128px 버튼에 맞춰 확대 */
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0;
@@ -64,7 +64,7 @@
 /* ── 선택 패널 ── */
 .hx-fcta-panel {
   position: fixed;
-  bottom: 132px;      /* 버튼(일러스트 96px, bottom:24px = top 120px) 위로 띄움 */
+  bottom: 164px;      /* 버튼(일러스트 128px, bottom:24px = top 152px) 위로 띄움 */
   right: 3vw;
   z-index: 9000;
   background: #0D1117;
@@ -449,7 +449,7 @@
 @media (max-width: 991px) {
   /* 일러스트 높이 = 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
   .hx-fcta-btn__img { height: 13.5vw; }
-  .hx-fcta-btn__label { font-size: 12px; }
+  .hx-fcta-btn__label { font-size: 15px; }   /* 버튼 크기 유지, 라벨만 확대 */
   .hx-fcta-panel { bottom: calc(13.5vw + 36px); }
 }
 
@@ -464,6 +464,6 @@
 @media (max-width: 479px) {
   /* 일러스트 높이 = 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
   .hx-fcta-btn__img { height: 6.3rem; }
-  .hx-fcta-btn__label { font-size: 11px; }
+  .hx-fcta-btn__label { font-size: 14px; }   /* 버튼 크기 유지, 라벨만 확대 */
   .hx-fcta-panel { bottom: calc(6.3rem + 32px); }
 }
