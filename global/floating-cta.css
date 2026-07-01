@@ -43,18 +43,20 @@
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
 }
 
-/* 흰 카드 빈칸 위에 겹치는 라벨 — 볼드 / 메인 블랙 / 공식 폰트 */
+/* 흰 카드 빈칸 '가운데'에 겹치는 라벨 — 메인 블랙 / 공식 폰트.
+   굵기 700 은 작은 크기에서 글자 속(카운터)이 떡져서 600 으로 낮추고
+   크기를 키움. 자간도 음수 제거해 밀림 방지. */
 .hx-fcta-btn__label {
   position: absolute;
   left: 50%;
-  bottom: 11%;                 /* 일러스트 하단 흰 카드 안쪽 */
+  bottom: 20%;                 /* 흰 카드 빈칸 세로 중앙 */
   transform: translateX(-50%);
   font-family: 'ds-endendend', sans-serif;   /* 메인 공식 폰트 */
   color: #0d1117;                             /* 메인 블랙 */
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   white-space: nowrap;
   pointer-events: none;
 }
@@ -447,7 +449,7 @@
 @media (max-width: 991px) {
   /* 일러스트 높이 = 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
   .hx-fcta-btn__img { height: 13.5vw; }
-  .hx-fcta-btn__label { font-size: 11px; }
+  .hx-fcta-btn__label { font-size: 12px; }
   .hx-fcta-panel { bottom: calc(13.5vw + 36px); }
 }
 
@@ -462,6 +464,6 @@
 @media (max-width: 479px) {
   /* 일러스트 높이 = 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
   .hx-fcta-btn__img { height: 6.3rem; }
-  .hx-fcta-btn__label { font-size: 10px; }
+  .hx-fcta-btn__label { font-size: 11px; }
   .hx-fcta-panel { bottom: calc(6.3rem + 32px); }
 }
