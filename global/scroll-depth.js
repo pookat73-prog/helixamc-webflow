@@ -21,6 +21,10 @@
   if (window.__helixScrollDepthInit) return;
   window.__helixScrollDepthInit = true;
 
+  /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징(*.webflow.io)에선
+     페이지뷰/스크롤 깊이 측정을 쏘지 않음 (정식 GA4 데이터 오염 방지). */
+  if (/\.webflow\.io$/i.test(location.hostname)) return;
+
   var DEBUG = /[?&]debug-ga=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[helix-ga]'].concat([].slice.call(arguments))); }
 

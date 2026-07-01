@@ -147,6 +147,36 @@ fetch(document.querySelector('script[src*="seocho/bootstrap"]').src + '?cb=' + D
 - 정식 도메인 → `@main` 브랜치 콘텐츠 로드
 - 워크플로우 (`.github/workflows/webflow-deploy.yml`): `main` / `staging` 푸시 둘 다 트리거, **푸시된 ref 의 캐시만** 퍼지/워밍업
 
+## 📊 GA4 측정은 정식(main)에서만 — 스테이징 도메인 게이트 (LOCKED v1)
+
+**방침**: 측정(GA4)은 **정식 사이트에서만** 동작. 스테이징(`*.webflow.io`)은 실사용 사이트가 아니므로, 여기서 측정을 쏘면 정식 GA4 속성(`G-PWCB5MVC32`)에 테스트 트래픽이 섞여 데이터가 오염됨.
+
+### 확정 메커니즘 — 도메인 게이트 (브랜치 분기 아님)
+
+측정 코드는 **양쪽 브랜치(main/staging)에 동일하게** 두되, 런타임에 `location.hostname` 으로 걸러 스테이징에선 no-op:
+
+| 파일 | 스테이징(`*.webflow.io`) 동작 |
+|---|---|
+| `global/ga4-base.js` | gtag.js inject / config skip. no-op `gtag` stub 만 정의 후 return → 모든 모듈의 `gtag('event', ...)` 조용히 무시 |
+| `global/scroll-depth.js` | 페이지뷰·스크롤 깊이 측정 안 함 (즉시 return) |
+| `global/ga-inspector.js` | `?ga-inspect=1` 이어도 테두리·배지·실시간 로그 미표시 |
+
+게이트 판정: `/\.webflow\.io$/i.test(location.hostname)`
+
+### 왜 브랜치 분기가 아니라 도메인 게이트인가
+
+브랜치별로 측정 코드를 다르게 두면 (staging 엔 삭제, main 엔 유지) main↔staging 머지 때마다 충돌·드리프트. 도메인 게이트는 **코드는 하나**, 판정만 런타임 → staging 승격(staging→main) 시 그대로 따라가도 정식 도메인에선 게이트가 안 걸려 측정 정상 동작.
+
+### 변경하면 안 되는 것
+
+- ❌ 새 측정 모듈 추가 시 이 게이트 누락 (staging 에서 측정 새어나감)
+- ❌ 게이트를 브랜치 분기(`BRANCH === 'staging'`)로 바꾸기 — 도메인 기준 유지 (로컬/프리뷰 도메인 대응)
+- ❌ 측정 코드를 staging 브랜치에서만 삭제 (드리프트 유발)
+
+### 새 측정 붙일 때 체크
+
+측정(gtag 이벤트)을 새로 붙이는 모듈은, 위 세 파일의 게이트에 편승(대개 `ga4-base.js` 의 no-op stub 이 알아서 무시)하므로 별도 조치 불필요. 단 **자체적으로 gtag.js 를 직접 로드하는 새 진입점**을 만들면 반드시 같은 도메인 게이트를 넣을 것.
+
 ## ⚠️ 모바일 viewport 격리 — 건드리지 말 것 (LOCKED v1, PR #586/#587/#588)
 
 **대상 파일**: `global/global.css`
