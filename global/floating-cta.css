@@ -49,12 +49,12 @@
 .hx-fcta-btn__label {
   position: absolute;
   left: 50%;
-  bottom: 20%;                 /* 흰 카드 빈칸 세로 중앙 */
+  bottom: 16%;                 /* 흰 카드 빈칸 중앙에서 살짝 아래로 */
   transform: translateX(-50%);
   font-family: 'ds-endendend', sans-serif;   /* 메인 공식 폰트 */
   color: #0d1117;                             /* 메인 블랙 */
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1;
   letter-spacing: 0;
   white-space: nowrap;
