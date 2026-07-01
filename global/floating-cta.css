@@ -3,40 +3,34 @@
    전 페이지 오른쪽 하단 고정 노출
    ================================================================ */
 
-/* ── 토글 버튼 ──
+/* ── 토글 버튼 (상담 문의 SVG 일러스트) ──
    right 는 위로가기(.helix-top-btn, right:3vw)와 같은 기준선에 맞춰
    세로 정렬. 위로가기는 top-button.js 의 회피 로직이 이 버튼을 감지해
-   자동으로 위로 올라감(겹침 방지). */
+   자동으로 위로 올라감(겹침 방지).
+   높이는 위로가기(64px)의 1.5배 = 96px. 원본 SVG 비율(407.88:371.28) 유지. */
 .hx-fcta-btn {
   position: fixed;
   bottom: 24px;
   right: 3vw;
   z-index: 9000;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #0D1117;
-  color: #F4F7FB;
+  height: 96px;                    /* 위로가기 64px × 1.5 */
+  width: auto;
+  aspect-ratio: 407.88 / 371.28;   /* 원본 SVG 뷰박스 비율 */
+  padding: 0;
   border: none;
+  border-radius: 14px;
+  background: transparent;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 3px;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28));
+  transition: transform 0.2s ease, filter 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
 
 .hx-fcta-btn:hover {
   transform: scale(1.06);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.34));
 }
 
 .hx-fcta-btn:focus-visible {
@@ -44,20 +38,18 @@
   outline-offset: 3px;
 }
 
-.hx-fcta-btn__icon {
-  font-size: 18px;
-  line-height: 1;
-}
-
-.hx-fcta-btn__label {
-  font-size: 10px;
-  line-height: 1;
+.hx-fcta-btn__img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 /* ── 선택 패널 ── */
 .hx-fcta-panel {
   position: fixed;
-  bottom: 94px;
+  bottom: 132px;      /* 버튼(bottom:24px + height:96px = top 120px) 위로 12px 띄움 */
   right: 3vw;
   z-index: 9000;
   background: #0D1117;
@@ -438,15 +430,22 @@
 .hx-fcta-form__done-close:active { transform: scale(0.97); }
 
 /* ── 모바일 하단 여백 (고정 버튼에 콘텐츠 가리지 않도록) ── */
+@media (max-width: 991px) {
+  /* 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
+  .hx-fcta-btn { height: 13.5vw; }
+  .hx-fcta-panel { bottom: calc(13.5vw + 36px); }
+}
+
 @media (max-width: 599px) {
   .hx-fcta-btn {
     bottom: 20px;
     right: 3vw;        /* 위로가기와 같은 기준선 유지 */
-    width: 56px;
-    height: 56px;
   }
-  .hx-fcta-panel {
-    bottom: 86px;
-    right: 3vw;
-  }
+  .hx-fcta-panel { right: 3vw; }
+}
+
+@media (max-width: 479px) {
+  /* 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
+  .hx-fcta-btn { height: 6.3rem; }
+  .hx-fcta-panel { bottom: calc(6.3rem + 32px); }
 }

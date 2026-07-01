@@ -34,6 +34,9 @@
     (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
   var DONE_IMG  = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
                   ASSET_REF + '/global/cta-done.svg';
+  /* 플로팅 토글 버튼 얼굴 — 상담 문의 일러스트(SVG) */
+  var CONSULT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
+                  ASSET_REF + '/global/cta-consult.svg';
 
   /* ── HTML 주입 ── */
   var html = [
@@ -56,9 +59,8 @@
 
     /* 토글 버튼 */
     '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
-      ' aria-label="상담 메뉴 열기" aria-expanded="false" aria-controls="hxFctaPanel">',
-      '<span class="hx-fcta-btn__icon" aria-hidden="true">💬</span>',
-      '<span class="hx-fcta-btn__label">상담</span>',
+      ' aria-label="상담 문의하기" aria-expanded="false" aria-controls="hxFctaPanel">',
+      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="상담 문의하기">',
     '</button>',
 
     /* 상담 신청 모달 */
