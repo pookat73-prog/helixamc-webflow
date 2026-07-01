@@ -36,13 +36,14 @@
     btn.className = 'helix-top-btn';
     btn.href = '#';
     btn.setAttribute('aria-label', '맨 위로');
+    /* 아이콘만(글자 제거) — '맨 위로' 의미의 바+화살표. 접근성은 앵커의
+       aria-label="맨 위로" 로 유지. */
     btn.innerHTML =
       '<div class="helix-top-btn__box">' +
-        '<div class="helix-top-btn__label">위로</div>' +
         '<svg class="helix-top-btn__icon" viewBox="0 0 24 24" fill="none"' +
-          ' stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"' +
+          ' stroke="#ffffff" stroke-width="2" stroke-linecap="round"' +
           ' stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="M12 5.5V18.5"/><path d="M6 11l6-5.5 6 5.5"/>' +
+          '<path d="M7 5.4H17"/><path d="M12 19V9.2"/><path d="M7.4 13.6L12 9l4.6 4.6"/>' +
         '</svg>';
     btn.addEventListener('click', function (e) {
       e.preventDefault();
