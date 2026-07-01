@@ -35,6 +35,24 @@
     try { console.warn.apply(console, args); } catch (e) {}
   }
 
+  /* GA4 — 사이트 공통 패턴(<이벤트>_<device>, beacon). 측정은 정식 도메인에서만
+     (ga4-base 도메인 게이트가 스테이징에선 no-op). */
+  function emGa(eventName, params) {
+    try {
+      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var p = params || {};
+      p.device = device;
+      var name = eventName + '_' + device;
+      if (typeof window.gtag === 'function') {
+        p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        p.event = name;
+        window.dataLayer.push(p);
+      }
+    } catch (e) {}
+  }
+
   var OWNER = 'pookat73-prog';
   var REPO  = 'helixamc-webflow';
 
@@ -212,6 +230,11 @@
       var branch = e.target.closest && e.target.closest('.helix-emergency-modal_branch');
       if (branch) {
         var tel = branch.getAttribute('data-tel') || '';
+        var bkey = branch.getAttribute('data-branch') || '';
+        /* 상세모달 CTA 측정 — 일산 제외(사용자 요청), 서초만 집계 */
+        if (bkey === 'seocho') {
+          emGa('emergency_modal_call', { item_type: 'emergency_modal_cta', branch: '서초', value: tel });
+        }
         if (tel) {
           var ok = window.confirm(tel + ' 로 전화 연결하시겠습니까?');
           if (!ok) e.preventDefault();
@@ -347,6 +370,9 @@
     if (!t || !t.slug) return;
     e.preventDefault();
     log('click open', t.slug);
+
+    /* GA4 — 증상 카드 클릭(상세모달 열기). 어느 증상인지 slug/name 으로 집계. */
+    emGa('emergency_symptom_open', { item_type: 'emergency_symptom', symptom: t.name || t.slug, slug: t.slug });
 
     /* 인라인 데이터가 있으면 바로 풀 렌더 — 스켈레톤 플래시 없음.
        없는 slug 만 스켈레톤 → fetch 폴백. */
