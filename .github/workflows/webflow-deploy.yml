@@ -11,6 +11,7 @@ on:
       - 'global/**'
       - 'seocho/**'
       - 'emergency/**'
+      - 'seo-snippets/**'
   workflow_dispatch:
 
 permissions:
@@ -154,6 +155,8 @@ jobs:
             "about/cert-modal/modal.js"
             "global/floating-cta.css"
             "global/floating-cta.js"
+            "seo-snippets/seocho.html"
+            "seo-snippets/symptoms.html"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
@@ -220,6 +223,8 @@ jobs:
             "emergency/modal.js"
             "emergency/renewal-bar.css"
             "emergency/renewal-bar.js"
+            "seo-snippets/seocho.html"
+            "seo-snippets/symptoms.html"
           )
           # 참고: seocho/doctors/data/<group>/<slug>.json (의료진 28명) 은 클릭
           # 시점에 lazy fetch — 페이지 로드 차단 안 함. 첫 클릭 시 jsDelivr lazy
