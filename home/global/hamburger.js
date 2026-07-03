@@ -10,7 +10,7 @@
 
   /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크 */
   var NAV_LINKS = [
-    { text: 'about HELIX',  href: '/discover-helix' },
+    { text: 'discover HELIX', href: '/discover-helix' },
     { group: [ { text: '진료과목', href: '#' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
     { group: [ { text: 'FAQ', href: '#' }, { text: '뉴스룸', href: '#' } ] },
