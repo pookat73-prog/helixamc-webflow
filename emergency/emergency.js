@@ -22,7 +22,7 @@
      섹션(#map_naver) 으로 이동. 페이지 진입 시 anchor 가 viewport 맨
      위에 오도록 브라우저 기본 동작 활용. */
   var MAP_BLOCKS = [
-    { selector: '.map.seocho, .map-seocho', href: '/seoco-bonweon#map_naver', key: 'seocho', branch: '서초' },
+    { selector: '.map.seocho, .map-seocho', href: '/seocho#map_naver', key: 'seocho', branch: '서초' },
     /* 일산분원 방문안내 상세 페이지 미완성 — 이동 차단, 토스트만. */
     { selector: '.map.ilsan, .map-ilsan',   pending: true, key: 'ilsan', branch: '일산' }
   ];

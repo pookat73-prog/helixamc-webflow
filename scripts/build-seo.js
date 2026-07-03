@@ -16,8 +16,8 @@
    대상 페이지:
      - home.html         → /
      - discover-helix.html → /discover-helix
-     - seoco-bonweon.html  → /seoco-bonweon (의료진 24명 + 시설 — 핵심)
-     - eunggeub-jeungsang.html → /eunggeub-jeungsang (응급증상, WIP)
+     - seocho.html  → /seocho (의료진 24명 + 시설 — 핵심)
+     - symptoms.html → /symptoms (응급증상, WIP)
 
    데이터 갱신 시 본 스크립트 재실행 → 변경된 페이지만 다시 복붙.
    ================================================================ */
@@ -51,9 +51,9 @@ const HOSPITAL = {
 
 /* 서초본원 — VeterinaryCare (LocalBusiness) */
 const SEOCHO_BRANCH = {
-  branchId: 'seoco-bonweon',
+  branchId: 'seocho',
   branchNameKo: '서초 본원',
-  url: HOSPITAL.origin + '/seoco-bonweon',
+  url: HOSPITAL.origin + '/seocho',
   address: {
     streetAddress: '신반포로 162, 르본시티 2층',
     addressLocality: '서초구',
@@ -142,11 +142,11 @@ function physicianNode(doc) {
   const type = isTechnician ? 'Person' : 'Physician';
   const node = {
     '@type': type,
-    '@id': `${HOSPITAL.origin}/seoco-bonweon#doctor-${doc.slug}`,
+    '@id': `${SEOCHO_BRANCH.url}#doctor-${doc.slug}`,
     name: doc.name,
     jobTitle: doc.title,
     worksFor: { '@id': `${HOSPITAL.origin}/#org` },
-    affiliation: { '@id': `${HOSPITAL.origin}/seoco-bonweon#branch` },
+    affiliation: { '@id': `${SEOCHO_BRANCH.url}#branch` },
   };
   if (doc.photo) node.image = doc.photo;
   if (dept) node.medicalSpecialty = dept.nameEn;
@@ -387,7 +387,7 @@ function conditionNode(url, c) {
 }
 
 function buildEmergency(conditions) {
-  const url = HOSPITAL.origin + '/eunggeub-jeungsang';
+  const url = HOSPITAL.origin + '/symptoms';
   const graph = [
     {
       '@type': 'MedicalWebPage',
@@ -452,8 +452,8 @@ function main() {
   const pages = {
     'home.html':              buildHome(),
     'discover-helix.html':    buildAbout(),
-    'seoco-bonweon.html':     buildSeocho(doctors),
-    'eunggeub-jeungsang.html': buildEmergency(conditions),
+    'seocho.html':            buildSeocho(doctors),
+    'symptoms.html':          buildEmergency(conditions),
   };
 
   for (const [file, content] of Object.entries(pages)) {
