@@ -14,18 +14,36 @@
      Webflow 가 클래스 이름 공백을 그대로 두는 경우(.call.seocho)와
      하이픈으로 변환하는 경우(.call-seocho) 둘 다 커버. */
   var CALL_BLOCKS = [
-    { selector: '.call.seocho, .call-seocho', tel: '02-2135-9119' },
-    { selector: '.call.ilsan, .call-ilsan',   tel: '031-978-7575' }
+    { selector: '.call.seocho, .call-seocho', tel: '02-2135-9119', key: 'seocho', branch: '서초' },
+    { selector: '.call.ilsan, .call-ilsan',   tel: '031-978-7575', key: 'ilsan',  branch: '일산' }
   ];
 
   /* "map seocho" / "map ilsan" 블록 클릭 → 지점 상세 페이지의 오시는길
      섹션(#map_naver) 으로 이동. 페이지 진입 시 anchor 가 viewport 맨
      위에 오도록 브라우저 기본 동작 활용. */
   var MAP_BLOCKS = [
-    { selector: '.map.seocho, .map-seocho', href: '/seoco-bonweon#map_naver' },
+    { selector: '.map.seocho, .map-seocho', href: '/seocho#map_naver', key: 'seocho', branch: '서초' },
     /* 일산분원 방문안내 상세 페이지 미완성 — 이동 차단, 토스트만. */
-    { selector: '.map.ilsan, .map-ilsan',   pending: true }
+    { selector: '.map.ilsan, .map-ilsan',   pending: true, key: 'ilsan', branch: '일산' }
   ];
+
+  /* GA4 — 사이트 공통 패턴(<이벤트>_<device>, beacon). 측정은 정식 도메인에서만
+     (ga4-base 도메인 게이트가 스테이징에선 no-op 처리). */
+  function emGa(eventName, params) {
+    try {
+      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var p = params || {};
+      p.device = device;
+      var name = eventName + '_' + device;
+      if (typeof window.gtag === 'function') {
+        p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        p.event = name;
+        window.dataLayer.push(p);
+      }
+    } catch (e) {}
+  }
 
   function showPendingToast(msg) {
     var t = document.createElement('div');
@@ -50,6 +68,10 @@
       if (!hit) continue;
       e.preventDefault();
       var tel = CALL_BLOCKS[i].tel;
+      /* 카드 옆 진열 CTA 측정 — 일산 제외(사용자 요청), 서초만 집계 */
+      if (CALL_BLOCKS[i].key === 'seocho') {
+        emGa('emergency_card_cta', { item_type: 'emergency_card_cta', action: 'call', branch: CALL_BLOCKS[i].branch, value: tel });
+      }
       var ok = window.confirm(tel + ' 로 전화 연결하시겠습니까?');
       if (ok) {
         location.href = 'tel:' + tel.replace(/\D/g, '');
@@ -61,6 +83,10 @@
       var mhit = e.target.closest(MAP_BLOCKS[j].selector);
       if (!mhit) continue;
       e.preventDefault();
+      /* 카드 옆 진열 CTA 측정 — 일산 제외, 서초만 집계 */
+      if (MAP_BLOCKS[j].key === 'seocho') {
+        emGa('emergency_card_cta', { item_type: 'emergency_card_cta', action: 'map', branch: MAP_BLOCKS[j].branch, value: MAP_BLOCKS[j].href || '' });
+      }
       if (MAP_BLOCKS[j].pending) {
         showPendingToast('준비중입니다');
       } else {

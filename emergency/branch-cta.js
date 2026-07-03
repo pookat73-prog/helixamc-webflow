@@ -20,7 +20,7 @@
   var BRANCHES = [
     {
       key: 'seocho', name: '서초본원', tel: '02-2135-9119',
-      mapHref: '/seoco-bonweon#map_naver',
+      mapHref: '/seocho#map_naver',
       img: 'https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d39160537239833ee5ed2d_%EC%9E%90%EC%82%B0%209.png',
       alt: '헬릭스동물메디컬센터 서초본원'
     },

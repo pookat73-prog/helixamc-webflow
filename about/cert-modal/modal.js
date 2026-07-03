@@ -3,7 +3,7 @@
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
-     본래 /yiryojin, /yiryojin-copy, /yiryojin-copy-2 페이지로 새 탭 이동.
+     본래 /aaha-cert, /emergency-cert, /cat-cert 상세 페이지로 새 탭 이동.
    - 본 스크립트가 그 링크 클릭을 가로채 모달을 열고, 해당 페이지를
      fetch 해서 <section> 들을 슬라이드로 보여줌.
    - 같은 사이트의 같은 Webflow 글로벌 CSS 가 이미 로드돼 있으므로
@@ -28,9 +28,17 @@
   }
 
   /* 모달이 가로챌 상세페이지 슬러그 (about 페이지의 + 버튼 링크 대상)
-     - /cert-aaha: AAHA 인증 카드 (구 /yiryojin 슬러그에서 변경)
-     - /yiryojin-copy, /yiryojin-copy-2: 나머지 두 장 */
-  var DETAIL_SLUGS = ['/cert-aaha', '/yiryojin', '/yiryojin-copy', '/yiryojin-copy-2'];
+     새 슬러그 (번역어 통일):
+     - /aaha-cert:      AAHA 인증
+     - /emergency-cert: 응급 인증
+     - /cat-cert:       고양이 인증
+     구 로마자 슬러그(/cert-aaha, /yiryojin*)도 당분간 함께 유지 —
+     Webflow 페이지 이름변경 배포 타이밍이 어긋나도 모달이 안 깨지도록.
+     정식 반영 확인 후 아래 옛 항목들 제거 예정. */
+  var DETAIL_SLUGS = [
+    '/aaha-cert', '/emergency-cert', '/cat-cert',
+    '/cert-aaha', '/yiryojin', '/yiryojin-copy', '/yiryojin-copy-2'
+  ];
 
   var cache = Object.create(null);  // slug → string[] (section outerHTML 배열)
   var overlay = null;

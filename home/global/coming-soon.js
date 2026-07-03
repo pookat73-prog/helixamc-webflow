@@ -207,7 +207,7 @@
   /* 지점 카드 중 "라이브" 처리할 카드 (준비중 해제 + 클릭 시 페이지 이동).
      식별: 카드 텍스트에 매칭 패턴 포함 시 해당 URL 로 이동. */
   var LIVE_BRANCH_CARDS = [
-    { match: /서초|2135-9119/, url: '/seoco-bonweon', label: '서초본원' }
+    { match: /서초|2135-9119/, url: '/seocho', label: '서초본원' }
   ];
   var BRANCH_CARD_SEL = '.home_branch-card, .flex-block-22 > .div-block-151';
   var LIVE_ATTR = 'data-helix-link';

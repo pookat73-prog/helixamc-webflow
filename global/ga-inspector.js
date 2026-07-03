@@ -70,7 +70,10 @@
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
     /* 홈 지점 카드 */
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
-    { sel: 'a[href^="tel:"]',       label: '지점 · 전화번호',     event: 'tel_copy_*' },
+    /* tel_copy 는 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
+       .home_branch-card 로 한정하지 않으면 응급 모달 분원 전화(tel: 링크) 등
+       사이트 전역 tel: 링크에 오배지됨. */
+    { sel: '.home_branch-card a[href^="tel:"]', label: '지점 · 전화번호', event: 'tel_copy_*' },
     { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },
@@ -82,7 +85,13 @@
     { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_call' },
     /* 응급 페이지 하단 24시 응급 진료 CTA */
     { sel: '.helix-branch-cta__row', label: '응급 · 지점 전화',   event: 'emergency_call_*' },
-    { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' }
+    { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' },
+    /* 응급 페이지 증상 카드 + 카드 옆/모달 CTA (모두 응급 페이지에만 존재하는 셀렉터).
+       카드 옆·모달 CTA 는 일산 제외(서초만) — data-branch/클래스로 서초만 배지. */
+    { sel: '.em_card, [data-emergency-open]', label: '응급 · 증상 카드', event: 'emergency_symptom_open_*' },
+    { sel: '.call.seocho, .call-seocho', label: '응급 · 서초 전화(카드옆)', event: 'emergency_card_cta_*' },
+    { sel: '.map.seocho, .map-seocho',   label: '응급 · 서초 오시는길(카드옆)', event: 'emergency_card_cta_*' },
+    { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' }
   ];
 
   /* about(=/discover-helix) 페이지 전용 — .cta-style / .link-block 등은 다른
@@ -375,6 +384,7 @@
       var nodes = document.querySelectorAll(t.sel);
       nodes.forEach(function (el) {
         if (!isVisible(el)) return;
+        if (isOccluded(el)) return;             /* 모달 등에 가려진 요소엔 배지 안 그림 */
         if (t.match && !t.match(el)) return;   /* 텍스트 등 추가 필터 */
         if (seen.indexOf(el) !== -1) return;    /* 이미 배지 달린 요소면 skip */
         seen.push(el);
@@ -392,6 +402,23 @@
       });
     });
     position();
+  }
+
+  /* 모달/오버레이 등에 실제로 가려진 요소인지 — 중심점을 히트테스트.
+     중심이 뷰포트 밖이면(스크롤로 화면 밖) 판정 skip → 아래쪽 배지는
+     스크롤하면 position() 이 따라가므로 그대로 유지. 점검기 오버레이는
+     pointer-events:none 라 elementFromPoint 가 무시(배지가 방해 안 함). */
+  function isOccluded(el) {
+    try {
+      var r = el.getBoundingClientRect();
+      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      var vw = window.innerWidth, vh = window.innerHeight;
+      if (cx < 0 || cy < 0 || cx > vw || cy > vh) return false; /* 뷰포트 밖 → 가림 판정 안 함 */
+      var top = document.elementFromPoint(cx, cy);
+      if (!top) return false;
+      if (top === el || el.contains(top) || top.contains(el)) return false;
+      return true; /* 다른 요소(모달 등)가 위를 덮음 */
+    } catch (e) { return false; }
   }
 
   function isVisible(el) {
@@ -445,15 +472,13 @@
     window.addEventListener('resize', function () { scanTargets(); }, { passive: true });
 
     /* 탭 전환 시 배지 재스캔 — Webflow 탭은 활성 탭만 표시(display:none)라,
-       숨은 탭(외과·정형외과 등) 의 측정 자리는 그 탭이 활성화돼 보일 때
-       비로소 배지를 그릴 수 있음. 탭류 클릭 직후 재스캔해 배지가 탭을 따라감.
-       (측정 자체는 페이지 전체 위임이라 탭과 무관하게 항상 발사됨.) */
-    document.addEventListener('click', function (e) {
-      if (e.target && e.target.closest &&
-          e.target.closest('.w-tab-link, .w-tabs, [data-w-tab], [role="tab"], .helix-mini-tabmenu, .helix-mini-tabpanel_item, .helix-mini-tabselect')) {
-        setTimeout(scanTargets, 60);
-        setTimeout(scanTargets, 300);
-      }
+       숨은 탭(외과·정형외과 등) 의 측정 자리, 클릭으로 열리는 모달(증상
+       상세·의료진 상세) 안 CTA, 아코디언 등 — 클릭으로 UI 가 바뀌면 그 요소가
+       비로소 보이므로 재스캔해야 배지가 따라감. 디버그 오버레이라 매 클릭
+       재스캔해도 부담 없음(디바운스). (측정 자체는 위임이라 항상 발사됨.) */
+    document.addEventListener('click', function () {
+      setTimeout(scanTargets, 60);
+      setTimeout(scanTargets, 340);
     }, true);
 
     /* 푸터·플로팅 CTA 등은 DOMContentLoaded 이후 늦게 주입됨 → 재스캔 */
