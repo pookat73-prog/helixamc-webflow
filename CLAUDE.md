@@ -117,6 +117,53 @@ fetch(document.querySelector('script[src*="seocho/bootstrap"]').src + '?cb=' + D
 
 ---
 
+## 🔎 SEO 구조화데이터 — **자동 로더 방식** (LOCKED v1, 사용자 확정)
+
+**방침**: 페이지별 JSON-LD(구조화데이터)는 Webflow head 에 **정적으로 붙여넣지 않고**, 각 페이지 head 에 심어둔 **작은 자동 로더**가 런타임에 `seo-snippets/<page>.html` 을 fetch 해서 `<script type="application/ld+json">` 만 뽑아 head 에 주입한다. → 슬러그·내용이 바뀌어도 **Webflow 에 다시 붙여넣을 필요 없음** (코드만 고치면 됨).
+
+### 메커니즘
+
+각 페이지 head freeform code 에 (기존 gsap/bootstrap 뒤에) 이 로더 한 덩어리:
+```html
+<script>
+(function(){
+  var b=/\.webflow\.io$/i.test(location.hostname)?"staging":"main";
+  fetch("https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@"+b+"/seo-snippets/<page>.html")
+    .then(function(r){return r.ok?r.text():"";})
+    .then(function(h){ if(!h)return;
+      var d=document.createElement("div"); d.innerHTML=h;
+      var n=d.querySelectorAll('script[type="application/ld+json"]');
+      for(var i=0;i<n.length;i++){var s=document.createElement("script");s.type="application/ld+json";s.textContent=n[i].textContent;document.head.appendChild(s);}
+    }).catch(function(){});
+})();
+</script>
+```
+- bootstrap 과 동일한 **도메인 게이트**: 정식→`@main`, 스테이징(`*.webflow.io`)→`@staging`
+- `innerHTML` 로 파싱된 `<script>` 는 실행 안 됨 → textContent 만 복사해 새 script 노드로 주입 (Google 은 렌더링 시 읽음)
+
+### 적용 현황 (4개 SEO 페이지 전부)
+
+| 페이지 | Webflow page slug | fetch 대상 |
+|---|---|---|
+| 홈 | `/` | `seo-snippets/home.html` |
+| about | `/discover-helix` | `seo-snippets/discover-helix.html` |
+| 서초 본원 | `/seocho` | `seo-snippets/seocho.html` |
+| 응급증상 | `/symptoms` | `seo-snippets/symptoms.html` |
+
+### 새 SEO 페이지 추가 시
+
+1. `scripts/build-seo.js` 에 빌더 추가 → `node scripts/build-seo.js` → `seo-snippets/<page>.html` 생성
+2. **워크플로우** (`webflow-deploy.yml`) 의 퍼지 FILES + 워밍업 FILES 배열에 `seo-snippets/<page>.html` 추가 (안 하면 jsDelivr 캐시가 옛날 것 → 로더가 stale SEO 주입)
+3. Webflow 해당 페이지 head 에 위 로더(page 이름만 교체) 붙여넣기 → Publish
+
+### 변경하면 안 되는 것
+
+- ❌ 정적 JSON-LD 를 head 에 다시 하드코딩 (슬러그 바뀔 때마다 재붙여넣기 지옥 재발 — 이걸 없애려고 로더로 전환함)
+- ❌ 도메인 게이트를 브랜치 분기로 바꾸기 (bootstrap 과 동일하게 hostname 기준 유지)
+- ❌ 새 SEO 페이지 추가하면서 워크플로우 FILES 배열 누락 (캐시 stale → 로더가 옛 데이터 주입)
+
+---
+
 ## 워크플로우 — **staging 우선 배포** (LOCKED v1, PR #546)
 
 ### 브랜치 전략

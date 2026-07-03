@@ -155,6 +155,8 @@ jobs:
             "about/cert-modal/modal.js"
             "global/floating-cta.css"
             "global/floating-cta.js"
+            "seo-snippets/home.html"
+            "seo-snippets/discover-helix.html"
             "seo-snippets/seocho.html"
             "seo-snippets/symptoms.html"
           )
@@ -223,6 +225,8 @@ jobs:
             "emergency/modal.js"
             "emergency/renewal-bar.css"
             "emergency/renewal-bar.js"
+            "seo-snippets/home.html"
+            "seo-snippets/discover-helix.html"
             "seo-snippets/seocho.html"
             "seo-snippets/symptoms.html"
           )
