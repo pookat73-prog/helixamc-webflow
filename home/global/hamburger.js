@@ -3,18 +3,18 @@
 
   /* ── 링크 설정 (URL 변경 시 여기만 수정) ── */
   var BRANCHES = [
-    { text: '서초 본원',          href: '#' },
+    { text: '서초 본원',          href: '/seocho' },
     { text: '일산 분원',          href: '#' },
     { text: '서울동물영상종양센터', href: '#' }
   ];
 
   /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크 */
   var NAV_LINKS = [
-    { text: 'about HELIX',  href: '#' },
+    { text: 'about HELIX',  href: '/discover-helix' },
     { group: [ { text: '진료과목', href: '#' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
     { group: [ { text: 'FAQ', href: '#' }, { text: '뉴스룸', href: '#' } ] },
-    { text: '응급증상안내',  href: '#' }
+    { text: '응급증상안내',  href: '/symptoms' }
   ];
 
   var VET_CHART_HREF = '#';
