@@ -65,10 +65,16 @@
     '.dept-grid:hover [class*="dept-card_"]{filter:brightness(.3) saturate(.35)}' +
     /* 호버한 카드: 원복 + 바닥·우측 고정한 채 확대(위·왼쪽으로 커짐) + 은은한 그림자 */
     '.dept-grid:hover [class*="dept-card_"]:hover{filter:none;transform:scale(1.04);z-index:30;' +
-    'box-shadow:0 6px 20px rgba(0,0,0,.35)}';
-  /* 참고: dept-border.js 의 SH 그림자 오버레이([data-hx-sh-*])는 카드 입체감을
-     주므로 호버 중에도 유지한다(숨기지 않음). 각 카드에 붙은 그림자는 그 카드가
-     scale 될 때 함께 움직이고, 컨테이너 그림자는 열 전체 깊이감으로 유지. */
+    'box-shadow:0 6px 20px rgba(0,0,0,.35)}' +
+    /* SH 겹침 그림자([data-hx-sh-*]) 처리:
+       - 호버한(활성) 요소 자신의 그림자만 끈다. 그 카드는 커지면서 자기 드롭섀도우
+         로 떠 있으므로 겹침 그림자가 오히려 툭 잘려 보임. 특히 안과/치과는 그림자가
+         열 컨테이너(div-block-263)에 붙어 안쪽 카드 scale 을 안 따라가므로 그 열
+         호버 시 컨테이너 그림자를 끈다.
+       - 나머지(어두워지는) 카드들 그림자는 유지 → 전체 입체감 보존. */
+    '[data-hx-sh-l],[data-hx-sh-ri]{transition:opacity .3s ease}' +
+    '.dept-card_sg:hover [data-hx-sh-l],.dept-card_di:hover [data-hx-sh-l],' +
+    '.div-block-263:hover [data-hx-sh-l],.div-block-263:hover [data-hx-sh-ri]{opacity:0}';
 
   function injectCss() {
     var s = document.createElement('style');
