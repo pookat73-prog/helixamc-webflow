@@ -17,15 +17,25 @@
    의 ::before 가상요소 배경이라, 아래 규칙(요소 대상)이 닿지 않음.
    ================================================================ */
 
-@media screen and (max-width: 767px) {
-  /* 카드 자신 + 모든 자식 요소의 배경 이미지 제거.
+/* 범위: 데스크톱(≥992px) 유지, 그 아래(태블릿+모바일) 전부 제거.
+   이유: 폰 가로(landscape)는 실제 화면폭이 800~930px라 Webflow 기준
+   "가로모바일"이 아니라 태블릿 구간(768~991px)으로 잡힘. 767px 이하로만
+   걸면 폰 가로에서 안 먹으므로 991px 까지 커버. */
+@media screen and (max-width: 991px) {
+  /* 실제로 사진을 그리는 요소 — 카드 자식 .dept_image_di 의 background.
+     진단 결과 사진은 카드가 아니라 이 자식의 배경으로 붙어 있었음. */
+  .dept-card_di .dept_image_di,
+  .dept_image_di {
+    display: none !important;
+    background-image: none !important;
+  }
+
+  /* 보강: 사진이 카드 자신/다른 자식 배경, img, 배경비디오로 붙은 경우까지 제거.
      가상요소(::before 화살표)는 * 로 매칭되지 않아 안전. */
   .dept-card_di,
   .dept-card_di * {
     background-image: none !important;
   }
-
-  /* 사진이 <img> / 배경비디오로 들어간 경우까지 제거. */
   .dept-card_di img,
   .dept-card_di video,
   .dept-card_di .w-background-video,
