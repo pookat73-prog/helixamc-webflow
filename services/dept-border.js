@@ -1,0 +1,24 @@
+/* ================================================================
+   HELIX AMC — 진료과목(services) 카드 U자 테두리
+   기존 Webflow 등록 스크립트 deptUshapeBorder v0.0.30 을 이관.
+   services/bootstrap.js 가 로드.
+
+   대상: .dept-card_im / _sg / _di / _dt / _oc, .div-block-263
+   각 카드 상/좌/하단에 그라데이션 SVG 라인을 그려 U자 테두리 연출.
+
+   변경점 (원본 대비):
+   - 안과(.dept-card_oc) 에 자기 왼쪽 테두리 추가(lg: null → OCL). 원본은
+     안과 왼쪽변을 컨테이너(div-block-263) 테두리에서 빌렸는데, 호버로 안과가
+     커질 때 dept-nav.js 가 컨테이너 테두리를 숨겨 왼쪽변이 사라지던 문제 →
+     안과가 자기 왼쪽변을 갖게 해 스케일과 함께 움직이도록.
+   - OCL: 안과 왼쪽 테두리용 세로 그라데이션. 위는 실선 블루, 아래로 갈수록
+     투명(alpha 0)하게 풀어져 바닥에서 툭 끊겨 보이지 않게 함(55%→100% 페이드).
+   - 컨테이너(div-block-263) 테두리 draw 제거. 안과·치과가 각자 자기 테두리를
+     갖게 되어 중복이고, 호버로 카드가 커질 때 자기 테두리(이동)와 컨테이너
+     테두리(고정)가 두 줄로 보이는 잔상의 원인이었음. 컨테이너 SH 그림자는 유지.
+   - 카드 z-index(tz) 1→0. 카드가 각자 stacking context 를 만들면 화살표 버튼이
+     "다른 카드"의 겹침 그림자(z-index 15) 밑에 갇혀 어둡게 묻혔음. z-index 를
+     걷어내면(층 순서는 DOM 순서로 동일 유지) 화살표(z-index 16)가 그림자(15)를
+     전역에서 이기고, 이미지(0)는 그림자 밑이라 어두워지는 효과는 유지됨.
+   ================================================================ */
+(function(){var NS='http://www.w3.org/2000/svg',SKY='#7dd3fc',BLU='#0075d6',SW=3,K=0.3;function E(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e}function G(id,x1,y1,x2,y2,sts){var g=E('linearGradient',{id:id,gradientUnits:'userSpaceOnUse',x1:x1,y1:y1,x2:x2,y2:y2});sts.forEach(function(s){g.appendChild(E('stop',{offset:s[0],'stop-color':s[1],'stop-opacity':s[2]}))});return g}function P(d,gid,solid){var at={d:d,fill:'none','stroke-width':SW,'stroke-linecap':'round','stroke-linejoin':'round'};at.stroke=solid?BLU:('url(#'+gid+')');return E('path',at)}function B(el,a,tz,nb,lg,co){Array.from(el.children).forEach(function(c){if(c.getAttribute&&c.getAttribute('data-hx-u'))c.remove()});if(getComputedStyle(el).position==='static')el.style.position='relative';if(tz)el.style.zIndex='11';var cs=getComputedStyle(el),w=el.clientWidth,h=el.clientHeight,o=SW/2;if(!w||!h)return;var rT=parseFloat(cs.borderTopLeftRadius)||0,rB=parseFloat(cs.borderBottomLeftRadius)||0,tT=Math.max(rT,o),tB=Math.max(rB,o);var u='u'+Math.random().toString(36).slice(2,7);var s=E('svg',{viewBox:'0 0 '+w+' '+h,width:w,height:h,fill:'none'});s.style.cssText='position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:20';var d=E('defs');d.appendChild(G(u+'t',tT,0,w,0,[[0,SKY,1],[K,BLU,1],[1,BLU,a]]));if(lg&&!co)d.appendChild(G(u+'l',0,0,0,h,lg));if(!nb)d.appendChild(G(u+'b',tB,h,w,h,[[0,BLU,1],[1,BLU,a]]));s.appendChild(d);s.appendChild(P('M '+tT+' '+o+' L '+w+' '+o,u+'t'));if(co){if(rT>o)s.appendChild(P('M '+tT+' '+o+' A '+(rT-o)+' '+(rT-o)+' 0 0 0 '+o+' '+rT,null,true))}else if(lg){var lp='M '+tT+' '+o;lp+=rT>o?' A '+(rT-o)+' '+(rT-o)+' 0 0 0 '+o+' '+rT:' L '+o+' '+o;lp+=' L '+o+' '+(rB>o?h-rB:h-o);lp+=rB>o?' A '+(rB-o)+' '+(rB-o)+' 0 0 0 '+tB+' '+(h-o):' L '+tB+' '+(h-o);s.appendChild(P(lp,u+'l'))}if(!nb)s.appendChild(P('M '+tB+' '+(h-o)+' L '+w+' '+(h-o),u+'b'));s.setAttribute('data-hx-u','1');el.appendChild(s)}function A(sel,a,tz,nb,lg,co){document.querySelectorAll(sel).forEach(function(el){B(el,a,tz,nb,lg,co)})}function SH(sel,dir){var attr='data-hx-sh-'+(dir||'l');document.querySelectorAll(sel).forEach(function(el){var old=el.querySelector('['+attr+']');if(old)old.remove();if(getComputedStyle(el).position==='static')el.style.position='relative';var w=el.clientWidth,reach=w*0.6;var grad='linear-gradient(to left, rgba(13,17,23,1) 0%, rgba(13,17,23,1) 5%, rgba(13,17,23,0) 55%, rgba(13,17,23,0) 100%)';var sh=document.createElement('div');sh.setAttribute(attr,'1');var css='position:absolute;top:0;width:'+reach+'px;height:100%;pointer-events:none;z-index:15;background:'+grad+';';css+=(dir==='ri')?'right:0':'left:-'+reach+'px';sh.style.cssText=css;el.appendChild(sh)})}function R(){var FULL=[[0,SKY,1],[K,BLU,1],[1,BLU,1]];var FADE=[[0,SKY,1],[K,BLU,1],[0.4,BLU,1],[0.5,BLU,0.2]];var OCL=[[0,SKY,1],[K,BLU,1],[0.55,BLU,1],[1,BLU,0]];A('.dept-card_im,.dept-card_sg,.dept-card_di,.dept-card_dt',0,0,false,FULL);A('.dept-card_oc',0,0,1,OCL);SH('.dept-card_sg');SH('.dept-card_di');SH('.div-block-263');SH('.div-block-263','ri')}if(document.readyState!=='loading')R();else document.addEventListener('DOMContentLoaded',R);var T;window.addEventListener('resize',function(){clearTimeout(T);T=setTimeout(R,150)})})();

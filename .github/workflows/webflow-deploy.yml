@@ -11,6 +11,7 @@ on:
       - 'global/**'
       - 'seocho/**'
       - 'emergency/**'
+      - 'services/**'
       - 'seo-snippets/**'
   workflow_dispatch:
 
@@ -105,6 +106,9 @@ jobs:
             "emergency/data/severe-pain.json"
             "emergency/data/hemorrhage.json"
             "emergency/data/proptosis.json"
+            "services/bootstrap.js"
+            "services/dept-border.js"
+            "services/dept-nav.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/card-render.js"
@@ -213,6 +217,9 @@ jobs:
             "about/about.js"
             "about/cert-modal/modal.css"
             "about/cert-modal/modal.js"
+            "services/bootstrap.js"
+            "services/dept-border.js"
+            "services/dept-nav.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/modal.css"
