@@ -8,8 +8,8 @@
      를 원형 화살표 버튼으로 스타일링.
    - 카드 전체가 클릭 영역 → LINKS 의 URL 로 이동.
    - 카드 호버 시: 그 카드는 바닥·우측을 고정한 채 위·왼쪽으로 커지고(scale,
-     transform-origin: bottom right) 화살표가 블루로 채워지며, 같은 그리드의
-     나머지 카드는 어두워지고 채도가 낮아짐(강조).
+     transform-origin: bottom right), 같은 그리드의 나머지 카드는 더 어두워지고
+     채도가 낮아짐(강조). 화살표 버튼 자체는 안 변함(파랑 채움·슬라이드 없음).
 
    v2 수정 (사용자 피드백)
    - 화살표를 유니코드(\2192) → 폰트 독립 SVG 로 교체 (카드 폰트에 → 글리프가
@@ -54,27 +54,27 @@
   var CSS =
     /* 카드: 클릭 가능 + 부드러운 전환. 확대 기준점은 우하단 고정(바닥·우측) */
     '[class*="dept-card_"]{cursor:pointer;transform-origin:bottom right;transition:transform .3s ease,filter .3s ease,box-shadow .3s ease}' +
-    /* 화살표 버튼(원) — 불투명 블루 테두리 + 살짝 어두운 배경으로 또렷하게 */
+    /* 화살표 버튼(원) — 다크 배경 + 블루 테두리로 항상 고정(호버해도 안 변함) */
     '.right-pointing-arrow{width:32px;height:32px;border-radius:50%;border:1.5px solid #0075d6;' +
     'background-color:rgba(13,17,23,.35);display:flex;align-items:center;justify-content:center;' +
-    'box-sizing:border-box;transition:background-color .25s,border-color .25s}' +
-    /* 원 안 화살표 글리프(SVG) */
+    'box-sizing:border-box}' +
+    /* 원 안 화살표 글리프(SVG) — 위치 고정(호버 슬라이드 없음) */
     '.right-pointing-arrow::before{content:"";width:14px;height:14px;' +
-    'background:center/14px no-repeat ' + ARROW + ';transition:transform .25s}' +
-    /* 그리드 호버: 나머지 카드는 어두워지고 채도 낮아짐 */
-    '.dept-grid:hover [class*="dept-card_"]{filter:brightness(.5) saturate(.55)}' +
+    'background:center/14px no-repeat ' + ARROW + '}' +
+    /* 그리드 호버: 나머지 카드는 더 어둡게 + 채도 더 낮게 */
+    '.dept-grid:hover [class*="dept-card_"]{filter:brightness(.3) saturate(.35)}' +
     /* 호버한 카드: 원복 + 바닥·우측 고정한 채 확대(위·왼쪽으로 커짐) + 은은한 그림자 */
     '.dept-grid:hover [class*="dept-card_"]:hover{filter:none;transform:scale(1.04);z-index:30;' +
     'box-shadow:0 6px 20px rgba(0,0,0,.35)}' +
-    /* 호버한 카드의 화살표: 블루로 채워지고 살짝 오른쪽 이동 */
-    '[class*="dept-card_"]:hover .right-pointing-arrow{background-color:#0075d6;border-color:#0075d6}' +
-    '[class*="dept-card_"]:hover .right-pointing-arrow::before{transform:translateX(2px)}' +
-    /* dept-border.js 정적 장식 페이드 — 카드 사이 그림자 오버레이 전체 +
-       오른쪽 열 컨테이너(div-block-263) 직속 테두리. 호버로 카드가 scale 될 때
-       안 따라가 어긋나므로 그리드 호버 동안 부드럽게 숨긴다. */
+    /* dept-border.js 정적 장식 페이드
+       - 카드 사이 그림자 오버레이([data-hx-sh-*]): 아무 카드나 호버 시 페이드
+         (카드 scale 을 안 따라가므로).
+       - 오른쪽 열 컨테이너(div-block-263) 직속 테두리([data-hx-u]): 안과/치과가
+         이 테두리로 왼쪽변을 받으므로, "그 열 자체를 호버할 때만" 숨긴다. 다른
+         카드 호버 시엔 유지해 안과 왼쪽변이 사라지지 않게 함. */
     '[data-hx-sh-l],[data-hx-sh-ri],.div-block-263>[data-hx-u]{transition:opacity .3s ease}' +
-    '.dept-grid:hover [data-hx-sh-l],.dept-grid:hover [data-hx-sh-ri],' +
-    '.dept-grid:hover .div-block-263>[data-hx-u]{opacity:0}';
+    '.dept-grid:hover [data-hx-sh-l],.dept-grid:hover [data-hx-sh-ri]{opacity:0}' +
+    '.div-block-263:hover>[data-hx-u]{opacity:0}';
 
   function injectCss() {
     var s = document.createElement('style');
