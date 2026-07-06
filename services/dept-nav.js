@@ -65,13 +65,10 @@
     '.dept-grid:hover [class*="dept-card_"]{filter:brightness(.3) saturate(.35)}' +
     /* 호버한 카드: 원복 + 바닥·우측 고정한 채 확대(위·왼쪽으로 커짐) + 은은한 그림자 */
     '.dept-grid:hover [class*="dept-card_"]:hover{filter:none;transform:scale(1.04);z-index:30;' +
-    'box-shadow:0 6px 20px rgba(0,0,0,.35)}' +
-    /* dept-border.js 카드 사이 그림자 오버레이([data-hx-sh-*])는 카드 scale 을
-       안 따라가므로 아무 카드나 호버 시 숨긴다. (컨테이너 랩퍼 테두리는
-       dept-border.js 에서 아예 안 그리므로 여기서 처리할 것 없음 — 안과·치과가
-       각자 자기 테두리를 가짐) */
-    '[data-hx-sh-l],[data-hx-sh-ri]{transition:opacity .3s ease}' +
-    '.dept-grid:hover [data-hx-sh-l],.dept-grid:hover [data-hx-sh-ri]{opacity:0}';
+    'box-shadow:0 6px 20px rgba(0,0,0,.35)}';
+  /* 참고: dept-border.js 의 SH 그림자 오버레이([data-hx-sh-*])는 카드 입체감을
+     주므로 호버 중에도 유지한다(숨기지 않음). 각 카드에 붙은 그림자는 그 카드가
+     scale 될 때 함께 움직이고, 컨테이너 그림자는 열 전체 깊이감으로 유지. */
 
   function injectCss() {
     var s = document.createElement('style');
