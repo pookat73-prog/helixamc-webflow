@@ -66,15 +66,15 @@
     /* 호버한 카드: 원복 + 바닥·우측 고정한 채 확대(위·왼쪽으로 커짐) + 은은한 그림자 */
     '.dept-grid:hover [class*="dept-card_"]:hover{filter:none;transform:scale(1.04);z-index:30;' +
     'box-shadow:0 6px 20px rgba(0,0,0,.35)}' +
-    /* dept-border.js 정적 장식 페이드
-       - 카드 사이 그림자 오버레이([data-hx-sh-*]): 아무 카드나 호버 시 페이드
-         (카드 scale 을 안 따라가므로).
-       - 오른쪽 열 컨테이너(div-block-263) 직속 테두리([data-hx-u]): 안과/치과가
-         이 테두리로 왼쪽변을 받으므로, "그 열 자체를 호버할 때만" 숨긴다. 다른
-         카드 호버 시엔 유지해 안과 왼쪽변이 사라지지 않게 함. */
+    /* dept-border.js 정적 장식 페이드 — 아무 카드나 호버 시:
+       - 카드 사이 그림자 오버레이([data-hx-sh-*])
+       - 오른쪽 열 컨테이너(div-block-263) 직속 테두리([data-hx-u]) = 안과/치과
+         랩퍼 외곽선
+       둘 다 카드 scale 을 안 따라가므로 호버 동안 숨긴다. (안과는 dept-border.js
+       에서 자기 왼쪽 테두리를 갖게 했으므로, 랩퍼 테두리를 죽여도 왼쪽변 유지됨) */
     '[data-hx-sh-l],[data-hx-sh-ri],.div-block-263>[data-hx-u]{transition:opacity .3s ease}' +
-    '.dept-grid:hover [data-hx-sh-l],.dept-grid:hover [data-hx-sh-ri]{opacity:0}' +
-    '.div-block-263:hover>[data-hx-u]{opacity:0}';
+    '.dept-grid:hover [data-hx-sh-l],.dept-grid:hover [data-hx-sh-ri],' +
+    '.dept-grid:hover .div-block-263>[data-hx-u]{opacity:0}';
 
   function injectCss() {
     var s = document.createElement('style');
