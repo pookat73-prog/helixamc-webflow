@@ -67,14 +67,17 @@
     '.dept-grid:hover [class*="dept-card_"]:hover{filter:none;transform:scale(1.04);z-index:30;' +
     'box-shadow:0 6px 20px rgba(0,0,0,.35)}' +
     /* SH 겹침 그림자([data-hx-sh-*]) 처리:
-       - 호버한(활성) 요소 자신의 그림자만 끈다. 그 카드는 커지면서 자기 드롭섀도우
-         로 떠 있으므로 겹침 그림자가 오히려 툭 잘려 보임. 특히 안과/치과는 그림자가
-         열 컨테이너(div-block-263)에 붙어 안쪽 카드 scale 을 안 따라가므로 그 열
-         호버 시 컨테이너 그림자를 끈다.
-       - 나머지(어두워지는) 카드들 그림자는 유지 → 전체 입체감 보존. */
+       각 카드는 "다음 요소"의 왼쪽 그림자(left:-reach)에 덮여 뒤에 있는 것처럼
+       보인다. 카드가 커지면(위로) 그 위에 덮인 다음 요소의 그림자는 고정 높이라
+       원래 높이에서 툭 잘린다. → 호버한 카드 "위에 덮인 그림자"(다음 형제 요소의
+       [data-hx-sh-l])를 끈다. 나머지 카드 그림자는 유지 → 깊이감 보존.
+       그리드 순서: 내과(im) → 외과(sg) → 영상(di) → 안과/치과 컨테이너(div-block-263). */
     '[data-hx-sh-l],[data-hx-sh-ri]{transition:opacity .3s ease}' +
-    '.dept-card_sg:hover [data-hx-sh-l],.dept-card_di:hover [data-hx-sh-l],' +
-    '.div-block-263:hover [data-hx-sh-l],.div-block-263:hover [data-hx-sh-ri]{opacity:0}';
+    '.dept-card_im:hover~.dept-card_sg [data-hx-sh-l],' +   /* 내과 위 = 외과 l */
+    '.dept-card_sg:hover~.dept-card_di [data-hx-sh-l],' +   /* 외과 위 = 영상 l */
+    '.dept-card_di:hover~.div-block-263 [data-hx-sh-l],' +  /* 영상 위 = 컨테이너 l */
+    '.div-block-263:hover [data-hx-sh-l],' +                /* 안과/치과: 컨테이너 l */
+    '.div-block-263:hover [data-hx-sh-ri]{opacity:0}';      /* 안과/치과: 컨테이너 우측 */
 
   function injectCss() {
     var s = document.createElement('style');
