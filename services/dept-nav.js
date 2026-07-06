@@ -54,10 +54,12 @@
   var CSS =
     /* 카드: 클릭 가능 + 부드러운 전환. 확대 기준점은 우하단 고정(바닥·우측) */
     '[class*="dept-card_"]{cursor:pointer;transform-origin:bottom right;transition:transform .3s ease,filter .3s ease,box-shadow .3s ease}' +
-    /* 화살표 버튼(원) — 다크 배경 + 블루 테두리로 항상 고정(호버해도 안 변함) */
+    /* 화살표 버튼(원) — 다크 배경 + 블루 테두리로 항상 고정(호버해도 안 변함).
+       z-index 16 으로 겹침 그림자(SH, z-index 15) 위에 올림(카드 z-index 제거로
+       전역 stacking 에서 경쟁 → 그림자보다 위). */
     '.right-pointing-arrow{width:32px;height:32px;border-radius:50%;border:1.5px solid #0075d6;' +
     'background-color:rgba(13,17,23,.35);display:flex;align-items:center;justify-content:center;' +
-    'box-sizing:border-box}' +
+    'box-sizing:border-box;position:relative;z-index:16}' +
     /* 원 안 화살표 글리프(SVG) — 위치 고정(호버 슬라이드 없음) */
     '.right-pointing-arrow::before{content:"";width:14px;height:14px;' +
     'background:center/14px no-repeat ' + ARROW + '}' +
