@@ -42,4 +42,16 @@
   .dept-card_di .w-background-video-atom {
     display: none !important;
   }
+
+  /* 사진이 빠진 만큼 카드를 텍스트 높이로 접고 격자 칸 위쪽으로 정렬.
+     - 이 카드는 원래 오른쪽 안과+치과 두 칸 높이(고정 146px 행)에 맞춰
+       stretch 로 늘어나 있었음 → align-self:start 로 늘어남을 풀고
+       height:auto 로 내용(텍스트) 높이만 차지하게 함.
+     - 결과: 카드는 내과/외과처럼 짧아지고, 칸의 아래쪽(사진이 있던 자리)은
+       빈 박스 없이 배경만 남음. */
+  .dept-card_di {
+    align-self: start !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
 }
