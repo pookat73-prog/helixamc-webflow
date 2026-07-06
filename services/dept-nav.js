@@ -18,6 +18,15 @@
    - 호버 확대 기준점을 bottom-right 로 고정 → 카드가 위·왼쪽으로 커짐. 바닥이
      안 내려가므로 사진 아래 밝은 부분이 드러나 회색 바처럼 보이던 문제 해소.
 
+   v3 수정 (사용자 피드백)
+   - dept-border.js 가 로드 시 고정 크기로 그린 정적 장식이 카드 scale 을 안
+     따라가 어긋나던 문제:
+     · 카드 사이 그림자 오버레이([data-hx-sh-*]) 가 제자리에 남던 문제
+     · 안과/치과가 든 오른쪽 열 컨테이너(div-block-263)의 테두리([data-hx-u])가
+       안쪽 카드만 커질 때 뜬 파란 선으로 어긋나던 문제
+     → 그리드 호버 동안 이 정적 장식들을 부드럽게 숨김(각 카드 자체 테두리만
+       남아 스케일과 함께 정확히 움직임).
+
    상세페이지 연결
    - 상세페이지를 만들면 아래 LINKS 값만 채우면 됨 (Webflow 손댈 필요 없음).
      예) im: '/naegwa'
@@ -59,7 +68,13 @@
     'box-shadow:0 6px 20px rgba(0,0,0,.35)}' +
     /* 호버한 카드의 화살표: 블루로 채워지고 살짝 오른쪽 이동 */
     '[class*="dept-card_"]:hover .right-pointing-arrow{background-color:#0075d6;border-color:#0075d6}' +
-    '[class*="dept-card_"]:hover .right-pointing-arrow::before{transform:translateX(2px)}';
+    '[class*="dept-card_"]:hover .right-pointing-arrow::before{transform:translateX(2px)}' +
+    /* dept-border.js 정적 장식 페이드 — 카드 사이 그림자 오버레이 전체 +
+       오른쪽 열 컨테이너(div-block-263) 직속 테두리. 호버로 카드가 scale 될 때
+       안 따라가 어긋나므로 그리드 호버 동안 부드럽게 숨긴다. */
+    '[data-hx-sh-l],[data-hx-sh-ri],.div-block-263>[data-hx-u]{transition:opacity .3s ease}' +
+    '.dept-grid:hover [data-hx-sh-l],.dept-grid:hover [data-hx-sh-ri],' +
+    '.dept-grid:hover .div-block-263>[data-hx-u]{opacity:0}';
 
   function injectCss() {
     var s = document.createElement('style');
