@@ -1,0 +1,35 @@
+/* ================================================================
+   HELIX AMC — 진료과목(services) 페이지 전용 오버라이드
+   services/bootstrap.js 가 로드.
+
+   영상의학과 카드(.dept-card_di) 사진 — 모바일에서 강제 제거
+   -----------------------------------------------------------------
+   증상: Webflow 에서 가로모바일 브레이크포인트에 별도 버전을 만들어
+   그 카드의 사진을 지웠는데도 모바일에서 사진이 계속 보임.
+   원인(추정): Webflow 상 "지운 요소"와 실제로 렌더되는 사진이 서로 다른
+   요소 — 예) <img> 를 지웠지만 사진은 카드/래퍼의 background-image 였거나
+   그 반대. 그래서 브레이크포인트 삭제가 실제 렌더 요소에 안 걸림.
+
+   처방: 코드에서 그 카드의 배경/이미지를 모바일(≤767px)에서 확실히 눌러
+   없앤다. Webflow 의 어떤 방식(배경·img·배경비디오)으로 붙었든 커버.
+
+   ⚠️ 화살표 버튼은 안 건드림 — dept-nav.js 의 화살표는 .right-pointing-arrow
+   의 ::before 가상요소 배경이라, 아래 규칙(요소 대상)이 닿지 않음.
+   ================================================================ */
+
+@media screen and (max-width: 767px) {
+  /* 카드 자신 + 모든 자식 요소의 배경 이미지 제거.
+     가상요소(::before 화살표)는 * 로 매칭되지 않아 안전. */
+  .dept-card_di,
+  .dept-card_di * {
+    background-image: none !important;
+  }
+
+  /* 사진이 <img> / 배경비디오로 들어간 경우까지 제거. */
+  .dept-card_di img,
+  .dept-card_di video,
+  .dept-card_di .w-background-video,
+  .dept-card_di .w-background-video-atom {
+    display: none !important;
+  }
+}
