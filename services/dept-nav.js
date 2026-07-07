@@ -91,9 +91,6 @@
     '@media screen and (min-width:768px) and (max-width:991px){' +
     '.dept-card_di{min-height:418px !important}' +
     '.dept_image_di{display:flex !important;min-height:348px !important}' +
-    /* 태블릿에선 카드가 작아 32px 화살표 버튼이 과하게 커 보임 → 축소 */
-    '.right-pointing-arrow{width:24px !important;height:24px !important;border-width:1.25px !important}' +
-    '.right-pointing-arrow::before{width:10px !important;height:10px !important;background-size:10px !important}' +
     '}';
 
   function injectCss() {
