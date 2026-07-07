@@ -79,7 +79,19 @@
     '.dept-card_sg:hover~.dept-card_di [data-hx-sh-l],' +   /* 외과 위 = 영상 l */
     '.dept-card_di:hover~.div-block-263 [data-hx-sh-l],' +  /* 영상 위 = 컨테이너 l */
     '.div-block-263:hover [data-hx-sh-l],' +                /* 안과/치과: 컨테이너 l */
-    '.div-block-263:hover [data-hx-sh-ri]{opacity:0}';      /* 안과/치과: 컨테이너 우측 */
+    '.div-block-263:hover [data-hx-sh-ri]{opacity:0}' +      /* 안과/치과: 컨테이너 우측 */
+    /* 영상 카드 이미지 강제 표시 — Webflow 게시본 버그 우회.
+       증상: 디자이너 캔버스엔 영상 이미지가 보이는데, 라이브 태블릿(768~991)에서만
+       display:none 으로 사라짐. Webflow 게시 CSS 가 디자인과 어긋나 이 셀만 숨김을 내보내며,
+       재게시·요소 재생성으로도 안 지워짐(플랫폼 단 꼬임). → 사이트가 원래 주입하는 이 CSS 로
+       !important 강제 표시해 그 숨김을 이김.
+       .dept_image_di 는 데스크탑 덱(dept-container(DT))에만 있고 그 덱은 ≤767 에서 통째로
+       숨겨지므로, 이 규칙은 모바일(가로모바일 텍스트덱)에 영향 없음. min-height 는 영상 카드가
+       격자에서 혼자 앉아 높이를 못 받아 접히는 것 방지(다른 카드는 짝이 있어 불필요). */
+    '@media screen and (min-width:768px) and (max-width:991px){' +
+    '.dept-card_di{min-height:418px !important}' +
+    '.dept_image_di{display:flex !important;min-height:348px !important}' +
+    '}';
 
   function injectCss() {
     var s = document.createElement('style');
