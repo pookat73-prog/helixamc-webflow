@@ -104,8 +104,28 @@
     return m ? m[1].toLowerCase() : null;
   }
 
+  /* 영상 카드 이미지 강제 표시 (JS) — 일부 게시본에서 이미지에 인라인/고특이도 display:none 이
+     걸려 CSS !important 로도 안 밀릴 때, 인라인 !important 를 직접 걸어 무조건 이긴다.
+     태블릿(768~991) 에서만 적용. 그 밖에선 우리가 건 인라인만 해제(원래 규칙 따르게).
+     .dept_image_di 는 데스크탑 덱(dept-container(DT)) 전용 → 모바일 텍스트덱 무영향. */
+  function forceDiTablet() {
+    var img = document.querySelector('.dept_image_di');
+    if (!img) return;
+    if (window.innerWidth >= 768 && window.innerWidth <= 991) {
+      img.style.setProperty('display', 'flex', 'important');
+      img.style.setProperty('min-height', '348px', 'important');
+    } else {
+      img.style.removeProperty('display');
+      img.style.removeProperty('min-height');
+    }
+  }
+
   function init() {
     injectCss();
+    forceDiTablet();
+    [300, 1200].forEach(function (t) { setTimeout(forceDiTablet, t); });
+    var _rt;
+    window.addEventListener('resize', function () { clearTimeout(_rt); _rt = setTimeout(forceDiTablet, 150); });
     document.querySelectorAll('[class*="dept-card_"]').forEach(function (card) {
       var k = keyFor(card);
       if (!k || !(k in LINKS)) return;
