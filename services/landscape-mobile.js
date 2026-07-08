@@ -1,44 +1,43 @@
 /* ================================================================
    HELIX AMC — 진료과목(services) 페이지 전용
-   가로로 돌린 "폰"을 태블릿이 아니라 가로모바일 레이아웃으로 강제
+   기기가 "엉뚱한 브레이크포인트"에 걸리는 두 경우를 viewport 폭으로 교정
 
-   문제
+   교정 대상
    -----------------------------------------------------------------
-   갤럭시 S24+ 같은 큰 폰을 가로로 돌리면 브라우저가 인식하는 CSS 가로폭이
-   약 830~900px 로 나온다. Webflow 태블릿 브레이크포인트(768~991px)가
-   딱 그 구간이라, 브라우저는 "가로로 돌린 큰 폰"과 "진짜 태블릿"을
-   폭만 봐선 구분하지 못하고 → 가로 폰에 태블릿 레이아웃을 씌운다.
+   (A) 가로로 돌린 큰 폰 (예: 갤럭시 S24+)
+       → CSS 폭이 ~900px 로 잡혀 Webflow 태블릿(768~991)에 걸림
+       → 태블릿 화면이 나옴. 원하는 건 가로모바일.
+       처방: viewport 폭을 767 로 → Webflow 가로모바일(≤767) 강제.
 
-   해법 (방법 B — viewport 폭 강제)
-   -----------------------------------------------------------------
-   폰과 태블릿을 가르는 진짜 기준은 "높이"다.
-     - 가로 폰   : 폭 넓고 높이 낮음(대략 350~480px)
-     - 가로 태블릿: 높이가 훨씬 큼(600px 이상)
-   그래서 (가로 방향 + 화면 높이 낮음) 이 둘이 겹치면 = 가로 폰 으로 보고,
-   viewport 폭을 767 로 고정한다. 그러면:
-     - Webflow 의 ≤767 규칙(가로모바일)이 켜지고
-     - ≤479 규칙(세로모바일)은 안 켜짐
-   → 정확히 "가로모바일" 레이아웃이 통째로 나온다.
+   (B) 세로로 세운 아이패드 프로 12.9" (폭 1024px)
+       → 992 이상이라 Webflow 데스크탑에 걸림 → 데스크탑 화면이 나옴.
+       원하는 건 태블릿.
+       처방: viewport 폭을 991 로 → Webflow 태블릿(≤991) 강제.
 
-   왜 min-width 게이트를 안 쓰나 (무한 플리커 방지)
+   폰 vs 태블릿, 태블릿 vs 데스크탑 구분 기준
    -----------------------------------------------------------------
-   viewport 폭을 767 로 바꾸면 브라우저가 인식하는 width 자체가 바뀐다.
-   그래서 판정 조건에 width 계열(min-width 등)을 넣으면, 강제 후 조건이
-   풀리고 → 원복 → 다시 조건 성립 → … 무한 반복(플리커)이 난다.
-   판정은 폭을 바꿔도 안정적인 (orientation + max-height) 두 가지로만 한다.
-   (같은 max-height:500 기준을 emergency.css 도 가로 폰 감지에 쓴다.)
+   - 가로 폰   : 가로 방향 + 화면 높이 낮음(≤500px). 태블릿은 높이가 커서 제외.
+   - 세로 프로 : 세로 방향 + 자연 폭이 992~1024. (11인치는 834라 이미 태블릿.)
+
+   ⚠️ 무한 플리커 방지 — "자연 폭 측정 후 판정"
+   -----------------------------------------------------------------
+   viewport 폭을 강제로 바꾸면 innerWidth 자체가 바뀐다. 그래서 폭 조건을
+   현재 innerWidth 로 계속 재평가하면: 강제 → 조건 풀림 → 원복 → 조건 성립 →
+   … 무한 반복(플리커)이 난다.
+   해법: 재평가는 "실제 회전(orientation change)" 때만 하고, 매번 먼저 원본
+   viewport 로 복원해 '자연 폭' 을 측정한 뒤 판정한다. 우리가 meta 를 바꿔
+   생기는 resize 로는 재평가하지 않으므로 루프가 없다.
    ================================================================ */
 
 (function () {
   'use strict';
 
-  /* 가로 폰 판정 — 폭을 강제로 바꿔도 뒤집히지 않는 조건만 사용.
-     767 로 강제하면 높이도 같이 축소되지만 여전히 500 밑이라 매칭 유지 → 안정. */
-  var PHONE_LANDSCAPE = '(orientation: landscape) and (max-height: 500px)';
+  var LANDSCAPE_PHONE_MAX_H = 500;   /* 가로 폰: 이 높이 이하 (태블릿은 초과) */
+  var PRO_MIN_W = 992;               /* 세로 프로: 자연 폭 하한 (데스크탑 경계) */
+  var PRO_MAX_W = 1024;              /* 세로 프로: 자연 폭 상한 (12.9" 세로) */
 
-  /* ≤767 은 켜고 ≤479 는 안 켜지는 값 = 딱 가로모바일 브레이크포인트.
-     축소량도 최소(폰 가로폭이 대개 767 보다 조금 큼)라 확대가 덜하다. */
-  var FORCE_WIDTH = 767;
+  var FORCE_LANDSCAPE_PHONE = 'width=767';  /* ≤767 켜고 ≤479 안 켬 = 가로모바일 */
+  var FORCE_PRO_PORTRAIT   = 'width=991';   /* ≤991 켜고 데스크탑 안 켬 = 태블릿 */
 
   var meta = document.querySelector('meta[name="viewport"]');
   if (!meta) {
@@ -47,26 +46,35 @@
     document.head.appendChild(meta);
   }
 
-  /* Webflow 기본 viewport 값을 원본으로 보관 → 세로/태블릿/데스크톱에서 복원 */
+  /* Webflow 기본 viewport 값 보관 → 해당 없을 때 원복 + '자연 폭' 측정용 */
   var ORIGINAL = meta.getAttribute('content') || 'width=device-width, initial-scale=1';
 
-  var mq = window.matchMedia(PHONE_LANDSCAPE);
+  function evaluate() {
+    /* 먼저 원본으로 되돌려 강제 이전의 '자연 폭/높이' 를 측정 (플리커 방지 핵심) */
+    meta.setAttribute('content', ORIGINAL);
+    /* 복원 반영(reflow) 후 측정 */
+    requestAnimationFrame(function () {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      var landscape = w > h;
 
-  function apply() {
-    if (mq.matches) {
-      /* 가로 폰 → 폭 767 고정으로 Webflow 가로모바일 레이아웃 강제 */
-      meta.setAttribute('content', 'width=' + FORCE_WIDTH);
-    } else {
-      /* 세로 / 태블릿 / 데스크톱 → 원래 반응형 viewport 로 복원 */
-      meta.setAttribute('content', ORIGINAL);
-    }
+      if (landscape && h <= LANDSCAPE_PHONE_MAX_H) {
+        /* (A) 가로 폰 → 가로모바일 강제 */
+        meta.setAttribute('content', FORCE_LANDSCAPE_PHONE);
+      } else if (!landscape && w >= PRO_MIN_W && w <= PRO_MAX_W) {
+        /* (B) 세로 아이패드 프로 → 태블릿 강제 */
+        meta.setAttribute('content', FORCE_PRO_PORTRAIT);
+      }
+      /* 그 외(일반 폰 세로 / 태블릿 / 데스크탑) → ORIGINAL 유지 */
+    });
   }
 
-  apply();
+  evaluate();
 
-  /* 회전 대응 — matchMedia change 가 정석. 구형 사파리는 addListener 폴백.
-     일부 안드로이드는 change 누락 케이스가 있어 orientationchange 도 병행. */
-  if (mq.addEventListener) mq.addEventListener('change', apply);
-  else if (mq.addListener) mq.addListener(apply);
-  window.addEventListener('orientationchange', apply);
+  /* 실제 회전 때만 재평가 — 우리가 meta 를 바꿔 생기는 resize 로는 재평가 안 함.
+     orientation change 는 방향이 실제로 바뀔 때만 발생 → 루프 없음. */
+  var mqPortrait = window.matchMedia('(orientation: portrait)');
+  if (mqPortrait.addEventListener) mqPortrait.addEventListener('change', evaluate);
+  else if (mqPortrait.addListener) mqPortrait.addListener(evaluate); /* 구형 사파리 */
+  window.addEventListener('orientationchange', evaluate);
 })();
