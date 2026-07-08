@@ -99,11 +99,11 @@
     /* 안쪽 실제 이미지는 비율 유지하며 영역을 꽉 채우되 넘치지 않게 */
     '.dept_image_di img,.dept_image_di>*{object-fit:cover !important;width:100% !important;height:100% !important}' +
     '}' +
-    /* 가로모바일(≤767 + 가로 + 높이≤500): 화살표 아이콘을 약간 작게.
-       원 32→28px, 안쪽 화살표 글리프 14→12px. 다른 뷰는 그대로. */
-    '@media screen and (max-width:767px) and (orientation:landscape) and (max-height:500px){' +
-    '.right-pointing-arrow{width:28px;height:28px}' +
-    '.right-pointing-arrow::before{width:12px;height:12px;background-size:12px}' +
+    /* 모바일(≤767, 세로·가로 모두): 화살표 아이콘 축소.
+       원 32→26px, 안쪽 화살표 글리프 14→11px. 데스크탑/태블릿은 그대로. */
+    '@media screen and (max-width:767px){' +
+    '.right-pointing-arrow{width:26px;height:26px}' +
+    '.right-pointing-arrow::before{width:11px;height:11px;background-size:11px}' +
     '}';
 
   function injectCss() {
