@@ -27,6 +27,7 @@
     'global/global.css',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
+    'global/top-button.css',
     'global/top-button.js',
     /* 진료과목 전용 — 페이지 오버라이드(영상의학과 카드 모바일 사진 제거 등) */
     'services/services.css',
