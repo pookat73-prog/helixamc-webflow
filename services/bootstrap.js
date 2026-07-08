@@ -31,6 +31,8 @@
     'global/top-button.js',
     /* 진료과목 전용 — 페이지 오버라이드(영상의학과 카드 모바일 사진 제거 등) */
     'services/services.css',
+    /* 진료과목 전용 — 가로 폰을 태블릿이 아닌 가로모바일 레이아웃으로 강제 */
+    'services/landscape-mobile.js',
     /* 진료과목 전용 — 카드 U자 테두리(기존 deptUshapeBorder) */
     'services/dept-border.js',
     /* 진료과목 전용 — 화살표 상세이동 버튼 + 카드 강조 호버(기존 deptDetailNav) */
