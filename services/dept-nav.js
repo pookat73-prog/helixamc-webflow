@@ -89,8 +89,15 @@
        숨겨지므로, 이 규칙은 모바일(가로모바일 텍스트덱)에 영향 없음. min-height 는 영상 카드가
        격자에서 혼자 앉아 높이를 못 받아 접히는 것 방지(다른 카드는 짝이 있어 불필요). */
     '@media screen and (min-width:768px) and (max-width:991px){' +
-    '.dept-card_di{min-height:418px !important}' +
-    '.dept_image_di{display:flex !important;min-height:348px !important}' +
+    /* 카드에 클립 — 이미지가 카드 바닥 밖으로 삐져나가지 않게. 아이패드 미니(768px,
+       태블릿 최소폭)에서 이미지 세로가 넘쳐 바닥을 뚫던 문제 차단. */
+    '.dept-card_di{min-height:418px !important;overflow:hidden !important}' +
+    /* 높이는 상한 없이 min 만(=바닥). 카드가 큰 기기(아이패드 에어 등)에선 카드
+       높이만큼 이미지가 늘어나 채우고, 좁은 기기(미니)에선 카드 overflow 로 잘림.
+       ※ 상한(max-height)을 박으면 큰 카드에서 이미지 밑에 검은 띠가 생김 → 넣지 말 것. */
+    '.dept_image_di{display:flex !important;min-height:348px !important;overflow:hidden !important}' +
+    /* 안쪽 실제 이미지는 비율 유지하며 영역을 꽉 채우되 넘치지 않게 */
+    '.dept_image_di img,.dept_image_di>*{object-fit:cover !important;width:100% !important;height:100% !important}' +
     '}';
 
   function injectCss() {
@@ -114,9 +121,14 @@
     if (window.innerWidth >= 768 && window.innerWidth <= 991) {
       img.style.setProperty('display', 'flex', 'important');
       img.style.setProperty('min-height', '348px', 'important');
+      /* 클립만(상한 없음) — 좁은 태블릿(미니)에선 넘침을 잘라내고, 큰 태블릿
+         (에어)에선 이미지가 카드 높이만큼 늘어나 검은 띠가 안 생기게.
+         CSS !important 가 인라인에 밀리는 게시본까지 커버. */
+      img.style.setProperty('overflow', 'hidden', 'important');
     } else {
       img.style.removeProperty('display');
       img.style.removeProperty('min-height');
+      img.style.removeProperty('overflow');
     }
   }
 

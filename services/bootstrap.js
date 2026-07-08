@@ -27,10 +27,13 @@
     'global/global.css',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
-    'global/top-button.css',
-    'global/top-button.js',
+    /* 위로가기 버튼(global/top-button.*)은 진료과목 페이지에서 의도적으로 제외.
+       사용자 요청 — 이 페이지에서만 위로가기 버튼 안 띄움. 다른 페이지는 그대로 유지.
+       (남아있을 수 있는 Webflow legacy 버튼 .link-block-11 은 services.css 에서 숨김) */
     /* 진료과목 전용 — 페이지 오버라이드(영상의학과 카드 모바일 사진 제거 등) */
     'services/services.css',
+    /* 진료과목 전용 — 가로 폰을 태블릿이 아닌 가로모바일 레이아웃으로 강제 */
+    'services/landscape-mobile.js',
     /* 진료과목 전용 — 카드 U자 테두리(기존 deptUshapeBorder) */
     'services/dept-border.js',
     /* 진료과목 전용 — 화살표 상세이동 버튼 + 카드 강조 호버(기존 deptDetailNav) */
