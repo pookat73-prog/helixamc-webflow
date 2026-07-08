@@ -34,10 +34,17 @@
 
   var LANDSCAPE_PHONE_MAX_H = 500;   /* 가로 폰: 이 높이 이하 (태블릿은 초과) */
   var PRO_MIN_W = 992;               /* 세로 프로: 자연 폭 하한 (데스크탑 경계) */
-  var PRO_MAX_W = 1024;              /* 세로 프로: 자연 폭 상한 (12.9" 세로) */
+  /* 세로 프로 자연 폭 상한. 모델별 세로 폭이 달라 넉넉히 1040 까지:
+       - 아이패드 프로 12.9" (~M2 이전) : 1024
+       - 아이패드 프로 13"  (M4, 2024~) : 1032  ← 1024 로 잡으면 여기서 샘
+       - 아이패드 에어 13"  (M2)         : 1024
+     1040 상한이면 위 셋 다 커버, 세로 데스크탑 모니터(대개 1080+)는 제외. */
+  var PRO_MAX_W = 1040;
 
   var FORCE_LANDSCAPE_PHONE = 'width=767';  /* ≤767 켜고 ≤479 안 켬 = 가로모바일 */
   var FORCE_PRO_PORTRAIT   = 'width=991';   /* ≤991 켜고 데스크탑 안 켬 = 태블릿 */
+
+  var DEBUG = /[?&]debug-bp=1/.test(location.search);
 
   var meta = document.querySelector('meta[name="viewport"]');
   if (!meta) {
@@ -57,6 +64,13 @@
       var w = window.innerWidth;
       var h = window.innerHeight;
       var landscape = w > h;
+
+      if (DEBUG) {
+        console.log('[bp] natural w=' + w + ' h=' + h +
+          ' landscape=' + landscape +
+          ' → phone=' + (landscape && h <= LANDSCAPE_PHONE_MAX_H) +
+          ' proPortrait=' + (!landscape && w >= PRO_MIN_W && w <= PRO_MAX_W));
+      }
 
       if (landscape && h <= LANDSCAPE_PHONE_MAX_H) {
         /* (A) 가로 폰 → 가로모바일 강제 */
