@@ -27,6 +27,10 @@
     'global/global.css',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
+    /* 헤더의 잠긴 탭(data-coming-soon) 클릭 시 "준비중입니다" 토스트 +
+       '진료과목' 탭을 /services 로 승격(markLiveNav). 다른 페이지와 동일 동작. */
+    'home/global/coming-soon.css',
+    'home/global/coming-soon.js',
     /* 위로가기 버튼(global/top-button.*)은 진료과목 페이지에서 의도적으로 제외.
        사용자 요청 — 이 페이지에서만 위로가기 버튼 안 띄움. 다른 페이지는 그대로 유지.
        (남아있을 수 있는 Webflow legacy 버튼 .link-block-11 은 services.css 에서 숨김) */
