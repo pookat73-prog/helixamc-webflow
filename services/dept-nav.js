@@ -113,7 +113,7 @@
     'opacity:0;transition:opacity .28s ease,transform .28s ease;white-space:nowrap;letter-spacing:.02em}' +
     '.hx-toast.is-on{opacity:1;transform:translate(-50%,0)}' +
     /* 진료과목 페이지에 있을 때 헤더 '진료과목' 탭 밑줄(현재 페이지 활성 표시) */
-    '.hx-nav-current{text-decoration:underline !important;text-underline-offset:6px !important;text-decoration-thickness:2px !important}';
+    '.hx-nav-current{text-decoration:underline !important;text-decoration-color:#0075d6 !important;text-underline-offset:6px !important;text-decoration-thickness:2px !important}';
 
   function injectCss() {
     var s = document.createElement('style');
