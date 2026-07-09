@@ -22,8 +22,11 @@
   /* 햄버거 아이콘 자체를 "준비중"으로 막을지 여부.
      true  → 아이콘 클릭해도 메뉴 안 열리고 "준비중입니다" 토스트만 뜸
      false → 정상 동작 (메뉴 열림)
-     메뉴 콘텐츠가 모두 준비되면 이 줄만 false 로 변경. */
-  var MENU_COMING_SOON = true;
+     ── 도메인 게이트 ──
+     스테이징(*.webflow.io)에선 메뉴를 열어 검증, 정식 도메인에선 잠금(준비중) 유지.
+     브랜치 분기 아님(측정 게이트와 동일 방침) → main 에 올라가도 정식은 자동 잠금.
+     메뉴 콘텐츠가 모두 준비되면 이 줄을 false 로(도메인 무관 전체 개방). */
+  var MENU_COMING_SOON = !/\.webflow\.io$/i.test(location.hostname);
 
   /* href 가 '#' 이면 아직 미연결 → data-coming-soon 자동 부여 */
   function comingSoonAttr(href) {
