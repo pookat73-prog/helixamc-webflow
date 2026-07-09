@@ -234,6 +234,75 @@
     });
   }
 
+  /* 헤더 1차 네비 탭 라이브 링크 — 텍스트 정확 매칭.
+     헤더의 "진료과목" 같은 Webflow 네이티브 링크는 컴포넌트에 data-coming-soon 이
+     박혀 준비중 토스트만 떴음. 텍스트가 정확히 일치하면 data-coming-soon 을 떼고
+     data-helix-link 를 걸어 클릭 시 해당 페이지로 이동(handleLiveCardClick 가 처리). */
+  var LIVE_NAV = [
+    { text: '진료과목', url: '/services' }
+  ];
+  function markLiveNav() {
+    var cands = document.querySelectorAll('a,[data-coming-soon]');
+    Array.prototype.forEach.call(cands, function (el) {
+      var txt = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      for (var i = 0; i < LIVE_NAV.length; i++) {
+        if (txt !== LIVE_NAV[i].text) continue;
+        if (el.hasAttribute('data-coming-soon')) el.removeAttribute('data-coming-soon');
+        if (el.getAttribute(LIVE_ATTR) !== LIVE_NAV[i].url) {
+          el.setAttribute(LIVE_ATTR, LIVE_NAV[i].url);
+          el.style.cursor = 'pointer';
+        }
+      }
+    });
+  }
+
+  /* 헤더 '지점안내' 탭 → 홈 맨 밑 지점 카드 섹션으로 이동.
+     - 홈이면 부드럽게 스크롤, 다른 페이지면 홈(?to=branches)으로 이동 후 로드 시 스크롤.
+     - 텍스트 공백 무시 매칭('지점 안내'/'지점안내' 모두). */
+  var BRANCH_SCROLL_ATTR = 'data-helix-scroll';
+  function isHomePath() { return /^\/(index\.html)?$/i.test(location.pathname); }
+  function markBranchNav() {
+    document.querySelectorAll('a,[data-coming-soon]').forEach(function (el) {
+      if ((el.textContent || '').replace(/\s+/g, '') !== '지점안내') return;
+      if (el.hasAttribute('data-coming-soon')) el.removeAttribute('data-coming-soon');
+      if (!el.hasAttribute(BRANCH_SCROLL_ATTR)) {
+        el.setAttribute(BRANCH_SCROLL_ATTR, '1');
+        el.style.cursor = 'pointer';
+      }
+    });
+  }
+  function scrollToBranchSection() {
+    var t = document.querySelector(BRANCH_CARD_SEL);
+    if (!t) return false;
+    var sec = (t.closest && t.closest('section')) || t;
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return true;
+  }
+  function handleBranchNavClick(e) {
+    var el = e.target;
+    while (el && el !== document.body && el.nodeType === 1) {
+      if (el.hasAttribute && el.hasAttribute(BRANCH_SCROLL_ATTR)) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isHomePath()) scrollToBranchSection();
+        else window.location.href = '/?to=branches';
+        return;
+      }
+      el = el.parentElement;
+    }
+  }
+  document.addEventListener('click', handleBranchNavClick, true);
+  function maybeScrollBranchOnLoad() {
+    if (!isHomePath() || !/[?&]to=branches/.test(location.search)) return;
+    var n = 0;
+    var iv = setInterval(function () {
+      if (scrollToBranchSection() || ++n >= 40) {
+        clearInterval(iv);
+        try { history.replaceState(null, '', location.pathname); } catch (e) {}
+      }
+    }, 150);
+  }
+
   /* Webflow Designer 컴포넌트 정의/인스턴스에 custom attribute 로 박혀 있는
      data-coming-soon 을 떼어내야 하는 라이브 셀렉터.
      셀렉터에 매칭되는 element 와 그 자손 anchor 의 data-coming-soon 제거. */
@@ -272,6 +341,10 @@
     });
     /* 라이브 지점 카드는 마킹 직후 해제 (mark 가 박은 data-coming-soon 제거) */
     markLiveBranchCards();
+    /* 헤더 "진료과목" 등 1차 네비 탭 → 실제 페이지 링크로 승격 */
+    markLiveNav();
+    /* 헤더 "지점안내" 탭 → 홈 지점 카드 섹션 스크롤 이동으로 승격 */
+    markBranchNav();
   }
 
   /* 라이브 지점 카드 클릭 → 페이지 이동.
@@ -327,6 +400,8 @@
       mark();
       if (++n >= 20) clearInterval(iv);
     }, 250);
+    /* 홈 진입 시 ?to=branches 면 지점 카드 섹션으로 스크롤 */
+    maybeScrollBranchOnLoad();
   }
 
   if (document.readyState === 'loading') {
