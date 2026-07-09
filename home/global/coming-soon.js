@@ -234,6 +234,28 @@
     });
   }
 
+  /* 헤더 1차 네비 탭 라이브 링크 — 텍스트 정확 매칭.
+     헤더의 "진료과목" 같은 Webflow 네이티브 링크는 컴포넌트에 data-coming-soon 이
+     박혀 준비중 토스트만 떴음. 텍스트가 정확히 일치하면 data-coming-soon 을 떼고
+     data-helix-link 를 걸어 클릭 시 해당 페이지로 이동(handleLiveCardClick 가 처리). */
+  var LIVE_NAV = [
+    { text: '진료과목', url: '/services' }
+  ];
+  function markLiveNav() {
+    var cands = document.querySelectorAll('a,[data-coming-soon]');
+    Array.prototype.forEach.call(cands, function (el) {
+      var txt = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      for (var i = 0; i < LIVE_NAV.length; i++) {
+        if (txt !== LIVE_NAV[i].text) continue;
+        if (el.hasAttribute('data-coming-soon')) el.removeAttribute('data-coming-soon');
+        if (el.getAttribute(LIVE_ATTR) !== LIVE_NAV[i].url) {
+          el.setAttribute(LIVE_ATTR, LIVE_NAV[i].url);
+          el.style.cursor = 'pointer';
+        }
+      }
+    });
+  }
+
   /* Webflow Designer 컴포넌트 정의/인스턴스에 custom attribute 로 박혀 있는
      data-coming-soon 을 떼어내야 하는 라이브 셀렉터.
      셀렉터에 매칭되는 element 와 그 자손 anchor 의 data-coming-soon 제거. */
@@ -272,6 +294,8 @@
     });
     /* 라이브 지점 카드는 마킹 직후 해제 (mark 가 박은 data-coming-soon 제거) */
     markLiveBranchCards();
+    /* 헤더 "진료과목" 등 1차 네비 탭 → 실제 페이지 링크로 승격 */
+    markLiveNav();
   }
 
   /* 라이브 지점 카드 클릭 → 페이지 이동.
