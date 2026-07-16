@@ -55,7 +55,7 @@
     lineEase:   LINE_EASE,                            // 선 곡선 (미지원 시 폴백)
     textDelay:  0.12,                                 // 선·문단 따딱 붙게 (엇박 120ms)
     textDur:    0.5,                                  // 문단 나오는 시간
-    textSlide:  16,                                   // 문단 아래→위 이동(px)
+    textSlide:  7,                                    // 문단 살짝 둥실(작은 이동)
     textEase:   TEXT_EASE,                            // 문단 곡선 (선과 따로)
     // 접힘(역순)
     cTextDur:   0.22,
