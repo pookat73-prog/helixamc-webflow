@@ -45,7 +45,7 @@
     heightDur:  0.5,                                  // 영역 열림 (이징=선과 동일)
     lineDur:    0.5,                                  // 선 그리는 시간
     lineEase:   SPLINE,                               // 커스텀 곡선 (0,0)(0.68,0.62)(1,1)
-    textDelay:  0.17,                                 // 두 요소 시차 170ms
+    textDelay:  2.0,                                  // 선과 글 시차 2초
     textDur:    0.5,                                  // 문단 나오는 시간
     textSlide:  16,                                   // 문단 아래→위 이동(px)
     textEase:   SPLINE,                               // 문단도 동일 곡선
@@ -73,7 +73,8 @@
   /* 영역 열림 이징 = 선 이징(선과 동일) */
   function tOpen(a)  { return 'max-height ' + CFG.heightDur + 's ' + CFG.lineEase; }
   function tLine()   { return 'transform ' + CFG.lineDur + 's ' + CFG.lineEase; }
-  function tText()   { return 'opacity ' + Math.min(CFG.textDur, 0.5) + 's ease, transform ' + CFG.textDur + 's ' + CFG.textEase; }
+  /* 페이드인·슬라이드인 둘 다 같은 곡선(선과 동일) */
+  function tText()   { return 'opacity ' + CFG.textDur + 's ' + CFG.textEase + ', transform ' + CFG.textDur + 's ' + CFG.textEase; }
 
   function showEl(el) { if (el) el.style.removeProperty('display'); }
   function hideEl(el) { if (el) el.style.setProperty('display', 'none', 'important'); }
