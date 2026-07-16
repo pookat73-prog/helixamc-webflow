@@ -12,6 +12,7 @@ on:
       - 'seocho/**'
       - 'emergency/**'
       - 'services/**'
+      - 'faq/**'
       - 'seo-snippets/**'
   workflow_dispatch:
 
@@ -111,6 +112,9 @@ jobs:
             "services/landscape-mobile.js"
             "services/dept-border.js"
             "services/dept-nav.js"
+            "faq/bootstrap.js"
+            "faq/faq.css"
+            "faq/faq.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/card-render.js"
@@ -224,6 +228,9 @@ jobs:
             "services/landscape-mobile.js"
             "services/dept-border.js"
             "services/dept-nav.js"
+            "faq/bootstrap.js"
+            "faq/faq.css"
+            "faq/faq.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/modal.css"
