@@ -54,9 +54,9 @@
     lineDur:    0.5,                                  // 선 그리는 시간
     lineEase:   LINE_EASE,                            // 선 곡선 (미지원 시 폴백)
     textDelay:  0.18,                                 // 선·문단 따딱, 살짝 지연 (180ms)
-    textDur:    0.5,                                  // 문단 슬라이드 시간
-    fadeDur:    0.2,                                   // 문단 페이드인 시간 (슬라이드와 별개, 확!)
-    textSlide:  3,                                    // 문단 아주 살짝 둥실
+    textDur:    0.2,                                  // 문단 슬라이드 시간 (= 페이드와 동일)
+    fadeDur:    0.2,                                   // 문단 페이드인 시간
+    textSlide:  2,                                    // 문단 아주 얕게 둥실
     textEase:   TEXT_EASE,                            // 문단 슬라이드(이동) 곡선
     fadeEase:   'cubic-bezier(0.977, -0.001, 1, 0.696)', // 문단 페이드인(opacity) 곡선 (별개)
     // 접힘(역순)
