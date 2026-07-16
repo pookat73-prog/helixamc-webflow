@@ -53,7 +53,7 @@
     heightDur:  0.5,                                  // 영역 열림 (이징=선과 동일)
     lineDur:    0.5,                                  // 선 그리는 시간
     lineEase:   LINE_EASE,                            // 선 곡선 (미지원 시 폴백)
-    textDelay:  0.12,                                 // 선·문단 따딱 붙게 (엇박 120ms)
+    textDelay:  0.18,                                 // 선·문단 따딱, 살짝 지연 (180ms)
     textDur:    0.5,                                  // 문단 나오는 시간
     textSlide:  3,                                    // 문단 아주 살짝 둥실
     textEase:   TEXT_EASE,                            // 문단 슬라이드(이동) 곡선
