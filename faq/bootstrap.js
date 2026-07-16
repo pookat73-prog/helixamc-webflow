@@ -1,34 +1,18 @@
 /* ================================================================
-   HELIX AMC - FAQ 페이지 BOOTSTRAP LOADER (v1.0 — 아코디언 + 자세히보기 토글)
-   Webflow FAQ 페이지 head 에 아래 두 줄만 붙이면 됨:
+   HELIX AMC - FAQ 페이지 BOOTSTRAP LOADER (v2 — 커밋 SHA 불변 로드)
+   Webflow FAQ 페이지 head 로더가 이 파일을 불러옴.
 
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-   <script src="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/faq/bootstrap.js"></script>
+   ⚠ 캐시 원천 회피: FILES 를 @staging/@main 브랜치 ref 로 로드하면 jsDelivr
+   엣지 캐시가 최대 12h stale → 코드 고쳐도 브라우저에 안 닿는 문제 반복됨.
+   그래서 GitHub API 로 브랜치 HEAD 커밋 SHA 를 조회해, 그 SHA 의 immutable
+   jsDelivr URL 로 FILES 를 로드한다(홈/글로벌 bootstrap 과 동일 방식).
    ================================================================ */
 
 (function () {
   'use strict';
 
-  /* ─────────────────────────────────────────────────────────────
-     STAGING SELF-REDIRECT
-     Webflow head 는 @main/faq/bootstrap.js 로 고정. 스테이징 도메인
-     (*.webflow.io) 이면 @staging 의 같은 bootstrap 을 다시 불러 그쪽
-     (최신 FILES) 로 실행. 2회차는 플래그 보고 skip.
-     ───────────────────────────────────────────────────────────── */
-  if (!window.__helixFaqBootstrapRedirected &&
-      /\.webflow\.io$/i.test(location.hostname)) {
-    window.__helixFaqBootstrapRedirected = true;
-    var __s = document.createElement('script');
-    __s.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@staging/faq/bootstrap.js?t=' +
-              Math.floor(Date.now() / 60000);
-    __s.async = false;
-    document.head.appendChild(__s);
-    return;
-  }
-
   /* 첫 화면 이미지 우선 로드 — Webflow 가 모든 <img> 에 loading="lazy" 를
-     자동으로 박아서 상단 이미지가 늦게 뜨는 문제. 첫 ~1.5 화면 안 이미지만
-     eager + fetchpriority:high 로 승격. */
+     자동으로 박아서 상단 이미지가 늦게 뜨는 문제. */
   (function eagerLoadAboveFold() {
     function upgrade(img) {
       if (!img || img.__helixEager) return;
@@ -68,8 +52,7 @@
 
   var FILES = [
     /* GA4 base loader — gtag.js 본체. 다른 모듈의 gtag('event', ...) 호출이
-       안전하게 큐잉되도록 FILES 배열 첫 줄에 둠. (도메인 게이트로 스테이징
-       에선 no-op) */
+       안전하게 큐잉되도록 FILES 배열 첫 줄에. (도메인 게이트로 스테이징 no-op) */
     'global/ga4-base.js',
     /* GA 측정 점검 오버레이 — ?ga-inspect=1 일 때만 동작 (평소 무해) */
     'global/ga-inspector.js',
@@ -90,7 +73,7 @@
     'home/global/coming-soon.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
-    /* FAQ 전용 — 아코디언 여닫기 + 자세히보기/간략히보기 토글 */
+    /* FAQ 전용 — 자세히보기/간략히보기 토글 */
     'faq/faq.css',
     'faq/faq.js',
     /* 푸터 (홈/about 과 동일) */
@@ -99,8 +82,7 @@
   ];
 
   function cdn(ref, path) {
-    var t = Math.floor(Date.now() / 60000);
-    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + '?t=' + t;
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path;
   }
 
   function injectCss(url, onerr) {
@@ -122,26 +104,38 @@
     return s;
   }
 
-  function loadFile(path, ref) {
+  function loadFile(path, ref, isFallback) {
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH) {
-        console.warn('[faq-bootstrap] failed even from @' + BRANCH + ':', path);
-        return;
-      }
-      console.warn('[faq-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
-      loadFile(path, BRANCH);
+      if (isFallback) { console.warn('[faq-bootstrap] load failed:', path); return; }
+      console.warn('[faq-bootstrap] SHA load failed for ' + path + ', retry @' + BRANCH);
+      loadFile(path, BRANCH, true);
     };
     if (ext === 'css') injectCss(url, fallback);
     else if (ext === 'js') injectJs(url, null, fallback);
   }
 
-  function injectAll(ref) {
-    FILES.forEach(function (path) { loadFile(path, ref); });
+  function injectAll(ref, isFallback) {
+    FILES.forEach(function (path) { loadFile(path, ref, isFallback); });
   }
 
-  /* @branch 직접 로드 — 워크플로우가 push 마다 자동 퍼지 + 워밍업 */
-  window.HELIX_REF = BRANCH;
-  injectAll(BRANCH);
+  /* 브랜치 HEAD 커밋 SHA 조회 → 그 SHA 의 immutable URL 로 로드.
+     API 실패(레이트리밋 등) 시에만 @BRANCH 로 폴백. */
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
+            '?t=' + Date.now();
+  fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (data) {
+      var sha = (data.sha || '').substring(0, 10);
+      if (!sha) throw new Error('no sha');
+      window.HELIX_REF = sha;
+      console.log('[faq-bootstrap] loading commit', sha);
+      injectAll(sha, false);
+    })
+    .catch(function (err) {
+      console.warn('[faq-bootstrap] SHA API 실패, @' + BRANCH + ' 폴백', err);
+      window.HELIX_REF = BRANCH;
+      injectAll(BRANCH, true);
+    });
 })();
