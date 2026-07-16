@@ -1,27 +1,9 @@
 /* ================================================================
-   HELIX AMC — FAQ 자세히보기 / 간략히보기 토글 (v2.0)
-
-   구조(사용자가 Webflow 에서 컴포넌트로 디자인 완료):
-   - .faq_qa          질문 카드(태그·질문·요약 + 링크 2개). 항상 보임.
-       .faq-more  "자세히 보기 +"  (기본 노출)
-       .faq-more  "간략히 보기 -"  (기본 숨김)
-   - .faq_answer-ai   상세 답변 = 펼침부분. 기본 숨김, 자세히 클릭 시 노출.
-
-   방침: 접힌 상태·펼친 상태는 이미 만들어져 있으므로 JS 는 보이기/숨기기만.
-   아래 규칙은 JS 가 준비된 뒤(html.faq-js-ready)만 적용 → JS 실패 시 전부
-   보임(콘텐츠 유실 없음, 점진적 향상).
+   HELIX AMC — FAQ 토글 (v3)
+   숨김/보임은 faq.js 가 인라인 style 로 직접 처리(CSS 캐시 어긋남 방지).
+   이 파일은 커서 등 보조 스타일만. 없어도 토글 자체는 동작함.
    ================================================================ */
 
-/* 펼침부분: is-open 이 아닐 때 숨김. is-open 이면 Webflow 원래 display 그대로 */
-html.faq-js-ready [class*="faq_answer"]:not(.is-open) {
-  display: none !important;
-}
-
-/* 자세히/간략히 링크: 숨김 대상만 감춤 (보일 땐 Webflow 원래 display 유지) */
-html.faq-js-ready .faq-more.is-hidden {
-  display: none !important;
-}
-
-html.faq-js-ready .faq-more {
+[class*="faq-more" i] {
   cursor: pointer;
 }
