@@ -31,7 +31,7 @@
   var DEBUG = /[?&]debug-faq=1\b/.test(location.search);
   function log() {
     if (!DEBUG) return;
-    console.log.apply(console, ['[FAQ v6]'].concat(Array.prototype.slice.call(arguments)));
+    console.log.apply(console, ['[FAQ v7]'].concat(Array.prototype.slice.call(arguments)));
   }
 
   var QA_SEL   = '[class*="faq_qa" i]';
@@ -42,8 +42,9 @@
 
   var H_OPEN  = 'max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
   var H_CLOSE = 'max-height 0.34s cubic-bezier(0.4, 0, 0.2, 1)';
-  var LINE_EASE = 'transform 0.6s cubic-bezier(0.65, 0, 0.35, 1)';   // ease-in-out
+  var LINE_EASE = 'transform 0.55s cubic-bezier(0.83, 0, 0.17, 1)';  // easeInOutQuint — 쫀득/명료
   var TEXT_EASE = 'opacity 0.45s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+  var TEXT_DELAY = '0.28s';                                          // 선이 먼저 그어진 뒤 문단 등장
 
   function showEl(el) { if (el) el.style.removeProperty('display'); }
   function hideEl(el) { if (el) el.style.setProperty('display', 'none', 'important'); }
@@ -108,7 +109,7 @@
     // (3) 문단 fade + slide-in (살짝 delay)
     if (p.text) {
       p.text.style.transition = TEXT_EASE;
-      p.text.style.transitionDelay = '0.1s';
+      p.text.style.transitionDelay = TEXT_DELAY;
       p.text.style.opacity = '1';
       p.text.style.transform = 'translateY(0)';
     }
