@@ -55,8 +55,9 @@
     lineEase:   LINE_EASE,                            // 선 곡선 (미지원 시 폴백)
     textDelay:  0.12,                                 // 선·문단 따딱 붙게 (엇박 120ms)
     textDur:    0.5,                                  // 문단 나오는 시간
-    textSlide:  7,                                    // 문단 살짝 둥실(작은 이동)
-    textEase:   TEXT_EASE,                            // 문단 곡선 (선과 따로)
+    textSlide:  3,                                    // 문단 아주 살짝 둥실
+    textEase:   TEXT_EASE,                            // 문단 슬라이드(이동) 곡선
+    fadeEase:   'cubic-bezier(0.977, -0.001, 1, 0.696)', // 문단 페이드인(opacity) 곡선 (별개)
     // 접힘(역순)
     cTextDur:   0.22,
     cLineDelay: 0.13,
@@ -81,8 +82,8 @@
   /* 영역 열림 이징 = 선 이징(선과 동일) */
   function tOpen(a)  { return 'max-height ' + CFG.heightDur + 's ' + CFG.lineEase; }
   function tLine()   { return 'transform ' + CFG.lineDur + 's ' + CFG.lineEase; }
-  /* 페이드인·슬라이드인 둘 다 같은 곡선(선과 동일) */
-  function tText()   { return 'opacity ' + CFG.textDur + 's ' + CFG.textEase + ', transform ' + CFG.textDur + 's ' + CFG.textEase; }
+  /* 페이드인(opacity)과 슬라이드인(transform) 곡선 분리 */
+  function tText()   { return 'opacity ' + CFG.textDur + 's ' + CFG.fadeEase + ', transform ' + CFG.textDur + 's ' + CFG.textEase; }
 
   function showEl(el) { if (el) el.style.removeProperty('display'); }
   function hideEl(el) { if (el) el.style.setProperty('display', 'none', 'important'); }
