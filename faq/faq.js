@@ -39,13 +39,13 @@
 
   /* ── 조절 가능한 값(초 단위) — 패널이 이 객체를 실시간 수정 ──────── */
   var CFG = (window.HELIX_FAQ_CFG = {
-    heightDur:  0.5,                                  // 영역 열림 시간
-    lineDur:    0.7,                                  // 선 그리는 시간
-    lineEase:   'cubic-bezier(0.85, 0, 0.92, 0.06)',  // 천천히→팍
-    textDelay:  0.62,                                 // 문단 시작(선 거의 끝날 때)
+    heightDur:  0.5,                                  // 영역 열림 시간 (이징은 선과 동일)
+    lineDur:    0.6,                                  // 선 그리는 시간
+    lineEase:   'cubic-bezier(0.85, 0, 0.4, 1)',      // 천천히→팍→안착(끝 감속)
+    textDelay:  0.6,                                  // 문단 시작(선 끝날 때)
     textDur:    0.5,                                  // 문단 나오는 시간
     textSlide:  16,                                   // 문단 아래→위 이동(px)
-    textEase:   'cubic-bezier(0.34, 1.7, 0.5, 1)',    // 쫀득(살짝 튕김, easeOutBack)
+    textEase:   'cubic-bezier(0.16, 1, 0.3, 1)',      // 부드럽게(튕김 없음)
     // 접힘(역순)
     cTextDur:   0.22,
     cLineDelay: 0.13,
@@ -55,19 +55,20 @@
   });
 
   var LINE_EASE_PRESETS = {
-    '천천히→팍(현재)': 'cubic-bezier(0.85, 0, 0.92, 0.06)',
-    '팍(덜 극단적)':   'cubic-bezier(0.7, 0, 0.84, 0)',
-    '쫀득(튕김)':      'cubic-bezier(0.34, 1.7, 0.5, 1)',
-    '부드럽게':        'cubic-bezier(0.16, 1, 0.3, 1)'
+    '천천히→팍→안착(현재)': 'cubic-bezier(0.85, 0, 0.4, 1)',
+    '더 극단(안착↑)':       'cubic-bezier(0.9, 0, 0.35, 1)',
+    '팍(끝빠름·안착없음)':  'cubic-bezier(0.85, 0, 0.92, 0.06)',
+    '부드럽게':             'cubic-bezier(0.16, 1, 0.3, 1)'
   };
   var TEXT_EASE_PRESETS = {
-    '쫀득(튕김,현재)': 'cubic-bezier(0.34, 1.7, 0.5, 1)',
-    '더 쫀득(강한튕김)': 'cubic-bezier(0.3, 2.0, 0.5, 1)',
-    '선처럼 팍':        'cubic-bezier(0.85, 0, 0.92, 0.06)',
-    '부드럽게':         'cubic-bezier(0.16, 1, 0.3, 1)'
+    '부드럽게(현재)':   'cubic-bezier(0.16, 1, 0.3, 1)',
+    '선과 동일':        'cubic-bezier(0.85, 0, 0.4, 1)',
+    '쫀득(튕김)':       'cubic-bezier(0.34, 1.7, 0.5, 1)',
+    '천천히':           'cubic-bezier(0.4, 0, 0.2, 1)'
   };
 
-  function tOpen(a)  { return 'max-height ' + CFG.heightDur + 's cubic-bezier(0.16, 1, 0.3, 1)'; }
+  /* 영역 열림 이징 = 선 이징(선과 동일) */
+  function tOpen(a)  { return 'max-height ' + CFG.heightDur + 's ' + CFG.lineEase; }
   function tLine()   { return 'transform ' + CFG.lineDur + 's ' + CFG.lineEase; }
   function tText()   { return 'opacity ' + Math.min(CFG.textDur, 0.5) + 's ease, transform ' + CFG.textDur + 's ' + CFG.textEase; }
 
