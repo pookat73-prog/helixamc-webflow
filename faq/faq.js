@@ -38,14 +38,17 @@
   var LINE_SEL = '[class*="faq_line" i]';
 
   /* ── 조절 가능한 값(초 단위) — 패널이 이 객체를 실시간 수정 ──────── */
+  /* 확정 스펙: 베지어 스플라인 (0,0)(0.68,0.62)(1,1) = 2차 베지어 → 3차 변환.
+     지속 500ms, 두 요소(선·문단) 시차 170ms. 적용 속성 = 위치 이동. */
+  var SPLINE = 'cubic-bezier(0.453, 0.413, 0.787, 0.747)';
   var CFG = (window.HELIX_FAQ_CFG = {
-    heightDur:  0.5,                                  // 영역 열림 시간 (이징은 선과 동일)
-    lineDur:    0.6,                                  // 선 그리는 시간
-    lineEase:   'cubic-bezier(0.85, 0, 0.4, 1)',      // 천천히→팍→안착(끝 감속)
-    textDelay:  0.6,                                  // 문단 시작(선 끝날 때)
+    heightDur:  0.5,                                  // 영역 열림 (이징=선과 동일)
+    lineDur:    0.5,                                  // 선 그리는 시간
+    lineEase:   SPLINE,                               // 커스텀 곡선 (0,0)(0.68,0.62)(1,1)
+    textDelay:  0.17,                                 // 두 요소 시차 170ms
     textDur:    0.5,                                  // 문단 나오는 시간
     textSlide:  16,                                   // 문단 아래→위 이동(px)
-    textEase:   'cubic-bezier(0.16, 1, 0.3, 1)',      // 부드럽게(튕김 없음)
+    textEase:   SPLINE,                               // 문단도 동일 곡선
     // 접힘(역순)
     cTextDur:   0.22,
     cLineDelay: 0.13,
@@ -55,14 +58,14 @@
   });
 
   var LINE_EASE_PRESETS = {
-    '천천히→팍→안착(현재)': 'cubic-bezier(0.85, 0, 0.4, 1)',
-    '더 극단(안착↑)':       'cubic-bezier(0.9, 0, 0.35, 1)',
+    '커스텀 스플라인(현재)': SPLINE,
+    '천천히→팍→안착':       'cubic-bezier(0.85, 0, 0.4, 1)',
     '팍(끝빠름·안착없음)':  'cubic-bezier(0.85, 0, 0.92, 0.06)',
     '부드럽게':             'cubic-bezier(0.16, 1, 0.3, 1)'
   };
   var TEXT_EASE_PRESETS = {
-    '부드럽게(현재)':   'cubic-bezier(0.16, 1, 0.3, 1)',
-    '선과 동일':        'cubic-bezier(0.85, 0, 0.4, 1)',
+    '선과 동일(현재)':  SPLINE,
+    '부드럽게':         'cubic-bezier(0.16, 1, 0.3, 1)',
     '쫀득(튕김)':       'cubic-bezier(0.34, 1.7, 0.5, 1)',
     '천천히':           'cubic-bezier(0.4, 0, 0.2, 1)'
   };
