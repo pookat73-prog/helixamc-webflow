@@ -1,82 +1,27 @@
 /* ================================================================
-   HELIX AMC — FAQ 아코디언 + 자세히보기/간략히보기 토글 (v1.0)
+   HELIX AMC — FAQ 자세히보기 / 간략히보기 토글 (v2.0)
 
-   전략: "점진적 향상(progressive enhancement)".
-   - CSS 기본 상태는 '펼쳐짐' → JS 가 실패해도 답변은 그대로 다 보임.
-   - faq.js 가 로드되면 .faq-js-ready 를 <html> 에 박고, 그 다음부터
-     접힘/애니메이션/자세히보기가 동작.
-   - 접힘 높이 애니메이션은 max-height 트랜지션으로 처리.
+   구조(사용자가 Webflow 에서 컴포넌트로 디자인 완료):
+   - .faq_qa          질문 카드(태그·질문·요약 + 링크 2개). 항상 보임.
+       .faq-more  "자세히 보기 +"  (기본 노출)
+       .faq-more  "간략히 보기 -"  (기본 숨김)
+   - .faq_answer-ai   상세 답변 = 펼침부분. 기본 숨김, 자세히 클릭 시 노출.
+
+   방침: 접힌 상태·펼친 상태는 이미 만들어져 있으므로 JS 는 보이기/숨기기만.
+   아래 규칙은 JS 가 준비된 뒤(html.faq-js-ready)만 적용 → JS 실패 시 전부
+   보임(콘텐츠 유실 없음, 점진적 향상).
    ================================================================ */
 
-/* JS 준비되기 전엔 클릭 커서/화살표 회전 등 인터랙션 흔적을 숨겨 둠 */
-html.faq-js-ready .faq_qa {
+/* 펼침부분: is-open 이 아닐 때 숨김. is-open 이면 Webflow 원래 display 그대로 */
+html.faq-js-ready [class*="faq_answer"]:not(.is-open) {
+  display: none !important;
+}
+
+/* 자세히/간략히 링크: 숨김 대상만 감춤 (보일 땐 Webflow 원래 display 유지) */
+html.faq-js-ready .faq-more.is-hidden {
+  display: none !important;
+}
+
+html.faq-js-ready .faq-more {
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* 질문 헤더 안에 화살표 요소(.faq-arrow 또는 [data-faq-arrow])가 있으면
-   펼침 상태에서 180° 회전. 없으면 아무 영향 없음(무해). */
-html.faq-js-ready .faq_qa .faq-arrow,
-html.faq-js-ready .faq_qa [data-faq-arrow] {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-html.faq-js-ready .faq_qa.is-open .faq-arrow,
-html.faq-js-ready .faq_qa.is-open [data-faq-arrow] {
-  transform: rotate(180deg);
-}
-
-/* 답변 패널 — 접힘/펼침. JS 가 max-height 를 인라인으로 제어.
-   .faq-anim 이 붙은 뒤부터만 트랜지션(초기 접힘은 애니 없이 즉시). */
-html.faq-js-ready .faq_answer {
-  overflow: hidden;
-}
-html.faq-js-ready .faq_answer.faq-anim {
-  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity   0.3s ease;
-}
-html.faq-js-ready .faq_answer.is-collapsed {
-  max-height: 0 !important;
-  opacity: 0;
-}
-
-/* ── 자세히보기 / 간략히보기 (답변 더보기, 줄 제한) ────────────────
-   대상 텍스트 요소에 .faq-clamp 를 걸어 지정 줄 수만 노출.
-   --faq-clamp 변수로 줄 수 조절(기본 3줄). */
-html.faq-js-ready .faq-clamp {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: var(--faq-clamp, 3);
-  line-clamp: var(--faq-clamp, 3);
-  overflow: hidden;
-}
-
-/* '자세히보기' 버튼 — 기존 버튼이 없을 때 JS 가 주입.
-   컴포넌트에 이미 버튼/요소가 있으면 이 스타일은 그쪽엔 적용 안 됨. */
-html.faq-js-ready .faq-more-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
-  margin-top: 0.7em;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #0075d6;
-  font: inherit;
-  font-size: 0.92em;
-  font-weight: 600;
-  line-height: 1.2;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-html.faq-js-ready .faq-more-btn:hover {
-  text-decoration: underline;
-}
-/* 버튼 뒤 화살표(캐럿) — 펼침 상태에서 뒤집힘 */
-html.faq-js-ready .faq-more-btn .faq-more-caret {
-  display: inline-block;
-  transition: transform 0.25s ease;
-}
-html.faq-js-ready .faq-more-btn.is-expanded .faq-more-caret {
-  transform: rotate(180deg);
 }
