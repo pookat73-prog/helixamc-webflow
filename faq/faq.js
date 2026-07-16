@@ -41,14 +41,21 @@
   /* 확정 스펙: 사용자 이징 도구가 뽑은 멀티포인트 linear() 스플라인 그대로.
      (0.68,0.62)를 지나감. 지속 500ms, 두 요소(선·문단) 시차 170ms. */
   var SPLINE = 'linear(0 0.0%, 0.0037 11.3%, 0.0131 21.2%, 0.0279 29.9%, 0.0479 37.4%, 0.0729 43.9%, 0.1027 49.4%, 0.1372 54.0%, 0.176 57.7%, 0.219 60.7%, 0.266 63.1%, 0.3168 64.9%, 0.3712 66.2%, 0.4289 67.0%, 0.4897 67.6%, 0.5535 67.9%, 0.62 68.0%, 0.6839 68.2%, 0.74 68.5%, 0.7888 69.0%, 0.831 69.8%, 0.867 70.8%, 0.8973 72.0%, 0.9225 73.4%, 0.9429 75.2%, 0.9593 77.2%, 0.9719 79.5%, 0.9815 82.0%, 0.9884 85.0%, 0.9932 88.2%, 0.9964 91.8%, 0.9985 95.7%, 1 100.0%)';
+  /* linear() 미지원 브라우저(구형 사파리·인앱 웹뷰 등) 폴백 — 창→팍→안착 근사.
+     미지원 시 linear() 는 트랜지션 값 전체를 무효화해 "즉시 튐"을 유발하므로 필수. */
+  var SPLINE_FB = 'cubic-bezier(0.85, 0, 0.4, 1)';
+  var SUPPORTS_LINEAR = !!(window.CSS && CSS.supports && CSS.supports('transition-timing-function', 'linear(0 0%, 1 100%)'));
+  var EASE = SUPPORTS_LINEAR ? SPLINE : SPLINE_FB;
+  if (!SUPPORTS_LINEAR) console.info('[FAQ] linear() 미지원 브라우저 → cubic-bezier 폴백 사용');
+
   var CFG = (window.HELIX_FAQ_CFG = {
     heightDur:  0.5,                                  // 영역 열림 (이징=선과 동일)
     lineDur:    0.5,                                  // 선 그리는 시간
-    lineEase:   SPLINE,                               // 커스텀 곡선 (0,0)(0.68,0.62)(1,1)
-    textDelay:  2.0,                                  // 선과 글 시차 2초
+    lineEase:   EASE,                                 // 커스텀 곡선 (미지원 시 폴백)
+    textDelay:  1.0,                                  // 선과 글 시차 1초
     textDur:    0.5,                                  // 문단 나오는 시간
     textSlide:  16,                                   // 문단 아래→위 이동(px)
-    textEase:   SPLINE,                               // 문단도 동일 곡선
+    textEase:   EASE,                                 // 문단도 동일 곡선
     // 접힘(역순)
     cTextDur:   0.22,
     cLineDelay: 0.13,
