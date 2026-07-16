@@ -31,7 +31,7 @@
   var DEBUG = /[?&]debug-faq=1\b/.test(location.search);
   function log() {
     if (!DEBUG) return;
-    console.log.apply(console, ['[FAQ v7]'].concat(Array.prototype.slice.call(arguments)));
+    console.log.apply(console, ['[FAQ v8]'].concat(Array.prototype.slice.call(arguments)));
   }
 
   var QA_SEL   = '[class*="faq_qa" i]';
@@ -40,11 +40,17 @@
   var LINE_SEL = '[class*="faq_line" i]';                       // FAQ_Line 구분선
   var TEXT_SEL = '[class*="faq-a_full" i], [class*="faq_fa" i]'; // 상세 문단/내용
 
-  var H_OPEN  = 'max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
-  var H_CLOSE = 'max-height 0.34s cubic-bezier(0.4, 0, 0.2, 1)';
-  var LINE_EASE = 'transform 0.55s cubic-bezier(0.83, 0, 0.17, 1)';  // easeInOutQuint — 쫀득/명료
-  var TEXT_EASE = 'opacity 0.45s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
-  var TEXT_DELAY = '0.28s';                                          // 선이 먼저 그어진 뒤 문단 등장
+  /* 펼침 — 영역은 곧바로 열리고, 선만 아주 천천히 기다가 끝에서 팍! */
+  var H_OPEN     = 'max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+  var LINE_OPEN  = 'transform 0.7s cubic-bezier(0.85, 0, 0.92, 0.06)';          // 극단 easeIn: 천천히 기다가 팍
+  var TEXT_OPEN  = 'opacity 0.4s ease, transform 0.48s cubic-bezier(0.16, 1, 0.3, 1)';
+  var TEXT_OPEN_DELAY = '0.52s';                                                // 선이 팍 그어진 뒤 문단 등장
+  /* 접힘 (역순: 문단 → 선 → 높이) */
+  var H_CLOSE    = 'max-height 0.42s cubic-bezier(0.7, 0, 0.84, 0)';            // 마지막에 팍 닫힘
+  var LINE_CLOSE = 'transform 0.4s cubic-bezier(0.6, 0, 0.9, 0.2)';             // 가운데로 오므라듦
+  var TEXT_CLOSE = 'opacity 0.2s ease, transform 0.26s cubic-bezier(0.5, 0, 0.75, 0)';
+  var LINE_CLOSE_DELAY   = '0.13s';                                             // 문단 먼저 빠진 뒤 선
+  var HEIGHT_CLOSE_DELAY = '0.24s';                                             // 선까지 오므라든 뒤 높이 닫힘
 
   function showEl(el) { if (el) el.style.removeProperty('display'); }
   function hideEl(el) { if (el) el.style.setProperty('display', 'none', 'important'); }
@@ -58,8 +64,8 @@
 
   /* 서브 요소 시작 상태(닫힘) 세팅 */
   function primeClosed(p) {
-    if (p.line) { p.line.style.transition = 'none'; p.line.style.transformOrigin = 'center'; p.line.style.transform = 'scaleX(0)'; }
-    if (p.text) { p.text.style.transition = 'none'; p.text.style.opacity = '0'; p.text.style.transform = 'translateY(10px)'; }
+    if (p.line) { p.line.style.transition = 'none'; p.line.style.transitionDelay = '0s'; p.line.style.transformOrigin = 'center'; p.line.style.transform = 'scaleX(0)'; }
+    if (p.text) { p.text.style.transition = 'none'; p.text.style.transitionDelay = '0s'; p.text.style.opacity = '0'; p.text.style.transform = 'translateY(10px)'; }
   }
 
   function closeAnswer(a, instant) {
@@ -69,20 +75,35 @@
     var p = parts(a);
     if (instant) {
       a.style.transition = 'none';
+      a.style.transitionDelay = '0s';
       a.style.maxHeight = '0px';
       primeClosed(p);
       void a.offsetHeight;
       return;
     }
-    // 높이: 현재→0
+    // 높이 현재값 고정
     a.style.transition = 'none';
+    a.style.transitionDelay = '0s';
     a.style.maxHeight = a.scrollHeight + 'px';
     void a.offsetHeight;
+
+    // 역순: (1) 문단 먼저 빠짐
+    if (p.text) {
+      p.text.style.transition = TEXT_CLOSE;
+      p.text.style.transitionDelay = '0s';
+      p.text.style.opacity = '0';
+      p.text.style.transform = 'translateY(10px)';
+    }
+    // (2) 선이 가운데로 오므라듦 (문단 뒤)
+    if (p.line) {
+      p.line.style.transition = LINE_CLOSE;
+      p.line.style.transitionDelay = LINE_CLOSE_DELAY;
+      p.line.style.transform = 'scaleX(0)';
+    }
+    // (3) 높이 닫힘 (마지막에 팍)
     a.style.transition = H_CLOSE;
+    a.style.transitionDelay = HEIGHT_CLOSE_DELAY;
     a.style.maxHeight = '0px';
-    // 구분선 접힘 + 문단 fade-out
-    if (p.line) { p.line.style.transition = 'transform 0.3s ease'; p.line.style.transform = 'scaleX(0)'; }
-    if (p.text) { p.text.style.transition = 'opacity 0.22s ease, transform 0.28s ease'; p.text.style.opacity = '0'; p.text.style.transform = 'translateY(8px)'; }
   }
 
   function openAnswer(a) {
@@ -94,6 +115,7 @@
 
     // 시작 상태 확정(닫힘)
     a.style.transition = 'none';
+    a.style.transitionDelay = '0s';
     a.style.maxHeight = '0px';
     a.style.opacity = '1';
     primeClosed(p);
@@ -101,15 +123,19 @@
 
     var target = a.scrollHeight; // transform/opacity 는 레이아웃 높이에 영향 없음
 
-    // (1) 컨테이너 높이 펼침
+    // (1) 영역(높이)은 곧바로 열림
     a.style.transition = H_OPEN;
     a.style.maxHeight = target + 'px';
-    // (2) 구분선 가운데→양쪽
-    if (p.line) { p.line.style.transition = LINE_EASE; p.line.style.transform = 'scaleX(1)'; }
-    // (3) 문단 fade + slide-in (살짝 delay)
+    // (2) 구분선: 가운데→양쪽, 아주 천천히 기다가 끝에서 팍
+    if (p.line) {
+      p.line.style.transition = LINE_OPEN;
+      p.line.style.transitionDelay = '0s';
+      p.line.style.transform = 'scaleX(1)';
+    }
+    // (3) 문단: 선이 팍 그어진 뒤 fade + slide-in
     if (p.text) {
-      p.text.style.transition = TEXT_EASE;
-      p.text.style.transitionDelay = TEXT_DELAY;
+      p.text.style.transition = TEXT_OPEN;
+      p.text.style.transitionDelay = TEXT_OPEN_DELAY;
       p.text.style.opacity = '1';
       p.text.style.transform = 'translateY(0)';
     }

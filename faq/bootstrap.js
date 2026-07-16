@@ -120,22 +120,25 @@
     FILES.forEach(function (path) { loadFile(path, ref, isFallback); });
   }
 
-  /* 브랜치 HEAD 커밋 SHA 조회 → 그 SHA 의 immutable URL 로 로드.
-     API 실패(레이트리밋 등) 시에만 @BRANCH 로 폴백. */
-  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
-            '?t=' + Date.now();
-  fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (data) {
-      var sha = (data.sha || '').substring(0, 10);
-      if (!sha) throw new Error('no sha');
-      window.HELIX_REF = sha;
-      console.log('[faq-bootstrap] loading commit', sha);
-      injectAll(sha, false);
-    })
-    .catch(function (err) {
-      console.warn('[faq-bootstrap] SHA API 실패, @' + BRANCH + ' 폴백', err);
-      window.HELIX_REF = BRANCH;
-      injectAll(BRANCH, true);
-    });
+  /* 자기 자신이 로드된 URL 의 ref 를 그대로 재활용 → GitHub API 호출 없음.
+     페이지 head 로더가 이미 커밋 SHA 를 조회해 faq/bootstrap.js@<sha> 로
+     불러오므로, 그 <sha>(immutable) 를 FILES 에도 그대로 쓴다.
+     (레이트리밋·"SHA API 실패" 로그 제거. head 로더가 폴백했으면 여기 ref 는
+     'staging'/'main' 이 되어 그대로 @BRANCH 로 로드) */
+  function currentRef() {
+    var src = '';
+    try { if (document.currentScript && document.currentScript.src) src = document.currentScript.src; } catch (e) {}
+    if (!src) {
+      var ss = document.querySelectorAll('script[src*="/faq/bootstrap.js"]');
+      if (ss.length) src = ss[ss.length - 1].src;
+    }
+    var m = src.match(/@([^/]+)\/faq\/bootstrap\.js/);
+    return (m && m[1]) ? m[1] : BRANCH;
+  }
+
+  var REF = currentRef();
+  var usedFallback = (REF === BRANCH); // ref 가 브랜치명이면 head 로더가 폴백한 것
+  window.HELIX_REF = REF;
+  console.log('[faq-bootstrap] ref', REF);
+  injectAll(REF, usedFallback);
 })();
