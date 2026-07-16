@@ -34,6 +34,27 @@ Webflow Designer MCP (또는 다른 MCP) 도구를 써야 하는 작업이면, *
 3. 링크 제시 후, 사용자가 "열었다" 확인하면 그 때 MCP 호출.
 4. MCP 없이도 가능한 대안 (repo CSS/JS 직접 수정 등) 이 있으면 그 대안도 함께 제시해 사용자가 고르게 함.
 
+## 🚫 사용자에게 커스텀 코드 붙여넣기 요구 금지 — Claude 가 API 로 처리 (LOCKED v1, 사용자 확정)
+
+**사용자 확정 지시**: "커스텀 코드 절대 안 쓸거야." → 사용자는 Webflow 커스텀 코드(head/footer freeform)를 **직접 붙여넣거나 수정하지 않는다.** "이 두 줄 head 에 붙여주세요" 식 안내는 **금지.**
+
+### 규칙
+
+1. **페이지 로더가 필요하거나 잘못돼 있으면 Claude 가 직접 고친다.**
+   - 도구: Webflow MCP `data_scripts_tool > get_page_freeform_code` (읽기) / `set_page_freeform_code` (쓰기).
+   - 페이지 head freeform 을 GitHub/jsDelivr bootstrap 을 가리키도록 Claude 가 써 넣는다. 사용자는 손대지 않음.
+2. **로직·자산은 항상 GitHub 리포 + jsDelivr (bootstrap 패턴) 로 관리.**
+   - Webflow 호스팅 registered script (`website-files.com`) 로 로직을 옮기지 말 것. 코드는 GitHub 에 두고, 페이지 head 의 로더가 jsDelivr 로 불러오게만 함.
+   - "GitHub 왜 안 쓰냐" = 이미 씀. 리포에 파일 올리고 staging 머지 → 페이지 head 로더가 그 파일을 로드. 페이지 head 로더 교정만 API 로.
+3. **페이지 복제로 생긴 잘못된 로더 주의.**
+   - 새 페이지를 기존 페이지 복제로 만들면 head 에 **원본 페이지의 로더가 그대로 복사**된다. 예: FAQ 페이지 head 가 `services/bootstrap.js` 를 가리키고 있었음 → faq 자산이 영영 안 뜸. Claude 가 `set_page_freeform_code` 로 `faq/bootstrap.js` 로 교정.
+4. **라이브 쓰기·Publish 는 outward-facing** → 실행 전 사용자 확인 1회. freeform 교정 후에는 반드시 **Webflow Publish** 필요 (`data_sites_tool > publish_site`, staging 은 `publishToWebflowSubdomain:true`).
+
+### 새 페이지 배포 체크 (개정)
+
+- ❌ "head 에 붙여주세요" 안내
+- ✅ (1) 리포에 `{page}/bootstrap.js` + 자산 push → staging 머지 (2) 워크플로우 paths/FILES 에 `{page}/**` 추가 (3) `get_page_freeform_code` 로 현재 로더 확인 → 잘못됐거나 없으면 `set_page_freeform_code` 로 교정 (4) `publish_site` 로 Publish (5) 사용자는 확인만.
+
 ## 🔥 새 폴더/페이지 작업 시 — 워크플로우 paths 필터 점검 (LOCKED v1, PR #621~#630 교훈)
 
 **증상**: 코드 푸시 → PR 머지했는데 사이트에 반영 안 됨. "캐시 기다려 주세요" 만 반복하게 됨.
