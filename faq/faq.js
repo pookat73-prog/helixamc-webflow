@@ -142,10 +142,10 @@
     primeClosed(p);
     void a.offsetHeight;
 
-    var target = a.scrollHeight;
+    // 영역(흰 공간)은 클릭 즉시 통째로 확보 — 높이 애니 없음
+    a.style.maxHeight = 'none';
 
-    a.style.transition = tOpen(a);
-    a.style.maxHeight = target + 'px';
+    // 확보된 공간 안에서 선·문단 모션 시작
     if (p.line) {
       p.line.style.transition = tLine();
       p.line.style.transitionDelay = '0s';
@@ -157,13 +157,6 @@
       p.text.style.opacity = '1';
       p.text.style.transform = 'translateY(0)';
     }
-
-    var done = function (e) {
-      if (e && e.propertyName && e.propertyName !== 'max-height') return;
-      if (a.__open) a.style.maxHeight = 'none';
-      a.removeEventListener('transitionend', done);
-    };
-    a.addEventListener('transitionend', done);
   }
 
   function findLinks(qa) {
