@@ -63,7 +63,9 @@
     cTextDur:   0.22,
     cLineDelay: 0.13,
     cLineDur:   0.4,
-    cHeightDelay: 0.24,
+    // 빈 공간은 선이 '완전히' 사라진 뒤에야 닫기 시작 (선이 잘려 뾱 하고 사라지는 느낌 제거).
+    // 시작 시점 = 선 시작(cLineDelay) + 선 시간(cLineDur) + 여유(cHeightGap) 로 자동 계산.
+    cHeightGap: 0.06,
     cHeightDur: 0.42
   });
 
@@ -128,8 +130,10 @@
       p.line.style.transitionDelay = CFG.cLineDelay + 's';
       p.line.style.transform = 'scaleX(0)';
     }
+    // 선이 다 지워지는 시점(cLineDelay+cLineDur) 이후에야 빈 공간이 닫히기 시작.
+    var heightDelay = CFG.cLineDelay + CFG.cLineDur + CFG.cHeightGap;
     a.style.transition = 'max-height ' + CFG.cHeightDur + 's cubic-bezier(0.7,0,0.84,0)';
-    a.style.transitionDelay = CFG.cHeightDelay + 's';
+    a.style.transitionDelay = heightDelay + 's';
     a.style.maxHeight = '0px';
   }
 
