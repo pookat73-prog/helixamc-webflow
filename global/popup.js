@@ -13,8 +13,8 @@
 (function () {
   'use strict';
 
-  /* ⏸ 팝업 임시 OFF 스위치 — 다시 켜려면 true 로 변경 (심사/리뉴얼 기간 동안 잠시 끔) */
-  var ENABLED = false;
+  /* ▶ 팝업 ON/OFF 스위치 — 끄려면 false 로 변경 (홈페이지 리뉴얼 안내 재개) */
+  var ENABLED = true;
   if (!ENABLED) return;
 
   var CONFIG = {
