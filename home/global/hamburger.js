@@ -5,13 +5,13 @@
   var BRANCHES = [
     { text: '서초 본원',          href: '/seocho' },
     { text: '일산 분원',          href: '#' },
-    { text: '서울동물영상종양센터', href: '#' }
+    { text: '서울동물영상종양센터', href: 'https://www.svicc.co.kr/' }
   ];
 
   /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크 */
   var NAV_LINKS = [
     { text: 'discover HELIX', href: '/discover-helix' },
-    { group: [ { text: '진료과목', href: '#' }, { text: '특화진료', href: '#' } ] },
+    { group: [ { text: '진료과목', href: '/services' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
     { group: [ { text: 'FAQ', href: '#' }, { text: '뉴스룸', href: '#' } ] },
     { text: '응급증상안내',  href: '/symptoms' }
@@ -22,21 +22,28 @@
   /* 햄버거 아이콘 자체를 "준비중"으로 막을지 여부.
      true  → 아이콘 클릭해도 메뉴 안 열리고 "준비중입니다" 토스트만 뜸
      false → 정상 동작 (메뉴 열림)
-     ── 도메인 게이트 ──
-     스테이징(*.webflow.io)에선 메뉴를 열어 검증, 정식 도메인에선 잠금(준비중) 유지.
-     브랜치 분기 아님(측정 게이트와 동일 방침) → main 에 올라가도 정식은 자동 잠금.
-     메뉴 콘텐츠가 모두 준비되면 이 줄을 false 로(도메인 무관 전체 개방). */
-  var MENU_COMING_SOON = !/\.webflow\.io$/i.test(location.hostname);
+     ── 전체 개방 ──
+     주요 메뉴(서초본원·SVICC·discover HELIX·진료과목·응급증상안내)가 연결되어
+     메뉴를 도메인 무관 전체 개방. 아직 미연결 항목(일산분원·특화진료·의료인프라·
+     FAQ·뉴스룸·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
+     coming-soon.js 가 "준비중입니다" 토스트로 안내. */
+  var MENU_COMING_SOON = false;
 
   /* href 가 '#' 이면 아직 미연결 → data-coming-soon 자동 부여 */
   function comingSoonAttr(href) {
     return href === '#' ? ' data-coming-soon="1"' : '';
   }
 
+  /* 외부 사이트(http/https) 링크는 새 탭으로 — 우리 사이트는 그대로 두고
+     딴 창에서 열림. 내부 경로('/seocho' 등)엔 아무 것도 안 붙음. */
+  function externalAttr(href) {
+    return /^https?:\/\//i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : '';
+  }
+
   /* ── 오버레이 HTML 생성 ── */
   function buildOverlayHTML() {
     var branchesHTML = BRANCHES.map(function (b) {
-      return '<a href="' + b.href + '"' + comingSoonAttr(b.href) +
+      return '<a href="' + b.href + '"' + comingSoonAttr(b.href) + externalAttr(b.href) +
         ' class="hx-menu-branch">' + b.text + '</a>';
     }).join('');
 
@@ -44,12 +51,12 @@
       if (n.group) {
         var inner = n.group.map(function (g, i) {
           return (i > 0 ? '<span class="hx-menu-nav-sep">・</span>' : '') +
-            '<a href="' + g.href + '"' + comingSoonAttr(g.href) +
+            '<a href="' + g.href + '"' + comingSoonAttr(g.href) + externalAttr(g.href) +
             ' class="hx-menu-nav-link">' + g.text + '</a>';
         }).join('');
         return '<div class="hx-menu-nav-group">' + inner + '</div>';
       }
-      return '<a href="' + n.href + '"' + comingSoonAttr(n.href) +
+      return '<a href="' + n.href + '"' + comingSoonAttr(n.href) + externalAttr(n.href) +
         ' class="hx-menu-nav-link">' + n.text + '</a>';
     }).join('');
 
@@ -61,7 +68,7 @@
           '<nav class="hx-menu-nav">' + navHTML + '</nav>' +
         '</div>' +
         '<div class="hx-menu-footer">' +
-          '<a href="' + VET_CHART_HREF + '"' + comingSoonAttr(VET_CHART_HREF) +
+          '<a href="' + VET_CHART_HREF + '"' + comingSoonAttr(VET_CHART_HREF) + externalAttr(VET_CHART_HREF) +
             ' class="hx-menu-footer-link">' +
             '수의사용 웹 차트' +
             '<span class="hx-menu-footer-link__arrow">›</span>' +
