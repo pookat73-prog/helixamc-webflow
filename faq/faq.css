@@ -7,3 +7,12 @@
 [class*="faq-more" i] {
   cursor: pointer;
 }
+
+/* FAQ 페이지 한정 들여쓰기 — 요약(faq-a) + 상세 본문(faq-a_full) 둘 다.
+   양 조절은 아래 --faq-indent 한 줄만 바꾸면 됨 (요약/본문 같은 양으로 정렬). */
+:root {
+  --faq-indent: 16px;
+}
+[class*="faq-a" i] {
+  padding-left: var(--faq-indent);
+}
