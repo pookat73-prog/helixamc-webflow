@@ -8,11 +8,13 @@
   cursor: pointer;
 }
 
-/* FAQ 페이지 한정 들여쓰기 — 요약(faq-a) + 상세 본문(faq-a_full) 둘 다.
-   양 조절은 아래 --faq-indent 한 줄만 바꾸면 됨 (요약/본문 같은 양으로 정렬). */
+/* FAQ 페이지 한정 첫 줄 들여쓰기 — 요약(faq-a) + 상세 본문(faq-a_full) 둘 다.
+   문단 전체를 미는 padding 이 아니라 '첫 줄만' 들어가는 text-indent.
+   (동일 값을 Webflow 스타일 faq-a / faq-a_Full 에도 박아둠 — 캐시 폴백 대비 이중화.)
+   양 조절은 아래 --faq-indent 한 줄만 바꾸면 됨. */
 :root {
-  --faq-indent: 16px;
+  --faq-indent: 1em;
 }
 [class*="faq-a" i] {
-  padding-left: var(--faq-indent);
+  text-indent: var(--faq-indent);
 }
