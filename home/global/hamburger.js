@@ -22,7 +22,9 @@
     { text: '응급증상안내',  href: '/symptoms' }
   ];
 
-  var VET_CHART_HREF = '#';
+  /* 수의사용 웹 차트 = 벳칭 웹리퍼 협력병원 접속(로그인) 주소.
+     외부 사이트라 externalAttr 이 자동으로 새 탭(target=_blank) 처리. */
+  var VET_CHART_HREF = 'https://cross-vet.vetching.cc/auth/helix/refer';
 
   /* 햄버거 아이콘 자체를 "준비중"으로 막을지 여부.
      true  → 아이콘 클릭해도 메뉴 안 열리고 "준비중입니다" 토스트만 뜸
