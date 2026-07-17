@@ -98,6 +98,21 @@
     };
   }
 
+  /* 상세 본문에 사용자가 넣은 수동 줄바꿈(<br>)은 CSS text-indent 의 '첫 줄'로
+     인식되지 않아 그 줄만 안 들어감. 각 줄을 블록 <span> 으로 감싸면 문단의
+     text-indent 를 상속받아 줄마다 첫 줄 들여쓰기가 적용됨. (스크립트 미로드 시엔
+     Webflow/CSS 의 text-indent 로 최소 첫 줄은 들어감 — graceful degradation) */
+  function wrapLinesForIndent(text) {
+    if (!text || text.__faqLinesWrapped) return;
+    var html = text.innerHTML;
+    if (!/<br|[\r\n]/i.test(html)) { text.__faqLinesWrapped = true; return; }
+    var segs = html.split(/<br\s*\/?>|\r?\n/i);
+    text.innerHTML = segs.map(function (s) {
+      return '<span class="faq-line">' + s + '</span>';
+    }).join('');
+    text.__faqLinesWrapped = true;
+  }
+
   function primeClosed(p) {
     if (p.line) { p.line.style.transition = 'none'; p.line.style.transitionDelay = '0s'; p.line.style.transformOrigin = 'center'; p.line.style.transform = 'scaleX(0)'; }
     if (p.text) { p.text.style.transition = 'none'; p.text.style.transitionDelay = '0s'; p.text.style.opacity = '0'; p.text.style.transform = 'translateY(' + CFG.textSlide + 'px)'; }
@@ -213,6 +228,7 @@
       var lk = findLinks(qa);
       var it = { qa: qa, answer: answerFor(qa), expand: lk.expand, collapse: lk.collapse, open: false };
       qa.__faqItem = it; ITEMS.push(it); fresh++;
+      if (it.answer) { var _p = parts(it.answer); if (_p.text) wrapLinesForIndent(_p.text); }
       (function (item) {
         if (item.expand) item.expand.addEventListener('click', function (e) { e.preventDefault(); setState(item, true); });
         if (item.collapse) item.collapse.addEventListener('click', function (e) { e.preventDefault(); setState(item, false); });
