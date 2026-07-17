@@ -1,6 +1,11 @@
 (function () {
   'use strict';
 
+  /* 스테이징(*.webflow.io) 여부 — 정식엔 아직 안 여는 항목을 스테이징에서만
+     미리 열어 작업 편의를 주기 위한 도메인 게이트 (측정/메뉴 게이트와 동일 방침).
+     정식 도메인에선 게이트가 안 걸려 해당 항목이 준비중으로 유지됨. */
+  var IS_STAGING = /\.webflow\.io$/i.test(location.hostname);
+
   /* ── 링크 설정 (URL 변경 시 여기만 수정) ── */
   var BRANCHES = [
     { text: '서초 본원',          href: '/seocho' },
@@ -13,11 +18,13 @@
     { text: 'discover HELIX', href: '/discover-helix' },
     { group: [ { text: '진료과목', href: '/services' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
-    { group: [ { text: 'FAQ', href: '#' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
+    { group: [ { text: 'FAQ', href: IS_STAGING ? '/faq' : '#' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
     { text: '응급증상안내',  href: '/symptoms' }
   ];
 
-  var VET_CHART_HREF = '#';
+  /* 수의사용 웹 차트 = 벳칭 웹리퍼 협력병원 접속(로그인) 주소.
+     외부 사이트라 externalAttr 이 자동으로 새 탭(target=_blank) 처리. */
+  var VET_CHART_HREF = 'https://cross-vet.vetching.cc/auth/helix/refer';
 
   /* 햄버거 아이콘 자체를 "준비중"으로 막을지 여부.
      true  → 아이콘 클릭해도 메뉴 안 열리고 "준비중입니다" 토스트만 뜸
