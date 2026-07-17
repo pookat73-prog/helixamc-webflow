@@ -2,6 +2,13 @@
    HELIX AMC - GLOBAL BOOTSTRAP
    Webflow Site Settings → Custom Code → Head에 한 번만 붙여두면
    모든 페이지에서 자동으로 최신 커밋 기준으로 로드됨.
+
+   ⚠ 스테이징 도메인 게이트 (다른 모든 bootstrap 과 동일 사양):
+      *.webflow.io 이면 @staging, 정식 도메인이면 @main 을 본다.
+      이 게이트가 없으면 — 스테이징 검증 중(staging 이 main 보다 앞선
+      정상 상태) 페이지 로더는 새 메뉴/global 을 @staging 에서 불러오는데,
+      이 global bootstrap 은 옛 것을 @main 에서 불러와 덮어써버려
+      "새 버전 깜빡 → 옛날로 복귀" 회귀가 남. (반드시 hostname 기준 유지)
    ================================================================ */
 
 (function () {
@@ -9,7 +16,7 @@
 
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
-  var BRANCH = 'main';
+  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
     'global/global.css',
