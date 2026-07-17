@@ -206,6 +206,24 @@ body.hx-menu-open {
   opacity: 0.8;
 }
 
+/* --- 준비중(미연결) 항목: 호버 시 흐림 + 클릭하면 토스트 --- */
+/* 평소엔 일반 항목과 똑같이 보이다가, 마우스를 올리면 흐려져 "아직 준비중"임을
+   미리 알림(파란/퍼플 호버 대신 흰색 유지 + opacity 낮춤). 클릭 시에는
+   coming-soon.js 가 "준비중입니다" 토스트를 띄움. data-coming-soon 은
+   hamburger.js 가 href='#' 항목에 자동 부여. */
+.hx-menu-branch[data-coming-soon],
+.hx-menu-nav-link[data-coming-soon],
+.hx-menu-footer-link[data-coming-soon] {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.hx-menu-branch[data-coming-soon]:hover,
+.hx-menu-nav-link[data-coming-soon]:hover,
+.hx-menu-footer-link[data-coming-soon]:hover {
+  color: #ffffff;
+  opacity: 0.4;
+  cursor: default;
+}
+
 /* --- Mobile --- */
 @media (max-width: 768px) {
   .hx-menu-body    { padding: 48px 32px 32px; }
