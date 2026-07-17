@@ -18,3 +18,9 @@
 [class*="faq-a" i] {
   text-indent: var(--faq-indent);
 }
+/* 상세 본문의 수동 줄바꿈 각 줄(faq.js 가 <br> 을 감싼 블록). 부모의
+   text-indent 를 상속 → 줄마다 첫 줄 들여쓰기. */
+.faq-line {
+  display: block;
+  text-indent: var(--faq-indent);
+}
