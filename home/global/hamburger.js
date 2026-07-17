@@ -13,7 +13,7 @@
     { text: 'discover HELIX', href: '/discover-helix' },
     { group: [ { text: '진료과목', href: '/services' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
-    { group: [ { text: 'FAQ', href: '#' }, { text: '뉴스룸', href: '#' } ] },
+    { group: [ { text: 'FAQ', href: '#' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
     { text: '응급증상안내',  href: '/symptoms' }
   ];
 
@@ -214,9 +214,13 @@
       if (e.key === 'Escape' && isOpen) closeMenu();
     });
 
-    /* 링크 클릭 → 활성 처리 후 닫기 */
+    /* 링크 클릭 → 활성 처리 후 닫기.
+       단 준비중(미연결) 항목은 메뉴를 닫지 않음 — 잘못 눌렀거나, 다른 항목을
+       마저 훑어보려는 경우 매번 다시 열 필요 없게. "준비중" 토스트는
+       coming-soon.js 가 그대로 띄움. */
     overlay.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () {
+        if (a.hasAttribute('data-coming-soon')) return;
         setActive(a);
         closeMenu();
       });
