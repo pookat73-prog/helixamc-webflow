@@ -1,88 +1,95 @@
 /* ================================================================
-   HELIX AMC — FAQ 카드 겹치기(스택) 실험 레이아웃 v1
+   HELIX AMC — FAQ 카드 겹치기(스택) 실험 레이아웃 v2
 
-   평소  : 카드들이 살짝 겹쳐 쌓여 '질문만 빼꼼'
-   호버  : 그 카드가 위로 떠오르며 답변이 아래로 펼쳐짐(오버레이)
-   클릭  : 그 카드를 '열림' 상태로 고정(상세설명 계속 표시)
+   실제 DOM:
+     .faq-list                       ← 컨테이너
+       └ .faq_q [data-species...]    ← 목록 항목(겹치는 단위)
+           └ .faq_box                ← 카드(배경 있음)
+               ├ .faq_qa  질문 + 요약
+               └ .faq_answer-ai  상세
 
-   ⚠ 실험용 — 되돌리려면 faq/bootstrap.js 의 FILES 에서
-     'faq/faq-stack.css' + 'faq/faq-stack.js' 두 줄만 제거하면
-     기존 클릭 토글(faq.js)이 자동 복귀함.
+   동작:
+     평소  : 카드가 겹쳐 쌓여 '질문만 빼꼼'
+             (다음 카드가 이전 카드의 요약을 덮음 — 겹침 양은 JS 가 질문
+              높이를 실측해 '요약부터 아래'를 정확히 덮도록 계산)
+     호버  : 그 카드가 위로 떠오르며(z 최상단) 요약이 드러남
+     클릭  : 상세(.faq_answer-ai)가 아래로 펼쳐짐(재클릭 닫힘)
 
-   레이아웃 핵심:
-     · 답변(faq_answer)을 position:absolute 로 흐름에서 빼서
-       카드 박스 높이 = 질문(faq_qa) 높이 로 고정 → 겹침 계산 안정.
-     · 겹침은 카드끼리 음수 margin-top. 호버/열림 카드는 z-index 를
-       최상단으로 올려 stack 위로 '떠오르게' 함(transform lift).
+   ⚠ 실험용 — 되돌리려면 faq/bootstrap.js FILES 에서
+     'faq/faq-stack.css' + 'faq/faq-stack.js' 두 줄 제거 → 기존 토글 복귀.
+
+   겹침 양·떠오름은 JS 가 실측해 인라인 margin 으로 넣음.
+   손잡이(--faq-stack-lift 등)는 아래 :root-스코프 변수.
    ================================================================ */
 
-.helix-faq-stack {
+.helix-faq-list {
+  display: block !important;   /* grid/flex gap 로 인한 겹침 무효화 방지 */
   position: relative;
-  /* 튜닝 손잡이 — 이 값만 바꾸면 됨 */
-  --faq-stack-overlap: 22px;   /* 카드끼리 겹치는 양(클수록 더 빼꼼) */
   --faq-stack-lift: 16px;      /* 호버/열림 시 위로 떠오르는 거리 */
   --faq-stack-dur: 0.38s;
   --faq-stack-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  padding-bottom: 24px;        /* 마지막 카드 답변 오버레이 여유 */
+  padding-bottom: 20px;
 }
 
-.helix-faq-card {
+/* 겹치는 단위(목록 항목). 겹침 margin 은 JS 가 인라인으로 넣음. */
+.helix-faq-item {
   position: relative;
   z-index: 1;
-  opacity: 1 !important;       /* IX2 초기 숨김(opacity:0) 방어 */
-  border-radius: inherit;
-  transition: transform var(--faq-stack-dur) var(--faq-stack-ease),
-              box-shadow var(--faq-stack-dur) var(--faq-stack-ease);
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  overflow: visible !important;
+  cursor: pointer;
+  transition: transform var(--faq-stack-dur) var(--faq-stack-ease);
   will-change: transform;
 }
 
-/* 두 번째 카드부터 위 카드에 겹쳐 올려 '질문만 빼꼼' */
-.helix-faq-card.is-stacked {
-  margin-top: calc(var(--faq-stack-overlap) * -1);
+/* 호버 or 클릭 열림 → 위로 떠오르고 z 최상단(가려졌던 요약이 드러남) */
+.helix-faq-item:hover,
+.helix-faq-item.is-open {
+  z-index: 999;
+  transform: translateY(calc(var(--faq-stack-lift) * -1));
+}
+.helix-faq-item.is-open:not(:hover) {
+  z-index: 900;
 }
 
-/* 답변 = 질문 아래로 떨어지는 오버레이. 평소엔 숨김 */
+/* 카드(배경 있는 박스). 상세 오버레이가 밖으로 나갈 수 있게 overflow 해제 */
+.helix-faq-card {
+  position: relative;
+  overflow: visible !important;
+  margin-bottom: 0 !important;
+  transition: box-shadow var(--faq-stack-dur) var(--faq-stack-ease);
+}
+.helix-faq-item:hover .helix-faq-card,
+.helix-faq-item.is-open .helix-faq-card {
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* 상세(.faq_answer-ai) = 카드 아래로 떨어지는 오버레이. 평소·호버엔 숨김,
+   클릭(열림)에서만 노출 */
 .helix-faq-answer {
   display: block !important;
   position: absolute !important;
   left: 0;
   right: 0;
-  top: calc(100% - var(--faq-stack-overlap));
+  top: 100%;
   z-index: 2;
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
   pointer-events: none;
-  border-radius: inherit;
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
   transition: opacity var(--faq-stack-dur) var(--faq-stack-ease),
               transform var(--faq-stack-dur) var(--faq-stack-ease);
 }
-
-/* 호버(미리보기) 또는 클릭 열림(고정) → 카드가 위로 떠오르고 답변 노출.
-   :hover 는 자손(오버레이된 답변)에 있을 때도 참이라, 답변 위로
-   마우스를 옮겨도 계속 열려 있음(CTA 클릭 가능). */
-.helix-faq-card:hover,
-.helix-faq-card.is-open {
-  z-index: 999;
-  transform: translateY(calc(var(--faq-stack-lift) * -1));
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-}
-
-.helix-faq-card:hover .helix-faq-answer,
-.helix-faq-card.is-open .helix-faq-answer {
+.helix-faq-item.is-open .helix-faq-answer {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-/* 열림 고정 카드는 살짝 더 확실한 강조(호버 안 해도 떠 있게) */
-.helix-faq-card.is-open {
-  z-index: 900;
-}
-
-/* 겹침 실험 중엔 인라인 '자세히 보기 / 간략히 보기' 링크는 숨김
-   (호버·클릭이 그 역할을 대신함) */
-.helix-faq-stack [class*="faq-more" i] {
+/* 겹침 실험 중엔 인라인 '자세히 보기 / 간략히 보기' 링크 숨김
+   (호버=요약, 클릭=상세 가 그 역할을 대신함) */
+.helix-faq-list [class*="faq-more" i] {
   display: none !important;
 }
