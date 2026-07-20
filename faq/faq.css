@@ -114,3 +114,27 @@
   color: #8b949e;
   user-select: none;
 }
+
+/* ── 제목 밑 파란 선(Div Block 294)에서 위로 올라오는 포탈 글로우 ─────
+   선 가운데에서 위로만 부드럽게 번지는 여린 파란 그라데이션. 방사형으로
+   페이드해 옆으로 삐져나가지 않고, 약간 짧게 올라옴. (faq.css 는 FAQ
+   페이지에서만 로드되므로 이 선 컴포넌트의 다른 사용처엔 영향 없음) */
+.div-block-294 {
+  position: relative;
+}
+.div-block-294::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;                     /* 파란 선에서 시작 */
+  transform: translateX(-50%);
+  width: 46%;                    /* 선보다 좁게 → 옆으로 안 삐져나가게 */
+  height: 1.5vw;                 /* 위로 약간 짧게 */
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 100%,
+    rgba(0, 117, 214, 0.30) 0%,
+    rgba(0, 117, 214, 0.10) 45%,
+    rgba(0, 117, 214, 0) 75%
+  );
+}
