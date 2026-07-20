@@ -25,7 +25,8 @@
 .helix-faq-list {
   display: block !important;   /* grid/flex gap 로 인한 겹침 무효화 방지 */
   position: relative;
-  --faq-stack-lift: 16px;      /* 호버/열림 시 위로 떠오르는 거리 */
+  --faq-stack-lift: 16px;      /* 호버 시 위로 떠오르는 거리 */
+  --faq-stack-dim: 0.35;       /* 호버 시 나머지 카드가 어두워지는 정도(0~1) */
   --faq-stack-dur: 0.38s;
   --faq-stack-ease: cubic-bezier(0.22, 1, 0.36, 1);
   padding-bottom: 20px;
@@ -54,6 +55,22 @@
   position: relative;
   overflow: visible !important;
   margin-bottom: 0 !important;
+}
+
+/* 호버 시 '나머지 카드'만 살짝 어두워짐(전체 화면 아님, 카드 영역만).
+   각 항목 위에 얇은 검은 막(::after)을 깔되, 평소·호버당사자는 투명. */
+.helix-faq-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: rgba(0, 0, 0, var(--faq-stack-dim, 0.35));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--faq-stack-dur) var(--faq-stack-ease);
+}
+.helix-faq-list:hover .helix-faq-item:not(:hover)::after {
+  opacity: 1;
 }
 
 /* 상세(.faq_answer-ai) 는 이 실험에선 항상 숨김(호버는 '요약'만 노출).
