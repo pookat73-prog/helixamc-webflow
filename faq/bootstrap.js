@@ -76,6 +76,8 @@
     /* FAQ 전용 — 자세히보기/간략히보기 토글 */
     'faq/faq.css',
     'faq/faq.js',
+    /* FAQ 전용 — 질환으로 보기 탭 필터 칩 연결 */
+    'faq/filter.js',
     /* 푸터 (홈/about 과 동일) */
     'home/global/footer.css',
     'home/global/footer.js'
