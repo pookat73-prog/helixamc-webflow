@@ -16,10 +16,11 @@
      FIELD   → data-category  (관절·보행·신경, 심장·호흡기 …, 콤마 다중값 가능)
 
    동작 (사용자 확정):
-     - 다중 선택: 한 그룹에서 칩 여러 개 켜기 가능 → 그 중 하나라도 맞으면 표시(OR)
-     - 그룹끼리는 AND: 켜진 그룹이 여럿이면 모두 만족해야 표시
+     - 그룹(문단) 내 단일 선택: 한 그룹에서는 칩 하나만 활성. 다른 칩을 누르면
+       그 그룹의 기존 선택은 해제되고 새 칩이 켜짐(같은 그룹 중복 선택 불가)
+     - 그룹끼리는 AND: SPECIES 선택 그리고 FIELD 선택을 모두 만족해야 표시
      - 아무 칩도 안 켜진 그룹은 조건 없음(전체 통과)
-     - 칩 다시 클릭 → 해제. .faq-chip_reset → 그 그룹만 해제
+     - 켜진 칩 다시 클릭 → 해제. .faq-chip_reset → 그 그룹 해제
      - '일반으로 보기' 탭의 칩 묶음은 라벨(.faq-filter) 래퍼가 없어 자동 제외
 
    페이징:
@@ -272,10 +273,18 @@
         chip.setAttribute('aria-pressed', 'false');
         chip.addEventListener('click', function (e) {
           e.preventDefault();
-          var on = !group.active[val];
-          group.active[val] = on;
-          chip.classList.toggle('is-on', on);
-          chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+          var wasOn = !!group.active[val];
+          // 같은 그룹(문단) 안에서는 단일 선택 — 나머지 칩 모두 해제
+          group.active = {};
+          for (var j = 0; j < group.chips.length; j++) {
+            group.chips[j].classList.remove('is-on');
+            group.chips[j].setAttribute('aria-pressed', 'false');
+          }
+          if (!wasOn) {                    // 켜져 있던 걸 다시 누르면 해제(토글)
+            group.active[val] = true;
+            chip.classList.add('is-on');
+            chip.setAttribute('aria-pressed', 'true');
+          }
           currentPage = 1;                 // 필터 바뀌면 1페이지부터
           apply();
         });
