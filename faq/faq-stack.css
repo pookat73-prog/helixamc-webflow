@@ -49,15 +49,11 @@
   transform: translateY(calc(var(--faq-stack-lift) * -1));
 }
 
-/* 카드(배경 있는 박스) */
+/* 카드 박스 — 그림자 없음. 회색 외곽선(Webflow 원래 스타일)이 곧 카드. */
 .helix-faq-card {
   position: relative;
   overflow: visible !important;
   margin-bottom: 0 !important;
-  transition: box-shadow var(--faq-stack-dur) var(--faq-stack-ease);
-}
-.helix-faq-item:hover .helix-faq-card {
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.5);
 }
 
 /* 상세(.faq_answer-ai) 는 이 실험에선 항상 숨김(호버는 '요약'만 노출).
