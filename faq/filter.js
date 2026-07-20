@@ -208,7 +208,11 @@
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'faq-page-btn' + (opts.cls ? ' ' + opts.cls : '');
-      b.textContent = label;
+      // 숫자는 span 으로 감싼다 — 선택 페이지 하이라이터가 글자 폭에 맞게 깔리도록
+      var lbl = document.createElement('span');
+      lbl.className = 'faq-page-lbl';
+      lbl.textContent = label;
+      b.appendChild(lbl);
       if (opts.active) { b.classList.add('is-current'); b.setAttribute('aria-current', 'page'); }
       if (opts.disabled) { b.disabled = true; }
       else { b.addEventListener('click', function (e) { e.preventDefault(); goToPage(page); }); }
