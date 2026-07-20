@@ -62,15 +62,30 @@
 
   var ITEMS = [];   // { item, card, answer, qa, summary }
 
+  /* 항목(겹치는 단위) = '.faq-list 의 직속 자식'. data-species 로 잡으면
+     카드 안쪽에도 data-species 가 달린 카드(예: 3번)가 다른 그룹으로 빠져
+     겹침이 안 먹음 → 컨테이너 직속 자식으로 확정. */
+  function findContainerAndItem(card) {
+    var container = card.closest('[class*="faq-list" i]');
+    if (container) {
+      var node = card;
+      while (node.parentElement && node.parentElement !== container) node = node.parentElement;
+      return { container: container, item: node };
+    }
+    var item = card.closest('[data-species]') || card.parentElement || card;
+    return { container: item.parentElement, item: item };
+  }
+
   function processCard(card) {
     if (card.__faqStack) return;
     card.__faqStack = true;
 
-    var item = card.closest('[data-species]') || card.parentElement || card;
+    var ci = findContainerAndItem(card);
+    var item = ci.item;
+    var container = ci.container;
     var qa = card.querySelector(QA_SEL);
     var answer = card.querySelector(ANS_SEL);
     var summary = qa ? qa.querySelector(SUM_SEL) : null;
-    var container = item.parentElement;
 
     if (container) container.classList.add('helix-faq-list');
     item.classList.add('helix-faq-item');
@@ -116,8 +131,6 @@
       list.sort(function (a, b) {
         return (a.item.compareDocumentPosition(b.item) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1;
       });
-      // margin 초기화 후 실측
-      list.forEach(function (rec) { rec.item.style.marginTop = '0px'; });
 
       var m = list.map(function (rec) {
         var it = rec.item;
@@ -130,6 +143,8 @@
         return { rec: rec, peek: peek, h: it.offsetHeight };
       });
 
+      // 첫 항목은 원래 위쪽 여백 유지(필터 박스와의 간격) — 인라인 override 제거
+      if (m.length) m[0].rec.item.style.marginTop = '';
       for (var i = 1; i < m.length; i++) {
         var prev = m[i - 1];
         var overlap = Math.max(0, Math.round(prev.h - prev.peek));
