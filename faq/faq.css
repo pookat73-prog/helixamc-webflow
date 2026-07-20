@@ -52,6 +52,8 @@
   align-items: center;
   gap: 6px;
   margin-top: 28px;
+  /* 페이지가 1개라 버튼이 비어도 같은 높이를 예약 → 아래 여백이 사라지지 않게 */
+  min-height: 26px;
 }
 .faq-page-btn {
   min-width: 26px;
