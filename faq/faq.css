@@ -63,6 +63,8 @@
   border: 0;
   background: transparent;
   color: inherit;
+  /* Webflow '기본 일반 폰트' 변수 사용 (변수 값 바뀌면 따라감) */
+  font-family: var(--기본-일반-폰트, 'Noto Sans KR'), sans-serif;
   font-size: 10px;               /* 기존 15px 에서 1/3 축소 */
   line-height: 1;
   cursor: pointer;
