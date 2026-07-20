@@ -125,16 +125,17 @@
 .div-block-294::after {
   content: "";
   position: absolute;
-  left: 50%;
+  left: 0;                       /* 선 전체 폭 */
+  right: 0;
   bottom: 0;                     /* 파란 선에서 시작 */
-  transform: translateX(-50%);
-  width: 46%;                    /* 선보다 좁게 → 옆으로 안 삐져나가게 */
-  height: 1.5vw;                 /* 위로 약간 짧게 */
+  height: 1.5vw;                 /* 가운데 최대 높이(위로 약간 짧게) */
   pointer-events: none;
+  /* 가로 반경 = 선 절반폭 → 양 끝에 딱 닿아 거기서 사라짐.
+     가운데가 제일 높고 끝으로 갈수록 높이 0 으로 줄어드는 돔(아치). */
   background: radial-gradient(
-    ellipse 100% 100% at 50% 100%,
+    ellipse 50% 100% at 50% 100%,
     rgba(0, 117, 214, 0.30) 0%,
-    rgba(0, 117, 214, 0.10) 45%,
-    rgba(0, 117, 214, 0) 75%
+    rgba(0, 117, 214, 0.12) 55%,
+    rgba(0, 117, 214, 0) 100%
   );
 }
