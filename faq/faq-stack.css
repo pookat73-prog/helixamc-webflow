@@ -8,17 +8,19 @@
                ├ .faq_qa  질문 + 요약
                └ .faq_answer-ai  상세
 
-   동작:
+   동작 (호버 전용):
      평소  : 카드가 겹쳐 쌓여 '질문만 빼꼼'
              (다음 카드가 이전 카드의 요약을 덮음 — 겹침 양은 JS 가 질문
               높이를 실측해 '요약부터 아래'를 정확히 덮도록 계산)
-     호버  : 그 카드가 위로 떠오르며(z 최상단) 요약이 드러남
-     클릭  : 상세(.faq_answer-ai)가 아래로 펼쳐짐(재클릭 닫힘)
+     호버  : 그 카드가 위로 떠오르며(z 최상단) 요약이 드러남 + 나머지 카드 어두워짐
+
+   ⚠ 카드 박스 자체(padding/배경/테두리/모양)는 Webflow 원본 그대로 둠.
+     이 파일은 '위치(겹침)'와 '호버 연출'만 담당. 카드 내부 스타일 override 금지.
 
    ⚠ 실험용 — 되돌리려면 faq/bootstrap.js FILES 에서
      'faq/faq-stack.css' + 'faq/faq-stack.js' 두 줄 제거 → 기존 토글 복귀.
 
-   겹침 양·떠오름은 JS 가 실측해 인라인 margin 으로 넣음.
+   겹침 양은 JS 가 실측해 인라인 margin 으로 넣음.
    손잡이(--faq-stack-lift 등)는 아래 :root-스코프 변수.
    ================================================================ */
 
@@ -50,11 +52,10 @@
   transform: translateY(calc(var(--faq-stack-lift) * -1));
 }
 
-/* 카드 박스 — 그림자 없음. 회색 외곽선(Webflow 원래 스타일)이 곧 카드. */
+/* 카드 박스 — Webflow 원본 모양 그대로. position 만 부여(상세 오버레이 기준).
+   padding/배경/테두리/overflow 등 카드 모양은 절대 건드리지 않음. */
 .helix-faq-card {
   position: relative;
-  overflow: visible !important;
-  margin-bottom: 0 !important;
 }
 
 /* 호버 시 '나머지 카드'만 살짝 어두워짐(전체 화면 아님, 카드 영역만).
