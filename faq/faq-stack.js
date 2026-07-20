@@ -8,12 +8,12 @@
                ├ .faq_qa  질문 + 요약(.faq-a)
                └ .faq_answer-ai  상세(.faq-a_Full) = ANSWER
 
-   동작
+   동작 (호버 전용 — 클릭 상호작용 없음)
      평소  : 카드가 겹쳐 쌓여 '질문만 빼꼼'.
              겹침 양 = JS 가 '요약(.faq-a) 시작 지점'을 실측해, 다음 카드가
              딱 그 아래(요약부터)를 덮도록 음수 margin 을 넣음 → 질문만 남음.
      호버  : 그 항목이 위로 떠오르며 z 최상단 → 가려졌던 요약이 드러남.
-     클릭  : 상세(.faq_answer-ai) 오버레이가 아래로 펼쳐짐(재클릭 닫힘).
+             상세(.faq_answer-ai)는 항상 숨김.
 
    기존 클릭 토글(faq.js)은 이 파일이 __helixFaqInit 를 선점해 자동 비활성.
    ⚠ 되돌리려면 faq/bootstrap.js FILES 에서 이 파일 + faq-stack.css 제거.
@@ -98,14 +98,8 @@
 
     /* 카드 배경 채우기(겹쳐도 아래가 안 비치게) */
     if (isTransparent(getComputedStyle(card).backgroundColor)) card.style.background = opaqueBg(card);
-    if (answer) answer.style.background = opaqueBg(card);
 
-    /* 클릭 → 상세 열림 고정 토글. 상세 안 링크/버튼(전화·복사·CTA)은 그대로 동작 */
-    item.addEventListener('click', function (e) {
-      if (e.target.closest('a, button, [role="button"], input, textarea, select')) return;
-      item.classList.toggle('is-open');
-      log('toggle is-open =', item.classList.contains('is-open'));
-    });
+    /* 호버 전용 — 클릭 상호작용 없음. 상세(.faq_answer-ai)는 항상 숨김. */
 
     ITEMS.push({ item: item, card: card, answer: answer, qa: qa, summary: summary });
   }
