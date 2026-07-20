@@ -73,7 +73,11 @@
     'home/global/coming-soon.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
-    /* FAQ 전용 — 자세히보기/간략히보기 토글 */
+    /* FAQ 카드 겹치기(스택) 실험 — faq-stack.js 가 __helixFaqInit 를 선점해
+       아래 기존 클릭 토글(faq.js)을 자동 비활성화. 되돌리려면 이 두 줄만 제거. */
+    'faq/faq-stack.css',
+    'faq/faq-stack.js',
+    /* FAQ 전용 — 자세히보기/간략히보기 토글(스택 실험이 켜지면 자동 무효) */
     'faq/faq.css',
     'faq/faq.js',
     /* FAQ 전용 — 질환으로 보기 탭 필터 칩 연결 */
