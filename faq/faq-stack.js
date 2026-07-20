@@ -60,7 +60,34 @@
     });
   }
 
-  var ITEMS = [];   // { item, card, answer, qa, summary }
+  var ITEMS = [];   // { item, card, answer, qa, summary, _hiddenH, _after }
+  var ORIG_GAP = null;   // 원래 Webflow 카드 사이 간격(px) — 겹침 적용 전 실측
+
+  function gap() { return (ORIG_GAP == null) ? 16 : ORIG_GAP; }
+
+  /* helix-faq-list 클래스(=display:block override) 를 붙이기 '전' 원래
+     레이아웃에서 첫 두 카드 사이 간격을 실측 → 호버로 드러날 때 그 간격만큼
+     아래 카드를 밀어내려 원래 캔버스 스페이싱을 복원. */
+  function captureGap() {
+    if (ORIG_GAP != null) return;
+    var cards = document.querySelectorAll(CARD_SEL);
+    if (cards.length < 2) return;
+    var a = findContainerAndItem(cards[0]);
+    var b = findContainerAndItem(cards[1]);
+    if (!a.item || !b.item || a.container !== b.container) return;
+    var g = Math.round(b.item.getBoundingClientRect().top - a.item.getBoundingClientRect().bottom);
+    if (g >= 0 && g < 200) { ORIG_GAP = g; log('원래 카드 간격 실측', g + 'px'); }
+  }
+
+  /* 호버 시: 뒤 카드들을 (가려졌던 요약높이 + 원래간격) 만큼 아래로 밀어
+     드러난 카드가 아래 카드와 원래 스페이싱을 갖게 함. */
+  function applyHover(rec, on) {
+    var push = on ? ((rec._hiddenH || 0) + gap()) : 0;
+    var after = rec._after || [];
+    for (var i = 0; i < after.length; i++) {
+      after[i].item.style.transform = on ? ('translateY(' + push + 'px)') : '';
+    }
+  }
 
   /* 항목(겹치는 단위) = '.faq-list 의 직속 자식'. data-species 로 잡으면
      카드 안쪽에도 data-species 가 달린 카드(예: 3번)가 다른 그룹으로 빠져
@@ -99,9 +126,12 @@
     /* 카드 배경 채우기(겹쳐도 아래가 안 비치게) */
     if (isTransparent(getComputedStyle(card).backgroundColor)) card.style.background = opaqueBg(card);
 
-    /* 호버 전용 — 클릭 상호작용 없음. 상세(.faq_answer-ai)는 항상 숨김. */
+    /* 호버 전용 — 카드가 떠오르고, 뒤 카드를 밀어 원래 간격 확보(applyHover). */
+    var rec = { item: item, card: card, answer: answer, qa: qa, summary: summary, _hiddenH: 0, _after: [] };
+    item.addEventListener('mouseenter', function () { applyHover(rec, true); });
+    item.addEventListener('mouseleave', function () { applyHover(rec, false); });
 
-    ITEMS.push({ item: item, card: card, answer: answer, qa: qa, summary: summary });
+    ITEMS.push(rec);
   }
 
   /* 질문만 남기는 실측 겹침: 각 항목의 '요약 시작 y' 를 재서, 다음 항목이
@@ -144,6 +174,12 @@
         var overlap = Math.max(0, Math.round(prev.h - prev.peek));
         m[i].rec.item.style.marginTop = (-overlap) + 'px';
       }
+      // 호버 밀어내기용: 각 항목의 가려진 요약 높이 + 뒤 항목 목록 저장
+      for (var k = 0; k < m.length; k++) {
+        m[k].rec._hiddenH = Math.max(0, Math.round(m[k].h - m[k].peek));
+        m[k].rec._after = [];
+        for (var j = k + 1; j < m.length; j++) m[k].rec._after.push(m[j].rec);
+      }
       if (DEBUG && m.length) {
         log('그룹', m.length, '개 / 첫 항목 peek≈' + Math.round(m[0].peek) + 'px, h=' + m[0].h + 'px');
       }
@@ -171,6 +207,7 @@
 
   function process() {
     var cards = document.querySelectorAll(CARD_SEL);
+    captureGap();   // 클래스(display:block) 붙기 전에 원래 간격 실측(1회, 늦은 렌더 대비)
     var fresh = 0;
     for (var i = 0; i < cards.length; i++) {
       if (!cards[i].__faqStack) { processCard(cards[i]); fresh++; }
