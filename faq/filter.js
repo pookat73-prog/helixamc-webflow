@@ -81,7 +81,7 @@
   var listEl = null;
   var emptyEl = null;
 
-  var PAGE_SIZE   = 8;    // 한 페이지에 보여줄 질문 수
+  var PAGE_SIZE   = 5;    // 한 페이지에 보여줄 질문 수
   var currentPage = 1;
   var pagerEl     = null;
 
@@ -199,9 +199,11 @@
 
   function renderPager(totalPages) {
     ensurePager();
-    if (totalPages <= 1) { pagerEl.style.display = 'none'; pagerEl.innerHTML = ''; return; }
-    pagerEl.style.display = '';
     pagerEl.innerHTML = '';
+    // 페이지가 1개뿐이면 버튼만 비우고 슬롯은 그대로 둔다(display:none 금지).
+    // 슬롯을 없애면 그 높이만큼 아래 여백이 사라져 레이아웃이 위로 당겨짐.
+    // CSS 의 min-height 가 빈 상태에서도 같은 높이를 예약해 여백을 유지.
+    if (totalPages <= 1) return;
 
     function btn(label, page, opts) {
       opts = opts || {};
