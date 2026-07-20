@@ -98,8 +98,8 @@
   position: absolute;
   left: 1px;                     /* 글자보다 살짝 작은 사각형 */
   right: 1px;
-  bottom: -2px;                  /* 약간 아래로 내려온 위치 */
-  height: 0.72em;                /* 글자 아래쪽만 덮는 낮은 밴드 */
+  bottom: -5px;                  /* 아래로 내려온 위치 */
+  height: 1.05em;                /* 두꺼운 형광펜 밴드 */
   background: rgba(0, 117, 214, 0.42);   /* 블루 반투명 형광펜 */
   border-radius: 2px;
   z-index: -1;
