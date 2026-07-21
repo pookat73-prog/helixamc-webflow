@@ -133,6 +133,23 @@
     rec.indicator = el;
   }
 
+  /* 'dim(나머지 카드 어둡게)' 은 리스트 hover 만으로는 빈 공간(패딩/여백) 위에서도
+     켜져 전부 어두워지는 문제가 있었음. 실제로 '어떤 카드 위'에 있을 때만 켜지도록
+     리스트에 helix-faq-hovering 클래스를 이벤트 위임으로 토글. (모든 브라우저 안전) */
+  function bindHoverTracking(container) {
+    if (!container || container.__faqHoverBound) return;
+    container.__faqHoverBound = true;
+    container.addEventListener('mouseover', function (e) {
+      var t = e.target;
+      if (t && t.closest && t.closest('.helix-faq-item')) container.classList.add('helix-faq-hovering');
+    });
+    container.addEventListener('mouseout', function (e) {
+      var to = e.relatedTarget;
+      // 다음 지점도 카드 안이면 유지(카드↔카드 이동), 아니면(빈 공간/리스트 밖) 해제
+      if (!to || !to.closest || !to.closest('.helix-faq-item')) container.classList.remove('helix-faq-hovering');
+    });
+  }
+
   function processCard(card) {
     if (card.__faqStack) return;
     card.__faqStack = true;
@@ -144,7 +161,10 @@
     var answer = card.querySelector(ANS_SEL);
     var summary = qa ? qa.querySelector(SUM_SEL) : null;
 
-    if (container) container.classList.add('helix-faq-list');
+    if (container) {
+      container.classList.add('helix-faq-list');
+      bindHoverTracking(container);
+    }
     item.classList.add('helix-faq-item');
     card.classList.add('helix-faq-card');
     if (answer) answer.classList.add('helix-faq-answer');
