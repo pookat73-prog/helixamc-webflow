@@ -83,6 +83,14 @@
   display: none !important;
 }
 
+/* 펼치면 요약은 텍스트 위계 '맨 아래 순번'(옅은 회색)으로 물러남 — 상세가 초점 */
+.helix-faq-card [class*="faq_qa" i] [class*="faq-a" i] {
+  transition: color var(--faq-dur) var(--faq-ease);
+}
+.helix-faq-item.is-open [class*="faq_qa" i] [class*="faq-a" i] {
+  color: #adb5bf !important;
+}
+
 /* ── 요약 밑 '자세히' + 화살표 인디케이터 (faq-stack.js 주입) ────────
    아코디언은 카드가 항상 보이므로 인디케이터도 항상 표시. 화살표는 해당
    카드에 마우스 올릴 때만 통통(과하지 않게). */
@@ -93,6 +101,8 @@
   justify-content: center;
   gap: 4px;
   margin-top: 10px;
+  width: 100%;              /* 부모 정렬과 무관하게 항상 가운데(펼침 시 '접기'도) */
+  box-sizing: border-box;
   text-indent: 0;
   text-align: center;
   color: #0075d6;

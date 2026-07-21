@@ -19,11 +19,14 @@
 [class*="faq-a" i] {
   text-indent: var(--faq-indent);
 }
-/* 상세 본문의 수동 줄바꿈 각 줄(faq.js 가 <br> 을 감싼 블록). 부모의
-   text-indent 를 상속 → 줄마다 첫 줄 들여쓰기. */
+/* 상세 본문의 수동 줄바꿈 각 줄(faq.js 가 <br> 을 감싼 블록).
+   첫 줄은 그대로, '두번째 줄바꿈부터' 들여쓰기(사용자 요청). */
 .faq-line {
   display: block;
-  text-indent: var(--faq-indent);
+  text-indent: 1.1em;
+}
+.faq-line:first-child {
+  text-indent: 0;
 }
 
 /* ── 필터 칩 활성 표시 (filter.js 가 .is-on 토글) ─────────────────
@@ -155,6 +158,13 @@
   box-shadow: none !important;
   border: 0 !important;
   border-radius: 0 !important;
+}
+
+/* 카드 질문 밑 구분선이 페이지 제목용 '파란 글로우 선(div-block-294)' 을
+   재사용 중이면, 카드 안에서는 그 글로우(::after)를 꺼서 '옅은 띠 겹침' 제거.
+   (페이지 제목의 글로우는 카드 밖이라 그대로 유지) */
+.helix-faq-card .div-block-294::after {
+  display: none !important;
 }
 
 /* ── 선택 필터 상단 고정 표시 (filter.js 주입) ─────────────────────
