@@ -67,6 +67,16 @@
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+/* 요약 ↔ 상세 간격을 코드로 제어(너무 동떨어져 보이지 않게 연결감).
+   상세 컨테이너/슬롯의 Webflow 여분 위 여백은 제거하고, 딱 이 값만 쓰게. */
+.helix-faq-item.is-open .helix-faq-answer {
+  margin-top: 12px !important;
+  padding-top: 0 !important;
+}
+.helix-faq-item.is-open .helix-faq-answer [class*="faq_fa-slot" i] {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
 
 /* Webflow 인라인 '자세히 보기 / 간략히 보기' 링크는 인디케이터가 대체 → 숨김 */
 .helix-faq-list [class*="faq-more" i] {
