@@ -1,28 +1,28 @@
 /* ================================================================
-   HELIX AMC — FAQ 카드 겹치기(스택) v3 — 호버 + '자세히' 클릭 펼침
+   HELIX AMC — FAQ 아코디언 v4 (겹침 스택 폐기)
 
    실제 DOM (Webflow):
      .faq-list                       ← 컨테이너
-       └ .faq_q [data-species...]    ← 목록 항목(겹치는 단위) = ITEM
-           └ .faq_box                ← 카드(배경) = CARD
-               ├ .faq_qa  질문 + 요약(.faq-a)
+       └ .faq_q [data-species...]    ← 목록 항목(카드 단위) = ITEM
+           └ .faq_box                ← 카드 = CARD
+               ├ .faq_qa  질문 + 요약(.faq-a) + '자세히' 인디케이터(주입)
                └ .faq_answer-ai  상세(.faq-a_Full) = ANSWER
 
    동작
-     평소  : 카드가 겹쳐 쌓여 '질문만 빼꼼'.
-             겹침 양 = JS 가 '요약(.faq-a) 시작 지점'을 실측해, 다음 카드가
-             딱 그 아래(요약부터)를 덮도록 음수 margin 을 넣음 → 질문만 남음.
-     호버  : 그 항목이 위로 떠오르며 z 최상단 → 가려졌던 요약이 드러남.
-             요약 밑에 중앙정렬로 '자세히' + 감각 화살표 인디케이터가 뜸.
-     클릭  : '자세히' 누르면 상세(.faq_answer-ai)가 카드 '안'으로 인라인 펼쳐져
-             카드가 하나로 늘어남 + 아래 리스트가 실제로 밀려 내려감(겹쳐 덮지 않음).
+     평소  : 카드가 세로로 하나씩(겹침 없음). 질문 + 요약 항상 표시.
+             요약 밑 중앙정렬로 '자세히' + 화살표 인디케이터.
+     클릭  : '자세히' 누르면 상세가 카드 '안'으로 인라인 펼쳐져 카드가 하나로
+             늘어남(박스 속 박스 없이). 아래 리스트는 자연스레 밀려 내려감.
              펼치면 화살표 반대(180°) + 라벨 '자세히'→'접기'. 다시 누르면 접힘.
-             아코디언식(하나 열면 나머지 닫힘).
+             아코디언식(하나 열면 나머지 닫힘). 펼치면 화면에 다 보이게 시야 이동.
+
+   선·그림자·테두리 등 카드 효과 = 이 파일(코드) + faq.css.
+   정렬/타이포 등 원본 디자인 = Webflow 캔버스.
 
    기존 클릭 토글(faq.js)은 이 파일이 __helixFaqInit 를 선점해 자동 비활성.
    ⚠ 되돌리려면 faq/bootstrap.js FILES 에서 이 파일 + faq-stack.css 제거.
 
-   디버그: URL 에 ?faq-stack-debug=1  → 카드별 실측 peek/overlap 로그.
+   디버그: URL 에 ?faq-stack-debug=1  → 로그.
    ================================================================ */
 
 (function () {
@@ -42,7 +42,6 @@
   var QA_SEL   = '[class*="faq_qa" i]';        // .faq_qa (질문+요약)
   var ANS_SEL  = '[class*="faq_answer" i]';    // .faq_answer-ai (상세)
   var SUM_SEL  = '[class*="faq-a" i]';         // 요약 .faq-a (질문블록 아래)
-  var PEEK_MIN = 56;                            // 실측 실패 시 최소 노출 높이(px)
 
   function isTransparent(bg) {
     return !bg || /rgba?\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\s*\)|transparent/.test(bg.replace(/\s/g, ''));
@@ -169,23 +168,6 @@
     rec.indicator = el;
   }
 
-  /* 'dim(나머지 카드 어둡게)' 은 리스트 hover 만으로는 빈 공간(패딩/여백) 위에서도
-     켜져 전부 어두워지는 문제가 있었음. 실제로 '어떤 카드 위'에 있을 때만 켜지도록
-     리스트에 helix-faq-hovering 클래스를 이벤트 위임으로 토글. (모든 브라우저 안전) */
-  function bindHoverTracking(container) {
-    if (!container || container.__faqHoverBound) return;
-    container.__faqHoverBound = true;
-    container.addEventListener('mouseover', function (e) {
-      var t = e.target;
-      if (t && t.closest && t.closest('.helix-faq-item')) container.classList.add('helix-faq-hovering');
-    });
-    container.addEventListener('mouseout', function (e) {
-      var to = e.relatedTarget;
-      // 다음 지점도 카드 안이면 유지(카드↔카드 이동), 아니면(빈 공간/리스트 밖) 해제
-      if (!to || !to.closest || !to.closest('.helix-faq-item')) container.classList.remove('helix-faq-hovering');
-    });
-  }
-
   function processCard(card) {
     if (card.__faqStack) return;
     card.__faqStack = true;
@@ -197,10 +179,7 @@
     var answer = card.querySelector(ANS_SEL);
     var summary = qa ? qa.querySelector(SUM_SEL) : null;
 
-    if (container) {
-      container.classList.add('helix-faq-list');
-      bindHoverTracking(container);
-    }
+    if (container) container.classList.add('helix-faq-list');
     item.classList.add('helix-faq-item');
     card.classList.add('helix-faq-card');
     if (answer) answer.classList.add('helix-faq-answer');
@@ -209,73 +188,20 @@
     neutralizeIX2(card);
     neutralizeIX2(answer);
 
-    /* 카드 배경 채우기(투명 카드일 때만 — 겹쳐도 아래가 안 비치게).
-       카드에 이미 배경이 있으면 손대지 않음(Webflow 원본 유지). */
+    /* 카드 배경이 투명이면 채워 테두리/그림자가 뜨는 카드처럼 보이게(원본 배경 있으면 유지). */
     if (isTransparent(getComputedStyle(card).backgroundColor)) card.style.background = opaqueBg(card);
-
-    /* 펼침 상세는 카드 '바로 아래'에 이어붙는 오버레이 → 상세 컨테이너 배경을
-       카드 배경과 '똑같이' 맞춰 이음매(회색 띠) 없이 카드가 늘어난 것처럼 보이게.
-       (안쪽 흰 답변 박스 .faq-a_Full 은 그대로 — 이건 '답변 말풍선'). */
-    if (answer) {
-      var cardBg = getComputedStyle(card).backgroundColor;
-      if (isTransparent(cardBg)) cardBg = opaqueBg(card);
-      answer.style.setProperty('background-color', cardBg, 'important');
-      answer.style.setProperty('background-image', 'none', 'important');
-    }
-
-    /* 호버 연출은 전적으로 CSS(:hover)가 담당 — JS 는 위치(겹침)만 계산. */
 
     var rec = { item: item, card: card, answer: answer, qa: qa, summary: summary, indicator: null };
     buildIndicator(rec);   // 요약 밑 '자세히' 인디케이터 (누르면 상세 펼침)
     ITEMS.push(rec);
   }
 
-  /* 질문만 남기는 실측 겹침: 각 항목의 '요약 시작 y' 를 재서, 다음 항목이
-     그 지점부터 덮도록 음수 margin. 필터로 숨은 항목은 제외하고 재계산. */
+  /* 아코디언 — 겹침 없음. 예전 스택이 넣었을 수 있는 인라인 음수 margin 만
+     걷어내 세로 배치가 CSS 간격을 따르게 함. (레이아웃은 CSS 가 담당) */
   function layout() {
-    // 컨테이너별 그룹핑(보이는 항목만)
-    var groups = [];
-    var seen = [];
-    ITEMS.forEach(function (rec) {
-      var it = rec.item;
-      if (!it.parentElement) return;
-      var cs = getComputedStyle(it);
-      if (cs.display === 'none' || cs.visibility === 'hidden') return;
-      var gi = seen.indexOf(it.parentElement);
-      if (gi === -1) { seen.push(it.parentElement); groups.push([rec]); }
-      else groups[gi].push(rec);
-    });
-
-    groups.forEach(function (list) {
-      // DOM 순서 정렬
-      list.sort(function (a, b) {
-        return (a.item.compareDocumentPosition(b.item) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1;
-      });
-
-      var m = list.map(function (rec) {
-        var it = rec.item;
-        var itTop = it.getBoundingClientRect().top;
-        var peek;
-        if (it.classList.contains('is-open')) {
-          peek = it.offsetHeight;   // 펼친 카드: 전체 노출 → 뒤 항목이 안 덮고 아래로 밀림
-        } else if (rec.summary) {
-          peek = rec.summary.getBoundingClientRect().top - itTop;   // 요약 시작 = 질문 끝
-        }
-        if (!(peek > PEEK_MIN)) peek = Math.min(PEEK_MIN, it.offsetHeight);
-        return { rec: rec, peek: peek, h: it.offsetHeight };
-      });
-
-      // 첫 항목은 원래 위쪽 여백 유지(필터 박스와의 간격) — 인라인 override 제거
-      if (m.length) m[0].rec.item.style.marginTop = '';
-      for (var i = 1; i < m.length; i++) {
-        var prev = m[i - 1];
-        var overlap = Math.max(0, Math.round(prev.h - prev.peek));
-        m[i].rec.item.style.marginTop = (-overlap) + 'px';
-      }
-      if (DEBUG && m.length) {
-        log('그룹', m.length, '개 / 첫 항목 peek≈' + Math.round(m[0].peek) + 'px, h=' + m[0].h + 'px');
-      }
-    });
+    for (var i = 0; i < ITEMS.length; i++) {
+      if (ITEMS[i].item) ITEMS[i].item.style.marginTop = '';
+    }
   }
 
   var MO = null;
