@@ -14,9 +14,10 @@
              딱 그 아래(요약부터)를 덮도록 음수 margin 을 넣음 → 질문만 남음.
      호버  : 그 항목이 위로 떠오르며 z 최상단 → 가려졌던 요약이 드러남.
              요약 밑에 중앙정렬로 '자세히' + 감각 화살표 인디케이터가 뜸.
-     클릭  : '자세히' 누르면 상세(.faq_answer-ai)가 카드 아래로 펼쳐짐(오버레이).
-             아코디언식(하나 열면 나머지 닫힘). 열린 카드는 마우스가 떠나도
-             떠오른 채 고정. 다시 누르면 접힘.
+     클릭  : '자세히' 누르면 상세(.faq_answer-ai)가 카드 '안'으로 인라인 펼쳐져
+             카드가 하나로 늘어남 + 아래 리스트가 실제로 밀려 내려감(겹쳐 덮지 않음).
+             펼치면 화살표 반대(180°) + 라벨 '자세히'→'접기'. 다시 누르면 접힘.
+             아코디언식(하나 열면 나머지 닫힘).
 
    기존 클릭 토글(faq.js)은 이 파일이 __helixFaqInit 를 선점해 자동 비활성.
    ⚠ 되돌리려면 faq/bootstrap.js FILES 에서 이 파일 + faq-stack.css 제거.
@@ -83,19 +84,28 @@
      카드 호버로 요약이 드러난 뒤, 요약 밑 '자세히' 인디케이터를 누르면
      상세(.faq_answer-ai)가 카드 아래로 펼쳐짐. 아코디언식: 하나 열면 나머지
      닫힘. 열린 카드는 마우스가 떠나도 CSS(.is-open)로 떠오른 채 고정. */
+  function setIndicator(rec, open) {
+    if (!rec.indicator) return;
+    rec.indicator.setAttribute('aria-expanded', open ? 'true' : 'false');
+    var lbl = rec.indicator.querySelector('.helix-faq-indicator__label');
+    if (lbl) lbl.textContent = open ? '접기' : '자세히';   // 펼치면 '접기' 로
+  }
   function closeRec(r) {
     if (!r) return;
     r.item.classList.remove('is-open');
-    if (r.indicator) r.indicator.setAttribute('aria-expanded', 'false');
+    setIndicator(r, false);
   }
   function openRec(rec) {
     ITEMS.forEach(function (r) { if (r !== rec) closeRec(r); });
     rec.item.classList.add('is-open');
-    if (rec.indicator) rec.indicator.setAttribute('aria-expanded', 'true');
+    setIndicator(rec, true);
   }
   function toggleRec(rec) {
     if (rec.item.classList.contains('is-open')) closeRec(rec);
     else openRec(rec);
+    // 펼침/접힘으로 카드 높이가 바뀜 → 겹침·아래 항목 위치 즉시 재계산
+    // (펼친 카드는 전체 노출로 잡혀 아래 리스트가 실제로 밀려 내려감)
+    moStop(); layout(); moStart();
   }
 
   /* 요약 밑에 '자세히' + 감각 화살표 인디케이터 주입 (상세가 있을 때만). */
@@ -190,7 +200,9 @@
         var it = rec.item;
         var itTop = it.getBoundingClientRect().top;
         var peek;
-        if (rec.summary) {
+        if (it.classList.contains('is-open')) {
+          peek = it.offsetHeight;   // 펼친 카드: 전체 노출 → 뒤 항목이 안 덮고 아래로 밀림
+        } else if (rec.summary) {
           peek = rec.summary.getBoundingClientRect().top - itTop;   // 요약 시작 = 질문 끝
         }
         if (!(peek > PEEK_MIN)) peek = Math.min(PEEK_MIN, it.offsetHeight);
