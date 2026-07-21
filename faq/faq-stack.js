@@ -89,15 +89,28 @@
     var lbl = rec.indicator.querySelector('.helix-faq-indicator__label');
     if (lbl) lbl.textContent = open ? '접기' : '자세히';   // 펼치면 '접기' 로
   }
+  /* 인디케이터 위치: 닫힘=요약 바로 뒤 / 펼침=상세 아래(카드 끝).
+     펼침 때 '접기'가 요약과 상세 사이에 끼어 둘을 갈라놓지 않게 하려고 이동. */
+  function placeIndicator(rec, open) {
+    if (!rec.indicator) return;
+    if (open) {
+      if (rec.card) rec.card.appendChild(rec.indicator);          // 상세 아래(맨 끝)
+    } else if (rec.qa) {
+      if (rec.summary && rec.summary.parentNode === rec.qa) rec.qa.insertBefore(rec.indicator, rec.summary.nextSibling);
+      else rec.qa.appendChild(rec.indicator);                     // 요약 바로 뒤(원위치)
+    }
+  }
   function closeRec(r) {
     if (!r) return;
     r.item.classList.remove('is-open');
     setIndicator(r, false);
+    placeIndicator(r, false);
   }
   function openRec(rec) {
     ITEMS.forEach(function (r) { if (r !== rec) closeRec(r); });
     rec.item.classList.add('is-open');
     setIndicator(rec, true);
+    placeIndicator(rec, true);
   }
   function toggleRec(rec) {
     var willOpen = !rec.item.classList.contains('is-open');
