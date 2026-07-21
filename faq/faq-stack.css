@@ -24,9 +24,9 @@
 .helix-faq-list {
   display: block !important;
   position: relative;
-  --faq-dur: 0.34s;
-  --faq-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  padding-bottom: 20px;
+  --faq-dur: var(--dur);      /* 전역 토큰 사용 */
+  --faq-ease: var(--ease);
+  padding-bottom: var(--space-lg);
 }
 
 /* 카드 단위(item) — 세로로 하나씩, 카드 사이 간격.
@@ -34,7 +34,7 @@
    그 바깥 item(.faq_q)의 배경/그림자/테두리는 없앰 → '흰 배경 겹침' 제거. */
 .helix-faq-item {
   position: relative;
-  margin: 0 0 14px 0 !important;
+  margin: 0 0 var(--space-sm) 0 !important;
   overflow: visible !important;
   background: transparent !important;
   background-image: none !important;
@@ -45,10 +45,10 @@
 /* 카드 박스 효과 — 코드에서 테두리/반경/그림자 담당 (호버·펼침 시 강조) */
 .helix-faq-card {
   position: relative;
-  /* Q 위 여백 — Webflow 에서 흰 스페이서를 지운 자리를 코드로 대체(반응형) */
-  padding-top: clamp(20px, 3.6vw, 32px);
-  border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  /* Q 위 여백 — Webflow 에서 흰 스페이서를 지운 자리를 코드로 대체(토큰) */
+  padding-top: var(--space-lg);
+  border-radius: var(--radius);
+  border: 1px solid var(--hairline);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 20px rgba(0, 0, 0, 0.05);
   transition: box-shadow var(--faq-dur) var(--faq-ease),
               border-color var(--faq-dur) var(--faq-ease);
@@ -78,7 +78,7 @@
 /* 요약 ↔ 상세 간격을 코드로 제어(너무 동떨어져 보이지 않게 연결감).
    상세 컨테이너/슬롯의 Webflow 여분 위 여백은 제거하고, 딱 이 값만 쓰게. */
 .helix-faq-item.is-open .helix-faq-answer {
-  margin-top: 12px !important;
+  margin-top: var(--space-sm) !important;
   padding-top: 0 !important;
 }
 .helix-faq-item.is-open .helix-faq-answer [class*="faq_fa-slot" i] {
@@ -96,7 +96,7 @@
   transition: color var(--faq-dur) var(--faq-ease);
 }
 .helix-faq-item.is-open [class*="faq_qa" i] [class*="faq-a" i] {
-  color: #adb5bf !important;
+  color: var(--c-faint) !important;
 }
 
 /* ── 요약 밑 '자세히' + 화살표 인디케이터 (faq-stack.js 주입) ────────
@@ -107,13 +107,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  margin-top: 10px;
+  gap: var(--space-2xs);
+  margin-top: var(--space-xs);
   width: 100%;              /* 부모 정렬과 무관하게 항상 가운데(펼침 시 '접기'도) */
   box-sizing: border-box;
   text-indent: 0;
   text-align: center;
-  color: #0075d6;
+  color: var(--c-blue);
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -121,14 +121,14 @@
 }
 .helix-faq-indicator:hover { color: #0a86ef; }
 .helix-faq-indicator__label {
-  font-size: clamp(0.74rem, 2.6vw, 0.9rem);   /* 화면 크기 따라 줄어듦(반응형) */
+  font-size: var(--fs-sm);            /* 전역 토큰(반응형) */
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1;
 }
 .helix-faq-indicator__arrow {
-  width: clamp(13px, 3.6vw, 20px);            /* 화면 크기 따라 줄어듦(반응형) */
-  height: clamp(13px, 3.6vw, 20px);
+  width: var(--icon-sm);              /* 전역 토큰(반응형) */
+  height: var(--icon-sm);
   display: block;
   fill: none;
   stroke: currentColor;

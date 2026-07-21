@@ -179,8 +179,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 8px 14px;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
   background: rgba(255, 255, 255, 0.96);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
@@ -190,15 +190,15 @@
   font-family: var(--기본-일반-폰트, 'Noto Sans KR'), sans-serif;
 }
 .faq-pinned-filter__label {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 600;
-  color: #8b949e;
+  color: var(--c-muted);
 }
 .faq-pinned-filter__chip {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
-  color: #0075d6;
-  border: 1px solid #0075d6;
+  color: var(--c-blue);
+  border: 1px solid var(--c-blue);
   border-radius: 999px;
   padding: 2px 10px;
   background: rgba(0, 117, 214, 0.10);
