@@ -1,131 +1,97 @@
 /* ================================================================
-   HELIX AMC — FAQ 카드 겹치기(스택) 실험 레이아웃 v2
+   HELIX AMC — FAQ 아코디언 v4 (겹침 스택 폐기, 세로 아코디언)
 
-   실제 DOM:
-     .faq-list                       ← 컨테이너
-       └ .faq_q [data-species...]    ← 목록 항목(겹치는 단위)
-           └ .faq_box                ← 카드(배경 있음)
-               ├ .faq_qa  질문 + 요약
-               └ .faq_answer-ai  상세
+   실제 DOM (Webflow):
+     .faq-list
+       └ .faq_q [data-species...]   ← 목록 항목(카드 단위)
+           └ .faq_box               ← 카드
+               ├ .faq_qa  질문 + 요약(.faq-a) + '자세히' 인디케이터(주입)
+               └ .faq_answer-ai  상세(.faq-a_Full)
 
-   동작 (호버 전용):
-     평소  : 카드가 겹쳐 쌓여 '질문만 빼꼼'
-             (다음 카드가 이전 카드의 요약을 덮음 — 겹침 양은 JS 가 질문
-              높이를 실측해 '요약부터 아래'를 정확히 덮도록 계산)
-     호버  : 그 카드가 위로 떠오르며(z 최상단) 요약이 드러남 + 나머지 카드 어두워짐
+   동작
+     - 카드가 세로로 하나씩(겹침 없음). 질문 + 요약 항상 표시.
+     - 요약 밑 '자세히'(+화살표) 클릭 → 상세가 카드 안으로 인라인 펼쳐짐
+       (박스 속 박스 없이 카드가 하나로 늘어남). 라벨 '자세히'↔'접기',
+       화살표 180° 반전. 아코디언(하나 열면 나머지 닫힘).
+     - 펼치면 늘어난 카드가 화면에 다 보이도록 시야 이동(JS ensureVisible).
 
-   ⚠ 카드 박스 자체(padding/배경/테두리/모양)는 Webflow 원본 그대로 둠.
-     이 파일은 '위치(겹침)'와 '호버 연출'만 담당. 카드 내부 스타일 override 금지.
+   선·그림자·테두리 등 카드 효과는 이 파일(코드)에서 담당(사용자 지시).
+   정렬/타이포 등 원본 디자인은 Webflow 캔버스에서.
 
-   ⚠ 실험용 — 되돌리려면 faq/bootstrap.js FILES 에서
-     'faq/faq-stack.css' + 'faq/faq-stack.js' 두 줄 제거 → 기존 토글 복귀.
-
-   겹침 양은 JS 가 실측해 인라인 margin 으로 넣음.
-   손잡이(--faq-stack-lift 등)는 아래 :root-스코프 변수.
+   ⚠ 되돌리려면 faq/bootstrap.js FILES 에서 이 파일 + faq-stack.js 제거.
    ================================================================ */
 
 .helix-faq-list {
-  display: block !important;   /* grid/flex gap 로 인한 겹침 무효화 방지 */
+  display: block !important;
   position: relative;
-  --faq-stack-lift: 16px;      /* 호버 시 위로 떠오르는 거리 */
-  --faq-stack-dim: 0.35;       /* 호버 시 나머지 카드가 어두워지는 정도(0~1) */
-  --faq-stack-dur: 0.38s;
-  --faq-stack-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --faq-dur: 0.34s;
+  --faq-ease: cubic-bezier(0.22, 1, 0.36, 1);
   padding-bottom: 20px;
 }
 
-/* 겹치는 단위(목록 항목). 겹침 margin 은 JS 가 인라인으로 넣음. */
+/* 카드 단위 — 세로로 하나씩, 카드 사이 간격 */
 .helix-faq-item {
   position: relative;
-  z-index: 1;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  margin-bottom: 0 !important;
+  margin: 0 0 14px 0 !important;
   overflow: visible !important;
-  transition: transform var(--faq-stack-dur) var(--faq-stack-ease);
-  will-change: transform;
 }
 
-/* 호버 → 위로 떠오르고 z 최상단 → 가려졌던 요약이 드러남 */
-.helix-faq-item:hover {
-  z-index: 999;
-  transform: translateY(calc(var(--faq-stack-lift) * -1));
-}
-
-/* 카드 박스 — Webflow 원본 모양 그대로. position 만 부여(상세 오버레이 기준).
-   padding/배경/테두리/overflow 등 카드 모양은 절대 건드리지 않음. */
+/* 카드 박스 효과 — 코드에서 테두리/반경/그림자 담당 (호버·펼침 시 강조) */
 .helix-faq-card {
   position: relative;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 20px rgba(0, 0, 0, 0.05);
+  transition: box-shadow var(--faq-dur) var(--faq-ease),
+              border-color var(--faq-dur) var(--faq-ease);
+}
+.helix-faq-item:hover .helix-faq-card {
+  border-color: rgba(0, 117, 214, 0.28);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06), 0 14px 30px rgba(0, 0, 0, 0.09);
+}
+.helix-faq-item.is-open .helix-faq-card {
+  border-color: rgba(0, 117, 214, 0.45);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06), 0 16px 34px rgba(0, 0, 0, 0.10);
 }
 
-/* 호버 시 '나머지 카드'만 살짝 어두워짐(전체 화면 아님, 카드 영역만).
-   각 항목 위에 얇은 검은 막(::after)을 깔되, 평소·호버당사자는 투명. */
-.helix-faq-item::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  background: rgba(0, 0, 0, var(--faq-stack-dim, 0.35));
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--faq-stack-dur) var(--faq-stack-ease);
-}
-/* 실제로 '어떤 카드 위'에 있을 때만(helix-faq-hovering) 나머지 카드가 어두워짐.
-   리스트 빈 공간(패딩/여백) 위에선 켜지지 않아 '전부 어두워짐' 방지. */
-.helix-faq-list.helix-faq-hovering .helix-faq-item:not(:hover)::after {
-  opacity: 1;
-}
-/* 펼쳐 둔 카드는 어두워지지 않게(회색 덮임 방지) */
-.helix-faq-list.helix-faq-hovering .helix-faq-item.is-open::after {
-  opacity: 0 !important;
-}
-
-/* 상세(.faq_answer-ai) — 평소엔 숨김(흐름에서 빠져 카드 높이 = 질문+요약
-   → 겹침 계산 안정). '자세히' 클릭(.is-open) 시 카드 '안'으로 인라인 펼쳐져
-   카드가 하나로 늘어나고, JS 가 겹침을 다시 계산해 아래 리스트가 밀려 내려감. */
+/* 상세 — 평소 숨김, 펼치면 카드 안으로 인라인(박스 속 박스 없음) */
 .helix-faq-answer {
   display: none !important;
 }
 .helix-faq-item.is-open .helix-faq-answer {
   display: block !important;
-  position: static !important;   /* 인라인 흐름 → 카드가 커지고 아래 항목이 밀림 */
-  animation: helixFaqReveal var(--faq-stack-dur) var(--faq-stack-ease);
+  position: static !important;
+  animation: helixFaqReveal var(--faq-dur) var(--faq-ease);
 }
 @keyframes helixFaqReveal {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 겹침 실험 중엔 인라인 '자세히 보기 / 간략히 보기' 링크 숨김 */
+/* Webflow 인라인 '자세히 보기 / 간략히 보기' 링크는 인디케이터가 대체 → 숨김 */
 .helix-faq-list [class*="faq-more" i] {
   display: none !important;
 }
 
-/* ================================================================
-   요약 밑 '자세히' + 감각 화살표 인디케이터 (faq-stack.js v3 주입)
-   카드가 떠오른 상태(호버) 또는 펼친 상태(.is-open)에서만 노출.
-   누르면 상세가 펼쳐짐.
-   ================================================================ */
+/* ── 요약 밑 '자세히' + 화살표 인디케이터 (faq-stack.js 주입) ────────
+   아코디언은 카드가 항상 보이므로 인디케이터도 항상 표시. 화살표는 해당
+   카드에 마우스 올릴 때만 통통(과하지 않게). */
 .helix-faq-indicator {
   display: flex;
-  flex-direction: column;   /* '자세히' 아래 화살표 → 세로 줄바꿈 */
-  align-items: center;      /* 중앙정렬 */
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   gap: 4px;
   margin-top: 10px;
-  text-indent: 0;           /* 요약 text-indent 상속 차단 */
+  text-indent: 0;
   text-align: center;
-  color: #0075d6;           /* 메인 블루 */
+  color: #0075d6;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  /* 기본 숨김 → 호버/펼침 시 등장 */
-  opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity var(--faq-stack-dur) var(--faq-stack-ease),
-              transform var(--faq-stack-dur) var(--faq-stack-ease);
-  pointer-events: none;
+  transition: color var(--faq-dur) var(--faq-ease);
 }
+.helix-faq-indicator:hover { color: #0a86ef; }
 .helix-faq-indicator__label {
   font-size: 0.9rem;
   font-weight: 600;
@@ -141,29 +107,19 @@
   stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
-  animation: helixFaqArrow 1.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-  transition: transform var(--faq-stack-dur) var(--faq-stack-ease);
+  opacity: 0.7;
+  transition: transform var(--faq-dur) var(--faq-ease), opacity var(--faq-dur) var(--faq-ease);
+}
+.helix-faq-item:hover .helix-faq-indicator__arrow {
+  animation: helixFaqArrow 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 @keyframes helixFaqArrow {
   0%, 100% { transform: translateY(0);   opacity: 0.7; }
   50%      { transform: translateY(3px); opacity: 1;   }
 }
-
-/* 카드 호버 or 펼침 → 인디케이터 노출 */
-.helix-faq-item:hover .helix-faq-indicator,
-.helix-faq-item.is-open .helix-faq-indicator {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-/* 펼침 상태: 화살표를 위로 뒤집어 '접기' 암시 + 통통 애니 정지 */
+/* 펼침: 화살표 180° 반전(접기 암시) + 통통 애니 정지 */
 .helix-faq-item.is-open .helix-faq-indicator__arrow {
-  animation: none;
+  animation: none !important;
   transform: rotate(180deg);
-}
-
-/* 펼침 카드는 z 를 살짝 올려 위 카드(질문) 위로 자연스럽게 겹쳐 보이게.
-   (상세 노출/아래 밀기는 인라인 흐름 + JS 겹침 재계산이 담당 — 떠오름 없음) */
-.helix-faq-item.is-open {
-  z-index: 2;
+  opacity: 1;
 }

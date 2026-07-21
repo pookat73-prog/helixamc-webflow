@@ -11,9 +11,10 @@
 /* FAQ 페이지 한정 첫 줄 들여쓰기 — 요약(faq-a) + 상세 본문(faq-a_full) 둘 다.
    문단 전체를 미는 padding 이 아니라 '첫 줄만' 들어가는 text-indent.
    (동일 값을 Webflow 스타일 faq-a / faq-a_Full 에도 박아둠 — 캐시 폴백 대비 이중화.)
-   양 조절은 아래 --faq-indent 한 줄만 바꾸면 됨. */
+   양 조절은 아래 --faq-indent 한 줄만 바꾸면 됨.
+   (아코디언 개편: 왼쪽 라인이 들쭉날쭉해 보여 0 으로 — 첫 줄 들여쓰기 제거) */
 :root {
-  --faq-indent: 1em;
+  --faq-indent: 0px;
 }
 [class*="faq-a" i] {
   text-indent: var(--faq-indent);
@@ -138,6 +139,22 @@
     rgba(0, 117, 214, 0.12) 55%,
     rgba(0, 117, 214, 0) 100%
   );
+}
+
+/* ── 아코디언: 펼침 상세 '박스 속 박스' 평평화 ────────────────────
+   Webflow 상세 슬롯(faq_fa-slot)의 흰 박스/그림자/테두리/둥근모서리를 없애
+   답변이 카드에 바로 얹히게(하나의 카드처럼). 안쪽 CTA 칩 등은 안 건드림. */
+.helix-faq-answer {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+.helix-faq-answer [class*="faq_fa-slot" i] {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
 }
 
 /* ── 선택 필터 상단 고정 표시 (filter.js 주입) ─────────────────────
