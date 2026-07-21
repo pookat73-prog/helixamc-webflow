@@ -81,6 +81,8 @@
   var GROUPS = [];   // { attr, active: {} , reset }
   var listEl = null;
   var emptyEl = null;
+  var filterRegionEls = [];   // 필터 영역(라벨+칩묶음) — 화면에서 가려졌는지 판정용
+  var pinnedEl = null;        // 선택 필터 상단 고정 표시
 
   var PAGE_SIZE   = 5;    // 한 페이지에 보여줄 질문 수
   var currentPage = 1;
@@ -145,6 +147,7 @@
 
     updateEmpty(matched.length === 0 && anyActive());
     renderPager(totalPages);
+    updatePinned();   // 선택 필터 상단 고정 표시 갱신
     log('apply → 매칭', matched.length, '/ 페이지', currentPage, '/', totalPages);
   }
 
@@ -248,6 +251,92 @@
     emptyEl.style.display = showEmpty ? 'block' : 'none';
   }
 
+  /* ── 선택 필터 상단 고정 표시 ──────────────────────────────────
+     스크롤이 올라가 필터 칩 영역이 헤더 밑으로 사라지면, '지금 어떤 필터가
+     켜져 있는지'를 화면 상단에 고정으로 보여줌(눌러 필터로 되돌아가기). */
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function headerBottom() {
+    var h = document.querySelector('header.header') || document.querySelector('.header');
+    if (h) { try { if (getComputedStyle(h).position === 'fixed') return h.getBoundingClientRect().bottom; } catch (e) {} }
+    return 56;
+  }
+  function filterBottom() {
+    var b = 0;
+    for (var i = 0; i < filterRegionEls.length; i++) {
+      var el = filterRegionEls[i];
+      if (!el || !el.getBoundingClientRect) continue;
+      var r = el.getBoundingClientRect();
+      if (r.bottom > b) b = r.bottom;
+    }
+    return b;
+  }
+  function activeSummary() {
+    var parts = [];
+    for (var g = 0; g < GROUPS.length; g++) {
+      for (var v in GROUPS[g].active) { if (GROUPS[g].active[v]) parts.push(v); }
+    }
+    return parts;
+  }
+  function firstFilterEl() {
+    var top = null, topY = Infinity;
+    for (var i = 0; i < filterRegionEls.length; i++) {
+      var r = filterRegionEls[i].getBoundingClientRect();
+      if (r.top < topY) { topY = r.top; top = filterRegionEls[i]; }
+    }
+    return top;
+  }
+  function buildPinned() {
+    if (pinnedEl) return pinnedEl;
+    pinnedEl = document.createElement('div');
+    pinnedEl.className = 'faq-pinned-filter';
+    pinnedEl.setAttribute('role', 'status');
+    pinnedEl.style.display = 'none';
+    pinnedEl.title = '필터로 이동';
+    pinnedEl.addEventListener('click', function () {
+      var f = firstFilterEl();
+      if (!f) return;
+      try {
+        var y = f.getBoundingClientRect().top + window.pageYOffset - (headerBottom() + 10);
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      } catch (e) {}
+    });
+    document.body.appendChild(pinnedEl);
+    return pinnedEl;
+  }
+  function updatePinned() {
+    buildPinned();
+    var parts = activeSummary();
+    if (!parts.length) { pinnedEl.style.display = 'none'; return; }
+    pinnedEl.innerHTML = '<span class="faq-pinned-filter__label">선택된 필터</span>' +
+      parts.map(function (p) { return '<span class="faq-pinned-filter__chip">' + escapeHtml(p) + '</span>'; }).join('');
+    syncPinnedVisibility();
+  }
+  function syncPinnedVisibility() {
+    if (!pinnedEl) return;
+    var covered = filterBottom() <= headerBottom() + 4;   // 필터 영역이 헤더 밑으로 사라짐
+    var show = activeSummary().length > 0 && covered;
+    pinnedEl.style.top = headerBottom() + 'px';
+    pinnedEl.style.display = show ? '' : 'none';
+  }
+  var scrollRaf = null;
+  function onScrollResize() {
+    if (scrollRaf) return;
+    scrollRaf = (window.requestAnimationFrame || function (f) { return setTimeout(f, 16); })(function () {
+      scrollRaf = null;
+      syncPinnedVisibility();
+    });
+  }
+  // faq-stack.js 가 카드 펼침 시 시야 이동에 쓸 '고정필터 높이' 노출
+  window.__helixFaqPinnedH = function () {
+    if (!activeSummary().length) return 0;
+    if (pinnedEl) { var h = pinnedEl.getBoundingClientRect().height; if (h) return h; }
+    return 44;
+  };
+
   function isLabel(el) { return /faq-filter-label/i.test(el.className || ''); }
 
   function bindGroup(optsEl, attr) {
@@ -302,14 +391,19 @@
     if (!listEl || !seq.length) return false;
 
     GROUPS = [];
-    var pending = null;
+    filterRegionEls = [];
+    var pending = null, pendingLabel = null;
     for (var i = 0; i < seq.length; i++) {
       var el = seq[i];
       if (isLabel(el)) {
         pending = attrForLabel(el.textContent);
+        pendingLabel = el;
       } else if (pending) {         // 라벨 직후의 칩묶음
         bindGroup(el, pending);
+        if (pendingLabel) filterRegionEls.push(pendingLabel);
+        filterRegionEls.push(el);   // 필터 영역 = 라벨 + 칩묶음 (가림 판정용)
         pending = null;
+        pendingLabel = null;
       }
     }
     if (!GROUPS.length) return false;
@@ -319,6 +413,8 @@
   }
 
   function start() {
+    window.addEventListener('scroll', onScrollResize, { passive: true });
+    window.addEventListener('resize', onScrollResize);
     if (build()) {
       log('필터 준비 완료 — 그룹', GROUPS.length, '개');
       return;
