@@ -74,20 +74,100 @@
   opacity: 1;
 }
 
-/* 상세(.faq_answer-ai) 는 이 실험에선 항상 숨김(호버는 '요약'만 노출).
-   흐름에서 빼서 카드 높이 = 질문+요약 로 고정(겹침 계산 안정). */
+/* 상세(.faq_answer-ai) — 평소엔 숨김 오버레이(흐름에서 빼서 카드 높이 =
+   질문+요약 로 고정 → 겹침 계산 안정). '자세히' 클릭(.is-open) 시 카드
+   바로 아래로 부드럽게 펼쳐짐. */
 .helix-faq-answer {
   display: block !important;
   position: absolute !important;
   left: 0;
   right: 0;
   top: 100%;
+  z-index: 10;
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity var(--faq-stack-dur) var(--faq-stack-ease),
+              transform var(--faq-stack-dur) var(--faq-stack-ease);
 }
 
 /* 겹침 실험 중엔 인라인 '자세히 보기 / 간략히 보기' 링크 숨김 */
 .helix-faq-list [class*="faq-more" i] {
   display: none !important;
+}
+
+/* ================================================================
+   요약 밑 '자세히' + 감각 화살표 인디케이터 (faq-stack.js v3 주입)
+   카드가 떠오른 상태(호버) 또는 펼친 상태(.is-open)에서만 노출.
+   누르면 상세가 펼쳐짐.
+   ================================================================ */
+.helix-faq-indicator {
+  display: flex;
+  flex-direction: column;   /* '자세히' 아래 화살표 → 세로 줄바꿈 */
+  align-items: center;      /* 중앙정렬 */
+  justify-content: center;
+  gap: 4px;
+  margin-top: 10px;
+  text-indent: 0;           /* 요약 text-indent 상속 차단 */
+  text-align: center;
+  color: #0075d6;           /* 메인 블루 */
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  /* 기본 숨김 → 호버/펼침 시 등장 */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--faq-stack-dur) var(--faq-stack-ease),
+              transform var(--faq-stack-dur) var(--faq-stack-ease);
+  pointer-events: none;
+}
+.helix-faq-indicator__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.helix-faq-indicator__arrow {
+  width: 20px;
+  height: 20px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: helixFaqArrow 1.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transition: transform var(--faq-stack-dur) var(--faq-stack-ease);
+}
+@keyframes helixFaqArrow {
+  0%, 100% { transform: translateY(0);   opacity: 0.7; }
+  50%      { transform: translateY(3px); opacity: 1;   }
+}
+
+/* 카드 호버 or 펼침 → 인디케이터 노출 */
+.helix-faq-item:hover .helix-faq-indicator,
+.helix-faq-item.is-open .helix-faq-indicator {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+/* 펼침 상태: 화살표를 위로 뒤집어 '접기' 암시 + 통통 애니 정지 */
+.helix-faq-item.is-open .helix-faq-indicator__arrow {
+  animation: none;
+  transform: rotate(180deg);
+}
+
+/* 펼침: 카드를 떠오른 채 고정(마우스가 떠나도 유지) */
+.helix-faq-item.is-open {
+  z-index: 998;
+  transform: translateY(calc(var(--faq-stack-lift) * -1));
+}
+/* 펼침: 상세 오버레이 드러냄 */
+.helix-faq-item.is-open .helix-faq-answer {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);   /* 아래 카드와 분리감 */
 }
