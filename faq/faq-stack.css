@@ -70,11 +70,13 @@
   pointer-events: none;
   transition: opacity var(--faq-stack-dur) var(--faq-stack-ease);
 }
-.helix-faq-list:hover .helix-faq-item:not(:hover)::after {
+/* 실제로 '어떤 카드 위'에 있을 때만(helix-faq-hovering) 나머지 카드가 어두워짐.
+   리스트 빈 공간(패딩/여백) 위에선 켜지지 않아 '전부 어두워짐' 방지. */
+.helix-faq-list.helix-faq-hovering .helix-faq-item:not(:hover)::after {
   opacity: 1;
 }
-/* 펼쳐 둔 카드는 마우스가 떠나도 어두워지지 않게(회색 덮임 방지) */
-.helix-faq-list:hover .helix-faq-item.is-open::after {
+/* 펼쳐 둔 카드는 어두워지지 않게(회색 덮임 방지) */
+.helix-faq-list.helix-faq-hovering .helix-faq-item.is-open::after {
   opacity: 0 !important;
 }
 
