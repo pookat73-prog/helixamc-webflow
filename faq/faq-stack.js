@@ -147,10 +147,14 @@
        카드에 이미 배경이 있으면 손대지 않음(Webflow 원본 유지). */
     if (isTransparent(getComputedStyle(card).backgroundColor)) card.style.background = opaqueBg(card);
 
-    /* 펼침 시 상세가 아래 카드 위로 드러나므로, 상세 배경이 비치지 않게 채움
-       (투명일 때만 — 원본 배경이 있으면 유지). */
-    if (answer && isTransparent(getComputedStyle(answer).backgroundColor)) {
-      answer.style.background = opaqueBg(card);
+    /* 펼침 상세는 카드 '바로 아래'에 이어붙는 오버레이 → 상세 컨테이너 배경을
+       카드 배경과 '똑같이' 맞춰 이음매(회색 띠) 없이 카드가 늘어난 것처럼 보이게.
+       (안쪽 흰 답변 박스 .faq-a_Full 은 그대로 — 이건 '답변 말풍선'). */
+    if (answer) {
+      var cardBg = getComputedStyle(card).backgroundColor;
+      if (isTransparent(cardBg)) cardBg = opaqueBg(card);
+      answer.style.setProperty('background-color', cardBg, 'important');
+      answer.style.setProperty('background-image', 'none', 'important');
     }
 
     /* 호버 연출은 전적으로 CSS(:hover)가 담당 — JS 는 위치(겹침)만 계산. */

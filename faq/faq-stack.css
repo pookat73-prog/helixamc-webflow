@@ -73,6 +73,10 @@
 .helix-faq-list:hover .helix-faq-item:not(:hover)::after {
   opacity: 1;
 }
+/* 펼쳐 둔 카드는 마우스가 떠나도 어두워지지 않게(회색 덮임 방지) */
+.helix-faq-list:hover .helix-faq-item.is-open::after {
+  opacity: 0 !important;
+}
 
 /* 상세(.faq_answer-ai) — 평소엔 숨김 오버레이(흐름에서 빼서 카드 높이 =
    질문+요약 로 고정 → 겹침 계산 안정). '자세히' 클릭(.is-open) 시 카드
