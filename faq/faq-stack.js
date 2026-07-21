@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — FAQ 카드 겹치기(스택) 실험 v2
+   HELIX AMC — FAQ 카드 겹치기(스택) v3 — 호버 + '자세히' 클릭 펼침
 
    실제 DOM (Webflow):
      .faq-list                       ← 컨테이너
@@ -8,12 +8,15 @@
                ├ .faq_qa  질문 + 요약(.faq-a)
                └ .faq_answer-ai  상세(.faq-a_Full) = ANSWER
 
-   동작 (호버 전용 — 클릭 상호작용 없음)
+   동작
      평소  : 카드가 겹쳐 쌓여 '질문만 빼꼼'.
              겹침 양 = JS 가 '요약(.faq-a) 시작 지점'을 실측해, 다음 카드가
              딱 그 아래(요약부터)를 덮도록 음수 margin 을 넣음 → 질문만 남음.
      호버  : 그 항목이 위로 떠오르며 z 최상단 → 가려졌던 요약이 드러남.
-             상세(.faq_answer-ai)는 항상 숨김.
+             요약 밑에 중앙정렬로 '자세히' + 감각 화살표 인디케이터가 뜸.
+     클릭  : '자세히' 누르면 상세(.faq_answer-ai)가 카드 아래로 펼쳐짐(오버레이).
+             아코디언식(하나 열면 나머지 닫힘). 열린 카드는 마우스가 떠나도
+             떠오른 채 고정. 다시 누르면 접힘.
 
    기존 클릭 토글(faq.js)은 이 파일이 __helixFaqInit 를 선점해 자동 비활성.
    ⚠ 되돌리려면 faq/bootstrap.js FILES 에서 이 파일 + faq-stack.css 제거.
@@ -76,6 +79,50 @@
     return { container: item.parentElement, item: item };
   }
 
+  /* ── 펼침(자세히) 상태 관리 ────────────────────────────────────
+     카드 호버로 요약이 드러난 뒤, 요약 밑 '자세히' 인디케이터를 누르면
+     상세(.faq_answer-ai)가 카드 아래로 펼쳐짐. 아코디언식: 하나 열면 나머지
+     닫힘. 열린 카드는 마우스가 떠나도 CSS(.is-open)로 떠오른 채 고정. */
+  function closeRec(r) {
+    if (!r) return;
+    r.item.classList.remove('is-open');
+    if (r.indicator) r.indicator.setAttribute('aria-expanded', 'false');
+  }
+  function openRec(rec) {
+    ITEMS.forEach(function (r) { if (r !== rec) closeRec(r); });
+    rec.item.classList.add('is-open');
+    if (rec.indicator) rec.indicator.setAttribute('aria-expanded', 'true');
+  }
+  function toggleRec(rec) {
+    if (rec.item.classList.contains('is-open')) closeRec(rec);
+    else openRec(rec);
+  }
+
+  /* 요약 밑에 '자세히' + 감각 화살표 인디케이터 주입 (상세가 있을 때만). */
+  function buildIndicator(rec) {
+    if (rec.indicator || !rec.answer) return;
+    var qa = rec.qa || rec.card;
+    if (!qa) return;
+    var el = document.createElement('div');
+    el.className = 'helix-faq-indicator';
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('aria-expanded', 'false');
+    el.setAttribute('aria-label', '자세히 보기');
+    el.innerHTML =
+      '<span class="helix-faq-indicator__label">자세히</span>' +
+      '<svg class="helix-faq-indicator__arrow" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M5 9l7 7 7-7"/></svg>';
+    // 요약 바로 뒤에 끼워넣기(요약이 qa 직속일 때). 아니면 qa 끝에 붙임(요약 아래).
+    if (rec.summary && rec.summary.parentNode === qa) qa.insertBefore(el, rec.summary.nextSibling);
+    else qa.appendChild(el);
+    el.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); toggleRec(rec); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRec(rec); }
+    });
+    rec.indicator = el;
+  }
+
   function processCard(card) {
     if (card.__faqStack) return;
     card.__faqStack = true;
@@ -100,9 +147,17 @@
        카드에 이미 배경이 있으면 손대지 않음(Webflow 원본 유지). */
     if (isTransparent(getComputedStyle(card).backgroundColor)) card.style.background = opaqueBg(card);
 
+    /* 펼침 시 상세가 아래 카드 위로 드러나므로, 상세 배경이 비치지 않게 채움
+       (투명일 때만 — 원본 배경이 있으면 유지). */
+    if (answer && isTransparent(getComputedStyle(answer).backgroundColor)) {
+      answer.style.background = opaqueBg(card);
+    }
+
     /* 호버 연출은 전적으로 CSS(:hover)가 담당 — JS 는 위치(겹침)만 계산. */
 
-    ITEMS.push({ item: item, card: card, answer: answer, qa: qa, summary: summary });
+    var rec = { item: item, card: card, answer: answer, qa: qa, summary: summary, indicator: null };
+    buildIndicator(rec);   // 요약 밑 '자세히' 인디케이터 (누르면 상세 펼침)
+    ITEMS.push(rec);
   }
 
   /* 질문만 남기는 실측 겹침: 각 항목의 '요약 시작 y' 를 재서, 다음 항목이
