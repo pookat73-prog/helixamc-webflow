@@ -78,22 +78,20 @@
   opacity: 0 !important;
 }
 
-/* 상세(.faq_answer-ai) — 평소엔 숨김 오버레이(흐름에서 빼서 카드 높이 =
-   질문+요약 로 고정 → 겹침 계산 안정). '자세히' 클릭(.is-open) 시 카드
-   바로 아래로 부드럽게 펼쳐짐. */
+/* 상세(.faq_answer-ai) — 평소엔 숨김(흐름에서 빠져 카드 높이 = 질문+요약
+   → 겹침 계산 안정). '자세히' 클릭(.is-open) 시 카드 '안'으로 인라인 펼쳐져
+   카드가 하나로 늘어나고, JS 가 겹침을 다시 계산해 아래 리스트가 밀려 내려감. */
 .helix-faq-answer {
+  display: none !important;
+}
+.helix-faq-item.is-open .helix-faq-answer {
   display: block !important;
-  position: absolute !important;
-  left: 0;
-  right: 0;
-  top: 100%;
-  z-index: 10;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-  transform: translateY(6px);
-  transition: opacity var(--faq-stack-dur) var(--faq-stack-ease),
-              transform var(--faq-stack-dur) var(--faq-stack-ease);
+  position: static !important;   /* 인라인 흐름 → 카드가 커지고 아래 항목이 밀림 */
+  animation: helixFaqReveal var(--faq-stack-dur) var(--faq-stack-ease);
+}
+@keyframes helixFaqReveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* 겹침 실험 중엔 인라인 '자세히 보기 / 간략히 보기' 링크 숨김 */
@@ -162,15 +160,8 @@
   transform: rotate(180deg);
 }
 
-/* 펼침: 카드를 떠오른 채 고정(마우스가 떠나도 유지) */
+/* 펼침 카드는 z 를 살짝 올려 위 카드(질문) 위로 자연스럽게 겹쳐 보이게.
+   (상세 노출/아래 밀기는 인라인 흐름 + JS 겹침 재계산이 담당 — 떠오름 없음) */
 .helix-faq-item.is-open {
-  z-index: 998;
-  transform: translateY(calc(var(--faq-stack-lift) * -1));
-}
-/* 펼침: 상세 오버레이 드러냄 */
-.helix-faq-item.is-open .helix-faq-answer {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transform: translateY(0);
+  z-index: 2;
 }
