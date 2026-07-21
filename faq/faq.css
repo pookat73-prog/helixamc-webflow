@@ -139,3 +139,40 @@
     rgba(0, 117, 214, 0) 100%
   );
 }
+
+/* ── 선택 필터 상단 고정 표시 (filter.js 주입) ─────────────────────
+   스크롤로 필터 칩 영역이 헤더 밑으로 사라지면, 지금 켜진 필터를 헤더 바로
+   아래에 고정으로 보여줌(클릭 시 필터로 스크롤 업). 선택이 없으면 안 뜸. */
+.faq-pinned-filter {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 900;                  /* 헤더 아래, 본문 위 */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0, 117, 214, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  font-family: var(--기본-일반-폰트, 'Noto Sans KR'), sans-serif;
+}
+.faq-pinned-filter__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8b949e;
+}
+.faq-pinned-filter__chip {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0075d6;
+  border: 1px solid #0075d6;
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: rgba(0, 117, 214, 0.10);
+}

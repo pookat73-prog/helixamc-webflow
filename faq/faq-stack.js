@@ -101,11 +101,47 @@
     setIndicator(rec, true);
   }
   function toggleRec(rec) {
-    if (rec.item.classList.contains('is-open')) closeRec(rec);
-    else openRec(rec);
+    var willOpen = !rec.item.classList.contains('is-open');
+    if (willOpen) openRec(rec); else closeRec(rec);
     // 펼침/접힘으로 카드 높이가 바뀜 → 겹침·아래 항목 위치 즉시 재계산
     // (펼친 카드는 전체 노출로 잡혀 아래 리스트가 실제로 밀려 내려감)
     moStop(); layout(); moStart();
+    // 펼칠 때, 늘어난 카드가 화면에 다 들어오도록 시야 이동(상단 헤더/고정필터 침범 금지)
+    if (willOpen) ensureVisible(rec.item);
+  }
+
+  /* 상단 고정 요소(헤더 + 필터 고정표시)의 화면상 하단 y — 이 밑에 카드 top 을 둠 */
+  function topGuard() {
+    var hb = 56;
+    var h = document.querySelector('header.header');
+    if (h) { try { if (getComputedStyle(h).position === 'fixed') hb = h.getBoundingClientRect().bottom; } catch (e) {} }
+    var pinned = 0;
+    try { if (window.__helixFaqPinnedH) pinned = window.__helixFaqPinnedH() || 0; } catch (e) {}
+    return hb + pinned;
+  }
+
+  /* 펼친 카드가 뷰포트에 최대한 다 보이도록 스크롤. 카드가 화면보다 크면 top 을
+     고정 요소 바로 밑에 맞춤(질문부터 보이게). 상단 고정 요소는 절대 안 가림. */
+  function ensureVisible(item) {
+    if (!item) return;
+    setTimeout(function () {
+      var guard = topGuard() + 12;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var margin = 16;
+      var r = item.getBoundingClientRect();
+      var delta = 0;
+      if (r.height >= vh - guard - margin) {
+        delta = r.top - guard;                                   // 다 안 들어감 → top 정렬
+      } else if (r.bottom > vh - margin) {
+        delta = Math.min(r.bottom - (vh - margin), r.top - guard); // 아래 잘림 → 내리되 top 유지
+      } else if (r.top < guard) {
+        delta = r.top - guard;                                   // 위가 가림 → 올림
+      }
+      if (Math.abs(delta) > 2) {
+        try { window.scrollBy({ top: delta, behavior: 'smooth' }); }
+        catch (e) { window.scrollBy(0, delta); }
+      }
+    }, 20);
   }
 
   /* 요약 밑에 '자세히' + 감각 화살표 인디케이터 주입 (상세가 있을 때만). */
