@@ -181,6 +181,20 @@
     rec.indicator = el;
   }
 
+  /* 상세 문단의 수동 줄바꿈(<br>)을 각각 .faq-line 블록으로 감쌈 → CSS 가
+     '첫 줄 제외, 둘째 줄바꿈부터 들여쓰기'를 적용할 수 있게. (예전 faq.js 가
+     하던 일인데, faq-stack 이 faq.js 를 비활성화하므로 여기로 옮김) */
+  function wrapLinesForIndent(text) {
+    if (!text || text.__faqLinesWrapped) return;
+    var html = text.innerHTML;
+    if (!/<br|[\r\n]/i.test(html)) { text.__faqLinesWrapped = true; return; }
+    var segs = html.split(/<br\s*\/?>|\r?\n/i);
+    text.innerHTML = segs.map(function (s) {
+      return '<span class="faq-line">' + s + '</span>';
+    }).join('');
+    text.__faqLinesWrapped = true;
+  }
+
   function processCard(card) {
     if (card.__faqStack) return;
     card.__faqStack = true;
@@ -203,6 +217,12 @@
 
     /* 카드 배경이 투명이면 채워 테두리/그림자가 뜨는 카드처럼 보이게(원본 배경 있으면 유지). */
     if (isTransparent(getComputedStyle(card).backgroundColor)) card.style.background = opaqueBg(card);
+
+    /* 상세 문단 각 줄을 .faq-line 으로 감쌈 → 둘째 줄바꿈부터 들여쓰기(CSS) 적용 */
+    if (answer) {
+      var textEl = answer.querySelector('[class*="faq-a_full" i]') || answer.querySelector('p');
+      if (textEl) wrapLinesForIndent(textEl);
+    }
 
     var rec = { item: item, card: card, answer: answer, qa: qa, summary: summary, indicator: null };
     buildIndicator(rec);   // 요약 밑 '자세히' 인디케이터 (누르면 상세 펼침)
