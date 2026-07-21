@@ -29,11 +29,17 @@
   padding-bottom: 20px;
 }
 
-/* 카드 단위 — 세로로 하나씩, 카드 사이 간격 */
+/* 카드 단위(item) — 세로로 하나씩, 카드 사이 간격.
+   실제 카드(.faq_box=.helix-faq-card)가 테두리/그림자/배경을 담당하므로,
+   그 바깥 item(.faq_q)의 배경/그림자/테두리는 없앰 → '흰 배경 겹침' 제거. */
 .helix-faq-item {
   position: relative;
   margin: 0 0 14px 0 !important;
   overflow: visible !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
 }
 
 /* 카드 박스 효과 — 코드에서 테두리/반경/그림자 담당 (호버·펼침 시 강조) */
