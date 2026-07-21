@@ -45,6 +45,8 @@
 /* 카드 박스 효과 — 코드에서 테두리/반경/그림자 담당 (호버·펼침 시 강조) */
 .helix-faq-card {
   position: relative;
+  /* Q 위 여백 — Webflow 에서 흰 스페이서를 지운 자리를 코드로 대체(반응형) */
+  padding-top: clamp(20px, 3.6vw, 32px);
   border-radius: 14px;
   border: 1px solid rgba(0, 0, 0, 0.07);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 20px rgba(0, 0, 0, 0.05);
@@ -119,14 +121,14 @@
 }
 .helix-faq-indicator:hover { color: #0a86ef; }
 .helix-faq-indicator__label {
-  font-size: 0.9rem;
+  font-size: clamp(0.74rem, 2.6vw, 0.9rem);   /* 화면 크기 따라 줄어듦(반응형) */
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1;
 }
 .helix-faq-indicator__arrow {
-  width: 20px;
-  height: 20px;
+  width: clamp(13px, 3.6vw, 20px);            /* 화면 크기 따라 줄어듦(반응형) */
+  height: clamp(13px, 3.6vw, 20px);
   display: block;
   fill: none;
   stroke: currentColor;
