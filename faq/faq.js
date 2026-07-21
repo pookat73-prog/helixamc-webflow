@@ -1,5 +1,10 @@
 /* ================================================================
-   HELIX AMC — FAQ 자세히보기 / 간략히보기 토글 (v10 — 덩어리 페이드인)
+   HELIX AMC — FAQ 자세히보기 / 간략히보기 토글 (v11 — 카드 호버 인디케이터)
+
+   v11: 카드에 마우스를 올리면 요약 설명 밑에 중앙정렬로 '자세히' + 줄바꿈 +
+        감각적으로 통통 튀는 화살표가 등장. 누르면 상세 답변이 펼쳐짐.
+        기존 '자세히 보기 +' 텍스트 링크는 이 인디케이터가 대체(숨김).
+        터치 기기(hover 없음)에선 인디케이터가 항상 표시됨.
 
    Webflow 실제 구조 (컴포넌트, 2026-07 개편):
      FAQ_Box
@@ -60,6 +65,45 @@
     '쫀득(살짝 튕김)':    'cubic-bezier(0.34, 1.4, 0.5, 1)',
     '선형':             'linear'
   };
+
+  /* ── 카드 호버 인디케이터 ('자세히' + 감각 화살표) ────────────────
+     카드에 마우스를 올리면 요약 설명 밑에 중앙정렬로 '자세히' + 줄바꿈 +
+     아래로 살짝 통통 튀는 화살표가 등장. 누르면 상세 답변이 펼쳐짐.
+     기존 '자세히 보기 +' 텍스트 링크는 이 인디케이터가 대체하므로 숨김.
+     터치 기기(hover 없음)에선 CSS 로 항상 표시. */
+  function findCard(a, expand) {
+    // 답변(a)과 펼침 링크(expand) 의 가장 가까운 공통 조상 = FAQ_Box(카드)
+    if (!expand) return a.parentElement;
+    var chain = [];
+    for (var n = expand; n; n = n.parentElement) chain.push(n);
+    for (var m = a; m; m = m.parentElement) if (chain.indexOf(m) !== -1) return m;
+    return a.parentElement;
+  }
+
+  function buildHoverMore(it) {
+    if (it.hoverMore || !it.expand) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'faq-hover-more';
+    wrap.setAttribute('role', 'button');
+    wrap.setAttribute('tabindex', '0');
+    wrap.setAttribute('aria-label', '자세히 보기');
+    wrap.innerHTML =
+      '<span class="faq-hover-more__label">자세히</span>' +
+      '<svg class="faq-hover-more__arrow" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M5 9l7 7 7-7"/></svg>';
+    // 기존 펼침 링크가 있던 자리(요약 아래)에 끼워넣고, 원래 링크는 숨김
+    it.expand.parentNode.insertBefore(wrap, it.expand.nextSibling);
+    hideEl(it.expand);
+    it.hoverMore = wrap;
+
+    var card = findCard(it.answer, it.expand);
+    if (card) { card.classList.add('faq-hovercard'); it.card = card; }
+
+    wrap.addEventListener('click', function (e) { e.preventDefault(); setState(it, true); });
+    wrap.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setState(it, true); }
+    });
+  }
 
   function showEl(el) { if (el) el.style.removeProperty('display'); }
   function hideEl(el) { if (el) el.style.setProperty('display', 'none', 'important'); }
@@ -165,10 +209,12 @@
     if (open) {
       openAnswer(it.answer);
       hideEl(it.expand);
+      hideEl(it.hoverMore);       // 펼쳐지면 호버 인디케이터 숨김
       showEl(it.collapse);        // 접힘 버튼은 답변 안에 있음 — 함께 노출
     } else {
       closeAnswer(it.answer, instant);
-      showEl(it.expand);          // 접힘 버튼은 답변과 함께 닫히므로 별도 숨김 불필요
+      if (it.hoverMore) { showEl(it.hoverMore); hideEl(it.expand); }  // 인디케이터가 대체 → 원래 링크는 계속 숨김
+      else showEl(it.expand);     // 접힘 버튼은 답변과 함께 닫히므로 별도 숨김 불필요
     }
     if (it.expand) it.expand.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
@@ -182,7 +228,11 @@
       var a = answers[i];
       if (a.__faqItem) {
         var ex = a.__faqItem;
-        if (!ex.open && a.style.maxHeight !== '0px') { closeAnswer(a, true); showEl(ex.expand); }
+        if (!ex.open && a.style.maxHeight !== '0px') {
+          closeAnswer(a, true);
+          if (ex.hoverMore) { showEl(ex.hoverMore); hideEl(ex.expand); }
+          else showEl(ex.expand);
+        }
         continue;
       }
       var lk = findItemLinks(a);
@@ -191,6 +241,8 @@
 
       var textEl = a.querySelector('[class*="faq-a_full" i]') || a.querySelector('p');
       if (textEl) wrapLinesForIndent(textEl);
+
+      buildHoverMore(it);   // 요약 아래 호버 인디케이터 주입 (원래 펼침 링크 대체)
 
       (function (item) {
         if (item.expand)   item.expand.addEventListener('click',   function (e) { e.preventDefault(); setState(item, true); });
