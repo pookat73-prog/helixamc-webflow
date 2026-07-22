@@ -222,24 +222,28 @@
    ================================================================ */
 :root {
   --faq-accent: rgba(0, 117, 214, 0.92);   /* 진한 모서리 색 (불투명에 가까운 메인블루) */
-  --faq-border-w: 1.5px;                    /* 외곽선 두께 */
+  --faq-border-w: 2px;                      /* 외곽선 두께 — 1.5px 는 날카로워 2px */
   --faq-radius: 14px;                       /* 박스 모서리 라운드 */
-  --faq-answer-pad: 14px 30px;              /* 안쪽 여백 — 세로 14 / 가로 30 (납작한 가로 직사각형) */
+  --faq-answer-pad: 16px 32px;              /* 안쪽 여백 — 세로 16 / 가로 32 (납작한 가로 직사각형) */
   --faq-answer-outset: 8px;                 /* 좌우로 이만큼 더 넓힘 → 가로가 조금 더 길게 */
   --faq-answer-bg: rgba(0, 117, 214, 0.03); /* 면 색 — 원래 톤 채우되 더 여리게(투명도↑) */
 }
+/* !important — Webflow 의 faq-a_Full 은 조합 클래스(base+custom)라 우선순위가
+   더 높아 우리 padding 을 덮어씀. 이 프로젝트 패턴대로 !important 로 눌러
+   패딩·면색·박스 규칙이 실제로 적용되게 한다. */
 [class*="faq-a_full" i] {
   position: relative;
-  margin-top: 18px;
-  margin-inline: calc(var(--faq-answer-outset) * -1);  /* 좌우로 밀어 가로 확장 */
-  padding: var(--faq-answer-pad);
-  border-radius: var(--faq-radius);
-  background: var(--faq-answer-bg);   /* 여린 파란 면 색 */
-  line-height: 1.75;                  /* 줄간격 넉넉히 → 가독성·강조 */
+  margin-top: 18px !important;
+  margin-inline: calc(var(--faq-answer-outset) * -1) !important;  /* 좌우로 밀어 가로 확장 */
+  padding: var(--faq-answer-pad) !important;
+  border-radius: var(--faq-radius) !important;
+  background: var(--faq-answer-bg) !important;   /* 여린 파란 면 색 */
+  line-height: 1.75 !important;                  /* 줄간격 넉넉히 → 가독성·강조 */
 }
-/* 대각(45deg) 그라데이션 테두리 — 왼쪽상단·오른쪽하단 모서리는
-   불투명에 가까운 메인블루(가운데 50% 피크), 오른쪽상단·왼쪽하단
-   모서리는 투명으로 풀림(양 끝 0%/100%).
+/* 대각(45deg) 그라데이션 테두리 — 왼쪽상단·오른쪽하단 모서리는 진한
+   메인블루, 오른쪽상단·왼쪽하단 모서리는 투명으로 풀림.
+   파란 구간을 '점(50%)' 이 아니라 넓은 고원(38~62%)으로 펴서, 납작한
+   가로 사각형에서도 우하단이 얇고 날카로운 선이 아니라 매끄럽게 이어짐.
    ::before 를 박스 크기로 깔고, 테두리 두께만큼의 링만 남기도록
    mask 두 겹을 exclude 합성 → 안쪽은 뚫려 면 색만 보임. */
 [class*="faq-a_full" i]::before {
@@ -249,9 +253,10 @@
   border-radius: inherit;
   padding: var(--faq-border-w);
   background: linear-gradient(45deg,
-              rgba(0, 117, 214, 0) 0%,      /* 왼쪽하단 모서리 — 풀림 */
-              var(--faq-accent) 50%,         /* 왼쪽상단·오른쪽하단 대각선 — 진한 파랑 */
-              rgba(0, 117, 214, 0) 100%);    /* 오른쪽상단 모서리 — 풀림 */
+              rgba(0, 117, 214, 0) 6%,       /* 왼쪽하단 모서리 — 풀림 */
+              var(--faq-accent) 38%,          /* 진한 구간 시작 */
+              var(--faq-accent) 62%,          /* 진한 구간 끝(왼쪽상단·오른쪽하단 포함) */
+              rgba(0, 117, 214, 0) 94%);      /* 오른쪽상단 모서리 — 풀림 */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
