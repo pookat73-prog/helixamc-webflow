@@ -1,7 +1,8 @@
 /* ================================================================
-   HELIX AMC — FAQ 토글 (v3)
+   HELIX AMC — FAQ 토글 (v5)
    숨김/보임은 faq.js 가 인라인 style 로 직접 처리(CSS 캐시 어긋남 방지).
-   이 파일은 커서 등 보조 스타일만. 없어도 토글 자체는 동작함.
+   이 파일은 커서/들여쓰기 + 상세 답변 강조(안 A2: 사선 그라데이션 외곽선).
+   토글 로직 자체는 faq.js / faq-stack.js.
    ================================================================ */
 
 [class*="faq-more" i] {
@@ -11,16 +12,251 @@
 /* FAQ 페이지 한정 첫 줄 들여쓰기 — 요약(faq-a) + 상세 본문(faq-a_full) 둘 다.
    문단 전체를 미는 padding 이 아니라 '첫 줄만' 들어가는 text-indent.
    (동일 값을 Webflow 스타일 faq-a / faq-a_Full 에도 박아둠 — 캐시 폴백 대비 이중화.)
-   양 조절은 아래 --faq-indent 한 줄만 바꾸면 됨. */
+   양 조절은 아래 --faq-indent 한 줄만 바꾸면 됨.
+   (아코디언 개편: 왼쪽 라인이 들쭉날쭉해 보여 0 으로 — 첫 줄 들여쓰기 제거) */
 :root {
-  --faq-indent: 1em;
+  --faq-indent: 0px;
 }
 [class*="faq-a" i] {
   text-indent: var(--faq-indent);
 }
-/* 상세 본문의 수동 줄바꿈 각 줄(faq.js 가 <br> 을 감싼 블록). 부모의
-   text-indent 를 상속 → 줄마다 첫 줄 들여쓰기. */
+/* 상세 본문의 수동 줄바꿈 각 줄(faq.js 가 <br> 을 감싼 블록).
+   첫 줄은 그대로, '두번째 줄바꿈부터' 들여쓰기(사용자 요청). */
 .faq-line {
   display: block;
-  text-indent: var(--faq-indent);
+  text-indent: 1.1em;
+}
+.faq-line:first-child {
+  text-indent: 0;
+}
+
+/* ── 필터 칩 활성 표시 (filter.js 가 .is-on 토글) ─────────────────
+   Webflow 기본 칩 스타일과 싸우지 않도록 텍스트색은 그대로 두고
+   테두리 + 옅은 파란 배경으로 '선택됨'만 표시. 색은 메인 블루(#0075d6). */
+.faq-chip.is-on {
+  border-color: #0075d6 !important;
+  background: rgba(0, 117, 214, 0.18) !important;
+  box-shadow: 0 0 0 1px #0075d6 inset;
+}
+
+/* 필터 결과 없음 안내(filter.js 가 동적 생성) */
+.faq-empty {
+  display: none;
+  padding: 24px 8px;
+  text-align: center;
+  color: #8b949e;
+  font-size: 15px;
+}
+
+/* ── 페이지네이션 (filter.js 가 .pages 슬롯에 렌더) ───────────────
+   Webflow 슬롯(.pages)에 faq-pager 클래스를 덧붙여 버튼 줄로 배치. */
+.faq-pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 28px;
+  /* 페이지가 1개라 버튼이 비어도 같은 높이를 예약 → 아래 여백이 사라지지 않게 */
+  min-height: 30px;
+}
+.faq-page-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  /* Webflow '기본 일반 폰트' 변수 사용 (변수 값 바뀌면 따라감) */
+  font-family: var(--기본-일반-폰트, 'Noto Sans KR'), sans-serif;
+  font-size: 14px;               /* 페이징 숫자 크기 (작아 보여 10→14 로 키움) */
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.faq-page-btn:hover:not(:disabled):not(.is-current) {
+  color: #0075d6;
+}
+.faq-page-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.faq-page-nav {
+  font-size: 16px;
+}
+
+/* 숫자 라벨 — 하이라이터가 글자 폭에 맞게 깔리도록 기준점 */
+.faq-page-lbl {
+  position: relative;
+  z-index: 0;
+}
+
+/* 선택된 페이지 = 블루 형광펜으로 그은 느낌
+   글자보다 살짝 작은 반투명 파란 사각형이 약간 아래로 내려와 깔리고,
+   글씨는 메인 블랙. */
+.faq-page-btn.is-current {
+  color: #0d1117;                /* 메인 블랙 */
+  font-weight: 600;
+  cursor: default;
+}
+.faq-page-btn.is-current .faq-page-lbl::before {
+  content: "";
+  position: absolute;
+  left: -3px;                    /* 글자 좌우로 각 3px 튀어나오게 */
+  right: -3px;
+  bottom: -5px;                  /* 아래로 내려온 위치 */
+  height: 1.05em;                /* 두꺼운 형광펜 밴드 */
+  background: rgba(0, 117, 214, 0.42);   /* 블루 반투명 형광펜 */
+  border-radius: 2px;
+  z-index: -1;
+}
+.faq-page-gap {
+  min-width: 20px;
+  text-align: center;
+  color: #8b949e;
+  user-select: none;
+}
+
+/* ── 제목 밑 파란 선(Div Block 294)에서 위로 올라오는 포탈 글로우 ─────
+   선 가운데에서 위로만 부드럽게 번지는 여린 파란 그라데이션. 방사형으로
+   페이드해 옆으로 삐져나가지 않고, 약간 짧게 올라옴. (faq.css 는 FAQ
+   페이지에서만 로드되므로 이 선 컴포넌트의 다른 사용처엔 영향 없음) */
+.div-block-294 {
+  position: relative;
+}
+.div-block-294::after {
+  content: "";
+  position: absolute;
+  left: 0;                       /* 선 전체 폭 */
+  right: 0;
+  bottom: 0;                     /* 파란 선에서 시작 */
+  height: 1vw;                   /* 가운데 최대 높이(꼭대기 낮춤) */
+  pointer-events: none;
+  /* 가로 반경 = 선 절반폭 → 양 끝에 딱 닿아 거기서 사라짐.
+     가운데가 제일 높고 끝으로 갈수록 높이 0 으로 줄어드는 돔(아치). */
+  background: radial-gradient(
+    ellipse 50% 100% at 50% 100%,
+    rgba(0, 117, 214, 0.30) 0%,
+    rgba(0, 117, 214, 0.12) 55%,
+    rgba(0, 117, 214, 0) 100%
+  );
+}
+
+/* ── 아코디언: 펼침 상세 '박스 속 박스' 평평화 ────────────────────
+   Webflow 상세 슬롯(faq_fa-slot)의 흰 박스/그림자/테두리/둥근모서리를 없애
+   답변이 카드에 바로 얹히게(하나의 카드처럼). 안쪽 CTA 칩 등은 안 건드림. */
+.helix-faq-answer {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+.helix-faq-answer [class*="faq_fa-slot" i] {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* ── 선택 필터 상단 고정 표시 (filter.js 주입) ─────────────────────
+   스크롤로 필터 칩 영역이 헤더 밑으로 사라지면, 지금 켜진 필터를 헤더 바로
+   아래에 고정으로 보여줌(클릭 시 필터로 스크롤 업). 선택이 없으면 안 뜸. */
+.faq-pinned-filter {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 900;                  /* 헤더 아래, 본문 위 */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0, 117, 214, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  font-family: var(--기본-일반-폰트, 'Noto Sans KR'), sans-serif;
+}
+.faq-pinned-filter__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-muted);
+}
+.faq-pinned-filter__chip {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-blue);
+  border: 1px solid var(--c-blue);
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: rgba(0, 117, 214, 0.10);
+}
+
+/* ================================================================
+   상세 답변 강조 (안 A2 — 사선 그라데이션 외곽선으로 감싸기)
+   목적: 펼쳤을 때 요약(faq-a)과 상세(faq-a_full)가 같은 배경으로
+   이어져 "한 덩어리 글벽"처럼 떡지는 것을 막고, 상세 답변을 상담
+   문의 카드처럼 '사선 투명→메인블루 그라데이션 테두리'로 감싼다.
+   경계 신호는 브랜드 파랑(#0075d6)이라 카드 통일감 유지, 안쪽은
+   투명이라 시원하고 가볍다.
+
+   - 대상: [class*="faq-a_full"] = Webflow 의 faq-a_Full (상세 문단).
+     요약(faq-a)은 매칭 안 됨 → 그대로 둠. CTA/'간략히 보기' 는 이
+     박스 아래에 위치 → 읽는 본문만 그라데이션 박스로 묶임.
+   - 답변 슬롯(faq_fa-slot)은 위에서 이미 평평화(투명)돼 있어, 이
+     그라데이션 박스가 유일한 테두리가 됨(박스 속 박스 안 생김).
+   - 그라데이션 테두리는 ::before + mask 합성으로 그림 → 페이지
+     배경색을 몰라도(밝든 어둡든) 테두리만 그라데이션, 안은 투명.
+     (border-image 는 라운드 코너가 안 먹어서 mask 기법 사용)
+   - 조절 포인트(맨 위 변수):
+       --faq-accent       : 테두리 끝 색(브랜드 블루)
+       --faq-border-w     : 테두리 두께
+
+   ※ 면적(패딩/여백/좌우 확장/모서리 반경/줄간격)은 사용자가 Webflow
+     Designer 에서 직접 조절하기로 해서, 여기선 초기화(강제 안 함).
+     그라데이션 테두리 선 + 여린 면색만 남김. Webflow 에서 faq-a_Full 에
+     준 padding/margin/radius 가 그대로 반영됨.
+   ================================================================ */
+:root {
+  --faq-accent: rgba(0, 117, 214, 0.92);   /* 진한 모서리 색 (불투명에 가까운 메인블루) */
+  --faq-border-w: 2px;                      /* 외곽선 두께 */
+  --faq-answer-bg: rgba(0, 117, 214, 0.02); /* 면 색 — 여린 파란 톤 (조금 더 투명하게) */
+}
+/* 면적 관련(padding/margin/radius/line-height)은 여기서 지정하지 않음 →
+   Webflow Designer 설정이 그대로 적용됨. 여기선 그라데이션 선 기준점
+   (position)과 여린 면색만. border-radius 는 ::before 가 상속하므로
+   Webflow 에서 준 라운드를 선이 그대로 따라감. */
+[class*="faq-a_full" i] {
+  position: relative;
+  background: var(--faq-answer-bg);
+}
+/* 대각(45deg) 그라데이션 테두리 — 왼쪽상단·오른쪽하단 모서리는 진한
+   메인블루, 오른쪽상단·왼쪽하단 모서리는 투명으로 풀림.
+   진한 구간은 짧게(46~54%) 콕, 투명으로 풀리는 구간은 양 끝(0%/100%)
+   까지 길~게 → 두 모서리만 진하고 나머지는 길게 서서히 사라짐.
+   ::before 를 박스 크기로 깔고, 테두리 두께만큼의 링만 남기도록
+   mask 두 겹을 exclude 합성 → 안쪽은 뚫려 면 색만 보임. */
+[class*="faq-a_full" i]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--faq-border-w);
+  background: linear-gradient(45deg,
+              rgba(0, 117, 214, 0) 0%,        /* 왼쪽하단 모서리 — 완전 투명 */
+              var(--faq-accent) 46%,           /* 진한 구간 시작 (짧게) */
+              var(--faq-accent) 54%,           /* 진한 구간 끝 (짧게) — 왼쪽상단·오른쪽하단 */
+              rgba(0, 117, 214, 0) 100%);      /* 오른쪽상단 모서리 — 완전 투명 (풀리는 구간 길~게) */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
 }

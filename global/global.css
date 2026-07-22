@@ -2,6 +2,54 @@
    HELIX AMC - GLOBAL CSS (모든 페이지 공통)
    ================================================================ */
 
+/* ================================================================
+   디자인 토큰 (반응형 기본값) — 모든 페이지 공통
+   방침: 크기는 clamp/rem 으로 '화면 따라 매끄럽게'. 페이지 CSS 는 px 를
+   직접 박지 말고 var(--...) 를 쓴다 → 브레이크포인트 없이도 자동 반응형,
+   값 하나 바꾸면 전 페이지 반영. (배치=Webflow, 크기/효과=여기 토큰)
+   ⚠ 아래 LOCKED 뷰포트 격리/헤더 규칙은 건드리지 말 것 — 이 블록은 추가만.
+   ================================================================ */
+:root {
+  /* 글자 크기 — clamp(최소, 화면비례, 최대) */
+  --fs-xs:   clamp(0.72rem, 1.6vw, 0.80rem);
+  --fs-sm:   clamp(0.80rem, 2.0vw, 0.90rem);
+  --fs-body: clamp(0.95rem, 2.2vw, 1.05rem);
+  --fs-lg:   clamp(1.05rem, 2.6vw, 1.25rem);
+  --fs-h3:   clamp(1.20rem, 3.0vw, 1.50rem);
+  --fs-h2:   clamp(1.50rem, 4.0vw, 2.00rem);
+  --fs-h1:   clamp(1.90rem, 5.0vw, 2.80rem);
+
+  /* 여백/간격 — 유동 */
+  --space-2xs: clamp(4px,  0.8vw, 6px);
+  --space-xs:  clamp(6px,  1.2vw, 10px);
+  --space-sm:  clamp(10px, 1.8vw, 14px);
+  --space-md:  clamp(14px, 2.6vw, 22px);
+  --space-lg:  clamp(20px, 3.6vw, 34px);
+  --space-xl:  clamp(28px, 5.0vw, 52px);
+  --space-2xl: clamp(40px, 7.0vw, 80px);
+
+  /* 모서리 반경 — 유동 */
+  --radius-sm: clamp(8px,  1.2vw, 12px);
+  --radius:    clamp(10px, 1.6vw, 16px);
+  --radius-lg: clamp(14px, 2.2vw, 22px);
+
+  /* 아이콘 크기 — 유동 */
+  --icon-sm: clamp(13px, 3.6vw, 20px);
+  --icon-md: clamp(18px, 4.5vw, 28px);
+
+  /* 색 토큰 (브랜드) */
+  --c-blue:   #0075d6;
+  --c-purple: #5528aa;
+  --c-ink:    #0d1117;
+  --c-muted:  #8b949e;   /* 보조 텍스트 */
+  --c-faint:  #adb5bf;   /* 위계 최하위 텍스트 */
+  --hairline: rgba(0, 0, 0, 0.07);
+
+  /* 공통 이징/지속 */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur:  0.34s;
+}
+
 /* ── 한글 본문 줄바꿈 정책 ──
    word-break: keep-all   → 한글 단어 중간 끊김 방지 (예: "헬릭/스" X)
    overflow-wrap: break-word → 너무 긴 영문/URL 은 어쩔 수 없이 끊어 오버플로우 방지
