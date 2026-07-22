@@ -433,3 +433,62 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
+
+/* ================================================================
+   질환 탭 활성 시에만 '별도로 뺀 섹션' 표시 토글
+   ----------------------------------------------------------------
+   구조: 탭(질환/일반)은 Section A(WhiteFrame for List) 안에 있고, Webflow
+   기본 탭은 그 안의 패널만 자동으로 켜고 끔. 사용자가 faq 목록을 별도
+   Section B(WhiteFrame for List_connect = faq-list+페이징+CTA)로 빼서,
+   기본 탭은 Section B 를 못 건드림.
+   → '질환으로 보기' 탭이 활성일 때만 Section B 를 보이고, '일반으로 보기'
+     땐 숨긴다. (일반 콘텐츠는 Section A 안 패널에서 기본 탭이 표시)
+
+   탭 판별: '질환' 탭 링크는 안쪽 글자 요소가 .faq_tab-name (일반 탭은
+   .text-block-366). 그 글자를 품은 .w-tab-link 가 .w--current 면 질환 활성.
+   섹션 판별: 클래스에 list_connect 포함(WhiteFrame for List_connect).
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function diseaseTabLink() {
+    var name = document.querySelector('.faq_tab-name');
+    return name && name.closest ? name.closest('.w-tab-link') : null;
+  }
+  function sectionB() {
+    return document.querySelector('[class*="list_connect" i]');
+  }
+  function sync() {
+    var sec = sectionB(), tab = diseaseTabLink();
+    if (!sec || !tab) return false;
+    var on = tab.classList.contains('w--current');   // 질환 탭 활성?
+    sec.style.display = on ? '' : 'none';
+    return true;
+  }
+  function bind() {
+    sync();
+    // 탭 클릭 → Webflow 가 .w--current 를 옮긴 뒤(한 틱 후) 재동기화
+    var links = document.querySelectorAll('.w-tab-link');
+    for (var i = 0; i < links.length; i++) {
+      links[i].addEventListener('click', function () {
+        setTimeout(sync, 0);
+        setTimeout(sync, 80);
+      });
+    }
+    // 키보드/프로그램적 전환 대비 — 탭 메뉴 클래스 변화 감시
+    try {
+      var link = diseaseTabLink();
+      var menu = link && link.parentElement;
+      if (menu) {
+        var mo = new MutationObserver(function () { sync(); });
+        mo.observe(menu, { attributes: true, subtree: true, attributeFilter: ['class'] });
+      }
+    } catch (e) {}
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
+  // 탭/섹션이 늦게 렌더되는 경우 대비 폴백 폴링(최대 6초)
+  var n = 0;
+  var iv = setInterval(function () { sync(); if (++n >= 12) clearInterval(iv); }, 500);
+})();
