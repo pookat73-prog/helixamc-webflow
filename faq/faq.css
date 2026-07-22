@@ -142,7 +142,7 @@
   position: absolute;
   left: -4px;               /* 왼쪽은 글자에 붙게 */
   right: -8px;              /* 오른쪽은 그라데이션 풀림 공간 */
-  bottom: -4px;             /* 글자 밑선보다 더 아래로 → 형광펜이 아래로 넓어짐 */
+  bottom: -6px;             /* 글자 밑선보다 더 아래로 (쪼금 더 내림) */
   height: 1.15em;           /* 두께 조금 더 */
   /* 왼쪽은 그대로, 오른쪽 끄트머리로 갈수록 확 연해지는 그라데이션 */
   background: linear-gradient(to right,
