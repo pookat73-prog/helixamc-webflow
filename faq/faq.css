@@ -1,8 +1,8 @@
 /* ================================================================
-   HELIX AMC — FAQ 토글 (v4)
+   HELIX AMC — FAQ 토글 (v5)
    숨김/보임은 faq.js 가 인라인 style 로 직접 처리(CSS 캐시 어긋남 방지).
-   이 파일은 커서/들여쓰기 + 상세 답변 강조(안 A) 스타일.
-   토글 로직 자체는 faq.js.
+   이 파일은 커서/들여쓰기 + 상세 답변 강조(안 A2: 사선 그라데이션 외곽선).
+   토글 로직 자체는 faq.js / faq-stack.js.
    ================================================================ */
 
 [class*="faq-more" i] {
@@ -199,29 +199,60 @@
 }
 
 /* ================================================================
-   상세 답변 강조 (안 A — 왼쪽 파란 바 + 옅은 톤 배경)
+   상세 답변 강조 (안 A2 — 사선 그라데이션 외곽선으로 감싸기)
    목적: 펼쳤을 때 요약(faq-a)과 상세(faq-a_full)가 같은 배경으로
-   이어져 "한 덩어리 글벽"처럼 떡지는 것을 막고, 상세 답변만 강조
-   인용 블록처럼 분리한다. 경계 신호는 브랜드 파랑(#0075d6)으로 줘서
-   카드 전체 통일감은 유지.
+   이어져 "한 덩어리 글벽"처럼 떡지는 것을 막고, 상세 답변을 상담
+   문의 카드처럼 '사선 투명→메인블루 그라데이션 테두리'로 감싼다.
+   경계 신호는 브랜드 파랑(#0075d6)이라 카드 통일감 유지, 안쪽은
+   투명이라 시원하고 가볍다.
 
    - 대상: [class*="faq-a_full"] = Webflow 의 faq-a_Full (상세 문단).
-     요약(faq-a)은 매칭 안 됨 → 그대로 둠.
-   - 이 요소는 faq_answer-ai(펼침 애니메이션 컨테이너) 안에 있어
-     덩어리 페이드인에 그대로 편승. CTA/'간략히 보기' 는 이 블록
-     아래에 위치 → 읽는 본문만 강조 블록으로 묶임.
-   - 색은 반투명 틴트(rgba)라 밝은/어두운 페이지 배경 모두에서 자연.
-   - 조절 포인트: --faq-accent(선 색) / --faq-answer-bg(톤 배경).
+     요약(faq-a)은 매칭 안 됨 → 그대로 둠. CTA/'간략히 보기' 는 이
+     박스 아래에 위치 → 읽는 본문만 그라데이션 박스로 묶임.
+   - 답변 슬롯(faq_fa-slot)은 위에서 이미 평평화(투명)돼 있어, 이
+     그라데이션 박스가 유일한 테두리가 됨(박스 속 박스 안 생김).
+   - 그라데이션 테두리는 ::before + mask 합성으로 그림 → 페이지
+     배경색을 몰라도(밝든 어둡든) 테두리만 그라데이션, 안은 투명.
+     (border-image 는 라운드 코너가 안 먹어서 mask 기법 사용)
+   - 조절 포인트(맨 위 변수):
+       --faq-accent       : 테두리 끝 색(브랜드 블루)
+       --faq-border-w     : 테두리 두께
+       --faq-answer-pad   : 안쪽 사방 여백(시원함)
+       --faq-answer-outset: 좌우로 얼마나 더 넓힐지(가로 길이)
    ================================================================ */
 :root {
-  --faq-accent: #0075d6;                      /* 왼쪽 강조 바 색 (브랜드 블루) */
-  --faq-answer-bg: rgba(0, 117, 214, 0.05);   /* 상세 답변 옅은 톤 배경 */
+  --faq-accent: #0075d6;         /* 그라데이션 끝 색 (브랜드 블루) */
+  --faq-border-w: 1.5px;         /* 외곽선 두께 */
+  --faq-radius: 16px;            /* 박스 모서리 라운드 */
+  --faq-answer-pad: 24px 30px;   /* 안쪽 사방 여백 — 세로 24 / 가로 30 (시원하게) */
+  --faq-answer-outset: 8px;      /* 좌우로 이만큼 더 넓힘 → 가로가 조금 더 길게 */
 }
 [class*="faq-a_full" i] {
-  margin-top: 16px;
-  padding: 14px 16px 14px 18px;
-  border-left: 3px solid var(--faq-accent);
-  border-radius: 0 10px 10px 0;
-  background: var(--faq-answer-bg);
-  line-height: 1.75;            /* 상세는 줄간격 넉넉히 → 가독성·강조 */
+  position: relative;
+  margin-top: 18px;
+  margin-inline: calc(var(--faq-answer-outset) * -1);  /* 좌우로 밀어 가로 확장 */
+  padding: var(--faq-answer-pad);
+  border-radius: var(--faq-radius);
+  background: transparent;       /* 안쪽 투명 — 시원하고 가벼움 */
+  line-height: 1.8;              /* 줄간격 넉넉히 → 가독성·강조 */
+}
+/* 사선(135deg) 투명→메인블루 그라데이션 테두리.
+   ::before 를 박스 크기로 깔고, 테두리 두께만큼의 링만 남기도록
+   mask 두 겹을 exclude 합성 → 안쪽은 뚫려 투명. */
+[class*="faq-a_full" i]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--faq-border-w);
+  background: linear-gradient(135deg,
+              rgba(0, 117, 214, 0) 0%,
+              rgba(0, 117, 214, 0.25) 45%,
+              var(--faq-accent) 100%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
 }
