@@ -121,25 +121,25 @@
 }
 
 /* ── 뷰 탭 '선택됨' 표시 — 파란 형광펜 ───────────────────────────────
-   '질환으로 보기' 등 Webflow 기본 탭. 활성 탭에는 Webflow 가 자동으로
-   .w--current 를 붙임 → 페이징과 동일한 반투명 블루 형광펜을 글자 뒤에
-   깔아 '선택 상태' 를 표시. 탭을 바꾸면 .w--current 가 옮겨가 형광펜도
-   따라감. faq.css 는 FAQ 페이지 전용이라 이 페이지 탭에만 적용.
-   (형광펜은 z-index:-1 로 글자 뒤 → 글자 위로 겹쳐 가독성 유지) */
-.w-tab-link.w--current {
+   '질환으로 보기' 등 Webflow 기본 탭. 활성 탭 링크에 .w--current 가 붙고,
+   실제 글자는 그 안쪽 .faq_tab-name 에 있음. 형광펜을 바깥 탭 박스가 아니라
+   글자 요소(.faq_tab-name)에 직접 걸어 글자 폭·위치에 딱 맞춤(페이징과 동일).
+   탭을 바꾸면 .w--current 가 옮겨가 형광펜도 따라감. faq.css 는 FAQ 페이지
+   전용이라 이 페이지 탭에만 적용. (형광펜은 z-index:-1 로 글자 뒤) */
+.faq_tab-name {
   position: relative;
-  background-color: transparent;   /* 뒤에 깔리는 형광펜이 보이도록 */
+  z-index: 0;               /* 스태킹 기준 — ::after(-1)가 글자 뒤, 탭 배경 위 */
 }
-.w-tab-link.w--current::after {
+.w-tab-link.w--current .faq_tab-name::after {
   content: "";
   position: absolute;
-  left: 14%;                       /* 텍스트 폭에 맞춰 좌우 안쪽으로 */
-  right: 14%;
-  bottom: 22%;                     /* 글자 아래쪽에 걸치게 (형광펜 느낌) */
-  height: 0.52em;                  /* 글자 높이의 절반쯤 되는 두꺼운 밴드 */
+  left: -4px;               /* 글자 좌우로 살짝 튀어나오게 (페이징과 동일 느낌) */
+  right: -4px;
+  bottom: 1px;              /* 글자 밑선 근처에 걸치게 */
+  height: 0.5em;            /* 글자 높이의 절반쯤 되는 두꺼운 밴드 */
   background: rgba(0, 117, 214, 0.42);   /* 페이징과 동일한 블루 형광펜 */
   border-radius: 2px;
-  z-index: -1;                     /* 글자 뒤 */
+  z-index: -1;             /* 글자 뒤 */
   pointer-events: none;
 }
 
