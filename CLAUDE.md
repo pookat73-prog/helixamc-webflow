@@ -24,15 +24,27 @@
 ✅ 좋은 답:
 > 헤더가 스크롤 따라 어긋나는 이유는, Webflow 가 본문에 살짝 변형을 걸어서 "고정" 기준점이 화면이 아니라 본문이 돼버렸기 때문. 본문의 그 변형을 꺼주면 됨.
 
-## 🔌 MCP 가 필요할 땐 링크부터 선제시 (LOCKED v1)
+## 🔌 Webflow MCP — data_* 는 헤드리스(캔버스 불필요), designer_* 만 캔버스 필요 (LOCKED v2, MCP v2.0.1 실증)
 
-Webflow Designer MCP (또는 다른 MCP) 도구를 써야 하는 작업이면, **무작정 먼저 호출해서 실패하고 나서 링크 달라고 하지 말 것.** 사용자가 매번 그 패턴에 지침 사항. 대신:
+**갱신 배경**: 예전엔 "MCP 도구 = Designer 캔버스 열어둬야 동작"으로 알고 매번 캔버스 켜라고 안내했음. **MCP v2.0.1 에서 실제 테스트(디자이너 완전히 닫은 상태에서 `data_element_tool > set_attributes` 성공·검증)로 확인**: `data_*` 도구는 REST API 라 캔버스 안 열려 있어도 됨.
 
-1. 작업에 MCP 가 필요하다고 판단되는 즉시, **사용자에게 먼저 "이 작업은 Webflow Designer MCP 연결이 필요합니다 → [Designer 열기 링크]" 를 선제시**.
-2. Webflow Designer MCP 도구 (`element_tool`, `style_tool`, `de_*` 등) 는 **Designer 캔버스 세션이 열려 있어야** 동작. 헤드리스로는 실패함.
-   - Designer 열기: `https://webflow.com/design/helix-amc` (Site ID `69d090ea69d828e27d16ea29`) — Designer 우상단 Apps 패널에서 MCP/Companion 활성화.
-3. 링크 제시 후, 사용자가 "열었다" 확인하면 그 때 MCP 호출.
-4. MCP 없이도 가능한 대안 (repo CSS/JS 직접 수정 등) 이 있으면 그 대안도 함께 제시해 사용자가 고르게 함.
+### 도구 두 종류 (핵심)
+
+1. **`data_*` 도구 = REST API → 캔버스 불필요 (헤드리스 OK)**
+   - `data_element_tool`(요소 트리 읽기·텍스트/스타일/속성/링크 수정·이동/생성/삭제), `data_pages_tool`, `data_component_tool`, `data_style_tool`, `data_cms_tool` 등.
+   - **필요한 것은 `siteId` + `pageId` 뿐** (pageId 는 `data_pages_tool > list_pages` 또는 `designer_tool > get_current_page` 로).
+   - Site ID: `69d090ea69d828e27d16ea29`. FAQ pageId 예: `6a4f46aa5c5fd95c7b128df3`.
+2. **`designer_tool` = 라이브 UI 도구 → 캔버스 열려 있어야 함**
+   - `select_element`(캔버스에서 선택해 보여주기), `get_selected_element`(현재 선택 읽기), `open_canvas`/`switch_page`(캔버스 이동). 사용자 화면에 실시간 반영하는 편의 기능.
+
+### 운영 규칙
+
+1. **요소/스타일/속성/텍스트 수정, 구조 읽기**는 `data_*` 로 **캔버스 없이** 처리 — 더는 "캔버스 켜주세요" 선요청 안 함.
+2. **"이 요소 화면에서 선택해줘 / 지금 뭐 선택돼 있어?" 같은 라이브 편의**가 필요할 때만 Designer 열기 안내: `https://webflow.com/design/helix-amc` (Apps 패널에서 MCP/Companion 활성화).
+3. **연결(인증)은 1회** — MCP 계정 연결은 로그인처럼 한 번 해두면 유지. (연결 자체는 예나 지금이나 필요. 바뀐 건 "매번 캔버스 열어두기"가 사라진 것.)
+4. ⚠️ **충돌 주의**: `data_*` REST 로 수정하는 동안 Designer 를 동시에 열어두면 열린 캔버스가 덮어쓸 수 있음 → REST 작업 시엔 사용자에게 디자이너 닫아두길 권장.
+5. **반영은 Publish 필요**: `data_*` 로 고친 디자인 변경은 Webflow **Publish** 해야 사이트 DOM 에 나타남 (`data_sites_tool > publish_site`, 스테이징은 `publishToWebflowSubdomain:true`). Publish 는 outward-facing → 실행 전 확인 1회.
+6. MCP 없이도 가능한 대안(repo CSS/JS 직접 수정 등)이 있으면 함께 제시해 고르게 함.
 
 ## 🚫 사용자에게 커스텀 코드 붙여넣기 요구 금지 — Claude 가 API 로 처리 (LOCKED v1, 사용자 확정)
 
