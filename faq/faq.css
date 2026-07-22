@@ -221,11 +221,12 @@
        --faq-answer-outset: 좌우로 얼마나 더 넓힐지(가로 길이)
    ================================================================ */
 :root {
-  --faq-accent: #0075d6;         /* 그라데이션 끝 색 (브랜드 블루) */
-  --faq-border-w: 1.5px;         /* 외곽선 두께 */
-  --faq-radius: 16px;            /* 박스 모서리 라운드 */
-  --faq-answer-pad: 24px 30px;   /* 안쪽 사방 여백 — 세로 24 / 가로 30 (시원하게) */
-  --faq-answer-outset: 8px;      /* 좌우로 이만큼 더 넓힘 → 가로가 조금 더 길게 */
+  --faq-accent: rgba(0, 117, 214, 0.92);   /* 진한 모서리 색 (불투명에 가까운 메인블루) */
+  --faq-border-w: 1.5px;                    /* 외곽선 두께 */
+  --faq-radius: 14px;                       /* 박스 모서리 라운드 */
+  --faq-answer-pad: 14px 30px;              /* 안쪽 여백 — 세로 14 / 가로 30 (납작한 가로 직사각형) */
+  --faq-answer-outset: 8px;                 /* 좌우로 이만큼 더 넓힘 → 가로가 조금 더 길게 */
+  --faq-answer-bg: rgba(0, 117, 214, 0.03); /* 면 색 — 원래 톤 채우되 더 여리게(투명도↑) */
 }
 [class*="faq-a_full" i] {
   position: relative;
@@ -233,22 +234,24 @@
   margin-inline: calc(var(--faq-answer-outset) * -1);  /* 좌우로 밀어 가로 확장 */
   padding: var(--faq-answer-pad);
   border-radius: var(--faq-radius);
-  background: transparent;       /* 안쪽 투명 — 시원하고 가벼움 */
-  line-height: 1.8;              /* 줄간격 넉넉히 → 가독성·강조 */
+  background: var(--faq-answer-bg);   /* 여린 파란 면 색 */
+  line-height: 1.75;                  /* 줄간격 넉넉히 → 가독성·강조 */
 }
-/* 사선(135deg) 투명→메인블루 그라데이션 테두리.
+/* 대각(45deg) 그라데이션 테두리 — 왼쪽상단·오른쪽하단 모서리는
+   불투명에 가까운 메인블루(가운데 50% 피크), 오른쪽상단·왼쪽하단
+   모서리는 투명으로 풀림(양 끝 0%/100%).
    ::before 를 박스 크기로 깔고, 테두리 두께만큼의 링만 남기도록
-   mask 두 겹을 exclude 합성 → 안쪽은 뚫려 투명. */
+   mask 두 겹을 exclude 합성 → 안쪽은 뚫려 면 색만 보임. */
 [class*="faq-a_full" i]::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: var(--faq-border-w);
-  background: linear-gradient(135deg,
-              rgba(0, 117, 214, 0) 0%,
-              rgba(0, 117, 214, 0.25) 45%,
-              var(--faq-accent) 100%);
+  background: linear-gradient(45deg,
+              rgba(0, 117, 214, 0) 0%,      /* 왼쪽하단 모서리 — 풀림 */
+              var(--faq-accent) 50%,         /* 왼쪽상단·오른쪽하단 대각선 — 진한 파랑 */
+              rgba(0, 117, 214, 0) 100%);    /* 오른쪽상단 모서리 — 풀림 */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
