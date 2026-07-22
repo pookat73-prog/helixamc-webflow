@@ -226,7 +226,7 @@
 :root {
   --faq-accent: rgba(0, 117, 214, 0.92);   /* 진한 모서리 색 (불투명에 가까운 메인블루) */
   --faq-border-w: 2px;                      /* 외곽선 두께 */
-  --faq-answer-bg: rgba(0, 117, 214, 0.03); /* 면 색 — 여린 파란 톤 */
+  --faq-answer-bg: rgba(0, 117, 214, 0.02); /* 면 색 — 여린 파란 톤 (조금 더 투명하게) */
 }
 /* 면적 관련(padding/margin/radius/line-height)은 여기서 지정하지 않음 →
    Webflow Designer 설정이 그대로 적용됨. 여기선 그라데이션 선 기준점
