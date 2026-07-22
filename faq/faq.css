@@ -121,28 +121,30 @@
 }
 
 /* ── 뷰 탭 '선택됨' 표시 — 파란 형광펜 ───────────────────────────────
-   '질환으로 보기' 등 Webflow 기본 탭. 활성 탭 링크에 .w--current 가 붙고,
-   실제 글자는 그 안쪽 .faq_tab-name 에 있음. 형광펜을 바깥 탭 박스가 아니라
-   글자 요소(.faq_tab-name)에 직접 걸어 글자 폭·위치에 딱 맞춤(페이징과 동일).
-   탭을 바꾸면 .w--current 가 옮겨가 형광펜도 따라감. faq.css 는 FAQ 페이지
-   전용이라 이 페이지 탭에만 적용. (형광펜은 z-index:-1 로 글자 뒤) */
-.faq_tab-name {
+   '질환으로 보기' / '일반으로 가기' 등 Webflow 탭. 활성 탭 링크(.w-tab-link)에
+   .w--current 가 붙고, 실제 글자는 그 안쪽 텍스트 div 에 있음.
+   ⚠️ 탭마다 글자 클래스가 다름(질환=.faq_tab-name, 다른탭=.text-block-366 등).
+   그래서 특정 클래스 대신 '탭 링크의 자식 div' 를 통째로 잡아 탭 종류·이름과
+   무관하게 활성 탭이면 형광펜이 붙게 함(탭 추가/이름변경에도 자동).
+   형광펜은 바깥 탭 박스가 아니라 글자 div 에 걸어 폭·위치에 딱 맞춤.
+   faq.css 는 FAQ 페이지 전용. (형광펜은 z-index:-1 로 글자 뒤) */
+.w-tab-link > div {
   position: relative;
   z-index: 0;               /* 스태킹 기준 — ::after(-1)가 글자 뒤, 탭 배경 위 */
 }
 /* 활성 탭 글씨 자체를 진하게 — 파란 형광펜 위라 메인블랙이 대비 최고.
    + 1px 메인화이트 외부광선으로 글자가 형광펜에서 살짝 떠 보이게. */
-.w-tab-link.w--current .faq_tab-name {
+.w-tab-link.w--current > div {
   color: #0d1117;           /* 메인블랙 */
   font-weight: 700;         /* 찐하게 */
   text-shadow: 0 0 1px #F4F7FB, 0 0 1px #F4F7FB;   /* 외부광선 1px 메인화이트 */
 }
-.w-tab-link.w--current .faq_tab-name::after {
+.w-tab-link.w--current > div::after {
   content: "";
   position: absolute;
   left: -4px;               /* 왼쪽은 글자에 붙게 */
   right: -8px;              /* 오른쪽은 그라데이션 풀림 공간 */
-  bottom: -6px;             /* 글자 밑선보다 더 아래로 (쪼금 더 내림) */
+  bottom: -6px;             /* 글자 밑선보다 더 아래로 */
   height: 1.15em;           /* 두께 조금 더 */
   /* 왼쪽은 그대로, 오른쪽 끄트머리로 갈수록 확 연해지는 그라데이션 */
   background: linear-gradient(to right,
