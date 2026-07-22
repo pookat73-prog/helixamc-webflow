@@ -140,11 +140,15 @@
 .w-tab-link.w--current .faq_tab-name::after {
   content: "";
   position: absolute;
-  left: -4px;               /* 글자 좌우로 살짝 튀어나오게 (페이징과 동일 느낌) */
-  right: -4px;
+  left: -4px;               /* 왼쪽은 글자에 붙게 */
+  right: -8px;              /* 오른쪽은 그라데이션 풀림 공간 */
   bottom: -4px;             /* 글자 밑선보다 더 아래로 → 형광펜이 아래로 넓어짐 */
-  height: 1em;              /* 밴드를 더 두껍게 */
-  background: rgba(0, 117, 214, 0.3);    /* 더 연하게 0.5→0.3 */
+  height: 1.15em;           /* 두께 조금 더 */
+  /* 왼쪽은 그대로, 오른쪽 끄트머리로 갈수록 확 연해지는 그라데이션 */
+  background: linear-gradient(to right,
+              rgba(0, 117, 214, 0.3) 0%,
+              rgba(0, 117, 214, 0.3) 65%,
+              rgba(0, 117, 214, 0) 100%);
   border-radius: 2px;
   z-index: -1;             /* 글자 뒤 */
   pointer-events: none;
