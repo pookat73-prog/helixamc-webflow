@@ -217,28 +217,24 @@
    - 조절 포인트(맨 위 변수):
        --faq-accent       : 테두리 끝 색(브랜드 블루)
        --faq-border-w     : 테두리 두께
-       --faq-answer-pad   : 안쪽 사방 여백(시원함)
-       --faq-answer-outset: 좌우로 얼마나 더 넓힐지(가로 길이)
+
+   ※ 면적(패딩/여백/좌우 확장/모서리 반경/줄간격)은 사용자가 Webflow
+     Designer 에서 직접 조절하기로 해서, 여기선 초기화(강제 안 함).
+     그라데이션 테두리 선 + 여린 면색만 남김. Webflow 에서 faq-a_Full 에
+     준 padding/margin/radius 가 그대로 반영됨.
    ================================================================ */
 :root {
   --faq-accent: rgba(0, 117, 214, 0.92);   /* 진한 모서리 색 (불투명에 가까운 메인블루) */
-  --faq-border-w: 2px;                      /* 외곽선 두께 — 1.5px 는 날카로워 2px */
-  --faq-radius: 14px;                       /* 박스 모서리 라운드 */
-  --faq-answer-pad: 16px 32px;              /* 안쪽 여백 — 세로 16 / 가로 32 (납작한 가로 직사각형) */
-  --faq-answer-outset: 20px;                /* 좌우로 이만큼 더 넓힘 → 박스를 가로로 크게(텍스트 폭도 함께 넓어짐, 좁아지지 않음) */
-  --faq-answer-bg: rgba(0, 117, 214, 0.03); /* 면 색 — 원래 톤 채우되 더 여리게(투명도↑) */
+  --faq-border-w: 2px;                      /* 외곽선 두께 */
+  --faq-answer-bg: rgba(0, 117, 214, 0.03); /* 면 색 — 여린 파란 톤 */
 }
-/* !important — Webflow 의 faq-a_Full 은 조합 클래스(base+custom)라 우선순위가
-   더 높아 우리 padding 을 덮어씀. 이 프로젝트 패턴대로 !important 로 눌러
-   패딩·면색·박스 규칙이 실제로 적용되게 한다. */
+/* 면적 관련(padding/margin/radius/line-height)은 여기서 지정하지 않음 →
+   Webflow Designer 설정이 그대로 적용됨. 여기선 그라데이션 선 기준점
+   (position)과 여린 면색만. border-radius 는 ::before 가 상속하므로
+   Webflow 에서 준 라운드를 선이 그대로 따라감. */
 [class*="faq-a_full" i] {
   position: relative;
-  margin-top: 18px !important;
-  margin-inline: calc(var(--faq-answer-outset) * -1) !important;  /* 좌우로 밀어 가로 확장 */
-  padding: var(--faq-answer-pad) !important;
-  border-radius: var(--faq-radius) !important;
-  background: var(--faq-answer-bg) !important;   /* 여린 파란 면 색 */
-  line-height: 1.75 !important;                  /* 줄간격 넉넉히 → 가독성·강조 */
+  background: var(--faq-answer-bg);
 }
 /* 대각(45deg) 그라데이션 테두리 — 왼쪽상단·오른쪽하단 모서리는 진한
    메인블루, 오른쪽상단·왼쪽하단 모서리는 투명으로 풀림.
