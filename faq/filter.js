@@ -456,7 +456,10 @@
     return name && name.closest ? name.closest('.w-tab-link') : null;
   }
   function sectionB() {
-    return document.querySelector('[class*="list_connect" i]');
+    // 1순위: 안정적 커스텀 속성(REST 로 박아둠, Publish 후 사이트에 반영)
+    // 2순위: 폴백 — Publish 전이거나 속성 없을 때 클래스명으로
+    return document.querySelector('[data-faq-section="disease-list"]')
+        || document.querySelector('[class*="list_connect" i]');
   }
   function sync() {
     var sec = sectionB(), tab = diseaseTabLink();
