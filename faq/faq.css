@@ -69,8 +69,8 @@
   justify-content: center;
   border: 0;
   background: transparent;
-  /* inherit 은 주변 밝은(흰) 글자색을 물려받아 숫자가 안 보이던 문제 → 진한 색 명시 */
-  color: #3d4c5c;
+  /* 비활성 페이지 = 여린 위계 색(…·안내문과 동일). 활성만 메인블랙으로 도드라짐 */
+  color: #8b949e;
   /* Webflow '기본 일반 폰트' 변수 사용 (변수 값 바뀌면 따라감) */
   font-family: var(--기본-일반-폰트, 'Noto Sans KR'), sans-serif;
   font-size: 14px;               /* 페이징 숫자 크기 (작아 보여 10→14 로 키움) */
