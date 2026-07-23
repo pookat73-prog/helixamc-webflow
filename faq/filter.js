@@ -435,19 +435,18 @@
 })();
 
 /* ================================================================
-   '일반으로 보기' 탭 활성 시에만 '별도로 뺀 목록 섹션' 표시 토글
+   특정 탭 활성 시에만 '별도로 뺀 목록 섹션(일반용 FAQ)' 표시 토글
    ----------------------------------------------------------------
-   구조: 탭(질환/일반)은 Section A(WhiteFrame for List) 안에 있고, Webflow
-   기본 탭은 그 안의 패널만 자동으로 켜고 끔. 사용자가 faq 목록을 별도
-   Section B(WhiteFrame for List_connect = faq-list+페이징+CTA)로 빼서,
-   기본 탭은 Section B 를 못 건드림.
-   → '일반으로 보기' 탭이 활성일 때만 Section B(일반 FAQ 목록)를 보이고,
-     '질환으로 보기' 땐 숨긴다. (질환 필터/패널은 Webflow 기본 탭이 알아서
+   구조: 탭은 Section A(WhiteFrame for List) 안에 있고, Webflow 기본 탭은
+   그 안의 패널만 자동으로 켜고 끔. 사용자가 faq 목록을 별도 Section B
+   (WhiteFrame for List_connect = faq-list+페이징+CTA)로 빼서, 기본 탭은
+   Section B 를 못 건드림.
+   → .faq_tab-name 을 품은 탭이 활성일 때 Section B(일반용 FAQ 목록)를
+     보이고, 다른 탭일 땐 숨긴다. (필터/패널은 Webflow 기본 탭이 알아서
      Section A 안에서 켜고 끔 — 여기선 안 건드림)
 
-   탭 판별: '질환' 탭 링크는 안쪽 글자 요소가 .faq_tab-name (일반 탭은
-   .text-block-366). 그 글자를 품은 .w-tab-link 가 .w--current 면 질환 활성
-   → 그 반대(질환 비활성)면 일반 활성으로 보고 Section B 를 표시.
+   탭 판별: 대상 탭 링크는 안쪽 글자 요소가 .faq_tab-name. 그 글자를 품은
+   .w-tab-link 가 .w--current 면 활성 → Section B 표시.
    섹션 판별: 클래스에 list_connect 포함(WhiteFrame for List_connect).
    ================================================================ */
 (function () {
@@ -466,9 +465,9 @@
   function sync() {
     var sec = sectionB(), tab = diseaseTabLink();
     if (!sec || !tab) return false;
-    var diseaseOn = tab.classList.contains('w--current');   // 질환 탭 활성?
-    // 일반 탭 활성(= 질환 비활성)일 때만 목록 섹션 표시
-    sec.style.display = diseaseOn ? 'none' : '';
+    var diseaseTabOn = tab.classList.contains('w--current');   // .faq_tab-name 품은 탭 활성?
+    // 이 탭이 활성일 때만 목록 섹션(일반용 FAQ 목록) 표시
+    sec.style.display = diseaseTabOn ? '' : 'none';
     return true;
   }
   function bind() {
