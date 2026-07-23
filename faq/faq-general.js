@@ -39,6 +39,11 @@
 
   var RECS = [];   // { item, box, qRow, answer, indicator }
 
+  var PAGE_SIZE = 6;         // 한 페이지에 보여줄 질문 수
+  var curPage = 1;
+  var pagerEl = null;
+  var generalListEl = null;
+
   /* 일반용 목록 = .faq-more 없고 faq-a_full 있는 faq-list */
   function generalLists() {
     var out = [];
@@ -163,12 +168,96 @@
     RECS.push(rec);
   }
 
+  /* ── 페이징 (일반 목록 전용) ─────────────────────────────────────
+     일반 목록은 필터가 없어 전체를 PAGE_SIZE 씩 끊어 페이지로 보여줌.
+     pager 는 질환용과 동일 스타일(faq.css .faq-pager/.faq-page-btn 등) 재사용,
+     일반 섹션의 'Pages' 슬롯에 렌더(없으면 목록 뒤에 생성). */
+  function pageWindow(cur, total) {
+    if (total <= 7) { var a = []; for (var i = 1; i <= total; i++) a.push(i); return a; }
+    var out = [1], lo = Math.max(2, cur - 1), hi = Math.min(total - 1, cur + 1);
+    if (lo > 2) out.push('…');
+    for (var p = lo; p <= hi; p++) out.push(p);
+    if (hi < total - 1) out.push('…');
+    out.push(total);
+    return out;
+  }
+  function findPagesSlot() {
+    if (!generalListEl) return null;
+    var scope = (generalListEl.closest && generalListEl.closest('section')) || generalListEl.parentElement;
+    if (!scope) return null;
+    var cand = scope.querySelectorAll('[class*="pages" i]');
+    for (var i = 0; i < cand.length; i++) {
+      if (!cand[i].contains(generalListEl) && !generalListEl.contains(cand[i])) return cand[i];
+    }
+    return null;
+  }
+  function goToPage(p) {
+    curPage = p;
+    applyPaging();
+    try {
+      var top = generalListEl.getBoundingClientRect().top + window.pageYOffset - (headerBottom() + 20);
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    } catch (e) {}
+  }
+  function renderPager(totalPages) {
+    if (!pagerEl) {
+      pagerEl = findPagesSlot();
+      if (pagerEl) { if (!/\bfaq-pager\b/.test(pagerEl.className)) pagerEl.className += ' faq-pager'; }
+      else if (generalListEl && generalListEl.parentNode) {
+        pagerEl = document.createElement('nav');
+        pagerEl.className = 'faq-pager';
+        generalListEl.parentNode.insertBefore(pagerEl, generalListEl.nextSibling);
+      }
+    }
+    if (!pagerEl) return;
+    pagerEl.innerHTML = '';
+    pagerEl.setAttribute('aria-label', 'FAQ 페이지 이동');
+    if (totalPages <= 1) return;
+    function btn(label, page, opts) {
+      opts = opts || {};
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'faq-page-btn' + (opts.cls ? ' ' + opts.cls : '');
+      var lbl = document.createElement('span');
+      lbl.className = 'faq-page-lbl';
+      lbl.textContent = label;
+      b.appendChild(lbl);
+      if (opts.active) { b.classList.add('is-current'); b.setAttribute('aria-current', 'page'); }
+      if (opts.disabled) b.disabled = true;
+      else b.addEventListener('click', function (e) { e.preventDefault(); goToPage(page); });
+      pagerEl.appendChild(b);
+    }
+    btn('‹', curPage - 1, { cls: 'faq-page-nav', disabled: curPage <= 1 });
+    var win = pageWindow(curPage, totalPages);
+    for (var i = 0; i < win.length; i++) {
+      if (win[i] === '…') {
+        var s = document.createElement('span'); s.className = 'faq-page-gap'; s.textContent = '…';
+        pagerEl.appendChild(s);
+      } else btn(String(win[i]), win[i], { active: win[i] === curPage });
+    }
+    btn('›', curPage + 1, { cls: 'faq-page-nav', disabled: curPage >= totalPages });
+  }
+  function applyPaging() {
+    if (!generalListEl || !RECS.length) return;
+    var totalPages = Math.max(1, Math.ceil(RECS.length / PAGE_SIZE));
+    if (curPage > totalPages) curPage = totalPages;
+    if (curPage < 1) curPage = 1;
+    var start = (curPage - 1) * PAGE_SIZE, end = start + PAGE_SIZE;
+    for (var i = 0; i < RECS.length; i++) {
+      var on = (i >= start && i < end);
+      RECS[i].item.style.display = on ? '' : 'none';
+      if (!on) closeRec(RECS[i]);
+    }
+    renderPager(totalPages);
+  }
+
   function process() {
     var lists = generalLists();
     var fresh = 0;
     for (var i = 0; i < lists.length; i++) {
       var list = lists[i];
       list.setAttribute('data-faq-general', '1');
+      if (!generalListEl) generalListEl = list;   // 페이징 대상(첫 일반 목록)
       // 목록이 속한 섹션에 상단 여백 클래스(마진 겹침으로 어두운 body 노출 방지)
       var sec = list.closest ? list.closest('section') : null;
       if (sec) sec.classList.add('helix-gfaq-section');
@@ -180,6 +269,7 @@
       }
     }
     if (fresh) log('일반용 카드', fresh, '개 처리 / 목록', lists.length, '개');
+    applyPaging();   // 페이지 구간만 표시 + pager 렌더
     return lists.length;
   }
 
