@@ -208,6 +208,9 @@ section.subheader {
     padding: 0.35vw 2vw !important;
     background: #ffffff;
     border-radius: 0 0 14px 14px;
+    /* Webflow 원본 .w-tab-menu 에서 복제되며 딸려온 검정 border 제거 —
+       외곽선은 아래 box-shadow 헤어라인으로만 그림 */
+    border: none !important;
     /* 외곽선 — 제일 여린 텍스트위계4(#9aaabb) 헤어라인 + 부드러운 그림자 */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05), 0 0 0 0.5px #9aaabb;
     /* 위는 평평, 아래 좌·우만 둥근 인덱스 탭 형태 — 위 가장자리는 서브헤더에 붙음 */
