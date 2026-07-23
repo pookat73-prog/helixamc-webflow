@@ -120,6 +120,7 @@ jobs:
             "faq/faq-stack.js"
             "faq/faq-general.css"
             "faq/faq-general.js"
+            "faq/seo-loader.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/card-render.js"
@@ -174,6 +175,7 @@ jobs:
             "seo-snippets/discover-helix.html"
             "seo-snippets/seocho.html"
             "seo-snippets/symptoms.html"
+            "seo-snippets/faq.html"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
@@ -241,6 +243,7 @@ jobs:
             "faq/faq-stack.js"
             "faq/faq-general.css"
             "faq/faq-general.js"
+            "faq/seo-loader.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/modal.css"
@@ -257,6 +260,7 @@ jobs:
             "seo-snippets/discover-helix.html"
             "seo-snippets/seocho.html"
             "seo-snippets/symptoms.html"
+            "seo-snippets/faq.html"
           )
           # 참고: seocho/doctors/data/<group>/<slug>.json (의료진 28명) 은 클릭
           # 시점에 lazy fetch — 페이지 로드 차단 안 함. 첫 클릭 시 jsDelivr lazy
