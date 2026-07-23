@@ -1,0 +1,126 @@
+/* ================================================================
+   HELIX AMC — 일반용 FAQ '구분선 아코디언' (일반 목록 전용)
+
+   대상: '일반용' FAQ 목록만. 질환용(faq_box / FAQ_QA)엔 절대 안 닿음.
+   구분 방법: 페이지에 faq-list 가 2개(질환용/일반용)이고 클래스·속성이
+   동일하지만, 질환용 카드에는 '자세히 보기' 링크(.faq-more)가 있고
+   일반용(FAQ(C) 컴포넌트)에는 없다. faq-general.js 가 .faq-more 없는
+   목록만 골라 data-faq-general="1" + .helix-gfaq-* 마커를 단다.
+   → 이 CSS 는 그 마커에만 적용되므로 질환용과 완전히 격리된다.
+
+   룩: 박스·그림자 없이 얇은 구분선 + 오른쪽 +/− + 옅은 왼쪽 세로선 답변.
+   ================================================================ */
+
+/* 목록 컨테이너 */
+[data-faq-general] {
+  display: block;
+}
+
+/* 카드(항목) — 박스 없이 아래쪽 얇은 구분선만 */
+.helix-gfaq-item {
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--hairline, rgba(0, 0, 0, 0.07)) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+.helix-gfaq-item:last-child { border-bottom: 0 !important; }
+
+/* 카드 내부 박스(FAQ(C)_Q Box)도 면색/테두리 제거 → 순수 구분선 룩 */
+.helix-gfaq-box {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding-top: var(--space-lg, 24px) !important;
+  padding-bottom: var(--space-lg, 24px) !important;
+  padding-right: calc(var(--icon-md, 24px) + var(--space-md, 18px)) !important;
+  transition: background var(--dur, 0.28s) var(--ease, ease);
+}
+.helix-gfaq-item:hover .helix-gfaq-box {
+  background: rgba(0, 117, 214, 0.03) !important;
+}
+
+/* 질문 행 — 클릭 가능(커서) */
+.helix-gfaq-q {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 답변 — 평소 숨김, 펼치면 표시 */
+.helix-gfaq-answer {
+  display: none !important;
+}
+.helix-gfaq-item.is-open .helix-gfaq-answer {
+  display: block !important;
+  animation: helixGfaqReveal var(--dur, 0.28s) var(--ease, ease);
+}
+@keyframes helixGfaqReveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 답변 본문 — A2 사선 그라데이션 박스(faq.css) 무력화 후, 옅은 왼쪽 세로선 */
+[data-faq-general] [class*="faq-a_full" i] {
+  background: transparent !important;
+  border: 0 !important;
+  border-left: 2px solid rgba(0, 117, 214, 0.22) !important;
+  border-radius: 0 !important;
+  padding: 2px 0 2px 16px !important;
+  line-height: 1.75;
+}
+[data-faq-general] [class*="faq-a_full" i]::before {
+  display: none !important;   /* faq.css 의 그라데이션 테두리 제거 */
+}
+
+/* ── 오른쪽 +/− 토글 인디케이터 (faq-general.js 주입) ────────────── */
+.helix-gfaq-indicator {
+  position: absolute;
+  top: var(--space-lg, 24px);
+  right: 0;
+  width: var(--icon-md, 24px);
+  height: var(--icon-md, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-faint, #adb5bf);
+  cursor: pointer;
+  transition: color var(--dur, 0.28s) var(--ease, ease);
+}
+.helix-gfaq-item:hover .helix-gfaq-indicator,
+.helix-gfaq-item.is-open .helix-gfaq-indicator {
+  color: var(--c-blue, #0075d6);
+}
+.helix-gfaq-indicator__pm {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.helix-gfaq-indicator__pm::before,
+.helix-gfaq-indicator__pm::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+  border-radius: 2px;
+  transition: opacity var(--dur, 0.28s) var(--ease, ease),
+              transform var(--dur, 0.28s) var(--ease, ease);
+}
+.helix-gfaq-indicator__pm::before {   /* 가로 막대(항상) */
+  top: 50%; left: 18%; right: 18%; height: 2px;
+  transform: translateY(-50%);
+}
+.helix-gfaq-indicator__pm::after {    /* 세로 막대(닫힘 때만 → +) */
+  left: 50%; top: 18%; bottom: 18%; width: 2px;
+  transform: translateX(-50%);
+}
+.helix-gfaq-item.is-open .helix-gfaq-indicator__pm::after {
+  opacity: 0;
+  transform: translateX(-50%) rotate(90deg);
+}
