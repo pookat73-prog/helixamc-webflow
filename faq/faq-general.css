@@ -49,6 +49,7 @@
 .helix-gfaq-item {
   margin: 0 !important;
   padding: 0 !important;
+  min-height: 0 !important;
   background: transparent !important;
   background-image: none !important;
   border: 0 !important;
@@ -58,14 +59,19 @@
 }
 .helix-gfaq-item:first-child { border-top: 0 !important; }
 
-/* 카드 내부 박스도 평평화 */
+/* 카드 내부 박스도 평평화 — 세로 마진/패딩 완전 제거(위아래 간격 균일 핵심).
+   Webflow 가 박은 박스 마진이 남으면 질문 위쪽만 벌어짐. */
 .helix-gfaq-box {
+  display: block !important;
   background: transparent !important;
   background-image: none !important;
   border: 0 !important;
   box-shadow: none !important;
   border-radius: 0 !important;
   padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  gap: 0 !important;
 }
 
 /* 질문 행 — [Q뱃지][질문][+/−] 가로 배치, 왼쪽 정렬 */
@@ -113,25 +119,22 @@
   color: #fff !important;
 }
 
-/* 질문 텍스트 */
+/* 질문 텍스트 — 폰트 크기/자간은 Webflow 디자인(faq-q, 질환용과 동일) 그대로.
+   여기선 레이아웃(플렉스/정렬/여백)과 두께만 제어. 두께는 한 단계 얇게(500). */
 .helix-gfaq-qtext {
   flex: 1 1 auto !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.01em !important;
-  line-height: 1.5 !important;
+  font-weight: 500 !important;
   margin: 0 !important;
   padding: 0 !important;
   text-align: left !important;
-  color: var(--gfaq-ink) !important;
 }
 
-/* +/− 인디케이터 (행 오른쪽, 플렉스 막내) */
+/* +/− 인디케이터 (행 오른쪽, 플렉스 막내) — 작게 */
 .helix-gfaq-indicator {
   flex: none !important;
   position: relative;
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   color: var(--gfaq-faint);
   cursor: pointer;
   transition: color 0.25s ease;
@@ -180,9 +183,7 @@
   border: 0 !important;
   border-left: 2px solid var(--gfaq-blue-tint-2) !important;
   border-radius: 0 !important;
-  font-size: 13px !important;
-  line-height: 1.7 !important;
-  color: var(--gfaq-ink-soft) !important;
+  /* 폰트 크기/색은 Webflow 디자인(faq-a_full) 그대로 — 고정 안 함 */
 }
 [data-faq-general] [class*="faq-a_full" i]::before {
   display: none !important;   /* faq.css 의 사선 그라데이션 테두리 제거 */
