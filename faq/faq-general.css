@@ -30,6 +30,7 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 760px;
+  margin-top: 28px !important;       /* 위 필터와 붙지 않게 간격 */
   margin-left: auto !important;
   margin-right: auto !important;
   padding: 4px 24px !important;      /* faq-list 의 0 10vw 를 카드 여백으로 대체 */

@@ -119,21 +119,28 @@
     var qRow = qHead.parentElement || qHead;           // .FAQ(C)_Q (질문 행)
     var box = qRow.parentElement || item;              // .FAQ(C)_Q Box
 
-    // 'Q.' 뱃지 = qRow 안에서 질문(h3)이 아닌 형제
-    var qmark = null;
-    for (var i = 0; i < qRow.children.length; i++) {
-      if (qRow.children[i] !== qHead) { qmark = qRow.children[i]; break; }
-    }
-
     item.classList.add('helix-gfaq-item');
     box.classList.add('helix-gfaq-box');
     qRow.classList.add('helix-gfaq-q');
     qHead.classList.add('helix-gfaq-qtext');
     answerWrap.classList.add('helix-gfaq-answer');
-    if (qmark) {
-      qmark.classList.add('helix-gfaq-qmark');
-      var t = (qmark.textContent || '').trim();
-      if (/^q\.?$/i.test(t)) qmark.textContent = 'Q';   // 'Q.' → 'Q' (뱃지)
+
+    /* 네이티브 'Q.' 마크(텍스트가 정확히 'Q'/'Q.')를 찾아 숨기고,
+       내가 통제하는 뱃지를 질문 행 맨 앞에 새로 넣는다(원본 스타일 의존 X). */
+    var nativeQ = null;
+    var cand = qRow.querySelectorAll('*');
+    for (var i = 0; i < cand.length; i++) {
+      var c = cand[i];
+      if (c === qHead || c.contains(qHead)) continue;
+      if (/^q\.?$/i.test((c.textContent || '').trim())) { nativeQ = c; break; }
+    }
+    if (nativeQ) nativeQ.style.display = 'none';
+    if (!qRow.querySelector('.helix-gfaq-qmark')) {
+      var badge = document.createElement('span');
+      badge.className = 'helix-gfaq-qmark';
+      badge.setAttribute('aria-hidden', 'true');
+      badge.textContent = 'Q';
+      qRow.insertBefore(badge, qRow.firstChild);
     }
 
     // 접근성: 질문 행을 버튼처럼
