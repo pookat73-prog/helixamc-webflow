@@ -235,8 +235,14 @@ section.subheader {
   .helix-mini-tabmenu .w-tab-link:focus,
   .helix-mini-tabmenu .w-tab-link:hover {
     padding: 0.35vw 0.2vw !important;
-    font-size: 0.35em;
+    font-size: 0.35em !important;
     background: transparent !important;
+  }
+  /* 라벨이 안쪽 요소(div/span)에 자체 폰트크기를 갖고 있으면 위 .w-tab-link
+     의 0.35em 이 안 먹음 → 자식은 부모(0.35em 계산값)를 그대로 상속하게 강제.
+     inherit 라 em 이 중첩 축소되지 않음. */
+  .helix-mini-tabmenu .w-tab-link * {
+    font-size: inherit !important;
   }
   /* 미니 안 구분선도 조금 짧게 */
   .helix-mini-tabmenu .helix-tab-sep {
@@ -455,4 +461,11 @@ div[data-doctor-group] .flex-block-16:first-of-type {
    들쑥날쑥 보이던 것 차단. 정확히 1px 로 통일. */
 div[data-doctor-group] .b-divider-long_thin {
   height: 1px !important;
+}
+
+/* 의료진 카드 직함(직책) — Webflow 퍼블리시 스타일에서 볼드가 상속되던 것 차단,
+   Designer 설정대로 노멀(400) 강제. 데스크탑 .text-block-30 / 모바일 .job-title_m1 */
+div[data-doctor-group] .text-block-30,
+div[data-doctor-group] .job-title_m1 {
+  font-weight: 400 !important;
 }
