@@ -41,7 +41,10 @@
     /* 진료과목 전용 — 카드 U자 테두리(기존 deptUshapeBorder) */
     'services/dept-border.js',
     /* 진료과목 전용 — 화살표 상세이동 버튼 + 카드 강조 호버(기존 deptDetailNav) */
-    'services/dept-nav.js'
+    'services/dept-nav.js',
+    /* 진료과목 전용 — SEO 구조화데이터(MedicalWebPage + 진료과 ItemList) 주입.
+       Webflow 커스텀코드 쓰기 406 우회 (services/seo-loader.js 참고) */
+    'services/seo-loader.js'
   ];
 
   function cdn(ref, path) {
