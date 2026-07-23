@@ -435,19 +435,21 @@
 })();
 
 /* ================================================================
-   특정 탭 활성 시에만 '별도로 뺀 목록 섹션(일반용 FAQ)' 표시 토글
+   탭에 따라 '별도로 뺀 목록 섹션' 2개(질환용/일반용)를 서로 배타 토글
    ----------------------------------------------------------------
    구조: 탭은 Section A(WhiteFrame for List) 안에 있고, Webflow 기본 탭은
-   그 안의 패널만 자동으로 켜고 끔. 사용자가 faq 목록을 별도 Section B
-   (WhiteFrame for List_connect = faq-list+페이징+CTA)로 빼서, 기본 탭은
-   Section B 를 못 건드림.
-   → .faq_tab-name 을 품은 탭이 활성일 때 Section B(일반용 FAQ 목록)를
-     보이고, 다른 탭일 땐 숨긴다. (필터/패널은 Webflow 기본 탭이 알아서
-     Section A 안에서 켜고 끔 — 여기선 안 건드림)
+   그 안의 패널만 자동으로 켜고 끔. 사용자가 faq 목록을 별도 섹션
+   (WhiteFrame for List_connect = faq-list+페이징+CTA)으로 뺐는데, 이게
+   질환용/일반용 2개다. 클래스·data-faq-section 이 동일해 CSS 로는 구분 불가.
+   → 질환용 섹션엔 '자세히 보기'(.faq-more) 링크가 있고 일반용(FAQ(C)
+     컴포넌트)엔 없다. 이 차이로 두 섹션을 구분한다.
+   → .faq_tab-name 을 품은 탭(질환)이 활성이면 질환 섹션만, 아니면(일반)
+     일반 섹션만 표시. (반대쪽은 숨김)
 
-   탭 판별: 대상 탭 링크는 안쪽 글자 요소가 .faq_tab-name. 그 글자를 품은
-   .w-tab-link 가 .w--current 면 활성 → Section B 표시.
-   섹션 판별: 클래스에 list_connect 포함(WhiteFrame for List_connect).
+   탭 판별: 질환 탭 링크는 안쪽 글자 요소가 .faq_tab-name. 그 .w-tab-link
+   가 .w--current 면 질환 탭 활성.
+   섹션 판별: 클래스에 list_connect 포함(WhiteFrame for List_connect) 또는
+   data-faq-section="disease-list".
    ================================================================ */
 (function () {
   'use strict';
@@ -456,18 +458,28 @@
     var name = document.querySelector('.faq_tab-name');
     return name && name.closest ? name.closest('.w-tab-link') : null;
   }
-  function sectionB() {
-    // 1순위: 안정적 커스텀 속성(REST 로 박아둠, Publish 후 사이트에 반영)
-    // 2순위: 폴백 — Publish 전이거나 속성 없을 때 클래스명으로
-    return document.querySelector('[data-faq-section="disease-list"]')
-        || document.querySelector('[class*="list_connect" i]');
+  /* 별도로 뺀 목록 섹션들(질환용+일반용). 속성/클래스 둘 다로 잡고 중복 제거. */
+  function listSections() {
+    var nodes = document.querySelectorAll('[data-faq-section="disease-list"], [class*="list_connect" i]');
+    var out = [];
+    for (var i = 0; i < nodes.length; i++) {
+      if (out.indexOf(nodes[i]) < 0) out.push(nodes[i]);
+    }
+    return out;
+  }
+  /* 질환용 섹션 = '자세히 보기'(.faq-more) 링크를 품은 섹션. 일반용은 없음. */
+  function isDiseaseSection(sec) {
+    return !!sec.querySelector('[class*="faq-more" i]');
   }
   function sync() {
-    var sec = sectionB(), tab = diseaseTabLink();
-    if (!sec || !tab) return false;
-    var diseaseTabOn = tab.classList.contains('w--current');   // .faq_tab-name 품은 탭 활성?
-    // 이 탭이 활성일 때만 목록 섹션(일반용 FAQ 목록) 표시
-    sec.style.display = diseaseTabOn ? '' : 'none';
+    var secs = listSections(), tab = diseaseTabLink();
+    if (!secs.length || !tab) return false;
+    var diseaseTabOn = tab.classList.contains('w--current');   // 질환 탭 활성?
+    for (var i = 0; i < secs.length; i++) {
+      // 질환 탭이면 질환 섹션만, 일반 탭이면 일반 섹션만 표시(반대쪽 숨김)
+      var show = diseaseTabOn ? isDiseaseSection(secs[i]) : !isDiseaseSection(secs[i]);
+      secs[i].style.display = show ? '' : 'none';
+    }
     return true;
   }
   function bind() {
