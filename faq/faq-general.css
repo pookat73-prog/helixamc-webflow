@@ -1,126 +1,189 @@
 /* ================================================================
-   HELIX AMC — 일반용 FAQ '구분선 아코디언' (일반 목록 전용)
+   HELIX AMC — 일반용 FAQ '구분선 아코디언' (A안 목업 그대로, 일반 목록 전용)
 
    대상: '일반용' FAQ 목록만. 질환용(faq_box / FAQ_QA)엔 절대 안 닿음.
-   구분 방법: 페이지에 faq-list 가 2개(질환용/일반용)이고 클래스·속성이
-   동일하지만, 질환용 카드에는 '자세히 보기' 링크(.faq-more)가 있고
-   일반용(FAQ(C) 컴포넌트)에는 없다. faq-general.js 가 .faq-more 없는
-   목록만 골라 data-faq-general="1" + .helix-gfaq-* 마커를 단다.
-   → 이 CSS 는 그 마커에만 적용되므로 질환용과 완전히 격리된다.
+   구분: 질환용 카드엔 '자세히 보기'(.faq-more) 링크가 있고 일반용
+   (FAQ(C) 컴포넌트)에는 없다. faq-general.js 가 .faq-more 없는 목록만
+   골라 data-faq-general + .helix-gfaq-* 마커를 단다.
 
-   룩: 박스·그림자 없이 얇은 구분선 + 오른쪽 +/− + 옅은 왼쪽 세로선 답변.
+   A안(구분선 아코디언):
+   - 전체 목록을 흰 테두리 카드로 감싸고 그 안에 얇은 구분선
+   - 질문 행: [Q 뱃지] [질문] [+/−]  (왼쪽 정렬, 가로 배치)
+   - Q 뱃지: 평소 옅은 파란 틴트(글자 파랑) → 펼치면 솔리드 파랑(글자 흰색)
+   - 답변: 왼쪽 38px 들여쓰기 + 옅은 파란 세로선, 채움 없음
    ================================================================ */
 
-/* 목록 컨테이너 */
-[data-faq-general] {
-  display: block;
+/* 색 토큰 (목업 라이트값 — 실제 사이트 라이트 배경 기준) */
+:root {
+  --gfaq-card-bg: #ffffff;
+  --gfaq-ink: #0d1117;
+  --gfaq-ink-soft: #3d4c5c;
+  --gfaq-faint: #9aa7b6;
+  --gfaq-hairline: #dce3ec;
+  --gfaq-blue: #0075d6;
+  --gfaq-blue-tint: rgba(0, 117, 214, 0.06);
+  --gfaq-blue-tint-2: rgba(0, 117, 214, 0.12);
 }
 
-/* 카드(항목) — 박스 없이 아래쪽 얇은 구분선만 */
+/* 컨테이너 — 흰 테두리 카드 (목업 .ga-list) */
+[data-faq-general] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 760px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 4px 24px !important;      /* faq-list 의 0 10vw 를 카드 여백으로 대체 */
+  background: var(--gfaq-card-bg);
+  border: 1px solid var(--gfaq-hairline);
+  border-radius: 14px;
+}
+
+/* 항목 — 위쪽 얇은 구분선 (첫 항목은 없음). 박스/그림자 제거 */
 .helix-gfaq-item {
-  position: relative;
   margin: 0 !important;
   padding: 0 !important;
   background: transparent !important;
   background-image: none !important;
   border: 0 !important;
-  border-bottom: 1px solid var(--hairline, rgba(0, 0, 0, 0.07)) !important;
+  border-top: 1px solid var(--gfaq-hairline) !important;
   box-shadow: none !important;
   border-radius: 0 !important;
 }
-.helix-gfaq-item:last-child { border-bottom: 0 !important; }
+.helix-gfaq-item:first-child { border-top: 0 !important; }
 
-/* 카드 내부 박스(FAQ(C)_Q Box)도 면색/테두리 제거 → 순수 구분선 룩 */
+/* 카드 내부 박스도 평평화 */
 .helix-gfaq-box {
   background: transparent !important;
   background-image: none !important;
   border: 0 !important;
   box-shadow: none !important;
   border-radius: 0 !important;
-  padding-top: var(--space-lg, 24px) !important;
-  padding-bottom: var(--space-lg, 24px) !important;
-  padding-right: calc(var(--icon-md, 24px) + var(--space-md, 18px)) !important;
-  transition: background var(--dur, 0.28s) var(--ease, ease);
-}
-.helix-gfaq-item:hover .helix-gfaq-box {
-  background: rgba(0, 117, 214, 0.03) !important;
+  padding: 0 !important;
 }
 
-/* 질문 행 — 클릭 가능(커서) */
+/* 질문 행 — [Q뱃지][질문][+/−] 가로 배치, 왼쪽 정렬 */
 .helix-gfaq-q {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+  width: 100% !important;
+  text-align: left !important;
+  padding: 20px 0 !important;
+  margin: 0 !important;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
 }
-
-/* 답변 — 평소 숨김, 펼치면 표시 */
-.helix-gfaq-answer {
-  display: none !important;
-}
-.helix-gfaq-item.is-open .helix-gfaq-answer {
-  display: block !important;
-  animation: helixGfaqReveal var(--dur, 0.28s) var(--ease, ease);
-}
-@keyframes helixGfaqReveal {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+.helix-gfaq-q:focus-visible {
+  outline: 2px solid var(--gfaq-blue);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-/* 답변 본문 — A2 사선 그라데이션 박스(faq.css) 무력화 후, 옅은 왼쪽 세로선 */
-[data-faq-general] [class*="faq-a_full" i] {
-  background: transparent !important;
-  border: 0 !important;
-  border-left: 2px solid rgba(0, 117, 214, 0.22) !important;
-  border-radius: 0 !important;
-  padding: 2px 0 2px 16px !important;
-  line-height: 1.75;
+/* Q 뱃지 (평소 옅은 파란 틴트 → 펼치면 솔리드 파랑) */
+.helix-gfaq-qmark {
+  flex: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  border-radius: 7px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: var(--gfaq-blue-tint) !important;
+  color: var(--gfaq-blue) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: background 0.25s ease, color 0.25s ease;
 }
-[data-faq-general] [class*="faq-a_full" i]::before {
-  display: none !important;   /* faq.css 의 그라데이션 테두리 제거 */
+.helix-gfaq-item.is-open .helix-gfaq-qmark {
+  background: var(--gfaq-blue) !important;
+  color: #fff !important;
 }
 
-/* ── 오른쪽 +/− 토글 인디케이터 (faq-general.js 주입) ────────────── */
+/* 질문 텍스트 */
+.helix-gfaq-qtext {
+  flex: 1 1 auto !important;
+  font-size: 15.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  color: var(--gfaq-ink) !important;
+}
+
+/* +/− 인디케이터 (행 오른쪽, 플렉스 막내) */
 .helix-gfaq-indicator {
-  position: absolute;
-  top: var(--space-lg, 24px);
-  right: 0;
-  width: var(--icon-md, 24px);
-  height: var(--icon-md, 24px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--c-faint, #adb5bf);
-  cursor: pointer;
-  transition: color var(--dur, 0.28s) var(--ease, ease);
-}
-.helix-gfaq-item:hover .helix-gfaq-indicator,
-.helix-gfaq-item.is-open .helix-gfaq-indicator {
-  color: var(--c-blue, #0075d6);
-}
-.helix-gfaq-indicator__pm {
+  flex: none !important;
   position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
+  width: 18px;
+  height: 18px;
+  color: var(--gfaq-faint);
+  cursor: pointer;
+  transition: color 0.25s ease;
 }
+.helix-gfaq-item.is-open .helix-gfaq-indicator { color: var(--gfaq-blue); }
+.helix-gfaq-indicator__pm { position: absolute; inset: 0; }
 .helix-gfaq-indicator__pm::before,
 .helix-gfaq-indicator__pm::after {
   content: "";
   position: absolute;
+  inset: 0;
+  margin: auto;
   background: currentColor;
   border-radius: 2px;
-  transition: opacity var(--dur, 0.28s) var(--ease, ease),
-              transform var(--dur, 0.28s) var(--ease, ease);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
 }
-.helix-gfaq-indicator__pm::before {   /* 가로 막대(항상) */
-  top: 50%; left: 18%; right: 18%; height: 2px;
-  transform: translateY(-50%);
-}
-.helix-gfaq-indicator__pm::after {    /* 세로 막대(닫힘 때만 → +) */
-  left: 50%; top: 18%; bottom: 18%; width: 2px;
-  transform: translateX(-50%);
-}
+.helix-gfaq-indicator__pm::before { width: 100%; height: 2px; }   /* 가로 */
+.helix-gfaq-indicator__pm::after  { width: 2px; height: 100%; }   /* 세로 */
 .helix-gfaq-item.is-open .helix-gfaq-indicator__pm::after {
+  transform: rotate(90deg);
   opacity: 0;
-  transform: translateX(-50%) rotate(90deg);
+}
+
+/* 답변 — 평소 숨김, 펼치면 표시. Webflow 슬롯 평평화 */
+.helix-gfaq-answer {
+  display: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+.helix-gfaq-item.is-open .helix-gfaq-answer {
+  display: block !important;
+  animation: helixGfaqReveal 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes helixGfaqReveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 답변 본문 — 왼쪽 38px 들여쓰기 + 옅은 파란 세로선 (A2 그라데이션 무력화) */
+[data-faq-general] [class*="faq-a_full" i] {
+  margin: 0 0 22px 38px !important;
+  padding: 0 0 0 14px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-left: 2px solid var(--gfaq-blue-tint-2) !important;
+  border-radius: 0 !important;
+  font-size: 14.5px !important;
+  line-height: 1.7 !important;
+  color: var(--gfaq-ink-soft) !important;
+}
+[data-faq-general] [class*="faq-a_full" i]::before {
+  display: none !important;   /* faq.css 의 사선 그라데이션 테두리 제거 */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .helix-gfaq-item.is-open .helix-gfaq-answer { animation: none; }
+  .helix-gfaq-indicator__pm::before,
+  .helix-gfaq-indicator__pm::after,
+  .helix-gfaq-qmark { transition: none; }
 }
