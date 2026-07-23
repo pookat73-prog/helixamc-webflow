@@ -169,6 +169,9 @@
     for (var i = 0; i < lists.length; i++) {
       var list = lists[i];
       list.setAttribute('data-faq-general', '1');
+      // 목록이 속한 섹션에 상단 여백 클래스(마진 겹침으로 어두운 body 노출 방지)
+      var sec = list.closest ? list.closest('section') : null;
+      if (sec) sec.classList.add('helix-gfaq-section');
       // 직속 자식(카드 항목) 순회
       var kids = list.children;
       for (var k = 0; k < kids.length; k++) {
