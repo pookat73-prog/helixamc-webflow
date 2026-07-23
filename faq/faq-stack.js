@@ -8,11 +8,12 @@
                ├ .faq_qa  질문 + 요약(.faq-a) + '자세히' 인디케이터(주입)
                └ .faq_answer-ai  상세(.faq-a_Full) = ANSWER
 
-   동작 (구분선 아코디언)
-     평소  : 박스·그림자 없이 얇은 구분선으로만 질문 나열. 질문 + 요약 표시,
-             각 행 오른쪽에 + 아이콘.
-     클릭  : 질문 행 또는 + 를 누르면 상세가 카드 '안'으로 인라인 펼쳐지고
-             + → − 로 바뀜. 아래 리스트는 자연스레 밀려 내려감. 다시 누르면 접힘.
+   동작
+     평소  : 카드가 세로로 하나씩(겹침 없음). 질문 + 요약 항상 표시.
+             요약 밑 중앙정렬로 '자세히' + 화살표 인디케이터.
+     클릭  : '자세히' 누르면 상세가 카드 '안'으로 인라인 펼쳐져 카드가 하나로
+             늘어남(박스 속 박스 없이). 아래 리스트는 자연스레 밀려 내려감.
+             펼치면 화살표 반대(180°) + 라벨 '자세히'→'접기'. 다시 누르면 접힘.
              아코디언식(하나 열면 나머지 닫힘). 펼치면 화면에 다 보이게 시야 이동.
 
    선·그림자·테두리 등 카드 효과 = 이 파일(코드) + faq.css.
@@ -85,10 +86,20 @@
   function setIndicator(rec, open) {
     if (!rec.indicator) return;
     rec.indicator.setAttribute('aria-expanded', open ? 'true' : 'false');
-    rec.indicator.setAttribute('aria-label', open ? '답변 접기' : '답변 펼치기');
+    var lbl = rec.indicator.querySelector('.helix-faq-indicator__label');
+    if (lbl) lbl.textContent = open ? '접기' : '자세히';   // 펼치면 '접기' 로
   }
-  /* +/− 인디케이터는 카드 기준 절대배치(오른쪽 고정)라 이동 불필요 — no-op */
-  function placeIndicator(rec, open) {}
+  /* 인디케이터 위치: 닫힘=요약 바로 뒤 / 펼침=상세 아래(카드 끝).
+     펼침 때 '접기'가 요약과 상세 사이에 끼어 둘을 갈라놓지 않게 하려고 이동. */
+  function placeIndicator(rec, open) {
+    if (!rec.indicator) return;
+    if (open) {
+      if (rec.card) rec.card.appendChild(rec.indicator);          // 상세 아래(맨 끝)
+    } else if (rec.qa) {
+      if (rec.summary && rec.summary.parentNode === rec.qa) rec.qa.insertBefore(rec.indicator, rec.summary.nextSibling);
+      else rec.qa.appendChild(rec.indicator);                     // 요약 바로 뒤(원위치)
+    }
+  }
   function closeRec(r) {
     if (!r) return;
     r.item.classList.remove('is-open');
@@ -145,36 +156,29 @@
     }, 20);
   }
 
-  /* 질문 행 오른쪽에 +/− 인디케이터 주입 (상세가 있을 때만).
-     카드 기준 절대배치(오른쪽). 질문(질문블록) 클릭으로도 열고 닫히게. */
+  /* 요약 밑에 '자세히' + 감각 화살표 인디케이터 주입 (상세가 있을 때만). */
   function buildIndicator(rec) {
     if (rec.indicator || !rec.answer) return;
-    var host = rec.card;
-    if (!host) return;
+    var qa = rec.qa || rec.card;
+    if (!qa) return;
     var el = document.createElement('div');
     el.className = 'helix-faq-indicator';
     el.setAttribute('role', 'button');
     el.setAttribute('tabindex', '0');
     el.setAttribute('aria-expanded', 'false');
-    el.setAttribute('aria-label', '답변 펼치기');
-    el.innerHTML = '<span class="helix-faq-indicator__pm" aria-hidden="true"></span>';
-    host.appendChild(el);   // 카드 오른쪽 고정(절대배치)
+    el.setAttribute('aria-label', '자세히 보기');
+    el.innerHTML =
+      '<span class="helix-faq-indicator__label">자세히</span>' +
+      '<svg class="helix-faq-indicator__arrow" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M5 9l7 7 7-7"/></svg>';
+    // 요약 바로 뒤에 끼워넣기(요약이 qa 직속일 때). 아니면 qa 끝에 붙임(요약 아래).
+    if (rec.summary && rec.summary.parentNode === qa) qa.insertBefore(el, rec.summary.nextSibling);
+    else qa.appendChild(el);
     el.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); toggleRec(rec); });
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRec(rec); }
     });
     rec.indicator = el;
-
-    /* '질문 클릭 → 답 펼침' — 질문블록(요약 포함) 클릭도 토글.
-       링크/버튼/인디케이터 클릭은 제외(원래 동작 보존). */
-    if (rec.qa) {
-      rec.qa.style.cursor = 'pointer';
-      rec.qa.addEventListener('click', function (e) {
-        var t = e.target;
-        if (t && t.closest && t.closest('a, button, .helix-faq-indicator')) return;
-        toggleRec(rec);
-      });
-    }
   }
 
   /* 상세 문단의 수동 줄바꿈(<br>)을 각각 .faq-line 블록으로 감쌈 → CSS 가
