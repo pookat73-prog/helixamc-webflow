@@ -217,7 +217,8 @@ section.subheader {
     align-items: center;
     justify-content: center;
     flex-wrap: nowrap;
-    gap: 0;
+    /* 탭 사이 간격 시원하게 — 구분선 양옆으로 여백 확보 */
+    gap: 0.7vw;
   }
   .helix-mini-tabmenu.is-visible {
     transform: translate(-50%, calc(var(--header-h, 56px) + var(--subheader-h, 0px) - 2px));
@@ -229,8 +230,8 @@ section.subheader {
   .helix-mini-tabmenu .w-tab-link.w--current,
   .helix-mini-tabmenu .w-tab-link:focus,
   .helix-mini-tabmenu .w-tab-link:hover {
-    padding: 0.35vw 0.6vw !important;
-    font-size: 0.82em;
+    padding: 0.35vw 0.4vw !important;
+    font-size: 0.7em;
     background: transparent !important;
   }
   /* 미니 안 구분선도 조금 짧게 */
