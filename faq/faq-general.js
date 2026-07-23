@@ -53,9 +53,10 @@
   }
 
   function setIndicator(rec, open) {
-    if (!rec.indicator) return;
-    rec.indicator.setAttribute('aria-expanded', open ? 'true' : 'false');
-    rec.indicator.setAttribute('aria-label', open ? '답변 접기' : '답변 펼치기');
+    if (rec.qRow) {
+      rec.qRow.setAttribute('aria-expanded', open ? 'true' : 'false');
+      rec.qRow.setAttribute('aria-label', open ? '답변 접기' : '답변 펼치기');
+    }
   }
   function closeRec(r) {
     if (!r) return;
@@ -96,20 +97,14 @@
     }, 20);
   }
 
+  /* +/− 인디케이터를 질문 행(qRow)의 마지막 플렉스 자식으로 붙임 */
   function buildIndicator(rec) {
-    if (rec.indicator || !rec.box) return;
+    if (rec.indicator || !rec.qRow) return;
     var el = document.createElement('div');
     el.className = 'helix-gfaq-indicator';
-    el.setAttribute('role', 'button');
-    el.setAttribute('tabindex', '0');
-    el.setAttribute('aria-expanded', 'false');
-    el.setAttribute('aria-label', '답변 펼치기');
-    el.innerHTML = '<span class="helix-gfaq-indicator__pm" aria-hidden="true"></span>';
-    rec.box.appendChild(el);
-    el.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); toggleRec(rec); });
-    el.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRec(rec); }
-    });
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<span class="helix-gfaq-indicator__pm"></span>';
+    rec.qRow.appendChild(el);
     rec.indicator = el;
   }
 
@@ -121,21 +116,41 @@
     item.__helixGfaq = true;
 
     var answerWrap = answer.parentElement || answer;   // .FAQ(C)_Answer AI
-    var qRow = qHead.parentElement || qHead;           // .FAQ(C)_Q
+    var qRow = qHead.parentElement || qHead;           // .FAQ(C)_Q (질문 행)
     var box = qRow.parentElement || item;              // .FAQ(C)_Q Box
+
+    // 'Q.' 뱃지 = qRow 안에서 질문(h3)이 아닌 형제
+    var qmark = null;
+    for (var i = 0; i < qRow.children.length; i++) {
+      if (qRow.children[i] !== qHead) { qmark = qRow.children[i]; break; }
+    }
 
     item.classList.add('helix-gfaq-item');
     box.classList.add('helix-gfaq-box');
     qRow.classList.add('helix-gfaq-q');
+    qHead.classList.add('helix-gfaq-qtext');
     answerWrap.classList.add('helix-gfaq-answer');
+    if (qmark) {
+      qmark.classList.add('helix-gfaq-qmark');
+      var t = (qmark.textContent || '').trim();
+      if (/^q\.?$/i.test(t)) qmark.textContent = 'Q';   // 'Q.' → 'Q' (뱃지)
+    }
+
+    // 접근성: 질문 행을 버튼처럼
+    qRow.setAttribute('role', 'button');
+    qRow.setAttribute('tabindex', '0');
+    qRow.setAttribute('aria-expanded', 'false');
 
     var rec = { item: item, box: box, qRow: qRow, answer: answerWrap, indicator: null };
-    buildIndicator(rec);
+    buildIndicator(rec);   // qRow 마지막에 +/− 붙임
 
     qRow.addEventListener('click', function (e) {
-      var t = e.target;
-      if (t && t.closest && t.closest('a, button, .helix-gfaq-indicator')) return;
+      var tt = e.target;
+      if (tt && tt.closest && tt.closest('a, button')) return;
       toggleRec(rec);
+    });
+    qRow.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRec(rec); }
     });
 
     RECS.push(rec);
@@ -158,8 +173,36 @@
     return lists.length;
   }
 
+  /* 진단(디버그 전용): 화면에 보이는 '어두운 배경 + 넓은' 요소를 찾아 로그.
+     검은 띠 정체 파악용. ?faq-general-debug=1 일 때만. */
+  function diagnoseDark() {
+    if (!DEBUG) return;
+    try {
+      var vw = window.innerWidth || 1000;
+      var all = document.querySelectorAll('body *');
+      var hits = [];
+      for (var i = 0; i < all.length; i++) {
+        var el = all[i];
+        var r = el.getBoundingClientRect();
+        if (r.height < 16 || r.width < vw * 0.6) continue;      // 넓고 어느정도 높이만
+        var cs = getComputedStyle(el);
+        var bg = cs.backgroundColor || '';
+        var m = bg.match(/rgba?\(([^)]+)\)/);
+        if (!m) continue;
+        var p = m[1].split(',').map(function (s) { return parseFloat(s); });
+        var a = p.length > 3 ? p[3] : 1;
+        if (a < 0.5) continue;                                   // 투명 제외
+        var lum = 0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2];
+        if (lum > 60) continue;                                  // 밝으면 제외 → 어두운 것만
+        hits.push({ cls: el.className || el.tagName, bg: bg, top: Math.round(r.top), h: Math.round(r.height) });
+      }
+      log('어두운 넓은 요소 후보:', hits);
+    } catch (e) { log('diagnoseDark err', e); }
+  }
+
   function start() {
     process();
+    setTimeout(diagnoseDark, 800);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(process).catch(function () {});
     window.addEventListener('load', process);
 
