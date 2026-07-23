@@ -206,7 +206,7 @@ section.subheader {
     max-width: calc(100vw - 24px);
     /* 메뉴 자체 양옆 패딩 — 첫 탭(내과) 왼쪽·끝 탭(응급의학과) 오른쪽 여백 넉넉하게 */
     padding: 0.35vw 2vw !important;
-    background: #ffffff;
+    background: #f4f7fb; /* 메인 화이트 (--메인-화이트) */
     border-radius: 0 0 14px 14px;
     /* Webflow 원본 .w-tab-menu 에서 복제되며 딸려온 검정 border 제거 —
        외곽선은 아래 box-shadow 헤어라인으로만 그림 */
@@ -235,7 +235,7 @@ section.subheader {
   .helix-mini-tabmenu .w-tab-link:focus,
   .helix-mini-tabmenu .w-tab-link:hover {
     padding: 0.35vw 0.2vw !important;
-    font-size: 0.35em !important;
+    font-size: 0.8em !important;
     background: transparent !important;
   }
   /* 라벨이 안쪽 요소(div/span)에 자체 폰트크기를 갖고 있으면 위 .w-tab-link
