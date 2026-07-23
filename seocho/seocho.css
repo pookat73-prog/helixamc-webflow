@@ -204,8 +204,8 @@ section.subheader {
     z-index: 998 !important;
     width: auto !important;
     max-width: calc(100vw - 24px);
-    /* 메뉴 자체 양옆 패딩 — 알약 좌우 여백 넉넉하게 */
-    padding: 0.35vw 1.3vw !important;
+    /* 메뉴 자체 양옆 패딩 — 첫 탭(내과) 왼쪽·끝 탭(응급의학과) 오른쪽 여백 넉넉하게 */
+    padding: 0.35vw 2vw !important;
     background: #ffffff;
     border-radius: 0 0 14px 14px;
     /* 외곽선 — 텍스트위계3(#6b7d99) 얇은 선 + 부드러운 그림자 */
@@ -218,8 +218,8 @@ section.subheader {
     align-items: center;
     justify-content: center;
     flex-wrap: nowrap;
-    /* 탭 사이 간격 — 시원하되 살짝만 좁힘 */
-    gap: 1.3vw;
+    /* 탭 사이 간격 — 조금 더 붙임 */
+    gap: 1vw;
   }
   .helix-mini-tabmenu.is-visible {
     transform: translate(-50%, calc(var(--header-h, 56px) + var(--subheader-h, 0px) - 2px));
