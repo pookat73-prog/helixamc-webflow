@@ -351,6 +351,20 @@ section.subheader {
   }
 }
 
+/* ================================================================
+   햄버거 메뉴 열림 시 미니 분과 탭 숨김
+   ================================================================
+   햄버거 열면 hamburger.js 가 body 에 .hx-menu-open 을 붙이고 서브헤더가
+   사라지는데, 미니 탭엔 그 처리가 없어 허공에 둥둥 떠 보이던 문제.
+   메뉴 열려 있는 동안 미니 탭(데스크탑/모바일 셀렉트·패널 전부) 숨김.
+   ⚠️ body.hx-menu-open (0,2,1) 이 .helix-mini-tabmenu (0,1,0) 보다
+   구체적이라 미디어쿼리 안 display:inline-flex !important 도 이김. */
+body.hx-menu-open .helix-mini-tabmenu,
+body.hx-menu-open .helix-mini-tabselect,
+body.hx-menu-open .helix-mini-tabpanel {
+  display: none !important;
+}
+
 /* 네이버 지도 컨테이너 — Webflow 의 .map_naver / #map_naver 둘 다 커버.
    공통 속성 (높이 제외). */
 .map_naver,
