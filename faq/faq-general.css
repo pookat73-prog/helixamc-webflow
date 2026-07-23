@@ -36,10 +36,10 @@
 [data-faq-general] {
   box-sizing: border-box;
   width: 100%;
-  max-width: 720px;
+  max-width: 900px;                  /* 시원하게 더 넓게 */
   margin-left: auto !important;
   margin-right: auto !important;
-  padding: 0 22px !important;        /* 세로 여백은 질문 행이 담당(위아래 균일) */
+  padding: 0 32px !important;        /* 좌우 여백 넉넉히. 세로 여백은 질문 행이 담당 */
   background: var(--gfaq-card-bg);
   border: 1px solid var(--gfaq-hairline);
   border-radius: 14px;
@@ -83,7 +83,7 @@
   gap: 12px !important;
   width: 100% !important;
   text-align: left !important;
-  padding: 15px 0 !important;        /* 위·아래 동일, 축소 */
+  padding: 20px 0 !important;        /* 위·아래 동일, 넉넉히 */
   margin: 0 !important;
   cursor: pointer;
   user-select: none;
@@ -177,8 +177,8 @@
 
 /* 답변 본문 — 왼쪽 38px 들여쓰기 + 옅은 파란 세로선 (A2 그라데이션 무력화) */
 [data-faq-general] [class*="faq-a_full" i] {
-  margin: 0 0 16px 32px !important;   /* 뱃지(20)+gap(12) 만큼 들여씀 */
-  padding: 0 0 0 14px !important;
+  margin: 0 0 22px 32px !important;   /* 뱃지(20)+gap(12) 만큼 들여씀, 아래 여백 넉넉 */
+  padding: 2px 0 2px 16px !important;
   background: transparent !important;
   border: 0 !important;
   border-left: 2px solid var(--gfaq-blue-tint-2) !important;
