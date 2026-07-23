@@ -82,6 +82,9 @@
     'faq/faq.js',
     /* FAQ 전용 — 질환으로 보기 탭 필터 칩 연결 */
     'faq/filter.js',
+    /* FAQ 전용 — 일반용 목록만 구분선 아코디언(질환용 faq_box 엔 안 닿음) */
+    'faq/faq-general.css',
+    'faq/faq-general.js',
     /* 푸터 (홈/about 과 동일) */
     'home/global/footer.css',
     'home/global/footer.js'
