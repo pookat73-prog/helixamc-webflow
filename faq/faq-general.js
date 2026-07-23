@@ -39,7 +39,7 @@
 
   var RECS = [];   // { item, box, qRow, answer, indicator }
 
-  var PAGE_SIZE = 6;         // 한 페이지에 보여줄 질문 수
+  var PAGE_SIZE = 10;        // 한 페이지에 보여줄 질문 수(총 37개 → 4페이지)
   var curPage = 1;
   var pagerEl = null;
   var generalListEl = null;
