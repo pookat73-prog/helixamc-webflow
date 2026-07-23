@@ -89,6 +89,8 @@
        Webflow head freeform 쓰기가 406 으로 막혀, 다른 SEO 페이지의 head
        로더 대신 bootstrap FILES 로 동일 주입 수행 (faq/seo-loader.js 참고) */
     'faq/seo-loader.js',
+    /* FAQ 전용 — 콘텐츠 캐주얼 복사 방지(억지력). 내용 영역만, AI/봇 무관 */
+    'faq/protect.js',
     /* 푸터 (홈/about 과 동일) */
     'home/global/footer.css',
     'home/global/footer.js'
