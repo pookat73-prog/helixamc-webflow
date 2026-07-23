@@ -82,7 +82,14 @@ const SEOCHO_BRANCH = {
 const ROOT = path.resolve(__dirname, '..');
 const DOCTORS_JSON = path.join(ROOT, 'seocho', 'doctors', 'data', '_all.json');
 const EMERGENCY_DIR = path.join(ROOT, 'emergency', 'data');
+const FAQ_JSON = path.join(ROOT, 'faq', 'data', 'faq.json');
 const OUT_DIR = path.join(ROOT, 'seo-snippets');
+
+function loadFaq() {
+  if (!fs.existsSync(FAQ_JSON)) return { disease: [], general: [] };
+  const d = JSON.parse(fs.readFileSync(FAQ_JSON, 'utf8'));
+  return { disease: d.disease || [], general: d.general || [] };
+}
 
 function loadEmergencyConditions() {
   if (!fs.existsSync(EMERGENCY_DIR)) return [];
@@ -442,11 +449,63 @@ function buildEmergency(conditions) {
   return wrapJsonLd(jsonld) + '\n' + fallback;
 }
 
+function buildFaq(faq) {
+  const url = HOSPITAL.origin + '/faq';
+
+  /* 질환 FAQ: 요약(항상 노출) + 상세(펼침) 를 이어 붙여 완결된 답변으로.
+     일반 FAQ: 답변 그대로. 두 목록 모두 페이지에 실제 노출되는 텍스트라
+     Google FAQPage 가시성 요건 충족. */
+  const diseaseQAs = (faq.disease || []).map(x => ({
+    q: x.q,
+    a: [x.summary, x.detail].filter(Boolean).join('\n\n'),
+  }));
+  const generalQAs = (faq.general || []).map(x => ({ q: x.q, a: x.a }));
+  const allQAs = diseaseQAs.concat(generalQAs).filter(qa => qa.q && qa.a);
+
+  const faqNode = {
+    '@type': 'FAQPage',
+    '@id': url + '#faqpage',
+    url,
+    name: '자주 묻는 질문 (FAQ)',
+    inLanguage: 'ko',
+    isPartOf: { '@id': `${HOSPITAL.origin}/#website` },
+    about: { '@id': `${HOSPITAL.origin}/#org` },
+    mainEntity: allQAs.map(qa => ({
+      '@type': 'Question',
+      name: qa.q,
+      acceptedAnswer: { '@type': 'Answer', text: qa.a },
+    })),
+  };
+
+  const graph = [
+    faqNode,
+    breadcrumb([
+      { name: '홈', url: HOSPITAL.origin },
+      { name: '자주 묻는 질문', url },
+    ]),
+    {
+      '@type': 'MedicalOrganization',
+      '@id': `${HOSPITAL.origin}/#org`,
+      name: HOSPITAL.nameKo,
+      url: HOSPITAL.origin,
+      logo: HOSPITAL.logo,
+    },
+  ];
+  const jsonld = { '@context': 'https://schema.org', '@graph': graph };
+
+  const fallback = fallbackHtmlBlock(
+    `${HOSPITAL.nameKo} 자주 묻는 질문`,
+    allQAs.map(qa => `Q. ${qa.q} — A. ${qa.a.replace(/\s*\n\s*/g, ' ')}`)
+  );
+  return wrapJsonLd(jsonld) + '\n' + fallback;
+}
+
 /* ===================== 실행 ===================== */
 
 function main() {
   const doctors = loadDoctors();
   const conditions = loadEmergencyConditions();
+  const faq = loadFaq();
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
   const pages = {
@@ -454,6 +513,7 @@ function main() {
     'discover-helix.html':    buildAbout(),
     'seocho.html':            buildSeocho(doctors),
     'symptoms.html':          buildEmergency(conditions),
+    'faq.html':               buildFaq(faq),
   };
 
   for (const [file, content] of Object.entries(pages)) {
@@ -466,7 +526,8 @@ function main() {
     fs.writeFileSync(path.join(OUT_DIR, file), header + content + '\n');
     console.log(`✓ seo-snippets/${file} (${Buffer.byteLength(content, 'utf8')} bytes)`);
   }
-  console.log(`\n총 의료진 ${doctors.length}명 · 응급증상 ${conditions.length}건 처리됨.`);
+  const faqCount = (faq.disease || []).length + (faq.general || []).length;
+  console.log(`\n총 의료진 ${doctors.length}명 · 응급증상 ${conditions.length}건 · FAQ ${faqCount}문항 처리됨.`);
 }
 
 main();
