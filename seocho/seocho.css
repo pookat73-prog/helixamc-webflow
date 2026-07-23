@@ -207,6 +207,9 @@ section.subheader {
     padding: 0.35vw 0.9vw !important;
     background: #ffffff;
     border-radius: 0 0 14px 14px;
+    /* [배포 확인용 임시 마커 — 확인 후 제거] 새 CSS 도달 여부를 화면으로 판별 */
+    outline: 3px solid #ff2d55 !important;
+    outline-offset: 2px;
     /* 외곽선 — 텍스트위계3(#6b7d99) 얇은 선 + 부드러운 그림자 */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06), 0 0 0 0.5px #6b7d99;
     /* 위는 평평, 아래 좌·우만 둥근 인덱스 탭 형태 — 위 가장자리는 서브헤더에 붙음 */
@@ -231,7 +234,7 @@ section.subheader {
   .helix-mini-tabmenu .w-tab-link:focus,
   .helix-mini-tabmenu .w-tab-link:hover {
     padding: 0.35vw 0.2vw !important;
-    font-size: 0.6em;
+    font-size: 0.35em; /* [배포 확인용 임시 극단 축소 — 확인 후 되돌림] */
     background: transparent !important;
   }
   /* 미니 안 구분선도 조금 짧게 */
