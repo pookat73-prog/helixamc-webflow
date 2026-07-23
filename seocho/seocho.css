@@ -208,8 +208,8 @@ section.subheader {
     padding: 0.35vw 2vw !important;
     background: #ffffff;
     border-radius: 0 0 14px 14px;
-    /* 외곽선 — 텍스트위계3(#6b7d99) 얇은 선 + 부드러운 그림자 */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06), 0 0 0 0.5px #6b7d99;
+    /* 외곽선 — 텍스트위계2(#3d4f6b) 헤어라인(0.5px) + 부드러운 그림자 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06), 0 0 0 0.5px #3d4f6b;
     /* 위는 평평, 아래 좌·우만 둥근 인덱스 탭 형태 — 위 가장자리는 서브헤더에 붙음 */
     transform: translate(-50%, -120%);
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
