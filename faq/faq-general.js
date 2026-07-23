@@ -44,14 +44,20 @@
   var pagerEl = null;
   var generalListEl = null;
 
-  /* 일반용 목록 = .faq-more 없고 faq-a_full 있는 faq-list */
+  var BOX_SEL = '[class*="faq_box" i]';   // 질환용 카드 클래스(일반용엔 없음)
+  var QA_SEL  = '[class*="faq_qa" i]';    // 질환용 질문블록 클래스
+
+  /* 일반용 목록 = 질환 신호(faq_box/faq_qa/faq-more) 전무 + faq-a_full 있음.
+     Webflow 컴포넌트 지연 렌더로 잠깐 질환 목록을 오인하지 않게 신호를 여럿 본다. */
   function generalLists() {
     var out = [];
     var lists = document.querySelectorAll(LIST_SEL);
     for (var i = 0; i < lists.length; i++) {
       var l = lists[i];
-      if (l.querySelector(MORE_SEL)) continue;      // 질환용 → 제외
-      if (!l.querySelector(ANS_SEL)) continue;      // 답변 없는 목록 → 제외
+      if (l.querySelector(BOX_SEL)) continue;       // 질환 카드(faq_box) → 제외
+      if (l.querySelector(QA_SEL)) continue;        // 질환 질문블록(faq_qa) → 제외
+      if (l.querySelector(MORE_SEL)) continue;      // '자세히 보기' → 제외
+      if (!l.querySelector(ANS_SEL)) continue;      // 답변(faq-a_full) 없으면 제외
       out.push(l);
     }
     return out;
@@ -200,6 +206,12 @@
     } catch (e) {}
   }
   function renderPager(totalPages) {
+    if (!generalListEl) return;
+    var sec = (generalListEl.closest && generalListEl.closest('section')) || null;
+    // 안전장치: 일반 섹션(질환 카드 없음)에만 페이저를 둔다. 질환 섹션이면 취소.
+    if (sec && sec.querySelector(BOX_SEL)) return;
+    // 캐시된 pager 가 일반 섹션 밖(예: 질환 슬롯)이면 버리고 다시 찾음
+    if (pagerEl && sec && !sec.contains(pagerEl)) pagerEl = null;
     if (!pagerEl) {
       pagerEl = findPagesSlot();
       if (pagerEl) { if (!/\bfaq-pager\b/.test(pagerEl.className)) pagerEl.className += ' faq-pager'; }
@@ -257,7 +269,7 @@
     for (var i = 0; i < lists.length; i++) {
       var list = lists[i];
       list.setAttribute('data-faq-general', '1');
-      if (!generalListEl) generalListEl = list;   // 페이징 대상(첫 일반 목록)
+      if (i === 0) generalListEl = list;   // 페이징 대상(첫 일반 목록) — 매번 갱신
       // 목록이 속한 섹션에 상단 여백 클래스(마진 겹침으로 어두운 body 노출 방지)
       var sec = list.closest ? list.closest('section') : null;
       if (sec) sec.classList.add('helix-gfaq-section');
