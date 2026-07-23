@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.14 — 의료진 모달 정식 도메인 활성화)
+   HELIX AMC - 서초본원 페이지 BOOTSTRAP LOADER (v1.15 — 커밋 SHA 고정 로딩으로 캐시 stale 원천 차단)
    Webflow 서초본원 페이지 head 에 아래 두 줄만 붙이면 됨:
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -173,20 +173,49 @@
     console.warn('[seocho-bootstrap] NAVER_CLIENT_ID 미설정 — seocho/bootstrap.js 의 상수를 교체하세요.');
   }
 
-  /* SHA 라운드트립 제거 — 워크플로우가 push 마다 자동 퍼지 + 워밍업 하므로
-     @branch 직접 로드해도 stale 사실상 없음. 이전 SHA 패턴 대비 ~300ms 단축. */
-  window.HELIX_REF = BRANCH;
-  injectAll(BRANCH);
+  /* 의료진 카드 번들 선제 fetch — card-render.js 가 로드될 때쯤 이미 도착해
+     있도록. card-render 는 window.HELIX_DOCTOR_BUNDLE_PROMISE 가 있으면 우선 await.
+     ref(SHA 또는 branch) 를 받아 그 주소로 프리페치. */
+  function startBundlePrefetch(ref) {
+    try {
+      var bundleUrl = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
+                      '@' + ref + '/seocho/doctors/data/_all.json?t=' +
+                      Math.floor(Date.now() / 60000);
+      window.HELIX_DOCTOR_BUNDLE_PROMISE = fetch(bundleUrl, { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    } catch (e) {}
+  }
 
-  /* 의료진 카드 번들 선제 fetch — bootstrap 실행 즉시 시작해서, card-render.js
-     가 로드되어 실행될 때쯤이면 이미 도착해 있도록. card-render 는
-     window.HELIX_DOCTOR_BUNDLE_PROMISE 가 있으면 그걸 우선 await. */
-  try {
-    var bundleUrl = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-                    '@' + BRANCH + '/seocho/doctors/data/_all.json?t=' +
-                    Math.floor(Date.now() / 60000);
-    window.HELIX_DOCTOR_BUNDLE_PROMISE = fetch(bundleUrl, { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .catch(function () { return null; });
-  } catch (e) {}
+  /* 실제 로드 진입 — ref 로 모든 파일/번들 로드. HELIX_REF 도 같은 ref 로
+     맞춰 card-render.js 등이 동일 커밋의 데이터를 가져오게 함. */
+  function boot(ref) {
+    window.HELIX_REF = ref;
+    injectAll(ref);
+    startBundlePrefetch(ref);
+  }
+
+  /* 근본 캐시 수정 — 최신 커밋 SHA 를 GitHub API 로 조회해 그 SHA 의
+     immutable jsDelivr 주소로 로드. @branch 는 jsDelivr 엣지 캐시가 최대
+     수시간 stale 이라 배포가 즉시 반영 안 되던 문제 → SHA 는 매 배포마다
+     새 주소라 캐시가 낄 수 없어 즉시 반영. (홈 로더와 동일 전략.)
+     API 실패 / 파일 404 시엔 loadFile 이 알아서 @branch 로 폴백. */
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
+            '?t=' + Date.now();
+  if (window.__helixCommitSha) {
+    boot(window.__helixCommitSha.substring(0, 10));
+  } else {
+    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (data) {
+        var sha = (data.sha || '').substring(0, 10);
+        if (!sha) throw new Error('no sha in response');
+        console.log('[seocho-bootstrap] loading commit', sha);
+        boot(sha);
+      })
+      .catch(function (err) {
+        console.warn('[seocho-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
+        boot(BRANCH);
+      });
+  }
 })();
