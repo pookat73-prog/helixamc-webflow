@@ -1,7 +1,7 @@
 /* ================================================================
    HELIX AMC — FAQ 토글 (v5)
    숨김/보임은 faq.js 가 인라인 style 로 직접 처리(CSS 캐시 어긋남 방지).
-   이 파일은 커서/들여쓰기 + 상세 답변 강조(구분선 아코디언: 옅은 왼쪽 세로선).
+   이 파일은 커서/들여쓰기 + 상세 답변 강조(안 A2: 사선 그라데이션 외곽선).
    토글 로직 자체는 faq.js / faq-stack.js.
    ================================================================ */
 
@@ -235,27 +235,64 @@
 }
 
 /* ================================================================
-   상세 답변 강조 (구분선 아코디언 — 옅은 왼쪽 세로선 + 들여쓰기)
-   목적: 박스·면색 없이 가볍게. 펼쳤을 때 상세 답변(faq-a_full)에
-   아주 옅은 왼쪽 세로 하프라인 + 들여쓰기만 줘서, 질환용의 '박스
-   덩어리'와 대비되는 산뜻한 느낌.
+   상세 답변 강조 (안 A2 — 사선 그라데이션 외곽선으로 감싸기)
+   목적: 펼쳤을 때 요약(faq-a)과 상세(faq-a_full)가 같은 배경으로
+   이어져 "한 덩어리 글벽"처럼 떡지는 것을 막고, 상세 답변을 상담
+   문의 카드처럼 '사선 투명→메인블루 그라데이션 테두리'로 감싼다.
+   경계 신호는 브랜드 파랑(#0075d6)이라 카드 통일감 유지, 안쪽은
+   투명이라 시원하고 가볍다.
 
    - 대상: [class*="faq-a_full"] = Webflow 의 faq-a_Full (상세 문단).
-     요약(faq-a)은 매칭 안 됨 → 그대로 둠. CTA/'간략히 보기'는 이
-     블록 아래에 위치.
-   - 채움 배경/오른쪽 라운드/두꺼운 바 없음 → 얇은 선 + 여백만.
+     요약(faq-a)은 매칭 안 됨 → 그대로 둠. CTA/'간략히 보기' 는 이
+     박스 아래에 위치 → 읽는 본문만 그라데이션 박스로 묶임.
+   - 답변 슬롯(faq_fa-slot)은 위에서 이미 평평화(투명)돼 있어, 이
+     그라데이션 박스가 유일한 테두리가 됨(박스 속 박스 안 생김).
+   - 그라데이션 테두리는 ::before + mask 합성으로 그림 → 페이지
+     배경색을 몰라도(밝든 어둡든) 테두리만 그라데이션, 안은 투명.
+     (border-image 는 라운드 코너가 안 먹어서 mask 기법 사용)
    - 조절 포인트(맨 위 변수):
-       --faq-answer-bar   : 왼쪽 세로선 색(옅은 브랜드 블루)
-       --faq-bar-w        : 세로선 두께
+       --faq-accent       : 테두리 끝 색(브랜드 블루)
+       --faq-border-w     : 테두리 두께
+
+   ※ 면적(패딩/여백/좌우 확장/모서리 반경/줄간격)은 사용자가 Webflow
+     Designer 에서 직접 조절하기로 해서, 여기선 초기화(강제 안 함).
+     그라데이션 테두리 선 + 여린 면색만 남김. Webflow 에서 faq-a_Full 에
+     준 padding/margin/radius 가 그대로 반영됨.
    ================================================================ */
 :root {
-  --faq-answer-bar: rgba(0, 117, 214, 0.22);  /* 옅은 왼쪽 세로선 (브랜드 블루 저채도) */
-  --faq-bar-w: 2px;                            /* 세로선 두께 */
+  --faq-accent: rgba(0, 117, 214, 0.92);   /* 진한 모서리 색 (불투명에 가까운 메인블루) */
+  --faq-border-w: 2px;                      /* 외곽선 두께 */
+  --faq-answer-bg: rgba(0, 117, 214, 0.02); /* 면 색 — 여린 파란 톤 (조금 더 투명하게) */
 }
+/* 면적 관련(padding/margin/radius/line-height)은 여기서 지정하지 않음 →
+   Webflow Designer 설정이 그대로 적용됨. 여기선 그라데이션 선 기준점
+   (position)과 여린 면색만. border-radius 는 ::before 가 상속하므로
+   Webflow 에서 준 라운드를 선이 그대로 따라감. */
 [class*="faq-a_full" i] {
-  background: transparent;
-  border-left: var(--faq-bar-w) solid var(--faq-answer-bar);
-  border-radius: 0;
-  padding: 2px 0 2px 16px;
-  line-height: 1.75;
+  position: relative;
+  background: var(--faq-answer-bg);
+}
+/* 대각(45deg) 그라데이션 테두리 — 왼쪽상단·오른쪽하단 모서리는 진한
+   메인블루, 오른쪽상단·왼쪽하단 모서리는 투명으로 풀림.
+   진한 구간은 짧게(46~54%) 콕, 투명으로 풀리는 구간은 양 끝(0%/100%)
+   까지 길~게 → 두 모서리만 진하고 나머지는 길게 서서히 사라짐.
+   ::before 를 박스 크기로 깔고, 테두리 두께만큼의 링만 남기도록
+   mask 두 겹을 exclude 합성 → 안쪽은 뚫려 면 색만 보임. */
+[class*="faq-a_full" i]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--faq-border-w);
+  background: linear-gradient(45deg,
+              rgba(0, 117, 214, 0) 0%,        /* 왼쪽하단 모서리 — 완전 투명 */
+              var(--faq-accent) 46%,           /* 진한 구간 시작 (짧게) */
+              var(--faq-accent) 54%,           /* 진한 구간 끝 (짧게) — 왼쪽상단·오른쪽하단 */
+              rgba(0, 117, 214, 0) 100%);      /* 오른쪽상단 모서리 — 완전 투명 (풀리는 구간 길~게) */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
 }
