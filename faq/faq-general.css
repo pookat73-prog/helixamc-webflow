@@ -36,7 +36,7 @@
 [data-faq-general] {
   box-sizing: border-box;
   width: 100%;
-  max-width: 900px;                  /* 시원하게 더 넓게(이하 화면선 100%로 축소) */
+  max-width: 1080px;                 /* 필터/질환용 FAQ 폭에 맞춰 정렬 (절충: 900→1080, 이하 화면선 100%로 축소) */
   margin-left: auto !important;
   margin-right: auto !important;
   padding: 0 var(--space-lg) !important;   /* 좌우 여백(반응형 토큰). 세로는 질문 행이 담당 */
