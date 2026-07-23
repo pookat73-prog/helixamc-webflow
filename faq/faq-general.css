@@ -177,8 +177,9 @@
 
 /* 답변 본문 — 왼쪽 38px 들여쓰기 + 옅은 파란 세로선 (A2 그라데이션 무력화) */
 [data-faq-general] [class*="faq-a_full" i] {
-  margin: 0 0 22px 32px !important;   /* 뱃지(20)+gap(12) 만큼 들여씀, 아래 여백 넉넉 */
-  padding: 2px 0 2px 16px !important;
+  /* 펼침 시 카드 안 공간 시원하게: 질문↔답변(위 10) + 아래 넉넉(32) + 좌측 여유 */
+  margin: 10px 0 32px 32px !important;   /* 뱃지(20)+gap(12) 만큼 들여씀 */
+  padding: 4px 0 4px 20px !important;
   background: transparent !important;
   border: 0 !important;
   border-left: 2px solid var(--gfaq-blue-tint-2) !important;
