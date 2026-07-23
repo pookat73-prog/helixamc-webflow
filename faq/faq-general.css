@@ -15,7 +15,7 @@
 
 /* 색 토큰 (목업 라이트값 — 실제 사이트 라이트 배경 기준) */
 :root {
-  --gfaq-card-bg: #ffffff;
+  --gfaq-card-bg: #F4F7FB;    /* 메인 화이트 */
   --gfaq-ink: #0d1117;
   --gfaq-ink-soft: #3d4c5c;
   --gfaq-faint: #9aa7b6;
@@ -25,15 +25,21 @@
   --gfaq-blue-tint-2: rgba(0, 117, 214, 0.12);
 }
 
-/* 컨테이너 — 흰 테두리 카드 (목업 .ga-list) */
+/* 위 필터와의 간격 — 카드 margin 은 margin-collapse 로 섹션 밖(어두운 body)을
+   노출시키므로, 목록이 속한 섹션 안쪽 padding 으로 준다(밝은 섹션 배경이 채움).
+   faq-general.js 가 목록의 가장 가까운 <section> 에 이 클래스를 붙임. */
+.helix-gfaq-section {
+  padding-top: 26px !important;
+}
+
+/* 컨테이너 — 카드 (목업 .ga-list) */
 [data-faq-general] {
   box-sizing: border-box;
   width: 100%;
-  max-width: 760px;
-  margin-top: 28px !important;       /* 위 필터와 붙지 않게 간격 */
+  max-width: 720px;
   margin-left: auto !important;
   margin-right: auto !important;
-  padding: 4px 24px !important;      /* faq-list 의 0 10vw 를 카드 여백으로 대체 */
+  padding: 0 22px !important;        /* 세로 여백은 질문 행이 담당(위아래 균일) */
   background: var(--gfaq-card-bg);
   border: 1px solid var(--gfaq-hairline);
   border-radius: 14px;
@@ -68,10 +74,10 @@
   flex-direction: row !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: 14px !important;
+  gap: 12px !important;
   width: 100% !important;
   text-align: left !important;
-  padding: 20px 0 !important;
+  padding: 15px 0 !important;        /* 위·아래 동일, 축소 */
   margin: 0 !important;
   cursor: pointer;
   user-select: none;
@@ -86,15 +92,15 @@
 /* Q 뱃지 (평소 옅은 파란 틴트 → 펼치면 솔리드 파랑) */
 .helix-gfaq-qmark {
   flex: none !important;
-  width: 24px !important;
-  height: 24px !important;
-  min-width: 24px !important;
-  border-radius: 7px !important;
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  border-radius: 6px !important;
   display: grid !important;
   place-items: center !important;
   background: var(--gfaq-blue-tint) !important;
   color: var(--gfaq-blue) !important;
-  font-size: 13px !important;
+  font-size: 11px !important;
   font-weight: 800 !important;
   letter-spacing: -0.02em !important;
   line-height: 1 !important;
@@ -110,7 +116,7 @@
 /* 질문 텍스트 */
 .helix-gfaq-qtext {
   flex: 1 1 auto !important;
-  font-size: 15.5px !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em !important;
   line-height: 1.5 !important;
@@ -168,13 +174,13 @@
 
 /* 답변 본문 — 왼쪽 38px 들여쓰기 + 옅은 파란 세로선 (A2 그라데이션 무력화) */
 [data-faq-general] [class*="faq-a_full" i] {
-  margin: 0 0 22px 38px !important;
+  margin: 0 0 16px 32px !important;   /* 뱃지(20)+gap(12) 만큼 들여씀 */
   padding: 0 0 0 14px !important;
   background: transparent !important;
   border: 0 !important;
   border-left: 2px solid var(--gfaq-blue-tint-2) !important;
   border-radius: 0 !important;
-  font-size: 14.5px !important;
+  font-size: 13px !important;
   line-height: 1.7 !important;
   color: var(--gfaq-ink-soft) !important;
 }
