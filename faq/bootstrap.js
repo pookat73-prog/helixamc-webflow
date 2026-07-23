@@ -85,6 +85,10 @@
     /* FAQ 전용 — 일반용 목록만 구분선 아코디언(질환용 faq_box 엔 안 닿음) */
     'faq/faq-general.css',
     'faq/faq-general.js',
+    /* FAQ 전용 — SEO 구조화데이터(FAQPage JSON-LD) 주입.
+       Webflow head freeform 쓰기가 406 으로 막혀, 다른 SEO 페이지의 head
+       로더 대신 bootstrap FILES 로 동일 주입 수행 (faq/seo-loader.js 참고) */
+    'faq/seo-loader.js',
     /* 푸터 (홈/about 과 동일) */
     'home/global/footer.css',
     'home/global/footer.js'
