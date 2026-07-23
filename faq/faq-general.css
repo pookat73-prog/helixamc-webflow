@@ -119,17 +119,14 @@
   color: #fff !important;
 }
 
-/* 질문 텍스트 */
+/* 질문 텍스트 — 폰트 크기/자간은 Webflow 디자인(faq-q, 질환용과 동일) 그대로.
+   여기선 레이아웃(플렉스/정렬/여백)과 두께만 제어. 두께는 한 단계 얇게(500). */
 .helix-gfaq-qtext {
   flex: 1 1 auto !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.01em !important;
-  line-height: 1.5 !important;
+  font-weight: 500 !important;
   margin: 0 !important;
   padding: 0 !important;
   text-align: left !important;
-  color: var(--gfaq-ink) !important;
 }
 
 /* +/− 인디케이터 (행 오른쪽, 플렉스 막내) — 작게 */
@@ -186,9 +183,7 @@
   border: 0 !important;
   border-left: 2px solid var(--gfaq-blue-tint-2) !important;
   border-radius: 0 !important;
-  font-size: 13px !important;
-  line-height: 1.7 !important;
-  color: var(--gfaq-ink-soft) !important;
+  /* 폰트 크기/색은 Webflow 디자인(faq-a_full) 그대로 — 고정 안 함 */
 }
 [data-faq-general] [class*="faq-a_full" i]::before {
   display: none !important;   /* faq.css 의 사선 그라데이션 테두리 제거 */
