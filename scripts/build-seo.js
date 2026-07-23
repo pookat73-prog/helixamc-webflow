@@ -449,6 +449,72 @@ function buildEmergency(conditions) {
   return wrapJsonLd(jsonld) + '\n' + fallback;
 }
 
+/* 진료과목(/services) — 페이지에 노출되는 5개 진료과 카드 (제목 + 설명).
+   dept 상세 페이지가 발행된 경우에만 url 연결(미발행은 생략). */
+const SERVICES_DEPTS = [
+  { nameKo: '내과',     nameEn: 'Internal Medicine',  desc: '다양한 전신 질환을 아우르는 환자 맞춤형 진료',           slug: 'naegwa',            published: true  },
+  { nameKo: '외과',     nameEn: 'Surgery',            desc: '표준화된 프로토콜로 안정성을 높인 고난도 수술',           slug: 'oegwa',             published: false },
+  { nameKo: '영상의학과', nameEn: 'Diagnostic Imaging',  desc: '안전한 마취와 첨단 장비로 완성하는 정밀 진단',            slug: 'yeongsangyihaggwa', published: false },
+  { nameKo: '안과',     nameEn: 'Ophthalmology',      desc: '미세 검진과 빠른 판단을 통한 전신 질환 가능성 판별',        slug: 'angwa',             published: false },
+  { nameKo: '치과',     nameEn: 'Dentistry',          desc: '구조·염증·통증까지 살피는 대체 불가한 치아의 안전한 진료',   slug: 'cigwa',             published: false },
+];
+
+function buildServices() {
+  const url = HOSPITAL.origin + '/services';
+  const listId = url + '#dept-list';
+
+  const graph = [
+    {
+      '@type': 'MedicalWebPage',
+      '@id': url + '#page',
+      url,
+      name: '진료과목',
+      inLanguage: 'ko',
+      description: '헬릭스동물메디컬센터의 진료과목 안내 — 내과·외과·영상의학과·안과·치과 전문 진료.',
+      about: { '@id': `${HOSPITAL.origin}/#org` },
+      isPartOf: { '@id': `${HOSPITAL.origin}/#website` },
+      mainEntity: { '@id': listId },
+      lastReviewed: new Date().toISOString().slice(0, 10),
+    },
+    {
+      '@type': 'ItemList',
+      '@id': listId,
+      name: '진료과목',
+      numberOfItems: SERVICES_DEPTS.length,
+      itemListElement: SERVICES_DEPTS.map((d, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'MedicalProcedure',
+          name: d.nameKo,
+          alternateName: d.nameEn,
+          description: d.desc,
+          ...(d.published ? { url: `${HOSPITAL.origin}/${d.slug}` } : {}),
+        },
+      })),
+    },
+    breadcrumb([
+      { name: '홈', url: HOSPITAL.origin },
+      { name: '진료과목', url },
+    ]),
+    {
+      '@type': 'MedicalOrganization',
+      '@id': `${HOSPITAL.origin}/#org`,
+      name: HOSPITAL.nameKo,
+      url: HOSPITAL.origin,
+      logo: HOSPITAL.logo,
+      medicalSpecialty: SERVICES_DEPTS.map(d => d.nameEn),
+    },
+  ];
+  const jsonld = { '@context': 'https://schema.org', '@graph': graph };
+
+  const fallback = fallbackHtmlBlock('헬릭스동물메디컬센터 진료과목', [
+    `${HOSPITAL.nameKo} 진료과목 안내`,
+    ...SERVICES_DEPTS.map(d => `${d.nameKo}(${d.nameEn}) — ${d.desc}`),
+  ]);
+  return wrapJsonLd(jsonld) + '\n' + fallback;
+}
+
 function buildFaq(faq) {
   const url = HOSPITAL.origin + '/faq';
 
@@ -514,6 +580,7 @@ function main() {
     'seocho.html':            buildSeocho(doctors),
     'symptoms.html':          buildEmergency(conditions),
     'faq.html':               buildFaq(faq),
+    'services.html':          buildServices(),
   };
 
   for (const [file, content] of Object.entries(pages)) {
