@@ -55,15 +55,15 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 6px;
-  margin-top: 28px;
+  gap: var(--space-2xs);          /* 반응형 간격 */
+  margin-top: var(--space-lg);    /* 반응형 상단 여백 */
   /* 페이지가 1개라 버튼이 비어도 같은 높이를 예약 → 아래 여백이 사라지지 않게 */
-  min-height: 30px;
+  min-height: clamp(26px, 7vw, 32px);
 }
 .faq-page-btn {
-  min-width: 30px;
-  height: 30px;
-  padding: 0 7px;
+  min-width: clamp(26px, 7vw, 32px);   /* 반응형 버튼 크기 */
+  height: clamp(26px, 7vw, 32px);
+  padding: 0 var(--space-2xs);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -73,7 +73,7 @@
   color: #8b949e;
   /* Webflow '기본 일반 폰트' 변수 사용 (변수 값 바뀌면 따라감) */
   font-family: var(--기본-일반-폰트, 'Noto Sans KR'), sans-serif;
-  font-size: 14px;               /* 페이징 숫자 크기 (작아 보여 10→14 로 키움) */
+  font-size: var(--fs-sm);        /* 반응형 숫자 크기 */
   line-height: 1;
   cursor: pointer;
   transition: color 0.15s ease;
@@ -86,7 +86,7 @@
   cursor: default;
 }
 .faq-page-nav {
-  font-size: 16px;
+  font-size: var(--fs-body);      /* 화살표는 숫자보다 살짝 크게(반응형) */
 }
 
 /* 숫자 라벨 — 하이라이터가 글자 폭에 맞게 깔리도록 기준점 */
@@ -115,7 +115,7 @@
   z-index: -1;
 }
 .faq-page-gap {
-  min-width: 20px;
+  min-width: var(--space-md);     /* 반응형 */
   text-align: center;
   color: #8b949e;
   user-select: none;
