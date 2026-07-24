@@ -493,6 +493,15 @@
     window.addEventListener('scroll', onMove, { passive: true });
     window.addEventListener('resize', function () { scanTargets(); }, { passive: true });
 
+    /* 스크롤 중 '뒤늦게 나타나는' 측정 자리도 클릭 없이 잡히도록, 스크롤이
+       잦아들면 한 번 전체 재스캔(디바운스). onMove 는 기존 배지 위치만
+       따라가고, 이건 새로 생긴/보이게 된 요소에 배지를 새로 붙인다. */
+    var scrollRescanDeb;
+    window.addEventListener('scroll', function () {
+      clearTimeout(scrollRescanDeb);
+      scrollRescanDeb = setTimeout(scanTargets, 120);
+    }, { passive: true });
+
     /* 탭 전환 시 배지 재스캔 — Webflow 탭은 활성 탭만 표시(display:none)라,
        숨은 탭(외과·정형외과 등) 의 측정 자리, 클릭으로 열리는 모달(증상
        상세·의료진 상세) 안 CTA, 아코디언 등 — 클릭으로 UI 가 바뀌면 그 요소가
@@ -503,9 +512,14 @@
       setTimeout(scanTargets, 340);
     }, true);
 
-    /* 푸터·플로팅 CTA 등은 DOMContentLoaded 이후 늦게 주입됨 → 재스캔 */
-    var rescans = [400, 1000, 2000, 3500];
+    /* 푸터·플로팅 CTA·FAQ 카드('자세히' 인디케이터) 등은 로드 후 코드가
+       순차 주입/레이아웃하므로, 처음 몇 초간 촘촘히 + 주기적으로 재스캔해
+       클릭 없이도 배지가 다 붙게 한다(원장님 시연 시 빈칸 방지). */
+    var rescans = [200, 500, 900, 1400, 2000, 2800, 3800, 5000, 6500, 8500];
     rescans.forEach(function (ms) { setTimeout(scanTargets, ms); });
+    /* 카드가 계속 주입되는 초기 구간(약 12초) 낮은 빈도 주기 재스캔 */
+    var pc = 0;
+    var pi = setInterval(function () { scanTargets(); if (++pc >= 12) clearInterval(pi); }, 1000);
 
     /* DOM 변동도 감지해 재스캔 (과도 호출 방지 위해 디바운스) */
     try {
