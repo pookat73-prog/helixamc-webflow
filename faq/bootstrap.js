@@ -63,6 +63,8 @@
     'global/floating-cta.js',
     /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이) */
     'global/scroll-depth.js',
+    /* FAQ 전용 GA4 측정 — 질환/일반 탭·필터·항목 펼침·페이지 이동 */
+    'faq/faq-ga.js',
     /* 전역 공지 팝업 */
     'global/popup.css',
     'global/popup.js',
