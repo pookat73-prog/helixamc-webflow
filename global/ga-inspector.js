@@ -45,6 +45,7 @@
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
+    if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
@@ -65,6 +66,21 @@
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
+    /* 전 페이지 공통 — 헤더 홈 로고 / 진료과목 탭 (coming-soon.js 가 data-hx-hdr-ga 마킹) */
+    { sel: '[data-hx-hdr-ga="logo"]',     label: '헤더 · 홈 로고',   event: 'header_logo_home' },
+    { sel: '[data-hx-hdr-ga="services"]', label: '헤더 · 진료과목',  event: 'header_services_click' },
+    /* 전 페이지 공통 — 햄버거 메뉴 (홈: .image-18 / about: .menu-bar_mobile).
+       메뉴 오버레이(.hx-menu-*)는 클릭으로 열릴 때 주입·표시되며, 인스펙터가
+       클릭·DOM 변동 때 재스캔하므로 열면 네모가 따라붙는다. */
+    { sel: '.image-18, .menu-bar_mobile', label: '햄버거 · 메뉴 열기', event: 'menu_open' },
+    { sel: '.hx-menu-close',        label: '햄버거 · 메뉴 닫기',  event: 'menu_close' },
+    /* 전환 성격이 다른 링크는 전용 이벤트 → 전용 네모 (data-ga-event 로 정밀 타깃).
+       공용 항목보다 먼저 둬야 seen-dedup 에서 전용 라벨이 이김. */
+    { sel: '[data-ga-event="menu_emergency_click"]', label: '햄버거 · 응급증상 안내', event: 'menu_emergency_click' },
+    { sel: '[data-ga-event="menu_services_click"]',  label: '햄버거 · 진료과목',     event: 'menu_services_click' },
+    { sel: '[data-ga-event="vet_chart_click"]',      label: '햄버거 · 수의사용 웹차트', event: 'vet_chart_click' },
+    { sel: '.hx-menu-branch, .hx-menu-nav-link, .hx-menu-footer-link',
+      label: '햄버거 · 메뉴 이동', event: 'menu_nav_click' },
     /* 푸터 (홈 등) */
     { sel: '.footer-email-clickable', label: '푸터 · 이메일 복사', event: 'copy_email_*' },
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
@@ -128,6 +144,27 @@
       { sel: '.w-tab-menu .w-tab-link', label: '서초 · 분과 탭',       event: 'seocho_dept_tab_*' },
       { sel: '[data-doctor-open]',      label: '서초 · 의료진 상세(+)', event: 'seocho_doctor_detail_*' },
       { sel: '.naver-map-directions',   label: '서초 · 길찾기',        event: 'seocho_directions_*' }
+    ]);
+  }
+
+  /* FAQ 페이지 전용 — 질환/일반 양쪽 측정 자리. 질문 카드의 '자세히'
+     인디케이터(질환) / 질문 행(일반) 은 faq-stack.js·faq-general.js 가 로드
+     후 주입하고, 페이징으로 현재 페이지 항목만 보인다. 인스펙터는 클릭·DOM
+     변동 때 재스캔하므로 탭 전환/페이지 이동에 따라 배지가 따라붙는다. */
+  if (PAGE === 'faq') {
+    TARGETS = TARGETS.concat([
+      { sel: '.w-tab-menu .w-tab-link', label: 'FAQ · 탭(질환/일반)', event: 'faq_tab_select' },
+      { sel: '[class*="faq-chip" i]',   label: 'FAQ · 필터 칩',      event: 'faq_filter_select',
+        match: function (el) { return !/faq-chip_reset/i.test(el.className || ''); } },
+      { sel: '[class*="faq-chip_reset" i]', label: 'FAQ · 필터 초기화', event: 'faq_filter_reset' },
+      /* 질환 질문 — '자세히' 펼침 버튼(카드마다 1개). 정확한 클래스 토큰으로
+         잡아야 함: [class*="..."] 는 하위 label/arrow(__label/__arrow)까지 걸려
+         한 버튼에 네모칸이 3중으로 겹침. */
+      { sel: '.helix-faq-indicator', label: 'FAQ · 질환 질문 펼치기', event: 'faq_open' },
+      /* 일반 질문 — 질문 행(카드마다 1개). 정확한 토큰(하위 qmark/qtext 제외) */
+      { sel: '.helix-gfaq-q', label: 'FAQ · 일반 질문 펼치기', event: 'faq_open' },
+      /* 페이지 이동 (질환/일반 공통) */
+      { sel: '[class*="faq-page-btn" i]', label: 'FAQ · 페이지 이동', event: 'faq_page_nav' }
     ]);
   }
 
@@ -471,6 +508,15 @@
     window.addEventListener('scroll', onMove, { passive: true });
     window.addEventListener('resize', function () { scanTargets(); }, { passive: true });
 
+    /* 스크롤 중 '뒤늦게 나타나는' 측정 자리도 클릭 없이 잡히도록, 스크롤이
+       잦아들면 한 번 전체 재스캔(디바운스). onMove 는 기존 배지 위치만
+       따라가고, 이건 새로 생긴/보이게 된 요소에 배지를 새로 붙인다. */
+    var scrollRescanDeb;
+    window.addEventListener('scroll', function () {
+      clearTimeout(scrollRescanDeb);
+      scrollRescanDeb = setTimeout(scanTargets, 120);
+    }, { passive: true });
+
     /* 탭 전환 시 배지 재스캔 — Webflow 탭은 활성 탭만 표시(display:none)라,
        숨은 탭(외과·정형외과 등) 의 측정 자리, 클릭으로 열리는 모달(증상
        상세·의료진 상세) 안 CTA, 아코디언 등 — 클릭으로 UI 가 바뀌면 그 요소가
@@ -481,9 +527,14 @@
       setTimeout(scanTargets, 340);
     }, true);
 
-    /* 푸터·플로팅 CTA 등은 DOMContentLoaded 이후 늦게 주입됨 → 재스캔 */
-    var rescans = [400, 1000, 2000, 3500];
+    /* 푸터·플로팅 CTA·FAQ 카드('자세히' 인디케이터) 등은 로드 후 코드가
+       순차 주입/레이아웃하므로, 처음 몇 초간 촘촘히 + 주기적으로 재스캔해
+       클릭 없이도 배지가 다 붙게 한다(원장님 시연 시 빈칸 방지). */
+    var rescans = [200, 500, 900, 1400, 2000, 2800, 3800, 5000, 6500, 8500];
     rescans.forEach(function (ms) { setTimeout(scanTargets, ms); });
+    /* 카드가 계속 주입되는 초기 구간(약 12초) 낮은 빈도 주기 재스캔 */
+    var pc = 0;
+    var pi = setInterval(function () { scanTargets(); if (++pc >= 12) clearInterval(pi); }, 1000);
 
     /* DOM 변동도 감지해 재스캔 (과도 호출 방지 위해 디바운스) */
     try {

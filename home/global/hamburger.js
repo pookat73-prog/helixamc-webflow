@@ -1,11 +1,6 @@
 (function () {
   'use strict';
 
-  /* 스테이징(*.webflow.io) 여부 — 정식엔 아직 안 여는 항목을 스테이징에서만
-     미리 열어 작업 편의를 주기 위한 도메인 게이트 (측정/메뉴 게이트와 동일 방침).
-     정식 도메인에선 게이트가 안 걸려 해당 항목이 준비중으로 유지됨. */
-  var IS_STAGING = /\.webflow\.io$/i.test(location.hostname);
-
   /* ── 링크 설정 (URL 변경 시 여기만 수정) ── */
   var BRANCHES = [
     { text: '서초 본원',          href: '/seocho' },
@@ -13,13 +8,15 @@
     { text: '서울동물영상종양센터', href: 'https://www.svicc.co.kr/' }
   ];
 
-  /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크 */
+  /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크.
+     event 가 지정된 항목은 공용 menu_nav_click 대신 그 전용 이벤트를 쏨
+     (전환 성격이 다른 링크를 GA 에서 한 줄로 따로 집계하기 위함). */
   var NAV_LINKS = [
     { text: 'discover HELIX', href: '/discover-helix' },
-    { group: [ { text: '진료과목', href: '/services' }, { text: '특화진료', href: '#' } ] },
+    { group: [ { text: '진료과목', href: '/services', event: 'menu_services_click' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
-    { group: [ { text: 'FAQ', href: IS_STAGING ? '/faq' : '#' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
-    { text: '응급증상안내',  href: '/symptoms' }
+    { group: [ { text: 'FAQ', href: '/faq' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
+    { text: '응급증상안내',  href: '/symptoms', event: 'menu_emergency_click' }
   ];
 
   /* 수의사용 웹 차트 = 벳칭 웹리퍼 협력병원 접속(로그인) 주소.
@@ -32,7 +29,7 @@
      ── 전체 개방 ──
      주요 메뉴(서초본원·SVICC·discover HELIX·진료과목·응급증상안내)가 연결되어
      메뉴를 도메인 무관 전체 개방. 아직 미연결 항목(일산분원·특화진료·의료인프라·
-     FAQ·뉴스룸·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
+     뉴스룸·칼럼·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
      coming-soon.js 가 "준비중입니다" 토스트로 안내. */
   var MENU_COMING_SOON = false;
 
@@ -47,6 +44,13 @@
     return /^https?:\/\//i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : '';
   }
 
+  /* 전용 GA 이벤트가 지정된 항목이면 data-ga-event 속성 부여.
+     클릭 핸들러가 이 속성을 읽어 공용 menu_nav_click 대신 전용 이벤트를 쏨.
+     인스펙터도 이 속성으로 전용 네모를 그림. */
+  function gaAttr(item) {
+    return item && item.event ? ' data-ga-event="' + item.event + '"' : '';
+  }
+
   /* ── 오버레이 HTML 생성 ── */
   function buildOverlayHTML() {
     var branchesHTML = BRANCHES.map(function (b) {
@@ -58,12 +62,12 @@
       if (n.group) {
         var inner = n.group.map(function (g, i) {
           return (i > 0 ? '<span class="hx-menu-nav-sep">・</span>' : '') +
-            '<a href="' + g.href + '"' + comingSoonAttr(g.href) + externalAttr(g.href) +
+            '<a href="' + g.href + '"' + comingSoonAttr(g.href) + externalAttr(g.href) + gaAttr(g) +
             ' class="hx-menu-nav-link">' + g.text + '</a>';
         }).join('');
         return '<div class="hx-menu-nav-group">' + inner + '</div>';
       }
-      return '<a href="' + n.href + '"' + comingSoonAttr(n.href) + externalAttr(n.href) +
+      return '<a href="' + n.href + '"' + comingSoonAttr(n.href) + externalAttr(n.href) + gaAttr(n) +
         ' class="hx-menu-nav-link">' + n.text + '</a>';
     }).join('');
 
@@ -76,7 +80,7 @@
         '</div>' +
         '<div class="hx-menu-footer">' +
           '<a href="' + VET_CHART_HREF + '"' + comingSoonAttr(VET_CHART_HREF) + externalAttr(VET_CHART_HREF) +
-            ' class="hx-menu-footer-link">' +
+            ' data-ga-event="vet_chart_click" class="hx-menu-footer-link">' +
             '수의사용 웹 차트' +
             '<span class="hx-menu-footer-link__arrow">›</span>' +
           '</a>' +
@@ -109,6 +113,30 @@
       overlay.style.left  = left + 'px';
       overlay.style.right = '0';
       overlay.style.width = 'auto';
+    }
+  }
+
+  /* ── GA4 측정 헬퍼 ──
+     ga4-base.js 가 정의한 window.gtag 에 편승. 스테이징(*.webflow.io)에선
+     그 stub 이 no-op 이라 자동으로 아무 것도 안 쏨 → 별도 도메인 게이트 불필요.
+     어느 페이지의 햄버거인지 page 파라미터로 구분 (floating-cta.js 와 동일 규칙). */
+  function menuPage() {
+    var p = (location.pathname || '/').toLowerCase();
+    if (/discover/.test(p)) return 'discover';
+    if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
+    if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
+    if (/seocho|서초|seoco/.test(p)) return 'seocho';
+    if (/about/.test(p)) return 'about';
+    if (/emergency|응급/.test(p)) return 'emergency';
+    return 'home';
+  }
+  var MENU_PAGE = menuPage();
+
+  function ga(eventName, params) {
+    if (typeof window.gtag === 'function') {
+      var p = params || {};
+      p.page = MENU_PAGE;
+      window.gtag('event', eventName, p);
     }
   }
 
@@ -153,6 +181,7 @@
 
     function openMenu() {
       isOpen = true;
+      ga('menu_open', {});
       positionOverlay(overlay);
       overlay.classList.add('is-open');
       overlay.setAttribute('aria-hidden', 'false');
@@ -176,8 +205,9 @@
       }, '-=0.2');
     }
 
-    function closeMenu() {
+    function closeMenu(reason) {
       isOpen = false;
+      ga('menu_close', { method: reason || 'unknown' });
       document.body.classList.remove('hx-menu-open');
       closeBtn.classList.remove('is-visible');
       gsap.to(overlay, {
@@ -206,19 +236,19 @@
       }
       btn.addEventListener('click', function () {
         if (MENU_COMING_SOON) return;  /* 토스트는 coming-soon.js 가 처리 */
-        if (isOpen) closeMenu(); else openMenu();
+        if (isOpen) closeMenu('toggle'); else openMenu();
       });
     } else {
       console.warn('[hx-menu] .image-18 not found');
     }
 
     /* 백드롭 / X 버튼 클릭 → 닫기 */
-    backdrop.addEventListener('click', closeMenu);
-    closeBtn.addEventListener('click', closeMenu);
+    backdrop.addEventListener('click', function () { closeMenu('backdrop'); });
+    closeBtn.addEventListener('click', function () { closeMenu('close_button'); });
 
     /* ESC 키로 닫기 */
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && isOpen) closeMenu();
+      if (e.key === 'Escape' && isOpen) closeMenu('esc');
     });
 
     /* 링크 클릭 → 활성 처리 후 닫기.
@@ -227,9 +257,19 @@
        coming-soon.js 가 그대로 띄움. */
     overlay.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () {
-        if (a.hasAttribute('data-coming-soon')) return;
+        var comingSoon = a.hasAttribute('data-coming-soon');
+        /* 전용 이벤트가 지정된 링크(응급증상·진료과목·수의사용 웹차트)는
+           공용 menu_nav_click 대신 그 이벤트를 쏨 → 전환 성격별 분리 집계.
+           나머지 링크는 기존대로 공용 menu_nav_click. */
+        var dedicated = a.getAttribute('data-ga-event');
+        ga(dedicated || 'menu_nav_click', {
+          link_text: (a.textContent || '').trim(),
+          link_url: a.getAttribute('href') || '',
+          coming_soon: comingSoon ? 1 : 0
+        });
+        if (comingSoon) return;
         setActive(a);
-        closeMenu();
+        closeMenu('nav_link');
       });
     });
 

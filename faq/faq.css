@@ -273,6 +273,14 @@
   position: relative;
   background: var(--faq-answer-bg);
 }
+/* 답변 본문 안의 줄바꿈(<br>) 뒤에 한 줄 간격.
+   (구 Webflow FAQ 페이지 HTML 임베드에서 이관 — 스타일을 리포로 일원화.
+    원본: `.faq-a_full br{display:block;content:"";margin-top:1.4em}`.
+    content 는 실제 br 엘리먼트에선 무효라 생략, 대소문자 무시 선택자로 확장) */
+[class*="faq-a_full" i] br {
+  display: block;
+  margin-top: 1.4em;
+}
 /* 대각(45deg) 그라데이션 테두리 — 왼쪽상단·오른쪽하단 모서리는 진한
    메인블루, 오른쪽상단·왼쪽하단 모서리는 투명으로 풀림.
    진한 구간은 짧게(46~54%) 콕, 투명으로 풀리는 구간은 양 끝(0%/100%)
