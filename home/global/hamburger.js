@@ -141,6 +141,12 @@
   }
 
   function init() {
+    /* 중복 초기화 가드: 페이지 자체 bootstrap 과 site-wide global bootstrap 이
+       둘 다 hamburger.js 를 로드하는 경우, 오버레이/리스너가 두 벌 생겨
+       클릭이 열림→닫힘으로 상쇄돼 "안 열리는" 것처럼 보임. 한 번만 실행. */
+    if (window.__helixHamburgerInit) return;
+    window.__helixHamburgerInit = true;
+
     /* 백드롭 주입 */
     var backdrop = document.createElement('div');
     backdrop.className = 'hx-menu-backdrop';
@@ -224,23 +230,51 @@
     }
 
     /* ── 햄버거 클릭 이벤트 연결 ──
-       홈: .image-18 / about: .menu-bar_mobile (Webflow 마크업 차이) */
-    var btn = document.querySelector('.image-18') ||
-              document.querySelector('.menu-bar_mobile');
-    if (btn) {
+       페이지/뷰포트마다 헤더 마크업이 달라(홈: .menu-bar_mobile 데스크탑+모바일
+       헤더 컴포넌트 양쪽에 존재, about/기타: .menu-bar_mobile, 구버전: .image-18)
+       버거 버튼이 페이지에 2개 이상 있을 수 있음. querySelector 로 첫 하나만
+       잡으면 화면에 실제로 보이는(다른) 버튼엔 리스너가 안 붙어 안 열림.
+       → 매칭되는 모든 버거 버튼에 바인딩. */
+    var BURGER_SEL = '.menu-bar_mobile, .image-18';
+
+    function bindBurger(btn) {
+      if (!btn || btn.__hxBurgerBound) return;
+      btn.__hxBurgerBound = true;
       btn.style.cursor = 'pointer';
-      /* 햄버거 자체 준비중 모드: data-coming-soon 부여 → coming-soon.js 가
-         토스트 표시. openMenu 호출은 가드해서 메뉴가 열리지 않도록 함. */
+
+      /* 버거 아이콘은 Webflow 헤더 컴포넌트에 data-coming-soon="1" 이 baked-in
+         돼 있어, 그대로 두면 coming-soon.js 가 클릭을 가로채 "준비중" 토스트만
+         띄우고 메뉴가 안 열림. 메뉴 여는 버튼은 준비중 대상이 아니므로 꼬리표를
+         떼고 exempt 를 부여해 토스트를 확실히 차단. (햄버거 자체 준비중 모드일
+         때만 다시 data-coming-soon 부여) */
+      btn.removeAttribute('data-coming-soon');
       if (MENU_COMING_SOON) {
         btn.setAttribute('data-coming-soon', '1');
+      } else {
+        btn.setAttribute('data-coming-soon-exempt', '1');
       }
+
       btn.addEventListener('click', function () {
         if (MENU_COMING_SOON) return;  /* 토스트는 coming-soon.js 가 처리 */
         if (isOpen) closeMenu('toggle'); else openMenu();
       });
-    } else {
-      console.warn('[hx-menu] .image-18 not found');
     }
+
+    function bindAllBurgers() {
+      var list = document.querySelectorAll(BURGER_SEL);
+      for (var i = 0; i < list.length; i++) bindBurger(list[i]);
+      return list.length;
+    }
+
+    /* 즉시 바인딩 + 늦게 렌더되는 헤더 컴포넌트(IX2/컴포넌트 인스턴스) 대비 재시도 */
+    if (bindAllBurgers() === 0) {
+      console.warn('[hx-menu] burger button not found yet, retrying');
+    }
+    var burgerScan = 0;
+    var burgerIv = setInterval(function () {
+      bindAllBurgers();
+      if (++burgerScan >= 20) clearInterval(burgerIv);
+    }, 250);
 
     /* 백드롭 / X 버튼 클릭 → 닫기 */
     backdrop.addEventListener('click', function () { closeMenu('backdrop'); });
