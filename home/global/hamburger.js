@@ -1,11 +1,6 @@
 (function () {
   'use strict';
 
-  /* 스테이징(*.webflow.io) 여부 — 정식엔 아직 안 여는 항목을 스테이징에서만
-     미리 열어 작업 편의를 주기 위한 도메인 게이트 (측정/메뉴 게이트와 동일 방침).
-     정식 도메인에선 게이트가 안 걸려 해당 항목이 준비중으로 유지됨. */
-  var IS_STAGING = /\.webflow\.io$/i.test(location.hostname);
-
   /* ── 링크 설정 (URL 변경 시 여기만 수정) ── */
   var BRANCHES = [
     { text: '서초 본원',          href: '/seocho' },
@@ -18,7 +13,7 @@
     { text: 'discover HELIX', href: '/discover-helix' },
     { group: [ { text: '진료과목', href: '/services' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
-    { group: [ { text: 'FAQ', href: IS_STAGING ? '/faq' : '#' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
+    { group: [ { text: 'FAQ', href: '/faq' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
     { text: '응급증상안내',  href: '/symptoms' }
   ];
 
@@ -32,7 +27,7 @@
      ── 전체 개방 ──
      주요 메뉴(서초본원·SVICC·discover HELIX·진료과목·응급증상안내)가 연결되어
      메뉴를 도메인 무관 전체 개방. 아직 미연결 항목(일산분원·특화진료·의료인프라·
-     FAQ·뉴스룸·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
+     뉴스룸·칼럼·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
      coming-soon.js 가 "준비중입니다" 토스트로 안내. */
   var MENU_COMING_SOON = false;
 
