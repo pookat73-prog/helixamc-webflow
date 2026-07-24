@@ -66,11 +66,19 @@
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
+    /* 전 페이지 공통 — 헤더 홈 로고 / 진료과목 탭 (coming-soon.js 가 data-hx-hdr-ga 마킹) */
+    { sel: '[data-hx-hdr-ga="logo"]',     label: '헤더 · 홈 로고',   event: 'header_logo_home' },
+    { sel: '[data-hx-hdr-ga="services"]', label: '헤더 · 진료과목',  event: 'header_services_click' },
     /* 전 페이지 공통 — 햄버거 메뉴 (홈: .image-18 / about: .menu-bar_mobile).
        메뉴 오버레이(.hx-menu-*)는 클릭으로 열릴 때 주입·표시되며, 인스펙터가
        클릭·DOM 변동 때 재스캔하므로 열면 네모가 따라붙는다. */
     { sel: '.image-18, .menu-bar_mobile', label: '햄버거 · 메뉴 열기', event: 'menu_open' },
     { sel: '.hx-menu-close',        label: '햄버거 · 메뉴 닫기',  event: 'menu_close' },
+    /* 전환 성격이 다른 링크는 전용 이벤트 → 전용 네모 (data-ga-event 로 정밀 타깃).
+       공용 항목보다 먼저 둬야 seen-dedup 에서 전용 라벨이 이김. */
+    { sel: '[data-ga-event="menu_emergency_click"]', label: '햄버거 · 응급증상 안내', event: 'menu_emergency_click' },
+    { sel: '[data-ga-event="menu_services_click"]',  label: '햄버거 · 진료과목',     event: 'menu_services_click' },
+    { sel: '[data-ga-event="vet_chart_click"]',      label: '햄버거 · 수의사용 웹차트', event: 'vet_chart_click' },
     { sel: '.hx-menu-branch, .hx-menu-nav-link, .hx-menu-footer-link',
       label: '햄버거 · 메뉴 이동', event: 'menu_nav_click' },
     /* 푸터 (홈 등) */

@@ -303,6 +303,59 @@
     }, 150);
   }
 
+  /* ── 헤더 GA 측정 (전 페이지 공통 헤더) ──
+     홈 로고 / 진료과목 탭 클릭에 전용 GA 이벤트를 붙인다. window.gtag(ga4-base)
+     에 편승 → 스테이징(*.webflow.io)에선 no-op stub 이라 자동 비활성(측정 안 감).
+     실제 발사는 아래 document 캡처 리스너가 담당하고, 여기선 인스펙터 네모용
+     마커(data-hx-hdr-ga)만 부여한다.
+       - 로고: 헤더 안에서 홈(/)으로 가는, 이미지 품은 링크
+       - 진료과목: markLiveNav 가 승격한 data-helix-link="/services" 요소 */
+  function hxHeaderGa(name, params) {
+    if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
+  }
+  function hxHeaderRoot() {
+    return document.querySelector('.navbar1_component') ||
+           document.querySelector('header') ||
+           document.querySelector('[class*="navbar" i]') ||
+           document.querySelector('nav');
+  }
+  function hxIsHomeHref(a) {
+    var href = a.getAttribute('href');
+    if (href == null) return false;
+    if (href === '/' || /^\/(index\.html)?$/i.test(href)) return true;
+    try {
+      var u = new URL(a.href, location.href);
+      return u.origin === location.origin && /^\/(index\.html)?$/i.test(u.pathname);
+    } catch (e) { return false; }
+  }
+  var HDR_GA_ATTR = 'data-hx-hdr-ga';
+  function markHeaderGa() {
+    var header = hxHeaderRoot();
+    if (header) {
+      var anchors = header.querySelectorAll('a');
+      Array.prototype.forEach.call(anchors, function (a) {
+        if (a.getAttribute(HDR_GA_ATTR)) return;
+        if (hxIsHomeHref(a) && (a.querySelector('img,svg') || /logo/i.test(a.className || ''))) {
+          a.setAttribute(HDR_GA_ATTR, 'logo');
+        }
+      });
+    }
+    /* 진료과목 링크는 data-helix-link="/services" 로 유일 식별(헤더 스코프 불필요) */
+    var svc = document.querySelectorAll('[' + LIVE_ATTR + '="/services"]');
+    Array.prototype.forEach.call(svc, function (el) {
+      if (!el.getAttribute(HDR_GA_ATTR)) el.setAttribute(HDR_GA_ATTR, 'services');
+    });
+  }
+  /* 발사 리스너 — document 캡처. handleLiveCardClick 이 진료과목 클릭에서
+     stopPropagation 을 부르지만, 그건 "다른 타깃으로의 전파"만 막을 뿐
+     document 에 걸린 형제 캡처 리스너는 그대로 실행되므로 여기서 안전하게 발사. */
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    if (t.closest('[' + HDR_GA_ATTR + '="logo"]')) hxHeaderGa('header_logo_home', {});
+    else if (t.closest('[' + HDR_GA_ATTR + '="services"]')) hxHeaderGa('header_services_click', {});
+  }, true);
+
   /* Webflow Designer 컴포넌트 정의/인스턴스에 custom attribute 로 박혀 있는
      data-coming-soon 을 떼어내야 하는 라이브 셀렉터.
      셀렉터에 매칭되는 element 와 그 자손 anchor 의 data-coming-soon 제거. */
@@ -345,6 +398,8 @@
     markLiveNav();
     /* 헤더 "지점안내" 탭 → 홈 지점 카드 섹션 스크롤 이동으로 승격 */
     markBranchNav();
+    /* 헤더 홈 로고 / 진료과목 탭 → GA 측정 마커 부여 */
+    markHeaderGa();
   }
 
   /* 라이브 지점 카드 클릭 → 페이지 이동.
