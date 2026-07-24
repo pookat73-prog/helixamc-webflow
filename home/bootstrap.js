@@ -136,6 +136,11 @@
     /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
     'global/top-button.css',
     'global/top-button.js',
+    /* 햄버거 메뉴 (전 페이지 공통) — 다른 페이지 bootstrap 엔 다 있는데 홈만
+       빠져 있어 홈에서 메뉴가 안 열렸음. coming-soon.js 보다 먼저 로드해도
+       버튼 바인딩은 exempt 방식이라 순서 무관. */
+    'home/global/hamburger.css',
+    'home/global/hamburger.js',
     'home/section1/section1.css',
     'home/section1/section1.js',
     'home/section-divider/divider.css',
