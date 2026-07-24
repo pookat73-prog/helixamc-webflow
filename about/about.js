@@ -2233,11 +2233,38 @@
     /* 타깃 결정 — 우선순위
        1. href ID 와 일치하는 요소 중 실제 화면에 보이는 것 (Webflow 듀얼
           마크업에서 같은 ID 가 데스크탑/모바일 양쪽에 있을 때 visible 쪽)
-       2. heuristic: 링크의 .subheader_title 텍스트와 매칭되는 visible 헤딩
+       2. 큐레이션 매핑: 링크 문구와 섹션 헤딩 문구가 서로 다른 메뉴
+          (보호자·원장의료진) 를 지정 헤딩의 조상 섹션으로 확실히 연결.
+       3. heuristic: 링크의 .subheader_title 텍스트와 매칭되는 visible 헤딩
           (h1~h4) 의 가장 가까운 section/main 조상.
           데스크탑에만 ID 가 박혀 있고 모바일 마크업엔 ID 가 없는 케이스
           (보호자/의료진 같은 듀얼 섹션) 를 커버.
-       3. null — 클릭 핸들러는 null 이면 native 동작 안 막음. spy 도 무시. */
+       4. null — 클릭 핸들러는 null 이면 native 동작 안 막음. spy 도 무시. */
+
+    /* 링크 텍스트 ↔ 섹션 헤딩 텍스트가 다른 메뉴 전용 연결표.
+       titleHas (공백 제거한 링크 문구에 포함되면) → headingText 를 가진
+       visible 헤딩의 조상 섹션으로 스크롤. Webflow 섹션 링크(pageSection)
+       가 앵커 ID 를 못 만들거나, 링크 문구가 헤딩과 안 맞아도 확실히 이동. */
+    var CURATED_ANCHORS = [
+      { titleHas: '보호자', headingText: '이것이 헬릭스가 생각하는 병원의 역할입니다' },
+      { titleHas: '원장의료진', headingText: '원장 의료진' }
+    ];
+    function findSectionByHeadingText(text) {
+      var norm = (text || '').replace(/\s+/g, '');
+      if (!norm) return null;
+      var hs = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      for (var i = 0; i < hs.length; i++) {
+        var h = hs[i];
+        if (h.offsetParent === null && h.getClientRects().length === 0) continue;
+        var ht = (h.textContent || '').replace(/\s+/g, '');
+        if (!ht) continue;
+        if (ht === norm || ht.indexOf(norm) !== -1 || norm.indexOf(ht) !== -1) {
+          return h.closest('section') || h.closest('[class*="section"]') || h;
+        }
+      }
+      return null;
+    }
+
     function findVisibleTarget(href, linkEl) {
       if (href && href.charAt(0) === '#' && href.length >= 2) {
         var id = href.slice(1);
@@ -2250,6 +2277,13 @@
       if (linkEl) {
         var titleEl = linkEl.querySelector('.subheader_title') || linkEl;
         var title = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
+        var ntitle = title.replace(/\s+/g, '');
+        for (var c = 0; c < CURATED_ANCHORS.length; c++) {
+          if (ntitle.indexOf(CURATED_ANCHORS[c].titleHas) !== -1) {
+            var curated = findSectionByHeadingText(CURATED_ANCHORS[c].headingText);
+            if (curated) return curated;
+          }
+        }
         if (title.length >= 2) {
           var headings = document.querySelectorAll('h1, h2, h3, h4');
           for (var j = 0; j < headings.length; j++) {
