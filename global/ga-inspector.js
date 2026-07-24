@@ -45,6 +45,7 @@
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
+    if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
@@ -128,6 +129,26 @@
       { sel: '.w-tab-menu .w-tab-link', label: '서초 · 분과 탭',       event: 'seocho_dept_tab_*' },
       { sel: '[data-doctor-open]',      label: '서초 · 의료진 상세(+)', event: 'seocho_doctor_detail_*' },
       { sel: '.naver-map-directions',   label: '서초 · 길찾기',        event: 'seocho_directions_*' }
+    ]);
+  }
+
+  /* FAQ 페이지 전용 — 질환/일반 양쪽 측정 자리. 질문 카드의 '자세히'
+     인디케이터(질환) / 질문 행(일반) 은 faq-stack.js·faq-general.js 가 로드
+     후 주입하고, 페이징으로 현재 페이지 항목만 보인다. 인스펙터는 클릭·DOM
+     변동 때 재스캔하므로 탭 전환/페이지 이동에 따라 배지가 따라붙는다. */
+  if (PAGE === 'faq') {
+    TARGETS = TARGETS.concat([
+      { sel: '.w-tab-menu .w-tab-link', label: 'FAQ · 탭(질환/일반)', event: 'faq_tab_select' },
+      { sel: '[class*="faq-chip" i]',   label: 'FAQ · 필터 칩',      event: 'faq_filter_select',
+        match: function (el) { return !/faq-chip_reset/i.test(el.className || ''); } },
+      { sel: '[class*="faq-chip_reset" i]', label: 'FAQ · 필터 초기화', event: 'faq_filter_reset' },
+      /* 질환 질문 — '자세히' 펼침 인디케이터(카드마다 1개) */
+      { sel: '[class*="helix-faq-indicator" i]', label: 'FAQ · 질환 질문 펼치기', event: 'faq_open' },
+      /* 일반 질문 — 질문 행(카드마다 1개) */
+      { sel: '[class*="helix-gfaq-q" i]:not([class*="helix-gfaq-qmark" i]):not([class*="helix-gfaq-qtext" i])',
+        label: 'FAQ · 일반 질문 펼치기', event: 'faq_open' },
+      /* 페이지 이동 (질환/일반 공통) */
+      { sel: '[class*="faq-page-btn" i]', label: 'FAQ · 페이지 이동', event: 'faq_page_nav' }
     ]);
   }
 
