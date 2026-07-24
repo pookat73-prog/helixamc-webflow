@@ -142,11 +142,12 @@
       { sel: '[class*="faq-chip" i]',   label: 'FAQ · 필터 칩',      event: 'faq_filter_select',
         match: function (el) { return !/faq-chip_reset/i.test(el.className || ''); } },
       { sel: '[class*="faq-chip_reset" i]', label: 'FAQ · 필터 초기화', event: 'faq_filter_reset' },
-      /* 질환 질문 — '자세히' 펼침 인디케이터(카드마다 1개) */
-      { sel: '[class*="helix-faq-indicator" i]', label: 'FAQ · 질환 질문 펼치기', event: 'faq_open' },
-      /* 일반 질문 — 질문 행(카드마다 1개) */
-      { sel: '[class*="helix-gfaq-q" i]:not([class*="helix-gfaq-qmark" i]):not([class*="helix-gfaq-qtext" i])',
-        label: 'FAQ · 일반 질문 펼치기', event: 'faq_open' },
+      /* 질환 질문 — '자세히' 펼침 버튼(카드마다 1개). 정확한 클래스 토큰으로
+         잡아야 함: [class*="..."] 는 하위 label/arrow(__label/__arrow)까지 걸려
+         한 버튼에 네모칸이 3중으로 겹침. */
+      { sel: '.helix-faq-indicator', label: 'FAQ · 질환 질문 펼치기', event: 'faq_open' },
+      /* 일반 질문 — 질문 행(카드마다 1개). 정확한 토큰(하위 qmark/qtext 제외) */
+      { sel: '.helix-gfaq-q', label: 'FAQ · 일반 질문 펼치기', event: 'faq_open' },
       /* 페이지 이동 (질환/일반 공통) */
       { sel: '[class*="faq-page-btn" i]', label: 'FAQ · 페이지 이동', event: 'faq_page_nav' }
     ]);
