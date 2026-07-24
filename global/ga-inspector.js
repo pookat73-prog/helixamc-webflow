@@ -66,6 +66,13 @@
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
+    /* 전 페이지 공통 — 햄버거 메뉴 (홈: .image-18 / about: .menu-bar_mobile).
+       메뉴 오버레이(.hx-menu-*)는 클릭으로 열릴 때 주입·표시되며, 인스펙터가
+       클릭·DOM 변동 때 재스캔하므로 열면 네모가 따라붙는다. */
+    { sel: '.image-18, .menu-bar_mobile', label: '햄버거 · 메뉴 열기', event: 'menu_open' },
+    { sel: '.hx-menu-close',        label: '햄버거 · 메뉴 닫기',  event: 'menu_close' },
+    { sel: '.hx-menu-branch, .hx-menu-nav-link, .hx-menu-footer-link',
+      label: '햄버거 · 메뉴 이동', event: 'menu_nav_click' },
     /* 푸터 (홈 등) */
     { sel: '.footer-email-clickable', label: '푸터 · 이메일 복사', event: 'copy_email_*' },
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
