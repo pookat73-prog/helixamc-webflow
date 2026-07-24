@@ -8,13 +8,15 @@
     { text: '서울동물영상종양센터', href: 'https://www.svicc.co.kr/' }
   ];
 
-  /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크 */
+  /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크.
+     event 가 지정된 항목은 공용 menu_nav_click 대신 그 전용 이벤트를 쏨
+     (전환 성격이 다른 링크를 GA 에서 한 줄로 따로 집계하기 위함). */
   var NAV_LINKS = [
     { text: 'discover HELIX', href: '/discover-helix' },
-    { group: [ { text: '진료과목', href: '/services' }, { text: '특화진료', href: '#' } ] },
+    { group: [ { text: '진료과목', href: '/services', event: 'menu_services_click' }, { text: '특화진료', href: '#' } ] },
     { text: '의료 인프라',   href: '#' },
     { group: [ { text: 'FAQ', href: '/faq' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
-    { text: '응급증상안내',  href: '/symptoms' }
+    { text: '응급증상안내',  href: '/symptoms', event: 'menu_emergency_click' }
   ];
 
   /* 수의사용 웹 차트 = 벳칭 웹리퍼 협력병원 접속(로그인) 주소.
@@ -42,6 +44,13 @@
     return /^https?:\/\//i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : '';
   }
 
+  /* 전용 GA 이벤트가 지정된 항목이면 data-ga-event 속성 부여.
+     클릭 핸들러가 이 속성을 읽어 공용 menu_nav_click 대신 전용 이벤트를 쏨.
+     인스펙터도 이 속성으로 전용 네모를 그림. */
+  function gaAttr(item) {
+    return item && item.event ? ' data-ga-event="' + item.event + '"' : '';
+  }
+
   /* ── 오버레이 HTML 생성 ── */
   function buildOverlayHTML() {
     var branchesHTML = BRANCHES.map(function (b) {
@@ -53,12 +62,12 @@
       if (n.group) {
         var inner = n.group.map(function (g, i) {
           return (i > 0 ? '<span class="hx-menu-nav-sep">・</span>' : '') +
-            '<a href="' + g.href + '"' + comingSoonAttr(g.href) + externalAttr(g.href) +
+            '<a href="' + g.href + '"' + comingSoonAttr(g.href) + externalAttr(g.href) + gaAttr(g) +
             ' class="hx-menu-nav-link">' + g.text + '</a>';
         }).join('');
         return '<div class="hx-menu-nav-group">' + inner + '</div>';
       }
-      return '<a href="' + n.href + '"' + comingSoonAttr(n.href) + externalAttr(n.href) +
+      return '<a href="' + n.href + '"' + comingSoonAttr(n.href) + externalAttr(n.href) + gaAttr(n) +
         ' class="hx-menu-nav-link">' + n.text + '</a>';
     }).join('');
 
@@ -71,7 +80,7 @@
         '</div>' +
         '<div class="hx-menu-footer">' +
           '<a href="' + VET_CHART_HREF + '"' + comingSoonAttr(VET_CHART_HREF) + externalAttr(VET_CHART_HREF) +
-            ' class="hx-menu-footer-link">' +
+            ' data-ga-event="vet_chart_click" class="hx-menu-footer-link">' +
             '수의사용 웹 차트' +
             '<span class="hx-menu-footer-link__arrow">›</span>' +
           '</a>' +
@@ -249,7 +258,11 @@
     overlay.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () {
         var comingSoon = a.hasAttribute('data-coming-soon');
-        ga('menu_nav_click', {
+        /* 전용 이벤트가 지정된 링크(응급증상·진료과목·수의사용 웹차트)는
+           공용 menu_nav_click 대신 그 이벤트를 쏨 → 전환 성격별 분리 집계.
+           나머지 링크는 기존대로 공용 menu_nav_click. */
+        var dedicated = a.getAttribute('data-ga-event');
+        ga(dedicated || 'menu_nav_click', {
           link_text: (a.textContent || '').trim(),
           link_url: a.getAttribute('href') || '',
           coming_soon: comingSoon ? 1 : 0
