@@ -279,6 +279,9 @@
         var addr = Array.from(addrNodes)
           .map(function (n) { return (n.innerText || '').trim(); })
           .filter(Boolean)
+          // 건물명 + 층/호 같은 상세 줄(예: 일산 "르본시티 2층")은 복사에서 제외.
+          // 도로명 주소는 층/호로 끝나지 않으므로 도로명까지만 복사됨.
+          .filter(function (line) { return !/\d+\s*(층|호)$/.test(line); })
           .join(' ');
 
         if (!addr) { log('address not found in card'); return; }
