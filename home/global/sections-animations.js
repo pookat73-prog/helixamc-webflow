@@ -275,7 +275,9 @@
         var card = btn.closest('.home_branch-card');
         if (!card) return;
 
-        var addrNodes = card.querySelectorAll('[class*="home_branch-card_address"]');
+        // 주소 문단만 이어붙임. 단, 빈칸 확보용 허수 placeholder
+        // (Home_Branch Card_Address_null → home_branch-card_address_null)는 제외.
+        var addrNodes = card.querySelectorAll('[class*="home_branch-card_address"]:not([class*="home_branch-card_address_null"])');
         var addr = Array.from(addrNodes)
           .map(function (n) { return (n.innerText || '').trim(); })
           .filter(Boolean)
