@@ -1,0 +1,189 @@
+/* ================================================================
+   HELIX AMC — FAQ 페이지 자동 반응형 (브레이크포인트 없이 유동)
+
+   ■ 왜 필요한가
+   FAQ 페이지의 Webflow 클래스는 크기가 거의 전부 vw(화면 폭 비례)로만
+   박혀 있다. vw 는 하한·상한이 없어서 화면이 좁아지면 끝없이 작아진다.
+     - 상세 답변 본문(.faq-a_Full) 0.9vw → 1440px 에서 13px, 폰(390px)에선 3.5px
+     - 필터 칩/안내문 0.8vw       → 1440px 에서 11.5px, 폰에선 3.1px
+     - 카드 폭(.faq_box) 46vw      → 1440px 에서 662px, 폰에선 179px
+   Webflow 브레이크포인트 예외값이 붙은 건 극히 일부라, 대부분 구간이 무방비.
+
+   ■ 어떻게 고치나 — clamp(하한, 원래 vw, 상한)
+   원래 vw 기울기는 그대로 두고 바닥과 천장만 씌운다.
+     - 1440px(디자인 기준 폭): 지금과 동일하거나 사실상 동일
+     - 1440 ~ 1920px: 지금과 똑같이 커짐
+     - 1920px 초과(대형 모니터): 상한에서 멈춤 → 과하게 커지지 않음
+     - 1440px 미만(노트북·태블릿·폰): 하한에서 멈춤 → 더 이상 안 쪼그라듦
+   브레이크포인트를 새로 만들지 않으므로, 화면 폭이 어떤 값이든 자동으로 맞음.
+
+   ■ 조절 방법
+   아래 :root 변수 한 줄만 바꾸면 해당 요소의 최소 크기가 바뀐다.
+   (상한은 각 규칙의 clamp 세 번째 값 = 1920px 에서의 현재 크기)
+
+   ⚠ .faq-title 은 일부러 건드리지 않음 — Webflow 에 태블릿(4vw)·모바일(28px)
+     예외값이 이미 잘 잡혀 있어, 덮으면 오히려 태블릿 제목이 작아진다.
+   ⚠ 이 파일은 faq/bootstrap.js 로 FAQ 페이지에서만 로드된다(다른 페이지 무영향).
+   ================================================================ */
+
+:root {
+  /* 글자 최소 크기 — 화면이 아무리 좁아도 이 아래로는 안 내려감 */
+  --faq-min-q:        18px;   /* 질문 (질환용 .faq-q) */
+  --faq-min-answer:   15px;   /* 상세 답변 본문 (.faq-a_Full) */
+  --faq-min-tab:      14px;   /* 탭 이름 */
+  --faq-min-meta:     12px;   /* 칩·태그·번호·안내문 등 보조 글자 */
+  --faq-min-sub:      13px;   /* 소제목/오버라인 */
+  --faq-min-cta-head: 24px;   /* 하단 CTA 큰 제목 */
+  --faq-min-cta-tel:  22px;   /* 하단 CTA 전화번호 */
+  --faq-min-cta-sub:  15px;   /* 하단 CTA 보조 문구 */
+  --faq-min-cta-btn:  14px;   /* 하단 CTA 버튼 글자 */
+}
+
+/* ================================================================
+   1. 질문 / 답변 — 읽는 본문
+   ================================================================ */
+
+/* 질문 (질환용 목록). Webflow 모바일 예외값 18px 과 하한을 일치시켜,
+   768~991px 구간(예외값이 없어 12px 까지 작아지던 구멍)만 메워짐. */
+.faq-q {
+  font-size: clamp(var(--faq-min-q), 1.25vw, 24px) !important;
+  line-height: clamp(26px, 1.8vw, 35px) !important;
+}
+
+/* 상세 답변 본문. 좁은 화면에서 3.5px 까지 내려가던 값 → 15px 하한.
+   (1440px 에서 13px → 15px 로 약간 커짐. 원래 크기를 유지하고 싶으면
+    --faq-min-answer 를 13px 로 바꾸면 됨) */
+[class*="faq-a_full" i] {
+  font-size: clamp(var(--faq-min-answer), 0.9vw, 17px) !important;
+  line-height: clamp(24px, 1.6vw, 31px) !important;
+}
+
+/* ================================================================
+   2. 폭 — 좁은 화면에선 부모 폭 100%, 넓은 화면에선 지금 그대로
+   min(100%, clamp(1440px값, 원래vw, 1920px값))
+   → 폰에서 카드가 179px 로 쪼그라들던 문제 해소, 데스크탑은 동일
+   ================================================================ */
+.faq_box {
+  width: min(100%, clamp(662px, 46vw, 883px)) !important;
+}
+.faq-q {
+  width: min(100%, clamp(317px, 22vw, 422px)) !important;
+}
+[class*="faq-a_full" i] {
+  width: min(100%, clamp(389px, 27vw, 518px)) !important;
+}
+
+/* 상세 답변 박스 안쪽 여백/모서리도 하한·상한.
+   ※ 일반용 목록([data-faq-general])은 faq-general.css 가 !important 로
+     따로 잡고 있어 그쪽이 그대로 우선함 — 여기선 질환용에만 사실상 적용 */
+[class*="faq-a_full" i] {
+  padding: clamp(8px, 1vw, 19px) clamp(14px, 4vw, 77px) clamp(14px, 2vw, 38px);
+  border-radius: clamp(10px, 1.5vw, 29px);
+}
+
+/* ================================================================
+   3. 탭 / 필터 칩 / 페이지네이션 — 보조 UI
+   ================================================================ */
+.faq_tab-name {
+  font-size: clamp(var(--faq-min-tab), 1vw, 19px) !important;
+  line-height: clamp(var(--faq-min-tab), 1vw, 19px) !important;
+}
+.faq_tab-area {
+  padding: clamp(10px, 1.5vw, 29px) clamp(12px, 1.7vw, 33px) !important;
+}
+
+.faq-chip,
+.faq-chip_reset {
+  padding: clamp(6px, 0.6vw, 12px) clamp(10px, 1vw, 19px) !important;
+  font-size: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+  line-height: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+.faq-filter-opts,
+.faq_common {
+  gap: clamp(6px, 0.5vw, 10px) !important;
+}
+
+.faq-pg,
+.faq-num,
+.faq-tag,
+.faq-count,
+.faq-guide {
+  font-size: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+.faq-pg,
+.faq-tag,
+.faq-count,
+.faq-guide {
+  line-height: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+
+/* 소제목 / 오버라인 (태블릿 예외값 1.3vw 도 좁은 폭에선 10px 까지 내려감) */
+.faq-sub {
+  font-size: clamp(var(--faq-min-sub), 0.8vw, 15px) !important;
+  line-height: clamp(19px, 1.3vw, 25px) !important;
+}
+.faq-overline {
+  font-size: clamp(var(--faq-min-sub), 0.88vw, 17px) !important;
+  line-height: clamp(var(--faq-min-sub), 0.88vw, 17px) !important;
+}
+
+/* ================================================================
+   4. 하단 CTA (상담 문의 영역)
+   큰 글자는 하한을 '폰에서 적당한 크기'로 잡음 — 1440/1920px 은 지금 그대로
+   ================================================================ */
+.faq-cta_title {
+  font-size: clamp(26px, 2.5vw, 48px) !important;
+  line-height: clamp(32px, 2.5vw, 48px) !important;
+}
+.faq_cta-head {
+  font-size: clamp(var(--faq-min-cta-head), 2.32vw, 45px) !important;
+  line-height: clamp(var(--faq-min-cta-head), 2.3vw, 44px) !important;
+}
+.faq_cta-number,
+.faq-cta_tel,
+.faq-cta_tel-red {
+  font-size: clamp(var(--faq-min-cta-tel), 2vw, 38px) !important;
+  line-height: clamp(var(--faq-min-cta-tel), 2vw, 38px) !important;
+}
+.faq_cta-sub {
+  font-size: clamp(17px, 1.5vw, 29px) !important;
+  line-height: clamp(17px, 1.5vw, 29px) !important;
+}
+.faq-cta_sub {
+  font-size: clamp(var(--faq-min-cta-sub), 1.3vw, 25px) !important;
+  line-height: clamp(var(--faq-min-cta-sub), 1.3vw, 25px) !important;
+}
+.faq_cta-time {
+  font-size: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+  line-height: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+.faq_cta-call {
+  padding: clamp(10px, 1vw, 19px) !important;
+  font-size: clamp(var(--faq-min-cta-btn), 1vw, 19px) !important;
+  line-height: clamp(var(--faq-min-cta-btn), 1vw, 19px) !important;
+}
+.faq-cta_surface {
+  margin-top: clamp(20px, 3vw, 58px) !important;
+  margin-bottom: clamp(14px, 2vw, 38px) !important;
+  padding-top: clamp(28px, 5vw, 96px) !important;
+  padding-bottom: clamp(24px, 4vw, 77px) !important;
+}
+
+/* ================================================================
+   5. 카드 사이 선·여백
+   ================================================================ */
+.faq_line {
+  margin-bottom: clamp(8px, 0.9vw, 17px) !important;
+}
+.faq_line-deep {
+  margin-bottom: clamp(14px, 2vw, 38px) !important;
+}
+.faq_fa-slot {
+  gap: clamp(8px, 1vw, 19px) !important;
+}
+.faq_q,
+.faq-c-_q-box {
+  margin-top: clamp(12px, 1.5vw, 29px) !important;
+  padding-top: clamp(6px, 0.6vw, 12px) !important;
+  border-bottom-right-radius: clamp(12px, 2vw, 38px) !important;
+}

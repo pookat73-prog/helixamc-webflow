@@ -24,7 +24,7 @@
   /* ── 마케팅 데시보드(Firebase 실시간 DB) 상담 leads 적재 ──
      실장님 데시보드(Helixamc_pm)가 읽는 leads 경로에 직접 한 부 더 쌓는다.
      REST 방식 POST 라 Firebase SDK 로드 불필요. */
-  var LEADS_URL = 'https://helixamc-pm-default-rtdb.firebaseio.com/leads.json';
+  var LEADS_URL = 'https://helixamc-pm-default-rtdb.firebaseio.com/branches/seocho/leads.json';
 
   /* 완료 화면 일러스트(정적 에셋). 진입점이 넘긴 커밋 SHA 가 있으면 그
      immutable 주소로, 없으면 호스트 기반 브랜치(@staging/@main)로 로드. */
