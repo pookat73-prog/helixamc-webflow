@@ -164,7 +164,9 @@
       /* 일반 질문 — 질문 행(카드마다 1개). 정확한 토큰(하위 qmark/qtext 제외) */
       { sel: '.helix-gfaq-q', label: 'FAQ · 일반 질문 펼치기', event: 'faq_open' },
       /* 페이지 이동 (질환/일반 공통) */
-      { sel: '[class*="faq-page-btn" i]', label: 'FAQ · 페이지 이동', event: 'faq_page_nav' }
+      { sel: '[class*="faq-page-btn" i]', label: 'FAQ · 페이지 이동', event: 'faq_page_nav' },
+      /* 하단 CTA '전화 문의하기' — 확인창 → tel: 연결 (faq/cta-call.js) */
+      { sel: '[class*="faq_cta" i][class*="call" i]', label: 'FAQ · 전화 문의하기', event: 'faq_phone_call' }
     ]);
   }
 
