@@ -384,6 +384,59 @@
     return max;
   }
 
+  /* 화면 위쪽에 "실제로 붙어 있는" 고정/스티키 바들의 아래 끝(px).
+     헤더 → 서브헤더 → 필터처럼 세로로 이어 붙은 것들을 위에서부터 연결해
+     가며 가장 아래 끝을 구한다. 전체화면 오버레이(메뉴/모달), 화면 밖으로
+     나간 것, 위쪽 바가 아닌 것은 제외.
+     요소 이름을 하나도 몰라도 되는 게 핵심 — 마크업이 바뀌어도 따라간다. */
+  function topBarsBottom(exclude) {
+    var vh = window.innerHeight || 0;
+    var all = document.body.getElementsByTagName('*');
+    var bars = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (exclude && (el === exclude || exclude.contains(el) || el.contains(exclude))) continue;
+      var cs = window.getComputedStyle(el);
+      if (cs.position !== 'fixed' && cs.position !== 'sticky') continue;
+      if (cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) continue;
+      if (el.getAttribute('aria-hidden') === 'true') continue;
+      var r = el.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) continue;
+      if (r.bottom <= 0) continue;            /* 화면 위로 나감 */
+      if (r.height > vh * 0.5) continue;      /* 전체화면 오버레이 */
+      if (r.top > vh * 0.4) continue;         /* 위쪽 바가 아님 */
+      bars.push(r);
+    }
+    bars.sort(function (a, b) { return a.top - b.top; });
+    var max = 0;
+    for (var j = 0; j < bars.length; j++) {
+      if (bars[j].top <= max + 4 && bars[j].bottom > max) max = bars[j].bottom;
+    }
+    return max;
+  }
+
+  /* 스무스 스크롤이 끝난 뒤 목표 섹션 top 이 위 고정 바들 아래에 있는지
+     확인하고, 모자라면 그만큼만 더 내린다. 스티키 바는 클릭 시점엔 아직
+     안 붙어 있어 미리 정확히 잴 수 없다 — 도착 후에 재야 실제 값이 나온다. */
+  function settleAfterScroll(target) {
+    var tries = 0;
+    function fix() {
+      if (++tries > 3) return;
+      var gap = (topBarsBottom(target) + 8) - target.getBoundingClientRect().top;
+      if (gap > 1) {
+        window.scrollTo({ top: window.pageYOffset + gap, behavior: 'auto' });
+        setTimeout(fix, 60);
+      }
+    }
+    if ('onscrollend' in window) {
+      var once = function () { window.removeEventListener('scrollend', once); fix(); };
+      window.addEventListener('scrollend', once);
+      setTimeout(fix, 800);          /* scrollend 미발화 브라우저 대비 */
+    } else {
+      setTimeout(fix, 500);
+    }
+  }
+
   function init() {
     var links = document.querySelectorAll('.subheader_click-area');
     if (!links.length) return false;
@@ -470,6 +523,7 @@
         var subH = href === '#photo' ? 0 : subheaderH();
         var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH() + subH + 12);
         window.scrollTo({ top: y, behavior: 'smooth' });
+        /* 위 값은 어림치. 실제 보정은 아래 전역 위임 핸들러가 도착 후 처리 */
         if (history.replaceState) history.replaceState(null, '', href);
       });
     });
@@ -574,6 +628,28 @@
       if (init() || ++tries >= 25) clearInterval(t);
     }, 200);
   }
+
+  /* 페이지 내 앵커 이동은 서브헤더 말고 다른 경로로도 일어난다 (모바일 헤더
+     메뉴 등). 그런 경로는 위 핸들러가 안 걸려 보정 없이 착지해 제목이 헤더에
+     가린다. 그래서 클릭 주체와 무관하게 "도착 후 보정"만 덧붙인다.
+     스크롤 자체는 원래 하던 쪽에 맡기고 preventDefault 하지 않는다.
+     캡처 단계라 다른 핸들러가 전파를 막아도 실행된다. */
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (href.charAt(0) !== '#' || href.length < 2) return;
+    if (href === '#photo') return;          /* 마지막 섹션은 제외 */
+    var id = href.slice(1);
+    var list = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+    for (var i = 0; i < list.length; i++) {
+      var el = list[i];
+      if (el.offsetParent !== null || el.getClientRects().length > 0) {
+        settleAfterScroll(el);
+        return;
+      }
+    }
+  }, true);
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
