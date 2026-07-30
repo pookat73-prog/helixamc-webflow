@@ -352,6 +352,24 @@
      폰에서 0 이 나오고, 착지 지점이 모바일 서브헤더 뒤로 들어가 제목이
      가려진다. 클래스명 변경에 견디도록 .subheader_click-area 의 조상
      section 으로 찾아 그중 가장 높은(=보이는) 것을 채택. */
+  /* 헤더도 서브헤더와 같은 듀얼 마크업 — 데스크탑용(header.header)과
+     모바일용(header.header_mobile)이 둘 다 DOM 에 있고 한쪽만 보인다.
+     querySelector 는 셀렉터 순서가 아니라 문서 순서상 첫 번째(=데스크탑)를
+     집어오므로 폰에서 높이가 0 이 되어, 착지 지점이 헤더 높이만큼 위로 떠
+     제목이 가린다. 아래 sync() 와 동일하게 "화면 맨 위에 붙어 있는 것 중
+     가장 높은 것"을 채택. */
+  function headerH() {
+    var cands = document.querySelectorAll(
+      'header.header, header.header_mobile, header, .w-nav, nav[role="banner"]'
+    );
+    var max = 0;
+    for (var i = 0; i < cands.length; i++) {
+      var r = cands[i].getBoundingClientRect();
+      if (r.top <= 1 && r.height > max) max = r.height;
+    }
+    return max;
+  }
+
   function subheaderH() {
     var links = document.querySelectorAll('.subheader_click-area');
     var seen = [];
@@ -446,13 +464,11 @@
           } catch (e) {}
         })();
 
-        var hEl = document.querySelector('header.header, header, nav');
-        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
         /* 마지막 섹션(공간 갤러리 #photo) 은 제목 맞춤 대상에서 제외 —
            페이지 끝이라 어차피 더 내려갈 여지가 없다. 나머지 섹션은 헤더 +
            서브헤더 아래에 섹션 top 이 오게 해서 제목/첫 블록부터 보이게 함. */
         var subH = href === '#photo' ? 0 : subheaderH();
-        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH() + subH + 12);
         window.scrollTo({ top: y, behavior: 'smooth' });
         if (history.replaceState) history.replaceState(null, '', href);
       });
@@ -467,10 +483,8 @@
       requestAnimationFrame(function () {
         ticking = false;
         if (Date.now() - clickedAt < 700) return;
-        var hEl = document.querySelector('header.header, header, nav');
-        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
         var subH = subheaderH();
-        var line = headerH + subH + 16;
+        var line = headerH() + subH + 16;
         var straddle = null;
         var closest = null;
         var closestDist = Infinity;
