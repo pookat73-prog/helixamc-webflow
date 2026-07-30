@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.0)
+   About 인증 카드 "+" 상세보기 모달 (v1.2)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -11,6 +11,18 @@
 
    캐시: 슬러그별로 한 번 fetch → 세션 동안 재사용.
    끝에서: 멈춤 (이전/다음 비활성). 인증 페이지 간 순환 X.
+
+   v1.1 — Webflow Designer 에서 숨겨둔(눈 아이콘 off) 섹션은 슬라이드에서
+   제외. 안 그러면 빈 화면 슬라이드 + 인디케이터 점이 하나 더 생김
+   (cat-cert 4번째 섹션이 숨김 상태였음).
+
+   v1.2 — 모바일(≤767px) 전용 인증 배지 줄 추가.
+   휴대폰에서는 인증 카드 3개가 세로로 길게 늘어져 한눈에 안 들어오고,
+   ≤479px 에서는 Webflow 쪽 그리드가 아예 display:none 이라 인증이
+   통째로 안 보였음. 그래서 모바일에선 카드 대신 "인증마크만" 떼어
+   한 줄 3칸으로 크게 깔고, 탭하면 기존 상세 모달이 열리게 함
+   (배지를 실제 <a href="/aaha-cert"> 로 만들어 아래 클릭 가로채기가
+   그대로 처리 → 별도 경로 추가 없음).
    ================================================================ */
 
 (function () {
@@ -147,7 +159,8 @@
           slide.innerHTML = h;
           track.appendChild(slide);
         });
-        currentCount = htmls.length;
+        dropHiddenSlides();
+        currentCount = track.children.length;
         buildDots(currentCount);
         go(0, true);
       })
@@ -155,6 +168,35 @@
         track.innerHTML = '<div class="helix-cert-modal__loading">불러오기 실패: ' +
           (err && err.message ? err.message : '알 수 없는 오류') + '</div>';
       });
+  }
+
+  /* Webflow Designer 에서 숨겨둔 섹션 걸러내기.
+     Webflow 는 숨긴 요소를 인라인 display:none 또는 컴파일된 CSS 로 내보내는데,
+     둘 중 어느 쪽이든 모달은 이미 화면에 붙어 있으므로 (is-open → display:flex)
+     실제 계산된 display 로 판정할 수 있다.
+     안전망: 전부 숨김으로 판정되면 아무것도 지우지 않음. */
+  function dropHiddenSlides() {
+    var slides = Array.prototype.slice.call(track.children);
+    var hidden = slides.filter(function (slide) {
+      var sec = slide.firstElementChild;
+      if (!sec) return true;
+      if (/display\s*:\s*none/i.test(sec.getAttribute('style') || '')) return true;
+      var cs;
+      try { cs = window.getComputedStyle(sec); } catch (_) { return false; }
+      return !!cs && cs.display === 'none';
+    });
+    if (hidden.length === slides.length) {
+      /* 전부 숨김으로 판정된 경우 — 상세 페이지 CSS 가 이 섹션들을 특정
+         화면폭에서만 보이도록 해둔 상황 (.cert-modal-frame 이 데스크톱에선
+         display:none, 모바일 폭에서만 display:block). 예전엔 여기서 그냥
+         빠져서 빈 슬라이드만 남았음. 모달 안에서는 섹션이 곧 본문이므로
+         강제로 보이게 켠다. 일부만 숨김인 정상 케이스는 아래로 흘러가
+         v1.1 동작(숨긴 섹션 제외)이 그대로 유지됨. */
+      overlay.classList.add('is-force-visible');
+      return;
+    }
+    overlay.classList.remove('is-force-visible');
+    hidden.forEach(function (slide) { slide.parentNode.removeChild(slide); });
   }
 
   function close() {
@@ -224,12 +266,103 @@
     });
   }
 
+  /* ----------------------------------------------------------------
+     모바일 인증 배지 줄 — 인증마크만 떼어 한 줄 3칸
+     ----------------------------------------------------------------
+     각 인증 카드에서 (1) 마크 div (2) "+" 버튼의 링크 를 뽑아
+     <a> 배지로 다시 조립한다. 마크는 원본 div 를 clone 해서 Webflow
+     클래스(.div-block-157/158/159)를 그대로 들고 오므로 배경 이미지
+     주소를 코드에 박아둘 필요가 없음 (이미지 교체돼도 따라감).
+     보이기/숨기기는 CSS 미디어쿼리 담당 — JS 는 폭을 재지 않음
+     (가로/세로 전환, 데스크톱 창 줄이기 모두 CSS 가 알아서 처리). */
+  var CERTS = [
+    { card: '.about_contents_box_ahha',  mark: '.div-block-159',
+      slug: '/aaha-cert',      tag: 'AAHA',      kr: '미국동물병원협회' },
+    { card: '.about_contents_box_veccs', mark: '.div-block-158',
+      slug: '/emergency-cert', tag: 'VECCS',     kr: '응급·중환자 케어' },
+    { card: '.about_contents_box_cfc',   mark: '.div-block-157',
+      slug: '/cat-cert',       tag: 'CFC GOLD',  kr: '고양이 친화 진료소' }
+  ];
+
+  function buildMobileBadges() {
+    var section = document.getElementById('cert');
+    if (!section) return;
+    /* 중복 생성 방지 — MutationObserver 나 재호출로 두 번 들어올 수 있음 */
+    if (section.querySelector('.helix-cert-badges')) return;
+
+    var grid = section.querySelector('.about_grid-3-_mid-align');
+    var wrap = document.createElement('div');
+    wrap.className = 'helix-cert-badges';
+
+    var built = 0;
+    CERTS.forEach(function (cert) {
+      var card = section.querySelector(cert.card);
+      if (!card) return;
+      var mark = card.querySelector(cert.mark);
+      if (!mark) return;
+
+      /* 슬러그는 카드 안 "+" 버튼의 실제 href 를 우선 사용 —
+         Webflow 에서 페이지 슬러그를 바꿔도 배지가 따라감. */
+      var href = cert.slug;
+      var plus = card.querySelector('a[href]');
+      if (plus) {
+        try {
+          var u = new URL(plus.href, location.href);
+          if (u.origin === location.origin && isDetailPath(u.pathname)) href = u.pathname;
+        } catch (_) {}
+      }
+
+      var a = document.createElement('a');
+      a.className = 'helix-cert-badge';
+      a.href = href;
+      a.setAttribute('aria-label', cert.kr + ' ' + cert.tag + ' 인증 상세 보기');
+      /* coming-soon.js 토스트가 가로채지 않도록 면제 표시 (markExempt 와 동일) */
+      a.setAttribute('data-coming-soon-exempt', '1');
+
+      var markWrap = document.createElement('span');
+      markWrap.className = 'helix-cert-badge__markwrap';
+
+      var markClone = mark.cloneNode(false);
+      markClone.classList.add('helix-cert-badge__mark');
+      /* 원본에 IX2 등이 박아둔 인라인 크기/투명도는 배지에선 방해만 됨 */
+      markClone.removeAttribute('data-w-id');
+      markClone.style.removeProperty('opacity');
+      markClone.style.removeProperty('width');
+      markClone.style.removeProperty('height');
+      markWrap.appendChild(markClone);
+
+      var tag = document.createElement('span');
+      tag.className = 'helix-cert-badge__tag';
+      tag.textContent = cert.tag;
+
+      var kr = document.createElement('span');
+      kr.className = 'helix-cert-badge__kr';
+      kr.textContent = cert.kr;
+
+      a.appendChild(markWrap);
+      a.appendChild(tag);
+      a.appendChild(kr);
+      wrap.appendChild(a);
+      built++;
+    });
+
+    if (!built) return;
+    if (grid && grid.parentNode) grid.parentNode.insertBefore(wrap, grid.nextSibling);
+    else section.appendChild(wrap);
+  }
+
   function attach() {
     markExempt();
+    buildMobileBadges();
     /* Webflow IX2 / 컴포넌트가 늦게 마운트하는 경우 대비 — DOM 변경 감지
        시 다시 마킹. 5초 후 해제. */
     try {
-      var mo = new MutationObserver(function () { markExempt(); });
+      var mo = new MutationObserver(function () {
+        markExempt();
+        /* 인증 카드/"+"버튼이 늦게 마운트되는 경우 배지도 뒤늦게 조립.
+           내부에서 중복 생성은 막으므로 여러 번 불려도 안전. */
+        buildMobileBadges();
+      });
       mo.observe(document.body, { childList: true, subtree: true });
       setTimeout(function () { mo.disconnect(); }, 5000);
     } catch (_) {}
