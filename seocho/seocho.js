@@ -418,26 +418,52 @@
   /* 스무스 스크롤이 끝난 뒤 목표 섹션 top 이 위 고정 바들 아래에 있는지
      확인하고, 모자라면 그만큼만 더 내린다. 스티키 바는 클릭 시점엔 아직
      안 붙어 있어 미리 정확히 잴 수 없다 — 도착 후에 재야 실제 값이 나온다. */
-  function settleAfterScroll(target) {
-    var tries = 0;
-    function fix() {
-      if (++tries > 3) return;
-      /* gap > 0 = 섹션 top 이 고정 바 아래 끝보다 위에 있다 = 가려져 있다.
-         드러내려면 섹션을 화면 아래로 내려야 하고, 그건 스크롤을 그만큼
-         "위로" 올리는 것이다. (+gap 으로 내리면 더 잘린다) */
-      var gap = (topBarsBottom(target) + 8) - target.getBoundingClientRect().top;
-      if (gap > 1) {
-        window.scrollTo({ top: window.pageYOffset - gap, behavior: 'auto' });
-        setTimeout(fix, 60);
+  /* 스크롤이 "실제로 멈출 때까지" 기다렸다가 콜백.
+     고정 시간(setTimeout)에 기대면 이동 거리가 길 때 아직 스무스 스크롤
+     중이라, 보정해도 진행 중이던 애니메이션이 곧바로 덮어써 무효가 된다.
+     scrollend 이벤트는 브라우저별 지원이 갈려(iOS Safari 17 미만 없음)
+     신뢰할 수 없다. 그래서 스크롤 위치가 멎었는지를 직접 확인한다. */
+  function whenScrollSettles(cb) {
+    var last = -1, same = 0, ticks = 0;
+    var iv = setInterval(function () {
+      var y = window.pageYOffset;
+      if (y === last) same++; else same = 0;
+      last = y;
+      if (same >= 3 || ++ticks > 60) {   /* 약 150ms 정지, 3초 상한 */
+        clearInterval(iv);
+        cb();
       }
+    }, 50);
+  }
+
+  function settleAfterScroll(target) {
+    var rounds = 0;
+    var cancelled = false;
+    function onUser() { cancelled = true; }
+    window.addEventListener('wheel', onUser, { passive: true });
+    window.addEventListener('touchmove', onUser, { passive: true });
+
+    function done() {
+      window.removeEventListener('wheel', onUser);
+      window.removeEventListener('touchmove', onUser);
     }
-    if ('onscrollend' in window) {
-      var once = function () { window.removeEventListener('scrollend', once); fix(); };
-      window.addEventListener('scrollend', once);
-      setTimeout(fix, 800);          /* scrollend 미발화 브라우저 대비 */
-    } else {
-      setTimeout(fix, 500);
+
+    function round() {
+      whenScrollSettles(function () {
+        if (cancelled) return done();
+        /* gap > 0 = 섹션 top 이 고정 바 아래 끝보다 위에 있다 = 가려져 있다.
+           드러내려면 섹션을 화면 아래로 내려야 하고, 그건 스크롤을 그만큼
+           "위로" 올리는 것이다. (+gap 으로 내리면 더 잘린다) */
+        var gap = (topBarsBottom(target) + 8) - target.getBoundingClientRect().top;
+        if (gap > 1 && ++rounds <= 3) {
+          window.scrollTo({ top: window.pageYOffset - gap, behavior: 'auto' });
+          round();
+        } else {
+          done();
+        }
+      });
     }
+    round();
   }
 
   function init() {
