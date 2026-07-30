@@ -484,6 +484,58 @@ div[data-doctor-group] .job-title_m1 {
   font-weight: 400 !important;
 }
 
+/* ================================================================
+   마무리 문구 뒤 파란 광선이 의료진 카드에 비치던 문제
+   ================================================================
+   증상: '그것이 우리가 이어온 방식입니다.' 뒤에 깔린 커다란 파란 번짐이
+   아래 의료진 섹션까지 흘러내려, 분과 탭 바와 프로필 카드에 파랗게
+   비쳐 보임 (카드 사이 틈으로도 파란색이 그대로 보였음).
+
+   원인 두 가지가 겹침:
+   1) 광선은 .flex-block-28 의 배경 이미지(지름 44vw). 이 박스는
+      aspect-ratio 1/1 이라 세로로 60vw 넘게 커지는데, 담고 있는 섹션
+      (.whiteframe_connect-copy) 은 10vw 뿐 → 아래로 한참 삐져나옴.
+      게다가 position:relative + z-index:1 이라 뒤따라오는 의료진
+      섹션의 흰 배경 '위로' 올라와 그려짐.
+   2) 의료진 카드(.flex-block-7 / .profile-card_m1) 는 자체 배경색이
+      없어서(투명) 뒤로 올라온 파란색이 카드에 그대로 비침.
+
+   처방: 의료진 섹션 맨 위에 '위는 투명 → 아래는 메인 화이트' 로 서서히
+   짙어지는 덮개를 깔아 광선을 지움. 딱 잘라내지 않고 페이드로 지우기
+   때문에 섹션 경계에 가로줄이 안 생김.
+   - 덮개 z-index 2 > 광선 z-index 1        → 광선만 가림
+   - 헤딩 .flex-block-18 (z-index 100) 과
+     탭·카드 .tabs (z-index 101, Webflow .w-tabs 가 position:relative)
+     는 덮개보다 위          → 글자·카드는 그대로 선명
+   - 길이 단위를 vw 로 둬서 모바일에서도 같은 비율로 동작
+     (광선/섹션 크기가 전부 vw 기반이라 화면 폭에 비례해 같이 줄어듦)
+   ⚠️ Webflow 는 클래스명을 소문자로 출력 → 셀렉터도 소문자 (LOCKED 교훈)
+   ⚠️ 이 파일은 서초 페이지에서만 로드되므로 .whiteframe 직접 겨냥 안전
+   ================================================================ */
+section.whiteframe,
+section.whiteframe_m,
+section.whiteframe_m2 {
+  position: relative;
+}
+section.whiteframe::before,
+section.whiteframe_m::before,
+section.whiteframe_m2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40vw;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(244, 247, 251, 0) 0%,
+    rgba(244, 247, 251, 0.55) 4vw,
+    #f4f7fb 10vw
+  );
+}
+
 /* 섹션 사이 얇은 구분선 (section.section > .div-block-220) — Designer 값이
    height: 0.9px 라, 브라우저가 1픽셀 격자에 맞출 때 0 으로 깎여 선이 아예
    안 보이는 경우가 생김. 화면 배율/확대율/스크롤 위치에 따라 떴다 안 떴다
