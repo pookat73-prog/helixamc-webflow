@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.0)
+   About 인증 카드 "+" 상세보기 모달 (v1.1)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -11,6 +11,10 @@
 
    캐시: 슬러그별로 한 번 fetch → 세션 동안 재사용.
    끝에서: 멈춤 (이전/다음 비활성). 인증 페이지 간 순환 X.
+
+   v1.1 — Webflow Designer 에서 숨겨둔(눈 아이콘 off) 섹션은 슬라이드에서
+   제외. 안 그러면 빈 화면 슬라이드 + 인디케이터 점이 하나 더 생김
+   (cat-cert 4번째 섹션이 숨김 상태였음).
    ================================================================ */
 
 (function () {
@@ -147,7 +151,8 @@
           slide.innerHTML = h;
           track.appendChild(slide);
         });
-        currentCount = htmls.length;
+        dropHiddenSlides();
+        currentCount = track.children.length;
         buildDots(currentCount);
         go(0, true);
       })
@@ -155,6 +160,25 @@
         track.innerHTML = '<div class="helix-cert-modal__loading">불러오기 실패: ' +
           (err && err.message ? err.message : '알 수 없는 오류') + '</div>';
       });
+  }
+
+  /* Webflow Designer 에서 숨겨둔 섹션 걸러내기.
+     Webflow 는 숨긴 요소를 인라인 display:none 또는 컴파일된 CSS 로 내보내는데,
+     둘 중 어느 쪽이든 모달은 이미 화면에 붙어 있으므로 (is-open → display:flex)
+     실제 계산된 display 로 판정할 수 있다.
+     안전망: 전부 숨김으로 판정되면 아무것도 지우지 않음. */
+  function dropHiddenSlides() {
+    var slides = Array.prototype.slice.call(track.children);
+    var hidden = slides.filter(function (slide) {
+      var sec = slide.firstElementChild;
+      if (!sec) return true;
+      if (/display\s*:\s*none/i.test(sec.getAttribute('style') || '')) return true;
+      var cs;
+      try { cs = window.getComputedStyle(sec); } catch (_) { return false; }
+      return !!cs && cs.display === 'none';
+    });
+    if (hidden.length === slides.length) return;
+    hidden.forEach(function (slide) { slide.parentNode.removeChild(slide); });
   }
 
   function close() {
