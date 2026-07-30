@@ -230,6 +230,15 @@
   font-size: clamp(var(--faq-min-cta-btn), 1vw, 19px) !important;
   line-height: clamp(var(--faq-min-cta-btn), 1vw, 19px) !important;
 }
+/* CTA 안에서 [찾으시는 답변…/더 궁금하신…] 묶음 ↔ [전화 문의하기] 사이 간격.
+   .div-block-301 의 margin-top:2vw 하나가 이 간격을 담당하는데 411px 화면에서
+   8px 밖에 안 돼 버튼이 문구에 붙어 있었음. 하한 확보 + 전 구간 조금 넓힘.
+   (.div-block-301 안의 전화번호·"평일 09:00…" 줄은 Webflow 에서 display:none
+    이라, 실제로 보이는 건 '전화 문의하기' 버튼뿐) */
+.div-block-301 {
+  margin-top: clamp(22px, 2.4vw, 46px) !important;
+}
+
 .faq-cta_surface {
   margin-top: clamp(12px, 3vw, 58px) !important;   /* 페이저↔CTA 간격 축소분 */
   margin-bottom: clamp(14px, 2vw, 38px) !important;
