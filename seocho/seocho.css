@@ -483,3 +483,12 @@ div[data-doctor-group] .text-block-30,
 div[data-doctor-group] .job-title_m1 {
   font-weight: 400 !important;
 }
+
+/* 섹션 사이 얇은 구분선 (section.section > .div-block-220) — Designer 값이
+   height: 0.9px 라, 브라우저가 1픽셀 격자에 맞출 때 0 으로 깎여 선이 아예
+   안 보이는 경우가 생김. 화면 배율/확대율/스크롤 위치에 따라 떴다 안 떴다
+   하던 직접 원인. 의료진 카드 구분선(.b-divider-long_thin) 과 같은 처방으로
+   정확히 1px 로 고정. (색/여백은 Designer 값 그대로 둠) */
+section.section > .div-block-220 {
+  height: 1px !important;
+}
