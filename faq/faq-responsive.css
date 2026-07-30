@@ -168,7 +168,7 @@
 }
 .faq-filter-opts,
 .faq_common {
-  gap: clamp(6px, 0.5vw, 10px) !important;
+  gap: clamp(8px, 0.7vw, 14px) !important;   /* 칩 사이 간격 — 좁아서 조금 넓힘 */
 }
 
 .faq-pg,
@@ -231,7 +231,7 @@
   line-height: clamp(var(--faq-min-cta-btn), 1vw, 19px) !important;
 }
 .faq-cta_surface {
-  margin-top: clamp(20px, 3vw, 58px) !important;
+  margin-top: clamp(12px, 3vw, 58px) !important;   /* 페이저↔CTA 간격 축소분 */
   margin-bottom: clamp(14px, 2vw, 38px) !important;
   padding-top: clamp(28px, 5vw, 96px) !important;
   padding-bottom: clamp(24px, 4vw, 77px) !important;
@@ -334,11 +334,33 @@
 @media (max-width: 767px) {
   .quick-stack {
     grid-template-columns: 1fr !important;
-    row-gap: clamp(4px, 1.2vw, 10px) !important;
+    row-gap: clamp(6px, 1.2vw, 12px) !important;
   }
   .faq-filter-label {
     padding-left: 0 !important;
   }
+}
+
+/* ── 필터 태그창 자체(.tabs-content = 테두리 있는 둥근 박스) ──────────────
+   좌우 패딩이 아예 0, 위아래는 1vw(411px 화면에서 4px) 뿐이라 칩이 테두리에
+   붙어 답답했음. 안쪽 여백을 사방으로 주고 모서리 반경에도 하한을 둠. */
+.tabs-content {
+  margin-left: clamp(0px, 1vw, 19px) !important;
+  margin-right: clamp(0px, 1vw, 19px) !important;
+  padding: clamp(14px, 1.2vw, 23px) clamp(14px, 1.4vw, 27px) !important;
+  border-radius: clamp(12px, 1.5vw, 29px) !important;
+}
+
+/* ── 제목("자주 묻는 질문") ↔ 탭·필터 사이 간격 넓히기 ────────────────────
+   지금은 붙어 있음(.tabs-2 여백 0). 탭 줄부터 아래로 내려 제목과 띄움. */
+.tabs-2 {
+  margin-top: clamp(20px, 2.2vw, 42px) !important;
+}
+
+/* ── 페이저 아래 여백 (페이저↔CTA 간격 축소분) ─────────────────────────
+   1.5rem 고정이라 좁은 화면에서도 24px. 하한만 낮춤(1440px 에선 24px 유지). */
+.pages {
+  margin-bottom: clamp(12px, 1.7vw, 24px) !important;
 }
 
 /* ================================================================
@@ -360,18 +382,30 @@
 }
 
 /* ================================================================
-   11. 모바일 전용 과다 여백 — 필터와 첫 카드 사이 빈 공간
+   11. 섹션 사이 과다 여백 — (1) 필터↔첫 카드 (2) 페이저↔CTA
 
-   여긴 vw 스케일 결함이 아니라 Webflow 모바일(≤479px) 값 자체가 큼:
-   위 섹션 아래 25vw + 아래 섹션 위 22vw = 약 200px 공백.
-   해당 브레이크포인트에만 상한을 씌운다(다른 폭엔 영향 없음).
-   여백을 원래대로 되돌리려면 이 블록만 지우면 됨.
+   여긴 vw 스케일 결함이 아니라 Webflow 의 태블릿/모바일 값 자체가 큼.
+   411px 화면 기준 원래 값:
+     필터↔첫 카드  = 필터섹션 아래 25vw(103) + 카드섹션 위 22vw(90)  ≈ 193px
+     페이저↔CTA    = 페이저 아래 24 + 카드섹션 아래 25vw(103)
+                     + CTA섹션 위 22vw(90) + CTA 위 여백 20        ≈ 237px
+   768px 태블릿에서도 medium 값(5vw/13vw)이라 여전히 과함 → 991px 이하 전체에
+   상한을 씌운다. 데스크탑(992px 이상)은 건드리지 않음.
+   원래 여백으로 되돌리려면 이 블록만 지우면 됨.
    ================================================================ */
-@media (max-width: 479px) {
+@media (max-width: 991px) {
+  /* 필터 ↔ 첫 카드 (좁히기) */
   .whiteframe-for-list_open {
-    padding-bottom: min(25vw, 40px) !important;
+    padding-bottom: clamp(10px, 3vw, 18px) !important;
   }
   .whiteframe-for-list_connect {
-    padding-top: min(22vw, 36px) !important;
+    padding-top: clamp(10px, 3vw, 18px) !important;
+  }
+  /* 페이저 ↔ CTA (좁히기) */
+  .whiteframe-for-list_connect {
+    padding-bottom: clamp(12px, 4vw, 24px) !important;
+  }
+  .whiteframe-for-list_close {
+    padding-top: clamp(12px, 4vw, 24px) !important;
   }
 }
