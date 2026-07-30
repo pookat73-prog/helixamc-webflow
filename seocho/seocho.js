@@ -352,6 +352,22 @@
      폰에서 0 이 나오고, 착지 지점이 모바일 서브헤더 뒤로 들어가 제목이
      가려진다. 클래스명 변경에 견디도록 .subheader_click-area 의 조상
      section 으로 찾아 그중 가장 높은(=보이는) 것을 채택. */
+  /* 진단 모드 — URL 에 ?debug-sub=1 을 붙이면 앵커를 누를 때마다
+     "무엇이 화면 위를 덮고 있는지 / 목표 섹션이 어디 있는지 / 보정이 얼마나
+     일어났는지" 를 콘솔에 찍는다. 착지가 안 맞을 때 추측 없이 원인을 특정하는 용도. */
+  var DBG = /[?&]debug-sub=1/.test(location.search);
+  function dlog() {
+    if (!DBG) return;
+    var a = ['[sub]'];
+    for (var i = 0; i < arguments.length; i++) a.push(arguments[i]);
+    try { console.log.apply(console, a); } catch (e) {}
+  }
+  function elName(el) {
+    if (!el) return '(null)';
+    var c = (el.className && el.className.toString ? el.className.toString() : '') || '';
+    return (el.tagName || '?').toLowerCase() + (c ? '.' + c.trim().split(/\s+/).join('.') : '');
+  }
+
   /* 헤더도 서브헤더와 같은 듀얼 마크업 — 데스크탑용(header.header)과
      모바일용(header.header_mobile)이 둘 다 DOM 에 있고 한쪽만 보인다.
      querySelector 는 셀렉터 순서가 아니라 문서 순서상 첫 번째(=데스크탑)를
@@ -405,13 +421,18 @@
       if (r.bottom <= 0) continue;            /* 화면 위로 나감 */
       if (r.height > vh * 0.5) continue;      /* 전체화면 오버레이 */
       if (r.top > vh * 0.4) continue;         /* 위쪽 바가 아님 */
-      bars.push(r);
+      bars.push({ el: el, r: r });
     }
-    bars.sort(function (a, b) { return a.top - b.top; });
+    bars.sort(function (a, b) { return a.r.top - b.r.top; });
     var max = 0;
     for (var j = 0; j < bars.length; j++) {
-      if (bars[j].top <= max + 4 && bars[j].bottom > max) max = bars[j].bottom;
+      var b = bars[j].r;
+      var used = b.top <= max + 4 && b.bottom > max;
+      if (used) max = b.bottom;
+      dlog('  바', used ? 'O' : 'x', elName(bars[j].el),
+        'top', Math.round(b.top), 'h', Math.round(b.height), 'bottom', Math.round(b.bottom));
     }
+    dlog('  → 덮는 높이', Math.round(max));
     return max;
   }
 
@@ -450,15 +471,20 @@
 
     function round() {
       whenScrollSettles(function () {
-        if (cancelled) return done();
+        if (cancelled) { dlog('보정 취소 — 사용자가 스크롤함'); return done(); }
+        dlog('스크롤 멈춤. 보정 라운드', rounds + 1, '| 섹션 top',
+          Math.round(target.getBoundingClientRect().top));
         /* gap > 0 = 섹션 top 이 고정 바 아래 끝보다 위에 있다 = 가려져 있다.
            드러내려면 섹션을 화면 아래로 내려야 하고, 그건 스크롤을 그만큼
            "위로" 올리는 것이다. (+gap 으로 내리면 더 잘린다) */
         var gap = (topBarsBottom(target) + 8) - target.getBoundingClientRect().top;
         if (gap > 1 && ++rounds <= 3) {
+          dlog('  가려짐 → 위로', Math.round(gap), 'px 보정');
           window.scrollTo({ top: window.pageYOffset - gap, behavior: 'auto' });
           round();
         } else {
+          dlog('보정 종료. gap', Math.round(gap), '| 최종 섹션 top',
+            Math.round(target.getBoundingClientRect().top));
           done();
         }
       });
@@ -550,6 +576,8 @@
            페이지 끝이라 어차피 더 내려갈 여지가 없다. 나머지 섹션은 헤더 +
            서브헤더 아래에 섹션 top 이 오게 해서 제목/첫 블록부터 보이게 함. */
         var subH = href === '#photo' ? 0 : subheaderH();
+        dlog('서브헤더 핸들러 실행:', href, '| 헤더', Math.round(headerH()),
+          '| 서브헤더', Math.round(subH), '| 목표', elName(t));
         var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH() + subH + 12);
         window.scrollTo({ top: y, behavior: 'smooth' });
         /* 위 값은 어림치. 실제 보정은 아래 전역 위임 핸들러가 도착 후 처리 */
@@ -668,16 +696,20 @@
     if (!a) return;
     var href = a.getAttribute('href') || '';
     if (href.charAt(0) !== '#' || href.length < 2) return;
-    if (href === '#photo') return;          /* 마지막 섹션은 제외 */
+    dlog('앵커 클릭:', href, '| 누른 것', elName(a), '| 화면폭', window.innerWidth);
+    if (href === '#photo') { dlog('  #photo 는 제외 대상'); return; }
     var id = href.slice(1);
     var list = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+    dlog('  같은 id 요소', list.length, '개');
     for (var i = 0; i < list.length; i++) {
       var el = list[i];
       if (el.offsetParent !== null || el.getClientRects().length > 0) {
+        dlog('  보이는 목표:', elName(el));
         settleAfterScroll(el);
         return;
       }
     }
+    dlog('  보이는 목표 없음 — 보정 안 함');
   }, true);
 
   if (document.readyState === 'loading') {
