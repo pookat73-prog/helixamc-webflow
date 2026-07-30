@@ -104,10 +104,23 @@
   max-width: clamp(346px, 24vw, 461px) !important;
 }
 
-/* 질문 밑 파란 구분선 — width:32vw (427px 화면에서 137px) */
+/* 카드 안쪽 좌우 여백 — 제목·선이 카드 테두리에 딱 붙어 답답해 보이던 것 해소.
+   세로 여백은 faq-stack.css 의 .helix-faq-card 가 담당하므로 좌우만 지정.
+   데스크탑에선 안쪽 내용이 max-width 로 잘려 가운데 정렬되므로 보이는 모양
+   변화 없음 (카드 폭 662/883 그대로). */
+.faq_box {
+  padding-left: clamp(16px, 2.2vw, 42px) !important;
+  padding-right: clamp(16px, 2.2vw, 42px) !important;
+}
+
+/* 질문 밑 파란 선 — 원래는 질문 아래 짧게 들어가는 장식선(32vw)이었는데
+   폭을 넓히면서 카드 끝에서 끝까지 닿아 뻣뻣해졌음.
+   카드 안쪽 폭의 77% 로 제한 → '짧은 선' 느낌 복원.
+   77% 는 데스크탑 비율을 그대로 가져온 값(선 32vw ÷ 카드 안쪽 41.6vw)이라
+   1440/1920 에서는 461/614px 그대로, 좁은 화면에서만 짧아진다. */
 .div-block-294 {
   width: 100% !important;
-  max-width: clamp(461px, 32vw, 614px) !important;
+  max-width: min(77%, clamp(461px, 32vw, 614px)) !important;
 }
 /* 그 선에서 위로 번지는 글로우(faq.css)의 높이도 하한 확보 */
 .div-block-294::after {
