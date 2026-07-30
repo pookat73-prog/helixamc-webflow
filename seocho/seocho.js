@@ -422,9 +422,12 @@
     var tries = 0;
     function fix() {
       if (++tries > 3) return;
+      /* gap > 0 = 섹션 top 이 고정 바 아래 끝보다 위에 있다 = 가려져 있다.
+         드러내려면 섹션을 화면 아래로 내려야 하고, 그건 스크롤을 그만큼
+         "위로" 올리는 것이다. (+gap 으로 내리면 더 잘린다) */
       var gap = (topBarsBottom(target) + 8) - target.getBoundingClientRect().top;
       if (gap > 1) {
-        window.scrollTo({ top: window.pageYOffset + gap, behavior: 'auto' });
+        window.scrollTo({ top: window.pageYOffset - gap, behavior: 'auto' });
         setTimeout(fix, 60);
       }
     }
