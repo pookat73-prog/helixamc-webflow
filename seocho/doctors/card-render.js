@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - 서초본원 의료진 카드 JSON 렌더러 (v1.0)
+   HELIX AMC - 서초본원 의료진 카드 JSON 렌더러 (v1.1 — 프로필 사진 alt 대체텍스트 추가)
 
    동작: 페이지 안에 [data-doctor-group="<group-id>"] 속성이 박힌
         컨테이너를 찾고, 안에 [data-doctor-template] 가 박힌 카드를
@@ -142,11 +142,12 @@
     return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'w=' + w;
   }
 
-  function setImg(root, selector, url) {
+  function setImg(root, selector, url, alt) {
     var img = root.querySelector(selector);
     if (!img) return false;
     if (!url) {
       img.style.display = 'none';
+      img.setAttribute('alt', '');
       return true;
     }
     img.src = sizedPhoto(url, 240);
@@ -154,7 +155,18 @@
     img.style.display = '';
     img.loading = 'lazy';
     img.decoding = 'async';
+    /* 대체텍스트 — 스크린리더/SEO 용. 원장님 성함+직함으로 채움.
+       alt 미전달 시에는 기존 값을 건드리지 않고 그대로 둔다. */
+    if (typeof alt === 'string' && alt) img.setAttribute('alt', alt);
     return true;
+  }
+
+  /* 사진 대체텍스트 문구 — '이소윤 원장' 형태. 직함이 없으면 성함만. */
+  function photoAlt(doctor) {
+    if (!doctor || !doctor.name) return '';
+    var name  = String(doctor.name).trim();
+    var title = doctor.title ? String(doctor.title).trim() : '';
+    return title ? name + ' ' + title : name;
   }
 
   /* 카드 표시용 학력 단순화 — 모달은 원본 그대로, 카드만 통일 표기로.
@@ -251,7 +263,7 @@
       setText(card, '.text-block-29', doctor.name);
       setText(card, '.text-block-30', doctor.title);
       setText(card, '.text-block-31', firstEdu);
-      setImg (card, '.image-29',     doctor.photo);
+      setImg (card, '.image-29',     doctor.photo, photoAlt(doctor));
     }
 
     /* 학회 1·2 — 양쪽 동일 (.flex-block-16 위치 기반).
