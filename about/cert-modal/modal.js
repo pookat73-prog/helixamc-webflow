@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.2)
+   About 인증 카드 "+" 상세보기 모달 (v1.3)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -170,33 +170,56 @@
       });
   }
 
-  /* Webflow Designer 에서 숨겨둔 섹션 걸러내기.
-     Webflow 는 숨긴 요소를 인라인 display:none 또는 컴파일된 CSS 로 내보내는데,
-     둘 중 어느 쪽이든 모달은 이미 화면에 붙어 있으므로 (is-open → display:flex)
-     실제 계산된 display 로 판정할 수 있다.
-     안전망: 전부 숨김으로 판정되면 아무것도 지우지 않음. */
+  /* 안 보여야 하는 섹션 걸러내기 — "숨김" 두 종류를 구분해서 처리한다.
+
+     (a) Designer 눈 아이콘 off → 인라인 style="display:none"
+         → 의도적으로 뺀 것이므로 화면폭과 무관하게 항상 제외
+     (b) 페이지 CSS 의 화면폭별 숨김 (.cert-modal-frame: ≥768px 이면 none)
+         → 모달 안에서는 섹션이 곧 본문이라, 전부 (b) 로 숨은 경우엔
+            강제로 켜야 함. 안 그러면 빈 슬라이드만 보임.
+
+     둘을 합쳐서 "전부 숨김이면 아무것도 안 지움" 으로 처리하면, PC 에서
+     (a) 로 끈 섹션까지 같이 되살아나 빈 슬라이드가 부활한다 (#1282 회귀).
+     그래서 (a) 를 먼저 무조건 제거한 뒤 남은 것만 (b) 로 판정. */
   function dropHiddenSlides() {
-    var slides = Array.prototype.slice.call(track.children);
-    var hidden = slides.filter(function (slide) {
+    function drop(slide) { slide.parentNode.removeChild(slide); }
+    function isCssHidden(slide) {
       var sec = slide.firstElementChild;
       if (!sec) return true;
-      if (/display\s*:\s*none/i.test(sec.getAttribute('style') || '')) return true;
       var cs;
       try { cs = window.getComputedStyle(sec); } catch (_) { return false; }
       return !!cs && cs.display === 'none';
+    }
+
+    var slides = Array.prototype.slice.call(track.children);
+
+    /* 1단계 — Designer 에서 눈 아이콘으로 끈 섹션은 화면폭과 무관하게 항상 제외.
+       Webflow 는 이 경우 인라인 style="display:none" 으로 내보낸다.
+       (cat-cert 4번째 섹션이 이 상태 — #1282) */
+    var eyeHidden = slides.filter(function (slide) {
+      var sec = slide.firstElementChild;
+      return !!sec && /display\s*:\s*none/i.test(sec.getAttribute('style') || '');
     });
-    if (hidden.length === slides.length) {
-      /* 전부 숨김으로 판정된 경우 — 상세 페이지 CSS 가 이 섹션들을 특정
-         화면폭에서만 보이도록 해둔 상황 (.cert-modal-frame 이 데스크톱에선
-         display:none, 모바일 폭에서만 display:block). 예전엔 여기서 그냥
-         빠져서 빈 슬라이드만 남았음. 모달 안에서는 섹션이 곧 본문이므로
-         강제로 보이게 켠다. 일부만 숨김인 정상 케이스는 아래로 흘러가
-         v1.1 동작(숨긴 섹션 제외)이 그대로 유지됨. */
+    eyeHidden.forEach(drop);
+
+    /* 2단계 — 남은 것 중 페이지 CSS 로 숨은 것 판정 */
+    var rest = Array.prototype.slice.call(track.children);
+    if (!rest.length) return;
+    var cssHidden = rest.filter(isCssHidden);
+
+    if (cssHidden.length === rest.length) {
+      /* 남은 게 전부 숨김 — 상세 페이지 CSS 가 특정 화면폭에서만 보이도록
+         해둔 상황 (.cert-modal-frame 은 ≥768px 에서 display:none, 모바일
+         폭에서만 display:block). 예전엔 여기서 그냥 빠져서 빈 슬라이드만
+         남았음. 모달 안에서는 섹션이 곧 본문이므로 강제로 켠다.
+
+         눈 아이콘으로 끈 섹션은 1단계에서 이미 빠졌으므로, 여기서 켜지는
+         것은 "원래 보여야 하는데 화면폭 때문에 숨은" 섹션들만. */
       overlay.classList.add('is-force-visible');
       return;
     }
     overlay.classList.remove('is-force-visible');
-    hidden.forEach(function (slide) { slide.parentNode.removeChild(slide); });
+    cssHidden.forEach(drop);
   }
 
   function close() {
