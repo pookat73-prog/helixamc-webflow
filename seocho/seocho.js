@@ -347,6 +347,25 @@
 (function () {
   'use strict';
 
+  /* 서브헤더는 듀얼 마크업 — 데스크탑용과 모바일용이 둘 다 DOM 에 있고
+     미디어쿼리로 한쪽만 보인다. 숨은 쪽은 높이 0 이므로 한쪽만 재면
+     폰에서 0 이 나오고, 착지 지점이 모바일 서브헤더 뒤로 들어가 제목이
+     가려진다. 클래스명 변경에 견디도록 .subheader_click-area 의 조상
+     section 으로 찾아 그중 가장 높은(=보이는) 것을 채택. */
+  function subheaderH() {
+    var links = document.querySelectorAll('.subheader_click-area');
+    var seen = [];
+    var max = 0;
+    for (var i = 0; i < links.length; i++) {
+      var sec = links[i].closest('section');
+      if (!sec || seen.indexOf(sec) !== -1) continue;
+      seen.push(sec);
+      var h = sec.getBoundingClientRect().height;
+      if (h > max) max = h;
+    }
+    return max;
+  }
+
   function init() {
     var links = document.querySelectorAll('.subheader_click-area');
     if (!links.length) return false;
@@ -429,8 +448,10 @@
 
         var hEl = document.querySelector('header.header, header, nav');
         var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
-        var sub = document.querySelector('.subheader');
-        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        /* 마지막 섹션(공간 갤러리 #photo) 은 제목 맞춤 대상에서 제외 —
+           페이지 끝이라 어차피 더 내려갈 여지가 없다. 나머지 섹션은 헤더 +
+           서브헤더 아래에 섹션 top 이 오게 해서 제목/첫 블록부터 보이게 함. */
+        var subH = href === '#photo' ? 0 : subheaderH();
         var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
         window.scrollTo({ top: y, behavior: 'smooth' });
         if (history.replaceState) history.replaceState(null, '', href);
@@ -448,8 +469,7 @@
         if (Date.now() - clickedAt < 700) return;
         var hEl = document.querySelector('header.header, header, nav');
         var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
-        var sub = document.querySelector('.subheader');
-        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var subH = subheaderH();
         var line = headerH + subH + 16;
         var straddle = null;
         var closest = null;
@@ -570,11 +590,21 @@
       if (rect.top <= 1 && rect.height > maxH) maxH = rect.height;
     }
     if (maxH > 0) document.documentElement.style.setProperty('--header-h', maxH + 'px');
-    var sEl = document.querySelector('section.subheader');
-    if (sEl) {
-      var sh = sEl.getBoundingClientRect().height;
-      if (sh > 0) document.documentElement.style.setProperty('--subheader-h', sh + 'px');
+    /* 서브헤더도 헤더와 같은 듀얼 마크업 — 데스크탑용은 폰에서, 모바일용은
+       그 위 화면에서 숨는다. 한쪽만 재면 폰에서 0 이 잡혀 분과 드롭다운이
+       서브헤더 뒤에 겹쳐 뜬다. 클래스명 변경에 견디도록 .subheader_click-area
+       의 조상 section 으로 찾아 가장 높은(=보이는) 것을 채택. */
+    var subLinks = document.querySelectorAll('.subheader_click-area');
+    var seenSub = [];
+    var maxSh = 0;
+    for (var s = 0; s < subLinks.length; s++) {
+      var sec = subLinks[s].closest('section');
+      if (!sec || seenSub.indexOf(sec) !== -1) continue;
+      seenSub.push(sec);
+      var sh = sec.getBoundingClientRect().height;
+      if (sh > maxSh) maxSh = sh;
     }
+    if (maxSh > 0) document.documentElement.style.setProperty('--subheader-h', maxSh + 'px');
   }
 
   var pollCount = 0;
@@ -635,7 +665,11 @@
         var el = list[i];
         if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
       }
-      return list[0] || null;
+      /* 보이는 것이 없으면 후보에서 제외. 숨겨진 요소(display:none)는 좌표가
+         전부 0 이라, 이걸 "다음 섹션"으로 잡으면 아래 beforeNext 판정이
+         (0 > line) 로 항상 거짓이 되어 미니 분과 헤더가 영영 안 뜬다.
+         듀얼 마크업이라 #vets 는 폰에서, #vets_M 은 데스크탑에서 숨는다. */
+      return null;
     });
     /* origMenu 의 absolute top 기준, 그보다 더 아래에 있는 첫 타깃 = 다음 섹션 */
     var menuTop = origMenu.getBoundingClientRect().top + window.pageYOffset;
