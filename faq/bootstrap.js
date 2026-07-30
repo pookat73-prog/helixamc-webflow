@@ -89,6 +89,10 @@
     /* FAQ 전용 — 일반용 목록만 구분선 아코디언(질환용 faq_box 엔 안 닿음) */
     'faq/faq-general.css',
     'faq/faq-general.js',
+    /* FAQ 전용 — 자동 반응형. Webflow 에 vw 로만 박힌 크기(하한·상한 없음)에
+       clamp(하한, 원래vw, 상한) 을 씌워 좁은/넓은 화면에서 자동으로 맞춤.
+       ⚠ 다른 FAQ CSS 뒤에 와야 함(마지막에 로드돼야 크기 규칙이 이김) */
+    'faq/faq-responsive.css',
     /* FAQ 전용 — SEO 구조화데이터(FAQPage JSON-LD) 주입.
        Webflow head freeform 쓰기가 406 으로 막혀, 다른 SEO 페이지의 head
        로더 대신 bootstrap FILES 로 동일 주입 수행 (faq/seo-loader.js 참고) */

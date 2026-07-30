@@ -1,0 +1,420 @@
+/* ================================================================
+   HELIX AMC — FAQ 페이지 자동 반응형 (브레이크포인트 없이 유동)
+
+   ■ 왜 필요한가
+   FAQ 페이지의 Webflow 클래스는 크기가 거의 전부 vw(화면 폭 비례)로만
+   박혀 있다. vw 는 하한·상한이 없어서 화면이 좁아지면 끝없이 작아진다.
+     - 상세 답변 본문(.faq-a_Full) 0.9vw → 1440px 에서 13px, 폰(390px)에선 3.5px
+     - 필터 칩/안내문 0.8vw       → 1440px 에서 11.5px, 폰에선 3.1px
+     - 카드 폭(.faq_box) 46vw      → 1440px 에서 662px, 폰에선 179px
+   Webflow 브레이크포인트 예외값이 붙은 건 극히 일부라, 대부분 구간이 무방비.
+
+   ■ 어떻게 고치나 — clamp(하한, 원래 vw, 상한)
+   원래 vw 기울기는 그대로 두고 바닥과 천장만 씌운다.
+     - 1440px(디자인 기준 폭): 지금과 동일하거나 사실상 동일
+     - 1440 ~ 1920px: 지금과 똑같이 커짐
+     - 1920px 초과(대형 모니터): 상한에서 멈춤 → 과하게 커지지 않음
+     - 1440px 미만(노트북·태블릿·폰): 하한에서 멈춤 → 더 이상 안 쪼그라듦
+   브레이크포인트를 새로 만들지 않으므로, 화면 폭이 어떤 값이든 자동으로 맞음.
+
+   ■ 조절 방법
+   아래 :root 변수 한 줄만 바꾸면 해당 요소의 최소 크기가 바뀐다.
+   (상한은 각 규칙의 clamp 세 번째 값 = 1920px 에서의 현재 크기)
+
+   ⚠ .faq-title 의 '글자 크기'는 건드리지 않음 — Webflow 에 태블릿(4vw)·
+     모바일(28px) 예외값이 이미 잘 잡혀 있어, 덮으면 태블릿 제목이 작아진다.
+     단 '줄 높이'는 보정한다(아래 6번) — 모바일에서 글자 28px 에 줄 높이가
+     4vw(≈17px) 라 글자가 자기 줄 상자를 넘쳐 위아래 요소와 겹쳤음.
+   ⚠ 이 파일은 faq/bootstrap.js 로 FAQ 페이지에서만 로드된다(다른 페이지 무영향).
+   ================================================================ */
+
+:root {
+  /* 글자 최소 크기 — 화면이 아무리 좁아도 이 아래로는 안 내려감 */
+  --faq-min-q:        18px;   /* 질문 (질환용 .faq-q) */
+  --faq-min-answer:   15px;   /* 상세 답변 본문 (.faq-a_Full) */
+  --faq-min-summary:  14px;   /* 질문 밑 요약 한 줄 (.faq-a) */
+  --faq-min-tab:      14px;   /* 탭 이름 */
+  --faq-min-meta:     12px;   /* 칩·태그·번호·안내문 등 보조 글자 */
+  --faq-min-sub:      13px;   /* 소제목/오버라인 */
+  --faq-min-cta-head: 24px;   /* 하단 CTA 큰 제목 */
+  --faq-min-cta-tel:  22px;   /* 하단 CTA 전화번호 */
+  --faq-min-cta-sub:  15px;   /* 하단 CTA 보조 문구 */
+  --faq-min-cta-btn:  14px;   /* 하단 CTA 버튼 글자 */
+}
+
+/* ================================================================
+   1. 질문 / 답변 — 읽는 본문
+   ================================================================ */
+
+/* 질문 (질환용 목록). Webflow 모바일 예외값 18px 과 하한을 일치시켜,
+   768~991px 구간(예외값이 없어 12px 까지 작아지던 구멍)만 메워짐. */
+.faq-q {
+  font-size: clamp(var(--faq-min-q), 1.25vw, 24px) !important;
+  line-height: clamp(26px, 1.8vw, 35px) !important;
+}
+
+/* 상세 답변 본문. 좁은 화면에서 3.5px 까지 내려가던 값 → 15px 하한.
+   (1440px 에서 13px → 15px 로 약간 커짐. 원래 크기를 유지하고 싶으면
+    --faq-min-answer 를 13px 로 바꾸면 됨) */
+[class*="faq-a_full" i] {
+  font-size: clamp(var(--faq-min-answer), 0.9vw, 17px) !important;
+  line-height: clamp(24px, 1.6vw, 31px) !important;
+}
+
+/* ================================================================
+   2. 폭 — 좁은 화면에선 부모 폭 100%, 넓은 화면에선 지금 그대로
+   width:100% + max-width:clamp(1440px값, 원래vw, 1920px값)
+   → 폰에서 카드가 179px 로 쪼그라들던 문제 해소, 데스크탑은 동일
+
+   ⚠ 여기서 `width: min(100%, ...)` 를 쓰면 안 됨 (v1 에서 이렇게 썼다가 회귀).
+     카드 안쪽 래퍼(.faq_qa)가 '내용에 맞춰 줄어드는(shrink-to-fit)' 상자라,
+     그 안에서 자식의 100% 는 폭 계산 단계에 0 으로 잡힌다 → 래퍼가 90px 쯤으로
+     쭈그러들고 질문이 3~4글자씩 줄바꿈됨. width:100% + max-width 로 쓰면
+     래퍼 폭이 먼저 정해지므로 이 문제가 없다. (.faq_qa 를 100% 로 고정하는
+     아래 4번 규칙과 한 쌍)
+   ================================================================ */
+.faq_box {
+  width: 100% !important;
+  max-width: clamp(662px, 46vw, 883px) !important;
+}
+.faq-q {
+  width: 100% !important;
+  max-width: clamp(317px, 22vw, 422px) !important;
+}
+[class*="faq-a_full" i] {
+  width: 100% !important;
+  max-width: clamp(389px, 27vw, 518px) !important;
+}
+
+/* 질문 밑 요약 한 줄 — 폭 20vw(폰에서 87px) + 글자 0.9vw(3.9px) 였음 */
+.faq-a {
+  width: 100% !important;
+  max-width: clamp(288px, 20vw, 384px) !important;
+  margin-top: clamp(8px, 1vw, 19px) !important;
+  font-size: clamp(var(--faq-min-summary), 0.9vw, 17px) !important;
+  line-height: clamp(22px, 1.5vw, 29px) !important;
+}
+
+/* 카드 컴포넌트 안쪽 래퍼들 — 질문(.faq-q)은 .faq_qa 바로 밑이 아니라
+   .div-block-293 > .div-block-283 안에 두 겹 더 들어 있다. 그래서 요약(.faq-a,
+   .faq_qa 직계)만 넓어지고 질문만 좁게 남아 3~4글자씩 줄바꿈됐음.
+   진짜 원인: .div-block-293 의 width:24vw (427px 화면에서 102px). */
+.div-block-293 {
+  width: 100% !important;
+  max-width: clamp(346px, 24vw, 461px) !important;
+}
+
+/* 카드 안쪽 좌우 여백 — 제목·선이 카드 테두리에 딱 붙어 답답해 보이던 것 해소.
+   세로 여백은 faq-stack.css 의 .helix-faq-card 가 담당하므로 좌우만 지정.
+   데스크탑에선 안쪽 내용이 max-width 로 잘려 가운데 정렬되므로 보이는 모양
+   변화 없음 (카드 폭 662/883 그대로). */
+.faq_box {
+  padding-left: clamp(16px, 2.2vw, 42px) !important;
+  padding-right: clamp(16px, 2.2vw, 42px) !important;
+}
+
+/* 질문 밑 파란 선 — 원래는 질문 아래 짧게 들어가는 장식선(32vw)이었는데
+   폭을 넓히면서 카드 끝에서 끝까지 닿아 뻣뻣해졌음.
+   카드 안쪽 폭의 77% 로 제한 → '짧은 선' 느낌 복원.
+   77% 는 데스크탑 비율을 그대로 가져온 값(선 32vw ÷ 카드 안쪽 41.6vw)이라
+   1440/1920 에서는 461/614px 그대로, 좁은 화면에서만 짧아진다. */
+.div-block-294 {
+  width: 100% !important;
+  max-width: min(77%, clamp(461px, 32vw, 614px)) !important;
+}
+/* 그 선에서 위로 번지는 글로우(faq.css)의 높이도 하한 확보 */
+.div-block-294::after {
+  height: clamp(6px, 1vw, 19px) !important;
+}
+
+/* 질문 위 "Q." 표시 — 1.4vw 라 427px 화면에서 6px(점처럼 보임) */
+.div-block-284 {
+  font-size: clamp(16px, 1.4vw, 27px) !important;
+  line-height: clamp(16px, 1.4vw, 27px) !important;
+}
+
+/* 질문+요약 래퍼를 카드 폭까지 펴줌 — 위 ⚠ 참고.
+   안쪽이 가운데 정렬(align-items:center)이라 데스크탑 보이는 모양은 동일.
+   .faq_answer-ai(상세 영역)는 건드리지 않음 — 그쪽은 왼쪽 정렬이라
+   폭을 펴면 상세 본문이 옆으로 밀림. */
+.faq_qa {
+  width: 100% !important;
+}
+
+/* 상세 답변 박스 안쪽 여백/모서리도 하한·상한.
+   ※ 일반용 목록([data-faq-general])은 faq-general.css 가 !important 로
+     따로 잡고 있어 그쪽이 그대로 우선함 — 여기선 질환용에만 사실상 적용 */
+[class*="faq-a_full" i] {
+  padding: clamp(8px, 1vw, 19px) clamp(14px, 4vw, 77px) clamp(14px, 2vw, 38px);
+  border-radius: clamp(10px, 1.5vw, 29px);
+}
+
+/* ================================================================
+   3. 탭 / 필터 칩 / 페이지네이션 — 보조 UI
+   ================================================================ */
+.faq_tab-name {
+  font-size: clamp(var(--faq-min-tab), 1vw, 19px) !important;
+  line-height: clamp(var(--faq-min-tab), 1vw, 19px) !important;
+}
+.faq_tab-area {
+  padding: clamp(10px, 1.5vw, 29px) clamp(12px, 1.7vw, 33px) !important;
+}
+
+.faq-chip,
+.faq-chip_reset {
+  padding: clamp(6px, 0.6vw, 12px) clamp(10px, 1vw, 19px) !important;
+  font-size: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+  line-height: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+.faq-filter-opts,
+.faq_common {
+  gap: clamp(8px, 0.7vw, 14px) !important;   /* 칩 사이 간격 — 좁아서 조금 넓힘 */
+}
+
+.faq-pg,
+.faq-num,
+.faq-tag,
+.faq-count,
+.faq-guide {
+  font-size: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+.faq-pg,
+.faq-tag,
+.faq-count,
+.faq-guide {
+  line-height: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+
+/* 소제목 / 오버라인 (태블릿 예외값 1.3vw 도 좁은 폭에선 10px 까지 내려감) */
+.faq-sub {
+  font-size: clamp(var(--faq-min-sub), 0.8vw, 15px) !important;
+  line-height: clamp(19px, 1.3vw, 25px) !important;
+}
+.faq-overline {
+  font-size: clamp(var(--faq-min-sub), 0.88vw, 17px) !important;
+  line-height: clamp(var(--faq-min-sub), 0.88vw, 17px) !important;
+}
+
+/* ================================================================
+   4. 하단 CTA (상담 문의 영역)
+   큰 글자는 하한을 '폰에서 적당한 크기'로 잡음 — 1440/1920px 은 지금 그대로
+   ================================================================ */
+.faq-cta_title {
+  font-size: clamp(26px, 2.5vw, 48px) !important;
+  line-height: clamp(32px, 2.5vw, 48px) !important;
+}
+.faq_cta-head {
+  font-size: clamp(var(--faq-min-cta-head), 2.32vw, 45px) !important;
+  line-height: clamp(var(--faq-min-cta-head), 2.3vw, 44px) !important;
+}
+.faq_cta-number,
+.faq-cta_tel,
+.faq-cta_tel-red {
+  font-size: clamp(var(--faq-min-cta-tel), 2vw, 38px) !important;
+  line-height: clamp(var(--faq-min-cta-tel), 2vw, 38px) !important;
+}
+.faq_cta-sub {
+  font-size: clamp(17px, 1.5vw, 29px) !important;
+  line-height: clamp(17px, 1.5vw, 29px) !important;
+}
+.faq-cta_sub {
+  font-size: clamp(var(--faq-min-cta-sub), 1.3vw, 25px) !important;
+  line-height: clamp(var(--faq-min-cta-sub), 1.3vw, 25px) !important;
+}
+.faq_cta-time {
+  font-size: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+  line-height: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+.faq_cta-call {
+  padding: clamp(10px, 1vw, 19px) !important;
+  font-size: clamp(var(--faq-min-cta-btn), 1vw, 19px) !important;
+  line-height: clamp(var(--faq-min-cta-btn), 1vw, 19px) !important;
+}
+/* CTA 안에서 [찾으시는 답변…/더 궁금하신…] 묶음 ↔ [전화 문의하기] 사이 간격.
+   .div-block-301 의 margin-top:2vw 하나가 이 간격을 담당하는데 411px 화면에서
+   8px 밖에 안 돼 버튼이 문구에 붙어 있었음. 하한 확보 + 전 구간 조금 넓힘.
+   (.div-block-301 안의 전화번호·"평일 09:00…" 줄은 Webflow 에서 display:none
+    이라, 실제로 보이는 건 '전화 문의하기' 버튼뿐) */
+.div-block-301 {
+  margin-top: clamp(22px, 2.4vw, 46px) !important;
+}
+
+.faq-cta_surface {
+  margin-top: clamp(12px, 3vw, 58px) !important;   /* 페이저↔CTA 간격 축소분 */
+  margin-bottom: clamp(14px, 2vw, 38px) !important;
+  padding-top: clamp(28px, 5vw, 96px) !important;
+  padding-bottom: clamp(24px, 4vw, 77px) !important;
+}
+
+/* ================================================================
+   5. 카드 사이 선·여백
+   ================================================================ */
+.faq_line {
+  margin-bottom: clamp(8px, 0.9vw, 17px) !important;
+}
+.faq_line-deep {
+  margin-bottom: clamp(14px, 2vw, 38px) !important;
+}
+.faq_fa-slot {
+  gap: clamp(8px, 1vw, 19px) !important;
+}
+.faq_q,
+.faq-c-_q-box {
+  /* 카드 바깥 래퍼. align-self:center 라 이것도 '내용에 맞춰 줄어드는' 상자 →
+     안쪽 .faq_box 의 width:100% 가 0 으로 잡혀 카드가 좁아진다. 폭을 고정해
+     연쇄를 끊음 (위 2번 ⚠ 와 같은 이유). */
+  width: 100% !important;
+  margin-top: clamp(12px, 1.5vw, 29px) !important;
+  padding-top: clamp(6px, 0.6vw, 12px) !important;
+  border-bottom-right-radius: clamp(12px, 2vw, 38px) !important;
+}
+
+/* ================================================================
+   6. 줄 높이가 글자보다 작아 생기는 '겹침' 보정
+
+   Webflow 에서 줄 높이를 글자 크기와 같은 vw 로 박아 둔 요소들은, 브레이크
+   포인트에서 글자 크기만 px 로 바꾸면 줄 높이가 따라오지 않아 글자가 자기
+   줄 상자를 넘친다 → 위아래 요소와 겹침.
+   `max(1em, 원래값)` = 줄 높이가 절대 글자보다 작아지지 않되, 원래값이 더
+   클 때는 원래값 그대로 → 데스크탑·태블릿 간격은 변하지 않음.
+   ================================================================ */
+
+/* 제목 "자주 묻는 질문" — 모바일에서 글자 28px 인데 줄 높이 4vw(≈17px).
+   오버라인(위)·탭(아래)과 겹치던 직접 원인. 글자 크기는 그대로 둠. */
+.faq-title {
+  line-height: max(1em, 2vw) !important;
+}
+
+/* ================================================================
+   7. 1차 적용에서 누락됐던 요소
+   ================================================================ */
+
+/* 필터 라벨 (SPECIES / FIELD) — 0.8vw 라 폰에서 3.5px.
+   격자 왼쪽 칸이 그만큼 좁아져 글자가 한 자씩 세로로 쌓였음.
+   nowrap + 줄어들지 않게(flex-shrink:0) 해서 칸 폭을 글자가 확보하게 함. */
+.faq-filter-label {
+  padding-top: clamp(0px, 0.6vw, 12px) !important;
+  padding-left: clamp(0px, 2vw, 38px) !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  font-size: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+  line-height: clamp(var(--faq-min-meta), 0.8vw, 15px) !important;
+}
+
+/* 두번째 탭 '일반으로 보기' 라벨 — 첫번째 탭(.faq_tab-name)과 클래스가 달라
+   1차에서 빠졌음. 같은 값으로 맞춤. */
+.text-block-366 {
+  font-size: clamp(var(--faq-min-tab), 1vw, 19px) !important;
+  line-height: clamp(var(--faq-min-tab), 1vw, 19px) !important;
+}
+
+/* ================================================================
+   8. 탭 '질환으로 보기 / 일반으로 보기' — 가로 배치 + 하이라이터 폭
+
+   증상: 좁은 화면에서 두 탭이 세로로 쌓이고, 활성 탭의 파란 형광펜이
+   글자 폭이 아니라 화면 폭만큼 길게 늘어남.
+   원인: 탭 링크가 한 줄을 통째로 차지(블록처럼 동작) → 그 안의 글자 div 도
+   full width → 형광펜(글자 div 기준 ::after)이 같이 늘어남.
+   조치: 탭 줄을 flex 로 만들고 각 탭이 '글자 폭만큼만' 차지하게 고정.
+   형광펜은 글자 div 기준이라 자동으로 글자 폭에 맞춰짐.
+   ================================================================ */
+.tabs-menu-2 {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: clamp(2px, 0.4vw, 8px) !important;
+}
+.tabs-menu-2 .w-tab-link {
+  flex: 0 0 auto !important;
+  width: auto !important;
+}
+/* 형광펜이 글자 폭에 딱 맞도록 — 글자 div 를 글자만큼만 차지하게 */
+.tabs-menu-2 .w-tab-link > div {
+  display: inline-block !important;
+}
+
+/* ================================================================
+   9. 필터 줄 — 좁은 화면에선 라벨을 칩 위로 (2단 격자 → 1단)
+
+   Quick Stack 이 [라벨 | 칩] 2단 격자라, 좁은 화면에서 라벨 칸이 눌려
+   간격이 어색해짐. 767px 이하에선 라벨을 칩 위에 올려 한 덩어리로 읽히게.
+   원래 2단으로 되돌리려면 이 @media 블록만 삭제.
+   ================================================================ */
+@media (max-width: 767px) {
+  .quick-stack {
+    grid-template-columns: 1fr !important;
+    row-gap: clamp(6px, 1.2vw, 12px) !important;
+  }
+  .faq-filter-label {
+    padding-left: 0 !important;
+  }
+}
+
+/* ── 필터 태그창 자체(.tabs-content = 테두리 있는 둥근 박스) ──────────────
+   좌우 패딩이 아예 0, 위아래는 1vw(411px 화면에서 4px) 뿐이라 칩이 테두리에
+   붙어 답답했음. 안쪽 여백을 사방으로 주고 모서리 반경에도 하한을 둠. */
+.tabs-content {
+  margin-left: clamp(0px, 1vw, 19px) !important;
+  margin-right: clamp(0px, 1vw, 19px) !important;
+  padding: clamp(14px, 1.2vw, 23px) clamp(14px, 1.4vw, 27px) !important;
+  border-radius: clamp(12px, 1.5vw, 29px) !important;
+}
+
+/* ── 제목("자주 묻는 질문") ↔ 탭·필터 사이 간격 넓히기 ────────────────────
+   지금은 붙어 있음(.tabs-2 여백 0). 탭 줄부터 아래로 내려 제목과 띄움. */
+.tabs-2 {
+  margin-top: clamp(20px, 2.2vw, 42px) !important;
+}
+
+/* ── 페이저 아래 여백 (페이저↔CTA 간격 축소분) ─────────────────────────
+   1.5rem 고정이라 좁은 화면에서도 24px. 하한만 낮춤(1440px 에선 24px 유지). */
+.pages {
+  margin-bottom: clamp(12px, 1.7vw, 24px) !important;
+}
+
+/* ================================================================
+   10. 카드가 위 필터 박스보다 좁아 보이는 문제 (좌우 여백 이중 적용)
+
+   카드 목록(.faq-list)의 좌우 10vw 여백이 섹션 자체 여백(8vw) 위에 겹쳐
+   쌓여, 카드만 양옆으로 한 겹 더 밀려 들어감.
+     387px 화면 기준 — 필터 박스 폭 82% vs 카드 폭 61%
+   데스크탑에선 카드가 max-width 로 잘리고 가운데 정렬이라 이 여백이 눈에
+   안 띄지만, 화면이 좁아지면 그대로 드러남.
+   → 992px 미만에서만 목록 자체 여백을 0 으로. 섹션 여백(8vw)이 이미 있어
+     카드가 필터 박스와 같은 선에 맞음. 데스크탑은 그대로.
+   ================================================================ */
+@media (max-width: 991px) {
+  .faq-list {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* ================================================================
+   11. 섹션 사이 과다 여백 — (1) 필터↔첫 카드 (2) 페이저↔CTA
+
+   여긴 vw 스케일 결함이 아니라 Webflow 의 태블릿/모바일 값 자체가 큼.
+   411px 화면 기준 원래 값:
+     필터↔첫 카드  = 필터섹션 아래 25vw(103) + 카드섹션 위 22vw(90)  ≈ 193px
+     페이저↔CTA    = 페이저 아래 24 + 카드섹션 아래 25vw(103)
+                     + CTA섹션 위 22vw(90) + CTA 위 여백 20        ≈ 237px
+   768px 태블릿에서도 medium 값(5vw/13vw)이라 여전히 과함 → 991px 이하 전체에
+   상한을 씌운다. 데스크탑(992px 이상)은 건드리지 않음.
+   원래 여백으로 되돌리려면 이 블록만 지우면 됨.
+   ================================================================ */
+@media (max-width: 991px) {
+  /* 필터 ↔ 첫 카드 (좁히기) */
+  .whiteframe-for-list_open {
+    padding-bottom: clamp(10px, 3vw, 18px) !important;
+  }
+  .whiteframe-for-list_connect {
+    padding-top: clamp(10px, 3vw, 18px) !important;
+  }
+  /* 페이저 ↔ CTA (좁히기) */
+  .whiteframe-for-list_connect {
+    padding-bottom: clamp(12px, 4vw, 24px) !important;
+  }
+  .whiteframe-for-list_close {
+    padding-top: clamp(12px, 4vw, 24px) !important;
+  }
+}
