@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.1)
+   About 인증 카드 "+" 상세보기 모달 (v1.5)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -15,6 +15,31 @@
    v1.1 — Webflow Designer 에서 숨겨둔(눈 아이콘 off) 섹션은 슬라이드에서
    제외. 안 그러면 빈 화면 슬라이드 + 인디케이터 점이 하나 더 생김
    (cat-cert 4번째 섹션이 숨김 상태였음).
+
+   v1.2 — 모바일(≤767px) 전용 인증 배지 줄 추가.
+   휴대폰에서는 인증 카드 3개가 세로로 길게 늘어져 한눈에 안 들어오고,
+   ≤479px 에서는 Webflow 쪽 그리드가 아예 display:none 이라 인증이
+   통째로 안 보였음. 그래서 모바일에선 카드 대신 "인증마크만" 떼어
+   한 줄 3칸으로 크게 깔고, 탭하면 기존 상세 모달이 열리게 함
+   (배지를 실제 <a href="/aaha-cert"> 로 만들어 아래 클릭 가로채기가
+   그대로 처리 → 별도 경로 추가 없음).
+
+   v1.3 — 모달 검수 수정. 카드 비율 깨짐(폭 확정 후 max-height 로 높이를
+   자르면 aspect-ratio 무효), 눈 아이콘으로 끈 섹션이 PC 에서 되살아나던
+   회귀, PC 인디케이터 점 대비, 태블릿 내용 잘림.
+
+   v1.4 — 휴대폰에서 상세 내용 세로 재배치. 상세 페이지에 모바일
+   브레이크포인트가 없고 데스크톱 가로 2단 + vw 고정폭으로만 짜여 있어,
+   휴대폰에선 칸이 반씩 쪼개져 글줄이 몇 글자마다 끊겼음
+   (reflowSlideForMobile 참고).
+
+   v1.5 — (a) 짝 없이 숨겨진 본문 되살리기. 일부 섹션은 본문 묶음
+   (.grid2)을 휴대폰 폭에서 끄면서 대신 보여줄 .grid2_m 을 안 만들어둬,
+   슬라이드가 제목과 푸터만 남고 본문이 통째로 사라졌음 (고양이 인증
+   2번째 섹션). 짝이 없을 때만 되살린다 — reviveOrphanHidden.
+   (b) v1.4 에서 이미지에 무조건 걸던 max-width:100% 가, 원래 %로 작게
+   잡아둔 푸터 로고(max-width:19%)까지 덮어써 화면 가득 커지던 문제 —
+   실제로 넘칠 때만 제한하도록 수정.
    ================================================================ */
 
 (function () {
@@ -52,6 +77,169 @@
   var dotsEl = null;
   var currentIdx = 0;
   var currentCount = 0;
+  var currentSlug = null;
+
+  var MOBILE_MAX = 767;
+  function isMobileView() { return window.innerWidth <= MOBILE_MAX; }
+
+  /* ----------------------------------------------------------------
+     모달 안 상세 내용 세로 재배치 (휴대폰 전용)
+     ----------------------------------------------------------------
+     인증 상세 페이지는 모바일 브레이크포인트가 없고 데스크톱 가로 2단 +
+     vw 고정폭으로만 짜여 있다. 그대로 휴대폰에 띄우면 칸이 반씩 쪼개져
+     빨간 박스가 34vw(=160px)까지 좁아지고 글줄이 몇 글자마다 끊긴다.
+
+     클래스 이름이 12개 섹션마다 제각각(aaha-box / grid2 / flex-block-61
+     / div-block-83 ...)이라 이름을 일일이 박는 대신, 계산된 배치를 읽어
+     "가로로 늘어선 묶음"과 "화면보다 한참 좁은 글상자"를 찾아 세로 1단 +
+     전체 폭으로 되돌린다.
+
+     인라인 스타일은 라이브 DOM 에만 붙는다. 슬라이드는 매번 캐시된
+     HTML 문자열에서 다시 만들어지므로 캐시가 오염되지 않는다. */
+  function elementChildren(el) {
+    return Array.prototype.filter.call(el.children, function (c) {
+      return c.nodeType === 1;
+    });
+  }
+
+  function hasOwnText(el) {
+    return !!(el.textContent || '').trim();
+  }
+
+  function classListOf(el) {
+    var cn = el.className;
+    if (typeof cn !== 'string') return [];       // SVG 등은 문자열이 아님
+    return cn.split(/\s+/).filter(Boolean);
+  }
+
+  /* 짝 없이 숨겨진 본문 묶음 되살리기.
+     상세 페이지는 섹션에 따라 본문 묶음(.grid2)을 휴대폰 폭에서
+     display:none 으로 꺼두는데, 대신 보여줄 모바일 묶음(.grid2_m)을
+     안 만들어둔 섹션이 있다. 그대로 두면 슬라이드가 제목과 푸터만 남고
+     본문이 통째로 사라진다 (고양이 인증 2번째 섹션).
+
+     - 눈 아이콘(인라인 display:none)으로 끈 것은 손대지 않음
+     - 모바일 전용(_M) 묶음은 되살리지 않음 (데스크톱 폭에서 숨는 게 정상)
+     - 옆에 짝(_M)이 있으면 그대로 둠 — 되살리면 같은 내용이 두 번 나옴
+     - 글이 거의 없는 장식용 요소도 제외 */
+  function reviveOrphanHidden(sec) {
+    Array.prototype.forEach.call(sec.querySelectorAll('*'), function (el) {
+      if (/display\s*:\s*none/i.test(el.getAttribute('style') || '')) return;
+
+      var cs;
+      try { cs = window.getComputedStyle(el); } catch (_) { return; }
+      if (!cs || cs.display !== 'none') return;
+
+      var classes = classListOf(el);
+      if (!classes.length) return;
+      if (classes.some(function (c) { return /_m$/i.test(c); })) return;
+
+      if ((el.textContent || '').trim().length < 20) return;
+
+      var parent = el.parentElement;
+      if (!parent) return;
+      var hasCounterpart = elementChildren(parent).some(function (sib) {
+        if (sib === el) return false;
+        var sc = classListOf(sib).join(' ').toLowerCase();
+        return classes.some(function (c) {
+          return sc.indexOf(c.toLowerCase() + '_m') !== -1;
+        });
+      });
+      if (hasCounterpart) return;
+
+      /* 되살릴 때 원래 display 값을 알 수 없으므로(none 으로 덮여 있음),
+         칸이 여럿이면 flex 세로로 — 아래 재배치가 이어서 1단으로 정리하고
+         grid 간격(row-gap)은 flex 에서도 그대로 먹는다. */
+      var many = elementChildren(el).length >= 2;
+      el.style.setProperty('display', many ? 'flex' : 'block', 'important');
+      if (many) el.style.setProperty('flex-direction', 'column', 'important');
+    });
+  }
+
+  function reflowSlideForMobile(slide) {
+    if (!slide) return;
+    var sec = slide.firstElementChild;
+    if (!sec) return;
+    var inner = sec.clientWidth;
+    if (!inner) return;
+
+    /* 숨은 본문을 먼저 되살린 뒤 배치를 정리해야 되살린 것도 함께 정리됨 */
+    reviveOrphanHidden(sec);
+
+    var nodes = sec.querySelectorAll('*');
+    Array.prototype.forEach.call(nodes, function (el) {
+      var tag = el.tagName;
+      if (tag === 'BR' || tag === 'SCRIPT' || tag === 'STYLE') return;
+
+      var cs;
+      try { cs = window.getComputedStyle(el); } catch (_) { return; }
+      if (!cs || cs.display === 'none') return;
+
+      if (tag === 'IMG' || tag === 'SVG') {
+        /* 넘칠 때만 폭을 제한한다.
+           무조건 max-width:100% 를 걸면, 원래 %로 작게 잡아둔 이미지
+           (푸터 로고 .image-31 은 max-width:19%)의 제한까지 덮어써서
+           화면 가득 커진다. 실제로 부모 밖으로 나갈 때만 손댈 것. */
+        var parent = el.parentElement;
+        var limit = parent ? parent.clientWidth : inner;
+        var shown = 0;
+        try { shown = el.getBoundingClientRect().width; } catch (_) {}
+        if (limit > 0 && shown > limit + 1) {
+          el.style.setProperty('max-width', '100%', 'important');
+          el.style.setProperty('height', 'auto', 'important');
+        }
+        return;
+      }
+
+      var kids = elementChildren(el);
+
+      /* 1) 가로로 늘어선 묶음 → 세로 1단 */
+      if (cs.display === 'grid' || cs.display === 'inline-grid') {
+        var cols = (cs.gridTemplateColumns || '').trim().split(/\s+/).length;
+        if (cols > 1) {
+          el.style.setProperty('grid-template-columns', '1fr', 'important');
+          el.style.setProperty('grid-auto-flow', 'row', 'important');
+        }
+      } else if (cs.display === 'flex' || cs.display === 'inline-flex') {
+        if ((cs.flexDirection || 'row').indexOf('row') === 0 && kids.length >= 2) {
+          el.style.setProperty('flex-direction', 'column', 'important');
+        }
+        /* 세로 묶음의 자식이 내용 폭만큼 쪼그라들지 않게 폭을 채움.
+           (데스크톱은 align-items:center 라 휴대폰에선 로고·박스가
+           가운데에서 작게 뭉침) */
+        el.style.setProperty('align-items', 'stretch', 'important');
+      }
+
+      /* 2) 이미지만 든 상자 — 데스크톱 vw 높이 기준이라 휴대폰에선
+            우표만 해짐. 높이 제한을 풀고 화면 폭 기준으로 다시 키움. */
+      if (!hasOwnText(el) && kids.length === 1 && kids[0].tagName === 'IMG') {
+        var h = parseFloat(cs.height) || 0;
+        if (h > 0 && h < inner * 0.34) {
+          el.style.setProperty('height', 'auto', 'important');
+          var im = kids[0];
+          im.style.setProperty('width', Math.round(inner * 0.42) + 'px', 'important');
+          im.style.setProperty('height', 'auto', 'important');
+          im.style.setProperty('margin-left', 'auto', 'important');
+          im.style.setProperty('margin-right', 'auto', 'important');
+        }
+        return;
+      }
+
+      /* 3) 화면보다 한참 좁은 글상자 → 폭 채우기 (vw 고정폭 잔재) */
+      if (hasOwnText(el)) {
+        var w = parseFloat(cs.width) || 0;
+        if (w > 0 && w < inner * 0.86) {
+          el.style.setProperty('width', '100%', 'important');
+          el.style.setProperty('max-width', '100%', 'important');
+        }
+      }
+    });
+  }
+
+  function reflowAllSlides() {
+    if (!track || !isMobileView()) return;
+    Array.prototype.forEach.call(track.children, reflowSlideForMobile);
+  }
 
   function buildOverlay() {
     overlay = document.createElement('div');
@@ -88,6 +276,26 @@
       else if (e.key === 'ArrowLeft')  { e.preventDefault(); go(currentIdx - 1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); go(currentIdx + 1); }
     });
+
+    /* 화면 회전/창 크기 변경으로 모바일↔데스크톱 경계를 넘으면 다시 그림.
+       세로 재배치는 인라인 스타일로 붙이므로, 가로로 돌렸을 때 그대로
+       두면 데스크톱 폭인데도 1단으로 남는다. 캐시된 HTML 에서 다시
+       만들 뿐이라 재요청은 없음. */
+    var wasMobile = isMobileView();
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      if (!overlay || !overlay.classList.contains('is-open')) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        var nowMobile = isMobileView();
+        if (nowMobile === wasMobile) {
+          reflowAllSlides();
+          return;
+        }
+        wasMobile = nowMobile;
+        if (currentSlug) open(currentSlug);
+      }, 180);
+    });
   }
 
   function fetchSections(slug) {
@@ -121,6 +329,7 @@
 
   function open(slug) {
     if (!overlay) buildOverlay();
+    currentSlug = slug;
     overlay.classList.add('is-open');
     document.documentElement.classList.add('helix-cert-modal-open');
 
@@ -155,6 +364,8 @@
         currentCount = track.children.length;
         buildDots(currentCount);
         go(0, true);
+        /* 레이아웃이 확정된 뒤 세로 재배치 (clientWidth 측정 필요) */
+        reflowAllSlides();
       })
       .catch(function (err) {
         track.innerHTML = '<div class="helix-cert-modal__loading">불러오기 실패: ' +
@@ -162,23 +373,56 @@
       });
   }
 
-  /* Webflow Designer 에서 숨겨둔 섹션 걸러내기.
-     Webflow 는 숨긴 요소를 인라인 display:none 또는 컴파일된 CSS 로 내보내는데,
-     둘 중 어느 쪽이든 모달은 이미 화면에 붙어 있으므로 (is-open → display:flex)
-     실제 계산된 display 로 판정할 수 있다.
-     안전망: 전부 숨김으로 판정되면 아무것도 지우지 않음. */
+  /* 안 보여야 하는 섹션 걸러내기 — "숨김" 두 종류를 구분해서 처리한다.
+
+     (a) Designer 눈 아이콘 off → 인라인 style="display:none"
+         → 의도적으로 뺀 것이므로 화면폭과 무관하게 항상 제외
+     (b) 페이지 CSS 의 화면폭별 숨김 (.cert-modal-frame: ≥768px 이면 none)
+         → 모달 안에서는 섹션이 곧 본문이라, 전부 (b) 로 숨은 경우엔
+            강제로 켜야 함. 안 그러면 빈 슬라이드만 보임.
+
+     둘을 합쳐서 "전부 숨김이면 아무것도 안 지움" 으로 처리하면, PC 에서
+     (a) 로 끈 섹션까지 같이 되살아나 빈 슬라이드가 부활한다 (#1282 회귀).
+     그래서 (a) 를 먼저 무조건 제거한 뒤 남은 것만 (b) 로 판정. */
   function dropHiddenSlides() {
-    var slides = Array.prototype.slice.call(track.children);
-    var hidden = slides.filter(function (slide) {
+    function drop(slide) { slide.parentNode.removeChild(slide); }
+    function isCssHidden(slide) {
       var sec = slide.firstElementChild;
       if (!sec) return true;
-      if (/display\s*:\s*none/i.test(sec.getAttribute('style') || '')) return true;
       var cs;
       try { cs = window.getComputedStyle(sec); } catch (_) { return false; }
       return !!cs && cs.display === 'none';
+    }
+
+    var slides = Array.prototype.slice.call(track.children);
+
+    /* 1단계 — Designer 에서 눈 아이콘으로 끈 섹션은 화면폭과 무관하게 항상 제외.
+       Webflow 는 이 경우 인라인 style="display:none" 으로 내보낸다.
+       (cat-cert 4번째 섹션이 이 상태 — #1282) */
+    var eyeHidden = slides.filter(function (slide) {
+      var sec = slide.firstElementChild;
+      return !!sec && /display\s*:\s*none/i.test(sec.getAttribute('style') || '');
     });
-    if (hidden.length === slides.length) return;
-    hidden.forEach(function (slide) { slide.parentNode.removeChild(slide); });
+    eyeHidden.forEach(drop);
+
+    /* 2단계 — 남은 것 중 페이지 CSS 로 숨은 것 판정 */
+    var rest = Array.prototype.slice.call(track.children);
+    if (!rest.length) return;
+    var cssHidden = rest.filter(isCssHidden);
+
+    if (cssHidden.length === rest.length) {
+      /* 남은 게 전부 숨김 — 상세 페이지 CSS 가 특정 화면폭에서만 보이도록
+         해둔 상황 (.cert-modal-frame 은 ≥768px 에서 display:none, 모바일
+         폭에서만 display:block). 예전엔 여기서 그냥 빠져서 빈 슬라이드만
+         남았음. 모달 안에서는 섹션이 곧 본문이므로 강제로 켠다.
+
+         눈 아이콘으로 끈 섹션은 1단계에서 이미 빠졌으므로, 여기서 켜지는
+         것은 "원래 보여야 하는데 화면폭 때문에 숨은" 섹션들만. */
+      overlay.classList.add('is-force-visible');
+      return;
+    }
+    overlay.classList.remove('is-force-visible');
+    cssHidden.forEach(drop);
   }
 
   function close() {
@@ -248,12 +492,103 @@
     });
   }
 
+  /* ----------------------------------------------------------------
+     모바일 인증 배지 줄 — 인증마크만 떼어 한 줄 3칸
+     ----------------------------------------------------------------
+     각 인증 카드에서 (1) 마크 div (2) "+" 버튼의 링크 를 뽑아
+     <a> 배지로 다시 조립한다. 마크는 원본 div 를 clone 해서 Webflow
+     클래스(.div-block-157/158/159)를 그대로 들고 오므로 배경 이미지
+     주소를 코드에 박아둘 필요가 없음 (이미지 교체돼도 따라감).
+     보이기/숨기기는 CSS 미디어쿼리 담당 — JS 는 폭을 재지 않음
+     (가로/세로 전환, 데스크톱 창 줄이기 모두 CSS 가 알아서 처리). */
+  var CERTS = [
+    { card: '.about_contents_box_ahha',  mark: '.div-block-159',
+      slug: '/aaha-cert',      tag: 'AAHA',      kr: '미국동물병원협회' },
+    { card: '.about_contents_box_veccs', mark: '.div-block-158',
+      slug: '/emergency-cert', tag: 'VECCS',     kr: '응급·중환자 케어' },
+    { card: '.about_contents_box_cfc',   mark: '.div-block-157',
+      slug: '/cat-cert',       tag: 'CFC GOLD',  kr: '고양이 친화 진료소' }
+  ];
+
+  function buildMobileBadges() {
+    var section = document.getElementById('cert');
+    if (!section) return;
+    /* 중복 생성 방지 — MutationObserver 나 재호출로 두 번 들어올 수 있음 */
+    if (section.querySelector('.helix-cert-badges')) return;
+
+    var grid = section.querySelector('.about_grid-3-_mid-align');
+    var wrap = document.createElement('div');
+    wrap.className = 'helix-cert-badges';
+
+    var built = 0;
+    CERTS.forEach(function (cert) {
+      var card = section.querySelector(cert.card);
+      if (!card) return;
+      var mark = card.querySelector(cert.mark);
+      if (!mark) return;
+
+      /* 슬러그는 카드 안 "+" 버튼의 실제 href 를 우선 사용 —
+         Webflow 에서 페이지 슬러그를 바꿔도 배지가 따라감. */
+      var href = cert.slug;
+      var plus = card.querySelector('a[href]');
+      if (plus) {
+        try {
+          var u = new URL(plus.href, location.href);
+          if (u.origin === location.origin && isDetailPath(u.pathname)) href = u.pathname;
+        } catch (_) {}
+      }
+
+      var a = document.createElement('a');
+      a.className = 'helix-cert-badge';
+      a.href = href;
+      a.setAttribute('aria-label', cert.kr + ' ' + cert.tag + ' 인증 상세 보기');
+      /* coming-soon.js 토스트가 가로채지 않도록 면제 표시 (markExempt 와 동일) */
+      a.setAttribute('data-coming-soon-exempt', '1');
+
+      var markWrap = document.createElement('span');
+      markWrap.className = 'helix-cert-badge__markwrap';
+
+      var markClone = mark.cloneNode(false);
+      markClone.classList.add('helix-cert-badge__mark');
+      /* 원본에 IX2 등이 박아둔 인라인 크기/투명도는 배지에선 방해만 됨 */
+      markClone.removeAttribute('data-w-id');
+      markClone.style.removeProperty('opacity');
+      markClone.style.removeProperty('width');
+      markClone.style.removeProperty('height');
+      markWrap.appendChild(markClone);
+
+      var tag = document.createElement('span');
+      tag.className = 'helix-cert-badge__tag';
+      tag.textContent = cert.tag;
+
+      var kr = document.createElement('span');
+      kr.className = 'helix-cert-badge__kr';
+      kr.textContent = cert.kr;
+
+      a.appendChild(markWrap);
+      a.appendChild(tag);
+      a.appendChild(kr);
+      wrap.appendChild(a);
+      built++;
+    });
+
+    if (!built) return;
+    if (grid && grid.parentNode) grid.parentNode.insertBefore(wrap, grid.nextSibling);
+    else section.appendChild(wrap);
+  }
+
   function attach() {
     markExempt();
+    buildMobileBadges();
     /* Webflow IX2 / 컴포넌트가 늦게 마운트하는 경우 대비 — DOM 변경 감지
        시 다시 마킹. 5초 후 해제. */
     try {
-      var mo = new MutationObserver(function () { markExempt(); });
+      var mo = new MutationObserver(function () {
+        markExempt();
+        /* 인증 카드/"+"버튼이 늦게 마운트되는 경우 배지도 뒤늦게 조립.
+           내부에서 중복 생성은 막으므로 여러 번 불려도 안전. */
+        buildMobileBadges();
+      });
       mo.observe(document.body, { childList: true, subtree: true });
       setTimeout(function () { mo.disconnect(); }, 5000);
     } catch (_) {}
