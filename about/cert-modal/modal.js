@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.3)
+   About 인증 카드 "+" 상세보기 모달 (v1.4)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -23,6 +23,15 @@
    한 줄 3칸으로 크게 깔고, 탭하면 기존 상세 모달이 열리게 함
    (배지를 실제 <a href="/aaha-cert"> 로 만들어 아래 클릭 가로채기가
    그대로 처리 → 별도 경로 추가 없음).
+
+   v1.3 — 모달 검수 수정. 카드 비율 깨짐(폭 확정 후 max-height 로 높이를
+   자르면 aspect-ratio 무효), 눈 아이콘으로 끈 섹션이 PC 에서 되살아나던
+   회귀, PC 인디케이터 점 대비, 태블릿 내용 잘림.
+
+   v1.4 — 휴대폰에서 상세 내용 세로 재배치. 상세 페이지에 모바일
+   브레이크포인트가 없고 데스크톱 가로 2단 + vw 고정폭으로만 짜여 있어,
+   휴대폰에선 칸이 반씩 쪼개져 글줄이 몇 글자마다 끊겼음
+   (reflowSlideForMobile 참고).
    ================================================================ */
 
 (function () {
@@ -60,6 +69,105 @@
   var dotsEl = null;
   var currentIdx = 0;
   var currentCount = 0;
+  var currentSlug = null;
+
+  var MOBILE_MAX = 767;
+  function isMobileView() { return window.innerWidth <= MOBILE_MAX; }
+
+  /* ----------------------------------------------------------------
+     모달 안 상세 내용 세로 재배치 (휴대폰 전용)
+     ----------------------------------------------------------------
+     인증 상세 페이지는 모바일 브레이크포인트가 없고 데스크톱 가로 2단 +
+     vw 고정폭으로만 짜여 있다. 그대로 휴대폰에 띄우면 칸이 반씩 쪼개져
+     빨간 박스가 34vw(=160px)까지 좁아지고 글줄이 몇 글자마다 끊긴다.
+
+     클래스 이름이 12개 섹션마다 제각각(aaha-box / grid2 / flex-block-61
+     / div-block-83 ...)이라 이름을 일일이 박는 대신, 계산된 배치를 읽어
+     "가로로 늘어선 묶음"과 "화면보다 한참 좁은 글상자"를 찾아 세로 1단 +
+     전체 폭으로 되돌린다.
+
+     인라인 스타일은 라이브 DOM 에만 붙는다. 슬라이드는 매번 캐시된
+     HTML 문자열에서 다시 만들어지므로 캐시가 오염되지 않는다. */
+  function elementChildren(el) {
+    return Array.prototype.filter.call(el.children, function (c) {
+      return c.nodeType === 1;
+    });
+  }
+
+  function hasOwnText(el) {
+    return !!(el.textContent || '').trim();
+  }
+
+  function reflowSlideForMobile(slide) {
+    if (!slide) return;
+    var sec = slide.firstElementChild;
+    if (!sec) return;
+    var inner = sec.clientWidth;
+    if (!inner) return;
+
+    var nodes = sec.querySelectorAll('*');
+    Array.prototype.forEach.call(nodes, function (el) {
+      var tag = el.tagName;
+      if (tag === 'BR' || tag === 'SCRIPT' || tag === 'STYLE') return;
+
+      var cs;
+      try { cs = window.getComputedStyle(el); } catch (_) { return; }
+      if (!cs || cs.display === 'none') return;
+
+      if (tag === 'IMG' || tag === 'SVG') {
+        el.style.setProperty('max-width', '100%', 'important');
+        return;
+      }
+
+      var kids = elementChildren(el);
+
+      /* 1) 가로로 늘어선 묶음 → 세로 1단 */
+      if (cs.display === 'grid' || cs.display === 'inline-grid') {
+        var cols = (cs.gridTemplateColumns || '').trim().split(/\s+/).length;
+        if (cols > 1) {
+          el.style.setProperty('grid-template-columns', '1fr', 'important');
+          el.style.setProperty('grid-auto-flow', 'row', 'important');
+        }
+      } else if (cs.display === 'flex' || cs.display === 'inline-flex') {
+        if ((cs.flexDirection || 'row').indexOf('row') === 0 && kids.length >= 2) {
+          el.style.setProperty('flex-direction', 'column', 'important');
+        }
+        /* 세로 묶음의 자식이 내용 폭만큼 쪼그라들지 않게 폭을 채움.
+           (데스크톱은 align-items:center 라 휴대폰에선 로고·박스가
+           가운데에서 작게 뭉침) */
+        el.style.setProperty('align-items', 'stretch', 'important');
+      }
+
+      /* 2) 이미지만 든 상자 — 데스크톱 vw 높이 기준이라 휴대폰에선
+            우표만 해짐. 높이 제한을 풀고 화면 폭 기준으로 다시 키움. */
+      if (!hasOwnText(el) && kids.length === 1 && kids[0].tagName === 'IMG') {
+        var h = parseFloat(cs.height) || 0;
+        if (h > 0 && h < inner * 0.34) {
+          el.style.setProperty('height', 'auto', 'important');
+          var im = kids[0];
+          im.style.setProperty('width', Math.round(inner * 0.42) + 'px', 'important');
+          im.style.setProperty('height', 'auto', 'important');
+          im.style.setProperty('margin-left', 'auto', 'important');
+          im.style.setProperty('margin-right', 'auto', 'important');
+        }
+        return;
+      }
+
+      /* 3) 화면보다 한참 좁은 글상자 → 폭 채우기 (vw 고정폭 잔재) */
+      if (hasOwnText(el)) {
+        var w = parseFloat(cs.width) || 0;
+        if (w > 0 && w < inner * 0.86) {
+          el.style.setProperty('width', '100%', 'important');
+          el.style.setProperty('max-width', '100%', 'important');
+        }
+      }
+    });
+  }
+
+  function reflowAllSlides() {
+    if (!track || !isMobileView()) return;
+    Array.prototype.forEach.call(track.children, reflowSlideForMobile);
+  }
 
   function buildOverlay() {
     overlay = document.createElement('div');
@@ -96,6 +204,26 @@
       else if (e.key === 'ArrowLeft')  { e.preventDefault(); go(currentIdx - 1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); go(currentIdx + 1); }
     });
+
+    /* 화면 회전/창 크기 변경으로 모바일↔데스크톱 경계를 넘으면 다시 그림.
+       세로 재배치는 인라인 스타일로 붙이므로, 가로로 돌렸을 때 그대로
+       두면 데스크톱 폭인데도 1단으로 남는다. 캐시된 HTML 에서 다시
+       만들 뿐이라 재요청은 없음. */
+    var wasMobile = isMobileView();
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      if (!overlay || !overlay.classList.contains('is-open')) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        var nowMobile = isMobileView();
+        if (nowMobile === wasMobile) {
+          reflowAllSlides();
+          return;
+        }
+        wasMobile = nowMobile;
+        if (currentSlug) open(currentSlug);
+      }, 180);
+    });
   }
 
   function fetchSections(slug) {
@@ -129,6 +257,7 @@
 
   function open(slug) {
     if (!overlay) buildOverlay();
+    currentSlug = slug;
     overlay.classList.add('is-open');
     document.documentElement.classList.add('helix-cert-modal-open');
 
@@ -163,6 +292,8 @@
         currentCount = track.children.length;
         buildDots(currentCount);
         go(0, true);
+        /* 레이아웃이 확정된 뒤 세로 재배치 (clientWidth 측정 필요) */
+        reflowAllSlides();
       })
       .catch(function (err) {
         track.innerHTML = '<div class="helix-cert-modal__loading">불러오기 실패: ' +

@@ -205,19 +205,35 @@ html.helix-cert-modal-open body {
    높이를 풀어 내용만큼 늘리고 세로 스크롤로 넘긴다.
    (데스크톱은 카드가 정확히 960×540 이라 기본 규칙 그대로 둠) */
 @media (max-width: 991px) {
+  /* 세로 1단 기준으로 전환.
+     섹션을 flex 세로로 두면 안쪽 묶음(.div-block-230: flex:1 +
+     space-between)이 화면 높이를 채우면서 구분선+로고가 바닥에 붙는다.
+     안 그러면 내용이 위쪽에만 몰리고 아래가 텅 빈 채로 남음. */
   .helix-cert-modal__slide > section {
+    display: flex !important;
+    flex-direction: column !important;
     height: auto !important;
     min-height: 100% !important;
     max-width: 100% !important;
   }
-  /* 높이가 유연해진 구간에서는 flex 대신 block 이 안전 (내용이 흐르는 대로) */
-  .helix-cert-modal.is-force-visible .helix-cert-modal__slide > section {
-    display: block !important;
+  .helix-cert-modal__slide > section > * {
+    align-self: stretch !important;
   }
-  /* 데스크톱에선 마지막 자식(구분선+로고)을 바닥에 붙였지만, 여기선
-     내용이 흐르는 대로 두고 아래 여백만 확보 (바닥 고정 시 빈 공간 발생) */
+  /* 데스크톱은 묶음마다 align-self:center 라 폭이 내용만큼만 잡힘.
+     휴대폰에선 그 탓에 글상자가 좁게 뭉치고, %로 잡은 로고가 기준 폭이
+     흔들려 엉뚱하게 커진다. 세로 1단에서는 전부 폭을 채우게 함.
+     (이미지는 예외 — 늘리면 찌그러지므로 가운데 정렬 유지) */
+  .helix-cert-modal__slide > section * {
+    align-self: stretch;
+  }
+  .helix-cert-modal__slide > section img,
+  .helix-cert-modal__slide > section svg {
+    align-self: center;
+  }
+  /* 데스크톱에선 마지막 자식을 margin-top:auto 로 바닥에 붙였지만,
+     여기선 위 flex 구조가 그 역할을 하므로 해제 */
   .helix-cert-modal__slide > section > :last-child {
-    margin-top: 2rem !important;
+    margin-top: 0 !important;
   }
   /* 가로 넘침 차단 — 960px 기준 고정폭 요소가 화면보다 넓어지는 것 방지 */
   .helix-cert-modal__slide > section img {
