@@ -46,8 +46,8 @@
    오른쪽보다 짧게 떠 어긋나 보이던 문제.
 
    v1.7 — (a) 고양이 인증 표지도 마크를 키움. 가로로 긴 마크(1311×697)라
-   높이를 맞추면 폭이 과해지므로, 폭을 가로줄의 40% 로 잡고 세로 가운데
-   정렬은 유지 (COVER_MARK_FIT 의 width 모드).
+   높이를 맞추면 폭이 과해지므로, 폭을 가로줄의 40% 로 잡고 세로는 마크
+   윗변을 제목 윗변에 맞춤 (COVER_MARK_FIT 의 width 모드 + align).
    (b) 설명 상자의 테두리·구분선·제목 색을 인증마크에서 뽑은 색으로 통일.
    테두리 클래스(.div-block-79-copy)가 세 상세 페이지 공용이라 어느 인증을
    열든 AAHA 레드가 나오고, 고양이만 구분선·제목이 핑크라 상자 안에서 색이
@@ -276,13 +276,14 @@
      - width : 마크 폭을 가로줄의 일정 비율로 잡고 높이는 비율대로 따라간다.
                가로로 긴 마크(고양이 1311×697)는 높이를 맞추면 폭이 높이의
                1.88배까지 벌어져 옆 글칸이 지나치게 좁아진다. 대신 지금보다
-               넉넉히 키우고 세로 가운데 정렬은 그대로 둔다 — 높이가 옆보다
-               낮을 수밖에 없어, 위로 붙이면 왼쪽 아래가 크게 빈다.
+               넉넉히 키운다. 높이가 옆 덩어리보다 낮을 수밖에 없으므로
+               align 으로 세로 위치를 정한다 — flex-start 면 마크 윗변이
+               제목 윗변과 나란해진다.
 
      AAHA(세로로 긴 300×375)는 아직 손대지 않는다. */
   var COVER_MARK_FIT = {
     '/emergency-cert': { mode: 'match', maxRowRatio: 0.46 },
-    '/cat-cert':       { mode: 'width', rowRatio: 0.40 }
+    '/cat-cert':       { mode: 'width', rowRatio: 0.40, align: 'flex-start' }
   };
 
   function fitCoverMark(slide) {
@@ -338,6 +339,7 @@
       var w = Math.round(rowWidth * cfg.rowRatio);
       cell.style.setProperty('width', w + 'px', 'important');
       cell.style.setProperty('height', Math.round(w / ratio) + 'px', 'important');
+      if (cfg.align) cell.style.setProperty('align-self', cfg.align, 'important');
       return;
     }
 
