@@ -208,6 +208,7 @@ jobs:
           FILES=(
             "global/ga4-base.js"
             "global/ga-inspector.js"
+            "global/sheet-log.js"
             "global/global.css"
             "global/floating-cta.css"
             "global/floating-cta.js"

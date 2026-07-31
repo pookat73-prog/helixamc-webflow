@@ -56,6 +56,10 @@
     'global/ga4-base.js',
     /* GA 측정 점검 오버레이 — ?ga-inspect=1 일 때만 동작 (평소 무해) */
     'global/ga-inspector.js',
+    /* 전 사이트 이벤트 자동 구글시트 로깅 — gtag('event', ...) 를
+       가로채 같은 내용을 시트에도 한 줄씩 적재 (GA4 맞춤 측정기준 없이
+       바로 확인 가능). 도메인 게이트는 GA4 와 동일(정식 사이트만) */
+    'global/sheet-log.js',
     /* 전역 + 헤더 + 햄버거 (다른 페이지와 동일 사양) */
     'global/global.css',
     /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
