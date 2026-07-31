@@ -108,6 +108,28 @@
   var LIVE_BRANCH_PATTERN = /서초|2135-9119/;
   var LIVE_BRANCH_CARD_SEL = '.home_branch-card, .flex-block-22 > .div-block-151';
 
+  /* 이미 열려 있는 페이지로 가는 링크는 토스트로 막지 않는다.
+
+     배경: 버튼 컴포넌트("메인페이지 버튼")에 data-coming-soon="1" 이
+     컴포넌트 수준으로 박혀 있어 그 버튼을 쓰는 모든 자리가 한꺼번에 막힌다.
+     Webflow 컴포넌트 인스턴스는 속성을 따로 덮어쓸 수 없어서
+     (set_attributes → "does not support attributes"), 버튼마다 끄고 켜는 게
+     불가능하다. 그래서 "무슨 버튼인가" 대신 "어디로 가는 링크인가"로 판정.
+
+     아직 비공개인 페이지(예: 특화진료 /specialty-care)는 아래 목록에
+     없으므로 그대로 토스트가 뜬다. 페이지를 열 때마다 여기 한 줄 추가. */
+  var LIVE_PATHS = ['/symptoms'];
+
+  function isLivePathLink(node) {
+    if (!node || !node.closest) return false;
+    var a = node.closest('a[href]');
+    if (!a) return false;
+    var u;
+    try { u = new URL(a.getAttribute('href'), location.href); } catch (_) { return false; }
+    if (u.origin !== location.origin) return false;
+    return LIVE_PATHS.indexOf(u.pathname.replace(/\/$/, '')) !== -1;
+  }
+
   function findBlockedTarget(node) {
     /* 업프론트: 클릭 타겟에서 가장 가까운 라이브 지점 카드 조상이 있고
        텍스트가 라이브 패턴이면 즉시 토스트 차단 (마킹 레이스 무관). */
@@ -115,6 +137,8 @@
       var liveCard = node.closest(LIVE_BRANCH_CARD_SEL);
       if (liveCard && LIVE_BRANCH_PATTERN.test(liveCard.textContent || '')) return null;
     }
+    /* 열려 있는 페이지로 가는 링크면 컴포넌트 마킹과 무관하게 이동시킨다 */
+    if (isLivePathLink(node)) return null;
     /* click target에서 위로 올라가며 data-coming-soon 마킹된 조상 찾기.
        단, 더 가까운 조상이 data-coming-soon-exempt 면 차단 안 함
        (예: branch-card 의 copy 버튼 / tel 링크는 카드 자체 마킹과 무관하게 동작) */
