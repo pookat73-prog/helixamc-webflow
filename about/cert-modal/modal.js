@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.4)
+   About 인증 카드 "+" 상세보기 모달 (v1.5)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -32,6 +32,14 @@
    브레이크포인트가 없고 데스크톱 가로 2단 + vw 고정폭으로만 짜여 있어,
    휴대폰에선 칸이 반씩 쪼개져 글줄이 몇 글자마다 끊겼음
    (reflowSlideForMobile 참고).
+
+   v1.5 — (a) 짝 없이 숨겨진 본문 되살리기. 일부 섹션은 본문 묶음
+   (.grid2)을 휴대폰 폭에서 끄면서 대신 보여줄 .grid2_m 을 안 만들어둬,
+   슬라이드가 제목과 푸터만 남고 본문이 통째로 사라졌음 (고양이 인증
+   2번째 섹션). 짝이 없을 때만 되살린다 — reviveOrphanHidden.
+   (b) v1.4 에서 이미지에 무조건 걸던 max-width:100% 가, 원래 %로 작게
+   잡아둔 푸터 로고(max-width:19%)까지 덮어써 화면 가득 커지던 문제 —
+   실제로 넘칠 때만 제한하도록 수정.
    ================================================================ */
 
 (function () {
@@ -98,12 +106,65 @@
     return !!(el.textContent || '').trim();
   }
 
+  function classListOf(el) {
+    var cn = el.className;
+    if (typeof cn !== 'string') return [];       // SVG 등은 문자열이 아님
+    return cn.split(/\s+/).filter(Boolean);
+  }
+
+  /* 짝 없이 숨겨진 본문 묶음 되살리기.
+     상세 페이지는 섹션에 따라 본문 묶음(.grid2)을 휴대폰 폭에서
+     display:none 으로 꺼두는데, 대신 보여줄 모바일 묶음(.grid2_m)을
+     안 만들어둔 섹션이 있다. 그대로 두면 슬라이드가 제목과 푸터만 남고
+     본문이 통째로 사라진다 (고양이 인증 2번째 섹션).
+
+     - 눈 아이콘(인라인 display:none)으로 끈 것은 손대지 않음
+     - 모바일 전용(_M) 묶음은 되살리지 않음 (데스크톱 폭에서 숨는 게 정상)
+     - 옆에 짝(_M)이 있으면 그대로 둠 — 되살리면 같은 내용이 두 번 나옴
+     - 글이 거의 없는 장식용 요소도 제외 */
+  function reviveOrphanHidden(sec) {
+    Array.prototype.forEach.call(sec.querySelectorAll('*'), function (el) {
+      if (/display\s*:\s*none/i.test(el.getAttribute('style') || '')) return;
+
+      var cs;
+      try { cs = window.getComputedStyle(el); } catch (_) { return; }
+      if (!cs || cs.display !== 'none') return;
+
+      var classes = classListOf(el);
+      if (!classes.length) return;
+      if (classes.some(function (c) { return /_m$/i.test(c); })) return;
+
+      if ((el.textContent || '').trim().length < 20) return;
+
+      var parent = el.parentElement;
+      if (!parent) return;
+      var hasCounterpart = elementChildren(parent).some(function (sib) {
+        if (sib === el) return false;
+        var sc = classListOf(sib).join(' ').toLowerCase();
+        return classes.some(function (c) {
+          return sc.indexOf(c.toLowerCase() + '_m') !== -1;
+        });
+      });
+      if (hasCounterpart) return;
+
+      /* 되살릴 때 원래 display 값을 알 수 없으므로(none 으로 덮여 있음),
+         칸이 여럿이면 flex 세로로 — 아래 재배치가 이어서 1단으로 정리하고
+         grid 간격(row-gap)은 flex 에서도 그대로 먹는다. */
+      var many = elementChildren(el).length >= 2;
+      el.style.setProperty('display', many ? 'flex' : 'block', 'important');
+      if (many) el.style.setProperty('flex-direction', 'column', 'important');
+    });
+  }
+
   function reflowSlideForMobile(slide) {
     if (!slide) return;
     var sec = slide.firstElementChild;
     if (!sec) return;
     var inner = sec.clientWidth;
     if (!inner) return;
+
+    /* 숨은 본문을 먼저 되살린 뒤 배치를 정리해야 되살린 것도 함께 정리됨 */
+    reviveOrphanHidden(sec);
 
     var nodes = sec.querySelectorAll('*');
     Array.prototype.forEach.call(nodes, function (el) {
@@ -115,7 +176,18 @@
       if (!cs || cs.display === 'none') return;
 
       if (tag === 'IMG' || tag === 'SVG') {
-        el.style.setProperty('max-width', '100%', 'important');
+        /* 넘칠 때만 폭을 제한한다.
+           무조건 max-width:100% 를 걸면, 원래 %로 작게 잡아둔 이미지
+           (푸터 로고 .image-31 은 max-width:19%)의 제한까지 덮어써서
+           화면 가득 커진다. 실제로 부모 밖으로 나갈 때만 손댈 것. */
+        var parent = el.parentElement;
+        var limit = parent ? parent.clientWidth : inner;
+        var shown = 0;
+        try { shown = el.getBoundingClientRect().width; } catch (_) {}
+        if (limit > 0 && shown > limit + 1) {
+          el.style.setProperty('max-width', '100%', 'important');
+          el.style.setProperty('height', 'auto', 'important');
+        }
         return;
       }
 
