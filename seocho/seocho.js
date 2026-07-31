@@ -347,6 +347,151 @@
 (function () {
   'use strict';
 
+  /* 서브헤더는 듀얼 마크업 — 데스크탑용과 모바일용이 둘 다 DOM 에 있고
+     미디어쿼리로 한쪽만 보인다. 숨은 쪽은 높이 0 이므로 한쪽만 재면
+     폰에서 0 이 나오고, 착지 지점이 모바일 서브헤더 뒤로 들어가 제목이
+     가려진다. 클래스명 변경에 견디도록 .subheader_click-area 의 조상
+     section 으로 찾아 그중 가장 높은(=보이는) 것을 채택. */
+  /* 진단 모드 — URL 에 ?debug-sub=1 을 붙이면 앵커를 누를 때마다
+     "무엇이 화면 위를 덮고 있는지 / 목표 섹션이 어디 있는지 / 보정이 얼마나
+     일어났는지" 를 콘솔에 찍는다. 착지가 안 맞을 때 추측 없이 원인을 특정하는 용도. */
+  var DBG = /[?&]debug-sub=1/.test(location.search);
+  function dlog() {
+    if (!DBG) return;
+    var a = ['[sub]'];
+    for (var i = 0; i < arguments.length; i++) a.push(arguments[i]);
+    try { console.log.apply(console, a); } catch (e) {}
+  }
+  function elName(el) {
+    if (!el) return '(null)';
+    var c = (el.className && el.className.toString ? el.className.toString() : '') || '';
+    return (el.tagName || '?').toLowerCase() + (c ? '.' + c.trim().split(/\s+/).join('.') : '');
+  }
+
+  /* 헤더도 서브헤더와 같은 듀얼 마크업 — 데스크탑용(header.header)과
+     모바일용(header.header_mobile)이 둘 다 DOM 에 있고 한쪽만 보인다.
+     querySelector 는 셀렉터 순서가 아니라 문서 순서상 첫 번째(=데스크탑)를
+     집어오므로 폰에서 높이가 0 이 되어, 착지 지점이 헤더 높이만큼 위로 떠
+     제목이 가린다. 아래 sync() 와 동일하게 "화면 맨 위에 붙어 있는 것 중
+     가장 높은 것"을 채택. */
+  function headerH() {
+    var cands = document.querySelectorAll(
+      'header.header, header.header_mobile, header, .w-nav, nav[role="banner"]'
+    );
+    var max = 0;
+    for (var i = 0; i < cands.length; i++) {
+      var r = cands[i].getBoundingClientRect();
+      if (r.top <= 1 && r.height > max) max = r.height;
+    }
+    return max;
+  }
+
+  function subheaderH() {
+    var links = document.querySelectorAll('.subheader_click-area');
+    var seen = [];
+    var max = 0;
+    for (var i = 0; i < links.length; i++) {
+      var sec = links[i].closest('section');
+      if (!sec || seen.indexOf(sec) !== -1) continue;
+      seen.push(sec);
+      var h = sec.getBoundingClientRect().height;
+      if (h > max) max = h;
+    }
+    return max;
+  }
+
+  /* 화면 위쪽에 "실제로 붙어 있는" 고정/스티키 바들의 아래 끝(px).
+     헤더 → 서브헤더 → 필터처럼 세로로 이어 붙은 것들을 위에서부터 연결해
+     가며 가장 아래 끝을 구한다. 전체화면 오버레이(메뉴/모달), 화면 밖으로
+     나간 것, 위쪽 바가 아닌 것은 제외.
+     요소 이름을 하나도 몰라도 되는 게 핵심 — 마크업이 바뀌어도 따라간다. */
+  function topBarsBottom(exclude) {
+    var vh = window.innerHeight || 0;
+    var all = document.body.getElementsByTagName('*');
+    var bars = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (exclude && (el === exclude || exclude.contains(el) || el.contains(exclude))) continue;
+      var cs = window.getComputedStyle(el);
+      if (cs.position !== 'fixed' && cs.position !== 'sticky') continue;
+      if (cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) continue;
+      if (el.getAttribute('aria-hidden') === 'true') continue;
+      var r = el.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0) continue;
+      if (r.bottom <= 0) continue;            /* 화면 위로 나감 */
+      if (r.height > vh * 0.5) continue;      /* 전체화면 오버레이 */
+      if (r.top > vh * 0.4) continue;         /* 위쪽 바가 아님 */
+      bars.push({ el: el, r: r });
+    }
+    bars.sort(function (a, b) { return a.r.top - b.r.top; });
+    var max = 0;
+    for (var j = 0; j < bars.length; j++) {
+      var b = bars[j].r;
+      var used = b.top <= max + 4 && b.bottom > max;
+      if (used) max = b.bottom;
+      dlog('  바', used ? 'O' : 'x', elName(bars[j].el),
+        'top', Math.round(b.top), 'h', Math.round(b.height), 'bottom', Math.round(b.bottom));
+    }
+    dlog('  → 덮는 높이', Math.round(max));
+    return max;
+  }
+
+  /* 스무스 스크롤이 끝난 뒤 목표 섹션 top 이 위 고정 바들 아래에 있는지
+     확인하고, 모자라면 그만큼만 더 내린다. 스티키 바는 클릭 시점엔 아직
+     안 붙어 있어 미리 정확히 잴 수 없다 — 도착 후에 재야 실제 값이 나온다. */
+  /* 스크롤이 "실제로 멈출 때까지" 기다렸다가 콜백.
+     고정 시간(setTimeout)에 기대면 이동 거리가 길 때 아직 스무스 스크롤
+     중이라, 보정해도 진행 중이던 애니메이션이 곧바로 덮어써 무효가 된다.
+     scrollend 이벤트는 브라우저별 지원이 갈려(iOS Safari 17 미만 없음)
+     신뢰할 수 없다. 그래서 스크롤 위치가 멎었는지를 직접 확인한다. */
+  function whenScrollSettles(cb) {
+    var last = -1, same = 0, ticks = 0;
+    var iv = setInterval(function () {
+      var y = window.pageYOffset;
+      if (y === last) same++; else same = 0;
+      last = y;
+      if (same >= 3 || ++ticks > 60) {   /* 약 150ms 정지, 3초 상한 */
+        clearInterval(iv);
+        cb();
+      }
+    }, 50);
+  }
+
+  function settleAfterScroll(target) {
+    var rounds = 0;
+    var cancelled = false;
+    function onUser() { cancelled = true; }
+    window.addEventListener('wheel', onUser, { passive: true });
+    window.addEventListener('touchmove', onUser, { passive: true });
+
+    function done() {
+      window.removeEventListener('wheel', onUser);
+      window.removeEventListener('touchmove', onUser);
+    }
+
+    function round() {
+      whenScrollSettles(function () {
+        if (cancelled) { dlog('보정 취소 — 사용자가 스크롤함'); return done(); }
+        dlog('스크롤 멈춤. 보정 라운드', rounds + 1, '| 섹션 top',
+          Math.round(target.getBoundingClientRect().top));
+        /* gap > 0 = 섹션 top 이 고정 바 아래 끝보다 위에 있다 = 가려져 있다.
+           드러내려면 섹션을 화면 아래로 내려야 하고, 그건 스크롤을 그만큼
+           "위로" 올리는 것이다. (+gap 으로 내리면 더 잘린다) */
+        var gap = (topBarsBottom(target) + 8) - target.getBoundingClientRect().top;
+        if (gap > 1 && ++rounds <= 3) {
+          dlog('  가려짐 → 위로', Math.round(gap), 'px 보정');
+          window.scrollTo({ top: window.pageYOffset - gap, behavior: 'auto' });
+          round();
+        } else {
+          dlog('보정 종료. gap', Math.round(gap), '| 최종 섹션 top',
+            Math.round(target.getBoundingClientRect().top));
+          done();
+        }
+      });
+    }
+    round();
+  }
+
   function init() {
     var links = document.querySelectorAll('.subheader_click-area');
     if (!links.length) return false;
@@ -427,12 +572,15 @@
           } catch (e) {}
         })();
 
-        var hEl = document.querySelector('header.header, header, nav');
-        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
-        var sub = document.querySelector('.subheader');
-        var subH = sub ? sub.getBoundingClientRect().height : 0;
-        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
+        /* 마지막 섹션(공간 갤러리 #photo) 은 제목 맞춤 대상에서 제외 —
+           페이지 끝이라 어차피 더 내려갈 여지가 없다. 나머지 섹션은 헤더 +
+           서브헤더 아래에 섹션 top 이 오게 해서 제목/첫 블록부터 보이게 함. */
+        var subH = href === '#photo' ? 0 : subheaderH();
+        dlog('서브헤더 핸들러 실행:', href, '| 헤더', Math.round(headerH()),
+          '| 서브헤더', Math.round(subH), '| 목표', elName(t));
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH() + subH + 12);
         window.scrollTo({ top: y, behavior: 'smooth' });
+        /* 위 값은 어림치. 실제 보정은 아래 전역 위임 핸들러가 도착 후 처리 */
         if (history.replaceState) history.replaceState(null, '', href);
       });
     });
@@ -446,11 +594,8 @@
       requestAnimationFrame(function () {
         ticking = false;
         if (Date.now() - clickedAt < 700) return;
-        var hEl = document.querySelector('header.header, header, nav');
-        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
-        var sub = document.querySelector('.subheader');
-        var subH = sub ? sub.getBoundingClientRect().height : 0;
-        var line = headerH + subH + 16;
+        var subH = subheaderH();
+        var line = headerH() + subH + 16;
         var straddle = null;
         var closest = null;
         var closestDist = Infinity;
@@ -541,6 +686,32 @@
     }, 200);
   }
 
+  /* 페이지 내 앵커 이동은 서브헤더 말고 다른 경로로도 일어난다 (모바일 헤더
+     메뉴 등). 그런 경로는 위 핸들러가 안 걸려 보정 없이 착지해 제목이 헤더에
+     가린다. 그래서 클릭 주체와 무관하게 "도착 후 보정"만 덧붙인다.
+     스크롤 자체는 원래 하던 쪽에 맡기고 preventDefault 하지 않는다.
+     캡처 단계라 다른 핸들러가 전파를 막아도 실행된다. */
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (href.charAt(0) !== '#' || href.length < 2) return;
+    dlog('앵커 클릭:', href, '| 누른 것', elName(a), '| 화면폭', window.innerWidth);
+    if (href === '#photo') { dlog('  #photo 는 제외 대상'); return; }
+    var id = href.slice(1);
+    var list = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+    dlog('  같은 id 요소', list.length, '개');
+    for (var i = 0; i < list.length; i++) {
+      var el = list[i];
+      if (el.offsetParent !== null || el.getClientRects().length > 0) {
+        dlog('  보이는 목표:', elName(el));
+        settleAfterScroll(el);
+        return;
+      }
+    }
+    dlog('  보이는 목표 없음 — 보정 안 함');
+  }, true);
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
   } else {
@@ -570,11 +741,21 @@
       if (rect.top <= 1 && rect.height > maxH) maxH = rect.height;
     }
     if (maxH > 0) document.documentElement.style.setProperty('--header-h', maxH + 'px');
-    var sEl = document.querySelector('section.subheader');
-    if (sEl) {
-      var sh = sEl.getBoundingClientRect().height;
-      if (sh > 0) document.documentElement.style.setProperty('--subheader-h', sh + 'px');
+    /* 서브헤더도 헤더와 같은 듀얼 마크업 — 데스크탑용은 폰에서, 모바일용은
+       그 위 화면에서 숨는다. 한쪽만 재면 폰에서 0 이 잡혀 분과 드롭다운이
+       서브헤더 뒤에 겹쳐 뜬다. 클래스명 변경에 견디도록 .subheader_click-area
+       의 조상 section 으로 찾아 가장 높은(=보이는) 것을 채택. */
+    var subLinks = document.querySelectorAll('.subheader_click-area');
+    var seenSub = [];
+    var maxSh = 0;
+    for (var s = 0; s < subLinks.length; s++) {
+      var sec = subLinks[s].closest('section');
+      if (!sec || seenSub.indexOf(sec) !== -1) continue;
+      seenSub.push(sec);
+      var sh = sec.getBoundingClientRect().height;
+      if (sh > maxSh) maxSh = sh;
     }
+    if (maxSh > 0) document.documentElement.style.setProperty('--subheader-h', maxSh + 'px');
   }
 
   var pollCount = 0;
@@ -635,7 +816,11 @@
         var el = list[i];
         if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
       }
-      return list[0] || null;
+      /* 보이는 것이 없으면 후보에서 제외. 숨겨진 요소(display:none)는 좌표가
+         전부 0 이라, 이걸 "다음 섹션"으로 잡으면 아래 beforeNext 판정이
+         (0 > line) 로 항상 거짓이 되어 미니 분과 헤더가 영영 안 뜬다.
+         듀얼 마크업이라 #vets 는 폰에서, #vets_M 은 데스크탑에서 숨는다. */
+      return null;
     });
     /* origMenu 의 absolute top 기준, 그보다 더 아래에 있는 첫 타깃 = 다음 섹션 */
     var menuTop = origMenu.getBoundingClientRect().top + window.pageYOffset;
