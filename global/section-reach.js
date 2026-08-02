@@ -1,13 +1,18 @@
 /* ================================================================
-   HELIX AMC — 섹션 도달 측정 (GA4 + 구글 시트 병행)
+   HELIX AMC — 섹션 도달 + 체류시간 측정 (GA4 + 구글 시트 병행)
    ================================================================
    "몇 % 스크롤했나"(global/scroll-depth.js) 와 별개로, "페이지의 어느
-   파트까지 실제로 봤나" 를 섹션 단위로 측정한다.
+   파트까지 실제로 봤나(도달)" 와 "그 파트를 몇 초나 보고 있었나(체류)"
+   를 섹션 단위로 측정한다.
 
-   ▸ 이벤트 이름 자체를 섹션별로 분리 (`<page>_sec_<key>`)
+   ① 도달 : `<page>_sec_<key>`   — 섹션 진입 시 1회
+   ② 체류 : `<page>_dwell_<key>` — 페이지를 떠날 때 누적 초 전송
+
+   ▸ 이벤트 이름 자체를 섹션별로 분리
      GA4 맞춤 측정기준(custom dimension) 등록 없이도 이벤트 보고서에서
      바로 섹션별로 갈라져 보이게 하려는 의도. 파라미터로만 구분하면
      등록 + 탐색 리포트 설정이 필요해져 사용자가 바로 확인 못 함.
+     (체류 '초' 값은 GA4 보고서에서 바로 안 보이므로 구글 시트에서 확인)
    ▸ gtag 로 보내므로 global/sheet-log.js 가 자동으로 가로채
      구글 시트에도 같이 쌓인다 (별도 배선 불필요).
 
@@ -128,6 +133,138 @@
     } catch (e) { log('send error', e); }
   }
 
+  /* ================================================================
+     ② 체류시간 — 그 파트를 실제로 몇 초 보고 있었나
+     ================================================================
+     판정: 섹션이 화면의 40% 이상을 덮거나, 섹션 자신의 50% 이상이
+     보이면 "보는 중". 두 조건을 OR 로 둔 이유 — 화면보다 긴 섹션은
+     자신의 50% 가 절대 안 차고, 짧은 섹션은 화면 40% 를 못 채운다.
+
+     자리 비움 제외: 탭을 다른 창으로 돌리거나(document.hidden),
+     60초간 아무 조작이 없으면 타이머를 멈춘다. 안 그러면 창만 띄워두고
+     자리를 뜬 시간이 통째로 체류로 잡혀 데이터가 무의미해진다.
+
+     전송 시점: 페이지를 떠날 때(pagehide). 모바일에선 pagehide 가 안
+     뜨는 경우가 많아 화면 숨김(visibilitychange) 에서도 보내되, 이미
+     보낸 만큼을 뺀 '증가분' 만 보낸다 → 시트에서 그냥 합계 내면 총 체류.
+     ================================================================ */
+  var DWELL_MIN_MS = 1000;   /* 1초 미만은 '지나감' 으로 보고 기록 안 함 */
+  var IDLE_MS      = 60000;  /* 60초간 조작 없으면 자리 비움으로 간주 */
+  var TICK_MS      = 5000;   /* 주기 점검 — 가만히 있어도 자리 비움 감지 */
+
+  /* [{ def, els: [...], total: 누적ms, since: 시작ts|null, sent: 전송한ms }] */
+  var tracked = [];
+  var lastActivity = Date.now();
+  var docHidden = false;
+
+  /* els 중 하나라도 '보는 중' 이면 true (데스크탑/모바일 듀얼 마크업 대응 —
+     숨은 쪽은 rect 높이가 0 이라 자연히 탈락) */
+  function viewing(els) {
+    var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+    if (!vh) return false;
+    for (var i = 0; i < els.length; i++) {
+      var r = els[i].getBoundingClientRect();
+      if (!r.height) continue;
+      var vis = Math.min(vh, r.bottom) - Math.max(0, r.top);
+      if (vis <= 0) continue;
+      if (vis / vh >= 0.4 || vis / r.height >= 0.5) return true;
+    }
+    return false;
+  }
+
+  /* 타이머 상태 재계산. forceOff 면 열린 타이머를 모두 닫는다. */
+  function recompute(forceOff) {
+    var t = Date.now();
+    var idleAt = lastActivity + IDLE_MS;
+    var awake = !docHidden && t < idleAt;
+    /* 자리 비움으로 끊는 경우, '마지막 조작 + 60초' 까지만 체류로 인정 */
+    var endMark = (!docHidden && t >= idleAt) ? Math.min(t, idleAt) : t;
+
+    for (var i = 0; i < tracked.length; i++) {
+      var d = tracked[i];
+      var live = !forceOff && awake && viewing(d.els);
+      if (live) {
+        if (d.since === null) d.since = t;
+      } else if (d.since !== null) {
+        d.total += Math.max(0, endMark - d.since);
+        d.since = null;
+      }
+    }
+  }
+
+  function sendDwell(def, ms) {
+    var name = PAGE + '_dwell_' + def.key;
+    var sec = Math.round(ms / 1000);
+    var params = {
+      item_type: 'section_dwell',
+      page: PAGE,
+      device: device(),
+      section_key: def.key,
+      section_name: def.label,
+      section_index: def.index,
+      dwell_sec: sec,
+      value: sec
+    };
+    try {
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';
+        window.gtag('event', name, params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = name;
+        window.dataLayer.push(params);
+      }
+      log('dwell', name, sec + 's');
+    } catch (e) { log('dwell send error', e); }
+  }
+
+  /* 누적분 중 아직 안 보낸 증가분만 전송 */
+  function flush() {
+    recompute(true);
+    for (var i = 0; i < tracked.length; i++) {
+      var d = tracked[i];
+      var delta = d.total - d.sent;
+      if (delta < DWELL_MIN_MS) continue;
+      d.sent = d.total;
+      sendDwell(d.def, delta);
+    }
+  }
+
+  function initDwell() {
+    if (!tracked.length) return;
+    docHidden = !!document.hidden;
+
+    var ticking = false;
+    function onScroll() {
+      lastActivity = Date.now();
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { ticking = false; recompute(false); });
+    }
+    function bump() { lastActivity = Date.now(); }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    var acts = ['mousemove', 'keydown', 'touchstart', 'click', 'wheel'];
+    for (var i = 0; i < acts.length; i++) {
+      window.addEventListener(acts[i], bump, { passive: true });
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      docHidden = !!document.hidden;
+      if (docHidden) {
+        flush();                    /* 모바일 이탈은 대개 여기서 잡힌다 */
+      } else {
+        lastActivity = Date.now();  /* 돌아왔으면 다시 켜기 */
+        recompute(false);
+      }
+    });
+    window.addEventListener('pagehide', flush);
+
+    setInterval(function () { recompute(false); }, TICK_MS);
+    recompute(false);               /* 첫 화면에 이미 걸쳐 있는 섹션 시작 */
+    log('dwell tracking on for', tracked.length, 'sections');
+  }
+
   function init() {
     /* 섹션 상단이 화면 아래 25% 선을 넘어오는 순간 = "이 파트를 봤다".
        화면에 살짝 걸치기만 한 상태에서 오발사되는 것을 막는 여유값. */
@@ -160,16 +297,23 @@
       /* 듀얼 마크업이면 후보를 모두 관측해두고, 실제로 보이는 쪽이
          먼저 교차할 때 1회만 발사한다(fired 가드로 중복 차단). */
       var observed = 0;
+      var els = [];
       for (var j = 0; j < picked.length; j++) {
         var target = resolve(picked[j]);
         if (!target || target.__helixSecDef) continue;
         target.__helixSecDef = def;
         io.observe(target);
+        els.push(target);
         observed++;
       }
-      if (observed) found++;
+      if (observed) {
+        found++;
+        /* 도달과 같은 요소로 체류도 잰다 (셀렉터 이원화 방지) */
+        tracked.push({ def: def, els: els, total: 0, since: null, sent: 0 });
+      }
     }
     log('page =', PAGE, '| sections observed =', found, '/', DEFS.length);
+    initDwell();
   }
 
   if (document.readyState === 'loading') {
