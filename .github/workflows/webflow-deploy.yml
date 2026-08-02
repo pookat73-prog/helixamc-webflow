@@ -213,6 +213,7 @@ jobs:
             "global/floating-cta.css"
             "global/floating-cta.js"
             "global/scroll-depth.js"
+            "global/section-reach.js"
             "global/popup.css"
             "global/popup.js"
             "home/bootstrap-v3.js"

@@ -90,6 +90,8 @@
     'global/floating-cta.js',
     /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이 25/50/75/100%) */
     'global/scroll-depth.js',
+    /* 전역 GA4 분석 (섹션 도달 — 어느 파트까지 봤나) */
+    'global/section-reach.js',
     /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
     'global/popup.css',
     'global/popup.js',
