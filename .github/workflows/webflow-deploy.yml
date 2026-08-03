@@ -207,6 +207,7 @@ jobs:
           BASE="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${SHA}"
           FILES=(
             "global/ga4-base.js"
+            "global/session.js"
             "global/ga-inspector.js"
             "global/sheet-log.js"
             "global/global.css"

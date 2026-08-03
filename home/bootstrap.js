@@ -120,6 +120,9 @@
        다른 모든 페이지 모듈의 gtag('event', ...) 호출이 안전하게 큐잉되도록
        FILES 배열의 가장 첫 줄에 둠. */
     'global/ga4-base.js',
+    /* 방문 묶음(세션) + 유입 경로 — 모든 이벤트에 자동 부착.
+       ga4-base 가 gtag 를 만든 직후에 감싸야 한다. */
+    'global/session.js',
     /* GA 측정 점검 오버레이 — ?ga-inspect=1 일 때만 동작 (평소 무해).
        ga4-base 바로 다음에 둬 다른 모듈보다 먼저 gtag 가로채기 설치. */
     'global/ga-inspector.js',
