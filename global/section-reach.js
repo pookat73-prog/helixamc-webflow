@@ -44,6 +44,9 @@
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
+    /* 응급증상은 슬러그가 /symptoms — scroll-depth.js 와 동일 판정 유지 */
+    if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
+        document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
