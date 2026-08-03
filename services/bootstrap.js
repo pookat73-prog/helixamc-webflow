@@ -23,6 +23,19 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* ── 측정 (다른 페이지와 동일 구성) ──────────────────────────
+       이 페이지는 그동안 측정 파일이 하나도 없어 방문·스크롤·클릭이
+       통째로 기록되지 않았다. ga4-base 가 gtag 를 만들고, session 이
+       방문 묶음·유입 경로를 붙이고, sheet-log 가 구글 시트로 복사한다.
+       순서 중요 — ga4-base 가 가장 먼저. */
+    'global/ga4-base.js',
+    'global/session.js',
+    'global/sheet-log.js',
+    'global/ga-inspector.js',
+    'global/scroll-depth.js',
+    'global/section-reach.js',
+    /* 진료과 카드 클릭(어느 과에 관심 있는지) — 이 페이지 전용 */
+    'services/services-ga.js',
     /* 전역 스타일 + 헤더/햄버거/상단버튼 — 기존 globalBootstrap 이 로드하던 것 */
     'global/global.css',
     'home/global/hamburger.css',

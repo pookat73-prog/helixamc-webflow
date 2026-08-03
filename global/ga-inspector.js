@@ -45,6 +45,10 @@
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
+    /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
+       (응급증상이 겪었던 것과 같은 문제). */
+    if (/(^|\/)services(\/|$)/.test(p) ||
+        document.querySelector('[class*="dept-card_"]')) return 'services';
     /* 응급증상은 슬러그가 /symptoms — 다른 측정 모듈과 동일 판정으로 통일 */
     if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
         document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';

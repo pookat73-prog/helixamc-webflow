@@ -44,6 +44,10 @@
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
+    /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
+       (응급증상이 겪었던 것과 같은 문제). */
+    if (/(^|\/)services(\/|$)/.test(p) ||
+        document.querySelector('[class*="dept-card_"]')) return 'services';
     /* 응급증상은 슬러그가 /symptoms — scroll-depth.js 와 동일 판정 유지 */
     if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
         document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
@@ -82,6 +86,15 @@
       { key: 'history',   label: '연혁',          sel: '#helix-history' },
       { key: 'family',    label: '보호자',        sel: '#helix-for-family' },
       { key: 'cert',      label: '인증',          sel: '#cert' }
+    ],
+    /* 진료과목 — 페이지 본문이 진료과 카드 5장이라, 카드 자체를 섹션으로 본다.
+       (클래스는 dept-border.js / dept-nav.js 가 쓰는 것과 동일) */
+    services: [
+      { key: 'im', label: '내과',       sel: '.dept-card_im' },
+      { key: 'sg', label: '외과',       sel: '.dept-card_sg' },
+      { key: 'di', label: '영상의학과', sel: '.dept-card_di' },
+      { key: 'oc', label: '안과',       sel: '.dept-card_oc' },
+      { key: 'dt', label: '치과',       sel: '.dept-card_dt' }
     ],
     seocho: [
       { key: 'hero',  label: '첫화면',   sel: 'section[class*="intro_backgra"]' },

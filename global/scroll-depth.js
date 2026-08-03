@@ -35,6 +35,10 @@
        about DOM 마커(.about-heading 등)를 가질 수 있다. DOM 마커보다 경로를
        먼저 가려야 디스커버 트래픽이 about 으로 섞이지 않는다. */
     if (/discover/.test(p)) return 'discover';
+    /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
+       (응급증상이 겪었던 것과 같은 문제). */
+    if (/(^|\/)services(\/|$)/.test(p) ||
+        document.querySelector('[class*="dept-card_"]')) return 'services';
     /* 응급증상 페이지 — 실제 슬러그가 /symptoms 라서 'emergency' 라는 글자를
        찾는 방식으로는 못 잡는다. 이걸 빠뜨려 응급 방문이 전부 home 으로
        집계되고 있었다(홈은 부풀고 응급은 0으로 보임).
