@@ -76,18 +76,14 @@ html.helix-cert-modal-open body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* yiryojin 섹션은 모달 크기 (max 960×540) 안에 맞도록 px 단위로 디자인된 전제.
-   안전망: 외부 마진/최대 너비 제한만 제거하고, 나머지 스타일은 그대로 살림. */
+/* 상세 섹션(.cert-modal-frame)은 이미 모달 크기(960×540)에 맞춰 디자인돼 있다.
+   그래서 여기서는 페이지 문맥에서 오던 바깥 여백만 걷어내고, 안쪽 배치는
+   Webflow 가 그리는 그대로 둔다 — 높이를 늘리거나 요소 위치를 옮기지 않는다.
+   (예전에는 섹션을 카드 높이에 맞춰 늘리고 마지막 묶음을 바닥에 붙였는데,
+   그러면 디자이너 화면과 위아래 간격이 달라진다.) */
 .helix-cert-modal__slide > section {
   margin: 0 !important;
   max-width: 100% !important;
-  /* 카드가 디자인보다 큰 뷰포트에선 height 540px 고정 섹션이 카드보다
-     짧아 밑에 검은 공간 발생. 섹션을 카드 가득 채우고, 마지막 자식
-     (divider+logo) 만 바닥으로 고정. 위쪽 컨텐츠는 그대로 위에 쌓임. */
-  height: 100% !important;
-}
-.helix-cert-modal__slide > section > :last-child {
-  margin-top: auto !important;
 }
 
 .helix-cert-modal__close {
@@ -198,39 +194,6 @@ html.helix-cert-modal-open body {
 }
 .helix-cert-modal.is-force-visible .helix-cert-modal__dot.is-active {
   background: #0075d6;
-}
-
-/* ================================================================
-   인증 배지 이미지 폭 상한 — 가로로 긴 배지가 옆 칸을 밀어내는 것 방지
-
-   배지 칸(.div-block-81)은 높이만 200px 로 고정돼 있고 이미지 쪽에는
-   폭 제한이 없다(.cert_shedow 가 max-width:none). 그래서 원본이 세로로
-   긴 AAHA(300×375 → 160×200) 와 정사각인 VECCS(1575×1575 → 200×200) 는
-   자리를 얌전히 차지하는데, 원본이 가로로 긴 고양이 인증 CFC
-   (1311×697) 만 높이 200px 에 맞추다 보니 폭이 376px 까지 벌어진다.
-
-   옆의 빨간 설명 상자(.div-block-79-copy)는 34vw 고정폭이라, 둘을 합친
-   가로줄이 카드 안쪽 폭을 넘긴다. 그 줄은 가운데 정렬(.aaha-box 의
-   justify-content:center)이라 좌우로 대칭으로 삐져나가고, 왼쪽은 배지가
-   여백을 뚫고 나오고 오른쪽은 빨간 상자가 카드 밖으로 잘려 나갔다.
-
-   폭 상한을 200px(= 정사각 VECCS 배지와 같은 폭)로 두면 가로로 긴
-   배지도 다른 인증과 똑같은 자리만 차지하고, 높이는 auto 라 원본 비율
-   그대로 유지된다. AAHA(160px) / VECCS(200px) 는 이미 상한 이하여서
-   렌더 결과가 전혀 바뀌지 않음.
-
-   ⚠️ height 를 고정하고 폭만 줄이면 안 됨 — 그러면 이미지가 가로로
-   눌려 비율이 깨진다. 반드시 height:auto + max-height 로 걸 것. */
-.helix-cert-modal__slide img.cert_shedow {
-  max-width: 200px !important;
-  max-height: 100% !important;
-  width: auto !important;
-  height: auto !important;
-}
-/* 폭 상한에 걸린 배지는 200px 칸 안에서 세로로 여백이 남는다 → 가운데로.
-   (AAHA·VECCS 는 칸 높이를 꽉 채우므로 영향 없음) */
-.helix-cert-modal__slide .div-block-81 {
-  align-items: center;
 }
 
 /* ≤991px — 카드가 디자인 폭(960px)보다 좁아지는 구간(태블릿 + 모바일).
