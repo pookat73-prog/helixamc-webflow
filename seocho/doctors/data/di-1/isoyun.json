@@ -5,6 +5,35 @@
   "order": 1,
   "photo": "https://cdn.prod.website-files.com/6a0ebfa8ab876d4fea0840ca/6a13b94723be8647e9cdeb2e_%EC%9D%B4%EC%86%8C%EC%9C%A4.jpg",
   "education": [
-    "건국대학교 수의영상진단과학 석사 졸업"
+    "건국대학교 수의과대학 수의영상진단과학 석사 졸업",
+    "건국대학교 수의학과 학사 졸업"
+  ],
+  "career": [
+    "현) 서울동물영상종양센터 원장",
+    "헬릭스동물메디컬센터 행신점 영상과장, 서초점 영상부장 근무",
+    "건국대학교 수의과대학 부속동물병원 영상진단과 인턴, 레지던트"
+  ],
+  "activities": [
+    "2012 한국수의영상의학회 (Korea Society of Veterinary Medical Imaging) 구두 발표 — \"Correlations among ISACHC classification, VHS and ARS in dogs with chronic mitral valvular disease\"",
+    "2011 세계소동물수의사회 학술대회 (WSAVA Congress in Jeju) 참석",
+    "2011–2012 한국수의영상의학연구회 (KSVMI) 학술대회 참석",
+    "2012, 2013, 2015 서울시수의사회 컨퍼런스 (Seoul Veterinary Conference) 참석",
+    "2012, 2013 한국동물병원협회 (KAHA Congress) 참석",
+    "2012, 2013 한국임상수의학회 컨퍼런스 참석"
+  ],
+  "lectures": [
+    "2013, 2014 건국대학교 수의영상진단학 동문회 — MRI 강의",
+    "2014 재경 충남대학교 동문회 영상진단학 강의 — 신경계 증상으로 내원한 환자의 MRI 검사를 통한 진단",
+    "2014 고양시 수의사회 세미나 — 영상진단학 강의 (CT와 MRI의 임상활용증례)",
+    "2015 헬릭스동물메디컬센터 주최 세미나 — 영상진단학 강의",
+    "2016 화성시 수의사회 세미나 — MRI 강의 (Diagnosis of canine neurological disease)",
+    "2019 헬릭스컨퍼런스 — CT & US guided trucut biopsy를 통한 진단 증례",
+    "2020 서울시수의사회 임상 컨퍼런스 강의 — 방사선 치료에 한걸음 다가가기",
+    "2022 서울시수의사회 연수교육 — 방사선 치료에 대한 개론 및 증례보고",
+    "2023 서울수의임상컨퍼런스 강의 — \"SVICC 방사선 치료 증례보고\" (since 2019.9~)"
+  ],
+  "publications": [
+    "CT (Computed Tomography)와 MRI (Magnetic Resonance Imaging)의 수의임상에서의 활용방안 — Journal of Korea Veterinary Medical Association, 2013",
+    "2024.01–2024.12 VETIS — \"What is your diagnosis?\" 증례 게재"
   ]
 }
