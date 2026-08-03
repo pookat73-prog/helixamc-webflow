@@ -327,6 +327,148 @@
     });
   }
 
+  /* ----------------------------------------------------------------
+     휴대폰 — 옆으로 나란히 붙은 채 남은 묶음만 세로로 세우기
+     ----------------------------------------------------------------
+     상세 페이지의 좁은 화면 규칙은 본문 묶음까지만 만들어져 있고, 표지
+     (인증마크 + 제목·설명)는 가로 배치 그대로다. 그래서 휴대폰에서 둘이
+     나란히 붙어 글 칸이 손가락만큼 좁아지고 글줄이 몇 글자마다 끊긴다.
+
+     이미 세로로 서 있는 묶음(푸터 등)이나 글이 충분히 넓게 나오는 묶음은
+     건드리지 않는다 — 좁은 화면 규칙이 제대로 켜진 장을 망가뜨리지 않도록,
+     "글 칸이 실제로 좁을 때" 만 세운다. */
+  var MOBILE_MIN_TEXT_RATIO = 0.55;   /* 글 칸이 이보다 좁으면 세로로 */
+  var MOBILE_MIN_FONT = 13;           /* 이보다 작은 글자는 끌어올림 (px) */
+
+  /* 덩이 사이 간격 — 상세 페이지는 간격도 화면폭 비례(1.3vw 등)로 잡혀 있어
+     휴대폰에선 5px 밖에 안 된다(같은 값이 PC 에선 19px). 원래 비율
+     (제목↔본문은 좁게, 덩이끼리는 넓게)은 지키면서 배로 늘린다. */
+  var MOBILE_GAP_SCALE = 2.2;
+  var MOBILE_MIN_GAP = 6;
+  var MOBILE_MAX_GAP = 44;
+
+  function fitMobileSection(sec, win) {
+    if (!sec || sec.getAttribute('data-helix-mobile-fit') === '1') return;
+    var W = win || window;
+    var inner = sec.clientWidth;
+    if (!inner) return;
+    sec.setAttribute('data-helix-mobile-fit', '1');
+
+    Array.prototype.forEach.call(sec.querySelectorAll('*'), function (el) {
+      var cs;
+      try { cs = W.getComputedStyle(el); } catch (_) { return; }
+      if (!cs || cs.display === 'none') return;
+
+      /* 좌우 여백이 화면 대비 과하면 줄인다. 좁은 단으로 만들려고 넣어둔
+         큰 여백(16vw 짜리도 있다)이 휴대폰에선 글 칸을 절반으로 깎는다. */
+      var pl = parseFloat(cs.paddingLeft) || 0;
+      var pr = parseFloat(cs.paddingRight) || 0;
+      if (pl + pr > inner * 0.18) {
+        var side = Math.round(inner * 0.04);
+        el.style.setProperty('padding-left', side + 'px', 'important');
+        el.style.setProperty('padding-right', side + 'px', 'important');
+      }
+
+      var kids = elementChildren(el);
+      if (kids.length < 2) return;
+
+      /* 세로로 쌓인 덩이 사이 간격 벌리기 */
+      var isCol = (cs.display === 'flex' || cs.display === 'inline-flex') &&
+                  (cs.flexDirection || 'row').indexOf('column') === 0;
+      if (isCol || cs.display === 'grid' || cs.display === 'inline-grid') {
+        var gap = parseFloat(cs.rowGap) || 0;
+        var want = Math.min(Math.max(gap * MOBILE_GAP_SCALE, MOBILE_MIN_GAP), MOBILE_MAX_GAP);
+        if (want > gap) el.style.setProperty('row-gap', Math.round(want) + 'px', 'important');
+      }
+
+      var isRow = (cs.display === 'flex' || cs.display === 'inline-flex') &&
+                  (cs.flexDirection || 'row').indexOf('row') === 0;
+      var cols = 0;
+      if (cs.display === 'grid' || cs.display === 'inline-grid') {
+        cols = (cs.gridTemplateColumns || '').trim().split(/\s+/).length;
+      }
+      if (!isRow && cols < 2) return;
+
+      var cramped = kids.some(function (k) {
+        if (!hasOwnText(k)) return false;
+        var w = 0;
+        try { w = k.getBoundingClientRect().width; } catch (_) {}
+        return w > 0 && w < inner * MOBILE_MIN_TEXT_RATIO;
+      });
+      if (!cramped) return;
+
+      if (cols >= 2) {
+        el.style.setProperty('grid-template-columns', '1fr', 'important');
+        el.style.setProperty('grid-auto-flow', 'row', 'important');
+      } else {
+        el.style.setProperty('flex-direction', 'column', 'important');
+        el.style.setProperty('align-items', 'stretch', 'important');
+      }
+      /* 세우고 나면 좌우로 벌어져 있던 간격이 위아래 간격이 된다 — 이것도
+         화면폭 비례라 휴대폰에선 좁으므로 같이 늘린다. */
+      var rowGap = parseFloat(cs.rowGap) || 0;
+      el.style.setProperty(
+        'row-gap',
+        Math.round(Math.min(Math.max(rowGap * MOBILE_GAP_SCALE, MOBILE_MIN_GAP), MOBILE_MAX_GAP)) + 'px',
+        'important'
+      );
+      kids.forEach(function (k) {
+        k.style.setProperty('width', 'auto', 'important');
+        k.style.setProperty('max-width', '100%', 'important');
+      });
+    });
+
+    /* 못 읽을 만큼 작은 글자 끌어올리기 — 안전장치.
+       위 CSS 는 이름을 아는 것들만 손보므로, 인증 페이지마다 다른 이름을
+       쓰는 요소가 남아 있을 수 있다. 실제로 잰 글자 크기가 기준보다 작을
+       때만 올리고, 줄 간격도 원래 비율대로 따라 올린다. */
+    Array.prototype.forEach.call(sec.querySelectorAll('*'), function (el) {
+      if (!hasOwnText(el)) return;
+      var hasTextChild = elementChildren(el).some(hasOwnText);
+      if (hasTextChild) return;             /* 글이 실제로 놓인 말단만 */
+
+      var cs;
+      try { cs = W.getComputedStyle(el); } catch (_) { return; }
+      if (!cs || cs.display === 'none') return;
+
+      var fs = parseFloat(cs.fontSize);
+      if (!(fs > 0) || fs >= MOBILE_MIN_FONT) return;
+
+      var lh = parseFloat(cs.lineHeight);
+      var ratio = lh > 0 ? lh / fs : 0;
+      if (!(ratio > 1.05)) ratio = 1.4;     /* 줄 간격이 글자보다 좁게 잡힌 경우 */
+      el.style.setProperty('font-size', MOBILE_MIN_FONT + 'px', 'important');
+      el.style.setProperty('line-height', Math.round(MOBILE_MIN_FONT * ratio) + 'px', 'important');
+    });
+
+    /* 세로로 세우고 나면 이미지가 폭을 넘길 수 있다 (표지 인증마크는 폭
+       제한이 풀려 있어 가로로 삐져나간다). 실제로 넘칠 때만 제한한다 —
+       무조건 걸면 %로 작게 잡아둔 푸터 로고까지 화면 가득 커진다. */
+    Array.prototype.forEach.call(sec.querySelectorAll('img'), function (im) {
+      var parent = im.parentElement;
+      var limit = parent ? parent.clientWidth : inner;
+      var r;
+      try { r = im.getBoundingClientRect(); } catch (_) { return; }
+      if (!r || !(r.width > 0)) return;
+      if (!(limit > 0) || r.width <= limit + 1) return;   /* 안 넘치면 그대로 */
+
+      /* 칸에 높이가 정해져 있으면(표지 인증마크 칸은 200px) 그 높이를
+         지키며 줄인다. 폭에 맞춰 늘리면 마크 하나가 화면을 가득 채운다. */
+      var ph = 0;
+      try { ph = parseFloat(W.getComputedStyle(parent).height) || 0; } catch (_) {}
+      if (ph > 0 && r.height > ph + 1) {
+        im.style.setProperty('max-height', '100%', 'important');
+        im.style.setProperty('width', 'auto', 'important');
+        im.style.setProperty('max-width', '100%', 'important');
+        im.style.setProperty('margin-left', 'auto', 'important');
+        im.style.setProperty('margin-right', 'auto', 'important');
+        return;
+      }
+      im.style.setProperty('max-width', '100%', 'important');
+      im.style.setProperty('height', 'auto', 'important');
+    });
+  }
+
   function reflowAllSlides() {
     /* 틀(iframe) 모드에서는 상세 페이지가 자기 화면을 스스로 켜므로
        이 추측 배치가 필요 없다 — 대비책으로 섹션을 직접 심었을 때만. */
@@ -537,12 +679,14 @@
          PC 는 flex — 클래스가 세로 정렬·여백을 flex 기준으로 잡아두었기 때문.
          휴대폰은 block — 상세 페이지의 휴대폰 화면이 block 기준으로 짜여 있어
          flex 로 켜면 안쪽 묶음이 디자이너 화면과 다르게 눌린다. */
-      sec.style.setProperty(
-        'display',
-        i === idx ? (isMobileFrame ? 'block' : 'flex') : 'none',
-        'important'
-      );
+      sec.style.setProperty('display', i === idx ? 'flex' : 'none', 'important');
     });
+
+    /* 보이는 장만 정리한다 — 숨은 장은 크기를 잴 수 없어(폭 0) 좁은지
+       넓은지 판단이 안 된다. 장마다 한 번씩만 돈다. */
+    if (isMobileFrame && iframeEl) {
+      fitMobileSection(iframeSections[idx], iframeEl.contentWindow);
+    }
     layoutIframe();
   }
 
@@ -557,6 +701,25 @@
     if (isMobileFrame && syncMobileFrameWidth(card)) {
       requestAnimationFrame(layoutIframe);
       return;
+    }
+
+    /* 휴대폰 — 내용이 화면보다 짧아도 상세 화면이 카드를 채우게 한다.
+       안 그러면 아래쪽이 텅 빈 채로 남고, 바닥에 붙어야 할 구분선·로고가
+       화면 한가운데 떠 있는 것처럼 보인다 (상세 화면은 위 내용과 바닥
+       묶음을 위아래로 벌려 놓는 구조라, 높이가 있어야 그렇게 잡힌다). */
+    if (isMobileFrame) {
+      var frameW = parseFloat(iframeEl.style.width) || card.clientWidth;
+      var s0 = Math.min(card.clientWidth / frameW, MOBILE_MAX_SCALE);
+      var slideEl = iframeEl.closest('.helix-cert-modal__slide');
+      var avail = card.clientHeight;
+      if (slideEl) {
+        var scs = window.getComputedStyle(slideEl);
+        avail = slideEl.clientHeight -
+          (parseFloat(scs.paddingTop) || 0) - (parseFloat(scs.paddingBottom) || 0);
+      }
+      if (avail > 0 && s0 > 0) {
+        sec.style.setProperty('min-height', Math.floor(avail / s0) + 'px', 'important');
+      }
     }
 
     var rect = sec.getBoundingClientRect();   /* 틀 안에서의 프레임 위치·크기 */
@@ -645,7 +808,28 @@
           'width:100%!important;max-width:100%!important}' +
           /* 넘치는 이미지만 가로 폭 안으로. !important 를 쓰지 않아, 원래
              %로 작게 잡아둔 로고(.image-31 max-width:19%)는 그대로 둔다. */
-          'img{max-width:100%}';
+          /* object-fit — 세로로 세우면서 그림 칸이 넓어지면 그림이 칸을
+             채우려 옆으로 늘어난다(인증마크가 찌그러짐). 칸 크기는 그대로
+             두고 그림만 원래 비율로 안에 맞춘다. */
+          'img{max-width:100%;object-fit:contain}' +
+
+          /* 좁은 화면용 값이 따로 없어 휴대폰에서만 유독 작아지는 것들.
+             PC 는 크기 기준이 창 너비(1440)인데 보이는 틀은 960 이라 글자가
+             1.5배 크게 잡히는 반면, 휴대폰은 그 둘이 같아 그만큼 작아진다.
+               - 파란 영문 제목(Why? / How? / What?) 3.3vw → 5.6vw
+               - 표지 빨간 약칭·영문 이름
+               - 구분선 아래 병원 로고 19% → 40% */
+          '.writing-english-copy-l{font-size:5.6vw!important;line-height:1.15!important}' +
+          '.text-block-25{font-size:4.4vw!important;line-height:1.25!important}' +
+          '.text-block-25-copy-copy{font-size:3.1vw!important;line-height:1.35!important}' +
+          '.image-31{max-width:40%!important}' +
+
+          /* PC 는 정해진 높이(540px)에 내용이 꽉 차서 위아래로 고르게 벌려
+             놓는 것이 자연스럽지만, 세로로 긴 휴대폰 화면에서는 같은 방식이
+             내용을 띄엄띄엄 흩어놓는다. 내용은 위에서부터 쌓고, 구분선·로고만
+             바닥에 붙인다. */
+          'section.cert-modal-frame > *{justify-content:flex-start!important}' +
+          'section.cert-modal-frame > * > :last-child{margin-top:auto!important}';
       } else {
         css += 'html,body{overflow:hidden!important}';
       }
