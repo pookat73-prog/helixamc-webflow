@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v2.1)
+   About 인증 카드 "+" 상세보기 모달 (v2.2)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -84,6 +84,11 @@
    재는 기준을 바꿔야 하고, 그게 iframe 이다 — 틀 너비를 1440px 로 못 박아
    누가 어떤 창에서 보든 같은 그림이 나오게 한다. openWithFixedFrame 참고.
    휴대폰은 예전 방식(섹션 직접 심기 + 세로 1단) 그대로.
+
+   v2.2 — 틀 안에서 영문 제목 글꼴이 기본 글꼴로 나오던 문제. Adobe(Typekit)
+   글꼴은 스크립트가 실행되면서 글꼴 규칙을 문서에 넣어주는 방식인데, 틀 안에서는
+   스크립트를 일부러 안 돌리기 때문. 스크립트는 계속 막아둔 채, 바깥 페이지에 이미
+   들어와 있는 글꼴 규칙만 골라 틀 안으로 복사한다 (copyFontRules).
    ================================================================ */
 
 (function () {
@@ -401,6 +406,37 @@
      1440px 짜리 화면을 손바닥만 하게 줄이는 꼴이라 글씨를 읽을 수 없다. */
   var DESIGN_WIDTH = 1440;   /* 상세 페이지가 디자인된 기준 창 너비 */
 
+  /* 틀 안 글꼴 살리기.
+     영문 제목에 쓰는 Adobe(Typekit) 글꼴은 <script> 가 실행되면서 글꼴 규칙을
+     문서에 넣어주는 방식이다. 그런데 틀 안에서는 스크립트를 일부러 안 돌리므로
+     (측정 중복·인터랙션 숨김 차단), 그대로 두면 영문 제목이 기본 글꼴로 나온다.
+
+     글꼴 규칙은 문서마다 따로 필요하지만, 바깥 페이지에는 이미 그 규칙이 들어와
+     있다. 그 중 글꼴 관련 것만 골라 틀 안으로 복사한다 — 스크립트는 여전히 안
+     돌리고, 글꼴 파일은 이미 받아둔 것이라 새로 받지도 않는다.
+
+     ⚠️ 바깥 스타일을 통째로 복사하면 안 된다 — 소개 페이지용 규칙이 틀 안
+     요소에 걸려 배치가 틀어진다. 반드시 글꼴 것만. */
+  function copyFontRules(idoc) {
+    var head = idoc.head || idoc.body;
+    if (!head) return;
+    var picks = [];
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll('link[rel="stylesheet"]'),
+      function (l) {
+        if (/typekit|fonts\.googleapis|fonts\.gstatic/i.test(l.href || '')) picks.push(l);
+      }
+    );
+    Array.prototype.forEach.call(document.querySelectorAll('style'), function (el) {
+      if (/@font-face/i.test(el.textContent || '')) picks.push(el);
+    });
+
+    picks.forEach(function (node) {
+      try { head.appendChild(idoc.importNode(node, true)); } catch (_) {}
+    });
+  }
+
   function showIframeSection(idx) {
     if (!iframeSections.length) return;
     iframeSections.forEach(function (sec, i) {
@@ -463,6 +499,7 @@
         'html,body{margin:0!important;padding:0!important;overflow:hidden!important}' +
         'body > *{display:none!important}';
       (idoc.head || idoc.body).appendChild(st);
+      copyFontRules(idoc);
 
       iframeSections = Array.prototype.slice.call(
         idoc.querySelectorAll('section.cert-modal-frame')
