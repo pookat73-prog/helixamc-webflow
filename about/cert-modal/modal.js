@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.11)
+   About 인증 카드 "+" 상세보기 모달 (v2.1)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -75,6 +75,15 @@
    뺀다. 이제 PC 에서는 바깥 여백만 걷고 안쪽은 Webflow 가 그리는 그대로다.
    휴대폰(≤767px)·태블릿(≤991px) 재배치는 그대로 유지 — 카드가 디자인 폭
    960px 보다 좁아지는 구간이라 그대로 두면 내용이 잘린다.
+
+   v2.1 — PC·태블릿에서 상세 페이지를 "고정 폭 틀"(iframe) 안에서 그린다.
+   프레임(960×540)은 어느 창에서 보든 같은데 그 안 크기가 vw(창 너비 기준)라
+   글자·상자만 창을 따라 변했다 — 넓은 창에서 내용이 프레임에 안 맞아 짜부돼
+   보이고, 개발자도구로 폭을 고정하면 멀쩡해 보이던 것이 같은 이유다.
+   확대·축소로는 못 고친다(통째로 줄여도 안쪽 비율은 그대로). 브라우저가 vw 를
+   재는 기준을 바꿔야 하고, 그게 iframe 이다 — 틀 너비를 1440px 로 못 박아
+   누가 어떤 창에서 보든 같은 그림이 나오게 한다. openWithFixedFrame 참고.
+   휴대폰은 예전 방식(섹션 직접 심기 + 세로 1단) 그대로.
    ================================================================ */
 
 (function () {
@@ -113,6 +122,8 @@
   var currentIdx = 0;
   var currentCount = 0;
   var currentSlug = null;
+  var iframeEl = null;        /* 고정 폭 틀 (PC·태블릿) — 없으면 섹션 직접 심기 모드 */
+  var iframeSections = [];    /* 그 틀 안의 상세 섹션들 */
 
   var MOBILE_MAX = 767;
   function isMobileView() { return window.innerWidth <= MOBILE_MAX; }
@@ -325,6 +336,7 @@
         var nowMobile = isMobileView();
         if (nowMobile === wasMobile) {
           reflowAllSlides();
+          layoutIframe();   /* 카드 폭이 바뀌면 틀 축소 비율도 다시 */
           return;
         }
         wasMobile = nowMobile;
@@ -362,6 +374,129 @@
       });
   }
 
+  /* ----------------------------------------------------------------
+     PC·태블릿 — 상세 페이지를 "고정 폭 틀" 안에서 그린다
+     ----------------------------------------------------------------
+     상세 페이지는 크기가 vw(브라우저 창 너비 기준)로 짜여 있다 — 설명 상자
+     34vw, 약칭 제목 1.58vw, 표지 제목 1.6vw. 그래서 프레임(960×540)은 어느
+     창에서 보든 960×540 인데 그 안의 글자·상자만 창 너비를 따라 커졌다 작아진다.
+     보는 사람 창 크기마다 다른 그림이 나오고, 창이 넓으면 내용이 프레임에
+     안 맞아 짜부돼 보인다. 개발자도구에서 폭을 고정해 보면 멀쩡했던 이유다.
+
+     확대·축소로는 못 고친다 — 통째로 줄여도 안쪽 비율은 그대로다. 브라우저가
+     vw 를 계산하는 기준 자체를 바꿔야 하고, 그 방법이 iframe 이다. iframe 안에서
+     vw 는 그 틀의 너비 기준으로 잡히므로, 틀 너비를 DESIGN_WIDTH 로 못 박으면
+     누가 어떤 창에서 보든 항상 같은 그림이 나온다.
+
+     틀은 DESIGN_WIDTH 로 넓게 두고, 그중 프레임(960×540)이 놓인 자리만 잘라
+     카드에 보여준다. 카드가 960 보다 좁아지는 창에서는 그 비율만큼 통째로
+     줄인다 — 이때는 안쪽 비율이 이미 고정돼 있으므로 그냥 작아지기만 한다.
+
+     ⚠️ sandbox="allow-same-origin" (allow-scripts 없음) — 틀 안 페이지의
+     스크립트를 아예 실행하지 않는다. 방문 측정이 중복으로 잡히는 것도,
+     Webflow 인터랙션이 요소를 숨겨놓는 것도 함께 막힌다. 우리 쪽에서
+     문서를 읽고 손보는 것은 same-origin 이라 그대로 된다.
+
+     휴대폰(≤767px)은 예전처럼 섹션을 직접 심는 방식 — 여기서 이 틀을 쓰면
+     1440px 짜리 화면을 손바닥만 하게 줄이는 꼴이라 글씨를 읽을 수 없다. */
+  var DESIGN_WIDTH = 1440;   /* 상세 페이지가 디자인된 기준 창 너비 */
+
+  function showIframeSection(idx) {
+    if (!iframeSections.length) return;
+    iframeSections.forEach(function (sec, i) {
+      /* .cert-modal-frame 은 클래스 자체가 display:none 이라(페이지에 노출
+         안 되는 자료용 페이지) 보여줄 때는 flex 로 켜준다 — 클래스가 세로
+         정렬·여백을 flex 기준으로 잡아두었기 때문. */
+      sec.style.setProperty('display', i === idx ? 'flex' : 'none', 'important');
+    });
+    layoutIframe();
+  }
+
+  function layoutIframe() {
+    if (!iframeEl || !overlay) return;
+    var card = overlay.querySelector('.helix-cert-modal__card');
+    var sec = iframeSections[currentIdx];
+    if (!card || !sec) return;
+
+    var rect = sec.getBoundingClientRect();   /* 틀 안에서의 프레임 위치·크기 */
+    if (!rect.width) return;
+
+    /* 틀 높이를 프레임에 맞춰 — 남는 아래쪽이 스크롤을 만들지 않도록 */
+    iframeEl.style.height = Math.ceil(rect.top + rect.height) + 'px';
+
+    /* 프레임의 왼쪽 위 모서리를 카드의 왼쪽 위에 맞추고, 카드 폭에 맞춰 축소.
+       translate 를 scale 뒤에 두면 이동량도 함께 축소돼 좌표가 맞는다. */
+    var scale = card.clientWidth / rect.width;
+    iframeEl.style.transformOrigin = 'top left';
+    iframeEl.style.transform =
+      'scale(' + scale + ') translate(' + (-rect.left) + 'px, ' + (-rect.top) + 'px)';
+  }
+
+  function openWithFixedFrame(slug) {
+    track.innerHTML = '';
+    track.style.transform = 'translateX(0)';
+
+    var slide = document.createElement('div');
+    slide.className = 'helix-cert-modal__slide is-fixed-frame';
+
+    var f = document.createElement('iframe');
+    f.className = 'helix-cert-modal__frame';
+    f.title = '인증 상세';
+    f.setAttribute('scrolling', 'no');
+    f.setAttribute('sandbox', 'allow-same-origin');
+    f.style.width = DESIGN_WIDTH + 'px';
+    f.style.height = '540px';
+
+    slide.appendChild(f);
+    track.appendChild(slide);
+    iframeEl = f;
+    iframeSections = [];
+
+    f.addEventListener('load', function () {
+      var idoc = null;
+      try { idoc = f.contentDocument; } catch (_) {}
+      if (!idoc || !idoc.body) { openWithSections(slug); return; }
+
+      /* 페이지 문맥(바깥 여백·스크롤·다른 요소)을 걷고 상세 섹션만 남긴다 */
+      var st = idoc.createElement('style');
+      st.textContent =
+        'html,body{margin:0!important;padding:0!important;overflow:hidden!important}' +
+        'body > *{display:none!important}';
+      (idoc.head || idoc.body).appendChild(st);
+
+      iframeSections = Array.prototype.slice.call(
+        idoc.querySelectorAll('section.cert-modal-frame')
+      ).filter(function (sec) {
+        /* Designer 에서 눈 아이콘으로 끈 섹션은 제외 — Webflow 가 인라인
+           style="display:none" 으로 내보낸다 (cat-cert 4번째 섹션) */
+        return !/display\s*:\s*none/i.test(sec.getAttribute('style') || '');
+      });
+
+      if (!iframeSections.length) { openWithSections(slug); return; }
+
+      /* 섹션이 body 바로 아래가 아니면 그 조상들도 되살려야 보인다 */
+      iframeSections.forEach(function (sec) {
+        var p = sec.parentElement;
+        while (p && p !== idoc.body) {
+          p.style.setProperty('display', 'block', 'important');
+          p = p.parentElement;
+        }
+      });
+
+      currentCount = iframeSections.length;
+      buildDots(currentCount);
+      go(0, true);
+
+      /* 글꼴이 늦게 도착하면 글줄 높이가 바뀐다 — 그 뒤 한 번 더 맞춤 */
+      if (idoc.fonts && idoc.fonts.ready) {
+        idoc.fonts.ready.then(layoutIframe).catch(function () {});
+      }
+    });
+
+    f.addEventListener('error', function () { openWithSections(slug); });
+    f.src = slug;
+  }
+
   function open(slug) {
     if (!overlay) buildOverlay();
     currentSlug = slug;
@@ -385,6 +520,20 @@
     dotsEl.innerHTML = '';
     prevBtn.disabled = true;
     nextBtn.disabled = true;
+
+    iframeEl = null;
+    iframeSections = [];
+
+    /* PC·태블릿은 고정 폭 틀 안에서 그린다 (창 너비에 따라 안쪽이 변하지
+       않도록). 휴대폰은 세로 1단 재배치가 필요해 섹션을 직접 심는다. */
+    if (!isMobileView()) { openWithFixedFrame(slug); return; }
+    openWithSections(slug);
+  }
+
+  function openWithSections(slug) {
+    iframeEl = null;
+    iframeSections = [];
+    track.innerHTML = '<div class="helix-cert-modal__loading">불러오는 중...</div>';
 
     fetchSections(slug)
       .then(function (htmls) {
@@ -482,11 +631,28 @@
     }
   }
 
+  function updateNav(idx) {
+    Array.prototype.forEach.call(dotsEl.children, function (d, i) {
+      d.classList.toggle('is-active', i === idx);
+    });
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === currentCount - 1;
+  }
+
   function go(idx, instant) {
     if (currentCount === 0) return;
     if (idx < 0) idx = 0;
     if (idx >= currentCount) idx = currentCount - 1;
     currentIdx = idx;
+
+    /* 고정 폭 틀(iframe) 모드 — 슬라이드를 옆으로 미는 대신 틀 안에서
+       보여줄 섹션만 바꾼다 */
+    if (iframeEl) {
+      showIframeSection(idx);
+      updateNav(idx);
+      return;
+    }
+
     if (instant) {
       var prevTransition = track.style.transition;
       track.style.transition = 'none';
@@ -496,11 +662,7 @@
     } else {
       track.style.transform = 'translateX(-' + (idx * 100) + '%)';
     }
-    Array.prototype.forEach.call(dotsEl.children, function (d, i) {
-      d.classList.toggle('is-active', i === idx);
-    });
-    prevBtn.disabled = idx === 0;
-    nextBtn.disabled = idx === currentCount - 1;
+    updateNav(idx);
     /* 슬라이드 안 스크롤 위치는 매 전환 시 맨 위로 리셋 */
     var active = track.children[idx];
     if (active && active.scrollTo) active.scrollTo(0, 0);

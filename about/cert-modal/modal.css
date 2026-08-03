@@ -86,6 +86,26 @@ html.helix-cert-modal-open body {
   max-width: 100% !important;
 }
 
+/* ================================================================
+   고정 폭 틀 (PC·태블릿) — modal.js 의 openWithFixedFrame 참고
+
+   상세 페이지 안쪽 크기가 vw(창 너비 기준)로 짜여 있어, 같은 960×540
+   프레임 안이라도 창 너비에 따라 글자·상자만 커졌다 작아졌다 한다. 그래서
+   페이지를 너비가 고정된 틀(iframe) 안에서 그린다 — 틀 안에서는 vw 가 그
+   틀의 너비 기준이라 누가 어떤 창에서 보든 같은 그림이 나온다.
+
+   틀은 디자인 기준 너비(1440px)로 넓게 두고, 그중 프레임(960×540)이 놓인
+   자리만 카드에 보이게 잘라낸다 — 자르는 일은 이 overflow:hidden 이 맡고,
+   위치·축소는 modal.js 가 transform 으로 맞춘다. */
+.helix-cert-modal__slide.is-fixed-frame {
+  overflow: hidden;
+}
+.helix-cert-modal__frame {
+  display: block;
+  border: 0;
+  background: #fff;
+}
+
 .helix-cert-modal__close {
   position: absolute;
   top: 14px;
