@@ -130,10 +130,15 @@
     return /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
   }
 
+  /* @<SHA> 면 불변이라 버스터 불필요. 붙이면 1분마다 주소가 새것이 돼
+     브라우저 캐시가 통째로 무효화된다(방문마다 전부 재다운로드).
+     내용이 바뀔 수 있는 @branch 폴백일 때만 붙인다. */
+  function bust(ref) {
+    return /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
+  }
   function dataUrl(slug) {
-    var t = Math.floor(Date.now() / 60000);
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-           '@' + getRef() + '/emergency/data/' + slug + '.json?t=' + t;
+           '@' + getRef() + '/emergency/data/' + slug + '.json' + bust(getRef());
   }
 
   function fetchSymptom(slug) {
@@ -146,7 +151,7 @@
     }
     var url = dataUrl(slug);
     log('fetching', slug, url);
-    var p = fetch(url, { cache: 'no-store' })
+    var p = fetch(url, /[?&]t=/.test(url) ? { cache: 'no-store' } : undefined)
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();

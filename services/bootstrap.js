@@ -101,14 +101,34 @@
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
+  /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
+     예전: 페이지를 열 때마다 /commits/<branch> 를 불렀다. 이 응답엔 그 커밋에서
+     바뀐 파일의 diff 가 통째로 실려 있어 한 번에 수 KB~수십 KB 다. 우리가 필요한
+     건 40자짜리 SHA 하나뿐인데 그 값 하나 얻자고 매번 그만큼을 받아왔다.
+     지금: SHA 만 들어 있는 /git/ref/heads/<branch>(수백 바이트) 를 쓰고, 받은
+     SHA 를 이 탭 안에서 60초 동안 재사용한다. 방문자가 여러 페이지를 둘러봐도
+     조회는 사실상 1회. 60초라 배포 직후 새로고침 검증에는 지장이 없다. */
+  var SHA_KEY = 'helix.sha.' + BRANCH;
+  var SHA_TTL = 60000;
+
+  function resolveSha(done, fail) {
+    try {
+      var c = JSON.parse(sessionStorage.getItem(SHA_KEY) || 'null');
+      if (c && c.sha && (Date.now() - c.t) < SHA_TTL) { done(c.sha); return; }
+    } catch (e) {}
+    var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO +
+              '/git/ref/heads/' + BRANCH + '?t=' + Math.floor(Date.now() / 60000);
+    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (d) {
+        var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 10);
+        if (!sha) throw new Error('no sha in response');
+        try { sessionStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
+        done(sha);
+      })
+      .catch(fail);
+  }
+
   /* 대상 브랜치 최신 커밋 SHA 조회 → immutable URL 로 로드. 실패하면 @branch 폴백. */
-  fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH,
-        { headers: { 'Accept': 'application/vnd.github+json' } })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (d) {
-      var sha = (d.sha || '').substring(0, 10);
-      if (!sha) throw 0;
-      injectAll(sha);
-    })
-    .catch(function () { injectAll(BRANCH); });
+  resolveSha(function (sha) { injectAll(sha); }, function () { injectAll(BRANCH); });
 })();
