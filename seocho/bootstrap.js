@@ -108,9 +108,11 @@
     /* 서초본원 전용 */
     'seocho/seocho.css',
     'seocho/seocho.js',
-    /* 서초본원 하단 리뉴얼 고정 바 (모바일 전용) */
-    'seocho/renewal-bar.css',
-    'seocho/renewal-bar.js',
+    /* 여기 있던 서초용 renewal-bar (css/js) 등록은 리포에 만들어진 적이 없는
+       파일이라 제거했다(응급 페이지의 같은 이름 파일에서 옮겨 적힌 흔적).
+       등록만 돼 있으니 서초 페이지를 열 때마다 없는 주소로 요청이 나가고,
+       실패하면 폴백까지 한 번 더 나가서 매번 4번을 헛되이 요청했다.
+       나중에 서초용 리뉴얼 바를 실제로 만들면 그때 파일과 함께 다시 등록. */
     /* 의료진 상세 모달 — 페이지에 [data-doctor-open] 이 있을 때만 동작.
        없으면 listen 만 하고 zero overhead. 카드 컴포넌트 자체와 무관.
        데이터: seocho/doctors/data/<group>/<slug>.json */
