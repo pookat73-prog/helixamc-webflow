@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.5)
+   About 인증 카드 "+" 상세보기 모달 (v1.7)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -40,6 +40,19 @@
    (b) v1.4 에서 이미지에 무조건 걸던 max-width:100% 가, 원래 %로 작게
    잡아둔 푸터 로고(max-width:19%)까지 덮어써 화면 가득 커지던 문제 —
    실제로 넘칠 때만 제한하도록 수정.
+
+   v1.6 — 응급 인증 표지에서 왼쪽 인증마크 높이를 옆 제목·본문 덩어리에
+   맞춤 (fitCoverMark 참고). 마크 칸 높이가 200px 로 못 박혀 있어
+   오른쪽보다 짧게 떠 어긋나 보이던 문제.
+
+   v1.7 — (a) 고양이 인증 표지도 마크를 키움. 가로로 긴 마크(1311×697)라
+   높이를 맞추면 폭이 과해지므로, 폭을 가로줄의 40% 로 잡고 세로는 마크
+   윗변을 제목 윗변에 맞춤 (COVER_MARK_FIT 의 width 모드 + align).
+   (b) 설명 상자의 테두리·구분선·제목 색을 인증마크에서 뽑은 색으로 통일.
+   테두리 클래스(.div-block-79-copy)가 세 상세 페이지 공용이라 어느 인증을
+   열든 AAHA 레드가 나오고, 고양이만 구분선·제목이 핑크라 상자 안에서 색이
+   따로 놀던 문제. 모달에 data-cert(슬러그)를 달아 modal.css 가 인증별로
+   가른다.
    ================================================================ */
 
 (function () {
@@ -241,6 +254,117 @@
     Array.prototype.forEach.call(track.children, reflowSlideForMobile);
   }
 
+  /* ----------------------------------------------------------------
+     표지 슬라이드 — 인증마크를 옆 덩어리 높이에 맞춤 (PC 폭 전용)
+     ----------------------------------------------------------------
+     표지는 [왼쪽 인증마크] + [오른쪽 제목 + 설명 상자] 두 칸이 가로로 선다.
+     마크 칸(.div-block-81)이 높이 200px 로 못 박혀 있어 오른쪽 덩어리보다
+     짧게 뜨고, 위아래로 여백이 남아 두 칸이 어긋나 보였다.
+
+     마크 높이를 오른쪽 덩어리에 맞춘다. 마크는 비율이 고정이라 높이가
+     커진 만큼 가로도 넓어지므로, 오른쪽 설명 상자의 고정폭(34vw)도 함께
+     풀어 남는 폭만 쓰게 한다. 안 풀면 두 칸을 합친 줄이 카드 안쪽 폭을
+     넘겨 좌우로 삐져나간다 (modal.css 의 배지 폭 상한 주석 참고).
+
+     오른쪽이 좁아지면 글줄이 늘어 다시 높아진다 — 그래서 한 번에 맞추지
+     않고 몇 번 되풀이해 수렴시킨다.
+
+     마크 원본 비율이 인증마다 달라 맞추는 방식을 둘로 나눈다.
+
+     - match : 마크 높이를 옆 덩어리에 맞춘다. 정사각(응급 1575×1575)처럼
+               높이를 키워도 폭이 감당되는 마크용.
+     - width : 마크 폭을 가로줄의 일정 비율로 잡고 높이는 비율대로 따라간다.
+               가로로 긴 마크(고양이 1311×697)는 높이를 맞추면 폭이 높이의
+               1.88배까지 벌어져 옆 글칸이 지나치게 좁아진다. 대신 지금보다
+               넉넉히 키운다. 높이가 옆 덩어리보다 낮을 수밖에 없으므로
+               align 으로 세로 위치를 정한다 — flex-start 면 마크 윗변이
+               제목 윗변과 나란해진다.
+
+     AAHA(세로로 긴 300×375)는 아직 손대지 않는다. */
+  var COVER_MARK_FIT = {
+    '/emergency-cert': { mode: 'match', maxRowRatio: 0.46 },
+    '/cat-cert':       { mode: 'width', rowRatio: 0.40, align: 'flex-start' }
+  };
+
+  function fitCoverMark(slide) {
+    if (!slide || isMobileView()) return;   /* 휴대폰은 세로 1단이라 해당 없음 */
+    var cfg = COVER_MARK_FIT[currentSlug];
+    if (!cfg) return;
+
+    var sec = slide.firstElementChild;
+    if (!sec) return;
+    var img = sec.querySelector('img.cert_shedow');
+    if (!img) return;
+    var cell = img.parentElement;              /* 마크 칸 */
+    var row = cell && cell.parentElement;      /* 두 칸을 담은 가로줄 */
+    if (!row) return;
+
+    var side = elementChildren(row).filter(function (c) { return c !== cell; });
+    if (!side.length) return;
+
+    /* 이미지가 아직 안 받아졌으면 원본 비율을 알 수 없다 — 도착한 뒤 다시 */
+    if (!img.complete || !img.naturalWidth || !img.naturalHeight) {
+      img.addEventListener('load', function () { fitCoverMark(slide); },
+        { once: true });
+      return;
+    }
+
+    var rowWidth = row.clientWidth || 0;
+    if (!rowWidth) return;
+    var ratio = img.naturalWidth / img.naturalHeight;
+
+    /* 오른쪽 칸 — 폭은 원래대로 두되, 마크에 밀려 자리가 모자라면 줄어들게.
+       (flex 를 1 로 주면 반대로 남는 폭까지 차지해 되레 넓어진다) */
+    side.forEach(function (el) {
+      el.style.setProperty('flex', '0 1 auto', 'important');
+      el.style.setProperty('min-width', '0', 'important');
+      el.style.setProperty('max-width', '100%', 'important');
+      Array.prototype.forEach.call(el.querySelectorAll('*'), function (d) {
+        d.style.setProperty('max-width', '100%', 'important');
+      });
+    });
+
+    /* 마크 — modal.css 의 폭 상한(200px)을 풀고 높이 기준으로 크기를 잡는다.
+       칸의 width 까지 함께 박아야 한다. 안 그러면 칸 폭을 정할 때 이미지의
+       원본 크기(1575px)가 기준이 돼 줄이 터진다. */
+    cell.style.setProperty('flex', '0 0 auto', 'important');
+    img.style.setProperty('max-width', 'none', 'important');
+    img.style.setProperty('max-height', 'none', 'important');
+    img.style.setProperty('width', 'auto', 'important');
+    img.style.setProperty('height', '100%', 'important');
+
+    /* 가로로 긴 마크 — 폭을 기준으로 잡는다. 옆 높이를 쫓아가지 않으므로
+       되풀이할 것도 없다. */
+    if (cfg.mode === 'width') {
+      var w = Math.round(rowWidth * cfg.rowRatio);
+      cell.style.setProperty('width', w + 'px', 'important');
+      cell.style.setProperty('height', Math.round(w / ratio) + 'px', 'important');
+      if (cfg.align) cell.style.setProperty('align-self', cfg.align, 'important');
+      return;
+    }
+
+    /* 마크가 커지면 오른쪽이 좁아져 다시 높아진다 — 몇 번 되풀이해 수렴 */
+    var maxMarkWidth = rowWidth * cfg.maxRowRatio;
+    for (var i = 0; i < 4; i++) {
+      var target = 0;
+      side.forEach(function (el) {
+        var h = el.getBoundingClientRect().height;
+        if (h > target) target = h;
+      });
+      if (!target) return;
+      if (target * ratio > maxMarkWidth) target = maxMarkWidth / ratio;
+      cell.style.setProperty('height', Math.round(target) + 'px', 'important');
+      cell.style.setProperty('width', Math.round(target * ratio) + 'px', 'important');
+    }
+  }
+
+  function tuneCoverSlides() {
+    if (!track) return;
+    Array.prototype.forEach.call(track.children, function (slide) {
+      fitCoverMark(slide);
+    });
+  }
+
   function buildOverlay() {
     overlay = document.createElement('div');
     overlay.className = 'helix-cert-modal';
@@ -290,6 +414,7 @@
         var nowMobile = isMobileView();
         if (nowMobile === wasMobile) {
           reflowAllSlides();
+          tuneCoverSlides();
           return;
         }
         wasMobile = nowMobile;
@@ -330,6 +455,9 @@
   function open(slug) {
     if (!overlay) buildOverlay();
     currentSlug = slug;
+    /* 어떤 인증을 열었는지 CSS 가 알 수 있게 표시 — 설명 상자 테두리·구분선·
+       제목을 그 인증마크의 색으로 맞추는 데 쓴다 (modal.css) */
+    overlay.setAttribute('data-cert', slug);
     overlay.classList.add('is-open');
     document.documentElement.classList.add('helix-cert-modal-open');
 
@@ -366,6 +494,11 @@
         go(0, true);
         /* 레이아웃이 확정된 뒤 세로 재배치 (clientWidth 측정 필요) */
         reflowAllSlides();
+        tuneCoverSlides();
+        /* 글꼴이 늦게 도착하면 글줄 높이가 바뀐다 — 그 뒤 한 번 더 맞춤 */
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(tuneCoverSlides).catch(function () {});
+        }
       })
       .catch(function (err) {
         track.innerHTML = '<div class="helix-cert-modal__loading">불러오기 실패: ' +
