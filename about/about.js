@@ -2302,11 +2302,35 @@
       return null;
     }
 
+    /* 요소가 실제로 화면에 그려지는가 (display:none 이면 false).
+       데스크탑 서브헤더(.subheader) 와 모바일 서브헤더(.m-subheader-copy) 가
+       DOM 에 동시에 존재하고 브레이크포인트로 한쪽만 display:flex 인 구조라,
+       "지금 보이는 쪽" 만 골라내는 판정이 스크롤스파이에 반드시 필요하다. */
+    function isVisible(el) {
+      return !!(el && (el.offsetParent !== null || el.getClientRects().length > 0));
+    }
+
+    /* 지금 화면에 떠 있는 서브헤더 바의 높이. 데스크탑에선 .subheader,
+       tiny 브레이크포인트에선 .m-subheader-copy 가 보인다. 예전엔 무조건
+       .subheader 만 쟀기 때문에 모바일에서 subH=0 이 되어 spy line 과
+       클릭 스크롤 위치가 모두 어긋났다. */
+    function subHeaderH() {
+      var bars = document.querySelectorAll('.subheader, .m-subheader-copy');
+      for (var i = 0; i < bars.length; i++) {
+        if (isVisible(bars[i])) return bars[i].getBoundingClientRect().height;
+      }
+      return 0;
+    }
+
     var entries = [];
-    links.forEach(function (a) {
-      var target = findVisibleTarget(a.getAttribute('href') || '', a);
-      if (target) entries.push({ link: a, target: target });
-    });
+    function buildEntries() {
+      entries = [];
+      links.forEach(function (a) {
+        var target = findVisibleTarget(a.getAttribute('href') || '', a);
+        if (target) entries.push({ link: a, target: target });
+      });
+    }
+    buildEntries();
     if (!entries.length) return;
 
     function setActive(link) {
@@ -2329,8 +2353,7 @@
         clickedAt = Date.now();
         var hEl = document.querySelector('header.header, header, nav');
         var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
-        var sub = document.querySelector('.subheader');
-        var subH = sub ? sub.getBoundingClientRect().height : 0;
+        var subH = subHeaderH();
         var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
         window.scrollTo({ top: y, behavior: 'smooth' });
         if (history.replaceState) history.replaceState(null, '', href);
@@ -2345,7 +2368,16 @@
        이전 알고리즘 ("라인 통과한 마지막") 은 섹션 사이 빈 공간에서
        이전 섹션 활성이 계속 유지되는 문제 → 다음 섹션 헤딩이 보이는데도
        이전 밑줄이 안 빠짐. straddle/closest 방식은 다음 섹션 헤딩이
-       viewport 에 들어오는 순간 부드럽게 전환. */
+       viewport 에 들어오는 순간 부드럽게 전환.
+
+       ⚠️ 숨은 쌍둥이 링크 제외 (이게 데스크탑 밑줄이 안 뜨던 원인)
+       서브헤더 메뉴는 데스크탑(.subheader)/모바일(.m-subheader-copy) 두 벌이
+       DOM 에 동시에 있고 둘 다 같은 .subheader_click-area 클래스 + 같은 섹션
+       앵커를 쓴다. 즉 링크가 6개가 아니라 12개고, 같은 섹션을 가리키는 짝이
+       두 개씩이다. 예전 코드는 straddle 을 덮어쓰기(마지막 승)로 골라
+       DOM 뒤쪽에 있는 모바일 링크가 항상 당첨 → 데스크탑에선 display:none 인
+       링크에 밑줄이 붙어 "아무 반응 없음" 으로 보였다.
+       → 지금 화면에 실제로 보이는 링크만 후보로 삼는다. */
     var ticking = false;
     function onScroll() {
       if (ticking) return;
@@ -2355,16 +2387,17 @@
         if (Date.now() - clickedAt < 700) return;
         var hEl = document.querySelector('header.header, header, nav');
         var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
-        var sub = document.querySelector('.subheader');
-        var subH = sub ? sub.getBoundingClientRect().height : 0;
-        var line = headerH + subH + 16;
+        var line = headerH + subHeaderH() + 16;
         var straddle = null;
         var closest = null;
         var closestDist = Infinity;
+        var firstVisible = null;
         for (var i = 0; i < entries.length; i++) {
+          if (!isVisible(entries[i].link)) continue;
           var rect = entries[i].target.getBoundingClientRect();
           if (rect.width === 0 && rect.height === 0) continue;
-          if (rect.top <= line && rect.bottom > line) {
+          if (!firstVisible) firstVisible = entries[i].link;
+          if (!straddle && rect.top <= line && rect.bottom > line) {
             straddle = entries[i].link;
           }
           var dist;
@@ -2374,13 +2407,21 @@
           if (dist < closestDist) { closestDist = dist; closest = entries[i].link; }
         }
         var current = straddle || closest;
-        if (!current && window.pageYOffset < 50) current = entries[0].link;
+        if (!current && window.pageYOffset < 50) current = firstVisible;
         if (current && !current.classList.contains('is-active')) setActive(current);
       });
     }
 
+    /* 브레이크포인트가 바뀌면 보이는 섹션 자체가 바뀐다
+       (#helix-for-family / #cheif-vets 는 데스크탑용·모바일용이 따로 있고
+       ID 가 같다) → 타깃을 다시 잡아준 뒤 스파이 재계산. */
+    function onResize() {
+      buildEntries();
+      onScroll();
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', onResize);
     onScroll();
   }
 
