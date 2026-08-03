@@ -2360,17 +2360,20 @@
       });
     });
 
-    /* 스크롤스파이 — "라인을 가장 잘 채우는" 섹션 활성화.
+    /* 스크롤스파이 — "서브헤더 바로 밑 기준선을 마지막으로 통과한 섹션" 활성화.
        spy line: header.bottom + subheader.height + 16px.
-       알고리즘:
-       1. spy line 을 [top, bottom] 안에 품는 (straddle) 섹션이 있으면 그것
-       2. 없으면 line 까지 가장 가까운 섹션 (위/아래 무관)
-       이전 알고리즘 ("라인 통과한 마지막") 은 섹션 사이 빈 공간에서
-       이전 섹션 활성이 계속 유지되는 문제 → 다음 섹션 헤딩이 보이는데도
-       이전 밑줄이 안 빠짐. straddle/closest 방식은 다음 섹션 헤딩이
-       viewport 에 들어오는 순간 부드럽게 전환.
 
-       ⚠️ 숨은 쌍둥이 링크 제외 (이게 데스크탑 밑줄이 안 뜨던 원인)
+       ⚠️ "가장 가까운 섹션" 방식 금지 (미리 활성화되는 원인)
+       탭 6개가 가리키는 앵커 섹션들 사이에는 앵커가 없는 섹션이 잔뜩 끼어
+       있다 (예: Helix History 앵커 다음 인터벤션 앵커까지 사이에 10개).
+       그 구간에서는 기준선을 품는 앵커 섹션이 없는데, 예전 코드는
+       "기준선에 가장 가까운 섹션" 으로 폴백해서 아직 한참 남은 다음 섹션이
+       당첨됐다 → 사용자가 아직 이전 파트를 보고 있는데 다음 탭에 밑줄이
+       미리 켜졌다.
+       → 앵커 사이 구간은 "직전 앵커의 내용" 이므로 직전 탭을 유지한다.
+          다음 탭은 그 섹션 윗변이 실제로 서브헤더 밑까지 올라왔을 때 켠다.
+
+       ⚠️ 숨은 쌍둥이 링크 제외 (데스크탑에서 밑줄이 아예 안 뜨던 원인)
        서브헤더 메뉴는 데스크탑(.subheader)/모바일(.m-subheader-copy) 두 벌이
        DOM 에 동시에 있고 둘 다 같은 .subheader_click-area 클래스 + 같은 섹션
        앵커를 쓴다. 즉 링크가 6개가 아니라 12개고, 같은 섹션을 가리키는 짝이
@@ -2388,26 +2391,23 @@
         var hEl = document.querySelector('header.header, header, nav');
         var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
         var line = headerH + subHeaderH() + 16;
-        var straddle = null;
-        var closest = null;
-        var closestDist = Infinity;
+        /* 기준선을 이미 통과한 섹션들 중 윗변이 기준선에 가장 가까운 것
+           = 문서 순서상 마지막으로 진입한 섹션. 배열 순서에 의존하지 않는다. */
+        var current = null;
+        var bestTop = -Infinity;
         var firstVisible = null;
         for (var i = 0; i < entries.length; i++) {
           if (!isVisible(entries[i].link)) continue;
           var rect = entries[i].target.getBoundingClientRect();
           if (rect.width === 0 && rect.height === 0) continue;
           if (!firstVisible) firstVisible = entries[i].link;
-          if (!straddle && rect.top <= line && rect.bottom > line) {
-            straddle = entries[i].link;
+          if (rect.top <= line && rect.top > bestTop) {
+            bestTop = rect.top;
+            current = entries[i].link;
           }
-          var dist;
-          if (rect.bottom < line) dist = line - rect.bottom;
-          else if (rect.top > line) dist = rect.top - line;
-          else dist = 0;
-          if (dist < closestDist) { closestDist = dist; closest = entries[i].link; }
         }
-        var current = straddle || closest;
-        if (!current && window.pageYOffset < 50) current = firstVisible;
+        /* 아직 첫 섹션에도 못 들어간 히어로 구간 → 첫 탭을 기본값으로 */
+        if (!current) current = firstVisible;
         if (current && !current.classList.contains('is-active')) setActive(current);
       });
     }
