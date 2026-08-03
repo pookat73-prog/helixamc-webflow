@@ -86,10 +86,10 @@
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
     /* 홈 지점 카드 */
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
-    /* tel_copy 는 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
+    /* home_phone_call 은 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
        .home_branch-card 로 한정하지 않으면 응급 모달 분원 전화(tel: 링크) 등
        사이트 전역 tel: 링크에 오배지됨. */
-    { sel: '.home_branch-card a[href^="tel:"]', label: '지점 · 전화번호', event: 'tel_copy_*' },
+    { sel: '.home_branch-card a[href^="tel:"]', label: '지점 · 전화걸기', event: 'home_phone_call_*' },
     { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },

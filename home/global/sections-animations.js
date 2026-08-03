@@ -366,13 +366,18 @@
         } else if (/일산|고양시|덕양구|978-7575/.test(telCardText)) {
           telBranchKey = 'ilsan';  telBranchLabel = '일산';
         }
-        var telEventName = 'tel_copy_' + telBranchKey + '_' + telDevice;
+        /* 이벤트 이름은 '전화' 기준 — 모바일에선 복사 직후 전화 앱이 실제로
+           연결되고, 데스크탑에서도 전화번호를 눌렀다는 건 전화 의사 표시다.
+           예전 이름(tel_copy_*)은 '복사'만 한 것처럼 읽혀 주소 복사
+           (copy_address_*)·이메일 복사(copy_email_*)와 뭉뚱그려졌다.
+           실제 통화 연결 여부는 will_dial 로 계속 구분 가능. */
+        var telEventName = 'home_phone_call_' + telBranchKey + '_' + telDevice;
         var telHref      = link.href;
 
         function trackTel() {
           try {
             var payload = {
-              item_type: 'tel_copy',
+              item_type: 'phone_call',
               branch: telBranchLabel || 'unknown',
               device: telDevice,
               value: phone,
