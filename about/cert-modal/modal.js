@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v2.0)
+   About 인증 카드 "+" 상세보기 모달 (v1.11)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -65,16 +65,16 @@
    설명 상자 색은 다시 Webflow 원본 클래스 색(세 페이지 공용 AAHA 레드,
    고양이만 구분선 핑크)으로 돌아간다.
 
-   v2.0 — 덧칠을 그만두고 "Webflow 화면 그대로" 로 전환.
-   상세 페이지는 크기가 vw(화면 너비 기준)로 짜여 있어서, 960px 카드 안에
-   그대로 넣으면 창이 넓을수록 글자·상자만 커지고 카드는 그대로여서 제목이
-   접히고 상자가 삐져나갔다. 창 너비마다·사이트마다 다르게 보이던 것도 전부
-   이 때문이었고, v1.6~v1.8 의 마크 크기 조정은 그 증상을 덮으려던 땜질이었다.
-   이제 섹션을 화면 너비 그대로 펼쳐 vw 값이 디자이너 의도대로 잡히게 한 뒤
-   통째로 축소해 카드에 앉힌다 (fitScaledSlides). 축소는 transform 이라 안쪽
-   배치가 다시 계산되지 않아, 어느 창 크기·어느 사이트에서 보든 같은 그림이
-   나온다. 휴대폰(≤767px)은 예전처럼 세로 1단 재배치 — 축소하면 글자가 읽을
-   수 없이 작아진다.
+   v2.0 (되돌림) — 상세 페이지를 화면 너비로 펼친 뒤 축소해 보여주려 했으나,
+   모달이 프레임 면적을 넘어 크게 떠서 되돌림. 모달은 상세 섹션
+   (.cert-modal-frame) 이 디자인된 면적, 즉 960×540 만큼만 보여준다.
+
+   v1.11 — 프레임 안쪽 덧칠을 걷어냄 (modal.css). 섹션을 카드 높이에 맞춰
+   늘리고 마지막 묶음을 바닥에 붙이던 규칙, 인증마크 폭 상한 200px, 마크 칸
+   가운데 정렬 — 셋 다 디자이너 화면과 간격·크기를 다르게 만들던 것들이라
+   뺀다. 이제 PC 에서는 바깥 여백만 걷고 안쪽은 Webflow 가 그리는 그대로다.
+   휴대폰(≤767px)·태블릿(≤991px) 재배치는 그대로 유지 — 카드가 디자인 폭
+   960px 보다 좁아지는 구간이라 그대로 두면 내용이 잘린다.
    ================================================================ */
 
 (function () {
@@ -276,79 +276,6 @@
     Array.prototype.forEach.call(track.children, reflowSlideForMobile);
   }
 
-  /* ----------------------------------------------------------------
-     PC·태블릿 — 상세 페이지를 화면 너비 그대로 그린 뒤 카드에 맞춰 축소
-     ----------------------------------------------------------------
-     인증 상세 페이지는 크기가 vw(화면 너비 기준)로 짜여 있다 — 설명 상자
-     34vw, 글자 1.58vw. 페이지를 화면 가득 볼 때를 전제한 값이라, 960px
-     짜리 카드 안에 그대로 넣으면 창이 넓어질수록 글자·상자만 커지고 카드는
-     그대로여서 제목이 이상하게 접히고 상자가 카드 밖으로 삐져나간다.
-     창 너비마다, 사이트마다 다르게 보이던 것도 전부 이 때문.
-
-     그래서 섹션을 "화면 너비 그대로" 펼쳐 vw 값이 디자이너가 의도한 대로
-     잡히게 한 다음, 통째로 축소해 카드에 앉힌다. 축소는 transform 이라
-     안쪽 배치가 다시 계산되지 않는다 — 어느 창 크기에서 보든, 어느
-     사이트에서 보든 디자이너 화면과 같은 그림이 나온다.
-
-     카드 높이는 축소된 내용 높이를 그대로 따른다. 16:9 를 고집하면 위아래에
-     빈 띠가 생기기 때문. 휴대폰(≤767px)은 예전처럼 세로 1단 재배치가 맡는다
-     — 축소하면 글자가 읽을 수 없이 작아진다. */
-  function fitScaledSlides() {
-    if (!overlay || !track) return;
-    var card = overlay.querySelector('.helix-cert-modal__card');
-    if (!card) return;
-    var slides = Array.prototype.slice.call(track.children);
-    if (!slides.length) return;
-
-    function eachSection(fn) {
-      slides.forEach(function (slide) {
-        var sec = slide.firstElementChild;
-        if (sec) fn(sec);
-      });
-    }
-
-    if (isMobileView()) {
-      overlay.classList.remove('is-scaled');
-      card.style.removeProperty('width');
-      card.style.removeProperty('height');
-      eachSection(function (sec) {
-        sec.style.removeProperty('width');
-        sec.style.removeProperty('transform');
-      });
-      return;
-    }
-
-    overlay.classList.add('is-scaled');
-
-    var vw = document.documentElement.clientWidth || window.innerWidth || 0;
-    if (!vw) return;
-
-    /* 1) 화면 너비로 펼쳐 자연 높이를 잰다 (축소 전 값이어야 함).
-          슬라이드마다 높이가 다를 수 있으니 가장 높은 것을 기준으로 —
-          카드 높이는 하나뿐이라 낮은 쪽에 맞추면 다른 장이 잘린다. */
-    var natH = 0;
-    eachSection(function (sec) {
-      sec.style.setProperty('width', vw + 'px', 'important');
-      sec.style.setProperty('transform', 'none', 'important');
-      var h = sec.offsetHeight;
-      if (h > natH) natH = h;
-    });
-    if (!natH) return;
-
-    /* 2) 카드에 들어갈 만큼 줄인다 — 가로는 화면의 96%(최대 960px),
-          세로는 창 높이의 92% 를 넘지 않게. */
-    var maxW = Math.min(vw * 0.96, 960);
-    var maxH = (window.innerHeight || 0) * 0.92;
-    var scale = maxW / vw;
-    if (maxH > 0 && natH * scale > maxH) scale = maxH / natH;
-
-    eachSection(function (sec) {
-      sec.style.setProperty('transform', 'scale(' + scale + ')', 'important');
-    });
-    card.style.setProperty('width', Math.round(vw * scale) + 'px', 'important');
-    card.style.setProperty('height', Math.round(natH * scale) + 'px', 'important');
-  }
-
   function buildOverlay() {
     overlay = document.createElement('div');
     overlay.className = 'helix-cert-modal';
@@ -398,7 +325,6 @@
         var nowMobile = isMobileView();
         if (nowMobile === wasMobile) {
           reflowAllSlides();
-          fitScaledSlides();   /* 창 폭이 바뀌면 축소 비율도 다시 */
           return;
         }
         wasMobile = nowMobile;
@@ -475,11 +401,6 @@
         go(0, true);
         /* 레이아웃이 확정된 뒤 세로 재배치 (clientWidth 측정 필요) */
         reflowAllSlides();
-        fitScaledSlides();
-        /* 글꼴이 늦게 도착하면 글줄 높이가 바뀐다 — 그 뒤 한 번 더 재서 맞춤 */
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(fitScaledSlides).catch(function () {});
-        }
       })
       .catch(function (err) {
         track.innerHTML = '<div class="helix-cert-modal__loading">불러오기 실패: ' +
