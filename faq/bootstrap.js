@@ -54,8 +54,15 @@
     /* GA4 base loader — gtag.js 본체. 다른 모듈의 gtag('event', ...) 호출이
        안전하게 큐잉되도록 FILES 배열 첫 줄에. (도메인 게이트로 스테이징 no-op) */
     'global/ga4-base.js',
+    /* 방문 묶음(세션) + 유입 경로 — 모든 이벤트에 자동 부착.
+       ga4-base 가 gtag 를 만든 직후에 감싸야 한다. */
+    'global/session.js',
     /* GA 측정 점검 오버레이 — ?ga-inspect=1 일 때만 동작 (평소 무해) */
     'global/ga-inspector.js',
+    /* 전 사이트 이벤트 자동 구글시트 로깅 — gtag('event', ...) 를
+       가로채 같은 내용을 시트에도 한 줄씩 적재 (GA4 맞춤 측정기준 없이
+       바로 확인 가능). 도메인 게이트는 GA4 와 동일(정식 사이트만) */
+    'global/sheet-log.js',
     /* 전역 + 헤더 + 햄버거 (다른 페이지와 동일 사양) */
     'global/global.css',
     /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */

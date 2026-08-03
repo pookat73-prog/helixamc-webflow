@@ -130,10 +130,15 @@
     return /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
   }
 
+  /* @<SHA> 면 불변이라 버스터 불필요. 붙이면 1분마다 주소가 새것이 돼
+     브라우저 캐시가 통째로 무효화된다(방문마다 전부 재다운로드).
+     내용이 바뀔 수 있는 @branch 폴백일 때만 붙인다. */
+  function bust(ref) {
+    return /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
+  }
   function dataUrl(slug) {
-    var t = Math.floor(Date.now() / 60000);
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-           '@' + getRef() + '/emergency/data/' + slug + '.json?t=' + t;
+           '@' + getRef() + '/emergency/data/' + slug + '.json' + bust(getRef());
   }
 
   function fetchSymptom(slug) {
@@ -146,7 +151,7 @@
     }
     var url = dataUrl(slug);
     log('fetching', slug, url);
-    var p = fetch(url, { cache: 'no-store' })
+    var p = fetch(url, /[?&]t=/.test(url) ? { cache: 'no-store' } : undefined)
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
@@ -283,9 +288,44 @@
     if (panel) panel.scrollTop = 0;
   }
 
+  /* ── 열람 시간 측정 ────────────────────────────────────────────
+     이 페이지는 증상 카드 11장이 한 화면에 들어가는 구조라 '스크롤로
+     어디까지 읽었나' 가 의미가 없다. 대신 "어떤 증상을 열어서 얼마나
+     읽었나" 가 실제 관심도 신호다. 열었다가 바로 닫으면(2초 미만)
+     잘못 눌렀거나 원하던 내용이 아니었다는 뜻이라 기록하지 않는다. */
+  var READ_MIN_MS = 2000;
+  var readFrom = 0, readOf = null;
+
+  function readStart(data) {
+    readFrom = Date.now();
+    readOf = data || null;
+  }
+
+  function readEnd() {
+    if (!readFrom || !readOf) { readFrom = 0; readOf = null; return; }
+    var ms = Date.now() - readFrom;
+    readFrom = 0;
+    var t = readOf; readOf = null;
+    if (ms < READ_MIN_MS) return;
+    emGa('emergency_symptom_read', {
+      item_type: 'emergency_symptom_read',
+      symptom: t.name || t.slug,
+      slug: t.slug,
+      read_sec: Math.round(ms / 1000),
+      value: Math.round(ms / 1000)
+    });
+  }
+
+  /* 모달을 열어둔 채 페이지를 떠나거나 탭을 돌리는 경우도 회수 */
+  window.addEventListener('pagehide', readEnd);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) readEnd();
+  });
+
   function open(data) {
     var m = ensureModal();
     render(data);
+    readStart(data);
     lastFocus = document.activeElement;
     document.documentElement.classList.add('helix-emergency-modal-open');
     document.body.classList.add('helix-emergency-modal-open');
@@ -301,6 +341,7 @@
 
   function close() {
     if (!modalEl || !modalEl.classList.contains('is-open')) return;
+    readEnd();
     modalEl.classList.remove('is-open');
     document.documentElement.classList.remove('helix-emergency-modal-open');
     document.body.classList.remove('helix-emergency-modal-open');

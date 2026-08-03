@@ -43,16 +43,20 @@
   var REPO  = 'helixamc-webflow';
 
   function getRef() { return (window.HELIX_REF || 'main'); }
+  /* @<SHA> 면 불변이라 버스터 불필요. 붙이면 1분마다 주소가 새것이 돼
+     브라우저 캐시가 통째로 무효화된다(방문마다 전부 재다운로드).
+     내용이 바뀔 수 있는 @branch 폴백일 때만 붙인다. */
+  function bust(ref) {
+    return /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
+  }
   function dataUrl(group, slug) {
-    var t = Math.floor(Date.now() / 60000);
     var file = slug ? (group + '/' + slug + '.json') : (group + '/_index.json');
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-           '@' + getRef() + '/seocho/doctors/data/' + file + '?t=' + t;
+           '@' + getRef() + '/seocho/doctors/data/' + file + bust(getRef());
   }
   function bundleUrl() {
-    var t = Math.floor(Date.now() / 60000);
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-           '@' + getRef() + '/seocho/doctors/data/_all.json?t=' + t;
+           '@' + getRef() + '/seocho/doctors/data/_all.json' + bust(getRef());
   }
 
   /* group + slug → Promise<doctor data> 캐시.
@@ -60,7 +64,10 @@
   var CACHE = (window.HELIX_DOCTOR_CACHE = window.HELIX_DOCTOR_CACHE || {});
 
   function fetchJson(url) {
-    return fetch(url, { cache: 'no-store' }).then(function (r) {
+    /* 불변 주소(@SHA)면 브라우저 캐시를 그대로 쓰게 둔다 — no-store 는
+       @branch 폴백처럼 내용이 바뀔 수 있을 때만 필요. */
+    var opts = /[?&]t=/.test(url) ? { cache: 'no-store' } : undefined;
+    return fetch(url, opts).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + url);
       return r.json();
     });

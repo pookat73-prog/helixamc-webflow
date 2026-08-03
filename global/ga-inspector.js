@@ -45,12 +45,18 @@
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
+    /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
+       (응급증상이 겪었던 것과 같은 문제). */
+    if (/(^|\/)services(\/|$)/.test(p) ||
+        document.querySelector('[class*="dept-card_"]')) return 'services';
+    /* 응급증상은 슬러그가 /symptoms — 다른 측정 모듈과 동일 판정으로 통일 */
+    if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
+        document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
-    if (/emergency|응급/.test(p)) return 'emergency';
     return 'home';
   }
   var PAGE = pageKey();
@@ -86,10 +92,10 @@
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
     /* 홈 지점 카드 */
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
-    /* tel_copy 는 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
+    /* home_phone_call 은 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
        .home_branch-card 로 한정하지 않으면 응급 모달 분원 전화(tel: 링크) 등
        사이트 전역 tel: 링크에 오배지됨. */
-    { sel: '.home_branch-card a[href^="tel:"]', label: '지점 · 전화번호', event: 'tel_copy_*' },
+    { sel: '.home_branch-card a[href^="tel:"]', label: '지점 · 전화걸기', event: 'home_phone_call_*' },
     { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },

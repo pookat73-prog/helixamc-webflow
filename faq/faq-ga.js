@@ -168,6 +168,9 @@
       setTimeout(function () {
         if (dItem && dItem.classList.contains('is-open')) {
           send('faq_open', { item_type: 'faq', category: 'disease', question: questionText(dItem), value: 'disease' });
+          readStart('disease', questionText(dItem));
+        } else {
+          readEnd();          // 접은 것 — 여기까지 읽은 시간 회수
         }
       }, 0);
       return;
@@ -179,11 +182,52 @@
       setTimeout(function () {
         if (gItem && gItem.classList.contains('is-open')) {
           send('faq_open', { item_type: 'faq', category: 'general', question: questionText(gItem), value: 'general' });
+          readStart('general', questionText(gItem));
+        } else {
+          readEnd();
         }
       }, 0);
       return;
     }
   }
+
+  /* ── 읽은 시간 ────────────────────────────────────────────────
+     이 페이지는 탭·필터로 내용이 갈아끼워지는 구조라 '스크롤로 어디까지
+     읽었나' 가 의미가 없다. 대신 "어떤 질문을 펼쳐서 얼마나 읽었나" 가
+     실제 신호다 — 오래 읽힌 질문은 잘 쓰인 답변이고, 열자마자 접힌
+     질문은 답이 부실하거나 제목이 오해를 부른다는 뜻.
+
+     펼쳤다 2초 안에 접으면 잘못 눌렀다고 보고 기록하지 않는다.
+     다른 질문을 펼치면 이전 질문의 시간이 먼저 회수된다(아코디언). */
+  var READ_MIN_MS = 2000;
+  var readFrom = 0, readCat = '', readQ = '';
+
+  function readStart(cat, q) {
+    readEnd();                 // 앞서 열려 있던 질문 정산 후 새로 시작
+    readFrom = Date.now();
+    readCat = cat; readQ = q;
+  }
+
+  function readEnd() {
+    if (!readFrom) return;
+    var ms = Date.now() - readFrom;
+    var cat = readCat, q = readQ;
+    readFrom = 0; readCat = ''; readQ = '';
+    if (ms < READ_MIN_MS) return;
+    send('faq_read', {
+      item_type: 'faq_read',
+      category: cat,
+      question: q,
+      read_sec: Math.round(ms / 1000),
+      value: Math.round(ms / 1000)
+    });
+  }
+
+  /* 펼쳐둔 채 페이지를 떠나거나 탭을 돌리는 경우도 회수 */
+  window.addEventListener('pagehide', readEnd);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) readEnd();
+  });
 
   function start() {
     document.addEventListener('click', onCaptureClick, true);   // 캡처 단계

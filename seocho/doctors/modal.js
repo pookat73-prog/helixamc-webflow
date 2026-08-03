@@ -54,10 +54,15 @@
     return /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
   }
 
+  /* @<SHA> 면 불변이라 버스터 불필요. 붙이면 1분마다 주소가 새것이 돼
+     브라우저 캐시가 통째로 무효화된다(방문마다 전부 재다운로드).
+     내용이 바뀔 수 있는 @branch 폴백일 때만 붙인다. */
+  function bust(ref) {
+    return /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
+  }
   function doctorUrl(group, slug) {
-    var t = Math.floor(Date.now() / 60000); /* 60s 버킷 — 브라우저 캐시 살짝 깸 */
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO +
-           '@' + getRef() + '/seocho/doctors/data/' + group + '/' + slug + '.json?t=' + t;
+           '@' + getRef() + '/seocho/doctors/data/' + group + '/' + slug + '.json' + bust(getRef());
   }
 
   function fetchDoctor(group, slug) {
@@ -75,7 +80,7 @@
     }
     var url = doctorUrl(group, slug);
     log('fetching', key, url);
-    var p = fetch(url, { cache: 'no-store' })
+    var p = fetch(url, /[?&]t=/.test(url) ? { cache: 'no-store' } : undefined)
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
@@ -240,6 +245,28 @@
     }
   });
 
+  /* ── 클릭한 버튼이 속한 카드의 의료진 한글 이름 ──────────────
+     카드 이름 요소는 데스크탑 .text-block-29 / 모바일 .name_m1
+     (card-render.js 의 매핑과 동일). 버튼에서 위로 한 단계씩 올라가며
+     찾되, 이름 요소가 2개 이상 잡히는 조상은 카드 경계를 넘어선 것
+     (여러 카드를 감싼 리스트)이므로 그 순간 포기한다 — 안 그러면 남의
+     이름이 붙는다. 못 찾으면 빈 문자열, slug 는 그대로 남으므로 무해. */
+  function doctorNameNear(trigger) {
+    var node = trigger;
+    for (var i = 0; i < 6 && node; i++) {
+      if (node.querySelectorAll) {
+        var hits = node.querySelectorAll('.text-block-29, .name_m1');
+        if (hits.length > 1) return '';            /* 카드 밖까지 올라옴 */
+        if (hits.length === 1) {
+          var t = (hits[0].innerText || hits[0].textContent || '').trim();
+          if (t) return t;
+        }
+      }
+      node = node.parentElement;
+    }
+    return '';
+  }
+
   /* ── 클릭 위임: 페이지에 동적으로 카드 추가돼도 자동 대응 ─── */
   document.addEventListener('click', function (e) {
     var trigger = e.target && e.target.closest && e.target.closest('[data-doctor-open]');
@@ -285,7 +312,11 @@
         branch: '서초',
         device: device,
         group: group,
-        slug: slug
+        slug: slug,
+        /* 한글 이름도 같이 — slug 만 보내면 시트에서 'gimtaeseong' 처럼 찍혀
+           누구인지 바로 안 보인다. 상세 데이터(fetchDoctor)는 이 시점엔 아직
+           안 왔으므로, 이미 화면에 그려져 있는 카드의 이름 텍스트를 읽는다. */
+        doctor: doctorNameNear(trigger)
       };
       try {
         if (typeof window.gtag === 'function') {

@@ -77,9 +77,16 @@
        다른 모든 페이지 모듈의 gtag('event', ...) 호출이 안전하게 큐잉되도록
        FILES 배열의 가장 첫 줄에 둠. */
     'global/ga4-base.js',
+    /* 방문 묶음(세션) + 유입 경로 — 모든 이벤트에 자동 부착.
+       ga4-base 가 gtag 를 만든 직후에 감싸야 한다. */
+    'global/session.js',
     /* GA 측정 점검 오버레이 — ?ga-inspect=1 일 때만 동작 (평소 무해).
        ga4-base 바로 다음에 둬 다른 모듈보다 먼저 gtag 가로채기 설치. */
     'global/ga-inspector.js',
+    /* 전 사이트 이벤트 자동 구글시트 로깅 — gtag('event', ...) 를
+       가로채 같은 내용을 시트에도 한 줄씩 적재 (GA4 맞춤 측정기준 없이
+       바로 확인 가능). 도메인 게이트는 GA4 와 동일(정식 사이트만) */
+    'global/sheet-log.js',
     /* 전역 (다른 페이지와 동일 사양) */
     'global/global.css',
     /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
@@ -116,9 +123,15 @@
     'home/global/footer.js'
   ];
 
+  /* @<SHA> 주소는 그 자체로 "이 커밋의 이 파일" 이라 내용이 절대 안 바뀐다.
+     여기에 분 단위 ?t= 를 붙이면 1분마다 주소가 새것이 돼 브라우저/CDN 캐시가
+     통째로 무효화됨 → 방문자가 페이지를 옮길 때마다 파일 전체를 매번 다시
+     내려받게 되고, jsDelivr 도 매번 원본을 새로 떠오는 게 됨(트래픽 폭증).
+     배포하면 SHA 자체가 바뀌므로 버스터 없이도 새 코드는 항상 즉시 반영된다.
+     내용이 바뀔 수 있는 @branch 폴백일 때만 버스터를 붙인다. */
   function cdn(ref, path) {
-    var t = Math.floor(Date.now() / 60000);
-    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + '?t=' + t;
+    var q = /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
+    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + q;
   }
 
   function injectCss(url, onerr) {
@@ -159,24 +172,41 @@
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
-  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/commits/' + BRANCH +
-            '?t=' + Date.now();
+  /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
+     예전: 페이지를 열 때마다 /commits/<branch> 를 불렀다. 이 응답엔 그 커밋에서
+     바뀐 파일의 diff 가 통째로 실려 있어 한 번에 수 KB~수십 KB 다. 우리가 필요한
+     건 40자짜리 SHA 하나뿐인데 그 값 하나 얻자고 매번 그만큼을 받아왔다.
+     지금: SHA 만 들어 있는 /git/ref/heads/<branch>(수백 바이트) 를 쓰고, 받은
+     SHA 를 이 탭 안에서 60초 동안 재사용한다. 방문자가 여러 페이지를 둘러봐도
+     조회는 사실상 1회. 60초라 배포 직후 새로고침 검증에는 지장이 없다. */
+  var SHA_KEY = 'helix.sha.' + BRANCH;
+  var SHA_TTL = 60000;
 
-  fetch(api, {
-    headers: { 'Accept': 'application/vnd.github+json' },
-    cache: 'no-store'
-  })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (data) {
-      var sha = (data.sha || '').substring(0, 10);
-      if (!sha) throw new Error('no sha in response');
-      console.log('[emergency-bootstrap] loading commit', sha);
-      window.HELIX_REF = sha;
-      injectAll(sha);
-    })
-    .catch(function (err) {
-      console.warn('[emergency-bootstrap] API fetch failed, fallback to @' + BRANCH, err);
-      window.HELIX_REF = BRANCH;
-      injectAll(BRANCH);
-    });
+  function resolveSha(done, fail) {
+    try {
+      var c = JSON.parse(sessionStorage.getItem(SHA_KEY) || 'null');
+      if (c && c.sha && (Date.now() - c.t) < SHA_TTL) { done(c.sha); return; }
+    } catch (e) {}
+    var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO +
+              '/git/ref/heads/' + BRANCH + '?t=' + Math.floor(Date.now() / 60000);
+    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (d) {
+        var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 10);
+        if (!sha) throw new Error('no sha in response');
+        try { sessionStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
+        done(sha);
+      })
+      .catch(fail);
+  }
+
+  resolveSha(function (sha) {
+    console.log('[emergency-bootstrap] loading commit', sha);
+    window.HELIX_REF = sha;
+    injectAll(sha);
+  }, function (err) {
+    console.warn('[emergency-bootstrap] SHA 조회 실패, @' + BRANCH + ' 로 폴백', err);
+    window.HELIX_REF = BRANCH;
+    injectAll(BRANCH);
+  });
 })();
