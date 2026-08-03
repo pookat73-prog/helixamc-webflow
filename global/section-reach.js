@@ -67,7 +67,12 @@
       { key: 'branch', label: '지점 카드',     sel: '.home_branch-card' },
       { key: 'svicc',  label: 'SVICC',        sel: '.home_background_svicc' }
     ],
-    about: [
+    /* 키는 pageKey() 가 돌려주는 값과 정확히 같아야 한다. 소개 페이지는
+       주소가 /discover-helix 라 판정이 'discover' 인데 여기 키가 'about'
+       이어서 목록을 못 찾고 섹션 측정이 통째로 안 돌고 있었다(로그 시트에서
+       소개 방문 28건 대비 섹션 도달 0건으로 발각). 이벤트 이름도
+       discover_page_view 와 같은 계열(discover_sec_*)로 맞춰진다. */
+    discover: [
       { key: 'hero',      label: '첫화면',        sel: '.about-heading' },
       { key: 'contents',  label: '본문 3박스',    sel: '.about_three_contents-box' },
       /* .clearframe 는 제외 — #hybrid-operation-room 이 ClearFrame 콤보
