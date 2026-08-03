@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.7)
+   About 인증 카드 "+" 상세보기 모달 (v2.3)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -42,17 +42,60 @@
    실제로 넘칠 때만 제한하도록 수정.
 
    v1.6 — 응급 인증 표지에서 왼쪽 인증마크 높이를 옆 제목·본문 덩어리에
-   맞춤 (fitCoverMark 참고). 마크 칸 높이가 200px 로 못 박혀 있어
-   오른쪽보다 짧게 떠 어긋나 보이던 문제.
+   맞춤. 마크 칸 높이가 200px 로 못 박혀 있어 오른쪽보다 짧게 떠 어긋나
+   보이던 문제. → v1.9 에서 걷어냄.
 
    v1.7 — (a) 고양이 인증 표지도 마크를 키움. 가로로 긴 마크(1311×697)라
-   높이를 맞추면 폭이 과해지므로, 폭을 가로줄의 40% 로 잡고 세로는 마크
-   윗변을 제목 윗변에 맞춤 (COVER_MARK_FIT 의 width 모드 + align).
+   높이를 맞추면 폭이 과해지므로, 폭을 가로줄의 40% 로 잡음.
+   → v1.9 에서 걷어냄.
    (b) 설명 상자의 테두리·구분선·제목 색을 인증마크에서 뽑은 색으로 통일.
-   테두리 클래스(.div-block-79-copy)가 세 상세 페이지 공용이라 어느 인증을
-   열든 AAHA 레드가 나오고, 고양이만 구분선·제목이 핑크라 상자 안에서 색이
-   따로 놀던 문제. 모달에 data-cert(슬러그)를 달아 modal.css 가 인증별로
-   가른다.
+   → v1.10 에서 걷어냄.
+
+   v1.9 — 표지 인증마크를 키우는 기능(v1.6 · v1.7a)을 통째로 걷어냄.
+   세 인증에 규칙이 제각각이라 마크 폭이 달라졌고, 그만큼 옆 제목 칸의 폭도
+   인증마다 달라져 제목 줄바꿈이 따로 놀았다. 규칙을 하나로 통일해봤지만
+   (v1.8) 세 인증이 다 같이 어긋나 보여, 기능 자체를 뺀다. 이제 세 인증 모두
+   modal.css 의 마크 폭 상한(200px)만 적용받아 같은 크기로 선다.
+   인증별 색 통일(v1.7b)은 이 문제와 무관하므로 그대로 둔다.
+
+   v1.10 — 인증별 색 통일(v1.7b)까지 걷어냄. 표지 어긋남을 코드 쪽에서
+   하나씩 되짚는 중이라, 최근에 얹은 것을 순서대로 뺀다. 이로써 최근 배치
+   (v1.6~v1.8)에서 얹은 것은 모두 빠졌고, 남은 것은 그 이전 상태 — 즉
+   modal.css 의 마크 폭 상한(#1295)과 휴대폰 재배치(v1.4·v1.5)뿐이다.
+   설명 상자 색은 다시 Webflow 원본 클래스 색(세 페이지 공용 AAHA 레드,
+   고양이만 구분선 핑크)으로 돌아간다.
+
+   v2.0 (되돌림) — 상세 페이지를 화면 너비로 펼친 뒤 축소해 보여주려 했으나,
+   모달이 프레임 면적을 넘어 크게 떠서 되돌림. 모달은 상세 섹션
+   (.cert-modal-frame) 이 디자인된 면적, 즉 960×540 만큼만 보여준다.
+
+   v1.11 — 프레임 안쪽 덧칠을 걷어냄 (modal.css). 섹션을 카드 높이에 맞춰
+   늘리고 마지막 묶음을 바닥에 붙이던 규칙, 인증마크 폭 상한 200px, 마크 칸
+   가운데 정렬 — 셋 다 디자이너 화면과 간격·크기를 다르게 만들던 것들이라
+   뺀다. 이제 PC 에서는 바깥 여백만 걷고 안쪽은 Webflow 가 그리는 그대로다.
+   휴대폰(≤767px)·태블릿(≤991px) 재배치는 그대로 유지 — 카드가 디자인 폭
+   960px 보다 좁아지는 구간이라 그대로 두면 내용이 잘린다.
+
+   v2.1 — PC·태블릿에서 상세 페이지를 "고정 폭 틀"(iframe) 안에서 그린다.
+   프레임(960×540)은 어느 창에서 보든 같은데 그 안 크기가 vw(창 너비 기준)라
+   글자·상자만 창을 따라 변했다 — 넓은 창에서 내용이 프레임에 안 맞아 짜부돼
+   보이고, 개발자도구로 폭을 고정하면 멀쩡해 보이던 것이 같은 이유다.
+   확대·축소로는 못 고친다(통째로 줄여도 안쪽 비율은 그대로). 브라우저가 vw 를
+   재는 기준을 바꿔야 하고, 그게 iframe 이다 — 틀 너비를 1440px 로 못 박아
+   누가 어떤 창에서 보든 같은 그림이 나오게 한다. openWithFixedFrame 참고.
+   휴대폰은 예전 방식(섹션 직접 심기 + 세로 1단) 그대로.
+
+   v2.2 — 틀 안에서 영문 제목 글꼴이 기본 글꼴로 나오던 문제. Adobe(Typekit)
+   글꼴은 스크립트가 실행되면서 글꼴 규칙을 문서에 넣어주는 방식인데, 틀 안에서는
+   스크립트를 일부러 안 돌리기 때문. 스크립트는 계속 막아둔 채, 바깥 페이지에 이미
+   들어와 있는 글꼴 규칙만 골라 틀 안으로 복사한다 (copyFontRules).
+
+   v2.3 — v2.2 로는 글꼴이 안 잡혔다. 이 사이트는 글꼴 스타일시트를 주소로
+   불러오지 않고(바깥에도 typekit 링크 0개) 스크립트가 규칙을 문서에 직접
+   심는 방식이라, 태그를 복사하는 것만으로는 못 가져온다. 그래서 세 갈래로
+   가져온다 — 링크 복사 / 문서에 들어와 있는 @font-face 규칙을 글자로 옮겨
+   심기 / 이미 받아둔 글꼴 객체를 틀 안 문서에 등록. 아울러 한글이 단어
+   중간에서 끊기던 것(합→니다)도 띄어쓰기에서만 끊기도록 바꾼다.
    ================================================================ */
 
 (function () {
@@ -91,6 +134,8 @@
   var currentIdx = 0;
   var currentCount = 0;
   var currentSlug = null;
+  var iframeEl = null;        /* 고정 폭 틀 (PC·태블릿) — 없으면 섹션 직접 심기 모드 */
+  var iframeSections = [];    /* 그 틀 안의 상세 섹션들 */
 
   var MOBILE_MAX = 767;
   function isMobileView() { return window.innerWidth <= MOBILE_MAX; }
@@ -254,117 +299,6 @@
     Array.prototype.forEach.call(track.children, reflowSlideForMobile);
   }
 
-  /* ----------------------------------------------------------------
-     표지 슬라이드 — 인증마크를 옆 덩어리 높이에 맞춤 (PC 폭 전용)
-     ----------------------------------------------------------------
-     표지는 [왼쪽 인증마크] + [오른쪽 제목 + 설명 상자] 두 칸이 가로로 선다.
-     마크 칸(.div-block-81)이 높이 200px 로 못 박혀 있어 오른쪽 덩어리보다
-     짧게 뜨고, 위아래로 여백이 남아 두 칸이 어긋나 보였다.
-
-     마크 높이를 오른쪽 덩어리에 맞춘다. 마크는 비율이 고정이라 높이가
-     커진 만큼 가로도 넓어지므로, 오른쪽 설명 상자의 고정폭(34vw)도 함께
-     풀어 남는 폭만 쓰게 한다. 안 풀면 두 칸을 합친 줄이 카드 안쪽 폭을
-     넘겨 좌우로 삐져나간다 (modal.css 의 배지 폭 상한 주석 참고).
-
-     오른쪽이 좁아지면 글줄이 늘어 다시 높아진다 — 그래서 한 번에 맞추지
-     않고 몇 번 되풀이해 수렴시킨다.
-
-     마크 원본 비율이 인증마다 달라 맞추는 방식을 둘로 나눈다.
-
-     - match : 마크 높이를 옆 덩어리에 맞춘다. 정사각(응급 1575×1575)처럼
-               높이를 키워도 폭이 감당되는 마크용.
-     - width : 마크 폭을 가로줄의 일정 비율로 잡고 높이는 비율대로 따라간다.
-               가로로 긴 마크(고양이 1311×697)는 높이를 맞추면 폭이 높이의
-               1.88배까지 벌어져 옆 글칸이 지나치게 좁아진다. 대신 지금보다
-               넉넉히 키운다. 높이가 옆 덩어리보다 낮을 수밖에 없으므로
-               align 으로 세로 위치를 정한다 — flex-start 면 마크 윗변이
-               제목 윗변과 나란해진다.
-
-     AAHA(세로로 긴 300×375)는 아직 손대지 않는다. */
-  var COVER_MARK_FIT = {
-    '/emergency-cert': { mode: 'match', maxRowRatio: 0.46 },
-    '/cat-cert':       { mode: 'width', rowRatio: 0.40, align: 'flex-start' }
-  };
-
-  function fitCoverMark(slide) {
-    if (!slide || isMobileView()) return;   /* 휴대폰은 세로 1단이라 해당 없음 */
-    var cfg = COVER_MARK_FIT[currentSlug];
-    if (!cfg) return;
-
-    var sec = slide.firstElementChild;
-    if (!sec) return;
-    var img = sec.querySelector('img.cert_shedow');
-    if (!img) return;
-    var cell = img.parentElement;              /* 마크 칸 */
-    var row = cell && cell.parentElement;      /* 두 칸을 담은 가로줄 */
-    if (!row) return;
-
-    var side = elementChildren(row).filter(function (c) { return c !== cell; });
-    if (!side.length) return;
-
-    /* 이미지가 아직 안 받아졌으면 원본 비율을 알 수 없다 — 도착한 뒤 다시 */
-    if (!img.complete || !img.naturalWidth || !img.naturalHeight) {
-      img.addEventListener('load', function () { fitCoverMark(slide); },
-        { once: true });
-      return;
-    }
-
-    var rowWidth = row.clientWidth || 0;
-    if (!rowWidth) return;
-    var ratio = img.naturalWidth / img.naturalHeight;
-
-    /* 오른쪽 칸 — 폭은 원래대로 두되, 마크에 밀려 자리가 모자라면 줄어들게.
-       (flex 를 1 로 주면 반대로 남는 폭까지 차지해 되레 넓어진다) */
-    side.forEach(function (el) {
-      el.style.setProperty('flex', '0 1 auto', 'important');
-      el.style.setProperty('min-width', '0', 'important');
-      el.style.setProperty('max-width', '100%', 'important');
-      Array.prototype.forEach.call(el.querySelectorAll('*'), function (d) {
-        d.style.setProperty('max-width', '100%', 'important');
-      });
-    });
-
-    /* 마크 — modal.css 의 폭 상한(200px)을 풀고 높이 기준으로 크기를 잡는다.
-       칸의 width 까지 함께 박아야 한다. 안 그러면 칸 폭을 정할 때 이미지의
-       원본 크기(1575px)가 기준이 돼 줄이 터진다. */
-    cell.style.setProperty('flex', '0 0 auto', 'important');
-    img.style.setProperty('max-width', 'none', 'important');
-    img.style.setProperty('max-height', 'none', 'important');
-    img.style.setProperty('width', 'auto', 'important');
-    img.style.setProperty('height', '100%', 'important');
-
-    /* 가로로 긴 마크 — 폭을 기준으로 잡는다. 옆 높이를 쫓아가지 않으므로
-       되풀이할 것도 없다. */
-    if (cfg.mode === 'width') {
-      var w = Math.round(rowWidth * cfg.rowRatio);
-      cell.style.setProperty('width', w + 'px', 'important');
-      cell.style.setProperty('height', Math.round(w / ratio) + 'px', 'important');
-      if (cfg.align) cell.style.setProperty('align-self', cfg.align, 'important');
-      return;
-    }
-
-    /* 마크가 커지면 오른쪽이 좁아져 다시 높아진다 — 몇 번 되풀이해 수렴 */
-    var maxMarkWidth = rowWidth * cfg.maxRowRatio;
-    for (var i = 0; i < 4; i++) {
-      var target = 0;
-      side.forEach(function (el) {
-        var h = el.getBoundingClientRect().height;
-        if (h > target) target = h;
-      });
-      if (!target) return;
-      if (target * ratio > maxMarkWidth) target = maxMarkWidth / ratio;
-      cell.style.setProperty('height', Math.round(target) + 'px', 'important');
-      cell.style.setProperty('width', Math.round(target * ratio) + 'px', 'important');
-    }
-  }
-
-  function tuneCoverSlides() {
-    if (!track) return;
-    Array.prototype.forEach.call(track.children, function (slide) {
-      fitCoverMark(slide);
-    });
-  }
-
   function buildOverlay() {
     overlay = document.createElement('div');
     overlay.className = 'helix-cert-modal';
@@ -414,7 +348,7 @@
         var nowMobile = isMobileView();
         if (nowMobile === wasMobile) {
           reflowAllSlides();
-          tuneCoverSlides();
+          layoutIframe();   /* 카드 폭이 바뀌면 틀 축소 비율도 다시 */
           return;
         }
         wasMobile = nowMobile;
@@ -452,12 +386,197 @@
       });
   }
 
+  /* ----------------------------------------------------------------
+     PC·태블릿 — 상세 페이지를 "고정 폭 틀" 안에서 그린다
+     ----------------------------------------------------------------
+     상세 페이지는 크기가 vw(브라우저 창 너비 기준)로 짜여 있다 — 설명 상자
+     34vw, 약칭 제목 1.58vw, 표지 제목 1.6vw. 그래서 프레임(960×540)은 어느
+     창에서 보든 960×540 인데 그 안의 글자·상자만 창 너비를 따라 커졌다 작아진다.
+     보는 사람 창 크기마다 다른 그림이 나오고, 창이 넓으면 내용이 프레임에
+     안 맞아 짜부돼 보인다. 개발자도구에서 폭을 고정해 보면 멀쩡했던 이유다.
+
+     확대·축소로는 못 고친다 — 통째로 줄여도 안쪽 비율은 그대로다. 브라우저가
+     vw 를 계산하는 기준 자체를 바꿔야 하고, 그 방법이 iframe 이다. iframe 안에서
+     vw 는 그 틀의 너비 기준으로 잡히므로, 틀 너비를 DESIGN_WIDTH 로 못 박으면
+     누가 어떤 창에서 보든 항상 같은 그림이 나온다.
+
+     틀은 DESIGN_WIDTH 로 넓게 두고, 그중 프레임(960×540)이 놓인 자리만 잘라
+     카드에 보여준다. 카드가 960 보다 좁아지는 창에서는 그 비율만큼 통째로
+     줄인다 — 이때는 안쪽 비율이 이미 고정돼 있으므로 그냥 작아지기만 한다.
+
+     ⚠️ sandbox="allow-same-origin" (allow-scripts 없음) — 틀 안 페이지의
+     스크립트를 아예 실행하지 않는다. 방문 측정이 중복으로 잡히는 것도,
+     Webflow 인터랙션이 요소를 숨겨놓는 것도 함께 막힌다. 우리 쪽에서
+     문서를 읽고 손보는 것은 same-origin 이라 그대로 된다.
+
+     휴대폰(≤767px)은 예전처럼 섹션을 직접 심는 방식 — 여기서 이 틀을 쓰면
+     1440px 짜리 화면을 손바닥만 하게 줄이는 꼴이라 글씨를 읽을 수 없다. */
+  var DESIGN_WIDTH = 1440;   /* 상세 페이지가 디자인된 기준 창 너비 */
+
+  /* 틀 안 글꼴 살리기.
+     영문 제목에 쓰는 Adobe(Typekit) 글꼴은 <script> 가 실행되면서 글꼴 규칙을
+     문서에 넣어주는 방식이다. 그런데 틀 안에서는 스크립트를 일부러 안 돌리므로
+     (측정 중복·인터랙션 숨김 차단), 그대로 두면 영문 제목이 기본 글꼴로 나온다.
+
+     글꼴 규칙은 문서마다 따로 필요하지만, 바깥 페이지에는 이미 그 규칙이 들어와
+     있다. 그 중 글꼴 관련 것만 골라 틀 안으로 복사한다 — 스크립트는 여전히 안
+     돌리고, 글꼴 파일은 이미 받아둔 것이라 새로 받지도 않는다.
+
+     ⚠️ 바깥 스타일을 통째로 복사하면 안 된다 — 소개 페이지용 규칙이 틀 안
+     요소에 걸려 배치가 틀어진다. 반드시 글꼴 것만. */
+  function copyFontRules(idoc) {
+    var head = idoc.head || idoc.body;
+    if (!head) return;
+
+    /* (1) 주소로 불러오는 글꼴 스타일시트는 링크째 복사 */
+    Array.prototype.forEach.call(
+      document.querySelectorAll('link[rel="stylesheet"]'),
+      function (l) {
+        if (/typekit|fonts\.googleapis|fonts\.gstatic/i.test(l.href || '')) {
+          try { head.appendChild(idoc.importNode(l, true)); } catch (_) {}
+        }
+      }
+    );
+
+    /* (2) 문서에 들어와 있는 @font-face 규칙을 글자로 옮겨 심기.
+       스크립트가 넣은 규칙은 <style> 안에 글자로 남지 않고 메모리에만 있는
+       경우가 있어(insertRule), 태그를 복사하는 것만으로는 안 잡힌다. */
+    var css = '';
+    Array.prototype.forEach.call(document.styleSheets, function (sheet) {
+      var rules = null;
+      try { rules = sheet.cssRules; } catch (_) { return; }   /* 외부 도메인은 못 읽음 */
+      if (!rules) return;
+      Array.prototype.forEach.call(rules, function (r) {
+        if (r && r.type === 5) css += r.cssText + '\n';       /* 5 = @font-face */
+      });
+    });
+    if (css) {
+      var st = idoc.createElement('style');
+      st.textContent = css;
+      head.appendChild(st);
+    }
+
+    /* (3) 이미 받아둔 글꼴 자체를 틀 안 문서에도 등록.
+       (1)(2) 로 못 잡는 방식 — 스크립트가 글꼴 객체만 만들어 넣는 경우 —
+       까지 커버한다. 같은 사이트 문서라 글꼴 파일을 새로 받지 않는다. */
+    try {
+      document.fonts.forEach(function (ff) {
+        try { idoc.fonts.add(ff); } catch (_) {}
+      });
+    } catch (_) {}
+  }
+
+  function showIframeSection(idx) {
+    if (!iframeSections.length) return;
+    iframeSections.forEach(function (sec, i) {
+      /* .cert-modal-frame 은 클래스 자체가 display:none 이라(페이지에 노출
+         안 되는 자료용 페이지) 보여줄 때는 flex 로 켜준다 — 클래스가 세로
+         정렬·여백을 flex 기준으로 잡아두었기 때문. */
+      sec.style.setProperty('display', i === idx ? 'flex' : 'none', 'important');
+    });
+    layoutIframe();
+  }
+
+  function layoutIframe() {
+    if (!iframeEl || !overlay) return;
+    var card = overlay.querySelector('.helix-cert-modal__card');
+    var sec = iframeSections[currentIdx];
+    if (!card || !sec) return;
+
+    var rect = sec.getBoundingClientRect();   /* 틀 안에서의 프레임 위치·크기 */
+    if (!rect.width) return;
+
+    /* 틀 높이를 프레임에 맞춰 — 남는 아래쪽이 스크롤을 만들지 않도록 */
+    iframeEl.style.height = Math.ceil(rect.top + rect.height) + 'px';
+
+    /* 프레임의 왼쪽 위 모서리를 카드의 왼쪽 위에 맞추고, 카드 폭에 맞춰 축소.
+       translate 를 scale 뒤에 두면 이동량도 함께 축소돼 좌표가 맞는다. */
+    var scale = card.clientWidth / rect.width;
+    iframeEl.style.transformOrigin = 'top left';
+    iframeEl.style.transform =
+      'scale(' + scale + ') translate(' + (-rect.left) + 'px, ' + (-rect.top) + 'px)';
+  }
+
+  function openWithFixedFrame(slug) {
+    track.innerHTML = '';
+    track.style.transform = 'translateX(0)';
+
+    var slide = document.createElement('div');
+    slide.className = 'helix-cert-modal__slide is-fixed-frame';
+
+    var f = document.createElement('iframe');
+    f.className = 'helix-cert-modal__frame';
+    f.title = '인증 상세';
+    f.setAttribute('scrolling', 'no');
+    f.setAttribute('sandbox', 'allow-same-origin');
+    f.style.width = DESIGN_WIDTH + 'px';
+    f.style.height = '540px';
+
+    slide.appendChild(f);
+    track.appendChild(slide);
+    iframeEl = f;
+    iframeSections = [];
+
+    f.addEventListener('load', function () {
+      var idoc = null;
+      try { idoc = f.contentDocument; } catch (_) {}
+      if (!idoc || !idoc.body) { openWithSections(slug); return; }
+
+      /* 페이지 문맥(바깥 여백·스크롤·다른 요소)을 걷고 상세 섹션만 남긴다 */
+      var st = idoc.createElement('style');
+      st.textContent =
+        'html,body{margin:0!important;padding:0!important;overflow:hidden!important}' +
+        'body > *{display:none!important}' +
+        /* 한글은 브라우저 기본값이 "글자 사이 아무 데서나 줄바꿈" 이라, 글줄이
+           한 칸만 모자라도 "합니다." 가 "합 / 니다" 로 끊긴다. 띄어쓰기에서만
+           끊기도록. */
+        'body{word-break:keep-all!important}';
+      (idoc.head || idoc.body).appendChild(st);
+      copyFontRules(idoc);
+      /* 바깥 페이지 글꼴이 늦게 도착하면 그때 한 번 더 옮겨 심는다 */
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+          copyFontRules(idoc);
+          layoutIframe();
+        }).catch(function () {});
+      }
+
+      iframeSections = Array.prototype.slice.call(
+        idoc.querySelectorAll('section.cert-modal-frame')
+      ).filter(function (sec) {
+        /* Designer 에서 눈 아이콘으로 끈 섹션은 제외 — Webflow 가 인라인
+           style="display:none" 으로 내보낸다 (cat-cert 4번째 섹션) */
+        return !/display\s*:\s*none/i.test(sec.getAttribute('style') || '');
+      });
+
+      if (!iframeSections.length) { openWithSections(slug); return; }
+
+      /* 섹션이 body 바로 아래가 아니면 그 조상들도 되살려야 보인다 */
+      iframeSections.forEach(function (sec) {
+        var p = sec.parentElement;
+        while (p && p !== idoc.body) {
+          p.style.setProperty('display', 'block', 'important');
+          p = p.parentElement;
+        }
+      });
+
+      currentCount = iframeSections.length;
+      buildDots(currentCount);
+      go(0, true);
+
+      /* 글꼴이 늦게 도착하면 글줄 높이가 바뀐다 — 그 뒤 한 번 더 맞춤 */
+      if (idoc.fonts && idoc.fonts.ready) {
+        idoc.fonts.ready.then(layoutIframe).catch(function () {});
+      }
+    });
+
+    f.addEventListener('error', function () { openWithSections(slug); });
+    f.src = slug;
+  }
+
   function open(slug) {
     if (!overlay) buildOverlay();
     currentSlug = slug;
-    /* 어떤 인증을 열었는지 CSS 가 알 수 있게 표시 — 설명 상자 테두리·구분선·
-       제목을 그 인증마크의 색으로 맞추는 데 쓴다 (modal.css) */
-    overlay.setAttribute('data-cert', slug);
     overlay.classList.add('is-open');
     document.documentElement.classList.add('helix-cert-modal-open');
 
@@ -479,6 +598,20 @@
     prevBtn.disabled = true;
     nextBtn.disabled = true;
 
+    iframeEl = null;
+    iframeSections = [];
+
+    /* PC·태블릿은 고정 폭 틀 안에서 그린다 (창 너비에 따라 안쪽이 변하지
+       않도록). 휴대폰은 세로 1단 재배치가 필요해 섹션을 직접 심는다. */
+    if (!isMobileView()) { openWithFixedFrame(slug); return; }
+    openWithSections(slug);
+  }
+
+  function openWithSections(slug) {
+    iframeEl = null;
+    iframeSections = [];
+    track.innerHTML = '<div class="helix-cert-modal__loading">불러오는 중...</div>';
+
     fetchSections(slug)
       .then(function (htmls) {
         track.innerHTML = '';
@@ -494,11 +627,6 @@
         go(0, true);
         /* 레이아웃이 확정된 뒤 세로 재배치 (clientWidth 측정 필요) */
         reflowAllSlides();
-        tuneCoverSlides();
-        /* 글꼴이 늦게 도착하면 글줄 높이가 바뀐다 — 그 뒤 한 번 더 맞춤 */
-        if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(tuneCoverSlides).catch(function () {});
-        }
       })
       .catch(function (err) {
         track.innerHTML = '<div class="helix-cert-modal__loading">불러오기 실패: ' +
@@ -580,11 +708,28 @@
     }
   }
 
+  function updateNav(idx) {
+    Array.prototype.forEach.call(dotsEl.children, function (d, i) {
+      d.classList.toggle('is-active', i === idx);
+    });
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === currentCount - 1;
+  }
+
   function go(idx, instant) {
     if (currentCount === 0) return;
     if (idx < 0) idx = 0;
     if (idx >= currentCount) idx = currentCount - 1;
     currentIdx = idx;
+
+    /* 고정 폭 틀(iframe) 모드 — 슬라이드를 옆으로 미는 대신 틀 안에서
+       보여줄 섹션만 바꾼다 */
+    if (iframeEl) {
+      showIframeSection(idx);
+      updateNav(idx);
+      return;
+    }
+
     if (instant) {
       var prevTransition = track.style.transition;
       track.style.transition = 'none';
@@ -594,11 +739,7 @@
     } else {
       track.style.transform = 'translateX(-' + (idx * 100) + '%)';
     }
-    Array.prototype.forEach.call(dotsEl.children, function (d, i) {
-      d.classList.toggle('is-active', i === idx);
-    });
-    prevBtn.disabled = idx === 0;
-    nextBtn.disabled = idx === currentCount - 1;
+    updateNav(idx);
     /* 슬라이드 안 스크롤 위치는 매 전환 시 맨 위로 리셋 */
     var active = track.children[idx];
     if (active && active.scrollTo) active.scrollTo(0, 0);
