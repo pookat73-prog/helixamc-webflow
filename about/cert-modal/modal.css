@@ -78,7 +78,7 @@ html.helix-cert-modal-open body {
 
 /* yiryojin 섹션은 모달 크기 (max 960×540) 안에 맞도록 px 단위로 디자인된 전제.
    안전망: 외부 마진/최대 너비 제한만 제거하고, 나머지 스타일은 그대로 살림. */
-.helix-cert-modal:not(.is-scaled) .helix-cert-modal__slide > section {
+.helix-cert-modal__slide > section {
   margin: 0 !important;
   max-width: 100% !important;
   /* 카드가 디자인보다 큰 뷰포트에선 height 540px 고정 섹션이 카드보다
@@ -86,30 +86,8 @@ html.helix-cert-modal-open body {
      (divider+logo) 만 바닥으로 고정. 위쪽 컨텐츠는 그대로 위에 쌓임. */
   height: 100% !important;
 }
-.helix-cert-modal:not(.is-scaled) .helix-cert-modal__slide > section > :last-child {
+.helix-cert-modal__slide > section > :last-child {
   margin-top: auto !important;
-}
-
-/* ================================================================
-   축소 모드 (PC·태블릿) — 상세 페이지를 화면 너비 그대로 그린 뒤 통째로 축소
-
-   섹션 폭·축소 비율·카드 크기는 modal.js 의 fitScaledSlides 가 잰 값으로
-   인라인으로 넣는다 (창 너비에 따라 달라지므로 CSS 로는 못 박을 수 없음).
-   여기서는 그 계산이 성립하도록 판만 깔아준다.
-   - 축소 기준점을 왼쪽 위로: 안 그러면 가운데 기준으로 줄어 위치가 어긋남
-   - 카드 16:9 고정 해제: 높이는 축소된 내용 높이를 따라감
-   - 넘침 숨김: 화면 너비로 펼친 섹션이 줄기 전 잠깐 삐져나오는 것 차단 */
-.helix-cert-modal.is-scaled .helix-cert-modal__card {
-  aspect-ratio: auto;
-  max-width: none;
-}
-.helix-cert-modal.is-scaled .helix-cert-modal__slide {
-  overflow: hidden;
-}
-.helix-cert-modal.is-scaled .helix-cert-modal__slide > section {
-  margin: 0 !important;
-  transform-origin: top left;
-  will-change: transform;
 }
 
 .helix-cert-modal__close {
@@ -222,10 +200,44 @@ html.helix-cert-modal-open body {
   background: #0075d6;
 }
 
-/* ≤767px — 휴대폰. 상세 섹션이 height:540px 고정 + 가로 2단이라 그대로 두면
-   내용이 잘린다. 높이를 풀어 내용만큼 늘리고 세로 1단으로 되돌린다.
-   (PC·태블릿은 축소 모드가 맡는다 — 위 .is-scaled 참고) */
-@media (max-width: 767px) {
+/* ================================================================
+   인증 배지 이미지 폭 상한 — 가로로 긴 배지가 옆 칸을 밀어내는 것 방지
+
+   배지 칸(.div-block-81)은 높이만 200px 로 고정돼 있고 이미지 쪽에는
+   폭 제한이 없다(.cert_shedow 가 max-width:none). 그래서 원본이 세로로
+   긴 AAHA(300×375 → 160×200) 와 정사각인 VECCS(1575×1575 → 200×200) 는
+   자리를 얌전히 차지하는데, 원본이 가로로 긴 고양이 인증 CFC
+   (1311×697) 만 높이 200px 에 맞추다 보니 폭이 376px 까지 벌어진다.
+
+   옆의 빨간 설명 상자(.div-block-79-copy)는 34vw 고정폭이라, 둘을 합친
+   가로줄이 카드 안쪽 폭을 넘긴다. 그 줄은 가운데 정렬(.aaha-box 의
+   justify-content:center)이라 좌우로 대칭으로 삐져나가고, 왼쪽은 배지가
+   여백을 뚫고 나오고 오른쪽은 빨간 상자가 카드 밖으로 잘려 나갔다.
+
+   폭 상한을 200px(= 정사각 VECCS 배지와 같은 폭)로 두면 가로로 긴
+   배지도 다른 인증과 똑같은 자리만 차지하고, 높이는 auto 라 원본 비율
+   그대로 유지된다. AAHA(160px) / VECCS(200px) 는 이미 상한 이하여서
+   렌더 결과가 전혀 바뀌지 않음.
+
+   ⚠️ height 를 고정하고 폭만 줄이면 안 됨 — 그러면 이미지가 가로로
+   눌려 비율이 깨진다. 반드시 height:auto + max-height 로 걸 것. */
+.helix-cert-modal__slide img.cert_shedow {
+  max-width: 200px !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+}
+/* 폭 상한에 걸린 배지는 200px 칸 안에서 세로로 여백이 남는다 → 가운데로.
+   (AAHA·VECCS 는 칸 높이를 꽉 채우므로 영향 없음) */
+.helix-cert-modal__slide .div-block-81 {
+  align-items: center;
+}
+
+/* ≤991px — 카드가 디자인 폭(960px)보다 좁아지는 구간(태블릿 + 모바일).
+   상세 섹션이 height:540px 로 고정돼 있어 폭이 줄면 내용이 잘림.
+   높이를 풀어 내용만큼 늘리고 세로 스크롤로 넘긴다.
+   (데스크톱은 카드가 정확히 960×540 이라 기본 규칙 그대로 둠) */
+@media (max-width: 991px) {
   /* 세로 1단 기준으로 전환.
      섹션을 flex 세로로 두면 안쪽 묶음(.div-block-230: flex:1 +
      space-between)이 화면 높이를 채우면서 구분선+로고가 바닥에 붙는다.
