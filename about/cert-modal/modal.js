@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.8)
+   About 인증 카드 "+" 상세보기 모달 (v1.7)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -53,12 +53,6 @@
    열든 AAHA 레드가 나오고, 고양이만 구분선·제목이 핑크라 상자 안에서 색이
    따로 놀던 문제. 모달에 data-cert(슬러그)를 달아 modal.css 가 인증별로
    가른다.
-
-   v1.8 — 세 인증 표지의 마크 크기 규칙을 하나로 통일. v1.6·v1.7 을 거치며
-   인증마다 규칙이 달라졌고(AAHA 200px 상한 / 응급 높이 맞춤 / 고양이 폭 40%),
-   마크 폭이 제각각이라 옆 제목 칸의 폭도 인증마다 달라져 제목 줄바꿈이 따로
-   놀았다. 이제 셋 다 "옆 덩어리 높이에 맞추되 가로줄의 46% 를 넘지 않음" 한
-   규칙을 쓴다.
    ================================================================ */
 
 (function () {
@@ -275,22 +269,27 @@
      오른쪽이 좁아지면 글줄이 늘어 다시 높아진다 — 그래서 한 번에 맞추지
      않고 몇 번 되풀이해 수렴시킨다.
 
-     v1.8 — 세 인증에 같은 규칙을 쓴다. 그전에는 인증마다 규칙이 달라(AAHA 는
-     손대지 않아 200px 상한, 응급은 높이 맞춤, 고양이는 가로줄의 40% 폭) 마크
-     크기가 제각각이었고, 그만큼 옆 제목 칸의 폭도 인증마다 달라져 제목 줄바꿈이
-     따로 놀았다. 특히 고양이는 마크가 가장 넓어 제목 칸이 제일 좁았다.
+     마크 원본 비율이 인증마다 달라 맞추는 방식을 둘로 나눈다.
 
-     공통 규칙: 마크 높이를 옆 덩어리에 맞추되, 폭이 가로줄의 maxRowRatio 를
-     넘으면 거기서 멈춘다. 마크 비율이 인증마다 달라도(AAHA 300×375 세로,
-     응급 1575×1575 정사각, 고양이 1311×697 가로) 이 한 규칙으로 다 커버된다 —
-     가로로 긴 마크만 폭 상한에 먼저 걸려 높이가 옆보다 낮아지므로, 그 경우엔
-     align 으로 윗변을 제목 윗변에 맞춘다. */
-  var COVER_MARK_FIT = { maxRowRatio: 0.46, align: 'flex-start' };
+     - match : 마크 높이를 옆 덩어리에 맞춘다. 정사각(응급 1575×1575)처럼
+               높이를 키워도 폭이 감당되는 마크용.
+     - width : 마크 폭을 가로줄의 일정 비율로 잡고 높이는 비율대로 따라간다.
+               가로로 긴 마크(고양이 1311×697)는 높이를 맞추면 폭이 높이의
+               1.88배까지 벌어져 옆 글칸이 지나치게 좁아진다. 대신 지금보다
+               넉넉히 키운다. 높이가 옆 덩어리보다 낮을 수밖에 없으므로
+               align 으로 세로 위치를 정한다 — flex-start 면 마크 윗변이
+               제목 윗변과 나란해진다.
+
+     AAHA(세로로 긴 300×375)는 아직 손대지 않는다. */
+  var COVER_MARK_FIT = {
+    '/emergency-cert': { mode: 'match', maxRowRatio: 0.46 },
+    '/cat-cert':       { mode: 'width', rowRatio: 0.40, align: 'flex-start' }
+  };
 
   function fitCoverMark(slide) {
     if (!slide || isMobileView()) return;   /* 휴대폰은 세로 1단이라 해당 없음 */
-    if (DETAIL_SLUGS.indexOf(currentSlug) === -1) return;
-    var cfg = COVER_MARK_FIT;
+    var cfg = COVER_MARK_FIT[currentSlug];
+    if (!cfg) return;
 
     var sec = slide.firstElementChild;
     if (!sec) return;
@@ -334,9 +333,15 @@
     img.style.setProperty('width', 'auto', 'important');
     img.style.setProperty('height', '100%', 'important');
 
-    /* 폭 상한에 걸리는 마크(가로로 긴 고양이)는 높이가 옆 덩어리보다 낮아진다
-       — 그때 마크가 세로 가운데로 뜨지 않고 윗변이 제목 윗변과 나란하도록. */
-    if (cfg.align) cell.style.setProperty('align-self', cfg.align, 'important');
+    /* 가로로 긴 마크 — 폭을 기준으로 잡는다. 옆 높이를 쫓아가지 않으므로
+       되풀이할 것도 없다. */
+    if (cfg.mode === 'width') {
+      var w = Math.round(rowWidth * cfg.rowRatio);
+      cell.style.setProperty('width', w + 'px', 'important');
+      cell.style.setProperty('height', Math.round(w / ratio) + 'px', 'important');
+      if (cfg.align) cell.style.setProperty('align-self', cfg.align, 'important');
+      return;
+    }
 
     /* 마크가 커지면 오른쪽이 좁아져 다시 높아진다 — 몇 번 되풀이해 수렴 */
     var maxMarkWidth = rowWidth * cfg.maxRowRatio;
