@@ -35,6 +35,12 @@
        about DOM 마커(.about-heading 등)를 가질 수 있다. DOM 마커보다 경로를
        먼저 가려야 디스커버 트래픽이 about 으로 섞이지 않는다. */
     if (/discover/.test(p)) return 'discover';
+    /* 응급증상 페이지 — 실제 슬러그가 /symptoms 라서 'emergency' 라는 글자를
+       찾는 방식으로는 못 잡는다. 이걸 빠뜨려 응급 방문이 전부 home 으로
+       집계되고 있었다(홈은 부풀고 응급은 0으로 보임).
+       (^|/)(symptoms|emergency)($|/) 로 인증 상세(/emergency-cert)는 제외. */
+    if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
+        document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
     /* FAQ 페이지 — 경로/DOM 마커로 우선 판정(안 그러면 home 으로 오분류됨) */
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';

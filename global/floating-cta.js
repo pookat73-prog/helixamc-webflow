@@ -289,11 +289,18 @@
   function ctaPage() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
+    /* 응급증상은 슬러그가 /symptoms — 아래 /emergency|응급/ 만으로는 안 잡혀
+       상담 CTA 가 전부 page:'home' 으로 찍히고 있었다. 다른 측정 모듈
+       (scroll-depth.js / section-reach.js) 과 동일 판정으로 통일. */
+    if (/(^|\/)(symptoms|emergency|응급)(\/|$)/.test(p) ||
+        document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
+    /* FAQ 판정이 아예 없어서 FAQ 페이지의 상담 CTA 가 page:'home' 으로
+       찍히고 있었다. 다른 측정 모듈과 동일 조건으로 추가. */
+    if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초|seoco/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
-    if (/emergency|응급/.test(p)) return 'emergency';
     return 'home';
   }
   var CTA_PAGE = ctaPage();

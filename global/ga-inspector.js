@@ -45,12 +45,14 @@
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
+    /* 응급증상은 슬러그가 /symptoms — 다른 측정 모듈과 동일 판정으로 통일 */
+    if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
+        document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
-    if (/emergency|응급/.test(p)) return 'emergency';
     return 'home';
   }
   var PAGE = pageKey();
