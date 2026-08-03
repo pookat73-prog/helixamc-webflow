@@ -1,5 +1,5 @@
 /* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v2.2)
+   About 인증 카드 "+" 상세보기 모달 (v2.3)
 
    동작:
    - About 페이지에서 인증 카드의 "+" 버튼(컴포넌트 "동그라미+블루")은
@@ -89,6 +89,13 @@
    글꼴은 스크립트가 실행되면서 글꼴 규칙을 문서에 넣어주는 방식인데, 틀 안에서는
    스크립트를 일부러 안 돌리기 때문. 스크립트는 계속 막아둔 채, 바깥 페이지에 이미
    들어와 있는 글꼴 규칙만 골라 틀 안으로 복사한다 (copyFontRules).
+
+   v2.3 — v2.2 로는 글꼴이 안 잡혔다. 이 사이트는 글꼴 스타일시트를 주소로
+   불러오지 않고(바깥에도 typekit 링크 0개) 스크립트가 규칙을 문서에 직접
+   심는 방식이라, 태그를 복사하는 것만으로는 못 가져온다. 그래서 세 갈래로
+   가져온다 — 링크 복사 / 문서에 들어와 있는 @font-face 규칙을 글자로 옮겨
+   심기 / 이미 받아둔 글꼴 객체를 틀 안 문서에 등록. 아울러 한글이 단어
+   중간에서 끊기던 것(합→니다)도 띄어쓰기에서만 끊기도록 바꾼다.
    ================================================================ */
 
 (function () {
@@ -420,21 +427,43 @@
   function copyFontRules(idoc) {
     var head = idoc.head || idoc.body;
     if (!head) return;
-    var picks = [];
 
+    /* (1) 주소로 불러오는 글꼴 스타일시트는 링크째 복사 */
     Array.prototype.forEach.call(
       document.querySelectorAll('link[rel="stylesheet"]'),
       function (l) {
-        if (/typekit|fonts\.googleapis|fonts\.gstatic/i.test(l.href || '')) picks.push(l);
+        if (/typekit|fonts\.googleapis|fonts\.gstatic/i.test(l.href || '')) {
+          try { head.appendChild(idoc.importNode(l, true)); } catch (_) {}
+        }
       }
     );
-    Array.prototype.forEach.call(document.querySelectorAll('style'), function (el) {
-      if (/@font-face/i.test(el.textContent || '')) picks.push(el);
-    });
 
-    picks.forEach(function (node) {
-      try { head.appendChild(idoc.importNode(node, true)); } catch (_) {}
+    /* (2) 문서에 들어와 있는 @font-face 규칙을 글자로 옮겨 심기.
+       스크립트가 넣은 규칙은 <style> 안에 글자로 남지 않고 메모리에만 있는
+       경우가 있어(insertRule), 태그를 복사하는 것만으로는 안 잡힌다. */
+    var css = '';
+    Array.prototype.forEach.call(document.styleSheets, function (sheet) {
+      var rules = null;
+      try { rules = sheet.cssRules; } catch (_) { return; }   /* 외부 도메인은 못 읽음 */
+      if (!rules) return;
+      Array.prototype.forEach.call(rules, function (r) {
+        if (r && r.type === 5) css += r.cssText + '\n';       /* 5 = @font-face */
+      });
     });
+    if (css) {
+      var st = idoc.createElement('style');
+      st.textContent = css;
+      head.appendChild(st);
+    }
+
+    /* (3) 이미 받아둔 글꼴 자체를 틀 안 문서에도 등록.
+       (1)(2) 로 못 잡는 방식 — 스크립트가 글꼴 객체만 만들어 넣는 경우 —
+       까지 커버한다. 같은 사이트 문서라 글꼴 파일을 새로 받지 않는다. */
+    try {
+      document.fonts.forEach(function (ff) {
+        try { idoc.fonts.add(ff); } catch (_) {}
+      });
+    } catch (_) {}
   }
 
   function showIframeSection(idx) {
@@ -497,9 +526,20 @@
       var st = idoc.createElement('style');
       st.textContent =
         'html,body{margin:0!important;padding:0!important;overflow:hidden!important}' +
-        'body > *{display:none!important}';
+        'body > *{display:none!important}' +
+        /* 한글은 브라우저 기본값이 "글자 사이 아무 데서나 줄바꿈" 이라, 글줄이
+           한 칸만 모자라도 "합니다." 가 "합 / 니다" 로 끊긴다. 띄어쓰기에서만
+           끊기도록. */
+        'body{word-break:keep-all!important}';
       (idoc.head || idoc.body).appendChild(st);
       copyFontRules(idoc);
+      /* 바깥 페이지 글꼴이 늦게 도착하면 그때 한 번 더 옮겨 심는다 */
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+          copyFontRules(idoc);
+          layoutIframe();
+        }).catch(function () {});
+      }
 
       iframeSections = Array.prototype.slice.call(
         idoc.querySelectorAll('section.cert-modal-frame')
