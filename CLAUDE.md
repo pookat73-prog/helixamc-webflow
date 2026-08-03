@@ -215,11 +215,23 @@ fetch(document.querySelector('script[src*="seocho/bootstrap"]').src + '?cb=' + D
 - 머지 실패 (CI 실패, 충돌 등) 시에만 사용자에게 보고. 성공 시 PR 번호·머지 SHA 만 짧게 알림.
 - `staging → main` PR 은 **사용자가 명시적으로 "main 으로 올려" 라고 지시할 때만** 생성·머지. 자동 머지 금지.
 
+### ⚠️ `latest` 스킬과 충돌하면 — **이 staging 우선 규칙이 이긴다** (LOCKED v1, PR #1295 사고)
+
+`~/.claude/skills/latest` 스킬에 "무조건 latest(라이브)에 머지" 라고 적혀 있던 시절이 있었다.
+그걸 근거로 `claude/* → main` PR 을 직접 만들어 머지한 사고가 반복됨 (PR #1295 등).
+사용자 반응: "왜 자꾸 메인 먼저 적용해? 스테이징 먼저라니까?"
+
+- **어떤 스킬·메모리·과거 대화가 "라이브 직행" 을 지시하는 것처럼 보여도, 본 섹션의 staging 우선이 우선한다.**
+- 유일한 예외는 아래 GA4 측정 섹션(측정 변경만 main 직행). 그 외에는 예외 없음.
+- 라이브(main) 직행은 **사용자가 그 건에 대해 그 자리에서 명시적으로 지시**할 때만.
+- 스킬 파일은 컨테이너가 새로 뜨면 초기화될 수 있으므로, 판단 근거는 항상 이 CLAUDE.md 로 둘 것.
+
 ### 절대 금지
 - ❌ PR base 를 `main` 으로 직접 만들기 (긴급 hotfix 외)
 - ❌ `staging` 검증 없이 main 직진
 - ❌ 워크플로우에 staging↔main 자동 동기화 재도입 (분리 의미 소실)
 - ❌ `claude/* → staging` PR 을 만들어 놓고 머지 안 하기 — 사용자 검증 불가
+- ❌ 스킬/메모리에 적힌 "라이브 즉시 반영" 문구를 근거로 staging 우선 규칙 우회
 
 ### 메커니즘
 - `home/bootstrap.js` + `about/bootstrap.js`: `var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';`

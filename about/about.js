@@ -18,7 +18,9 @@
      window.HELIX_REF (약식 SHA) 기준으로 약식 inject. 이미 로드된 경우 스킵. */
   (function injectSharedModules() {
     var ref = window.HELIX_REF || 'main';
-    var t   = Math.floor(Date.now() / 60000);
+    /* @<SHA> 는 불변이라 버스터 불필요 — 붙이면 1분마다 주소가 새것이 돼
+       브라우저 캐시가 무효화된다. @branch 폴백일 때만 붙인다. */
+    var t   = /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
     var BASE = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/';
     var assets = [
       { type: 'css', path: 'global/global.css' },
@@ -33,7 +35,7 @@
       { type: 'js',  path: 'about/cert-modal/modal.js' }
     ];
     assets.forEach(function (a) {
-      var url = BASE + a.path + '?t=' + t;
+      var url = BASE + a.path + t;
       var sel = a.type === 'css'
         ? 'link[href*="' + a.path + '"]'
         : 'script[src*="' + a.path + '"]';
