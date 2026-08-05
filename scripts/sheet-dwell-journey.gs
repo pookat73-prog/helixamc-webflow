@@ -87,7 +87,16 @@ function buildDwellJourney() {
   var events = parseEvents_(rows, since);
 
   if (!events.length) {
-    writeSheet_([['체류·동선'], [''], ['조회 기간에 기록이 없습니다.']]);
+    /* 왜 비었는지 바로 알 수 있게 근거를 같이 적는다 — 읽은 탭과 줄 수,
+       조회 기간. (예전에 빈 탭을 읽고 이유 없이 "없습니다" 만 나왔다) */
+    writeSheet_([
+      ['헬릭스 — 체류시간 · 동선'],
+      ['조회 기간에 기록이 없습니다.'],
+      ['원본에서 읽은 곳: ' + (LOG_SOURCE_NAME || '(못 찾음)') + ' / 원본 줄 수: ' + rows.length],
+      ['조회 기간: ' + periodText_(PERIOD_DAYS)],
+      ['기간을 넓히려면 스크립트 위쪽 PERIOD_DAYS 를 0 으로 바꾸세요 (전체 기간).']
+    ]);
+    toast_('기록을 찾지 못했습니다 — 탭 안의 안내를 확인해 주세요.');
     return;
   }
 
@@ -102,7 +111,7 @@ function buildDwellJourney() {
             '건은 제외 — 누가 누구인지 가를 수 없어 넣으면 동선이 뒤엉킵니다)';
   }
   out.push([head]);
-  out.push(['갱신 시각: ' + fmtDateTime_(new Date())]);
+  out.push(['갱신 시각: ' + fmtDateTime_(new Date()) + ' · 원본: ' + LOG_SOURCE_NAME]);
   out.push([]);
 
   pushBlock_(out, tableVisitSummary_(visits));
@@ -139,10 +148,31 @@ function toast_(msg) {
 /* ================================================================
    ① 로그 읽기 · 해석
    ================================================================ */
+/* 원본 로그 파일에서 '진짜 기록이 있는 탭' 을 찾아 읽는다.
+
+   처음엔 그냥 첫 번째 탭(getSheets()[0])을 읽었는데, 로그 파일의 첫
+   탭이 비어 있어서 "기록이 없습니다" 만 나왔다. 탭 순서나 이름이
+   언제든 바뀔 수 있으니, ① 머리글에 '이벤트명' 이 있는 탭을 먼저 찾고
+   ② 없으면 줄 수가 가장 많은 탭을 쓴다. */
+var LOG_SOURCE_NAME = '';   /* 어느 탭을 읽었는지 — 시트 맨 윗줄에 적는다 */
+
 function readLog_() {
-  var sh = SpreadsheetApp.openById(LOG_SPREADSHEET_ID).getSheets()[0];
-  var values = sh.getDataRange().getValues();
-  return values;
+  var sheets = SpreadsheetApp.openById(LOG_SPREADSHEET_ID).getSheets();
+  var best = null, bestRows = -1;
+
+  for (var i = 0; i < sheets.length; i++) {
+    var sh = sheets[i];
+    var rows = sh.getLastRow();
+    if (rows < 2) continue;
+
+    var head = sh.getRange(1, 1, 1, Math.min(8, sh.getLastColumn() || 1)).getValues()[0].join('|');
+    if (head.indexOf('이벤트명') >= 0) { best = sh; bestRows = rows; break; }
+    if (rows > bestRows) { best = sh; bestRows = rows; }
+  }
+
+  if (!best) { LOG_SOURCE_NAME = '(빈 파일)'; return []; }
+  LOG_SOURCE_NAME = best.getName() + ' 탭 ' + bestRows + '줄';
+  return best.getDataRange().getValues();
 }
 
 /** 한 줄을 {t, name, page, device, sid, step, prev, source, activeSec} 로 */
@@ -458,15 +488,32 @@ function pushBlock_(out, rows) {
 /* ================================================================
    ④ 잔심부름
    ================================================================ */
+/* 시간 칸을 밀리초로. 날짜 칸일 수도, 글자일 수도, 엑셀식 숫자일 수도 있어
+   세 가지를 모두 받아준다. 못 읽으면 0 (그 줄은 건너뜀). */
 function toMillis_(v) {
-  if (v instanceof Date) return v.getTime();
-  if (typeof v === 'number' && v > 0) return Math.round((v - 25569) * 86400000);
-  var s = String(v || '').trim();
-  if (!s || /^시간$/.test(s)) return 0;
-  var m = s.match(/^(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})[ T](\d{1,2}):(\d{2})(?::(\d{2}))?/);
-  if (m) {
-    return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], m[6] ? +m[6] : 0).getTime();
+  /* 날짜 객체 — instanceof 대신 getTime 유무로 판정(환경 차이에 안전) */
+  if (v && typeof v.getTime === 'function') {
+    var ms = v.getTime();
+    return isNaN(ms) ? 0 : ms;
   }
+  if (typeof v === 'number' && v > 0) return Math.round((v - 25569) * 86400000);
+
+  var s = String(v || '').trim();
+  if (!s || s === '시간') return 0;
+
+  /* 2026-07-31 14:59:46 / 2026.7.31 14:59 / 2026/7/31T14:59 */
+  var m = s.match(/^(\d{4})[-.\/\s]+(\d{1,2})[-.\/\s]+(\d{1,2})[\sT]+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], m[6] ? +m[6] : 0).getTime();
+
+  /* 2026. 8. 1 오전 11:20:29 (한국어 표기) */
+  var k = s.match(/^(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})\.?\s*(오전|오후)?\s*(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if (k) {
+    var h = +k[5];
+    if (k[4] === '오후' && h < 12) h += 12;
+    if (k[4] === '오전' && h === 12) h = 0;
+    return new Date(+k[1], +k[2] - 1, +k[3], h, +k[6], k[7] ? +k[7] : 0).getTime();
+  }
+
   var d = new Date(s);
   return isNaN(d.getTime()) ? 0 : d.getTime();
 }
