@@ -699,20 +699,26 @@ body > section.blackframe_image-h > section.clearframe_connect > div > div > div
 
 
 /* ================================================================
-   #cert — 인증 카드 3장 스크롤 진입 페이드 + 좌→우 살짝 슬라이드
-   - JS (about.js) 가 IntersectionObserver 로 .is-cert-in 부착
-   - stagger 80ms, transition 0.5s easeOutExpo (챠쟈쟉)
+   #cert — 인증 카드는 처음부터 그대로 붙어 있는다 (등장 효과 없음)
+
+   예전에는 AAHA 카드가 스크롤 진입 시 좌→우로 살짝 밀려들며 나타났다.
+   원래는 세 장 모두 순서대로 나타나게 만든 것인데, 셋 중 이 카드만
+   클래스 이름이 달라 실제로는 한 장만 움직였다 — 그래서 AAHA 카드만
+   유독 인터랙션이 걸린 것처럼 보였다. 사용자 지시로 걷어낸다.
+
+   about.js 가 붙이는 .is-cert-in 은 그대로 두되(그 흐름에 "+" 버튼
+   반짝임이 얹혀 있어 건드리면 같이 죽는다) 가리키는 규칙이 없으므로
+   아무 일도 하지 않는다.
+
+   !important 로 못 박는 이유: 이 카드에 Webflow 쪽 인터랙션이 걸려
+   있으면 페이지 진입 때 인라인으로 투명도·이동값을 박는다. 그것까지
+   무력화해야 "가만히 붙어 있는" 상태가 된다.
    ================================================================ */
-#cert .about_contents_box_ahha {
-  opacity: 0;
-  transform: translateX(-14px);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-}
+#cert .about_contents_box_ahha,
 #cert .about_contents_box_ahha.is-cert-in {
-  opacity: 1;
-  transform: translateX(0);
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
 }
 
 /* 인증 카드 동그라미 버튼 (.cert-plus) — 스태거 끝나고 셋다 동시에 한번 버언쩍.
