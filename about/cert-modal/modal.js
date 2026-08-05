@@ -343,9 +343,9 @@
   /* 덩이 사이 간격 — 상세 페이지는 간격도 화면폭 비례(1.3vw 등)로 잡혀 있어
      휴대폰에선 5px 밖에 안 된다(같은 값이 PC 에선 19px). 원래 비율
      (제목↔본문은 좁게, 덩이끼리는 넓게)은 지키면서 배로 늘린다. */
-  var MOBILE_GAP_SCALE = 2.2;
-  var MOBILE_MIN_GAP = 6;
-  var MOBILE_MAX_GAP = 44;
+  var MOBILE_GAP_SCALE = 3.2;
+  var MOBILE_MIN_GAP = 8;
+  var MOBILE_MAX_GAP = 60;
 
   function fitMobileSection(sec, win) {
     if (!sec || sec.getAttribute('data-helix-mobile-fit') === '1') return;
@@ -868,7 +868,7 @@
                - 파란 영문 제목(Why? / How? / What?) 3.3vw → 5.6vw
                - 표지 빨간 약칭·영문 이름
                - 구분선 아래 병원 로고 19% → 40% */
-          '.writing-english-copy-l{font-size:5.6vw!important;line-height:1.15!important}' +
+          '.writing-english-copy-l{font-size:8vw!important;line-height:1.15!important}' +
           '.text-block-25{font-size:4.4vw!important;line-height:1.25!important}' +
           '.text-block-25-copy-copy{font-size:3.1vw!important;line-height:1.35!important}' +
           '.image-31{max-width:40%!important}' +
