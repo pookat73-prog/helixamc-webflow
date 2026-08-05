@@ -214,6 +214,7 @@ jobs:
             "global/floating-cta.css"
             "global/floating-cta.js"
             "global/scroll-depth.js"
+            "global/page-time.js"
             "global/section-reach.js"
             "services/services-ga.js"
             "global/popup.css"

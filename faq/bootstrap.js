@@ -70,6 +70,8 @@
     'global/floating-cta.js',
     /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이) */
     'global/scroll-depth.js',
+    /* 페이지 체류시간 — 이 페이지에 실제로 몇 초 있었나 */
+    'global/page-time.js',
     /* FAQ 전용 GA4 측정 — 질환/일반 탭·필터·항목 펼침·페이지 이동 */
     'faq/faq-ga.js',
     /* FAQ 하단 CTA '전화 문의하기' — 확인창 → 복사 → tel: 연결 + GA4 */

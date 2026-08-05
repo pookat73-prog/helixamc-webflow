@@ -123,12 +123,35 @@
     return s;
   }
 
+  /* ── 이번 방문에서 몇 번째로 연 페이지인가 (동선) ──────────────
+     sid 만으로는 "같은 방문" 인 것만 알 뿐, 어떤 순서로 옮겨 다녔는지는
+     시각(초 단위) 으로 추측해야 했다. 같은 초에 여러 이벤트가 찍히면
+     순서가 뒤섞여 동선이 어긋난다. 그래서 페이지를 열 때마다 번호를
+     매기고(step), 직전 페이지 주소(prev) 를 함께 싣는다.
+     → 시트에서 sid 로 묶고 step 으로 정렬하면 동선이 그대로 나오고,
+       prev → page 쌍을 세면 '어디서 어디로 갔나' 가 집계된다. */
+  var PATH   = location.pathname || '/';
+  var stepNo = 1;
+  var prevPath = '';
+
+  function bumpPage() {
+    var s = ensure();
+    s.n = (typeof s.n === 'number' ? s.n : 0) + 1;
+    prevPath = s.last || '';         /* 직전에 보던 페이지 (첫 페이지면 빈값) */
+    s.last = PATH;
+    stepNo = s.n;
+    set(KEY_SESS, JSON.stringify(s));
+    log('페이지 순서', stepNo, '| 직전', prevPath || '(없음)');
+  }
+
   /* ── 모든 event 파라미터에 제자리 주입 ──────────────────────── */
   function decorate(params) {
     if (!params || typeof params !== 'object') return params;
     var s = ensure();
     /* 이미 값이 있으면 덮지 않는다 — 개별 모듈이 의도적으로 넣은 값 보호 */
     if (!params.sid)     params.sid     = s.id;
+    if (!params.step)    params.step    = stepNo;
+    if (!params.prev && prevPath) params.prev = prevPath;
     if (!params.source)  params.source  = s.src;
     if (!params.visitor) params.visitor = s.visitor;
     if (!params.landing) params.landing = s.land;
@@ -167,6 +190,8 @@
     }, 100);
   }
 
-  ensure();   /* 페이지 진입 즉시 방문 확보(첫 이벤트 전에 유입처 고정) */
+  /* 페이지 진입 즉시 방문 확보(첫 이벤트 전에 유입처 고정) +
+     이번 페이지의 순서 번호 확정 */
+  bumpPage();
   log('준비 완료');
 })();
