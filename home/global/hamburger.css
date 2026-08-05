@@ -49,16 +49,25 @@
   padding: 0;
   z-index: 10001;
   opacity: 0;
+  /* visibility 까지 끄는 이유: 터치 기기에서 X 를 탭해 닫으면 그 요소에 :hover
+     상태가 그대로 눌어붙어(다음 탭 전까지 안 풀림) 아래 hover 규칙이 계속 먹혀
+     닫은 뒤에도 X 가 화면에 남아 있었음. opacity 만으론 못 막아서 visibility 로
+     확실히 지움. 0.2s 지연을 줘 페이드아웃은 그대로 보이게 함. */
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
 }
 
 .hx-menu-close.is-visible {
   opacity: 0.55;
+  visibility: visible;
   pointer-events: auto;
+  transition: opacity 0.2s ease, visibility 0s linear 0s;
 }
 
-.hx-menu-close:hover { opacity: 1; }
+/* hover 밝기는 "열려 있을 때"만 — .is-visible 없이 두면 닫은 뒤에도
+   눌어붙은 :hover 때문에 X 가 opacity 1 로 되살아남 */
+.hx-menu-close.is-visible:hover { opacity: 1; }
 
 .hx-menu-close::before,
 .hx-menu-close::after {
