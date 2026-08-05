@@ -116,9 +116,25 @@
      (set_attributes → "does not support attributes"), 버튼마다 끄고 켜는 게
      불가능하다. 그래서 "무슨 버튼인가" 대신 "어디로 가는 링크인가"로 판정.
 
-     아직 비공개인 페이지(예: 특화진료 /specialty-care)는 아래 목록에
-     없으므로 그대로 토스트가 뜬다. 페이지를 열 때마다 여기 한 줄 추가. */
+     아직 비공개인 페이지는 아래 목록에 없으므로 그대로 토스트가 뜬다.
+     페이지를 열 때마다 여기 한 줄 추가. */
   var LIVE_PATHS = ['/symptoms'];
+
+  /* ── 스테이징에서만 여는 페이지 (도메인 게이트) ──
+     특화진료(/specialty-care)는 아직 정식 공개 전이다. 정식 사이트에서는
+     '준비중입니다' 토스트를 그대로 유지하고, 스테이징(*.webflow.io)에서만
+     실제 페이지로 이동시킨다.
+
+     왜 브랜치를 가르지 않고 도메인으로 판정하나: staging 에만 두면
+     나중에 다른 작업을 staging→main 으로 승격할 때 이게 딸려 올라가
+     의도치 않게 정식에 공개된다. 도메인 게이트는 코드가 main 에 올라가도
+     정식 도메인에서는 게이트에 걸려 계속 닫혀 있다. (GA4 측정과 같은 방식)
+
+     정식 공개 시점에는 이 블록을 지우고 위 LIVE_PATHS / 아래 LIVE_NAV 에
+     직접 한 줄씩 넣으면 된다. */
+  if (/\.webflow\.io$/i.test(location.hostname)) {
+    LIVE_PATHS.push('/specialty-care');
+  }
 
   function isLivePathLink(node) {
     if (!node || !node.closest) return false;
@@ -265,6 +281,13 @@
   var LIVE_NAV = [
     { text: '진료과목', url: '/services' }
   ];
+
+  /* 스테이징에서만 여는 메뉴 — 위 LIVE_PATHS 의 도메인 게이트와 같은 이유.
+     헤더와 햄버거 메뉴 양쪽 모두 텍스트가 '특화진료' 라 이 한 줄로 둘 다 열린다.
+     정식 공개 시점에 이 블록을 지우고 위 배열에 직접 넣으면 됨. */
+  if (/\.webflow\.io$/i.test(location.hostname)) {
+    LIVE_NAV.push({ text: '특화진료', url: '/specialty-care' });
+  }
   function markLiveNav() {
     var cands = document.querySelectorAll('a,[data-coming-soon]');
     Array.prototype.forEach.call(cands, function (el) {
