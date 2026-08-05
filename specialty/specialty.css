@@ -88,6 +88,19 @@
   .spec-item-cta    { transform: none; }
 }
 
+/* ── 섹션이 넘칠 때만 늘어나게 (푸터 침범 방지) ──
+   이 섹션은 원래 height:100vh 로 '정확히 한 화면' 고정이라, 내용이 한 화면을
+   넘으면 늘어나지 않고 그대로 아래(푸터)로 삐져나온다. 두 경우에 실제로 넘친다.
+     · 태블릿(768~991px): 마우스가 없어 설명을 처음부터 다 펼쳐 두는데,
+       이 폭에서는 섹션이 아직 100vh 고정 (휴대폰 767px 이하는 원래 auto)
+     · 데스크톱: 마우스를 올린 항목이 펼쳐지며 그 열이 약 38px 늘어남
+   '정확히 100vh' → '최소 100vh' 로 바꾸면 평소 보기는 그대로면서
+   넘칠 때만 늘어난다. 안 넘치면 이전과 렌더 결과가 동일. */
+.whiteframe-for-full-frame {
+  height: auto;
+  min-height: 100vh;
+}
+
 /* ── 동작 최소화 설정을 켠 사용자 ── */
 @media (prefers-reduced-motion: reduce) {
   .spec-item-wrap::before,
