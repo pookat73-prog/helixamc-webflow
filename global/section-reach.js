@@ -33,6 +33,10 @@
   /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징(*.webflow.io) 은 원천 skip
      (CLAUDE.md GA4 도메인 게이트 정책과 동일) */
   if (/\.webflow\.io$/i.test(location.hostname)) return;
+  /* 운영자 제외 — global/measure-gate.js 가 켜 둔 표시가 있으면 측정 안 함
+     (?helix-noga=1 로 켠 브라우저) */
+  if (window.__helixNoMeasure) return;
+
 
   var DEBUG = /[?&]debug-ga=1/.test(location.search);
   function log() {

@@ -73,6 +73,9 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 운영자 제외 스위치 — ?helix-noga=1 로 켠 브라우저는 측정 안 함.
+       gtag 가 만들어지기 전에 가로채야 해서 ga4-base 보다 앞에 둔다. */
+    'global/measure-gate.js',
     /* GA4 base loader — gtag.js 본체. 반드시 scroll-depth.js 보다 먼저 로드.
        다른 모든 페이지 모듈의 gtag('event', ...) 호출이 안전하게 큐잉되도록
        FILES 배열의 가장 첫 줄에 둠. */
@@ -93,6 +96,8 @@
     'global/floating-cta.css',
     'global/floating-cta.js',
     'global/scroll-depth.js',
+    /* 페이지 체류시간 — 이 페이지에 실제로 몇 초 있었나 */
+    'global/page-time.js',
     'global/popup.css',
     'global/popup.js',
     'global/top-button.css',

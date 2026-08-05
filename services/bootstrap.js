@@ -23,6 +23,9 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 운영자 제외 스위치 — ?helix-noga=1 로 켠 브라우저는 측정 안 함.
+       gtag 가 만들어지기 전에 가로채야 해서 ga4-base 보다 앞에 둔다. */
+    'global/measure-gate.js',
     /* ── 측정 (다른 페이지와 동일 구성) ──────────────────────────
        이 페이지는 그동안 측정 파일이 하나도 없어 방문·스크롤·클릭이
        통째로 기록되지 않았다. ga4-base 가 gtag 를 만들고, session 이
@@ -33,6 +36,8 @@
     'global/sheet-log.js',
     'global/ga-inspector.js',
     'global/scroll-depth.js',
+    /* 페이지 체류시간 — 이 페이지에 실제로 몇 초 있었나 */
+    'global/page-time.js',
     'global/section-reach.js',
     /* 진료과 카드 클릭(어느 과에 관심 있는지) — 이 페이지 전용 */
     'services/services-ga.js',
