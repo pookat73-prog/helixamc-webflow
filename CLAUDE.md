@@ -150,6 +150,52 @@ fetch(document.querySelector('script[src*="seocho/bootstrap"]').src + '?cb=' + D
 
 ---
 
+## 🔤 영문 공식 폰트 굵기 — Adobe 가변 폰트 + Webflow 한계 (LOCKED v1)
+
+**증상**: Webflow 디자이너에서 영문 공식 폰트의 Weight 드롭다운에 **Normal 하나만** 뜸. 사용자가 "최적화하다가 굵기 베리에이션이 날아갔냐"고 물음.
+
+**원인**: 리포 코드와 무관. Webflow 변수 `영문 공식 폰트` 가 가리키는 실제 폰트가 Adobe Fonts 의 **가변(variable) 판본** `peridot-pe-variable`. Webflow 는 Adobe 가변 폰트의 굵기 축을 못 읽어 굵기 목록을 만들지 못함 (Webflow 쪽 알려진 한계).
+
+### 폰트 변수 대응표 (Webflow Variables)
+
+| 변수명 | 실제 폰트 |
+|---|---|
+| 기본 공식 폰트 | `ds-endendend` |
+| 기본 일반 폰트 | `Noto Sans KR` |
+| 영문 일반 폰트 | `freight-sans-pro` |
+| **영문 공식 폰트** | **`peridot-pe-variable`** ← 가변 |
+| 숫자 필기체 | `p22-freely` |
+| Serif_Kr | `Vollkorn` |
+
+### 확정 해법 — 굵기 유틸리티 클래스
+
+`font-variation-settings` 로 굵기 축을 직접 지정. 값 자체는 **정상 렌더링됨** (실측 확인: 900 넣으니 캔버스에서 즉시 두꺼워짐).
+
+1. **기존 7개 클래스**엔 원래 굵기와 같은 값을 직접 심어둠 (디자인 변화 없음, 렌더링 보정용):
+   `.faq_cta-number` 700 / `.about_2026` 700 / `.heliix` 700 / `.faq-overline` 600 / `.spec-eyebrow` 600 / `.official-font_title_en` 400 / `.about_contents-title_blue` 400
+2. **사용자가 직접 굵기를 바꿀 때는 유틸리티 클래스**를 요소에 추가:
+   `en-w400` / `en-w500` / `en-w600` / `en-w700` / `en-w800`
+   - 각각 `font-variation-settings: "wght" N !important` + `font-synthesis-weight: none`
+   - `!important` 필수 — 없으면 기존 클래스와 명시도가 같아 순서 싸움이 남
+   - 사용자는 Selector 칸에 클래스만 붙였다 떼면 됨 (콤보 클래스로 잡히는 건 정상)
+
+`font-synthesis-weight: none` 은 브라우저가 가짜 굵기를 덧씌워 이중으로 두꺼워지는 걸 막음. 굵기 값 넣는 곳엔 항상 같이.
+
+### 시도했다가 실패한 방식 (재시도 금지)
+
+- **Adobe Fonts 에서 비가변 Peridot PE 추가** → 웹용은 가변 판본만 제공. 애초에 불가
+- **Webflow Custom properties 패널에 `font-variation-settings` 노출** → Webflow 가 이 속성을 패널에서 **감춤**. API 로 써넣어도 값은 저장·적용되지만 사용자 눈엔 안 보임 (`word-spacing` 같은 미지원 속성은 정상 노출됨 — 대조군)
+- **패널 자동완성으로 입력** → 목록에 `font-feature-settings` 만 있고 `font-variation-settings` 는 아예 없음. 사용자가 feature 쪽을 고르는 오입력 발생 (`"whgt"` 축 이름 오타도 동반)
+- **CSS 통째로 붙여넣기** (Webflow 공식 문서가 권하는 방법) → 이 속성은 안 먹음
+- **`--wght` CSS 변수를 손잡이로 두고 `var()` 참조** → `data_style_tool` 이 `--` 로 시작하는 속성명을 거부 (internal error)
+
+### 작업 시 주의
+
+- `data_*` REST 로 스타일 쓰는 동안 **사용자가 디자이너를 열어두면 서로 덮어씀**. 실제로 `.spec-eyebrow` 의 `font-size` 를 두고 충돌 발생 (사용자가 `0.7vw`→`11px` 로 바꾼 걸 Claude 가 되돌림). 쓰기 전 디자이너 닫아달라고 먼저 안내할 것
+- 굵기 없이 부모에게서 물려받는 클래스 8개(`.faq-cta_tel`, `.cert_info_title`, `.home_branch-card_call-number`, `.text-block-25` 등)는 **일부러 안 건드림**. 값을 박으면 현재 모습이 바뀔 수 있음
+
+---
+
 ## 🔎 SEO 구조화데이터 — **자동 로더 방식** (LOCKED v1, 사용자 확정)
 
 **방침**: 페이지별 JSON-LD(구조화데이터)는 Webflow head 에 **정적으로 붙여넣지 않고**, 각 페이지 head 에 심어둔 **작은 자동 로더**가 런타임에 `seo-snippets/<page>.html` 을 fetch 해서 `<script type="application/ld+json">` 만 뽑아 head 에 주입한다. → 슬러그·내용이 바뀌어도 **Webflow 에 다시 붙여넣을 필요 없음** (코드만 고치면 됨).
