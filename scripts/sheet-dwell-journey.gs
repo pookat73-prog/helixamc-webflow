@@ -25,11 +25,15 @@
 
    ── 쓰는 법 ──────────────────────────────────────────────────
    1) 요약 스프레드시트에서 [확장 프로그램] → [Apps Script]
-   2) 이 파일 내용을 통째로 붙여넣고 저장
-   3) 함수 목록에서 buildDwellJourney 를 골라 [실행]
+   2) 이 파일 내용을 통째로 붙여넣고 저장 (Ctrl+S)
+   3) 스프레드시트 탭으로 돌아가 브라우저 새로고침 (F5)
+   4) 상단 메뉴에 [📊 체류·동선] 이 생긴다 → [지금 새로 만들기] 클릭
       (처음 한 번은 권한 허용 창이 뜬다 — 본인 계정이므로 허용)
-   4) 스프레드시트로 돌아오면 [체류·동선] 탭이 생겨 있다
-   5) 매일 자동 갱신을 원하면 installDailyTrigger 를 한 번 실행
+   5) [체류·동선] 탭이 생기며 표가 채워진다
+
+   Apps Script 화면에서 직접 실행하는 방법도 그대로 남아 있다
+   (함수 목록에서 buildDwellJourney 선택 후 실행). 메뉴 쪽이 편해서
+   그걸 기본으로 안내한다.
 
    기간은 아래 PERIOD_DAYS 로 조절. 0 이면 전체 기간.
    ================================================================ */
@@ -56,6 +60,23 @@ var PAGE_LABEL = {
   emergency: '응급증상 /symptoms',
   services: '진료과목 /services'
 };
+
+/* ================================================================
+   메뉴 — 스프레드시트를 열 때 상단에 [📊 체류·동선] 을 붙인다
+   ================================================================
+   Apps Script 편집기의 실행 버튼을 찾아 들어가지 않아도, 시트 상단
+   메뉴에서 바로 돌릴 수 있게 하려는 것. 이 함수는 스프레드시트를
+   열 때 구글이 알아서 부른다(따로 실행할 필요 없음).
+   → 붙여넣고 저장한 뒤 시트를 새로고침(F5) 해야 메뉴가 나타난다. */
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('📊 체류·동선')
+    .addItem('지금 새로 만들기', 'buildDwellJourney')
+    .addSeparator()
+    .addItem('매일 아침 자동 갱신 켜기', 'installDailyTrigger')
+    .addItem('자동 갱신 끄기', 'removeDailyTrigger')
+    .addToUi();
+}
 
 /* ================================================================
    메인
@@ -90,15 +111,29 @@ function buildDwellJourney() {
   pushBlock_(out, tableVisitDetail_(visits));
 
   writeSheet_(out);
+  toast_('완료 — [' + OUT_SHEET_NAME + '] 탭에 방문 ' + visits.length + '건을 정리했습니다.');
 }
 
-/** 매일 아침 자동 갱신 트리거 설치 (한 번만 실행하면 됨) */
+/** 매일 아침 자동 갱신 켜기 */
 function installDailyTrigger() {
-  var all = ScriptApp.getProjectTriggers();
-  for (var i = 0; i < all.length; i++) {
-    if (all[i].getHandlerFunction() === 'buildDwellJourney') ScriptApp.deleteTrigger(all[i]);
-  }
+  removeDailyTrigger();
   ScriptApp.newTrigger('buildDwellJourney').timeBased().atHour(7).everyDays(1).create();
+  toast_('매일 아침 7시에 자동으로 새로 만듭니다.');
+}
+
+/** 자동 갱신 끄기 */
+function removeDailyTrigger() {
+  var all = ScriptApp.getProjectTriggers();
+  var n = 0;
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].getHandlerFunction() === 'buildDwellJourney') { ScriptApp.deleteTrigger(all[i]); n++; }
+  }
+  if (n) toast_('자동 갱신을 껐습니다.');
+}
+
+/** 화면 오른쪽 아래에 잠깐 뜨는 알림 */
+function toast_(msg) {
+  try { SpreadsheetApp.getActive().toast(msg, '체류·동선', 6); } catch (e) {}
 }
 
 /* ================================================================
