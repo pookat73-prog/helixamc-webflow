@@ -51,6 +51,9 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 운영자 제외 스위치 — ?helix-noga=1 로 켠 브라우저는 측정 안 함.
+       gtag 가 만들어지기 전에 가로채야 해서 ga4-base 보다 앞에 둔다. */
+    'global/measure-gate.js',
     /* GA4 base loader — gtag.js 본체. 다른 모듈의 gtag('event', ...) 호출이
        안전하게 큐잉되도록 FILES 배열 첫 줄에. (도메인 게이트로 스테이징 no-op) */
     'global/ga4-base.js',

@@ -38,6 +38,10 @@
     return;
   }
 
+  /* 운영자 제외 — global/measure-gate.js 가 켜 둔 표시가 있으면 측정 안 함
+     (?helix-noga=1 로 켠 브라우저) */
+  if (window.__helixNoMeasure) return;
+
   var GA_ID = 'G-PWCB5MVC32';
 
   /* Webflow Site Settings 의 GA4 통합이 켜져 있으면 Webflow 가 이미 동일

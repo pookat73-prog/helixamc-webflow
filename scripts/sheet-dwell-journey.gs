@@ -50,6 +50,16 @@ var OUT_SHEET_NAME = '체류·동선';
 /** 방문별 상세에 몇 개 방문까지 보여줄 것인가 */
 var DETAIL_LIMIT = 40;
 
+/* 빼고 싶은 방문의 표식(sid) 목록 — 운영자 본인이 둘러본 기록 지우기용.
+
+   앞으로 들어올 기록은 사이트의 제외 스위치(?helix-noga=1)로 막으면 되지만,
+   이미 쌓인 것은 여기서 빼야 한다. 4번 표 '방문별 동선 상세' 의 맨 오른쪽
+   '방문 표식' 칸에서 본인 방문(시각·동선을 보면 알아볼 수 있다)의 값을
+   복사해 아래에 따옴표로 감싸 쉼표로 이어 붙이면 된다.
+
+   예) var EXCLUDE_SIDS = ['msfi5ua2-0vv9m9', 'msf00002-zzzzzz']; */
+var EXCLUDE_SIDS = [];
+
 /** 페이지 키를 사람이 읽는 이름으로 */
 var PAGE_LABEL = {
   home: '홈 /',
@@ -106,6 +116,9 @@ function buildDwellJourney() {
   out.push(['헬릭스 — 체류시간 · 동선']);
   var head = periodText_(PERIOD_DAYS) + ' · 방문 ' + visits.length + '건 · 기록 ' +
              (events.length - visits.skippedEvents) + '건';
+  if (visits.excludedEvents) {
+    head += '   · 직접 빼기로 지정한 기록 ' + visits.excludedEvents + '건 제외';
+  }
   if (visits.skippedEvents) {
     head += '   (방문 표식이 없던 옛 기록 ' + visits.skippedEvents +
             '건은 제외 — 누가 누구인지 가를 수 없어 넣으면 동선이 뒤엉킵니다)';
@@ -223,10 +236,16 @@ function groupVisits_(events) {
   var bySid = {};
   var order = [];
   var skipped = 0;
+  var excluded = 0;
+
+  /* 빼기로 지정한 방문 표식 — 빠른 조회를 위해 표로 만들어 둔다 */
+  var drop = {};
+  for (var d = 0; d < EXCLUDE_SIDS.length; d++) drop[String(EXCLUDE_SIDS[d]).trim()] = true;
 
   for (var i = 0; i < events.length; i++) {
     var e = events[i];
     if (!e.sid) { skipped++; continue; }
+    if (drop[e.sid]) { excluded++; continue; }
     if (!bySid[e.sid]) { bySid[e.sid] = []; order.push(e.sid); }
     bySid[e.sid].push(e);
   }
@@ -236,6 +255,7 @@ function groupVisits_(events) {
 
   visits.sort(function (a, b) { return b.start - a.start; });
   visits.skippedEvents = skipped;
+  visits.excludedEvents = excluded;
   return visits;
 }
 
@@ -421,7 +441,7 @@ function tableFlow_(visits) {
 function tableVisitDetail_(visits) {
   var rows = [
     ['4. 방문별 동선 상세 (최근 ' + DETAIL_LIMIT + '개 방문)'],
-    ['시작 시각', '기기', '유입처', '페이지 수', '체류', '어떤 순서로 봤나']
+    ['시작 시각', '기기', '유입처', '페이지 수', '체류', '어떤 순서로 봤나', '방문 표식']
   ];
   var shown = 0;
   for (var i = 0; i < visits.length && shown < DETAIL_LIMIT; i++) {
@@ -436,10 +456,13 @@ function tableVisitDetail_(visits) {
       v.source || '',
       v.seq.length,
       secText_(v.durationSec),
-      path.join('  →  ')
+      path.join('  →  '),
+      v.sid
     ]);
   }
-  if (shown === 0) rows.push(['(표시할 방문이 없습니다)', '', '', '', '', '']);
+  if (shown === 0) rows.push(['(표시할 방문이 없습니다)', '', '', '', '', '', '']);
+  rows.push(['', '', '', '', '', '', '']);
+  rows.push(['※ 내 방문을 빼려면 그 줄의 \'방문 표식\' 값을 복사해, 스크립트 위쪽 EXCLUDE_SIDS 에 넣고 다시 새로 만드세요.']);
   return rows;
 }
 

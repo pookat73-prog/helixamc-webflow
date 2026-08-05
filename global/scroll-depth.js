@@ -24,6 +24,10 @@
   /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징(*.webflow.io)에선
      페이지뷰/스크롤 깊이 측정을 쏘지 않음 (정식 GA4 데이터 오염 방지). */
   if (/\.webflow\.io$/i.test(location.hostname)) return;
+  /* 운영자 제외 — global/measure-gate.js 가 켜 둔 표시가 있으면 측정 안 함
+     (?helix-noga=1 로 켠 브라우저) */
+  if (window.__helixNoMeasure) return;
+
 
   var DEBUG = /[?&]debug-ga=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[helix-ga]'].concat([].slice.call(arguments))); }

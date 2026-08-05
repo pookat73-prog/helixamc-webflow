@@ -25,6 +25,10 @@
 
   /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징은 원천 차단 */
   if (/\.webflow\.io$/i.test(location.hostname)) return;
+  /* 운영자 제외 — global/measure-gate.js 가 켜 둔 표시가 있으면 측정 안 함
+     (?helix-noga=1 로 켠 브라우저) */
+  if (window.__helixNoMeasure) return;
+
 
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbw4_teiXT692qgXtvKn9XfPuevpGGj6GxVodB-qvTZdLHMMhpaeP3UwHTtRVajoY-PB/exec';
 
