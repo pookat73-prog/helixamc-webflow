@@ -416,6 +416,42 @@
         k.style.setProperty('width', 'auto', 'important');
         k.style.setProperty('max-width', '100%', 'important');
       });
+
+      /* 세운 묶음 안 정리 — 옆으로 나란히 놓는 걸 전제로 짜여 있어서,
+         세로로 세우기만 하면 안쪽이 여전히 좁게 뭉친다.
+           - 설명 상자에 폭이 화면폭 비례(34vw)로 박혀 있음: PC(1440 기준)
+             에선 490px 이라 알맞지만 휴대폰에선 132px 밖에 안 된다
+           - 칸들이 "내용 폭만큼만" 잡히게 돼 있어 왼쪽에 몰림
+         → 글 상자는 폭을 채우고, 마크·이름·설명을 가운데로 모은다. */
+      el.style.setProperty('align-self', 'stretch', 'important');
+      el.style.setProperty('text-align', 'center', 'important');
+
+      var groupW = el.clientWidth || inner;
+      Array.prototype.forEach.call(el.querySelectorAll('*'), function (d) {
+        var ds;
+        try { ds = W.getComputedStyle(d); } catch (_) { return; }
+        if (!ds || ds.display === 'none') return;
+
+        if (/^(flex-start|start|baseline)$/.test(ds.alignSelf)) {
+          d.style.setProperty('align-self', 'stretch', 'important');
+        }
+        if ((ds.display === 'flex' || ds.display === 'inline-flex') &&
+            /^(flex-start|start)$/.test(ds.alignItems)) {
+          d.style.setProperty('align-items', 'stretch', 'important');
+        }
+
+        /* 폭이 박혀 있어 좁게 남은 글 상자는 폭을 채운다 */
+        var dw = 0;
+        try { dw = d.getBoundingClientRect().width; } catch (_) {}
+        if (hasOwnText(d) && dw > 0 && dw < groupW * 0.86) {
+          d.style.setProperty('width', 'auto', 'important');
+          d.style.setProperty('max-width', '100%', 'important');
+        }
+
+        if (/^(left|start)$/.test(ds.textAlign)) {
+          d.style.setProperty('text-align', 'center', 'important');
+        }
+      });
     });
 
     /* 못 읽을 만큼 작은 글자 끌어올리기 — 안전장치.
