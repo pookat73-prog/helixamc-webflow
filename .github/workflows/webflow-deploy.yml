@@ -206,6 +206,7 @@ jobs:
           SHA="${{ github.sha }}"
           BASE="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${SHA}"
           FILES=(
+            "global/measure-gate.js"
             "global/ga4-base.js"
             "global/session.js"
             "global/ga-inspector.js"
