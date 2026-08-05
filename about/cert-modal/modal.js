@@ -452,6 +452,15 @@
           d.style.setProperty('text-align', 'center', 'important');
         }
       });
+
+      /* 그림은 칸이 넓어져도 칸 왼쪽에 붙어 있다 — 칸이 아니라 그림 자체를
+         가운데로 보낸다 (좌우 여백을 자동으로 두면 남는 자리를 반씩 나눠
+         가져 가운데에 선다). */
+      Array.prototype.forEach.call(el.querySelectorAll('img'), function (im) {
+        im.style.setProperty('display', 'block', 'important');
+        im.style.setProperty('margin-left', 'auto', 'important');
+        im.style.setProperty('margin-right', 'auto', 'important');
+      });
     });
 
     /* 못 읽을 만큼 작은 글자 끌어올리기 — 안전장치.
@@ -841,7 +850,10 @@
         css +=
           'html,body{height:auto!important;overflow:visible!important}' +
           'section.cert-modal-frame{height:auto!important;min-height:0!important;' +
-          'width:100%!important;max-width:100%!important}' +
+          'width:100%!important;max-width:100%!important;' +
+          /* 위 여백 — 상세 페이지가 잡아둔 28px 로는 화면 맨 위 닫기 버튼
+             바로 밑에서 내용이 시작해 답답하다. 화면 폭에 비례해 넉넉히. */
+          'padding-top:14vw!important}' +
           /* 넘치는 이미지만 가로 폭 안으로. !important 를 쓰지 않아, 원래
              %로 작게 잡아둔 로고(.image-31 max-width:19%)는 그대로 둔다. */
           /* object-fit — 세로로 세우면서 그림 칸이 넓어지면 그림이 칸을
