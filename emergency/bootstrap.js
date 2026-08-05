@@ -93,6 +93,8 @@
     'global/floating-cta.css',
     'global/floating-cta.js',
     'global/scroll-depth.js',
+    /* 페이지 체류시간 — 이 페이지에 실제로 몇 초 있었나 */
+    'global/page-time.js',
     'global/popup.css',
     'global/popup.js',
     'global/top-button.css',

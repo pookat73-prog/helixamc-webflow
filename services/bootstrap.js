@@ -33,6 +33,8 @@
     'global/sheet-log.js',
     'global/ga-inspector.js',
     'global/scroll-depth.js',
+    /* 페이지 체류시간 — 이 페이지에 실제로 몇 초 있었나 */
+    'global/page-time.js',
     'global/section-reach.js',
     /* 진료과 카드 클릭(어느 과에 관심 있는지) — 이 페이지 전용 */
     'services/services-ga.js',
