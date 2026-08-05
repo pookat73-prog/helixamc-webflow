@@ -852,8 +852,9 @@
           'section.cert-modal-frame{height:auto!important;min-height:0!important;' +
           'width:100%!important;max-width:100%!important;' +
           /* 위 여백 — 상세 페이지가 잡아둔 28px 로는 화면 맨 위 닫기 버튼
-             바로 밑에서 내용이 시작해 답답하다. 화면 폭에 비례해 넉넉히. */
-          'padding-top:14vw!important}' +
+             바로 밑에서 내용이 시작해 답답하다. 화면 폭에 비례해 넉넉히
+             (390 화면에서 94px). */
+          'padding-top:24vw!important}' +
           /* 넘치는 이미지만 가로 폭 안으로. !important 를 쓰지 않아, 원래
              %로 작게 잡아둔 로고(.image-31 max-width:19%)는 그대로 둔다. */
           /* object-fit — 세로로 세우면서 그림 칸이 넓어지면 그림이 칸을
