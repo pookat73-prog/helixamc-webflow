@@ -13,6 +13,7 @@ on:
       - 'emergency/**'
       - 'services/**'
       - 'faq/**'
+      - 'specialty/**'
       - 'seo-snippets/**'
   workflow_dispatch:
 
@@ -126,6 +127,8 @@ jobs:
             "faq/protect.js"
             "faq/faq-ga.js"
             "faq/cta-call.js"
+            "specialty/bootstrap.js"
+            "specialty/specialty.css"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/card-render.js"
@@ -255,6 +258,8 @@ jobs:
             "faq/protect.js"
             "faq/faq-ga.js"
             "faq/cta-call.js"
+            "specialty/bootstrap.js"
+            "specialty/specialty.css"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/modal.css"
