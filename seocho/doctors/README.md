@@ -51,6 +51,17 @@ Webflow 측 작업도 필요:
 1. GitHub 웹에서 `seocho/doctors/data/<group>/<slug>.json` 열기
 2. 연필 아이콘 → 수정 → Commit → PR (base: `staging`)
 
+### ✅ 임시 숨김 (휴직 · 출산휴가 등)
+
+파일은 그대로 두고 `data/<group>/_index.json` 의 그 사람 항목에 `"draft": true` 만 추가:
+
+```json
+{ "slug": "eomharim", "draft": true }
+```
+
+카드 목록·모달·SEO 구조화데이터에서 모두 빠짐. 복귀하면 그 줄만 지우면 원상복구.
+(현재 숨김: `di-2/eomharim` 엄하림 과장 — 출산휴가)
+
 ### ✅ 삭제 (퇴사)
 
 1. GitHub 웹에서 해당 `<slug>.json` 파일 → **Delete file**

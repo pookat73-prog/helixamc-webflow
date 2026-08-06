@@ -3,7 +3,8 @@
     "slug": "gangyurim"
   },
   {
-    "slug": "eomharim"
+    "slug": "eomharim",
+    "draft": true
   },
   {
     "slug": "iyeongeun"
