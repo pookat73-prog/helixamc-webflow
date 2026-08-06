@@ -108,14 +108,20 @@
   box-shadow: 0 0 14px 2px rgba(0, 117, 214, .6);
 }
 
-/* ── 마우스가 있는 기기에서만 hover 동작 ── */
-@media (hover: hover) and (pointer: fine) {
+/* ── PC 폭에서만 hover 동작 ──
+   ⚠ 예전엔 `@media (hover:hover) and (pointer:fine)` 로 걸었다가 크게 데였다.
+   사용자 PC 브라우저가 이 조건을 false 로 보고해(터치스크린 노트북·기기
+   에뮬레이션·태블릿 모드 등에서 흔함) 접는 규칙이 통째로 안 먹었고,
+   설명 12개가 항상 펼쳐진 채로 남아 칸 높이가 어긋나고 옆으로 밀렸다.
+   → 판정 기준을 '화면 폭' 으로 바꾼다. 폭은 거짓말을 하지 않는다.
+   이 값을 바꾸면 specialty.js 의 DESKTOP_MIN 도 같이 바꿔야 한다. */
+@media (min-width: 992px) {
   .hst-item-wrap:hover .spec-item-reveal { max-height: 120px; opacity: 1; margin-top: 5px; }
   .hst-item-wrap:hover .spec-item-cta    { transform: translateY(0); }
 }
 
-/* ── 마우스가 없는 기기(모바일·태블릿) — 처음부터 전부 보이게 ── */
-@media (hover: none) {
+/* ── 좁은 화면(모바일·태블릿) — 처음부터 전부 보이게 ── */
+@media (max-width: 991px) {
   .spec-item-reveal { max-height: none; opacity: 1; margin-top: 5px; }
   .spec-item-cta    { transform: none; }
   .hx-spec-svg,
