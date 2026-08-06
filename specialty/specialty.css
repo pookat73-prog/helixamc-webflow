@@ -1,0 +1,110 @@
+/* ================================================================
+   HELIX AMC — 특화진료(/specialty-care) 항목 인터랙션  v1.0
+
+   목업 대응 — 항목에 마우스를 올리면
+     ① 항목 배경이 연한 파랑으로 물듦
+     ② 한글명 아래 파란 밑줄이 좌 → 우로 그어짐
+     ③ 한 줄 설명 + '자세히 보기 →' 가 아래로 펼쳐짐
+
+   ⚠ 설계 원칙 — Webflow 쪽은 '항상 펼쳐진' 상태로 둔다
+     설명·CTA 는 Webflow 네이티브 요소로, 숨김 없이 존재한다.
+     (Designer 에서 보이고, 글자 수정이 되고, 검색엔진도 읽음)
+     접는 일은 전적으로 이 파일이 한다. Webflow 에 숨김을 박아두면
+     나중에 열었을 때 요소가 안 보여 있는 줄도 모르게 되기 때문.
+
+   ⚠ 기존 레이아웃 보존 원칙
+     - spec-item-wrap / spec-item-name / spec-item-en / HST_* 의
+       기존 크기·간격 값은 하나도 바꾸지 않는다.
+     - 배경 틴트는 요소의 padding 이 아니라 ::before 오버레이로 그린다.
+       padding 을 주면 항목이 밀려 열 전체 높이가 바뀌기 때문.
+     - 펼침 영역은 접혔을 때 부모(spec-item-wrap)의 flex gap 3px 을
+       음수 margin 으로 정확히 상쇄해, 안 펼쳤을 땐 예전과 1px 도 다르지 않게 함.
+   ================================================================ */
+
+/* ── 항목 배경 틴트 (레이아웃에 영향 없는 오버레이) ── */
+.spec-item-wrap {
+  position: relative;
+}
+
+.spec-item-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -5px 0;              /* 위아래로만 살짝 넉넉히. 좌우는 열 폭 그대로 */
+  background: #EAF3FC;
+  border-radius: 3px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity .28s ease;
+}
+
+/* 틴트가 글자를 덮지 않도록 내용물을 위로 */
+.spec-item-wrap > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 한글명 밑줄 (좌 → 우) ── */
+.spec-item-name {
+  position: relative;
+}
+
+.spec-item-name::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 1px;
+  background: #0075D6;
+  transition: width .35s ease;
+}
+
+/* ── 펼쳐지는 영역 (설명 + 자세히 보기) ── */
+.spec-item-reveal {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: -3px;           /* 부모 flex gap 3px 상쇄 → 접힌 상태 높이 0 */
+  transition: max-height .32s ease, opacity .32s ease .04s, margin-top .32s ease;
+}
+
+.spec-item-cta {
+  transform: translateY(-3px);
+  transition: transform .28s ease;
+}
+
+/* ── 마우스가 있는 기기에서만 hover 동작 ── */
+@media (hover: hover) and (pointer: fine) {
+  .spec-item-wrap:hover::before                 { opacity: 1; }
+  .spec-item-wrap:hover .spec-item-name::after  { width: 28px; }
+  .spec-item-wrap:hover .spec-item-reveal       { max-height: 120px; opacity: 1; margin-top: 5px; }
+  .spec-item-wrap:hover .spec-item-cta          { transform: translateY(0); }
+}
+
+/* ── 마우스가 없는 기기(모바일·태블릿) — 처음부터 전부 보이게 ── */
+@media (hover: none) {
+  .spec-item-reveal { max-height: none; opacity: 1; margin-top: 5px; }
+  .spec-item-cta    { transform: none; }
+}
+
+/* ── 섹션이 넘칠 때만 늘어나게 (푸터 침범 방지) ──
+   이 섹션은 원래 height:100vh 로 '정확히 한 화면' 고정이라, 내용이 한 화면을
+   넘으면 늘어나지 않고 그대로 아래(푸터)로 삐져나온다. 두 경우에 실제로 넘친다.
+     · 태블릿(768~991px): 마우스가 없어 설명을 처음부터 다 펼쳐 두는데,
+       이 폭에서는 섹션이 아직 100vh 고정 (휴대폰 767px 이하는 원래 auto)
+     · 데스크톱: 마우스를 올린 항목이 펼쳐지며 그 열이 약 38px 늘어남
+   '정확히 100vh' → '최소 100vh' 로 바꾸면 평소 보기는 그대로면서
+   넘칠 때만 늘어난다. 안 넘치면 이전과 렌더 결과가 동일. */
+.whiteframe-for-full-frame {
+  height: auto;
+  min-height: 100vh;
+}
+
+/* ── 동작 최소화 설정을 켠 사용자 ── */
+@media (prefers-reduced-motion: reduce) {
+  .spec-item-wrap::before,
+  .spec-item-name::after,
+  .spec-item-reveal,
+  .spec-item-cta { transition: none; }
+}
