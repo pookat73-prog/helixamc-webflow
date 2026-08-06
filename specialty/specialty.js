@@ -57,13 +57,22 @@
   var DURATION   = 480;   /* 머리가 바닥에 닿기까지(ms). specialty.css 의 펼침 .48s 와 같아야 함 */
   var TAIL_LAG   = 170;   /* 꼬리가 머리를 뒤늦게 쫓는 시간차. 클수록 '기어가는' 느낌 */
   var FLASH_HOLD = 380;   /* 발광 유지 후 은은한 선으로 가라앉기까지 */
-  var RADIUS     = 20;    /* 꺾이는 모서리 라운드 */
+  var RADIUS     = 12;    /* 꺾이는 모서리 라운드. 실제 칸이 164px(글 폭 119px)로
+                             좁아 목업의 24 를 그대로 쓰면 모서리가 가로 구간을
+                             다 먹는다. 폭에 맞춰 축소. */
+  var DESKTOP_MIN = 992;  /* 이 폭 이상에서만 동작. specialty.css 와 같아야 함 */
   var GAP_Y      = 2;     /* 한글명 바닥에서 선까지 (기존 3px 틈 안) */
 
-  /* 마우스가 없는 기기(휴대폰·태블릿)는 설명을 처음부터 펼쳐 두므로 선도 안 그린다.
-     CSS 의 @media (hover:none) 과 판정을 일치시킨다. */
-  function hasHover() {
-    return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  /* 좁은 화면은 설명을 처음부터 펼쳐 두므로 선도 안 그린다.
+     CSS 의 @media (min-width: 992px) 와 판정을 일치시킨다.
+
+     ⚠ 예전엔 matchMedia('(hover:hover) and (pointer:fine)') 로 판정했다가
+     크게 데였다. 사용자 PC 브라우저가 이 조건을 false 로 보고해(터치스크린
+     노트북·기기 에뮬레이션·태블릿 모드 등에서 흔함) 선이 아예 안 그려졌고,
+     같은 조건을 쓰던 CSS 의 접는 규칙까지 통째로 죽어 설명 12개가 항상
+     펼쳐진 채 남았다. 폭 기준으로 바꾼 이유다. hover 판정으로 되돌리지 말 것. */
+  function isDesktop() {
+    return window.innerWidth >= DESKTOP_MIN;
   }
 
   function reducedMotion() {
@@ -89,7 +98,11 @@
     var nameRect = name.getBoundingClientRect();
     var startX = Math.round(nameRect.left - wrapRect.left);
     var y0     = Math.round(nameRect.bottom - wrapRect.top + GAP_Y);
-    var endX   = Math.round(wrapRect.width - padRight);
+    /* 세로 구간은 '오른쪽 안쪽 여백의 한가운데' 에 세운다.
+       글 영역 경계(width - padRight)에 딱 세우면 실제 칸이 좁아(글 폭 119px)
+       설명 글자의 오른쪽 끝을 선이 스친다. 목업은 320px 카드라 여유가 있었다.
+       여백 절반만큼 바깥으로 밀어 글자와 떨어뜨린다. */
+    var endX   = Math.round(wrapRect.width - padRight / 2);
 
     /* 펼친 상태의 바닥을 잰다. 이미 펼쳐져 있으면(=마우스가 올라가 있으면)
        손대지 않고 그대로 읽는다. */
@@ -184,7 +197,14 @@
 
   function enter(item) {
     stop(item);
-    if (!item.measured) item.measured = measure(item);
+    /* ⚠ 로드 시점이 아니라 '마우스가 올라온 시점' 에 잰다.
+       로더가 css 를 <link> 로 붙이는 건 비동기라, 로드 직후엔 우리 css 가
+       아직 적용 안 됐을 수 있다. 그 상태에서 재면
+         · 항목에 position:relative 가 없어 기준점이 엉뚱한 조상으로 잡히고
+         · 설명이 안 접혀 있어 바닥을 잘못 읽는다
+       hover 시점엔 css·폰트·레이아웃이 모두 확정돼 있어 이 문제가 없다.
+       12개 항목 × hover 1회당 측정 1회라 비용도 무시할 수준. */
+    item.measured = measure(item);
     if (!item.measured) return;
 
     item.edge.classList.remove('is-flash');
@@ -242,9 +262,7 @@
     var item = { wrap: wrap, name: name, reveal: reveal, svg: svg, path: path,
                  edge: edge, raf: null, flashTimer: null, len: 0, measured: false };
 
-    item.measured = measure(item);
-    if (item.measured) applyDash(item, 0, 0);
-
+    /* 여기서는 재지 않는다 — enter() 가 hover 시점에 잰다(위 주석 참고). */
     wrap.addEventListener('mouseenter', function () { enter(item); });
     wrap.addEventListener('mouseleave', function () { leave(item); });
     return item;
@@ -252,16 +270,14 @@
 
   var items = [];
 
-  function remeasure() {
-    items.forEach(function (it) {
-      if (it.raf || it.wrap.matches(':hover')) return;   /* 움직이는 중엔 건드리지 않음 */
-      it.measured = measure(it);
-      if (it.measured) applyDash(it, 0, 0);
-    });
+  /* 화면이 바뀌면 다음 hover 때 다시 재도록 표시만 해둔다.
+     미리 재두지 않는 이유는 enter() 의 주석과 같다. */
+  function invalidate() {
+    items.forEach(function (it) { it.measured = false; });
   }
 
   function init() {
-    if (!hasHover()) return;
+    if (!isDesktop()) return;
 
     var wraps = document.querySelectorAll(WRAP);
     if (!wraps.length) {
@@ -274,16 +290,10 @@
       if (it) items.push(it);
     }
 
-    /* 폰트가 늦게 도착하면 글자 위치·높이가 달라진다 → 도착 후 다시 잰다. */
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(remeasure);
-    }
-    window.addEventListener('load', remeasure);
-
     var rt;
     window.addEventListener('resize', function () {
       clearTimeout(rt);
-      rt = setTimeout(remeasure, 150);
+      rt = setTimeout(invalidate, 150);
     });
   }
 

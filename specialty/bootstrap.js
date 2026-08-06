@@ -22,19 +22,12 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
-    /* 특화진료 항목 hover 인터랙션 — 설명 펼침. css 단독으로 동작한다. */
-    'specialty/specialty.css'
-
-    /* ⚠ 'specialty/specialty.js' (코멧 선) 는 일시 중단.
-       실제 페이지에서 선의 조준이 어긋났다 — 옆 칸을 침범하고 세로 길이가
-       안 맞았다. 원인 추정: 이 로더가 css 를 <link> 로 붙이는 동안 js 가
-       먼저 실행되면, 좌표를 재는 시점에 우리 css 가 아직 적용되지 않아
-         · 항목 상자에 position:relative 가 없어 선의 기준점이 엉뚱한
-           조상으로 잡히고(→ 옆 칸 침범)
-         · 설명이 접혀 있지 않아 '펼친 상태 바닥' 을 잘못 재는(→ 높이 안 맞음)
-       일이 동시에 일어난다. 로컬 테스트는 css 가 즉시 적용되는 환경이라
-       이 경우를 못 잡았다.
-       고쳐서 실제 페이지로 검증한 뒤 다시 켤 것. 그때까지 설명 펼침만 나감. */
+    /* 특화진료 항목 hover 인터랙션
+         · specialty.css — 설명 펼침/접힘. js 없이 단독으로 동작한다.
+         · specialty.js  — 코멧 선(ㄱ자 경로 + 바닥 가로선). 선만 담당.
+       둘을 나눠 둔 이유: js 가 CDN 에서 못 와도 설명은 정상적으로 펼쳐진다. */
+    'specialty/specialty.css',
+    'specialty/specialty.js'
   ];
 
   function cdn(ref, path) {
