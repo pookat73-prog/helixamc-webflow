@@ -1,10 +1,24 @@
 /* ================================================================
-   HELIX AMC — 특화진료(/specialty-care) 항목 인터랙션  v1.0
+   HELIX AMC — 특화진료(/specialty-care) 항목 인터랙션  v2.0
 
-   목업 대응 — 항목에 마우스를 올리면
-     ① 항목 배경이 연한 파랑으로 물듦
-     ② 한글명 아래 파란 밑줄이 좌 → 우로 그어짐
-     ③ 한 줄 설명 + '자세히 보기 →' 가 아래로 펼쳐짐
+   항목에 마우스를 올리면
+     ① 한글명 바로 아래 이미 있던 3px 틈으로 파란 선이 지나간다
+        (머리가 먼저 뻗고 꼬리가 뒤따르는 '코멧' 움직임 — specialty.js)
+     ② 선이 끝에 닿는 순간 한 번 밝게 터지고, 은은한 밑줄로 가라앉는다
+     ③ 한 줄 설명 + '자세히 보기 →' 가 아래로 펼쳐진다
+
+   v2.0 변경 — 두 가지
+   -----------------------------------------------------------------
+   1) ⚠ 클래스 이름 교정: `.spec-item-wrap` → `.hst-item-wrap`
+      v1.0 이 붙잡던 `.spec-item-wrap` 은 이 사이트에 존재하지 않는
+      이름이었다. Webflow 의 실제 항목 상자는 `HST-Item-Wrap`
+      (게시되면 `.hst-item-wrap`) 이다.
+      그 결과 v1.0 에서는 '접는 규칙'만 이름이 맞아 동작하고 '펼치는
+      규칙'은 아무 데도 안 붙어서, PC 에서 12개 항목 전부 설명과
+      '자세히 보기' 가 영영 안 보였다. 이번에 교정.
+
+   2) 배경 틴트(::before)와 이전 밑줄(::after)을 걷어내고 코멧 선으로 교체.
+      효과가 겹쳐 산만해지는 것을 피하려 사용자가 교체를 택했다.
 
    ⚠ 설계 원칙 — Webflow 쪽은 '항상 펼쳐진' 상태로 둔다
      설명·CTA 는 Webflow 네이티브 요소로, 숨김 없이 존재한다.
@@ -12,53 +26,19 @@
      접는 일은 전적으로 이 파일이 한다. Webflow 에 숨김을 박아두면
      나중에 열었을 때 요소가 안 보여 있는 줄도 모르게 되기 때문.
 
-   ⚠ 기존 레이아웃 보존 원칙
-     - spec-item-wrap / spec-item-name / spec-item-en / HST_* 의
-       기존 크기·간격 값은 하나도 바꾸지 않는다.
-     - 배경 틴트는 요소의 padding 이 아니라 ::before 오버레이로 그린다.
-       padding 을 주면 항목이 밀려 열 전체 높이가 바뀌기 때문.
-     - 펼침 영역은 접혔을 때 부모(spec-item-wrap)의 flex gap 3px 을
-       음수 margin 으로 정확히 상쇄해, 안 펼쳤을 땐 예전과 1px 도 다르지 않게 함.
+   ⚠ 기존 레이아웃 보존 원칙 — 글자는 1px 도 밀리지 않는다
+     - hst-item-wrap / spec-item-name / spec-item-en 의 기존 크기·간격
+       값은 하나도 바꾸지 않는다.
+     - 코멧 선은 `position:absolute` 라 자리를 차지하지 않는다. 한글명
+       상자의 바닥 밖(-2px)에 떠서, 이미 있던 3px 틈 안에 들어앉는다.
+     - 펼침 영역은 접혔을 때 부모(hst-item-wrap)의 flex gap 3px 을
+       음수 margin 으로 정확히 상쇄해, 안 펼쳤을 땐 예전과 동일하다.
+
+   ⚠ JS 가 못 와도 글이 갇히지 않는다
+     펼침·접힘은 아래 CSS 의 :hover 규칙이 단독으로 처리한다.
+     specialty.js 는 코멧 선을 그리는 역할만 한다. 그래서 JS 로드가
+     실패해도 설명은 정상적으로 펼쳐진다(선만 안 그려짐).
    ================================================================ */
-
-/* ── 항목 배경 틴트 (레이아웃에 영향 없는 오버레이) ── */
-.spec-item-wrap {
-  position: relative;
-}
-
-.spec-item-wrap::before {
-  content: '';
-  position: absolute;
-  inset: -5px 0;              /* 위아래로만 살짝 넉넉히. 좌우는 열 폭 그대로 */
-  background: #EAF3FC;
-  border-radius: 3px;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-  transition: opacity .28s ease;
-}
-
-/* 틴트가 글자를 덮지 않도록 내용물을 위로 */
-.spec-item-wrap > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* ── 한글명 밑줄 (좌 → 우) ── */
-.spec-item-name {
-  position: relative;
-}
-
-.spec-item-name::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -3px;
-  width: 0;
-  height: 1px;
-  background: #0075D6;
-  transition: width .35s ease;
-}
 
 /* ── 펼쳐지는 영역 (설명 + 자세히 보기) ── */
 .spec-item-reveal {
@@ -74,18 +54,49 @@
   transition: transform .28s ease;
 }
 
+/* ── 코멧 선이 앉을 자리 ──
+   한글명 상자를 기준점으로 삼는다. 선 자체는 specialty.js 가 만들어 넣는다.
+   absolute 라 레이아웃에 영향 없음 — 아래 3px 틈 위에 겹쳐 뜬다. */
+.spec-item-name {
+  position: relative;
+}
+
+.hx-spec-line {
+  position: absolute;
+  left: 0;
+  bottom: -2px;               /* 한글명 바로 아래, 기존 3px 틈 안 */
+  height: 1px;
+  width: 0;                   /* 실제 값은 JS 가 한글 글자 폭을 재서 넣음 */
+  background: #0075D6;
+  border-radius: 1px;
+  pointer-events: none;
+  opacity: 0;
+  /* clip-path 로 좌(꼬리)·우(머리) 양 끝을 따로 움직여 코멧을 만든다.
+     inset(위 오른쪽 아래 왼쪽) — 처음엔 오른쪽 100% 라 완전히 가려진 상태. */
+  clip-path: inset(0 100% 0 0);
+  transition: box-shadow .45s ease, opacity .2s ease;
+}
+
+.hx-spec-line.is-on {
+  opacity: 1;
+}
+
+/* 머리가 끝에 닿는 순간의 짧은 발광. JS 가 380ms 뒤 떼어낸다. */
+.hx-spec-line.is-flash {
+  box-shadow: 0 0 8px 1px rgba(0, 117, 214, .65);
+}
+
 /* ── 마우스가 있는 기기에서만 hover 동작 ── */
 @media (hover: hover) and (pointer: fine) {
-  .spec-item-wrap:hover::before                 { opacity: 1; }
-  .spec-item-wrap:hover .spec-item-name::after  { width: 28px; }
-  .spec-item-wrap:hover .spec-item-reveal       { max-height: 120px; opacity: 1; margin-top: 5px; }
-  .spec-item-wrap:hover .spec-item-cta          { transform: translateY(0); }
+  .hst-item-wrap:hover .spec-item-reveal { max-height: 120px; opacity: 1; margin-top: 5px; }
+  .hst-item-wrap:hover .spec-item-cta    { transform: translateY(0); }
 }
 
 /* ── 마우스가 없는 기기(모바일·태블릿) — 처음부터 전부 보이게 ── */
 @media (hover: none) {
   .spec-item-reveal { max-height: none; opacity: 1; margin-top: 5px; }
   .spec-item-cta    { transform: none; }
+  .hx-spec-line     { display: none; }
 }
 
 /* ── 섹션이 넘칠 때만 늘어나게 (푸터 침범 방지) ──
@@ -101,10 +112,10 @@
   min-height: 100vh;
 }
 
-/* ── 동작 최소화 설정을 켠 사용자 ── */
+/* ── 동작 최소화 설정을 켠 사용자 ──
+   코멧 이동 없이 밑줄이 그냥 켜진다(specialty.js 가 판정해 이동을 건너뜀). */
 @media (prefers-reduced-motion: reduce) {
-  .spec-item-wrap::before,
-  .spec-item-name::after,
   .spec-item-reveal,
-  .spec-item-cta { transition: none; }
+  .spec-item-cta,
+  .hx-spec-line { transition: none; }
 }

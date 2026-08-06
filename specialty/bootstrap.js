@@ -22,8 +22,9 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
-    /* 특화진료 항목 hover 인터랙션 (배경 틴트 / 밑줄 / 설명 펼침) */
-    'specialty/specialty.css'
+    /* 특화진료 항목 hover 인터랙션 — 설명 펼침(css 단독) + 코멧 밑줄(css+js) */
+    'specialty/specialty.css',
+    'specialty/specialty.js'
   ];
 
   function cdn(ref, path) {
