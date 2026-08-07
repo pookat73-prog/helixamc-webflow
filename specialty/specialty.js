@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v3.0
+   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v3.1
    specialty/bootstrap.js 가 로드. 짝: specialty/specialty.css
 
    하는 일 — 사용자 목업(card_comet_v3) 그대로
@@ -11,7 +11,13 @@
        짧은 선이 경로를 '기어가는' 것처럼 보인다
      · 머리가 바닥에 닿는 순간(=DURATION), 항목 사이에 이미 있는 회색
        구분선(.hst_sb_line)이 파랗게 켜지며 한 번 터진 뒤 가라앉는다
-     · 마우스가 나가면 선이 왔던 길로 되돌아 나가고 가로선도 꺼진다
+     · 마우스가 나가면 경로는 그냥 사라지고, 켜졌던 파란 밑변만 도로
+       회색으로 꺼진다 (되감기 없음 — v3.1)
+
+   v3.1 변경 — 접힐 때 되감기 제거
+     마우스가 나갈 때 선을 거꾸로 다시 그리던 것을 뺐다. 사용자 요청:
+     "접힐 때는 역순으로 선이 그어지던 걸 없애줘. 밑변 파란색이 켜졌던 게
+      다시 꺼지는 것만 남겨줘."
 
    v3.0 변경 — 바닥 가로선을 '있던 회색 선' 으로
      따로 그린 파란 선이 항목 사이 회색 구분선과 위치가 달라 따로 놀았다.
@@ -195,8 +201,13 @@
     item.lit.classList.remove('hx-lit', 'hx-flash');
   }
 
-  /* forward=true 펼침 / false 접힘. 목업의 runWorm 과 같은 진행식. */
-  function runWorm(item, forward) {
+  /* 코멧 한 번 보내기(펼칠 때만). 머리가 앞서고 꼬리가 TAIL_LAG 만큼 늦게
+     따라오며 지워져, 끝나면 경로가 저절로 사라진다.
+
+     ⚠ 되감기(역주행)는 없다. 마우스가 나갈 때 선을 거꾸로 다시 그리던 것을
+     사용자 요청으로 뺐다("접힐 때 역순으로 선이 그어지던 걸 없애줘").
+     나갈 때는 경로를 그냥 감추고, 켜졌던 파란 밑변만 도로 꺼진다. */
+  function runWorm(item) {
     var start = performance.now();
     var total = DURATION + TAIL_LAG;
     var L = item.len;
@@ -205,15 +216,13 @@
       var t = now - start;
       var head = ease(Math.min(Math.max(t / DURATION, 0), 1));
       var tail = ease(Math.min(Math.max((t - TAIL_LAG) / DURATION, 0), 1));
-
-      if (forward) applyDash(item, L * tail, L * head);
-      else         applyDash(item, L * (1 - head), L * (1 - tail));
+      applyDash(item, L * tail, L * head);
 
       if (t < total) {
         item.raf = requestAnimationFrame(frame);
       } else {
         item.raf = null;
-        applyDash(item, forward ? L : 0, forward ? L : 0);  /* 끝나면 완전히 사라짐 */
+        applyDash(item, L, L);   /* 꼬리가 머리를 따라잡아 경로가 사라진 상태 */
       }
     }
     item.raf = requestAnimationFrame(frame);
@@ -236,7 +245,7 @@
     if (reducedMotion()) { lightEdge(item); return; }
 
     applyDash(item, 0, 0);
-    runWorm(item, true);
+    runWorm(item);
 
     /* 머리가 바닥에 닿는 시점(꼬리가 따라붙기 전)에 가로선 점등 */
     item.flashTimer = setTimeout(function () { lightEdge(item); }, DURATION);
@@ -244,10 +253,8 @@
 
   function leave(item) {
     stop(item);
-    darkenEdge(item);
-    if (!item.measured) return;
-    if (reducedMotion()) { applyDash(item, 0, 0); return; }
-    runWorm(item, false);
+    darkenEdge(item);          /* 파란 밑변 → 원래 회색으로 (CSS 트랜지션 .28s) */
+    if (item.measured) applyDash(item, 0, 0);   /* 경로는 되감지 않고 그냥 감춤 */
   }
 
   function setup(wrap) {
