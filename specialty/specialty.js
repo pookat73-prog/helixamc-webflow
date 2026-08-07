@@ -83,6 +83,13 @@
                              다 먹는다. 폭에 맞춰 축소. */
   var DESKTOP_MIN = 992;  /* 이 폭 이상에서만 동작. specialty.css 와 같아야 함 */
   var GAP_Y      = 2;     /* 한글명 바닥에서 선까지 (기존 3px 틈 안) */
+  var TOAST_MS   = 1800;  /* 토스트 노출 시간 */
+
+  /* 항목별 상세페이지 주소. 아직 없으므로 전부 비어 있고, 클릭하면
+     "준비중입니다" 토스트만 뜬다. 상세페이지가 생기면 한글명을 키로
+     여기에 주소만 넣으면 그 항목만 이동으로 바뀐다.
+     예) '종양 색전술': '/specialty/tumor-embolization' */
+  var LINKS = {};
 
   /* 좁은 화면은 설명을 처음부터 펼쳐 두므로 선도 안 그린다.
      CSS 의 @media (min-width: 992px) 와 판정을 일치시킨다.
@@ -98,6 +105,45 @@
 
   function reducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  /* ── '자세히 보기 →' 클릭 안내 토스트 ──
+     진료과목 페이지(services/dept-nav.js)와 같은 동작. 요소 하나를 만들어
+     재사용하고, 연타해도 다시 뜨도록 리플로우로 트랜지션을 재시작한다. */
+  var _toastEl, _toastTimer;
+  function showToast(msg) {
+    if (!_toastEl) {
+      _toastEl = document.createElement('div');
+      _toastEl.className = 'hx-toast';
+      (document.body || document.documentElement).appendChild(_toastEl);
+    }
+    _toastEl.textContent = msg;
+    void _toastEl.offsetWidth;            /* 연타 시 트랜지션 재시작 */
+    _toastEl.classList.add('is-on');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function () { _toastEl.classList.remove('is-on'); }, TOAST_MS);
+  }
+
+  /* 클릭은 문서에 한 번만 걸어 위임 처리한다. 항목마다 걸지 않으므로
+     Webflow 가 요소를 다시 그려도 계속 동작한다.
+     ⚠ 코멧(선)과 달리 화면 폭을 가리지 않는다 — 좁은 화면에서는 설명이
+     처음부터 펼쳐져 있어 '자세히 보기' 를 바로 누를 수 있기 때문. */
+  function initCta() {
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      var cta = (t && t.closest) ? t.closest('.spec-item-cta') : null;
+      if (!cta) return;
+
+      e.preventDefault();
+
+      var wrap = cta.closest(WRAP);
+      var nameEl = wrap && wrap.querySelector(NAME);
+      var key = nameEl ? (nameEl.textContent || '').trim() : '';
+      var url = LINKS[key];
+
+      if (url) location.href = url;
+      else showToast('준비중입니다');
+    });
   }
 
   /* easeOutCubic — 빠르게 튀어나갔다가 서서히 멈춤 */
@@ -316,7 +362,8 @@
   }
 
   function init() {
-    if (!isDesktop()) return;
+    initCta();          /* 토스트는 폭과 무관하게 항상 */
+    if (!isDesktop()) return;   /* 아래는 코멧(선) 전용 */
 
     var wraps = document.querySelectorAll(WRAP);
     if (!wraps.length) {

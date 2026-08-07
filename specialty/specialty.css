@@ -136,6 +136,41 @@
   box-shadow: 0 0 14px 2px rgba(0, 117, 214, .6);
 }
 
+/* ── '자세히 보기 →' 클릭 안내 토스트 ──
+   상세페이지가 아직 없어서 "준비중입니다" 만 띄운다.
+   모양은 진료과목 페이지(services/dept-nav.js)의 토스트와 동일하게 맞췄다.
+   특화진료 페이지는 그 파일을 안 싣기 때문에 여기 따로 둔다.
+   상세페이지가 생기면 specialty.js 의 LINKS 에 주소만 넣으면 된다. */
+.spec-item-cta {
+  cursor: pointer;
+}
+
+.hx-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 14%;
+  transform: translate(-50%, 12px);
+  background: rgba(13, 17, 23, .94);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 117, 214, .65);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .45);
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .28s ease, transform .28s ease;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+
+.hx-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 /* ── PC 폭에서만 hover 동작 ──
    ⚠ 예전엔 `@media (hover:hover) and (pointer:fine)` 로 걸었다가 크게 데였다.
    사용자 PC 브라우저가 이 조건을 false 로 보고해(터치스크린 노트북·기기
@@ -176,5 +211,6 @@
   .spec-item-reveal,
   .spec-item-cta,
   .hst_sb_line,
+  .hx-toast,
   .hx-spec-edge { transition: none; }
 }
