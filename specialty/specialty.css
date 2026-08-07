@@ -278,8 +278,10 @@
    양옆 패딩 약간."
 
    각 열의 맨 위 요소가 `.hst_group_title` 이므로 거기에 얹는다.
-   양옆 10px 를 띄워 열을 가르는 세로선(왼쪽=grid border-left 또는 앞 열의
+   양옆 5px 를 띄워 열을 가르는 세로선(왼쪽=grid border-left 또는 앞 열의
    border-right / 오른쪽=이 열의 border-right)에 닿지 않게 했다.
+   (처음 10px 로 넣었다가 사용자 요청으로 5px 로 줄임 — 바가 열 폭을 더
+    꽉 채워 '표의 머리' 느낌이 강해진다.)
 
    ⚠ absolute 라 자리를 차지하지 않는다 — 제목 칸 높이·글자 위치 안 바뀜.
      `.hst_group_title` 은 display:grid 지만, absolute 인 ::before 는
@@ -296,8 +298,8 @@
   content: '';
   position: absolute;
   top: 0;
-  left: 10px;
-  right: 10px;
+  left: 5px;
+  right: 5px;
   height: 3px;
   background: #0075D6;
   pointer-events: none;
