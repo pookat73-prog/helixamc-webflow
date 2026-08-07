@@ -22,8 +22,12 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
-    /* 특화진료 항목 hover 인터랙션 (배경 틴트 / 밑줄 / 설명 펼침) */
-    'specialty/specialty.css'
+    /* 특화진료 항목 hover 인터랙션
+         · specialty.css — 설명 펼침/접힘. js 없이 단독으로 동작한다.
+         · specialty.js  — 코멧 선(ㄱ자 경로 + 바닥 가로선). 선만 담당.
+       둘을 나눠 둔 이유: js 가 CDN 에서 못 와도 설명은 정상적으로 펼쳐진다. */
+    'specialty/specialty.css',
+    'specialty/specialty.js'
   ];
 
   function cdn(ref, path) {
