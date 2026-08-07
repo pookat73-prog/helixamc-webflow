@@ -65,6 +65,7 @@
   var NAME   = '.spec-item-name';
   var REVEAL = '.spec-item-reveal';
   var GRAY   = 'hst_sb_line';   /* 항목 사이 회색 구분선(Webflow HST_SB_line) */
+  var COL    = '.hst_col';      /* 항목들을 담은 세로 열(Webflow HST_Col) */
   var MAXREV = 120;             /* specialty.css 의 hover max-height 와 같아야 함 */
 
   /* 이 항목 바로 아래에 붙어 있는 회색 구분선. 열의 맨 아래 항목엔 없다
@@ -187,9 +188,25 @@
     var gl = grayLine(wrap);
     var targetY;
     if (gl) {
+      /* 아래에 회색 구분선이 있으면 그 선이 곧 착지점 */
       targetY = Math.round(gl.getBoundingClientRect().top - wrapRect.top + grow);
     } else {
-      targetY = Math.round(wrapRect.height + grow);
+      /* ── 열의 마지막 항목 — 아래에 회색 구분선이 없다 ──
+         두 후보 중 더 아래를 택한다.
+
+           내용 바닥 : 펼쳤을 때 글이 끝나는 자리
+           열 바닥   : 표 아래 테두리(.hst_grid border-bottom)가 지나는 자리
+
+         칸이 길어 여유가 있으면 '열 바닥' 이 더 아래다 → 바닥에 깔린 선
+         위치에 맞춰 켜진다(사용자 요청). 여유가 없는 칸은 펼치면서 열이
+         같이 늘어나므로 '내용 바닥' 이 곧 새 열 바닥이 된다.
+
+         이렇게 두면 어느 칸이 긴지 세어 둘 필요가 없다 — 칸마다 알아서
+         맞는 쪽을 고른다. 나중에 항목이 늘거나 글이 길어져도 그대로 맞음. */
+      var col = wrap.closest ? wrap.closest(COL) : null;
+      var contentBottom = wrapRect.height + grow;
+      var colBottom = col ? (col.getBoundingClientRect().bottom - wrapRect.top) : contentBottom;
+      targetY = Math.round(Math.max(colBottom, contentBottom));
     }
     item.gl = gl;
 
