@@ -181,6 +181,13 @@
     var seg = Math.max(0, b - a);
     item.path.style.strokeDasharray  = seg + ' ' + item.len;
     item.path.style.strokeDashoffset = b + item.len - 2 * a;
+
+    /* ⚠ 길이 0 일 때 반드시 숨긴다.
+       stroke-linecap:round 라서 길이가 0 인 dash 도 둥근 끝처리 때문에
+       '점' 하나로 그려진다. 그대로 두면 애니메이션이 끝난 뒤 선이 출발했던
+       자리에 파란 점이 남는다(사용자 지적). 움직이는 동안의 둥근 끝은
+       살려야 하므로 linecap 은 그대로 두고, 길이 0 인 순간만 감춘다. */
+    item.path.style.visibility = seg > 0.5 ? 'visible' : 'hidden';
   }
 
   function stop(item) {
