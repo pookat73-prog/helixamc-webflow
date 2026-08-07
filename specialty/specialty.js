@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v2.0
+   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v3.0
    specialty/bootstrap.js 가 로드. 짝: specialty/specialty.css
 
    하는 일 — 사용자 목업(card_comet_v3) 그대로
@@ -9,9 +9,15 @@
        끝까지 뻗고, 모서리를 둥글게 돌아 아래로 내려간다
      · 머리가 먼저 나가고 꼬리가 TAIL_LAG 만큼 늦게 따라오며 지워져서,
        짧은 선이 경로를 '기어가는' 것처럼 보인다
-     · 머리가 바닥에 닿는 순간(=DURATION) 그 자리에 가로선이 켜지고
-       한 번 밝게 터진 뒤, 380ms 뒤 은은한 선으로 가라앉는다
+     · 머리가 바닥에 닿는 순간(=DURATION), 항목 사이에 이미 있는 회색
+       구분선(.hst_sb_line)이 파랗게 켜지며 한 번 터진 뒤 가라앉는다
      · 마우스가 나가면 선이 왔던 길로 되돌아 나가고 가로선도 꺼진다
+
+   v3.0 변경 — 바닥 가로선을 '있던 회색 선' 으로
+     따로 그린 파란 선이 항목 사이 회색 구분선과 위치가 달라 따로 놀았다.
+     이제 그 회색 선을 찾아(nextElementSibling) 착지점으로 삼고, 그 선
+     자체를 켠다. 같은 요소라 어긋날 수가 없다. 열의 맨 아래 항목처럼
+     뒤에 회색 선이 없으면 대체 선(.hx-spec-edge)을 만들어 쓴다.
 
    v2.0 변경 — ㄱ자 경로 복원
      v1.0 은 한글명 아래 가로 밑줄만 그렸다. 목업의 핵심인 '오른쪽으로
@@ -24,11 +30,11 @@
      항목을 카드(테두리·배경)로 만들지도 않는다 — 사용자 지시.
 
    ⚠ 좌표는 하드코딩하지 않는다
-     한글명 위치, 항목 오른쪽 끝, 펼쳤을 때의 바닥 — 셋 다 실제 DOM 을
+     한글명 위치, 항목 오른쪽 끝, 회색 구분선 위치 — 셋 다 실제 DOM 을
      재서 구한다. 그래서 글자 길이·폰트·화면 폭이 달라져도 항상 맞는다.
-     바닥은 '펼친 상태'의 위치라야 하는데 평소엔 접혀 있으므로, 잠깐
-     펼친 모양으로 만들어 재고 즉시 되돌린다(같은 실행 흐름 안이라
-     화면에는 안 보임 — 목업의 FLIP 기법 그대로).
+     펼쳤을 때의 바닥은 강제로 펼쳐 보지 않고, scrollHeight 로 '펼치면
+     늘어날 높이' 를 계산해 회색 선 위치에 더한다(강제 펼침은 되돌릴 때
+     트랜지션이 재생돼 깜빡이는 사고가 있었다).
 
    ⚠ 이 파일은 '선'만 담당한다
      설명·CTA 의 펼침/접힘은 specialty.css 의 :hover 규칙이 단독으로 한다.
@@ -52,6 +58,15 @@
   var WRAP   = '.hst-item-wrap';
   var NAME   = '.spec-item-name';
   var REVEAL = '.spec-item-reveal';
+  var GRAY   = 'hst_sb_line';   /* 항목 사이 회색 구분선(Webflow HST_SB_line) */
+  var MAXREV = 120;             /* specialty.css 의 hover max-height 와 같아야 함 */
+
+  /* 이 항목 바로 아래에 붙어 있는 회색 구분선. 열의 맨 아래 항목엔 없다
+     (회색 선 8개 / 항목 12개). 없으면 null → 대체 선을 만들어 쓴다. */
+  function grayLine(wrap) {
+    var n = wrap.nextElementSibling;
+    return (n && n.className && n.className.indexOf(GRAY) !== -1) ? n : null;
+  }
 
   var BLUE       = '#0075D6';
   var DURATION   = 480;   /* 머리가 바닥에 닿기까지(ms). specialty.css 의 펼침 .48s 와 같아야 함 */
@@ -104,32 +119,27 @@
        여백 절반만큼 바깥으로 밀어 글자와 떨어뜨린다. */
     var endX   = Math.round(wrapRect.width - padRight / 2);
 
-    /* 펼친 상태의 바닥을 잰다. 이미 펼쳐져 있으면(=마우스가 올라가 있으면)
-       손대지 않고 그대로 읽는다. */
-    var targetY;
-    var expanded = reveal.getBoundingClientRect().height > 1;
-    if (expanded) {
-      targetY = Math.round(reveal.getBoundingClientRect().bottom - wrapRect.top);
-    } else {
-      /* ⚠ 되돌리는 순서가 중요하다.
-         펼친 값을 잰 뒤 transition 해제까지 한꺼번에 걷어내면, 그 순간
-         '120px → 0' 이 CSS 의 .48s 트랜지션을 타고 재생된다. 즉 페이지가
-         뜨자마자 설명이 잠깐 펼쳐졌다 접히는 깜빡임이 생긴다(실측 확인:
-         항목 높이가 잠시 125 → 126.9 로 뜸).
-         그래서 ① 크기만 먼저 되돌리고 ② 강제 리플로우로 '접힘'을
-         트랜지션 없이 확정한 뒤 ③ 마지막에 transition 을 풀어준다. */
-      reveal.style.transition = 'none';
-      reveal.style.maxHeight  = '120px';   /* CSS 의 hover 값과 동일 */
-      reveal.style.marginTop  = '5px';
-      reveal.style.opacity    = '1';
-      targetY = Math.round(reveal.getBoundingClientRect().bottom - wrapRect.top);
+    /* ── 착지점(targetY) ──
+       회색 구분선이 있으면 '그 선의 위치' 가 곧 착지점이다. 지금은 접혀
+       있으니, 펼쳐지면서 그 선이 내려갈 거리를 더해준다.
 
-      reveal.style.maxHeight = '';         /* ① 크기만 원복 */
-      reveal.style.marginTop = '';
-      reveal.style.opacity   = '';
-      void reveal.offsetHeight;            /* ② 트랜지션 없이 접힘 확정 */
-      reveal.style.transition = '';        /* ③ 이제 트랜지션 복구 */
+       ⚠ 예전처럼 잠깐 강제로 펼쳐서 재지 않는다. 되돌릴 때 트랜지션이
+       재생돼 깜빡이는 사고가 있었다. scrollHeight 는 max-height:0 +
+       overflow:hidden 상태에서도 '내용의 실제 높이' 를 알려주므로,
+       손대지 않고 계산만으로 구할 수 있다. */
+    var revTarget = Math.min(reveal.scrollHeight, MAXREV);
+    var revNow    = reveal.getBoundingClientRect().height;
+    var mtNow     = parseFloat(getComputedStyle(reveal).marginTop) || 0;
+    var grow      = (revTarget - revNow) + (5 - mtNow);   /* 펼치면 늘어날 높이 */
+
+    var gl = grayLine(wrap);
+    var targetY;
+    if (gl) {
+      targetY = Math.round(gl.getBoundingClientRect().top - wrapRect.top + grow);
+    } else {
+      targetY = Math.round(wrapRect.height + grow);
     }
+    item.gl = gl;
 
     if (endX - startX < RADIUS * 2 || targetY - y0 < RADIUS * 2) return false;
 
@@ -145,10 +155,18 @@
     item.path.setAttribute('d', item.d);
     item.len = item.path.getTotalLength();
 
-    /* 바닥 가로선 — 선이 닿는 높이에, 글자 왼쪽부터 항목 오른쪽 끝까지 */
-    item.edge.style.left  = startX + 'px';
-    item.edge.style.width = (endX - startX) + 'px';
-    item.edge.style.top   = targetY + 'px';
+    /* 켤 대상: 회색 구분선이 있으면 그것, 없으면 대체 선.
+       대체 선은 회색 선과 같은 모양이 되도록 항목 전체 폭으로 깐다. */
+    if (gl) {
+      item.lit = gl;
+      item.edge.style.display = 'none';
+    } else {
+      item.lit = item.edge;
+      item.edge.style.display = '';
+      item.edge.style.left  = '0px';
+      item.edge.style.width = Math.round(wrapRect.width) + 'px';
+      item.edge.style.top   = targetY + 'px';
+    }
     return true;
   }
 
@@ -165,10 +183,16 @@
   }
 
   function lightEdge(item) {
-    item.edge.classList.add('is-lit', 'is-flash');
+    if (!item.lit) return;
+    item.lit.classList.add('hx-lit', 'hx-flash');
     item.flashTimer = setTimeout(function () {
-      item.edge.classList.remove('is-flash');   /* 강한 발광은 가라앉고 은은한 선으로 */
+      if (item.lit) item.lit.classList.remove('hx-flash');   /* 발광은 가라앉고 은은한 선으로 */
     }, FLASH_HOLD);
+  }
+
+  function darkenEdge(item) {
+    if (!item.lit) return;
+    item.lit.classList.remove('hx-lit', 'hx-flash');
   }
 
   /* forward=true 펼침 / false 접힘. 목업의 runWorm 과 같은 진행식. */
@@ -207,7 +231,7 @@
     item.measured = measure(item);
     if (!item.measured) return;
 
-    item.edge.classList.remove('is-flash');
+    if (item.lit) item.lit.classList.remove('hx-flash');
 
     if (reducedMotion()) { lightEdge(item); return; }
 
@@ -220,7 +244,7 @@
 
   function leave(item) {
     stop(item);
-    item.edge.classList.remove('is-lit', 'is-flash');
+    darkenEdge(item);
     if (!item.measured) return;
     if (reducedMotion()) { applyDash(item, 0, 0); return; }
     runWorm(item, false);
@@ -260,7 +284,8 @@
     }
 
     var item = { wrap: wrap, name: name, reveal: reveal, svg: svg, path: path,
-                 edge: edge, raf: null, flashTimer: null, len: 0, measured: false };
+                 edge: edge, lit: null, gl: null,
+                 raf: null, flashTimer: null, len: 0, measured: false };
 
     /* 여기서는 재지 않는다 — enter() 가 hover 시점에 잰다(위 주석 참고). */
     wrap.addEventListener('mouseenter', function () { enter(item); });

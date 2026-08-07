@@ -1,15 +1,23 @@
 /* ================================================================
-   HELIX AMC — 특화진료(/specialty-care) 항목 인터랙션  v3.0
+   HELIX AMC — 특화진료(/specialty-care) 항목 인터랙션  v4.0
 
    항목에 마우스를 올리면 (사용자 목업 card_comet_v3 그대로)
      ① 한글명 바로 아래에서 파란 선이 출발해 오른쪽 끝까지 뻗고,
         모서리를 둥글게 돌아 아래로 내려간다.
         머리가 먼저 나가고 꼬리가 뒤따르며 지워지는 '코멧' 움직임.
-     ② 머리가 바닥에 닿는 순간 그 자리에 가로선이 켜지고 한 번 밝게
-        터진 뒤, 은은한 선으로 가라앉는다.
+     ② 머리가 바닥에 닿는 순간, 항목 사이에 이미 있는 회색 구분선
+        (.hst_sb_line)이 파랗게 켜지며 한 번 밝게 터진 뒤 가라앉는다.
+        새 선을 그리지 않고 있던 선을 켜므로 위치가 어긋날 수 없다.
      ③ 한 줄 설명 + '자세히 보기 →' 가 아래로 펼쳐진다.
         펼침 속도(480ms)와 선이 내려가는 속도를 맞춰, 선이 열리는 속도를
         따라가며 정확히 바닥에서 만난다.
+
+   v4.0 변경 — 바닥 가로선을 '있던 회색 선' 으로
+   -----------------------------------------------------------------
+   v3.0 은 파란 가로선을 따로 그렸는데, 항목 사이의 회색 구분선과 위치가
+   달라 따로 놀았다(사용자: "밑에 가로 선이 그 회색 밑 선하고 맞아야
+   하거든...? 지금은 따로고"). 이제 그 회색 선 자체를 켠다.
+   덤으로 착지점 계산도 회색 선 위치 기준이 되어 정확해졌다.
 
    v3.0 변경 — ㄱ자 경로 복원
    -----------------------------------------------------------------
@@ -88,7 +96,28 @@
   z-index: 1;
 }
 
-/* 머리가 닿는 자리에 켜지는 가로선 */
+/* ── 머리가 닿는 자리에 켜지는 가로선 ──
+   ⚠ 새로 그리지 않는다. 항목 사이에 이미 있는 Webflow 의 회색 구분선
+   (.hst_sb_line) 을 그대로 파랗게 켠다. 같은 요소를 쓰므로 위치·길이가
+   어긋날 수가 없다.
+   (v3.0 은 파란 선을 따로 그렸는데 회색 선과 따로 놀았다 — 사용자 지적:
+    "밑에 가로 선이 그 회색 밑 선하고 맞아야 하거든...? 지금은 따로고")
+
+   `.hst_sb_line.hx-lit` 는 Webflow 의 `.hst_sb_line`(명시도 0-1-0)보다
+   높아 !important 없이 이긴다.
+
+   열의 맨 아래 항목처럼 뒤에 회색 선이 없는 자리에서만 .hx-spec-edge 를
+   만들어 대신 쓴다(회색 선 8개 / 항목 12개 — 열마다 마지막 하나는 없음). */
+.hst_sb_line,
+.hx-spec-edge {
+  transition: background-color .28s ease, opacity .28s ease, box-shadow .45s ease;
+}
+
+.hst_sb_line.hx-lit {
+  background-color: #0075D6;
+}
+
+/* 회색 선이 없는 자리용 대체 선 */
 .hx-spec-edge {
   position: absolute;
   height: 1px;
@@ -96,15 +125,14 @@
   pointer-events: none;
   opacity: 0;
   z-index: 1;
-  transition: opacity .28s ease, box-shadow .45s ease;
 }
 
-.hx-spec-edge.is-lit {
+.hx-spec-edge.hx-lit {
   opacity: 1;
 }
 
 /* 닿는 순간의 짧은 발광. JS 가 380ms 뒤 떼어낸다. */
-.hx-spec-edge.is-flash {
+.hx-lit.hx-flash {
   box-shadow: 0 0 14px 2px rgba(0, 117, 214, .6);
 }
 
@@ -126,6 +154,7 @@
   .spec-item-cta    { transform: none; }
   .hx-spec-svg,
   .hx-spec-edge     { display: none; }
+  .hst_sb_line      { transition: none; }
 }
 
 /* ── 섹션이 넘칠 때만 늘어나게 (푸터 침범 방지) ──
@@ -146,5 +175,6 @@
 @media (prefers-reduced-motion: reduce) {
   .spec-item-reveal,
   .spec-item-cta,
+  .hst_sb_line,
   .hx-spec-edge { transition: none; }
 }
