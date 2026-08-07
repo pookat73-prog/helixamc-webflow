@@ -270,3 +270,35 @@
 @media (prefers-reduced-motion: reduce) {
   .spec-item-hint { animation: none; opacity: .75; }
 }
+
+/* ── 표 맨 윗변 — 그룹 제목 위 굵은 블루 바 ──  v4.2
+   `.hst_grid` 는 테두리가 오른쪽·아래·왼쪽에만 있고 **위쪽이 없다**
+   (스타일 실측 확인). 그래서 표 전체에서 윗변만 선이 비어 보였다.
+   사용자 요청: "그룹 콜론 윗변에 양옆 선 사이로 굵은 메인 블루 선.
+   양옆 패딩 약간."
+
+   각 열의 맨 위 요소가 `.hst_group_title` 이므로 거기에 얹는다.
+   양옆 10px 를 띄워 열을 가르는 세로선(왼쪽=grid border-left 또는 앞 열의
+   border-right / 오른쪽=이 열의 border-right)에 닿지 않게 했다.
+
+   ⚠ absolute 라 자리를 차지하지 않는다 — 제목 칸 높이·글자 위치 안 바뀜.
+     `.hst_group_title` 은 display:grid 지만, absolute 인 ::before 는
+     그리드 항목이 되지 않으므로 '01' 과 분과명 배치에 영향이 없다.
+
+   두께 3px 은 주변 회색선(0.5~1px)보다 확실히 굵어 '표의 머리' 로 읽힌다.
+   여기 파랑은 장식이 아니라 구조선이라, 호버 파랑(코멧·구분선)과 달리
+   늘 켜져 있다. */
+.hst_group_title {
+  position: relative;
+}
+
+.hst_group_title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  height: 3px;
+  background: #0075D6;
+  pointer-events: none;
+}
