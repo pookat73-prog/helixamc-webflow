@@ -220,3 +220,53 @@
   .hx-toast,
   .hx-spec-edge { transition: none; }
 }
+
+/* ── 항목 아래 지시표시(꺾쇠) 동작 ──  v4.1
+   짝이 되는 요소는 Webflow 네이티브다 — 각 항목의 영문명 바로 뒤에 있는
+   `.spec-item-hint` (Designer 내비게이터에서 "지시표시").
+   접혀 있을 때 "여기 마우스 올려보라" 고 눈짓하는 역할.
+
+   ⚠ 역할 분담
+     모양·위치·색은 Webflow 클래스가 가진다(Designer 에서 보이고 만질 수
+     있어야 하므로: absolute / left 31px / bottom 45px / 7×7 / 오른쪽·아래
+     테두리 / opacity .6 / pointer-events:none). 이 파일은 '움직임' 과
+     '호버하면 비켜주기' 만 한다. 그래서 이 파일이 CDN 에서 못 와도 꺾쇠는
+     그대로 보인다 — 숨쉬지 않고, 호버해도 안 사라질 뿐이다.
+     글이 안 갇히는 것과 같은 원칙.
+
+   ⚠ transform 에 rotate(45deg) 를 반드시 같이 적어야 한다
+     꺾쇠는 정사각형을 45도 돌려 오른쪽·아래 테두리만 남긴 것이다. 회전은
+     Webflow 클래스에 들어 있는데(실측 확인), 여기서 translateY 만 쓰면
+     transform 이 통째로 덮어써져 회전이 풀리고 'ㄱ' 자로 보인다.
+
+   ⚠ 992px 은 이 파일 위쪽 펼침 규칙과 같은 값이어야 한다
+     좁은 화면은 설명이 처음부터 다 펼쳐져 있어 지시표시가 필요 없고,
+     Webflow 쪽에서 이미 medium 브레이크포인트에 display:none 을 걸어 뒀다.
+
+   눈에 띄는 역할은 색이 아니라 움직임이 맡는다. 이 페이지에서 파랑은
+   코멧 선·켜지는 구분선·자세히 보기처럼 '지금 일어나는 일' 에만 쓴다.
+   늘 떠 있는 표시까지 파랗게 하면 호버했을 때의 파랑이 덜 특별해진다. */
+@media (min-width: 992px) {
+  .spec-item-hint {
+    animation: hxSpecHint 2.1s ease-in-out infinite;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+
+  /* 마우스가 올라오면 사라지며 설명이 펼쳐질 자리를 비켜준다 */
+  .hst-item-wrap:hover .spec-item-hint {
+    opacity: 0;
+    transform: translateY(4px) rotate(45deg);
+    animation: none;
+  }
+
+  /* 2.1초에 걸쳐 3px 내려갔다 돌아온다. 밝기도 함께 오간다. */
+  @keyframes hxSpecHint {
+    0%, 100% { opacity: .5; transform: translateY(0)   rotate(45deg); }
+    50%      { opacity: 1;  transform: translateY(3px) rotate(45deg); }
+  }
+}
+
+/* 동작 최소화 설정을 켠 사용자 — 움직임 없이 조용히 떠 있기만 한다 */
+@media (prefers-reduced-motion: reduce) {
+  .spec-item-hint { animation: none; opacity: .75; }
+}
