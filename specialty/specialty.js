@@ -300,14 +300,13 @@
 
   function enter(item) {
     stop(item);
-    /* ⚠ 로드 시점이 아니라 '마우스가 올라온 시점' 에 잰다.
-       로더가 css 를 <link> 로 붙이는 건 비동기라, 로드 직후엔 우리 css 가
-       아직 적용 안 됐을 수 있다. 그 상태에서 재면
-         · 항목에 position:relative 가 없어 기준점이 엉뚱한 조상으로 잡히고
-         · 설명이 안 접혀 있어 바닥을 잘못 읽는다
-       hover 시점엔 css·폰트·레이아웃이 모두 확정돼 있어 이 문제가 없다.
-       12개 항목 × hover 1회당 측정 1회라 비용도 무시할 수준. */
-    item.measured = measure(item);
+    /* ⚠ 여기서 다시 재지 않는다 — 캐시된 '평상시' 값을 쓴다.
+       예전엔 hover 할 때마다 쟀는데, 직전에 보던 항목이 아직 접히는 중이면
+       열 높이가 부풀어 있는 상태로 재게 된다. 그래서 처음 펼칠 때와 다른
+       칸을 거쳐 펼칠 때 파란 선 높이가 달라졌다(사용자 지적).
+       measureAll() 이 아무것도 펼쳐지지 않은 상태에서 미리 재 둔다.
+       아직 못 쟀을 때만(캐시 없음) 여기서 최선을 다해 잰다. */
+    if (!item.measured) item.measured = measure(item);
     if (!item.measured) return;
 
     if (item.lit) item.lit.classList.remove('hx-flash');
@@ -372,10 +371,29 @@
 
   var items = [];
 
-  /* 화면이 바뀌면 다음 hover 때 다시 재도록 표시만 해둔다.
-     미리 재두지 않는 이유는 enter() 의 주석과 같다. */
-  function invalidate() {
-    items.forEach(function (it) { it.measured = false; });
+  /* 우리 css 가 실제로 적용됐는지 — 접힘 규칙(max-height:0)이 살아 있으면 적용된 것.
+     로더가 css 를 <link> 로 붙이는 건 비동기라, 로드 직후엔 아직일 수 있다.
+     그 상태에서 재면 기준점(position:relative)과 바닥을 둘 다 잘못 읽는다. */
+  function cssApplied() {
+    if (!items.length) return false;
+    return getComputedStyle(items[0].reveal).maxHeight === '0px';
+  }
+
+  /* '아무것도 펼쳐지지 않은 평상시' 좌표를 일괄로 재서 기억해 둔다.
+     지금 마우스가 올라가 있는 항목은 건너뛴다(그 항목은 펼쳐져 있어 값이 틀림). */
+  function measureAll() {
+    items.forEach(function (it) {
+      if (it.raf) return;
+      if (it.wrap.matches && it.wrap.matches(':hover')) return;
+      it.measured = measure(it);
+      if (it.measured) applyDash(it, 0, 0);
+    });
+  }
+
+  /* css 가 붙을 때까지 짧게 기다렸다가 첫 측정. 최대 약 2초. */
+  function measureWhenReady(tries) {
+    if (cssApplied() || tries <= 0) { measureAll(); return; }
+    setTimeout(function () { measureWhenReady(tries - 1); }, 60);
   }
 
   function init() {
@@ -393,10 +411,16 @@
       if (it) items.push(it);
     }
 
+    measureWhenReady(32);                       /* css 적용 직후 평상시 좌표 확보 */
+    window.addEventListener('load', measureAll);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(measureAll);    /* 폰트가 늦게 오면 글자 높이가 바뀜 */
+    }
+
     var rt;
     window.addEventListener('resize', function () {
       clearTimeout(rt);
-      rt = setTimeout(invalidate, 150);
+      rt = setTimeout(measureAll, 150);
     });
   }
 
