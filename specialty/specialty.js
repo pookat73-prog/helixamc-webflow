@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v3.0
+   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v4.0
    specialty/bootstrap.js 가 로드. 짝: specialty/specialty.css
 
    하는 일 — 사용자 목업(card_comet_v3) 그대로
@@ -12,6 +12,17 @@
      · 머리가 바닥에 닿는 순간(=DURATION), 항목 사이에 이미 있는 회색
        구분선(.hst_sb_line)이 파랗게 켜지며 한 번 터진 뒤 가라앉는다
      · 마우스가 나가면 선이 왔던 길로 되돌아 나가고 가로선도 꺼진다
+
+   v4.0 변경 — 펼쳐도 아래가 안 밀린다
+     증상: FMT 에 올렸다가 신장 투석으로 넘어가면 파란 선이 카드가 펼쳐지는
+     만큼 아래로 밀렸다. FMT 는 열의 맨 아래라 '떠 있는 대체 선'을 써서
+     제자리에 있는데, 신장 투석은 글 흐름 안에 있는 진짜 회색 구분선을 켜기
+     때문에 설명이 펼쳐진 높이만큼 그대로 떠밀린 것.
+
+     고침: 항목 아래에 원래 비어 있던 여백(padding-bottom, 60px)을 펼치는
+     만큼 줄인다. 항목 전체 높이가 그대로라 아래 회색 선도, 그 아래 항목도
+     밀리지 않는다. 여백보다 설명이 길면 남는 만큼(residual)만 밀리고,
+     선의 착지점도 그 남는 만큼만 내려가도록 계산에 반영한다.
 
    v3.0 변경 — 바닥 가로선을 '있던 회색 선' 으로
      따로 그린 파란 선이 항목 사이 회색 구분선과 위치가 달라 따로 놀았다.
@@ -77,6 +88,9 @@
                              다 먹는다. 폭에 맞춰 축소. */
   var DESKTOP_MIN = 992;  /* 이 폭 이상에서만 동작. specialty.css 와 같아야 함 */
   var GAP_Y      = 2;     /* 한글명 바닥에서 선까지 (기존 3px 틈 안) */
+  var MIN_PAD    = 4;     /* 흡수 후에도 남겨 둘 아래 여백. 설명 마지막 줄이
+                             회색 구분선에 딱 붙지 않게 하는 최소 숨통.
+                             (여백 70px 중 66px 까지 삼킬 수 있다는 뜻) */
 
   /* 좁은 화면은 설명을 처음부터 펼쳐 두므로 선도 안 그린다.
      CSS 의 @media (min-width: 992px) 와 판정을 일치시킨다.
@@ -109,6 +123,9 @@
 
     var cs = getComputedStyle(wrap);
     var padRight = parseFloat(cs.paddingRight) || 0;
+    /* 아래 여백의 '원래 값'. 한 번만 읽어 캐시한다 — 흡수하는 동안에는
+       인라인으로 줄여 둔 값이 읽히므로, 매번 읽으면 점점 깎여 나간다. */
+    if (item.basePad == null) item.basePad = parseFloat(cs.paddingBottom) || 0;
 
     var nameRect = name.getBoundingClientRect();
     var startX = Math.round(nameRect.left - wrapRect.left);
@@ -120,8 +137,9 @@
     var endX   = Math.round(wrapRect.width - padRight / 2);
 
     /* ── 착지점(targetY) ──
-       회색 구분선이 있으면 '그 선의 위치' 가 곧 착지점이다. 지금은 접혀
-       있으니, 펼쳐지면서 그 선이 내려갈 거리를 더해준다.
+       회색 구분선이 있으면 '그 선의 위치' 가 곧 착지점이다. v4.0 부터는
+       펼침을 아래 여백으로 흡수하므로 그 선은 대개 제자리에 있고, 여백으로
+       다 못 삼킨 만큼(residual)만 내려간다. 그 거리만 더해준다.
 
        ⚠ 예전처럼 잠깐 강제로 펼쳐서 재지 않는다. 되돌릴 때 트랜지션이
        재생돼 깜빡이는 사고가 있었다. scrollHeight 는 max-height:0 +
@@ -132,14 +150,31 @@
     var mtNow     = parseFloat(getComputedStyle(reveal).marginTop) || 0;
     var grow      = (revTarget - revNow) + (5 - mtNow);   /* 펼치면 늘어날 높이 */
 
+    /* ── 늘어날 높이를 '이미 비어 있던 아래 여백' 안으로 흡수 (v4.0) ──
+       항목 아래에는 원래 비어 있는 여백이 있다(padding-bottom, 60px).
+       펼치는 만큼 그 여백을 줄이면 항목 전체 높이가 그대로라, 아래 회색
+       구분선(= 파랗게 켜질 선)도 그 아래 항목도 밀리지 않는다.
+       여백보다 설명이 길면 남는 만큼(residual)만 밀린다. */
+    var absorb   = Math.max(0, Math.min(grow, item.basePad - MIN_PAD));
+    var residual = grow - absorb;
+
+    /* ⚠ 여백을 실제로 줄이는 건 아래 좌표를 다 읽은 뒤에 한다.
+       회색 선 위치를 읽기 전에 건드리면 트랜지션 중간값이 섞여 읽힌다. */
     var gl = grayLine(wrap);
     var targetY;
     if (gl) {
-      targetY = Math.round(gl.getBoundingClientRect().top - wrapRect.top + grow);
+      targetY = Math.round(gl.getBoundingClientRect().top - wrapRect.top + residual);
     } else {
-      targetY = Math.round(wrapRect.height + grow);
+      targetY = Math.round(wrapRect.height + residual);
     }
     item.gl = gl;
+
+    /* 좌표를 다 읽었으니 이제 흡수 적용. */
+    wrap.style.paddingBottom = (item.basePad - absorb) + 'px';
+    /* 펼침 높이를 '실제로 펼칠 값' 으로 못박는다. CSS 의 고정 120px 로 두면
+       설명이 짧은 항목은 먼저 다 자라 버려서, 여백이 줄어드는 속도와 어긋나
+       그 사이 높이가 잠깐 출렁인다. 같은 값으로 맞추면 둘이 정확히 동행한다. */
+    reveal.style.maxHeight = revTarget + 'px';
 
     if (endX - startX < RADIUS * 2 || targetY - y0 < RADIUS * 2) return false;
 
@@ -245,6 +280,10 @@
   function leave(item) {
     stop(item);
     darkenEdge(item);
+    /* 흡수해 뒀던 아래 여백과 펼침 높이를 되돌린다. measure 가 실패해
+       선을 못 그린 경우에도 되돌려야 하므로 measured 검사보다 앞에 둔다. */
+    item.wrap.style.paddingBottom = '';
+    item.reveal.style.maxHeight   = '';
     if (!item.measured) return;
     if (reducedMotion()) { applyDash(item, 0, 0); return; }
     runWorm(item, false);
@@ -284,7 +323,7 @@
     }
 
     var item = { wrap: wrap, name: name, reveal: reveal, svg: svg, path: path,
-                 edge: edge, lit: null, gl: null,
+                 edge: edge, lit: null, gl: null, basePad: null,
                  raf: null, flashTimer: null, len: 0, measured: false };
 
     /* 여기서는 재지 않는다 — enter() 가 hover 시점에 잰다(위 주석 참고). */
@@ -298,7 +337,14 @@
   /* 화면이 바뀌면 다음 hover 때 다시 재도록 표시만 해둔다.
      미리 재두지 않는 이유는 enter() 의 주석과 같다. */
   function invalidate() {
-    items.forEach(function (it) { it.measured = false; });
+    items.forEach(function (it) {
+      it.measured = false;
+      /* 폭이 바뀌면 여백 값 자체가 달라질 수 있으니 캐시도 버리고,
+         흡수해 뒀던 인라인 값도 원래대로 되돌린다. */
+      it.basePad = null;
+      it.wrap.style.paddingBottom = '';
+      it.reveal.style.maxHeight   = '';
+    });
   }
 
   function init() {
