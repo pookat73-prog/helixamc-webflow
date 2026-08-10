@@ -96,8 +96,44 @@
     }
   }
 
+  /* ── 이 방문을 어떻게 읽어야 하나 ────────────────────────────────
+     "한 페이지만 보고 나갔다" 는 방문의 절반을 차지하는데, 그 안에는
+     성격이 정반대인 것들이 섞여 있다. 전화번호만 확인하고 만족해서 나간
+     방문과, 광고로 들어와 7초 만에 튕겨 나간 방문이 같은 한 줄로 세어진다
+     (측정 보고서 3-3). 셋으로 가를 수 있게 판정값을 함께 남긴다.
+
+       acted      이 방문에서 전환 행동(전화·상담·길찾기·복사)이 있었나
+                  — global/session.js 가 이벤트 이름을 보고 켜 둔 표시
+       acted_type 그 행동의 종류 (phone / consult / map / copy / lead)
+       engaged    실제로 보고 있던 시간이 30초 이상인가
+       bounce_kind
+         satisfied  행동이 있었다 → 이탈이 아니라 성공에 가깝다
+         read       행동은 없지만 30초 이상 봤다 → 읽고 나갔다
+         quick      10초 미만, 행동 없음 → 진짜 개선 대상은 여기뿐
+         short      그 사이 (10~30초, 행동 없음)
+
+     ⚠️ 이 값은 '이 페이지에 대한' 판정이다. 방문 전체가 한 페이지였는지는
+        session.js 가 붙이는 step(방문 내 순서)으로 시트에서 가른다
+        — step=1 이면서 그 방문에 다른 페이지 기록이 없으면 1페이지 방문. */
+  function verdict(activeSoFar, totalSoFar) {
+    var actSec = activeSoFar / 1000;
+    var acted  = !!window.__helixActed;
+    var kind;
+    if (acted)               kind = 'satisfied';
+    else if (actSec >= 30)   kind = 'read';
+    else if (totalSoFar / 1000 < 10) kind = 'quick';
+    else                     kind = 'short';
+    return {
+      acted:      acted ? 1 : 0,
+      acted_type: acted ? (window.__helixActedType || '') : '',
+      engaged:    actSec >= 30 ? 1 : 0,
+      bounce_kind: kind
+    };
+  }
+
   function send(activeDelta, totalDelta, totalSoFar) {
     var name = PAGE + '_time_on_page';
+    var v = verdict(activeTotal, totalSoFar);
     var params = {
       item_type:  'time_on_page',
       page:       PAGE,
@@ -105,6 +141,11 @@
       active_sec: Math.round(activeDelta / 1000),   /* 합계용 — 증가분 */
       total_sec:  Math.round(totalDelta / 1000),    /* 합계용 — 증가분 */
       elapsed_sec: Math.round(totalSoFar / 1000),   /* 참고용 — 진입 후 누적 */
+      active_total_sec: Math.round(activeTotal / 1000), /* 참고용 — 이 페이지 누적 active */
+      acted:       v.acted,
+      acted_type:  v.acted_type,
+      engaged:     v.engaged,
+      bounce_kind: v.bounce_kind,
       value:      Math.round(activeDelta / 1000)
     };
     try {
