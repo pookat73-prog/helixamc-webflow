@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — 특화진료(/specialty-care) 항목 인터랙션  v4.0
+   HELIX AMC — 특화진료(/specialty-care) 항목 인터랙션  v5.0
 
    항목에 마우스를 올리면 (사용자 목업 card_comet_v3 그대로)
      ① 한글명 바로 아래에서 파란 선이 출발해 오른쪽 끝까지 뻗고,
@@ -11,6 +11,21 @@
      ③ 한 줄 설명 + '자세히 보기 →' 가 아래로 펼쳐진다.
         펼침 속도(480ms)와 선이 내려가는 속도를 맞춰, 선이 열리는 속도를
         따라가며 정확히 바닥에서 만난다.
+
+   v5.0 변경 — 펼쳐도 아래가 안 밀린다
+   -----------------------------------------------------------------
+   증상: FMT 에 올렸다가 신장 투석으로 넘어가면 파란 선이 카드가 펼쳐지는
+   만큼 아래로 밀렸다. FMT 는 열의 맨 아래라 '떠 있는 대체 선'을 쓰므로
+   제자리에 있는데, 신장 투석은 글 흐름 안에 있는 진짜 회색 구분선을 켜서
+   설명이 펼쳐진 높이만큼 그대로 떠밀린 것.
+
+   고침: 항목 아래에는 원래 비어 있는 여백(padding-bottom)이 있다.
+   펼치는 만큼 그 여백을 줄이면 항목 전체 높이가 그대로라, 아래 회색 선도
+   그 아래 항목도 밀리지 않는다. 줄일 양은 설명 길이에 따라 달라지므로
+   specialty.js 가 항목마다 재서 인라인으로 넣고, 여기서는 그 변화가 펼침과
+   같은 속도로 일어나게 시간만 맞춘다.
+   여백 자체의 크기도 '가장 긴 설명이 들어갈 만큼' 으로 JS 가 정한다
+   (--hx-spec-pad). 넉넉히 고정해 두면 표가 늘 길어지기 때문.
 
    v4.0 변경 — 바닥 가로선을 '있던 회색 선' 으로
    -----------------------------------------------------------------
@@ -136,6 +151,47 @@
   box-shadow: 0 0 14px 2px rgba(0, 117, 214, .6);
 }
 
+/* ── '자세히 보기 →' 클릭 안내 토스트 ──
+   상세페이지가 아직 없어서 "준비중입니다" 만 띄운다.
+   모양은 진료과목 페이지(services/dept-nav.js)의 토스트를 따랐고, 그림자만
+   더 또렷하게 조였다(아래 참고). 특화진료 페이지는 그 파일을 안 싣기 때문에
+   여기 따로 둔다.
+   상세페이지가 생기면 specialty.js 의 LINKS 에 주소만 넣으면 된다. */
+.spec-item-cta {
+  cursor: pointer;
+}
+
+.hx-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 14%;
+  transform: translate(-50%, 12px);
+  background: rgba(13, 17, 23, .94);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 117, 214, .65);
+  /* 또렷한 그림자 — 흐림을 줄이고 두 겹으로 나눈다.
+     앞의 얇은 겹이 가장자리를 딱 잡아 주고, 뒤의 겹이 살짝 띄우는 느낌만
+     낸다. 예전엔 `0 10px 34px rgba(0,0,0,.45)` 한 겹이라 흐림이 너무 넓게
+     퍼져 뭉개져 보였다(사용자: "둥실하게 펴져있어서 좀 멍멍해보여"). */
+  box-shadow: 0 1px 2px rgba(13, 17, 23, .40),
+              0 3px 8px rgba(13, 17, 23, .28);
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .28s ease, transform .28s ease;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+
+.hx-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 /* ── PC 폭에서만 hover 동작 ──
    ⚠ 예전엔 `@media (hover:hover) and (pointer:fine)` 로 걸었다가 크게 데였다.
    사용자 PC 브라우저가 이 조건을 false 로 보고해(터치스크린 노트북·기기
@@ -144,8 +200,37 @@
    → 판정 기준을 '화면 폭' 으로 바꾼다. 폭은 거짓말을 하지 않는다.
    이 값을 바꾸면 specialty.js 의 DESKTOP_MIN 도 같이 바꿔야 한다. */
 @media (min-width: 992px) {
-  .hst-item-wrap:hover .spec-item-reveal { max-height: 120px; opacity: 1; margin-top: 5px; }
+  .hst-item-wrap:hover .spec-item-reveal { max-height: 200px; opacity: 1; margin-top: 5px; }
   .hst-item-wrap:hover .spec-item-cta    { transform: translateY(0); }
+
+  /* 펼침을 '이미 비어 있던 아래 여백' 안으로 흡수 (v5.0).
+     줄일 양은 설명 길이에 따라 다르므로 specialty.js 가 항목마다 재서
+     인라인 padding-bottom 으로 넣는다. 여기서는 그 변화가 설명이 펼쳐지는
+     속도와 정확히 같게 시간·이징만 맞춘다.
+
+     여백의 크기(--hx-spec-pad)도 specialty.js 가 정한다. Webflow 의 60px 은
+     설명이 한 줄일 때 기준이라, 두세 줄이 되는 폭에서는 모자라 아래를 밀었다.
+     그렇다고 넉넉하게 고정해 두면 표 전체가 늘 길어진다(사용자 지적:
+     "표가 전체적으로 늘어나서"). 그래서 가장 긴 설명이 들어갈 만큼만 잡는다 —
+     넓은 화면에서는 대개 원래 60px 그대로다.
+     ⚠ 값이 없을 때(JS 미도달)의 기본값 60px 은 Webflow 원래 값 그대로라,
+       JS 가 못 와도 보기는 예전과 완전히 같다. */
+  .hst-item-wrap {
+    padding-bottom: var(--hx-spec-pad, 60px);
+    transition: padding-bottom .48s cubic-bezier(.215,.61,.355,1);
+  }
+
+  /* 작은 갈매기 표시(= 아래에 더 있다는 신호)
+     · 여백이 커진 만큼 같이 내려, 한글명과의 거리(15px)는 예전 그대로 둔다.
+       안 그러면 이 표시만 글에서 멀어져 혼자 떠 보인다. (원래 값: 여백 60 −
+       bottom 45 = 15)
+     · 펼치는 동안은 바로 그 자리에 설명이 들어와 겹치므로 숨긴다.
+       설명 안의 '자세히 보기 →' 가 같은 역할을 대신한다. */
+  .spec-item-hint {
+    bottom: calc(var(--hx-spec-pad, 60px) - 15px);
+    transition: opacity .28s ease;
+  }
+  .hst-item-wrap:hover .spec-item-hint { opacity: 0; }
 }
 
 /* ── 좁은 화면(모바일·태블릿) — 처음부터 전부 보이게 ── */
@@ -175,6 +260,93 @@
 @media (prefers-reduced-motion: reduce) {
   .spec-item-reveal,
   .spec-item-cta,
+  .spec-item-hint,
+  .hst-item-wrap,
   .hst_sb_line,
+  .hx-toast,
   .hx-spec-edge { transition: none; }
+}
+
+/* ── 항목 아래 지시표시(꺾쇠) 동작 ──  v4.1
+   짝이 되는 요소는 Webflow 네이티브다 — 각 항목의 영문명 바로 뒤에 있는
+   `.spec-item-hint` (Designer 내비게이터에서 "지시표시").
+   접혀 있을 때 "여기 마우스 올려보라" 고 눈짓하는 역할.
+
+   ⚠ 역할 분담
+     모양·위치·색은 Webflow 클래스가 가진다(Designer 에서 보이고 만질 수
+     있어야 하므로: absolute / left 31px / bottom 45px / 7×7 / 오른쪽·아래
+     테두리 / opacity .6 / pointer-events:none). 이 파일은 '움직임' 과
+     '호버하면 비켜주기' 만 한다. 그래서 이 파일이 CDN 에서 못 와도 꺾쇠는
+     그대로 보인다 — 숨쉬지 않고, 호버해도 안 사라질 뿐이다.
+     글이 안 갇히는 것과 같은 원칙.
+
+   ⚠ transform 에 rotate(45deg) 를 반드시 같이 적어야 한다
+     꺾쇠는 정사각형을 45도 돌려 오른쪽·아래 테두리만 남긴 것이다. 회전은
+     Webflow 클래스에 들어 있는데(실측 확인), 여기서 translateY 만 쓰면
+     transform 이 통째로 덮어써져 회전이 풀리고 'ㄱ' 자로 보인다.
+
+   ⚠ 992px 은 이 파일 위쪽 펼침 규칙과 같은 값이어야 한다
+     좁은 화면은 설명이 처음부터 다 펼쳐져 있어 지시표시가 필요 없고,
+     Webflow 쪽에서 이미 medium 브레이크포인트에 display:none 을 걸어 뒀다.
+
+   눈에 띄는 역할은 색이 아니라 움직임이 맡는다. 이 페이지에서 파랑은
+   코멧 선·켜지는 구분선·자세히 보기처럼 '지금 일어나는 일' 에만 쓴다.
+   늘 떠 있는 표시까지 파랗게 하면 호버했을 때의 파랑이 덜 특별해진다. */
+@media (min-width: 992px) {
+  .spec-item-hint {
+    animation: hxSpecHint 2.1s ease-in-out infinite;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+
+  /* 마우스가 올라오면 사라지며 설명이 펼쳐질 자리를 비켜준다 */
+  .hst-item-wrap:hover .spec-item-hint {
+    opacity: 0;
+    transform: translateY(4px) rotate(45deg);
+    animation: none;
+  }
+
+  /* 2.1초에 걸쳐 3px 내려갔다 돌아온다. 밝기도 함께 오간다. */
+  @keyframes hxSpecHint {
+    0%, 100% { opacity: .5; transform: translateY(0)   rotate(45deg); }
+    50%      { opacity: 1;  transform: translateY(3px) rotate(45deg); }
+  }
+}
+
+/* 동작 최소화 설정을 켠 사용자 — 움직임 없이 조용히 떠 있기만 한다 */
+@media (prefers-reduced-motion: reduce) {
+  .spec-item-hint { animation: none; opacity: .75; }
+}
+
+/* ── 표 맨 윗변 — 그룹 제목 위 굵은 블루 바 ──  v4.2
+   `.hst_grid` 는 테두리가 오른쪽·아래·왼쪽에만 있고 **위쪽이 없다**
+   (스타일 실측 확인). 그래서 표 전체에서 윗변만 선이 비어 보였다.
+   사용자 요청: "그룹 콜론 윗변에 양옆 선 사이로 굵은 메인 블루 선.
+   양옆 패딩 약간."
+
+   각 열의 맨 위 요소가 `.hst_group_title` 이므로 거기에 얹는다.
+   양옆 5px 를 띄워 열을 가르는 세로선(왼쪽=grid border-left 또는 앞 열의
+   border-right / 오른쪽=이 열의 border-right)에 닿지 않게 했다.
+   (처음 10px 로 넣었다가 사용자 요청으로 5px 로 줄임 — 바가 열 폭을 더
+    꽉 채워 '표의 머리' 느낌이 강해진다.)
+
+   ⚠ absolute 라 자리를 차지하지 않는다 — 제목 칸 높이·글자 위치 안 바뀜.
+     `.hst_group_title` 은 display:grid 지만, absolute 인 ::before 는
+     그리드 항목이 되지 않으므로 '01' 과 분과명 배치에 영향이 없다.
+
+   두께 3px 은 주변 회색선(0.5~1px)보다 확실히 굵어 '표의 머리' 로 읽힌다.
+   여기 파랑은 장식이 아니라 구조선이라, 호버 파랑(코멧·구분선)과 달리
+   늘 켜져 있다. */
+.hst_group_title {
+  position: relative;
+}
+
+.hst_group_title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5px;
+  right: 5px;
+  height: 3px;
+  background: #0075D6;
+  pointer-events: none;
 }
