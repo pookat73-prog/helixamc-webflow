@@ -150,6 +150,47 @@
   box-shadow: 0 0 14px 2px rgba(0, 117, 214, .6);
 }
 
+/* ── '자세히 보기 →' 클릭 안내 토스트 ──
+   상세페이지가 아직 없어서 "준비중입니다" 만 띄운다.
+   모양은 진료과목 페이지(services/dept-nav.js)의 토스트를 따랐고, 그림자만
+   더 또렷하게 조였다(아래 참고). 특화진료 페이지는 그 파일을 안 싣기 때문에
+   여기 따로 둔다.
+   상세페이지가 생기면 specialty.js 의 LINKS 에 주소만 넣으면 된다. */
+.spec-item-cta {
+  cursor: pointer;
+}
+
+.hx-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 14%;
+  transform: translate(-50%, 12px);
+  background: rgba(13, 17, 23, .94);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 117, 214, .65);
+  /* 또렷한 그림자 — 흐림을 줄이고 두 겹으로 나눈다.
+     앞의 얇은 겹이 가장자리를 딱 잡아 주고, 뒤의 겹이 살짝 띄우는 느낌만
+     낸다. 예전엔 `0 10px 34px rgba(0,0,0,.45)` 한 겹이라 흐림이 너무 넓게
+     퍼져 뭉개져 보였다(사용자: "둥실하게 펴져있어서 좀 멍멍해보여"). */
+  box-shadow: 0 1px 2px rgba(13, 17, 23, .40),
+              0 3px 8px rgba(13, 17, 23, .28);
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .28s ease, transform .28s ease;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+
+.hx-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 /* ── PC 폭에서만 hover 동작 ──
    ⚠ 예전엔 `@media (hover:hover) and (pointer:fine)` 로 걸었다가 크게 데였다.
    사용자 PC 브라우저가 이 조건을 false 로 보고해(터치스크린 노트북·기기
@@ -216,5 +257,90 @@
   .spec-item-hint,
   .hst-item-wrap,
   .hst_sb_line,
+  .hx-toast,
   .hx-spec-edge { transition: none; }
+}
+
+/* ── 항목 아래 지시표시(꺾쇠) 동작 ──  v4.1
+   짝이 되는 요소는 Webflow 네이티브다 — 각 항목의 영문명 바로 뒤에 있는
+   `.spec-item-hint` (Designer 내비게이터에서 "지시표시").
+   접혀 있을 때 "여기 마우스 올려보라" 고 눈짓하는 역할.
+
+   ⚠ 역할 분담
+     모양·위치·색은 Webflow 클래스가 가진다(Designer 에서 보이고 만질 수
+     있어야 하므로: absolute / left 31px / bottom 45px / 7×7 / 오른쪽·아래
+     테두리 / opacity .6 / pointer-events:none). 이 파일은 '움직임' 과
+     '호버하면 비켜주기' 만 한다. 그래서 이 파일이 CDN 에서 못 와도 꺾쇠는
+     그대로 보인다 — 숨쉬지 않고, 호버해도 안 사라질 뿐이다.
+     글이 안 갇히는 것과 같은 원칙.
+
+   ⚠ transform 에 rotate(45deg) 를 반드시 같이 적어야 한다
+     꺾쇠는 정사각형을 45도 돌려 오른쪽·아래 테두리만 남긴 것이다. 회전은
+     Webflow 클래스에 들어 있는데(실측 확인), 여기서 translateY 만 쓰면
+     transform 이 통째로 덮어써져 회전이 풀리고 'ㄱ' 자로 보인다.
+
+   ⚠ 992px 은 이 파일 위쪽 펼침 규칙과 같은 값이어야 한다
+     좁은 화면은 설명이 처음부터 다 펼쳐져 있어 지시표시가 필요 없고,
+     Webflow 쪽에서 이미 medium 브레이크포인트에 display:none 을 걸어 뒀다.
+
+   눈에 띄는 역할은 색이 아니라 움직임이 맡는다. 이 페이지에서 파랑은
+   코멧 선·켜지는 구분선·자세히 보기처럼 '지금 일어나는 일' 에만 쓴다.
+   늘 떠 있는 표시까지 파랗게 하면 호버했을 때의 파랑이 덜 특별해진다. */
+@media (min-width: 992px) {
+  .spec-item-hint {
+    animation: hxSpecHint 2.1s ease-in-out infinite;
+    transition: opacity .22s ease, transform .22s ease;
+  }
+
+  /* 마우스가 올라오면 사라지며 설명이 펼쳐질 자리를 비켜준다 */
+  .hst-item-wrap:hover .spec-item-hint {
+    opacity: 0;
+    transform: translateY(4px) rotate(45deg);
+    animation: none;
+  }
+
+  /* 2.1초에 걸쳐 3px 내려갔다 돌아온다. 밝기도 함께 오간다. */
+  @keyframes hxSpecHint {
+    0%, 100% { opacity: .5; transform: translateY(0)   rotate(45deg); }
+    50%      { opacity: 1;  transform: translateY(3px) rotate(45deg); }
+  }
+}
+
+/* 동작 최소화 설정을 켠 사용자 — 움직임 없이 조용히 떠 있기만 한다 */
+@media (prefers-reduced-motion: reduce) {
+  .spec-item-hint { animation: none; opacity: .75; }
+}
+
+/* ── 표 맨 윗변 — 그룹 제목 위 굵은 블루 바 ──  v4.2
+   `.hst_grid` 는 테두리가 오른쪽·아래·왼쪽에만 있고 **위쪽이 없다**
+   (스타일 실측 확인). 그래서 표 전체에서 윗변만 선이 비어 보였다.
+   사용자 요청: "그룹 콜론 윗변에 양옆 선 사이로 굵은 메인 블루 선.
+   양옆 패딩 약간."
+
+   각 열의 맨 위 요소가 `.hst_group_title` 이므로 거기에 얹는다.
+   양옆 5px 를 띄워 열을 가르는 세로선(왼쪽=grid border-left 또는 앞 열의
+   border-right / 오른쪽=이 열의 border-right)에 닿지 않게 했다.
+   (처음 10px 로 넣었다가 사용자 요청으로 5px 로 줄임 — 바가 열 폭을 더
+    꽉 채워 '표의 머리' 느낌이 강해진다.)
+
+   ⚠ absolute 라 자리를 차지하지 않는다 — 제목 칸 높이·글자 위치 안 바뀜.
+     `.hst_group_title` 은 display:grid 지만, absolute 인 ::before 는
+     그리드 항목이 되지 않으므로 '01' 과 분과명 배치에 영향이 없다.
+
+   두께 3px 은 주변 회색선(0.5~1px)보다 확실히 굵어 '표의 머리' 로 읽힌다.
+   여기 파랑은 장식이 아니라 구조선이라, 호버 파랑(코멧·구분선)과 달리
+   늘 켜져 있다. */
+.hst_group_title {
+  position: relative;
+}
+
+.hst_group_title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5px;
+  right: 5px;
+  height: 3px;
+  background: #0075D6;
+  pointer-events: none;
 }
