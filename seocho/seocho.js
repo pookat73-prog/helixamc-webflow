@@ -1113,9 +1113,14 @@
         c) 1000ms 안전 타임아웃 — gtag 실패해도 전화는 무조건 연결
      3. 취소 시: 아무것도 안 함
 
-   GA4 이벤트: seocho_phone_call
-     params: { item_type: 'phone_call', branch: '서초',
-               device: 'mobile'|'desktop', value: '0221359119' }
+   GA4 이벤트 두 개 — 눌렀다 / 확인까지 했다 를 나눠 본다
+     seocho_phone_intent  번호를 누른 순간 (확인창 뜨기 전, 취소해도 남음)
+       params: { item_type: 'phone_intent', ... }
+     seocho_phone_call    확인창에서 '확인' 을 누른 뒤 (실제 연결)
+       params: { item_type: 'phone_call', branch: '서초',
+                 device: 'mobile'|'desktop', value: '0221359119' }
+     두 값의 차이 = 확인창에서 되돌아간 사람. 데스크탑은 실제 통화로
+     이어지지 않으니 '전화 의향' 은 intent 쪽으로 읽는다.
    ================================================================ */
 (function () {
   'use strict';
@@ -1157,6 +1162,29 @@
       document.body.removeChild(ta);
       return true;
     } catch (e) { return false; }
+  }
+
+  /* 번호를 누른 것 자체 — 확인창 결과와 무관하게 1회.
+     데스크탑에선 실제 통화로 이어지지 않으니, 데스크탑의 '전화 의향' 은
+     사실상 이 값으로 봐야 한다. */
+  function trackIntent(digits, sectionLabel) {
+    var params = {
+      item_type: 'phone_intent',
+      branch: '서초',
+      device: device(),
+      section: sectionLabel || 'unknown',
+      value: digits
+    };
+    try {
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';
+        window.gtag('event', 'seocho_phone_intent', params);
+        log('intent sent', params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = 'seocho_phone_intent';
+        window.dataLayer.push(params);
+      }
+    } catch (e) { log('intent error', e); }
   }
 
   function trackCall(digits, sectionLabel, cb) {
@@ -1203,6 +1231,17 @@
       e.preventDefault();
       e.stopPropagation();
       var pretty = formatDisplay(digits);
+
+      /* 번호를 누른 시점에 먼저 한 줄 남긴다 (확인창 뜨기 전).
+         seocho_phone_call 은 확인창에서 '확인' 을 눌러야만 기록되는데,
+         30일간 서초 방문 378건·전화 섹션 도달 85건인데도 0건이었다.
+         눌러보는 사람이 없는 것인지 확인창에서 다 취소하는 것인지
+         구분할 방법이 없어 개선 방향을 못 정한다.
+         intent(눌렀다) 와 call(확인까지 했다) 을 나눠 그 차이를 본다.
+         ※ intent 는 conv 태깅 대상이 아니다 — 같은 클릭이 call 로도
+           기록되므로 전환 수가 두 번 세어지지 않게 한다. */
+      trackIntent(digits, sectionLabel);
+
       var ok = window.confirm(pretty + ' 로 전화 연결하시겠습니까?\n번호가 자동으로 복사됩니다.');
       if (!ok) { log('user cancelled'); return; }
 
