@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v4.0
+   HELIX AMC — 특화진료(/specialty-care) 코멧 선  v4.1
    specialty/bootstrap.js 가 로드. 짝: specialty/specialty.css
 
    하는 일 — 사용자 목업(card_comet_v3) 그대로
@@ -13,6 +13,32 @@
        구분선(.hst_sb_line)이 파랗게 켜지며 한 번 터진 뒤 가라앉는다
      · 마우스가 나가면 경로는 그냥 사라지고, 켜졌던 파란 밑변만 도로
        회색으로 꺼진다 (되감기 없음 — v3.1)
+
+   v4.1 변경 — 재둔 값이 낡아 생기던 두 증상
+     ① 방사선 치료·스텐트 시술·FMT (여유가 있는 열들의 맨 아래 항목) 만 파란
+        선이 바닥선과 안 맞고 위에 그려짐. 여유 없는 열(비강경)은 멀쩡.
+     ② 중간 항목들이 마우스를 올리면 오히려 줄어듦.
+
+     원인은 하나 — 좌표를 로드 직후 한 번만 재 두는데, 그 뒤에 글자 높이가
+     달라지는 것(늦게 도착하는 폰트)을 못 따라갔다.
+       ① 마지막 항목의 착지점은 '열 바닥' 이고 그 자리는 가장 긴 열이 정한다.
+          글자가 커지면 가장 긴 열이 더 자라 나머지 열의 여유가 늘어나는데,
+          재둔 바닥은 그대로라 선이 위에 남는다. 여유가 큰 열일수록 더 틀어짐.
+          실측: 글줄 높이가 뒤늦게 13px 커지자 13 / 26 / 39px 어긋남.
+       ② 줄일 여백을 '재둔 설명 높이' 로 잡는데 그 값이 실제보다 크면
+          늘어나는 것보다 더 줄여서 카드가 작아진다.
+
+     고침
+       · hover 할 때마다 다시 잰다. v4.0 으로 펼침이 높이를 안 바꾸게 된
+         덕분에, #1377 이 피하려던 '접히는 중 부풀어 있는 상태' 위험이 없어졌다.
+       · 늘어날 높이를 '지금 높이' 로 빼서 구하지 않고 평상시 상수로 계산한다
+         (접히는 도중 재도 값이 안 흔들림 → ② 원천 차단).
+       · 높이가 실제로 변하는 순간을 ResizeObserver 로 지켜본다.
+         '폰트가 언제 오는지' 를 짐작하지 않는다.
+
+     덤 — 여백을 고정 85px 로 넉넉히 잡던 것을 '가장 긴 설명 + 10px' 로 바꿨다.
+     사용자 지적("표가 전체적으로 늘어나서") 대로 표가 늘 길어지기 때문.
+     넓은 화면에서는 대개 Webflow 원래 60px 그대로다.
 
    v4.0 변경 — 펼쳐도 아래가 안 밀린다
      증상: FMT 에 올렸다가 신장 투석으로 넘어가면 파란 선이 카드가 펼쳐지는
@@ -84,13 +110,28 @@
   var REVEAL = '.spec-item-reveal';
   var GRAY   = 'hst_sb_line';   /* 항목 사이 회색 구분선(Webflow HST_SB_line) */
   var COL    = '.hst_col';      /* 항목들을 담은 세로 열(Webflow HST_Col) */
-  var MAXREV = 120;             /* specialty.css 의 hover max-height 와 같아야 함 */
+  var GRID   = '.hst_grid';     /* 네 열을 담은 표(Webflow HST_Grid). 열 바닥을 정하는 주체 */
+  var MAXREV = 200;             /* specialty.css 의 hover max-height 와 같아야 함.
+                                   실제 펼침 높이는 JS 가 정확히 못박으므로 이 값은
+                                   '설마' 를 막는 상한일 뿐 — 너무 낮으면 설명이 잘린다. */
 
   /* 이 항목 바로 아래에 붙어 있는 회색 구분선. 열의 맨 아래 항목엔 없다
      (회색 선 8개 / 항목 12개). 없으면 null → 대체 선을 만들어 쓴다. */
   function grayLine(wrap) {
     var n = wrap.nextElementSibling;
     return (n && n.className && n.className.indexOf(GRAY) !== -1) ? n : null;
+  }
+
+  /* 펼쳤을 때 설명이 차지할 높이. scrollHeight 는 정수로 반올림돼 실제와 최대
+     1px 남짓 어긋나고, 그 차이가 그대로 카드 높이 흔들림으로 남는다. 그래서
+     자식들의 실제 높이를 소수점까지 더해서 구한다(줄간격은 flex gap). */
+  function revealHeight(reveal) {
+    var kids = reveal.children, n = kids.length;
+    if (!n) return reveal.scrollHeight;
+    var gap = parseFloat(getComputedStyle(reveal).rowGap) || 0;
+    var h = 0;
+    for (var i = 0; i < n; i++) h += kids[i].getBoundingClientRect().height;
+    return h + gap * (n - 1);
   }
 
   var BLUE       = '#0075D6';
@@ -102,9 +143,12 @@
                              다 먹는다. 폭에 맞춰 축소. */
   var DESKTOP_MIN = 992;  /* 이 폭 이상에서만 동작. specialty.css 와 같아야 함 */
   var GAP_Y      = 2;     /* 한글명 바닥에서 선까지 (기존 3px 틈 안) */
-  var MIN_PAD    = 4;     /* 펼침을 아래 여백으로 흡수하고도 남겨 둘 최소 여백.
-                             설명 마지막 줄이 회색 구분선에 딱 붙지 않게 하는
-                             숨통. (여백 85px 중 81px 까지 삼킬 수 있다는 뜻) */
+  var MIN_PAD    = 10;    /* 펼침을 아래 여백으로 흡수하고도 남겨 둘 최소 여백.
+                             설명 마지막 줄이 회색 구분선에 딱 붙지 않게 하는 숨통.
+                             여백 크기를 '가장 긴 설명 + 이 값' 으로 잡으므로,
+                             키우면 표가 그만큼 길어진다. */
+  var WF_PAD     = 60;    /* Webflow 원래 아래 여백. 설명이 짧아 더 필요 없으면
+                             이 값 그대로 둬서 표가 안 길어지게 한다. */
   var TOAST_MS   = 1800;  /* 토스트 노출 시간 */
 
   /* 항목별 상세페이지 주소. 아직 없으므로 전부 비어 있고, 클릭하면
@@ -206,10 +250,13 @@
        재생돼 깜빡이는 사고가 있었다. scrollHeight 는 max-height:0 +
        overflow:hidden 상태에서도 '내용의 실제 높이' 를 알려주므로,
        손대지 않고 계산만으로 구할 수 있다. */
-    var revTarget = Math.min(reveal.scrollHeight, MAXREV);
-    var revNow    = reveal.getBoundingClientRect().height;
-    var mtNow     = parseFloat(getComputedStyle(reveal).marginTop) || 0;
-    var grow      = (revTarget - revNow) + (5 - mtNow);   /* 펼치면 늘어날 높이 */
+    /* 펼치면 늘어날 높이 = 설명 높이 + margin-top 이 -3 에서 5 로 가는 8px.
+       ⚠ '지금 높이' 를 빼는 식으로 쓰지 않는다. 접히는 도중에 재면 그 값이
+       중간값이라, 줄일 여백을 실제보다 크게 잡아 카드가 오히려 줄어든다
+       (사용자 지적: "중간 카드들은 호버되면 도리어 줄어들어").
+       평상시 값(높이 0 / margin -3)은 상수이므로 그대로 쓴다. */
+    var revTarget = Math.min(revealHeight(reveal), MAXREV);
+    var grow      = revTarget + 8;
 
     /* ── 늘어날 높이를 '이미 비어 있던 아래 여백' 안으로 흡수 (v4.0) ──
        항목 아래에는 원래 비어 있는 여백이 있다(padding-bottom).
@@ -336,13 +383,20 @@
 
   function enter(item) {
     stop(item);
-    /* ⚠ 여기서 다시 재지 않는다 — 캐시된 '평상시' 값을 쓴다.
-       예전엔 hover 할 때마다 쟀는데, 직전에 보던 항목이 아직 접히는 중이면
-       열 높이가 부풀어 있는 상태로 재게 된다. 그래서 처음 펼칠 때와 다른
-       칸을 거쳐 펼칠 때 파란 선 높이가 달라졌다(사용자 지적).
-       measureAll() 이 아무것도 펼쳐지지 않은 상태에서 미리 재 둔다.
-       아직 못 쟀을 때만(캐시 없음) 여기서 최선을 다해 잰다. */
-    if (!item.measured) item.measured = measure(item);
+    /* 마우스가 올라온 지금 다시 잰다 (v4.1).
+       예전엔 hover 시점 측정이 위험했다 — 직전에 보던 항목이 접히는 중이면
+       열이 부풀어 있어서, 처음 펼칠 때와 다른 칸을 거쳐 펼칠 때 선 높이가
+       달라졌다(#1377). v4.0 부터는 펼쳐도 항목 높이가 변하지 않으므로
+       (실측: 항목을 갈아타는 내내 열 높이 일정) 그 위험이 사라졌다.
+
+       반대로 '미리 재 두기' 만 하면 잰 뒤에 글자 높이가 달라지는 경우
+       (늦게 도착하는 폰트)를 못 따라간다. 이 사이트는 Adobe 가변 폰트를 쓰는데
+       document.fonts.ready 가 그보다 먼저 끝나는 사고를 about 페이지에서 이미
+       겪었다. 실제로 이것 때문에 열 마지막 항목(방사선·스텐트·FMT)의 선이
+       바닥선보다 위에 그려지고, 중간 항목은 호버 시 되레 줄어들었다.
+       '언제 오는지' 를 짐작하는 대신 매번 다시 재서 원천 차단한다.
+       12개 × hover 1회당 1번이라 비용은 무시할 수준. */
+    item.measured = measure(item);
     if (!item.measured) return;
 
     /* 펼치는 만큼 아래 여백을 줄여, 항목 전체 높이를 그대로 유지한다 (v4.0).
@@ -427,9 +481,31 @@
     return getComputedStyle(items[0].reveal).maxHeight === '0px';
   }
 
+  /* ── 아래 여백을 '가장 긴 설명이 들어갈 만큼' 으로 맞춘다 (v4.1) ──
+     Webflow 기본 60px 은 설명이 한 줄일 때 기준이라, 두세 줄이 되는 폭에서는
+     모자라 그만큼이 아래를 밀었다. 그렇다고 넉넉히 고정해 두면 표 전체가 늘
+     길어진다(사용자 지적: "표가 전체적으로 늘어나서"). 그래서 실제 설명 높이를
+     재서 필요한 만큼만 늘린다 — 넓은 화면에서는 대개 원래 60px 그대로다.
+
+     여백을 이 값으로 잡으면 흡수량(absorb)이 항상 grow 와 같아져 밀림이 0 이 된다.
+     ⚠ 마우스가 올라가 있는 동안에는 건드리지 않는다. 그 항목은 여백을 이미
+     인라인으로 줄여 쓰고 있어서, 여기서 바꾸면 서로 싸운다. */
+  function fitReserve() {
+    var maxGrow = 0, busy = false;
+    items.forEach(function (it) {
+      if (it.wrap.style.paddingBottom) busy = true;
+      var g = Math.min(revealHeight(it.reveal), MAXREV) + 8;
+      if (g > maxGrow) maxGrow = g;
+    });
+    if (busy || !maxGrow) return;
+    var pad = Math.max(WF_PAD, Math.ceil(maxGrow) + MIN_PAD);
+    document.documentElement.style.setProperty('--hx-spec-pad', pad + 'px');
+  }
+
   /* '아무것도 펼쳐지지 않은 평상시' 좌표를 일괄로 재서 기억해 둔다.
      지금 마우스가 올라가 있는 항목은 건너뛴다(그 항목은 펼쳐져 있어 값이 틀림). */
   function measureAll() {
+    fitReserve();                 /* 여백부터 확정하고 → 그 상태에서 좌표를 잰다 */
     items.forEach(function (it) {
       if (it.raf) return;
       if (it.wrap.matches && it.wrap.matches(':hover')) return;
@@ -470,6 +546,32 @@
       clearTimeout(rt);
       rt = setTimeout(measureAll, 150);
     });
+
+    /* ── 글자 높이가 나중에 변하면 여백을 다시 맞춘다 (v4.1) ──
+       hover 때마다 다시 재므로 선 좌표는 이미 안전하다. 다만 '여백 크기' 는
+       평상시에 정해 두는 값이라, 늦게 도착한 폰트로 설명 줄 수가 바뀌면
+       모자라거나 남는다. load / fonts.ready 로는 부족하다 — 이 사이트가 쓰는
+       Adobe 가변 폰트는 document.fonts.ready 보다 늦게 오는 사고를 about
+       페이지에서 이미 겪었다. 그래서 '언제 오는지' 를 짐작하지 않고, 높이가
+       실제로 변하는 순간을 직접 지켜본다.
+
+       ⚠ 이 관찰자를 계속 켜 둘 수 있는 것은 v4.0 덕분이다. 펼쳐도 항목 높이가
+       변하지 않으므로(실측: 항목을 갈아타는 내내 열 높이 일정) 마우스만
+       움직여서는 울리지 않는다. 설명 글의 높이는 접혀 있어도 그대로라
+       (max-height 로 잘려 있을 뿐) 폰트가 바뀌면 정확히 이 관찰자가 잡는다. */
+    if (window.ResizeObserver) {
+      var ht, ro = new ResizeObserver(function () {
+        clearTimeout(ht);
+        ht = setTimeout(measureAll, 120);
+      });
+      var grid = document.querySelector(GRID);
+      if (grid) ro.observe(grid);                     /* 가장 긴 열이 바뀌는 것 */
+      items.forEach(function (it) {
+        ro.observe(it.wrap);                          /* 한글명·영문명 높이 */
+        var kids = it.reveal.children;
+        for (var k = 0; k < kids.length; k++) ro.observe(kids[k]);  /* 설명·CTA 높이 */
+      });
+    }
   }
 
   if (document.readyState !== 'loading') init();

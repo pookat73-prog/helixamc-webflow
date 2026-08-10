@@ -19,12 +19,13 @@
    제자리에 있는데, 신장 투석은 글 흐름 안에 있는 진짜 회색 구분선을 켜서
    설명이 펼쳐진 높이만큼 그대로 떠밀린 것.
 
-   고침: 항목 아래에는 원래 비어 있는 여백(padding-bottom, 60px)이 있다.
+   고침: 항목 아래에는 원래 비어 있는 여백(padding-bottom)이 있다.
    펼치는 만큼 그 여백을 줄이면 항목 전체 높이가 그대로라, 아래 회색 선도
    그 아래 항목도 밀리지 않는다. 줄일 양은 설명 길이에 따라 달라지므로
    specialty.js 가 항목마다 재서 인라인으로 넣고, 여기서는 그 변화가 펼침과
    같은 속도로 일어나게 시간만 맞춘다.
-   설명이 여백보다 길면 남는 만큼만 밀린다(전부 밀리던 이전보다 훨씬 적음).
+   여백 자체의 크기도 '가장 긴 설명이 들어갈 만큼' 으로 JS 가 정한다
+   (--hx-spec-pad). 넉넉히 고정해 두면 표가 늘 길어지기 때문.
 
    v4.0 변경 — 바닥 가로선을 '있던 회색 선' 으로
    -----------------------------------------------------------------
@@ -199,7 +200,7 @@
    → 판정 기준을 '화면 폭' 으로 바꾼다. 폭은 거짓말을 하지 않는다.
    이 값을 바꾸면 specialty.js 의 DESKTOP_MIN 도 같이 바꿔야 한다. */
 @media (min-width: 992px) {
-  .hst-item-wrap:hover .spec-item-reveal { max-height: 120px; opacity: 1; margin-top: 5px; }
+  .hst-item-wrap:hover .spec-item-reveal { max-height: 200px; opacity: 1; margin-top: 5px; }
   .hst-item-wrap:hover .spec-item-cta    { transform: translateY(0); }
 
   /* 펼침을 '이미 비어 있던 아래 여백' 안으로 흡수 (v5.0).
@@ -207,23 +208,28 @@
      인라인 padding-bottom 으로 넣는다. 여기서는 그 변화가 설명이 펼쳐지는
      속도와 정확히 같게 시간·이징만 맞춘다.
 
-     여백을 60px → 85px 로 늘린다. Webflow 의 60px 은 설명이 한 줄일 때를
-     기준으로 잡힌 값인데, 실제로는 창 폭에 따라 두세 줄이 되어 최대 81px
-     이 필요하다. 모자란 만큼이 그대로 아래를 밀고 있었다. 실측(992~2560px
-     전 구간)으로 81px 이 최대라 4px 숨통을 더해 85px.
-     쉬고 있을 때 항목 맨 아래에 빈 칸이 25px 더 생기는 것이 유일한 변화.
-     ⚠ 이 값을 줄이면 좁은 창에서 다시 밀리기 시작한다. */
+     여백의 크기(--hx-spec-pad)도 specialty.js 가 정한다. Webflow 의 60px 은
+     설명이 한 줄일 때 기준이라, 두세 줄이 되는 폭에서는 모자라 아래를 밀었다.
+     그렇다고 넉넉하게 고정해 두면 표 전체가 늘 길어진다(사용자 지적:
+     "표가 전체적으로 늘어나서"). 그래서 가장 긴 설명이 들어갈 만큼만 잡는다 —
+     넓은 화면에서는 대개 원래 60px 그대로다.
+     ⚠ 값이 없을 때(JS 미도달)의 기본값 60px 은 Webflow 원래 값 그대로라,
+       JS 가 못 와도 보기는 예전과 완전히 같다. */
   .hst-item-wrap {
-    padding-bottom: 85px;
+    padding-bottom: var(--hx-spec-pad, 60px);
     transition: padding-bottom .48s cubic-bezier(.215,.61,.355,1);
   }
 
   /* 작은 갈매기 표시(= 아래에 더 있다는 신호)
-     · bottom 을 여백 늘린 만큼(45 + 25) 같이 내려, 한글명과의 거리는 예전
-       그대로 둔다. 안 그러면 이 표시만 글에서 멀어져 혼자 떠 보인다.
+     · 여백이 커진 만큼 같이 내려, 한글명과의 거리(15px)는 예전 그대로 둔다.
+       안 그러면 이 표시만 글에서 멀어져 혼자 떠 보인다. (원래 값: 여백 60 −
+       bottom 45 = 15)
      · 펼치는 동안은 바로 그 자리에 설명이 들어와 겹치므로 숨긴다.
        설명 안의 '자세히 보기 →' 가 같은 역할을 대신한다. */
-  .spec-item-hint                      { bottom: 70px; transition: opacity .28s ease; }
+  .spec-item-hint {
+    bottom: calc(var(--hx-spec-pad, 60px) - 15px);
+    transition: opacity .28s ease;
+  }
   .hst-item-wrap:hover .spec-item-hint { opacity: 0; }
 }
 
