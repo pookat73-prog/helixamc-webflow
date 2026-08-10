@@ -105,7 +105,7 @@
     /* 홈 SVICC 버튼 */
     { sel: '.bt-box-4',             label: 'SVICC 버튼',          event: 'svicc_click_*' },
     /* 서초 전화 */
-    { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_call' },
+    { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_intent / _call' },
     /* 응급 페이지 하단 24시 응급 진료 CTA */
     { sel: '.helix-branch-cta__row', label: '응급 · 지점 전화',   event: 'emergency_call_*' },
     { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' },
@@ -153,7 +153,7 @@
     TARGETS = TARGETS.concat([
       /* 첫 섹션(인트로) 전화 — .heading-2 는 흔한 클래스라 인트로 섹션 안 +
          전화번호 텍스트만 배지. (예약 섹션 전화는 위 .branch_phoneno 배지) */
-      { sel: 'section[class*="intro_backgra"] .heading-2', label: '서초 · 첫섹션 전화', event: 'seocho_phone_call',
+      { sel: 'section[class*="intro_backgra"] .heading-2', label: '서초 · 첫섹션 전화', event: 'seocho_phone_intent / _call',
         match: function (el) { return !el.children.length && /\d{2,3}[.\- ]?\d{3,4}[.\- ]?\d{4}/.test(el.innerText || el.textContent || ''); } },
       { sel: '.subheader_click-area',   label: '서초 · 서브헤더 링크',  event: 'seocho_subheader_nav_*' },
       { sel: '.w-tab-menu .w-tab-link', label: '서초 · 분과 탭',       event: 'seocho_dept_tab_*' },
