@@ -148,10 +148,57 @@
     log('페이지 순서', stepNo, '| 직전', prevPath || '(없음)');
   }
 
+  /* ── 전환(문의로 이어지는 행동) 자동 태깅 ──────────────────────
+     "전환" 이라 부를 만한 행동이 전화·상담·길찾기·주소복사로 흩어져 있어,
+     한 표로 세려면 이벤트 이름을 일일이 나열해야 했다. 전화만 세면 30일에
+     10여 건뿐이라 "의료진을 본 쪽이 1.7배" 같은 비교가 한두 건에 뒤집히는
+     상태였다(측정 보고서 05-하나: 전환의 정의가 너무 좁다).
+
+     여기서 이벤트 이름만 보고 conv=1 + conv_type 을 자동으로 붙인다.
+     각 측정 모듈은 손댈 필요가 없고, 새 전환 행동이 생기면 아래 표에 한 줄만
+     더하면 전 사이트에 적용된다.
+
+     conv_type
+       lead    실제 상담 신청 접수 (가장 강한 신호)
+       phone   전화 걸기 / 번호 복사
+       consult 상담 메뉴 열기 · 신청 폼 열기
+       map     길찾기 · 오시는 길
+       copy    주소 · 이메일 복사
+     ※ vet_chart_click(수의사용 웹차트)은 보호자 전환이 아니라 제외. */
+  var CONV_RULES = [
+    { type: 'lead',    re: /^cta_form_submit$/ },
+    { type: 'phone',   re: /(_phone_call($|_)|^tel_copy_|^cta_call$|^emergency_call_|^emergency_modal_call_)/ },
+    { type: 'consult', re: /^cta_(open|form_open)$/ },
+    { type: 'map',     re: /(^seocho_directions_|^emergency_map_click_)/ },
+    { type: 'copy',    re: /^copy_(address|email)_/ }
+  ];
+
+  function convType(name) {
+    if (!name) return '';
+    for (var i = 0; i < CONV_RULES.length; i++) {
+      if (CONV_RULES[i].re.test(name)) return CONV_RULES[i].type;
+    }
+    return '';
+  }
+
   /* ── 모든 event 파라미터에 제자리 주입 ──────────────────────── */
-  function decorate(params) {
+  function decorate(params, eventName) {
     if (!params || typeof params !== 'object') return params;
     var s = ensure();
+
+    /* 전환 표시 — 이미 모듈이 직접 넣었으면 존중 */
+    if (params.conv === undefined) {
+      var ct = convType(eventName);
+      if (ct) {
+        params.conv = 1;
+        params.conv_type = ct;
+        /* page-time.js 가 "이 방문에서 뭔가 행동을 했나" 를 붙일 수 있게
+           같은 창 안에 표시를 남긴다. 한 페이지만 보고 나간 방문을
+           만족 이탈 / 읽은 이탈 / 즉시 이탈로 가르는 근거가 된다. */
+        window.__helixActed = 1;
+        window.__helixActedType = ct;
+      }
+    }
     /* 이미 값이 있으면 덮지 않는다 — 개별 모듈이 의도적으로 넣은 값 보호 */
     if (!params.sid)     params.sid     = s.id;
     if (!params.step)    params.step    = stepNo;
@@ -176,7 +223,7 @@
           arguments[2] = {};
           arguments.length = Math.max(arguments.length, 3);
         }
-        decorate(arguments[2]);
+        decorate(arguments[2], arguments[1]);
       }
       return original.apply(this, arguments);
     };
