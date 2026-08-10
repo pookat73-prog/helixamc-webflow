@@ -325,6 +325,18 @@
       var els = [];
       for (var j = 0; j < picked.length; j++) {
         var target = resolve(picked[j]);
+        /* ⚠️ 한 <section> 안에 여러 파트가 들어 있는 경우(홈: 지점 카드 +
+           SVICC 배너 / 진료과목: 진료과 카드 5장) 승격하면 전부 같은
+           section 을 가리킨다. 먼저 온 파트가 그 section 을 차지해 버려
+           뒤 파트는 관측 대상이 0개가 되고, 도달·체류가 통째로 안 잡혔다.
+           (실측: home_sec_svicc 0건 / services_sec_sg·di·oc·dt 전부 0건,
+            반면 같은 기간 svicc 버튼 클릭은 22건 — 클릭은 있는데 도달이
+            0인 모순으로 발각)
+           그럴 땐 승격을 포기하고 요소 자체를 관측한다. 섹션 상단 대신
+           그 파트 상단 기준이 되어 오히려 정확하다. */
+        if (target && target.__helixSecDef && target.__helixSecDef !== def) {
+          target = picked[j];
+        }
         if (!target || target.__helixSecDef) continue;
         target.__helixSecDef = def;
         io.observe(target);
