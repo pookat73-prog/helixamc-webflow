@@ -10,10 +10,12 @@
    ① sid       — 같은 방문끼리 묶는 값. 30분간 아무 측정이 없으면 새 방문.
                  → 시트에서 sid 를 세면 '사람이 몇 번 왔나',
                    sid 로 묶으면 '한 사람이 어떤 순서로 움직였나' 가 보인다.
-   ② source    — 어디서 들어왔나 (naver / google / kakao / instagram /
+   ② entry_src — 어디서 들어왔나 (naver / google / kakao / instagram /
                  ad(utm 있음) / direct / 그 외 도메인). 방문 첫 순간에
                  한 번 정하고 그 방문 내내 유지 — 사이트 안에서 페이지를
                  옮겨 다녀도 최초 유입처가 유지되도록.
+                 ⚠️ 이름이 source 가 아니라 entry_src 인 이유는 아래
+                    '이름을 바꾼 이유' 참고. 절대 source 로 되돌리지 말 것.
    ③ visitor   — new / returning. 이 브라우저의 첫 방문인지.
 
    utm 이 붙어 들어온 경우 utm_source/medium/campaign 도 함께 싣는다.
@@ -24,6 +26,19 @@
 
    저장은 localStorage — 탭을 여러 개 띄워도 같은 방문으로 묶인다.
    차단된 환경(사생활 보호 모드 등)에서는 메모리로 폴백해 조용히 동작.
+
+   ⚠️ 이름을 바꾼 이유 — source / medium / campaign 은 쓰면 안 되는 이름
+      (2026-08-11)
+      GA4 에는 "이 이름으로 값을 보내면 그걸 유입 경로로 믿는다" 는
+      약속된 이름이 몇 개 있다: source, medium, campaign, term, content,
+      campaign_id, source_platform, creative_format, marketing_tactic.
+      우리가 유입처를 source 라는 이름으로 실어 보내는 바람에, GA4 가
+      그 값을 진짜 유입 경로로 덮어써 버렸다. medium 은 안 보냈으니
+      보고서에는 "naver / (not set)", "floating_cta / (not set)" 같은
+      반쪽짜리 경로가 잔뜩 생겼다. 실제 채널 비중이 왜곡된 것.
+      → 우리가 쓰는 이름은 entry_src 로 바꿨다. 뜻은 그대로고, GA4 가
+        건드리지 않는 평범한 이름이라 원래 유입 경로가 보존된다.
+      → 새 값을 실을 때도 위 9개 이름은 쓰지 말 것.
 
    ⚠️ 측정은 정식 사이트에서만 — 스테이징(*.webflow.io)은 즉시 종료.
    디버그: URL 에 ?debug-ga=1
@@ -203,7 +218,9 @@
     if (!params.sid)     params.sid     = s.id;
     if (!params.step)    params.step    = stepNo;
     if (!params.prev && prevPath) params.prev = prevPath;
-    if (!params.source)  params.source  = s.src;
+    /* ⚠️ source 가 아니라 entry_src — GA4 가 source 를 유입 경로로 믿고
+       덮어쓰기 때문. 파일 머리말 '이름을 바꾼 이유' 참고. */
+    if (!params.entry_src) params.entry_src = s.src;
     if (!params.visitor) params.visitor = s.visitor;
     if (!params.landing) params.landing = s.land;
     if (s.utm_source   && !params.utm_source)   params.utm_source   = s.utm_source;

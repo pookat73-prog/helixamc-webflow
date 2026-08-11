@@ -228,7 +228,7 @@
     toggle.setAttribute('aria-label', '상담 메뉴 닫기');
     /* "상담 문의하기" 버튼 눌러 상담 메뉴를 연 순간 = 상담 의향.
        (닫기 클릭은 집계 안 함.) ga 헬퍼가 page 를 자동 부착. */
-    ga('cta_open', { source: 'floating_cta' });
+    ga('cta_open', { cta_src: 'floating_cta' });
   }
 
   function closePanel() {
@@ -309,7 +309,14 @@
   }
   var CTA_PAGE = ctaPage();
 
-  /* ── GA4 헬퍼 — 모든 상담 CTA 이벤트에 page 자동 부착 ── */
+  /* ── GA4 헬퍼 — 모든 상담 CTA 이벤트에 page 자동 부착 ──
+     ⚠️ 이벤트에 값을 실을 때 source / medium / campaign / term / content
+        이라는 이름은 쓰지 말 것. GA4 가 그 이름을 보면 "이게 이 방문의
+        유입 경로다" 라고 믿고 실제 유입 경로를 덮어쓴다. 예전에 상담
+        버튼이 source:'floating_cta' 를 보내는 바람에, 보고서에
+        "floating_cta / (not set)" 이 165세션(5.9%) 이나 잡혀 실제 채널
+        비중이 왜곡됐다. 그래서 지금은 cta_src 라는 이름을 쓴다.
+        (자세한 설명은 global/session.js 머리말) */
   function ga(eventName, params) {
     if (typeof window.gtag === 'function') {
       var p = params || {};
@@ -320,7 +327,7 @@
 
   /* ── 전화 클릭 ── */
   callBtn.addEventListener('click', function () {
-    ga('cta_call', { source: 'floating_cta' });
+    ga('cta_call', { cta_src: 'floating_cta' });
     closePanel();
   });
 
@@ -328,7 +335,7 @@
   formBtn.addEventListener('click', function () {
     closePanel();
     openModal();
-    ga('cta_form_open', { source: 'floating_cta' });
+    ga('cta_form_open', { cta_src: 'floating_cta' });
   });
 
   /* ── 폼 제출 ── */
@@ -453,7 +460,7 @@
   function onSubmitSuccess() {
     form.style.display = 'none';
     done.classList.add('is-visible');
-    ga('cta_form_submit', { source: 'floating_cta' });
+    ga('cta_form_submit', { cta_src: 'floating_cta' });
   }
 
   } // end run()

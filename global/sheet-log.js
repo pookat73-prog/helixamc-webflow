@@ -95,6 +95,14 @@
         params: params
       };
       payload = JSON.parse(JSON.stringify(payload));
+      /* 시트 호환 — 유입처를 싣는 이름을 source 에서 entry_src 로 바꿨는데
+         (GA4 가 source 를 유입 경로로 덮어써서. session.js 머리말 참고),
+         시트 수식이 아직 "source" 를 읽고 있을 수 있어 같은 값을 옛 이름
+         으로도 한 벌 넣어 둔다. 이건 시트로 가는 사본에만 붙고 GA4 로는
+         안 나가므로 유입 경로가 다시 덮일 일은 없다. */
+      if (payload.params && payload.params.entry_src && !payload.params.source) {
+        payload.params.source = payload.params.entry_src;
+      }
     } catch (e) { log('payload error', e); return; }
 
     ipCheck.then(function (isInternal) {
