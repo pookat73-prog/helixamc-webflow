@@ -26,6 +26,35 @@
      REST 방식 POST 라 Firebase SDK 로드 불필요. */
   var LEADS_URL = 'https://helixamc-pm-default-rtdb.firebaseio.com/branches/seocho/leads.json';
 
+  /* ── 증상칸 태그(칩) 정의 ──
+     보호자 화면에는 "강아지 · 1~7살 · 신장" 이 항목 구분 없이 한 줄로
+     나열되지만, 각 칩은 group 을 달고 있어 제출할 때 종/연령대/기저질환
+     으로 갈라져 나간다. 대시보드에는 이 갈래대로 들어감.
+       - species  : 하나만 (강아지 켜면 고양이 꺼짐)
+       - age      : 하나만
+       - condition: 여러 개. 단 '기저질환 없음' 은 나머지와 배타 */
+  var CHIPS = [
+    { group: 'species',   value: '강아지' },
+    { group: 'species',   value: '고양이' },
+    { group: 'age',       value: '1살 미만' },
+    { group: 'age',       value: '1~7살' },
+    { group: 'age',       value: '7살 이상' },
+    { group: 'age',       value: '나이 모름' },
+    { group: 'condition', value: '심장' },
+    { group: 'condition', value: '신장' },
+    { group: 'condition', value: '당뇨' },
+    { group: 'condition', value: '기저질환 없음', kind: 'none' },
+    { group: 'condition', value: '기타',          kind: 'etc'  }
+  ];
+
+  function chipHtml(c) {
+    return '<button type="button" class="hx-fcta-chip' +
+           (c.kind ? ' hx-fcta-chip--' + c.kind : '') +
+           '" data-group="' + c.group + '" data-value="' + c.value + '"' +
+           (c.kind ? ' data-kind="' + c.kind + '"' : '') +
+           ' aria-pressed="false">' + c.value + '</button>';
+  }
+
   /* 완료 화면 일러스트(정적 에셋). 진입점이 넘긴 커밋 SHA 가 있으면 그
      immutable 주소로, 없으면 호스트 기반 브랜치(@staging/@main)로 로드. */
   var ASSET_REF = window.__helixCommitSha ||
@@ -88,90 +117,83 @@
 
         /* 폼 */
         '<form class="hx-fcta-form" id="hxFctaForm" novalidate>',
-          '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_owner">',
-              '보호자님 성함<span aria-hidden="true">*</span></label>',
-            '<input class="hx-fcta-form__input" id="hxFcta_owner" name="보호자성함"',
-              ' type="text" placeholder="홍길동" required autocomplete="name">',
+
+          /* 제목 — 마스코트 말풍선이 붙을 자리(에셋 적용은 별건) */
+          '<div class="hx-fcta-form__head">',
+            '<p class="hx-fcta-form__eyebrow">HELIX Consultation</p>',
+            '<h2 class="hx-fcta-form__title">서둘러 연락드릴게요</h2>',
+            '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
+              '바로 알려드리겠습니다</p>',
           '</div>',
-          '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_phone">',
-              '연락처<span aria-hidden="true">*</span></label>',
-            '<input class="hx-fcta-form__input" id="hxFcta_phone" name="연락처"',
-              ' type="tel" inputmode="numeric" maxlength="11" placeholder="01012345678"',
-              ' required autocomplete="tel">',
+
+          /* 성함 · 연락처 — 한 줄에 나란히 */
+          '<div class="hx-fcta-form__row">',
+            '<div class="hx-fcta-form__group">',
+              '<label class="hx-fcta-form__label" for="hxFcta_owner">성함',
+                '<span class="hx-fcta-form__req" aria-hidden="true">*</span></label>',
+              '<input class="hx-fcta-form__input" id="hxFcta_owner" name="보호자성함"',
+                ' type="text" placeholder="홍길동" autocomplete="name" enterkeyhint="next">',
+              '<p class="hx-fcta-form__error" id="hxFcta_owner_err" role="alert"></p>',
+            '</div>',
+            '<div class="hx-fcta-form__group">',
+              '<label class="hx-fcta-form__label" for="hxFcta_phone">연락처',
+                '<span class="hx-fcta-form__req" aria-hidden="true">*</span></label>',
+              '<input class="hx-fcta-form__input" id="hxFcta_phone" name="연락처"',
+                ' type="tel" inputmode="numeric" maxlength="13" placeholder="010-1234-5678"',
+                ' autocomplete="tel" enterkeyhint="next">',
+              '<p class="hx-fcta-form__error" id="hxFcta_phone_err" role="alert"></p>',
+            '</div>',
           '</div>',
+
+          /* 반려동물 이름 */
           '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_pet">반려동물 이름</label>',
+            '<label class="hx-fcta-form__label" for="hxFcta_pet">반려동물 이름',
+              '<span class="hx-fcta-form__opt">선택</span></label>',
             '<input class="hx-fcta-form__input" id="hxFcta_pet" name="반려동물이름"',
-              ' type="text" placeholder="예) 초코">',
+              ' type="text" placeholder="예) 초코" enterkeyhint="next">',
           '</div>',
+
+          /* 증상 — 회색 박스 하나에 서술칸 + 태그(칩) 를 같이 담는다 */
           '<div class="hx-fcta-form__group">',
-            '<p class="hx-fcta-form__label" id="hxFcta_species_label">종</p>',
-            '<div class="hx-fcta-form__radio-group" role="radiogroup"',
-              ' aria-labelledby="hxFcta_species_label">',
-              '<label class="hx-fcta-form__radio-label">',
-                '<input type="radio" name="종" value="강아지"> 강아지',
-              '</label>',
-              '<label class="hx-fcta-form__radio-label">',
-                '<input type="radio" name="종" value="고양이"> 고양이',
-              '</label>',
-            '</div>',
-          '</div>',
-          '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_age">나이</label>',
-            '<div class="hx-fcta-form__inline">',
-              '<input class="hx-fcta-form__input" id="hxFcta_age" name="나이"',
-                ' type="text" placeholder="예) 3살 / 6개월">',
-              '<label class="hx-fcta-form__radio-label hx-fcta-form__age-unknown">',
-                '<input type="checkbox" id="hxFcta_age_unknown"> 모름',
-              '</label>',
-            '</div>',
-          '</div>',
-          '<div class="hx-fcta-form__group">',
-            '<p class="hx-fcta-form__label" id="hxFcta_sex_label">성별</p>',
-            '<div class="hx-fcta-form__radio-group" role="radiogroup"',
-              ' aria-labelledby="hxFcta_sex_label">',
-              '<label class="hx-fcta-form__radio-label">',
-                '<input type="radio" name="성별" value="남"> 남',
-              '</label>',
-              '<label class="hx-fcta-form__radio-label">',
-                '<input type="radio" name="성별" value="여"> 여',
-              '</label>',
-              '<label class="hx-fcta-form__radio-label">',
-                '<input type="radio" name="성별" value="중성화 남"> 중성화 남',
-              '</label>',
-              '<label class="hx-fcta-form__radio-label">',
-                '<input type="radio" name="성별" value="중성화 여"> 중성화 여',
-              '</label>',
-            '</div>',
-          '</div>',
-          '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_condition">기저질환</label>',
-            '<input class="hx-fcta-form__input" id="hxFcta_condition" name="기저질환"',
-              ' type="text" placeholder="없으면 비워두세요">',
-          '</div>',
-          '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_symptom">증상</label>',
-            '<textarea class="hx-fcta-form__textarea" id="hxFcta_symptom" name="증상"',
-              ' placeholder="증상을 간단히 적어주세요" rows="3"></textarea>',
-          '</div>',
-          '<div class="hx-fcta-form__group">',
-            '<div class="hx-fcta-form__privacy">',
-              '<div class="hx-fcta-form__privacy-text">',
-                '개인정보 수집·이용 동의<br><br>',
-                '수집 항목: 보호자님 성함, 연락처, 반려동물 이름·종·나이·성별, 기저질환, 증상<br>',
-                '수집 목적: 상담 신청 접수 및 회신<br>',
-                '보유 기간: 상담 완료 후 1년<br>',
-                '귀하는 개인정보 수집·이용을 거부할 권리가 있으며,',
-                ' 거부 시 상담 신청이 제한될 수 있습니다.',
+            '<label class="hx-fcta-form__label" for="hxFcta_symptom">증상',
+              '<span class="hx-fcta-form__opt">선택</span></label>',
+            '<p class="hx-fcta-form__guide">지금 가장 걱정되는 부분을 편하게 적어주세요.</p>',
+            '<div class="hx-fcta-symptom">',
+              '<textarea class="hx-fcta-symptom__text" id="hxFcta_symptom" name="증상"',
+                ' placeholder="예) 3일 전부터 밥을 잘 안 먹어요"></textarea>',
+              '<div class="hx-fcta-chips" id="hxFctaChips">',
+                CHIPS.map(chipHtml).join(''),
               '</div>',
-              '<label class="hx-fcta-form__privacy-check">',
-                '<input type="checkbox" id="hxFcta_privacy" name="개인정보동의" required>',
-                '개인정보 수집·이용에 동의합니다<span aria-hidden="true"> (필수)</span>',
-              '</label>',
+              '<div class="hx-fcta-etc" id="hxFctaEtc">',
+                '<input class="hx-fcta-form__input" id="hxFcta_etc" type="text"',
+                  ' placeholder="질환명을 적어주세요">',
+              '</div>',
             '</div>',
           '</div>',
+
+          /* 개인정보 동의 — 요약 한 줄, 전문은 '자세히 보기' 로 펼침 */
+          '<div class="hx-fcta-consent">',
+            '<div class="hx-fcta-consent__row">',
+              '<input type="checkbox" id="hxFcta_privacy" name="개인정보동의">',
+              '<div class="hx-fcta-consent__body">',
+                '<label class="hx-fcta-consent__text" for="hxFcta_privacy">',
+                  '입력하신 정보는 상담 접수 및 회신 목적으로만 사용되며,',
+                  ' 완료 후 1년 뒤 파기됩니다.</label> ',
+                '<button type="button" class="hx-fcta-consent__more" id="hxFctaPrivacyMore"',
+                  ' aria-expanded="false" aria-controls="hxFctaPrivacyDetail">자세히 보기</button>',
+              '</div>',
+            '</div>',
+            '<div class="hx-fcta-consent__detail" id="hxFctaPrivacyDetail" hidden>',
+              '<p class="hx-fcta-consent__detail-title">개인정보 수집·이용 동의</p>',
+              '<p>수집 항목: 성함, 연락처, 반려동물 이름·종·연령대·기저질환, 증상</p>',
+              '<p>수집 목적: 상담 신청 접수 및 회신</p>',
+              '<p>보유 기간: 상담 완료 후 1년</p>',
+              '<p>귀하는 개인정보 수집·이용을 거부할 권리가 있으며,',
+                ' 거부 시 상담 신청이 제한될 수 있습니다.</p>',
+            '</div>',
+          '</div>',
+          '<p class="hx-fcta-form__error" id="hxFcta_privacy_err" role="alert"></p>',
+
           '<button class="hx-fcta-form__submit" id="hxFctaSubmit" type="submit">',
             '상담 신청하기',
           '</button>',
@@ -198,24 +220,133 @@
   var done     = document.getElementById('hxFctaDone');
   var doneClose= document.getElementById('hxFctaDoneClose');
 
-  /* ── 나이 '모름' 체크 시 입력칸 비활성화 ── */
-  var ageInput   = document.getElementById('hxFcta_age');
-  var ageUnknown = document.getElementById('hxFcta_age_unknown');
-  if (ageUnknown && ageInput) {
-    ageUnknown.addEventListener('change', function () {
-      ageInput.disabled = ageUnknown.checked;
-      if (ageUnknown.checked) ageInput.value = '';
-    });
+  var ownerInput   = document.getElementById('hxFcta_owner');
+  var phoneInput   = document.getElementById('hxFcta_phone');
+  var petInput     = document.getElementById('hxFcta_pet');
+  var symptomInput = document.getElementById('hxFcta_symptom');
+  var etcWrap      = document.getElementById('hxFctaEtc');
+  var etcInput     = document.getElementById('hxFcta_etc');
+  var privacyEl    = document.getElementById('hxFcta_privacy');
+  var chipEls      = [].slice.call(document.querySelectorAll('.hx-fcta-chip'));
+
+  /* ── 태그(칩) 토글 ──
+     증상 텍스트칸에는 손대지 않는다. 켜고 끄기만 하고, 값은 제출할 때
+     그룹별로 모아 보낸다.
+       종·연령대 : 같은 줄에서 하나만 (다시 누르면 해제)
+       기저질환   : 여러 개. 단 '기저질환 없음' 은 나머지와 같이 못 켬 */
+  function chipOn(el) { return el.getAttribute('aria-pressed') === 'true'; }
+
+  function setChip(el, on) {
+    el.setAttribute('aria-pressed', on ? 'true' : 'false');
+    el.classList.toggle('is-on', on);
   }
 
-  /* ── 연락처: 숫자만, 최대 11자리 ── */
-  var phoneInput = document.getElementById('hxFcta_phone');
-  if (phoneInput) {
-    phoneInput.addEventListener('input', function () {
-      var digits = phoneInput.value.replace(/\D/g, '').slice(0, 11);
-      if (phoneInput.value !== digits) phoneInput.value = digits;
+  chipEls.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      var group = chip.dataset.group;
+      var kind  = chip.dataset.kind || '';
+      var turnOn = !chipOn(chip);
+
+      if (group === 'species' || group === 'age') {
+        /* 같은 줄은 하나만 남긴다 */
+        chipEls.forEach(function (o) {
+          if (o.dataset.group === group) setChip(o, false);
+        });
+        setChip(chip, turnOn);
+      } else {
+        setChip(chip, turnOn);
+        if (turnOn && kind === 'none') {
+          /* '기저질환 없음' 을 켜면 다른 질환은 모두 끈다 */
+          chipEls.forEach(function (o) {
+            if (o.dataset.group === 'condition' && o !== chip) setChip(o, false);
+          });
+        } else if (turnOn) {
+          /* 질환을 하나라도 켜면 '없음' 은 끈다 */
+          chipEls.forEach(function (o) {
+            if (o.dataset.kind === 'none') setChip(o, false);
+          });
+        }
+      }
+
+      /* '기타' 를 켠 동안에만 질환명 입력칸을 연다 */
+      var etcChip = chipEls.filter(function (o) { return o.dataset.kind === 'etc'; })[0];
+      var etcOpen = !!etcChip && chipOn(etcChip);
+      etcWrap.classList.toggle('is-open', etcOpen);
+      if (!etcOpen) etcInput.value = '';
+      else if (kind === 'etc') etcInput.focus();
+    });
+  });
+
+  function chipValues(group) {
+    return chipEls
+      .filter(function (c) { return c.dataset.group === group && chipOn(c); })
+      .map(function (c) { return c.dataset.value; });
+  }
+
+  /* ── 입력칸 아래 빨간 안내문 ── */
+  function setError(inputEl, errId, msg) {
+    var el = document.getElementById(errId);
+    if (el) {
+      el.textContent = msg || '';
+      el.classList.toggle('is-on', !!msg);
+    }
+    if (inputEl) inputEl.classList.toggle('is-invalid', !!msg);
+  }
+
+  function clearErrors() {
+    setError(ownerInput, 'hxFcta_owner_err', '');
+    setError(phoneInput, 'hxFcta_phone_err', '');
+    setError(null,       'hxFcta_privacy_err', '');
+  }
+
+  ownerInput.addEventListener('input', function () {
+    setError(ownerInput, 'hxFcta_owner_err', '');
+  });
+  privacyEl.addEventListener('change', function () {
+    if (privacyEl.checked) setError(null, 'hxFcta_privacy_err', '');
+  });
+
+  /* ── 연락처: 입력하는 동안 하이픈을 넣어 보여준다 ──
+     저장·전송은 숫자 11자리만 (dashboard 에서 전화 걸기 링크 만들 때 편함).
+     11자리를 다 채우면 손대지 않아도 다음 칸으로 커서가 넘어감. */
+  function phoneDigits() {
+    return phoneInput.value.replace(/\D/g, '').slice(0, 11);
+  }
+
+  phoneInput.addEventListener('input', function () {
+    var d = phoneDigits();
+    var out = d;
+    if (d.length > 3 && d.length <= 7) {
+      out = d.slice(0, 3) + '-' + d.slice(3);
+    } else if (d.length > 7) {
+      out = d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7);
+    }
+    if (phoneInput.value !== out) phoneInput.value = out;
+    setError(phoneInput, 'hxFcta_phone_err', '');
+    if (d.length === 11) petInput.focus();
+  });
+
+  /* ── Enter(모바일 키보드 '다음') 로 다음 칸 이동 ──
+     증상칸은 줄바꿈이 필요한 서술형이라 제외. */
+  function nextOnEnter(fromEl, toEl) {
+    fromEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); toEl.focus(); }
     });
   }
+  nextOnEnter(ownerInput, phoneInput);
+  nextOnEnter(phoneInput, petInput);
+  nextOnEnter(petInput,   symptomInput);
+
+  /* ── 개인정보 전문 펼치기 ── */
+  var privacyMore   = document.getElementById('hxFctaPrivacyMore');
+  var privacyDetail = document.getElementById('hxFctaPrivacyDetail');
+  privacyMore.addEventListener('click', function () {
+    var open = privacyDetail.hasAttribute('hidden');
+    if (open) privacyDetail.removeAttribute('hidden');
+    else privacyDetail.setAttribute('hidden', '');
+    privacyMore.setAttribute('aria-expanded', open ? 'true' : 'false');
+    privacyMore.textContent = open ? '접기' : '자세히 보기';
+  });
 
   /* ── 패널 열기·닫기 ── */
   var panelOpen = false;
@@ -256,7 +387,13 @@
       done.classList.remove('is-visible');
       submitBtn.disabled = false;
       submitBtn.textContent = '상담 신청하기';
-      if (ageInput) ageInput.disabled = false;
+      /* form.reset() 은 칩(button)·펼친 전문까지는 못 되돌린다 */
+      chipEls.forEach(function (c) { setChip(c, false); });
+      etcWrap.classList.remove('is-open');
+      privacyDetail.setAttribute('hidden', '');
+      privacyMore.setAttribute('aria-expanded', 'false');
+      privacyMore.textContent = '자세히 보기';
+      clearErrors();
     }
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
@@ -342,47 +479,56 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    /* 필수 항목 검사 */
-    var ownerVal   = document.getElementById('hxFcta_owner').value.trim();
-    var phoneVal   = document.getElementById('hxFcta_phone').value.trim();
-    var privacyEl  = document.getElementById('hxFcta_privacy');
+    /* ── 필수 항목 검사 ── 칸 아래 빨간 안내문으로 표시 */
+    clearErrors();
+
+    var ownerVal = ownerInput.value.trim();
+    var digits   = phoneDigits();
+    var bad      = null;
 
     if (!ownerVal) {
-      alert('보호자 이름을 입력해 주세요.');
-      document.getElementById('hxFcta_owner').focus();
-      return;
+      setError(ownerInput, 'hxFcta_owner_err', '성함을 입력해 주세요.');
+      bad = bad || ownerInput;
     }
-    if (!phoneVal) {
-      alert('연락처를 입력해 주세요.');
-      document.getElementById('hxFcta_phone').focus();
-      return;
+    if (!digits) {
+      setError(phoneInput, 'hxFcta_phone_err', '연락처를 입력해 주세요.');
+      bad = bad || phoneInput;
+    } else if (digits.length < 10) {
+      setError(phoneInput, 'hxFcta_phone_err', '연락처를 다시 확인해 주세요.');
+      bad = bad || phoneInput;
     }
     if (!privacyEl.checked) {
-      alert('개인정보 수집·이용에 동의해 주세요.');
-      privacyEl.focus();
-      return;
+      setError(null, 'hxFcta_privacy_err', '개인정보 수집·이용에 동의해 주세요.');
+      bad = bad || privacyEl;
     }
+    if (bad) { bad.focus(); return; }
 
     submitBtn.disabled = true;
     submitBtn.textContent = '전송 중…';
 
-    /* ── 마케팅 데시보드(Firebase leads)로도 한 부 적재 ──
-       반려동물이름·성별·기저질환은 데시보드에 전용 칸이 없어
-       증상(inquiry) 안에 괄호로 묶어 합쳐 넣는다. */
+    /* 태그(칩) 에서 고른 값 — 그룹별로 갈라서 꺼낸다 */
+    var petName   = petInput.value.trim();
+    var symptom   = symptomInput.value.trim();
+    var species   = chipValues('species')[0] || '';
+    var ageGroup  = chipValues('age')[0] || '';
+    var condList  = chipValues('condition');
+    var condEtc   = etcInput.value.trim();
+    /* '기타' 는 라벨이 아니라 사용자가 적은 질환명으로 바꿔 담는다 */
+    var condOut   = condList.map(function (v) {
+      return (v === '기타') ? (condEtc || '기타') : v;
+    });
+
+    /* ── 마케팅 대시보드(Firebase leads)로도 한 부 적재 ──
+       대시보드는 실장님 쪽 소유라 우리가 못 고친다. 그래서
+         · 기존 칸(petType/petAge/inquiry) 은 지금 형식 그대로 유지 →
+           대시보드를 손대지 않아도 정보가 하나도 안 사라짐
+         · 새 칸(species/ageGroup/conditions/petName/symptom) 을 나란히 추가 →
+           대시보드가 준비되면 이 갈래를 그대로 써서 걸러보기·정렬 가능
+       ⚠️ 기존 칸을 지우지 말 것. 지우면 대시보드가 고쳐지기 전까지 빈칸이 됨. */
     try {
-      var ageVal = document.getElementById('hxFcta_age_unknown').checked
-        ? '모름'
-        : document.getElementById('hxFcta_age').value.trim();
-
-      var petName = document.getElementById('hxFcta_pet').value.trim();
-      var sexVal  = (form.querySelector('input[name="성별"]:checked') || {}).value || '';
-      var condVal = document.getElementById('hxFcta_condition').value.trim();
-      var symptom = document.getElementById('hxFcta_symptom').value.trim();
-
       var extras = [];
-      if (petName) extras.push('반려동물: ' + petName);
-      if (sexVal)  extras.push('성별: ' + sexVal);
-      if (condVal) extras.push('기저질환: ' + condVal);
+      if (petName)        extras.push('반려동물: ' + petName);
+      if (condOut.length) extras.push('기저질환: ' + condOut.join(', '));
 
       var inquiryText = symptom;
       if (extras.length) {
@@ -392,11 +538,12 @@
       var qp = new URLSearchParams(location.search);
 
       var lead = {
+        /* 기존 칸 — 대시보드가 지금 읽고 있는 것 */
         name:         ownerVal,
-        phone:        phoneVal,
-        petType:      (form.querySelector('input[name="종"]:checked') || {}).value || '미선택',
+        phone:        digits,
+        petType:      species || '미선택',
         petBreed:     '',
-        petAge:       ageVal,
+        petAge:       ageGroup,
         inquiry:      inquiryText,
         submittedAt:  new Date().toISOString(),
         userAgent:    navigator.userAgent,
@@ -404,7 +551,15 @@
         utm_medium:   qp.get('utm_medium')   || '',
         utm_campaign: qp.get('utm_campaign') || '',
         utm_content:  qp.get('utm_content')  || '',
-        media:        '홈페이지'
+        media:        '홈페이지',
+
+        /* 새 칸 — 대시보드 개편 시 이쪽을 쓰면 됨 */
+        petName:      petName,
+        species:      species,
+        ageGroup:     ageGroup,
+        conditions:   condOut,
+        conditionEtc: condEtc,
+        symptom:      symptom
       };
 
       fetch(LEADS_URL, {
@@ -424,15 +579,12 @@
       source:         location.href,
       'email-subject': '[상담신청] ' + ownerVal,
       '보호자성함':   ownerVal,
-      '연락처':       phoneVal,
-      '반려동물이름': document.getElementById('hxFcta_pet').value.trim(),
-      '종':           (form.querySelector('input[name="종"]:checked') || {}).value || '',
-      '나이':         document.getElementById('hxFcta_age_unknown').checked
-                        ? '모름'
-                        : document.getElementById('hxFcta_age').value.trim(),
-      '성별':         (form.querySelector('input[name="성별"]:checked') || {}).value || '',
-      '기저질환':     document.getElementById('hxFcta_condition').value.trim(),
-      '증상':         document.getElementById('hxFcta_symptom').value.trim(),
+      '연락처':       digits,
+      '반려동물이름': petName,
+      '종':           species,
+      '연령대':       ageGroup,
+      '기저질환':     condOut.join(', '),
+      '증상':         symptom,
       '개인정보동의': '동의'
       /* TODO(차후): 사진 첨부 — '사진': <업로드된 파일 URL>. 입력 UI 는
          .hx-fcta-form__group 패턴으로 추가, 업로드 후 URL 을 여기 포함. */
