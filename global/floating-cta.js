@@ -64,9 +64,9 @@
   /* 플로팅 토글 버튼 얼굴 — 상담 문의 일러스트(SVG). */
   var CONSULT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
                    ASSET_REF + '/global/cta-consult.svg';
-  /* 마스코트(global/cta-mascot.svg)는 배치할 자리를 다시 정하는 중이라
-     지금은 폼에서 쓰지 않는다. 자리가 정해지면 위 두 개와 같은 방식으로
-     주소를 만들어 쓰면 됨. */
+  /* 인트로 문단 아래에 놓는 마스코트. */
+  var MASCOT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
+                   ASSET_REF + '/global/cta-mascot.svg';
 
   /* ── HTML 주입 ── */
   var html = [
@@ -121,14 +121,17 @@
         /* 폼 */
         '<form class="hx-fcta-form" id="hxFctaForm" novalidate>',
 
-          /* 제목 — eyebrow / 헤드 / 서브 3단.
-             (마스코트 말풍선안은 취소됨. 마스코트는 다른 자리에 배치 예정
-              이라 이 영역에서는 뺐고, 에셋은 global/cta-mascot.svg 에 둠.) */
+          /* 제목 — eyebrow / 헤드 / 서브 / 마스코트.
+             닫기 버튼은 modal__header 를 absolute 로 띄워 자리를 안 먹게
+             해서, 이 블록의 첫 줄(eyebrow)이 닫기 버튼과 같은 높이에서
+             시작한다. */
           '<div class="hx-fcta-form__head">',
             '<p class="hx-fcta-form__eyebrow">HELIX Consultation</p>',
             '<h2 class="hx-fcta-form__title">상담, 간편하게 남기세요</h2>',
             '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
               '바로 알려드리겠습니다</p>',
+            '<img class="hx-fcta-form__mascot" src="' + MASCOT_IMG + '"',
+              ' alt="" aria-hidden="true">',
           '</div>',
 
           /* 성함 · 연락처 — 한 줄에 나란히 */

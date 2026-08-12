@@ -226,14 +226,18 @@
     border-radius: 20px;
     max-height: 85vh;
   }
+  .hx-fcta-modal__header { top: 24px; right: 24px; }
 }
 
-/* ── 모달 헤더 ── */
+/* ── 모달 헤더 ──
+   닫기 버튼을 흐름에서 빼서 우상단에 띄운다 — 그래야 아래 인트로
+   문단(eyebrow)이 이 버튼과 같은 높이에서 시작해 위쪽 여백이 남지 않는다. */
 .hx-fcta-modal__header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-bottom: 4px;
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 2;
+  margin: 0;
 }
 
 .hx-fcta-modal__close {
@@ -263,8 +267,12 @@
   gap: 10px;
 }
 
-/* 제목 — eyebrow / 헤드 / 서브 3단 */
-.hx-fcta-form__head { margin-bottom: 2px; }
+/* 제목 — eyebrow / 헤드 / 서브 / 마스코트.
+   우상단에 뜬 닫기 버튼(32px + 여백)과 안 겹치도록 오른쪽에 여유를 둠. */
+.hx-fcta-form__head {
+  margin-bottom: 2px;
+  padding-right: 40px;
+}
 
 .hx-fcta-form__eyebrow {
   font-family: 'Noto Sans KR', sans-serif;
@@ -273,7 +281,7 @@
   letter-spacing: normal;   /* 자간 벌리지 않음 */
   text-transform: uppercase;
   color: var(--hx-sub);
-  margin: 0 0 6px;
+  margin: 0 0 2px;          /* 헤딩과 가깝게 */
 }
 
 .hx-fcta-form__title {
@@ -293,6 +301,15 @@
   line-height: 1.55;
   color: var(--hx-ink-sub);
   margin: 0;
+}
+
+/* 부연설명 아래 마스코트 — 적당한 크기로, 세로를 많이 먹지 않게 */
+.hx-fcta-form__mascot {
+  display: block;
+  width: 64px;
+  height: auto;
+  margin: 8px 0 0;
+  pointer-events: none;
 }
 
 /* 성함 · 연락처 한 줄 배치 */
@@ -621,6 +638,7 @@
   .hx-fcta-form { gap: 8px; }
   .hx-fcta-form__title { font-size: 18px; margin-bottom: 4px; }
   .hx-fcta-form__head { margin-bottom: 0; }
+  .hx-fcta-form__mascot { width: 52px; margin-top: 6px; }
   .hx-fcta-symptom__text { height: 38px; }
-  .hx-fcta-modal__header { margin-bottom: 0; }
+  .hx-fcta-modal__header { top: 16px; right: 20px; }
 }
