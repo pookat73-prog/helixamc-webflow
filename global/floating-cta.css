@@ -303,13 +303,24 @@
   margin: 0;
 }
 
-/* 부연설명 아래 마스코트 — 적당한 크기로, 세로를 많이 먹지 않게 */
+/* 부연설명 아래 — 마스코트가 서 있고 발밑에 긴 선이 바닥처럼 깔림 */
+.hx-fcta-form__ground {
+  margin-top: 14px;    /* 부연설명에서 약간 띄움 */
+}
+
 .hx-fcta-form__mascot {
   display: block;
-  width: 64px;
+  width: 88px;          /* 이전(64px)보다 키움 */
   height: auto;
-  margin: 8px 0 0;
+  margin: 0 0 -2px;     /* 발이 선에 살짝 닿도록 */
   pointer-events: none;
+}
+
+.hx-fcta-form__rule {
+  border: none;
+  border-top: 1px solid var(--hx-line);
+  margin: 0;
+  width: 100%;          /* 마스코트 발밑보다 길게, 카드 전체 너비로 */
 }
 
 /* 성함 · 연락처 한 줄 배치 */
@@ -638,7 +649,8 @@
   .hx-fcta-form { gap: 8px; }
   .hx-fcta-form__title { font-size: 18px; margin-bottom: 4px; }
   .hx-fcta-form__head { margin-bottom: 0; }
-  .hx-fcta-form__mascot { width: 52px; margin-top: 6px; }
+  .hx-fcta-form__ground { margin-top: 8px; }
+  .hx-fcta-form__mascot { width: 60px; }
   .hx-fcta-symptom__text { height: 38px; }
   .hx-fcta-modal__header { top: 16px; right: 20px; }
 }
