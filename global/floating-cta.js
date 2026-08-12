@@ -130,8 +130,13 @@
             '<h2 class="hx-fcta-form__title">상담, 간편하게 남기세요</h2>',
             '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
               '바로 알려드리겠습니다</p>',
-            '<img class="hx-fcta-form__mascot" src="' + MASCOT_IMG + '"',
-              ' alt="" aria-hidden="true">',
+            /* 마스코트가 서 있고, 발밑에 긴 선이 바닥처럼 깔림.
+               선은 마스코트 폭보다 길게 — 카드 전체 너비로. */
+            '<div class="hx-fcta-form__ground">',
+              '<img class="hx-fcta-form__mascot" src="' + MASCOT_IMG + '"',
+                ' alt="" aria-hidden="true">',
+              '<hr class="hx-fcta-form__rule" aria-hidden="true">',
+            '</div>',
           '</div>',
 
           /* 성함 · 연락처 — 한 줄에 나란히 */
