@@ -201,10 +201,13 @@
   border-radius: 20px 20px 0 0;
   width: 100%;
   max-width: 520px;
-  max-height: 90dvh;
-  max-height: 90vh;
+  /* dvh 를 뒤에 둬야 이긴다 — 주소창이 접혔다 펴지는 모바일에서
+     실제로 보이는 높이를 기준으로 잡기 위함. (순서가 반대면 vh 가
+     이겨서, 주소창이 펴진 상태에선 아래가 잘린다.) */
+  max-height: 94vh;
+  max-height: 94dvh;
   overflow-y: auto;
-  padding: 32px 28px 44px;   /* 여백 넉넉히 */
+  padding: 22px 22px 22px;
   transform: translateY(40px);
   transition: transform 0.22s ease;
 }
@@ -257,30 +260,80 @@
 .hx-fcta-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
-/* 제목 — 마스코트 말풍선이 붙을 자리 */
-.hx-fcta-form__head { margin-bottom: 6px; }
+/* 제목 — 마스코트가 말풍선으로 말을 거는 구조 */
+.hx-fcta-form__head { margin-bottom: 2px; }
 
 .hx-fcta-form__eyebrow {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: normal;   /* 자간 벌리지 않음 */
   text-transform: uppercase;
   color: var(--hx-sub);
-  margin: 0 0 8px;
+  margin: 0 0 6px;
+}
+
+/* 마스코트 + 말풍선 한 줄 */
+.hx-fcta-form__hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;               /* 말풍선 꼬리(동그라미)가 놓일 자리 */
+  margin-bottom: 7px;
+}
+
+.hx-fcta-form__mascot {
+  width: 84px;
+  height: auto;
+  flex-shrink: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* 말풍선 — 테두리 없이 서페이스 색 면으로만.
+   꼬리는 삼각형 대신 마스코트 쪽으로 작아지는 동그라미 두 개라
+   만화 대사보다 '마음의 소리' 에 가깝게 읽힌다. */
+.hx-fcta-form__bubble {
+  position: relative;
+  background: var(--hx-surface);
+  border-radius: 16px;
+  padding: 11px 15px;
+  min-width: 0;
+}
+
+.hx-fcta-form__bubble::before,
+.hx-fcta-form__bubble::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: var(--hx-surface);
+}
+
+.hx-fcta-form__bubble::before {
+  width: 9px;
+  height: 9px;
+  left: -8px;
+  bottom: 36%;    /* 마스코트 머리 높이 쪽을 향하게 */
+}
+
+.hx-fcta-form__bubble::after {
+  width: 5px;
+  height: 5px;
+  left: -17px;
+  bottom: 26%;
 }
 
 .hx-fcta-form__title {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.35;
   letter-spacing: -0.01em;
   color: var(--hx-ink);
-  margin: 0 0 6px;
+  margin: 0;
+  word-break: keep-all;
 }
 
 .hx-fcta-form__sub {
@@ -301,7 +354,7 @@
 .hx-fcta-form__group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .hx-fcta-form__label {
@@ -313,11 +366,12 @@
 
 .hx-fcta-form__req { color: var(--hx-red); margin-left: 2px; }
 
-.hx-fcta-form__opt {
-  font-weight: 400;
-  font-size: 11px;
-  color: var(--hx-ink-sub);
-  margin-left: 4px;
+/* 라벨 + 부연을 한 줄에 — 부연이 줄을 따로 먹지 않게 */
+.hx-fcta-form__labelrow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .hx-fcta-form__guide {
@@ -325,7 +379,7 @@
   font-size: 11.5px;
   line-height: 1.5;
   color: var(--hx-ink-sub);
-  margin: -2px 0 2px;
+  margin: 0;
 }
 
 /* 입력칸 — 글자 16px 은 iOS 에서 포커스 시 화면이 확대되는 걸 막는 최소값 */
@@ -336,7 +390,7 @@
   background: var(--hx-surface);
   border: 1px solid var(--hx-line);
   border-radius: 11px;
-  padding: 12px 14px;
+  padding: 11px 14px;
   outline: none;
   transition: border-color 0.15s ease, background 0.15s ease;
   width: 100%;
@@ -368,7 +422,7 @@
   border: 1px solid var(--hx-line);
   border-radius: 11px;
   background: var(--hx-surface);
-  padding: 12px 14px 14px;
+  padding: 11px 13px 12px;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
@@ -387,7 +441,7 @@
   line-height: 1.5;
   color: var(--hx-ink);
   resize: none;
-  height: 52px;
+  height: 44px;
   outline: none;
   box-sizing: border-box;
 }
@@ -398,19 +452,19 @@
 .hx-fcta-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 5px;
+  margin-top: 9px;
 }
 
 .hx-fcta-chip {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 400;
   color: var(--hx-sub);
   background: #fff;
   border: 1px solid var(--hx-line);
   border-radius: 999px;
-  padding: 7px 12px;
+  padding: 6px 10px;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
@@ -445,8 +499,8 @@
 .hx-fcta-consent {
   background: var(--hx-surface);
   border-radius: 11px;
-  padding: 11px 13px;
-  margin-top: 6px;
+  padding: 9px 12px;
+  margin-top: 0;
 }
 
 .hx-fcta-consent__row {
@@ -508,8 +562,8 @@
 
 /* ── 제출 버튼 ── */
 .hx-fcta-form__submit {
-  margin-top: 6px;
-  padding: 16px;
+  margin-top: 0;
+  padding: 15px;
   background: var(--hx-primary);
   color: #fff;
   border: none;
@@ -606,4 +660,18 @@
   .hx-fcta-btn__img { height: 6.3rem; }
   .hx-fcta-btn__label { font-size: 14px; }   /* 버튼 크기 유지, 라벨만 확대 */
   .hx-fcta-panel { bottom: calc(6.3rem + 32px); }
+}
+
+/* ── 화면이 짧은 기기(아이폰 SE 급, 세로 720px 이하) ──
+   폼이 한 화면에 들어오도록 여백·마스코트만 한 단계 줄인다.
+   글자 크기는 건드리지 않아 읽기 어려워지지 않게. */
+@media (max-height: 720px) {
+  .hx-fcta-modal__box { padding: 16px 20px 18px; }
+  .hx-fcta-form { gap: 8px; }
+  .hx-fcta-form__mascot { width: 68px; }
+  .hx-fcta-form__hero { gap: 16px; margin-bottom: 5px; }
+  .hx-fcta-form__bubble { padding: 9px 13px; }
+  .hx-fcta-form__title { font-size: 17px; }
+  .hx-fcta-symptom__text { height: 38px; }
+  .hx-fcta-modal__header { margin-bottom: 0; }
 }

@@ -64,6 +64,9 @@
   /* 플로팅 토글 버튼 얼굴 — 상담 문의 일러스트(SVG). */
   var CONSULT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
                    ASSET_REF + '/global/cta-consult.svg';
+  /* 폼 제목 옆 마스코트 — 말풍선의 말 주인. */
+  var MASCOT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
+                   ASSET_REF + '/global/cta-mascot.svg';
 
   /* ── HTML 주입 ── */
   var html = [
@@ -118,10 +121,18 @@
         /* 폼 */
         '<form class="hx-fcta-form" id="hxFctaForm" novalidate>',
 
-          /* 제목 — 마스코트 말풍선이 붙을 자리(에셋 적용은 별건) */
+          /* 제목 — 마스코트가 말풍선으로 말을 거는 구조.
+             말풍선 꼬리는 뾰족한 삼각형 대신 마스코트 쪽으로 작아지는
+             동그라미 두 개. 만화 말풍선보다 '마음의 소리' 에 가깝게. */
           '<div class="hx-fcta-form__head">',
             '<p class="hx-fcta-form__eyebrow">HELIX Consultation</p>',
-            '<h2 class="hx-fcta-form__title">서둘러 연락드릴게요</h2>',
+            '<div class="hx-fcta-form__hero">',
+              '<img class="hx-fcta-form__mascot" src="' + MASCOT_IMG + '"',
+                ' alt="" aria-hidden="true">',
+              '<div class="hx-fcta-form__bubble">',
+                '<h2 class="hx-fcta-form__title">서둘러 연락드릴게요</h2>',
+              '</div>',
+            '</div>',
             '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
               '바로 알려드리겠습니다</p>',
           '</div>',
@@ -147,17 +158,18 @@
 
           /* 반려동물 이름 */
           '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_pet">반려동물 이름',
-              '<span class="hx-fcta-form__opt">선택</span></label>',
+            '<label class="hx-fcta-form__label" for="hxFcta_pet">반려동물 이름</label>',
             '<input class="hx-fcta-form__input" id="hxFcta_pet" name="반려동물이름"',
               ' type="text" placeholder="예) 초코" enterkeyhint="next">',
           '</div>',
 
-          /* 증상 — 회색 박스 하나에 서술칸 + 태그(칩) 를 같이 담는다 */
+          /* 증상 — 회색 박스 하나에 서술칸 + 태그(칩) 를 같이 담는다.
+             부연은 한 줄을 더 쓰지 않도록 라벨 옆에 붙인다. */
           '<div class="hx-fcta-form__group">',
-            '<label class="hx-fcta-form__label" for="hxFcta_symptom">증상',
-              '<span class="hx-fcta-form__opt">선택</span></label>',
-            '<p class="hx-fcta-form__guide">지금 가장 걱정되는 부분을 편하게 적어주세요.</p>',
+            '<div class="hx-fcta-form__labelrow">',
+              '<label class="hx-fcta-form__label" for="hxFcta_symptom">증상</label>',
+              '<span class="hx-fcta-form__guide">지금 가장 걱정되는 부분을 편하게 적어주세요.</span>',
+            '</div>',
             '<div class="hx-fcta-symptom">',
               '<textarea class="hx-fcta-symptom__text" id="hxFcta_symptom" name="증상"',
                 ' placeholder="예) 3일 전부터 밥을 잘 안 먹어요"></textarea>',
