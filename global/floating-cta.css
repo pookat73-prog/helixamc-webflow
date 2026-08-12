@@ -303,24 +303,32 @@
   margin: 0;
 }
 
-/* 부연설명 아래 — 마스코트가 서 있고 발밑에 긴 선이 바닥처럼 깔림 */
-.hx-fcta-form__ground {
-  margin-top: 14px;    /* 부연설명에서 약간 띄움 */
+/* 가로 정렬 — 왼쪽 텍스트, 오른쪽 마스코트.
+   마스코트를 텍스트 블록 하단에 맞춰(align-items: flex-end) 세워서
+   발이 텍스트 마지막 줄과 같은 높이에 오게 한다. */
+.hx-fcta-form__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
 }
+
+.hx-fcta-form__intro { min-width: 0; flex: 1; }
 
 .hx-fcta-form__mascot {
   display: block;
-  width: 88px;          /* 이전(64px)보다 키움 */
+  width: 68px;
   height: auto;
-  margin: 0 0 -2px;     /* 발이 선에 살짝 닿도록 */
+  flex-shrink: 0;
   pointer-events: none;
 }
 
+/* 텍스트+마스코트 줄 아래, 카드 전체 너비의 긴 바닥선 */
 .hx-fcta-form__rule {
   border: none;
   border-top: 1px solid var(--hx-line);
-  margin: 0;
-  width: 100%;          /* 마스코트 발밑보다 길게, 카드 전체 너비로 */
+  margin: 12px 0 0;
+  width: 100%;
 }
 
 /* 성함 · 연락처 한 줄 배치 */
@@ -649,8 +657,8 @@
   .hx-fcta-form { gap: 8px; }
   .hx-fcta-form__title { font-size: 18px; margin-bottom: 4px; }
   .hx-fcta-form__head { margin-bottom: 0; }
-  .hx-fcta-form__ground { margin-top: 8px; }
-  .hx-fcta-form__mascot { width: 60px; }
+  .hx-fcta-form__mascot { width: 52px; }
+  .hx-fcta-form__rule { margin-top: 8px; }
   .hx-fcta-symptom__text { height: 38px; }
   .hx-fcta-modal__header { top: 16px; right: 20px; }
 }
