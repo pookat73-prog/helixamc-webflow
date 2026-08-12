@@ -126,7 +126,7 @@
               이라 이 영역에서는 뺐고, 에셋은 global/cta-mascot.svg 에 둠.) */
           '<div class="hx-fcta-form__head">',
             '<p class="hx-fcta-form__eyebrow">HELIX Consultation</p>',
-            '<h2 class="hx-fcta-form__title">간편 상담 신청</h2>',
+            '<h2 class="hx-fcta-form__title">상담, 간편하게 남기세요</h2>',
             '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
               '바로 알려드리겠습니다</p>',
           '</div>',
