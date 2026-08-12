@@ -44,6 +44,35 @@ jobs:
             echo "→ _all.json 변경 없음 (개별 JSON 변경 없는 푸시)"
           fi
 
+      - name: Rebuild SEO snippets (seo-snippets/*.html)
+        run: |
+          # 의료진·응급증상·FAQ 데이터를 읽어 JSON-LD 구조화데이터를 재생성.
+          # 각 페이지 head 의 자동 로더가 이 파일을 fetch 하므로, 데이터만 고치고
+          # 여기를 안 돌리면 검색엔진에는 옛 정보가 계속 노출됨.
+          node scripts/build-seo.js
+
+          # lastReviewed 는 "빌드한 날짜" 라 내용이 그대로여도 날짜가 바뀐 날엔
+          # 전 스니펫이 diff 로 잡힘. 그 줄만 바뀐 파일은 실질 변경이 아니므로
+          # 되돌려서 불필요한 자동 커밋·재트리거(= 캐시 퍼지 헛돌기)를 막음.
+          for f in $(git diff --name-only -- seo-snippets/); do
+            REAL=$(git diff -U0 -- "$f" | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' | grep -v 'lastReviewed' || true)
+            if [ -z "$REAL" ]; then
+              git checkout -- "$f"
+              echo "  · $f — 날짜만 변경 → 되돌림"
+            fi
+          done
+
+          if ! git diff --quiet -- seo-snippets/; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add seo-snippets/
+            git commit -m "chore(seo): rebuild seo-snippets [auto]"
+            git push origin HEAD:${GITHUB_REF_NAME}
+            echo "→ seo-snippets 변경 감지·자동 커밋. 새 커밋이 본 워크플로우를 재트리거함."
+          else
+            echo "→ seo-snippets 실질 변경 없음"
+          fi
+
       - name: Determine target ref
         id: ref
         run: |
