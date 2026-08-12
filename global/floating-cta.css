@@ -268,10 +268,12 @@
 }
 
 /* 제목 — eyebrow / 헤드 / 서브 / 마스코트.
-   우상단에 뜬 닫기 버튼(32px + 여백)과 안 겹치도록 오른쪽에 여유를 둠. */
+   텍스트(eyebrow·헤딩)는 짧아서 닫기 버튼과 안 겹치므로 큰 여백이
+   필요 없음 — 마스코트가 닫기 버튼과 같은 오른쪽 선에 맞춰지도록
+   여백을 최소로만 둠. */
 .hx-fcta-form__head {
   margin-bottom: 2px;
-  padding-right: 40px;
+  padding-right: 4px;
 }
 
 .hx-fcta-form__eyebrow {
@@ -317,7 +319,7 @@
 
 .hx-fcta-form__mascot {
   display: block;
-  width: 68px;
+  width: 78px;
   height: auto;
   flex-shrink: 0;
   pointer-events: none;
