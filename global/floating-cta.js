@@ -64,9 +64,9 @@
   /* 플로팅 토글 버튼 얼굴 — 상담 문의 일러스트(SVG). */
   var CONSULT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
                    ASSET_REF + '/global/cta-consult.svg';
-  /* 폼 제목 옆 마스코트 — 말풍선의 말 주인. */
-  var MASCOT_IMG = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' +
-                   ASSET_REF + '/global/cta-mascot.svg';
+  /* 마스코트(global/cta-mascot.svg)는 배치할 자리를 다시 정하는 중이라
+     지금은 폼에서 쓰지 않는다. 자리가 정해지면 위 두 개와 같은 방식으로
+     주소를 만들어 쓰면 됨. */
 
   /* ── HTML 주입 ── */
   var html = [
@@ -121,18 +121,12 @@
         /* 폼 */
         '<form class="hx-fcta-form" id="hxFctaForm" novalidate>',
 
-          /* 제목 — 마스코트가 말풍선으로 말을 거는 구조.
-             말풍선 꼬리는 뾰족한 삼각형 대신 마스코트 쪽으로 작아지는
-             동그라미 두 개. 만화 말풍선보다 '마음의 소리' 에 가깝게. */
+          /* 제목 — eyebrow / 헤드 / 서브 3단.
+             (마스코트 말풍선안은 취소됨. 마스코트는 다른 자리에 배치 예정
+              이라 이 영역에서는 뺐고, 에셋은 global/cta-mascot.svg 에 둠.) */
           '<div class="hx-fcta-form__head">',
             '<p class="hx-fcta-form__eyebrow">HELIX Consultation</p>',
-            '<div class="hx-fcta-form__hero">',
-              '<img class="hx-fcta-form__mascot" src="' + MASCOT_IMG + '"',
-                ' alt="" aria-hidden="true">',
-              '<div class="hx-fcta-form__bubble">',
-                '<h2 class="hx-fcta-form__title">서둘러 연락드릴게요</h2>',
-              '</div>',
-            '</div>',
+            '<h2 class="hx-fcta-form__title">간편 상담 신청</h2>',
             '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
               '바로 알려드리겠습니다</p>',
           '</div>',
