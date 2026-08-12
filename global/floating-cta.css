@@ -178,10 +178,26 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
+/* 폼 전용 색 — Webflow Base 컬렉션의 '고객접점' 묶음과 같은 값.
+   프라이머리는 신규(#7683A0) 기준. 이 블록 안에서만 쓰이므로
+   모달 래퍼에 묶어 두어 사이트 다른 곳에 새지 않게 한다. */
+.hx-fcta-modal {
+  --hx-primary: #7683A0;   /* 고객접점 프라이머리(신규) */
+  --hx-primary-d: #626E88; /* 위 색 눌렀을 때 */
+  --hx-sub: #A6AEBF;       /* 고객접점 서브 — 흐려도 되는 곳(placeholder·eyebrow)에만 */
+  --hx-ink: #3A4658;       /* 고객접점 커스터머 블랙 */
+  /* 읽혀야 하는 보조 문구(안내·동의 고지)는 서브 색으로 두면 흰 배경에서
+     대비가 모자라 안 읽힌다. 커스터머 블랙을 밝힌 중간톤을 따로 쓴다. */
+  --hx-ink-sub: #6B7686;
+  --hx-surface: #E7ECF3;   /* 고객접점 서페이스(화이트용) */
+  --hx-line: #D5DCE6;      /* 서페이스보다 한 단계 진한 테두리 */
+  --hx-red: #d60019;       /* 공식 레드 — 필수 표시·안내문 */
+}
+
 .hx-fcta-modal__box {
   position: relative;
   z-index: 1;
-  background: #F4F7FB;   /* 메인 화이트 (살짝 푸른기 도는 브랜드 화이트) */
+  background: #FFFFFF;
   border-radius: 20px 20px 0 0;
   width: 100%;
   max-width: 520px;
@@ -214,66 +230,73 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 8px;
-}
-
-/* ── 헤더 밑 안내문구 ── */
-.hx-fcta-form__intro {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #5b6b7a;
-  margin: 0 0 22px;
-}
-
-.hx-fcta-modal__title {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #0D1117;
-  margin: 0;
+  margin-bottom: 4px;
 }
 
 .hx-fcta-modal__close {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: none;
-  background: #E3E7EC;
-  color: #0D1117;
-  font-size: 18px;
+  border: 1px solid var(--hx-line);
+  background: #fff;
+  color: var(--hx-sub);
+  font-size: 15px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
   flex-shrink: 0;
   outline: none;
 }
 
-.hx-fcta-modal__close:hover { background: #d0d5db; }
-.hx-fcta-modal__close:focus-visible { outline: 2px solid #0075d6; outline-offset: 2px; }
+.hx-fcta-modal__close:hover { background: var(--hx-surface); color: var(--hx-ink); }
+.hx-fcta-modal__close:focus-visible { outline: 2px solid var(--hx-primary); outline-offset: 2px; }
 
 /* ── 폼 레이아웃 ── */
 .hx-fcta-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;   /* 항목 간 여백 넉넉히 */
+  gap: 14px;
 }
 
-/* 나이 입력 + '모름' 체크 가로 배치 */
-.hx-fcta-form__inline {
+/* 제목 — 마스코트 말풍선이 붙을 자리 */
+.hx-fcta-form__head { margin-bottom: 6px; }
+
+.hx-fcta-form__eyebrow {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hx-sub);
+  margin: 0 0 8px;
+}
+
+.hx-fcta-form__title {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--hx-ink);
+  margin: 0 0 6px;
+}
+
+.hx-fcta-form__sub {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--hx-ink-sub);
+  margin: 0;
+}
+
+/* 성함 · 연락처 한 줄 배치 */
+.hx-fcta-form__row {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
-.hx-fcta-form__inline .hx-fcta-form__input {
-  flex: 1 1 auto;
-}
-.hx-fcta-form__age-unknown {
-  flex-shrink: 0;
-  white-space: nowrap;
-}
+.hx-fcta-form__row .hx-fcta-form__group { flex: 1; min-width: 0; }
 
 .hx-fcta-form__group {
   display: flex;
@@ -283,127 +306,224 @@
 
 .hx-fcta-form__label {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  color: #0D1117;
+  color: var(--hx-ink);
 }
 
-.hx-fcta-form__label span {
-  color: #e03c3c;
-  margin-left: 2px;
+.hx-fcta-form__req { color: var(--hx-red); margin-left: 2px; }
+
+.hx-fcta-form__opt {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--hx-ink-sub);
+  margin-left: 4px;
 }
 
-.hx-fcta-form__input,
-.hx-fcta-form__textarea {
+.hx-fcta-form__guide {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 15px;
-  color: #0D1117;
-  background: #fff;
-  border: 1.5px solid #E3E7EC;
-  border-radius: 10px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--hx-ink-sub);
+  margin: -2px 0 2px;
+}
+
+/* 입력칸 — 글자 16px 은 iOS 에서 포커스 시 화면이 확대되는 걸 막는 최소값 */
+.hx-fcta-form__input {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  color: var(--hx-ink);
+  background: var(--hx-surface);
+  border: 1px solid var(--hx-line);
+  border-radius: 11px;
   padding: 12px 14px;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
   width: 100%;
   box-sizing: border-box;
 }
 
-.hx-fcta-form__input::placeholder,
-.hx-fcta-form__textarea::placeholder {
-  color: #adb5bd;
-}
+.hx-fcta-form__input::placeholder { color: var(--hx-sub); }
 
-.hx-fcta-form__input:focus,
-.hx-fcta-form__textarea:focus {
-  border-color: #0075d6;
-}
-
-.hx-fcta-form__textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* ── 라디오 (종 / 성별) ── */
-.hx-fcta-form__radio-group {
-  display: flex;
-  flex-wrap: wrap;   /* 성별 4지선다가 좁은 화면에서 줄바꿈 */
-  gap: 10px 16px;
-}
-
-.hx-fcta-form__radio-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 14px;
-  color: #0D1117;
-  cursor: pointer;
-}
-
-.hx-fcta-form__radio-label input[type="radio"],
-.hx-fcta-form__radio-label input[type="checkbox"] {
-  accent-color: #0075d6;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-/* ── 개인정보 동의 ── */
-.hx-fcta-form__privacy {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.hx-fcta-form__input:focus {
+  border-color: var(--hx-primary);
   background: #fff;
-  border: 1.5px solid #E3E7EC;
-  border-radius: 10px;
-  padding: 14px;
 }
 
-.hx-fcta-form__privacy-text {
+.hx-fcta-form__input.is-invalid { border-color: var(--hx-red); }
+
+/* 칸 아래 빨간 안내문 — 평소엔 자리를 차지하지 않는다 */
+.hx-fcta-form__error {
+  display: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--hx-red);
+  margin: 0;
+}
+.hx-fcta-form__error.is-on { display: block; }
+
+/* ── 증상칸 — 서술칸과 태그를 한 박스에 담는다 ── */
+.hx-fcta-symptom {
+  border: 1px solid var(--hx-line);
+  border-radius: 11px;
+  background: var(--hx-surface);
+  padding: 12px 14px 14px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.hx-fcta-symptom:focus-within {
+  border-color: var(--hx-primary);
+  background: #fff;
+}
+
+.hx-fcta-symptom__text {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--hx-ink);
+  resize: none;
+  height: 52px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.hx-fcta-symptom__text::placeholder { color: var(--hx-sub); }
+
+/* ── 태그(칩) ── 종·연령대·기저질환이 항목명 없이 한 줄로 이어짐 */
+.hx-fcta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.hx-fcta-chip {
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
-  line-height: 1.7;
-  color: #555;
-  max-height: 100px;
-  overflow-y: auto;
+  font-weight: 400;
+  color: var(--hx-sub);
+  background: #fff;
+  border: 1px solid var(--hx-line);
+  border-radius: 999px;
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
-.hx-fcta-form__privacy-check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px;
+.hx-fcta-chip:hover { border-color: var(--hx-sub); }
+.hx-fcta-chip:focus-visible { outline: 2px solid var(--hx-primary); outline-offset: 2px; }
+
+.hx-fcta-chip.is-on {
+  background: var(--hx-surface);
+  border-color: var(--hx-primary);
+  color: var(--hx-primary);
   font-weight: 600;
-  color: #0D1117;
+}
+
+/* '기저질환 없음' — 나머지와 성격이 달라 점선으로 구분 */
+.hx-fcta-chip--none { border-style: dashed; }
+
+/* '기타' 를 켰을 때만 열리는 질환명 칸 */
+.hx-fcta-etc { display: none; margin-top: 8px; }
+.hx-fcta-etc.is-open { display: block; }
+.hx-fcta-etc .hx-fcta-form__input {
+  background: #fff;
+  font-size: 16px;
+  padding: 10px 14px;
+}
+
+/* ── 개인정보 동의 — 요약 한 줄, 전문은 접어 둠 ── */
+.hx-fcta-consent {
+  background: var(--hx-surface);
+  border-radius: 11px;
+  padding: 11px 13px;
+  margin-top: 6px;
+}
+
+.hx-fcta-consent__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.hx-fcta-consent__row input[type="checkbox"] {
+  margin-top: 3px;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--hx-primary);
+  flex-shrink: 0;
   cursor: pointer;
 }
 
-.hx-fcta-form__privacy-check input[type="checkbox"] {
-  accent-color: #0075d6;
-  width: 16px;
-  height: 16px;
+.hx-fcta-consent__body {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--hx-ink-sub);
+}
+
+.hx-fcta-consent__text { cursor: pointer; }
+
+.hx-fcta-consent__more {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  color: var(--hx-primary);
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  flex-shrink: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  outline: none;
+}
+
+.hx-fcta-consent__more:focus-visible { outline: 2px solid var(--hx-primary); outline-offset: 2px; }
+
+.hx-fcta-consent__detail {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hx-line);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--hx-ink-sub);
+}
+
+.hx-fcta-consent__detail p { margin: 0; }
+.hx-fcta-consent__detail-title {
+  font-weight: 600;
+  color: var(--hx-ink);
+  margin-bottom: 4px !important;
 }
 
 /* ── 제출 버튼 ── */
 .hx-fcta-form__submit {
-  margin-top: 4px;
-  padding: 15px;
-  background: #00529c;   /* 메인 블루(#0075d6) 어둡게 */
-  color: #F4F7FB;
+  margin-top: 6px;
+  padding: 16px;
+  background: var(--hx-primary);
+  color: #fff;
   border: none;
   border-radius: 12px;
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   cursor: pointer;
   transition: background 0.15s ease;
   width: 100%;
 }
 
-.hx-fcta-form__submit:hover { background: #003f7a; }
+.hx-fcta-form__submit:hover { background: var(--hx-primary-d); }
 .hx-fcta-form__submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ── 완료 메시지 ── */
@@ -435,7 +555,7 @@
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 19px;
   font-weight: 700;
-  color: #0D1117;
+  color: var(--hx-ink);
   letter-spacing: -0.01em;
   margin: 0 0 10px;
 }
@@ -444,7 +564,7 @@
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
   line-height: 1.65;
-  color: #5a6270;
+  color: var(--hx-ink-sub);
   margin: 0 0 26px;
 }
 
@@ -453,7 +573,7 @@
   font-size: 15px;
   font-weight: 600;
   color: #fff;
-  background: #0075d6;
+  background: var(--hx-primary);
   border: none;
   border-radius: 10px;
   padding: 13px 44px;
@@ -461,7 +581,7 @@
   transition: background 0.2s, transform 0.1s;
 }
 
-.hx-fcta-form__done-close:hover { background: #005fb0; }
+.hx-fcta-form__done-close:hover { background: var(--hx-primary-d); }
 .hx-fcta-form__done-close:active { transform: scale(0.97); }
 
 /* ── 모바일 하단 여백 (고정 버튼에 콘텐츠 가리지 않도록) ──

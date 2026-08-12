@@ -133,10 +133,44 @@
 
   var fired = {};
 
+  /* ── 그 파트가 페이지의 어디쯤에 있나 ────────────────────────────
+     도달률은 아래로 갈수록 자연히 떨어진다. 그래서 "도달률이 낮다" 만으로는
+     콘텐츠가 약한 건지 그냥 아래에 있어서 그런 건지 못 가린다(측정 보고서
+     3-2). 파트의 위치를 같이 남겨두면 같은 깊이의 다른 파트끼리 비교할 수
+     있어 그 구분이 가능해진다.
+       depth_px   문서 맨 위에서 그 파트 상단까지 (픽셀)
+       depth_vh   화면 몇 개쯤 내려가야 나오나 (소수 첫째자리)
+       page_h     그 시점의 문서 전체 높이 — 페이지 길이가 바뀌어도 비교 가능
+       depth_pct  문서 전체 중 몇 % 지점인가 */
+  function depthOf(els) {
+    var out = { depth_px: null, depth_vh: null, page_h: null, depth_pct: null };
+    try {
+      var el = null;
+      for (var i = 0; i < (els || []).length; i++) {
+        if (isVisible(els[i])) { el = els[i]; break; }
+      }
+      if (!el) el = (els || [])[0];
+      if (!el || !el.getBoundingClientRect) return out;
+      var top = el.getBoundingClientRect().top +
+                (window.pageYOffset || document.documentElement.scrollTop || 0);
+      var vh  = window.innerHeight || 1;
+      var ph  = Math.max(
+        document.documentElement.scrollHeight || 0,
+        document.body ? document.body.scrollHeight : 0
+      ) || 1;
+      out.depth_px  = Math.round(top);
+      out.depth_vh  = Math.round((top / vh) * 10) / 10;
+      out.page_h    = Math.round(ph);
+      out.depth_pct = Math.round((top / ph) * 100);
+    } catch (e) {}
+    return out;
+  }
+
   function send(def) {
     if (fired[def.key]) return;
     fired[def.key] = true;
     var name = PAGE + '_sec_' + def.key;
+    var d = depthOf(def.els);
     var params = {
       item_type: 'section_reach',
       page: PAGE,
@@ -144,6 +178,10 @@
       section_key: def.key,
       section_name: def.label,
       section_index: def.index,
+      depth_px: d.depth_px,
+      depth_vh: d.depth_vh,
+      depth_pct: d.depth_pct,
+      page_h: d.page_h,
       value: def.index
     };
     try {
@@ -220,6 +258,7 @@
   function sendDwell(def, ms) {
     var name = PAGE + '_dwell_' + def.key;
     var sec = Math.round(ms / 1000);
+    var d = depthOf(def.els);
     var params = {
       item_type: 'section_dwell',
       page: PAGE,
@@ -227,6 +266,10 @@
       section_key: def.key,
       section_name: def.label,
       section_index: def.index,
+      depth_px: d.depth_px,
+      depth_vh: d.depth_vh,
+      depth_pct: d.depth_pct,
+      page_h: d.page_h,
       dwell_sec: sec,
       value: sec
     };
@@ -325,6 +368,18 @@
       var els = [];
       for (var j = 0; j < picked.length; j++) {
         var target = resolve(picked[j]);
+        /* ⚠️ 한 <section> 안에 여러 파트가 들어 있는 경우(홈: 지점 카드 +
+           SVICC 배너 / 진료과목: 진료과 카드 5장) 승격하면 전부 같은
+           section 을 가리킨다. 먼저 온 파트가 그 section 을 차지해 버려
+           뒤 파트는 관측 대상이 0개가 되고, 도달·체류가 통째로 안 잡혔다.
+           (실측: home_sec_svicc 0건 / services_sec_sg·di·oc·dt 전부 0건,
+            반면 같은 기간 svicc 버튼 클릭은 22건 — 클릭은 있는데 도달이
+            0인 모순으로 발각)
+           그럴 땐 승격을 포기하고 요소 자체를 관측한다. 섹션 상단 대신
+           그 파트 상단 기준이 되어 오히려 정확하다. */
+        if (target && target.__helixSecDef && target.__helixSecDef !== def) {
+          target = picked[j];
+        }
         if (!target || target.__helixSecDef) continue;
         target.__helixSecDef = def;
         io.observe(target);
@@ -333,6 +388,7 @@
       }
       if (observed) {
         found++;
+        def.els = els;              /* 깊이(depth_*) 계산에 쓴다 */
         /* 도달과 같은 요소로 체류도 잰다 (셀렉터 이원화 방지) */
         tracked.push({ def: def, els: els, total: 0, since: null, sent: 0 });
       }

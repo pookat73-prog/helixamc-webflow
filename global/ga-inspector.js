@@ -85,6 +85,7 @@
     { sel: '[data-ga-event="menu_emergency_click"]', label: '햄버거 · 응급증상 안내', event: 'menu_emergency_click' },
     { sel: '[data-ga-event="menu_services_click"]',  label: '햄버거 · 진료과목',     event: 'menu_services_click' },
     { sel: '[data-ga-event="vet_chart_click"]',      label: '햄버거 · 수의사용 웹차트', event: 'vet_chart_click' },
+    { sel: '[data-ga-event="menu_svicc_click"]',     label: '햄버거 · 스빅(SVICC)',   event: 'menu_svicc_click' },
     { sel: '.hx-menu-branch, .hx-menu-nav-link, .hx-menu-footer-link',
       label: '햄버거 · 메뉴 이동', event: 'menu_nav_click' },
     /* 푸터 (홈 등) */
@@ -104,7 +105,7 @@
     /* 홈 SVICC 버튼 */
     { sel: '.bt-box-4',             label: 'SVICC 버튼',          event: 'svicc_click_*' },
     /* 서초 전화 */
-    { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_call' },
+    { sel: '.branch_phoneno',       label: '서초 · 전화',         event: 'seocho_phone_intent / _call' },
     /* 응급 페이지 하단 24시 응급 진료 CTA */
     { sel: '.helix-branch-cta__row', label: '응급 · 지점 전화',   event: 'emergency_call_*' },
     { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' },
@@ -113,7 +114,15 @@
     { sel: '.em_card, [data-emergency-open]', label: '응급 · 증상 카드', event: 'emergency_symptom_open_*' },
     { sel: '.call.seocho, .call-seocho', label: '응급 · 서초 전화(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.map.seocho, .map-seocho',   label: '응급 · 서초 오시는길(카드옆)', event: 'emergency_card_cta_*' },
-    { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' }
+    { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' },
+    /* 준비중(토스트) 자리 — coming-soon.js 가 런타임에 data-coming-soon 을
+       박으므로 인스펙터의 재스캔이 뒤늦게 잡는다. 지점 카드처럼 마킹이
+       겹쳐 박히는 자리가 있어, 가장 바깥 하나에만 네모를 그린다. */
+    { sel: '[data-coming-soon]', label: '준비중 (토스트)', event: 'coming_soon_click_*',
+      match: function (el) {
+        var p = el.parentElement;
+        return !(p && p.closest && p.closest('[data-coming-soon]'));
+      } }
   ];
 
   /* about(=/discover-helix) 페이지 전용 — .cta-style / .link-block 등은 다른
@@ -144,7 +153,7 @@
     TARGETS = TARGETS.concat([
       /* 첫 섹션(인트로) 전화 — .heading-2 는 흔한 클래스라 인트로 섹션 안 +
          전화번호 텍스트만 배지. (예약 섹션 전화는 위 .branch_phoneno 배지) */
-      { sel: 'section[class*="intro_backgra"] .heading-2', label: '서초 · 첫섹션 전화', event: 'seocho_phone_call',
+      { sel: 'section[class*="intro_backgra"] .heading-2', label: '서초 · 첫섹션 전화', event: 'seocho_phone_intent / _call',
         match: function (el) { return !el.children.length && /\d{2,3}[.\- ]?\d{3,4}[.\- ]?\d{4}/.test(el.innerText || el.textContent || ''); } },
       { sel: '.subheader_click-area',   label: '서초 · 서브헤더 링크',  event: 'seocho_subheader_nav_*' },
       { sel: '.w-tab-menu .w-tab-link', label: '서초 · 분과 탭',       event: 'seocho_dept_tab_*' },

@@ -2,10 +2,14 @@
   'use strict';
 
   /* ── 링크 설정 (URL 변경 시 여기만 수정) ── */
+  /* event 가 지정된 항목은 공용 menu_nav_click 대신 그 전용 이벤트를 쏨.
+     스빅(SVICC)은 홈 배너 버튼(svicc_click_*)·소개 페이지 버튼
+     (about_svic_cta_*) 과 함께 세야 하는데, 메뉴 경유분만 menu_nav_click
+     안에 묻혀 있어 합산이 안 됐다. 전용 이름을 줘서 세 입구를 합칠 수 있게 함. */
   var BRANCHES = [
     { text: '서초 본원',          href: '/seocho' },
     { text: '일산 분원',          href: '#' },
-    { text: '서울동물영상종양센터', href: 'https://www.svicc.co.kr/' }
+    { text: '서울동물영상종양센터', href: 'https://www.svicc.co.kr/', event: 'menu_svicc_click' }
   ];
 
   /* 그룹 항목: 한 줄에 나란히, 각각 별도 링크.
@@ -54,7 +58,7 @@
   /* ── 오버레이 HTML 생성 ── */
   function buildOverlayHTML() {
     var branchesHTML = BRANCHES.map(function (b) {
-      return '<a href="' + b.href + '"' + comingSoonAttr(b.href) + externalAttr(b.href) +
+      return '<a href="' + b.href + '"' + comingSoonAttr(b.href) + externalAttr(b.href) + gaAttr(b) +
         ' class="hx-menu-branch">' + b.text + '</a>';
     }).join('');
 

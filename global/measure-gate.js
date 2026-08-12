@@ -33,19 +33,47 @@
 
   var KEY = 'helix_noga';
 
+  /* ── 표시를 두 군데에 남긴다 (localStorage + 쿠키) ────────────────
+     한쪽만 쓰면 자꾸 풀려서 매번 다시 켜야 했다. 풀리는 이유는 대개 셋:
+       · Safari 는 localStorage 를 7일 지나면 지운다 (사파리 정책)
+       · 브라우저에 '종료 시 사이트 데이터 삭제' 가 켜져 있는 경우
+       · 시크릿 창 — 창을 닫으면 저장소가 통째로 사라진다 (이건 못 피한다.
+         시크릿으로 확인할 땐 아래 '점검 모드' 북마크로 들어오면 된다)
+     두 군데에 남겨두면 한쪽이 지워져도 나머지 한쪽에서 되살린다. 그리고
+     방문할 때마다 다시 써서 만료 시계를 처음으로 되돌린다. */
+  function readCookie() {
+    try {
+      var m = new RegExp('(?:^|; )' + KEY + '=([^;]*)').exec(document.cookie || '');
+      return m ? decodeURIComponent(m[1]) : null;
+    } catch (e) { return null; }
+  }
+  function writeMark(on) {
+    try {
+      if (on) localStorage.setItem(KEY, '1');
+      else localStorage.removeItem(KEY);
+    } catch (e) {}
+    try {
+      document.cookie = KEY + '=' + (on ? '1' : '') +
+        ';path=/;max-age=' + (on ? 60 * 60 * 24 * 365 : 0) + ';samesite=lax';
+    } catch (e) {}
+  }
+
   /* 주소에 스위치가 실려 오면 먼저 반영한다 (?helix-noga=1 / =0) */
   var toggled = null;
   try {
     var m = /[?&]helix-noga=([01])/.exec(location.search || '');
     if (m) {
       toggled = m[1] === '1';
-      if (toggled) localStorage.setItem(KEY, '1');
-      else localStorage.removeItem(KEY);
+      writeMark(toggled);
     }
   } catch (e) {}
 
-  var off = false;
-  try { off = localStorage.getItem(KEY) === '1'; } catch (e) { off = false; }
+  var ls = null, ck = readCookie();
+  try { ls = localStorage.getItem(KEY); } catch (e) {}
+  var off = (ls === '1' || ck === '1');
+
+  /* 한쪽만 남아 있으면 다른 쪽을 되살리고, 켜져 있으면 만료 시계도 되감는다 */
+  if (off) writeMark(true);
 
   window.__helixNoMeasure = off;
 
@@ -66,4 +94,50 @@
      만들어 둔다. ga4-base.js 의 스테이징 게이트와 같은 방식. */
   window.dataLayer = window.dataLayer || [];
   if (typeof window.gtag !== 'function') { window.gtag = function () {}; }
+
+  /* ── 지금 제외 중이라는 걸 화면에 보여준다 ───────────────────────
+     여태 콘솔에만 찍혀서, 켜졌는지 확인하려면 매번 F12 를 열어야 했다.
+     그래서 "켜둔 줄 알았는데 안 켜져 있던" 경우를 눈치채지 못했다.
+     왼쪽 아래에 작은 표시를 띄워 한눈에 보이게 한다. 눌러서 해제할 수도
+     있고, 오른쪽 ✕ 로 이번 방문에만 숨길 수도 있다. */
+  function badge() {
+    if (document.getElementById('helix-noga-badge')) return;
+    var el = document.createElement('div');
+    el.id = 'helix-noga-badge';
+    el.style.cssText = [
+      'position:fixed', 'left:12px', 'bottom:12px', 'z-index:2147483647',
+      'display:flex', 'align-items:center', 'gap:8px',
+      'padding:7px 10px', 'border-radius:6px',
+      'background:rgba(13,17,23,.82)', 'color:#f4f7fb',
+      'font:600 11px/1.2 -apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif',
+      'letter-spacing:.02em', 'box-shadow:0 2px 10px rgba(0,0,0,.25)',
+      'pointer-events:auto', 'user-select:none'
+    ].join(';');
+
+    var dot = document.createElement('span');
+    dot.style.cssText = 'width:6px;height:6px;border-radius:50%;background:#0075d6;flex:0 0 auto';
+
+    var txt = document.createElement('span');
+    txt.textContent = '내 방문 측정 제외 중';
+    txt.title = '눌러서 해제 (다시 집계됩니다)';
+    txt.style.cursor = 'pointer';
+    txt.addEventListener('click', function () {
+      writeMark(false);
+      location.href = location.pathname + '?helix-noga=0';
+    });
+
+    var x = document.createElement('span');
+    x.textContent = '✕';
+    x.title = '이번 방문에만 숨기기 (제외는 그대로 유지)';
+    x.style.cssText = 'cursor:pointer;opacity:.55;font-weight:400';
+    x.addEventListener('click', function () { el.remove(); });
+
+    el.appendChild(dot); el.appendChild(txt); el.appendChild(x);
+    document.body.appendChild(el);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', badge);
+  } else {
+    badge();
+  }
 })();

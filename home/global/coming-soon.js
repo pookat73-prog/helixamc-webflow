@@ -179,6 +179,81 @@
     return null;
   }
 
+  /* ── 준비중 클릭 측정 ────────────────────────────────────────────
+     여태 토스트만 뜨고 기록이 한 줄도 안 남던 자리. "아직 안 연 기능인데도
+     눌러본 수요" 를 잡으려고 클릭마다 GA4 이벤트를 쏜다. window.gtag
+     (ga4-base) 에 편승 → 스테이징(*.webflow.io)에선 no-op stub 이라
+     자동으로 아무 것도 안 나감(별도 도메인 게이트 불필요).
+
+     ⚠️ 햄버거 메뉴 항목은 hamburger.js 가 menu_nav_click(coming_soon:1) 도
+        따로 쏜다. 두 이벤트는 묻는 게 달라(메뉴에서 어디로 갔나 / 준비중인데
+        눌린 수요) 일부러 둘 다 남기되, 시트에서 두 표를 더하면 메뉴 클릭이
+        두 번 세어진다. 합산할 땐 area='menu' 를 한쪽에서 빼고 더할 것. */
+  function csPage() {
+    var p = (location.pathname || '/').toLowerCase();
+    if (/discover/.test(p))            return 'discover';
+    if (/seocho|seoco/.test(p))        return 'seocho';
+    if (/emergency|symptoms/.test(p))  return 'emergency';
+    if (/specialty/.test(p))           return 'specialty';
+    if (/services/.test(p))            return 'services';
+    if (/faq/.test(p))                 return 'faq';
+    return 'home';
+  }
+  var CS_PAGE = csPage();
+
+  function csText(el) {
+    return ((el && (el.innerText || el.textContent)) || '').replace(/\s+/g, ' ').trim();
+  }
+
+  /* 어느 자리에서 눌렀나 — 시트에서 사람이 바로 읽히게 굵직하게만 나눔 */
+  function csArea(el) {
+    if (!el || !el.closest) return 'other';
+    if (el.closest('.hx-menu-overlay'))          return 'menu';
+    if (el.closest('.bt-box-2'))                 return 'home_specialty_cta';
+    if (el.closest(LIVE_BRANCH_CARD_SEL))        return 'branch_card';
+    if (el.closest('.just-box_qqqqqqq'))         return 'deck_card';
+    if (el.closest('header, .header, nav, [class*="navbar" i]')) return 'header';
+    if (el.closest('footer, .footer'))           return 'footer';
+    return 'other';
+  }
+
+  /* 라벨 — 마킹된 요소가 사진 링크라 글자가 없을 수 있어(지점 카드의 이미지
+     링크 등) 가까운 카드/버튼까지 올라가 글자를 줍는다. 지점 카드는 카드 전체
+     글이 딸려와 라벨이 길어지므로 지점 이름으로 갈음. */
+  function csLabel(el) {
+    var s = csText(el);
+    if (!s && el && el.closest) {
+      var host = el.closest(LIVE_BRANCH_CARD_SEL + ', .just-box_qqqqqqq, .bt-box-2, [class*="button" i]');
+      if (host) s = csText(host);
+    }
+    if (/일산|고양시|덕양구|978-7575/.test(s)) return '일산 분원';
+    if (/서초|2135-9119/.test(s))              return '서초 본원';
+    return s.slice(0, 40);
+  }
+
+  function trackComingSoon(el) {
+    try {
+      var d = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var label = csLabel(el);
+      var p = {
+        item_type: 'coming_soon_click',
+        page: CS_PAGE,
+        device: d,
+        area: csArea(el),
+        label: label,
+        value: label
+      };
+      var name = 'coming_soon_click_' + d;
+      if (typeof window.gtag === 'function') {
+        p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        p.event = name;
+        window.dataLayer.push(p);
+      }
+    } catch (err) {}
+  }
+
   function handleClick(e) {
     var target = findBlockedTarget(e.target);
     if (!target) return;
@@ -188,6 +263,9 @@
        링크 click 시 자체 닫기 핸들러가 필요한 경우(hamburger.js 의 closeMenu)
        가 정상 동작하도록 이벤트 버블을 살려둠. */
     e.preventDefault();
+
+    /* 토스트가 실제로 뜨는 클릭만 측정 (라이브로 푼 링크는 위에서 이미 return) */
+    trackComingSoon(target);
 
     /* 마지막 입력이 mouse면 커서 옆 토스트, 아니면(터치/펜) 화면 하단 토스트 */
     var useCursor = (lastInputType === 'mouse');

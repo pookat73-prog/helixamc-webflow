@@ -10,10 +10,12 @@
    ① sid       — 같은 방문끼리 묶는 값. 30분간 아무 측정이 없으면 새 방문.
                  → 시트에서 sid 를 세면 '사람이 몇 번 왔나',
                    sid 로 묶으면 '한 사람이 어떤 순서로 움직였나' 가 보인다.
-   ② source    — 어디서 들어왔나 (naver / google / kakao / instagram /
+   ② entry_src — 어디서 들어왔나 (naver / google / kakao / instagram /
                  ad(utm 있음) / direct / 그 외 도메인). 방문 첫 순간에
                  한 번 정하고 그 방문 내내 유지 — 사이트 안에서 페이지를
                  옮겨 다녀도 최초 유입처가 유지되도록.
+                 ⚠️ 이름이 source 가 아니라 entry_src 인 이유는 아래
+                    '이름을 바꾼 이유' 참고. 절대 source 로 되돌리지 말 것.
    ③ visitor   — new / returning. 이 브라우저의 첫 방문인지.
 
    utm 이 붙어 들어온 경우 utm_source/medium/campaign 도 함께 싣는다.
@@ -24,6 +26,19 @@
 
    저장은 localStorage — 탭을 여러 개 띄워도 같은 방문으로 묶인다.
    차단된 환경(사생활 보호 모드 등)에서는 메모리로 폴백해 조용히 동작.
+
+   ⚠️ 이름을 바꾼 이유 — source / medium / campaign 은 쓰면 안 되는 이름
+      (2026-08-11)
+      GA4 에는 "이 이름으로 값을 보내면 그걸 유입 경로로 믿는다" 는
+      약속된 이름이 몇 개 있다: source, medium, campaign, term, content,
+      campaign_id, source_platform, creative_format, marketing_tactic.
+      우리가 유입처를 source 라는 이름으로 실어 보내는 바람에, GA4 가
+      그 값을 진짜 유입 경로로 덮어써 버렸다. medium 은 안 보냈으니
+      보고서에는 "naver / (not set)", "floating_cta / (not set)" 같은
+      반쪽짜리 경로가 잔뜩 생겼다. 실제 채널 비중이 왜곡된 것.
+      → 우리가 쓰는 이름은 entry_src 로 바꿨다. 뜻은 그대로고, GA4 가
+        건드리지 않는 평범한 이름이라 원래 유입 경로가 보존된다.
+      → 새 값을 실을 때도 위 9개 이름은 쓰지 말 것.
 
    ⚠️ 측정은 정식 사이트에서만 — 스테이징(*.webflow.io)은 즉시 종료.
    디버그: URL 에 ?debug-ga=1
@@ -148,15 +163,64 @@
     log('페이지 순서', stepNo, '| 직전', prevPath || '(없음)');
   }
 
+  /* ── 전환(문의로 이어지는 행동) 자동 태깅 ──────────────────────
+     "전환" 이라 부를 만한 행동이 전화·상담·길찾기·주소복사로 흩어져 있어,
+     한 표로 세려면 이벤트 이름을 일일이 나열해야 했다. 전화만 세면 30일에
+     10여 건뿐이라 "의료진을 본 쪽이 1.7배" 같은 비교가 한두 건에 뒤집히는
+     상태였다(측정 보고서 05-하나: 전환의 정의가 너무 좁다).
+
+     여기서 이벤트 이름만 보고 conv=1 + conv_type 을 자동으로 붙인다.
+     각 측정 모듈은 손댈 필요가 없고, 새 전환 행동이 생기면 아래 표에 한 줄만
+     더하면 전 사이트에 적용된다.
+
+     conv_type
+       lead    실제 상담 신청 접수 (가장 강한 신호)
+       phone   전화 걸기 / 번호 복사
+       consult 상담 메뉴 열기 · 신청 폼 열기
+       map     길찾기 · 오시는 길
+       copy    주소 · 이메일 복사
+     ※ vet_chart_click(수의사용 웹차트)은 보호자 전환이 아니라 제외. */
+  var CONV_RULES = [
+    { type: 'lead',    re: /^cta_form_submit$/ },
+    { type: 'phone',   re: /(_phone_call($|_)|^tel_copy_|^cta_call$|^emergency_call_|^emergency_modal_call_)/ },
+    { type: 'consult', re: /^cta_(open|form_open)$/ },
+    { type: 'map',     re: /(^seocho_directions_|^emergency_map_click_)/ },
+    { type: 'copy',    re: /^copy_(address|email)_/ }
+  ];
+
+  function convType(name) {
+    if (!name) return '';
+    for (var i = 0; i < CONV_RULES.length; i++) {
+      if (CONV_RULES[i].re.test(name)) return CONV_RULES[i].type;
+    }
+    return '';
+  }
+
   /* ── 모든 event 파라미터에 제자리 주입 ──────────────────────── */
-  function decorate(params) {
+  function decorate(params, eventName) {
     if (!params || typeof params !== 'object') return params;
     var s = ensure();
+
+    /* 전환 표시 — 이미 모듈이 직접 넣었으면 존중 */
+    if (params.conv === undefined) {
+      var ct = convType(eventName);
+      if (ct) {
+        params.conv = 1;
+        params.conv_type = ct;
+        /* page-time.js 가 "이 방문에서 뭔가 행동을 했나" 를 붙일 수 있게
+           같은 창 안에 표시를 남긴다. 한 페이지만 보고 나간 방문을
+           만족 이탈 / 읽은 이탈 / 즉시 이탈로 가르는 근거가 된다. */
+        window.__helixActed = 1;
+        window.__helixActedType = ct;
+      }
+    }
     /* 이미 값이 있으면 덮지 않는다 — 개별 모듈이 의도적으로 넣은 값 보호 */
     if (!params.sid)     params.sid     = s.id;
     if (!params.step)    params.step    = stepNo;
     if (!params.prev && prevPath) params.prev = prevPath;
-    if (!params.source)  params.source  = s.src;
+    /* ⚠️ source 가 아니라 entry_src — GA4 가 source 를 유입 경로로 믿고
+       덮어쓰기 때문. 파일 머리말 '이름을 바꾼 이유' 참고. */
+    if (!params.entry_src) params.entry_src = s.src;
     if (!params.visitor) params.visitor = s.visitor;
     if (!params.landing) params.landing = s.land;
     if (s.utm_source   && !params.utm_source)   params.utm_source   = s.utm_source;
@@ -176,7 +240,7 @@
           arguments[2] = {};
           arguments.length = Math.max(arguments.length, 3);
         }
-        decorate(arguments[2]);
+        decorate(arguments[2], arguments[1]);
       }
       return original.apply(this, arguments);
     };
