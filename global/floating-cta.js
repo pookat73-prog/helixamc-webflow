@@ -126,17 +126,21 @@
              해서, 이 블록의 첫 줄(eyebrow)이 닫기 버튼과 같은 높이에서
              시작한다. */
           '<div class="hx-fcta-form__head">',
-            '<p class="hx-fcta-form__eyebrow">HELIX Consultation</p>',
-            '<h2 class="hx-fcta-form__title">상담, 간편하게 남기세요</h2>',
-            '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
-              '바로 알려드리겠습니다</p>',
-            /* 마스코트가 서 있고, 발밑에 긴 선이 바닥처럼 깔림.
-               선은 마스코트 폭보다 길게 — 카드 전체 너비로. */
-            '<div class="hx-fcta-form__ground">',
+            /* 가로 정렬 — 왼쪽 텍스트, 오른쪽 마스코트.
+               마스코트를 텍스트 블록 하단에 맞춰 세워서(align-items:
+               flex-end) 발이 텍스트 마지막 줄과 같은 높이에 오게 함. */
+            '<div class="hx-fcta-form__hero">',
+              '<div class="hx-fcta-form__intro">',
+                '<p class="hx-fcta-form__eyebrow">HELIX Consultation</p>',
+                '<h2 class="hx-fcta-form__title">상담, 간편하게 남기세요</h2>',
+                '<p class="hx-fcta-form__sub">마음 쓰이는 부분, 확인하는 대로<br>',
+                  '바로 알려드리겠습니다</p>',
+              '</div>',
               '<img class="hx-fcta-form__mascot" src="' + MASCOT_IMG + '"',
                 ' alt="" aria-hidden="true">',
-              '<hr class="hx-fcta-form__rule" aria-hidden="true">',
             '</div>',
+            /* 텍스트+마스코트 줄 아래, 카드 전체 너비의 긴 바닥선 */
+            '<hr class="hx-fcta-form__rule" aria-hidden="true">',
           '</div>',
 
           /* 성함 · 연락처 — 한 줄에 나란히 */
