@@ -17,7 +17,7 @@
      (전환 성격이 다른 링크를 GA 에서 한 줄로 따로 집계하기 위함). */
   var NAV_LINKS = [
     { text: 'discover HELIX', href: '/discover-helix' },
-    { group: [ { text: '진료과목', href: '/services', event: 'menu_services_click' }, { text: '특화진료', href: '#' } ] },
+    { group: [ { text: '진료과목', href: '/services', event: 'menu_services_click' }, { text: '특화진료', href: '/specialty-care' } ] },
     { text: '의료 인프라',   href: '#' },
     { group: [ { text: 'FAQ', href: '/faq' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
     { text: '응급증상안내',  href: '/symptoms', event: 'menu_emergency_click' }
@@ -31,8 +31,8 @@
      true  → 아이콘 클릭해도 메뉴 안 열리고 "준비중입니다" 토스트만 뜸
      false → 정상 동작 (메뉴 열림)
      ── 전체 개방 ──
-     주요 메뉴(서초본원·SVICC·discover HELIX·진료과목·응급증상안내)가 연결되어
-     메뉴를 도메인 무관 전체 개방. 아직 미연결 항목(일산분원·특화진료·의료인프라·
+     주요 메뉴(서초본원·SVICC·discover HELIX·진료과목·특화진료·응급증상안내)가
+     연결되어 메뉴를 도메인 무관 전체 개방. 아직 미연결 항목(일산분원·의료인프라·
      뉴스룸·칼럼·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
      coming-soon.js 가 "준비중입니다" 토스트로 안내. */
   var MENU_COMING_SOON = false;
