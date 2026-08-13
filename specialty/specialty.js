@@ -192,17 +192,30 @@
   /* 클릭은 문서에 한 번만 걸어 위임 처리한다. 항목마다 걸지 않으므로
      Webflow 가 요소를 다시 그려도 계속 동작한다.
      ⚠ 코멧(선)과 달리 화면 폭을 가리지 않는다 — 좁은 화면에서는 설명이
-     처음부터 펼쳐져 있어 '자세히 보기' 를 바로 누를 수 있기 때문. */
+     처음부터 펼쳐져 있어 항목을 바로 누를 수 있기 때문.
+
+     ⚠ 클릭 범위는 '자세히 보기 →' 가 아니라 항목 상자(WRAP) 전체다.
+     화살표는 작아서 정확히 겨냥해야 눌렸다. 이제 한글명·영문명·설명 등
+     항목 안 어디를 눌러도 같은 동작이 난다. 화살표도 그 안에 있으므로
+     따로 잡지 않아도 그대로 동작한다.
+
+     ⚠ 항목 안에 진짜 링크(a[href])나 버튼이 생기면 그건 건드리지 않는다.
+     지금은 없지만, 나중에 전화·외부 링크 등을 넣었을 때 카드 클릭이
+     그걸 가로채 못 쓰게 되는 사고를 미리 막는다. */
   function initCta() {
     document.addEventListener('click', function (e) {
       var t = e.target;
-      var cta = (t && t.closest) ? t.closest('.spec-item-cta') : null;
-      if (!cta) return;
+      if (!t || !t.closest) return;
+
+      /* 항목 안의 실제 링크·버튼은 자기 동작을 유지 */
+      if (t.closest('a[href], button')) return;
+
+      var wrap = t.closest(WRAP);
+      if (!wrap) return;
 
       e.preventDefault();
 
-      var wrap = cta.closest(WRAP);
-      var nameEl = wrap && wrap.querySelector(NAME);
+      var nameEl = wrap.querySelector(NAME);
       var key = nameEl ? (nameEl.textContent || '').trim() : '';
       var url = LINKS[key];
 
