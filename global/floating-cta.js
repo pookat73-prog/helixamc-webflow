@@ -460,6 +460,8 @@
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';
+    /* 특화진료 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다 (services 와 동일 이유) */
+    if (/(^|\/)specialty(-care)?(\/|$)/.test(p)) return 'specialty';
     /* 응급증상은 슬러그가 /symptoms — 아래 /emergency|응급/ 만으로는 안 잡혀
        상담 CTA 가 전부 page:'home' 으로 찍히고 있었다. 다른 측정 모듈
        (scroll-depth.js / section-reach.js) 과 동일 판정으로 통일. */

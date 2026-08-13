@@ -2,11 +2,13 @@
    HELIX AMC — 특화진료(/specialty-care) BOOTSTRAP LOADER  v1.0
    Webflow 특화진료 페이지 head 로더가 이 파일을 불러옴.
 
-   ⚠ 의도적으로 최소 구성.
-     이 페이지엔 원래 로더가 없었다. 다른 페이지처럼 전역 묶음
-     (헤더/푸터/플로팅 버튼/팝업 등)을 통째로 실으면 요청하지 않은
-     요소들이 화면에 새로 나타난다. 그래서 이번 인터랙션에 필요한
-     파일만 싣는다. 나중에 전역 묶음이 필요해지면 그 때 추가.
+   ⚠ 처음엔 이 페이지 전용 인터랙션 파일만 싣는 최소 구성이었다.
+     페이지가 정식 공개되면서 헤더 메뉴·햄버거·상담 CTA 가 다른 페이지와
+     똑같이 동작해야 해서 전역 묶음을 추가했다 (헤더 링크가 안 걸리고
+     호버 효과도 없고 상담 버튼도 안 뜨던 원인).
+
+   ⚠ hamburger.js 는 GSAP 을 쓴다 → 페이지 head 에 gsap.min.js 가
+     먼저 실려 있어야 한다 (services 페이지와 동일 구성).
 
    ⚠ 캐시 원천 회피: FILES 를 @staging/@main 브랜치 ref 로 로드하면
      jsDelivr 엣지 캐시가 최대 12h stale → 코드를 고쳐도 브라우저에
@@ -22,6 +24,18 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 전역 스타일 — 헤더 링크 스타일·호버 효과가 여기 들어 있다 */
+    'global/global.css',
+    /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
+    'global/floating-cta.css',
+    'global/floating-cta.js',
+    /* 헤더 햄버거 메뉴 (GSAP 의존) */
+    'home/global/hamburger.css',
+    'home/global/hamburger.js',
+    /* 헤더의 잠긴 탭 클릭 시 "준비중입니다" 토스트 + '진료과목'·'특화진료' 탭을
+       실제 페이지 링크로 승격(markLiveNav). 다른 페이지와 동일 동작. */
+    'home/global/coming-soon.css',
+    'home/global/coming-soon.js',
     /* 특화진료 항목 hover 인터랙션
          · specialty.css — 설명 펼침/접힘. js 없이 단독으로 동작한다.
          · specialty.js  — 코멧 선(ㄱ자 경로 + 바닥 가로선). 선만 담당.
