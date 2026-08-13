@@ -265,6 +265,18 @@
       var kind  = chip.dataset.kind || '';
       var turnOn = !chipOn(chip);
 
+      /* 태그 선택 집계 — 눌러서 켤 때만 잰다(끌 때는 안 잼).
+         cta_open 이 열 때만 재고 닫을 때는 안 재는 것과 같은 원칙.
+         같은 줄 안에서 자동으로 꺼지는 다른 칩(예: 고양이 누르면
+         강아지가 자동 해제)은 사용자가 직접 누른 게 아니므로 안 잼. */
+      if (turnOn) {
+        ga('cta_tag_select', {
+          cta_src: 'floating_cta',
+          tag_group: group,
+          tag_value: chip.dataset.value
+        });
+      }
+
       if (group === 'species' || group === 'age') {
         /* 같은 줄은 하나만 남긴다 */
         chipEls.forEach(function (o) {

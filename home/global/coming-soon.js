@@ -118,23 +118,7 @@
 
      아직 비공개인 페이지는 아래 목록에 없으므로 그대로 토스트가 뜬다.
      페이지를 열 때마다 여기 한 줄 추가. */
-  var LIVE_PATHS = ['/symptoms'];
-
-  /* ── 스테이징에서만 여는 페이지 (도메인 게이트) ──
-     특화진료(/specialty-care)는 아직 정식 공개 전이다. 정식 사이트에서는
-     '준비중입니다' 토스트를 그대로 유지하고, 스테이징(*.webflow.io)에서만
-     실제 페이지로 이동시킨다.
-
-     왜 브랜치를 가르지 않고 도메인으로 판정하나: staging 에만 두면
-     나중에 다른 작업을 staging→main 으로 승격할 때 이게 딸려 올라가
-     의도치 않게 정식에 공개된다. 도메인 게이트는 코드가 main 에 올라가도
-     정식 도메인에서는 게이트에 걸려 계속 닫혀 있다. (GA4 측정과 같은 방식)
-
-     정식 공개 시점에는 이 블록을 지우고 위 LIVE_PATHS / 아래 LIVE_NAV 에
-     직접 한 줄씩 넣으면 된다. */
-  if (/\.webflow\.io$/i.test(location.hostname)) {
-    LIVE_PATHS.push('/specialty-care');
-  }
+  var LIVE_PATHS = ['/symptoms', '/specialty-care'];
 
   function isLivePathLink(node) {
     if (!node || !node.closest) return false;
@@ -310,7 +294,7 @@
   'use strict';
 
   var COMING_SELECTORS = [
-    '.bt-box-2',
+    /* .bt-box-2 (특화진료 CTA) — /specialty-care 연결 완료, 준비중 해제 (FORCE_RELEASE_SELECTORS) */
     /* .bt-box-3 (응급내원이 필요한 증상 CTA) — 사용자 지시로 준비중 해제, Webflow href 그대로 사용 */
     /* .bt-box-4 (SVIC CTA) — 사용자 지시로 준비중 해제, Webflow href 그대로 사용 */
     '.home_branch-card',
@@ -357,15 +341,11 @@
      박혀 준비중 토스트만 떴음. 텍스트가 정확히 일치하면 data-coming-soon 을 떼고
      data-helix-link 를 걸어 클릭 시 해당 페이지로 이동(handleLiveCardClick 가 처리). */
   var LIVE_NAV = [
-    { text: '진료과목', url: '/services' }
+    { text: '진료과목', url: '/services' },
+    /* 헤더와 햄버거 메뉴 양쪽 모두 텍스트가 '특화진료' 라 이 한 줄로 둘 다 열린다. */
+    { text: '특화진료', url: '/specialty-care' }
   ];
 
-  /* 스테이징에서만 여는 메뉴 — 위 LIVE_PATHS 의 도메인 게이트와 같은 이유.
-     헤더와 햄버거 메뉴 양쪽 모두 텍스트가 '특화진료' 라 이 한 줄로 둘 다 열린다.
-     정식 공개 시점에 이 블록을 지우고 위 배열에 직접 넣으면 됨. */
-  if (/\.webflow\.io$/i.test(location.hostname)) {
-    LIVE_NAV.push({ text: '특화진료', url: '/specialty-care' });
-  }
   function markLiveNav() {
     var cands = document.querySelectorAll('a,[data-coming-soon]');
     Array.prototype.forEach.call(cands, function (el) {
@@ -485,6 +465,7 @@
      data-coming-soon 을 떼어내야 하는 라이브 셀렉터.
      셀렉터에 매칭되는 element 와 그 자손 anchor 의 data-coming-soon 제거. */
   var FORCE_RELEASE_SELECTORS = [
+    '.bt-box-2',  /* 특화진료 CTA — /specialty-care 연결 완료 */
     '.bt-box-3',  /* 응급내원이 필요한 증상 CTA — 컴포넌트 정의에 박힌 attr */
     '.bt-box-4'   /* SVIC CTA — 동일 컴포넌트 사용 */
   ];
