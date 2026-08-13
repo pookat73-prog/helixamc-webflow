@@ -43,6 +43,10 @@
     'services/services-ga.js',
     /* 전역 스타일 + 헤더/햄버거/상단버튼 — 기존 globalBootstrap 이 로드하던 것 */
     'global/global.css',
+    /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정. 이 페이지만 빠져 있어
+       상담 신청 버튼이 안 떴다. 다른 페이지와 동일 구성으로 맞춤. */
+    'global/floating-cta.css',
+    'global/floating-cta.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
     /* 헤더의 잠긴 탭(data-coming-soon) 클릭 시 "준비중입니다" 토스트 +
