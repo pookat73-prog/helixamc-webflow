@@ -500,11 +500,59 @@
     closePanel();
   });
 
+  /* ── 이번 상담 폼을 어디서 열었나 ──
+     상담 폼은 오른쪽 아래 플로팅 버튼으로도 열고, 본문에 심어 둔 인라인
+     버튼(예: 서초 "예약 안내" 섹션)으로도 연다. 제출까지 갔을 때 어느 쪽에서
+     시작한 신청인지 알아야 두 경로의 전환율을 비교할 수 있으므로, 열 때
+     출처를 여기 적어 두고 제출 이벤트에 같이 싣는다. */
+  var formSrc = 'floating_cta';
+
   /* ── 폼 열기 ── */
-  formBtn.addEventListener('click', function () {
+  formBtn.addEventListener('click', function (e) {
+    /* 사람이 실제로 누른 클릭만 받는다. 서초 페이지의 Webflow footer 커스텀
+       코드처럼 "본문 버튼을 누르면 이 플로팅 버튼을 대신 눌러 주는" 옛 방식이
+       아직 남아 있는 페이지가 있는데, 그건 스크립트가 만든 가짜 클릭이라
+       isTrusted 가 false 다. 그대로 두면 아래 인라인 처리와 겹쳐 상담 폼
+       열림이 두 번 집계되고 출처도 floating_cta 로 덮여 버린다. 여기서
+       걸러내면 옛 커스텀 코드를 지우지 않아도 집계가 어긋나지 않는다. */
+    if (e && e.isTrusted === false) return;
+    formSrc = 'floating_cta';
     closePanel();
     openModal();
     ga('cta_form_open', { cta_src: 'floating_cta' });
+  });
+
+  /* ── 본문에 심은 인라인 상담 버튼 ──
+     data-cta-target="hxFctaFormBtn" 을 가진 요소를 누르면 플로팅 버튼과
+     똑같은 상담 폼이 열린다. 예전엔 Webflow 페이지 커스텀 코드가 플로팅
+     버튼을 대신 눌러 주는 방식이라, 본문 버튼으로 들어온 신청도 GA4 에는
+     전부 floating_cta 로 찍혀 둘을 구분할 수 없었다. 이제 여기서 직접
+     처리해 어디서 눌렀는지를 나눠 담는다.
+       cta_src : data-cta-src 값 (없으면 'inline_cta')
+       cta_id  : 그 버튼의 id (예: seocho-reserve-cta-btn)
+     알 수 없는 대상 id 는 예전처럼 그 요소를 대신 눌러 주기만 한다. */
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    var el = (t && t.closest) ? t.closest('[data-cta-target]') : null;
+    if (!el) return;
+
+    var targetId = el.getAttribute('data-cta-target');
+    var src = el.getAttribute('data-cta-src') || 'inline_cta';
+
+    if (targetId === 'hxFctaFormBtn') {
+      e.preventDefault();
+      formSrc = src;
+      closePanel();
+      openModal();
+      ga('cta_form_open', { cta_src: src, cta_id: el.id || '' });
+      return;
+    }
+
+    var proxy = targetId && document.getElementById(targetId);
+    if (proxy) {
+      e.preventDefault();
+      proxy.click();
+    }
   });
 
   /* ── 폼 제출 ── */
@@ -644,7 +692,9 @@
   function onSubmitSuccess() {
     form.style.display = 'none';
     done.classList.add('is-visible');
-    ga('cta_form_submit', { cta_src: 'floating_cta' });
+    /* 플로팅에서 열었으면 floating_cta, 본문 인라인 버튼에서 열었으면
+       그 버튼의 출처가 그대로 실린다 (위 formSrc 참고). */
+    ga('cta_form_submit', { cta_src: formSrc });
   }
 
   } // end run()
