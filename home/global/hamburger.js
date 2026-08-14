@@ -140,6 +140,13 @@
     if (typeof window.gtag === 'function') {
       var p = params || {};
       p.page = MENU_PAGE;
+      /* 메뉴 링크(menu_nav_click / vet_chart_click 등)는 누르는 즉시 페이지가
+         넘어간다. 전송 방식을 안 정해두면 브라우저가 기록을 다 보내기 전에
+         페이지를 버려서 클릭이 통째로 사라질 수 있다 — 특히 수의사용 웹차트
+         같은 외부 이동. beacon 은 페이지가 사라져도 발송을 마치도록 보장한다.
+         (menu_open/menu_close 는 이동이 없어 굳이 필요치 않지만, 같은 통로를
+          쓰므로 함께 지정해도 무해하다.) */
+      p.transport_type = 'beacon';
       window.gtag('event', eventName, p);
     }
   }

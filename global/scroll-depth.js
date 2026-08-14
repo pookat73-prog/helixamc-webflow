@@ -98,18 +98,34 @@
         body ? body.offsetHeight : 0, doc.offsetHeight
       );
       var scrollable = docH - winH;
-      var percent = scrollable <= 0 ? 100 : Math.min(100, (scrollTop / scrollable) * 100);
 
+      /* 화면보다 짧아 스크롤할 게 없는 페이지 — 예전엔 여기서 percent 를 100
+         으로 놔서 25·50·75·100 이 페이지 열자마자 한꺼번에 찍혔다. 끝까지
+         읽은 게 아니라 페이지가 짧았을 뿐이므로 아무 것도 보내지 않는다.
+         (이미지 로드 등으로 나중에 길어지면 그때부터 정상 측정된다.) */
+      if (scrollable <= 0) return;
+
+      var percent = Math.min(100, (scrollTop / scrollable) * 100);
+
+      /* 한 번의 검사에서 여러 단계를 동시에 넘긴 경우(빠른 스크롤, 앵커 점프)
+         가장 높은 단계 하나만 보낸다. 넘긴 단계를 전부 보내면 같은 초에 여러
+         줄이 몰려 찍히고, 발송이 비동기라 도착 순서까지 뒤집혀(50 → 100 → 75)
+         "어디까지 읽었나" 를 읽을 수 없게 된다. 건너뛴 낮은 단계는 보내지
+         않되 발사 완료로 표시해, 뒤늦게 중복으로 나가지 않게 한다. */
+      var reached = 0;
       for (var i = 0; i < thresholds.length; i++) {
         var t = thresholds[i];
         if (percent >= t && !fired[t]) {
           fired[t] = true;
-          send(PAGE + '_scroll_depth', {
-            item_type: 'scroll_depth',
-            percent_scrolled: t,
-            value: t
-          });
+          reached = t;
         }
+      }
+      if (reached) {
+        send(PAGE + '_scroll_depth', {
+          item_type: 'scroll_depth',
+          percent_scrolled: reached,
+          value: reached
+        });
       }
       /* 모두 발사되면 리스너 해제 */
       if (fired[100]) {
