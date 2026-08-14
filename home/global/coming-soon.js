@@ -415,8 +415,24 @@
      마커(data-hx-hdr-ga)만 부여한다.
        - 로고: 헤더 안에서 홈(/)으로 가는, 이미지 품은 링크
        - 진료과목: markLiveNav 가 승격한 data-helix-link="/services" 요소 */
-  function hxHeaderGa(name, params) {
-    if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
+  /* 예전엔 이 두 이벤트를 빈 객체 {} 로 쏴서, 헤더 클릭이 기록은 남는데
+     "어느 페이지에서 / 무엇을 / 어느 기기로" 눌렀는지가 하나도 안 남았다.
+     다른 클릭 이벤트와 같은 칸(page·device·link_text·link_url·value)을 채운다.
+     헤더 링크는 누르는 즉시 페이지가 넘어가므로 beacon 으로 보내 유실 방지. */
+  function hxHeaderGa(name, el, fallbackLabel) {
+    if (typeof window.gtag !== 'function') return;
+    var a = (el && el.closest) ? (el.closest('a') || el) : null;
+    /* 로고는 이미지 링크라 글자가 없다 → fallbackLabel 로 갈음 */
+    var label = csText(a) || fallbackLabel || '';
+    window.gtag('event', name, {
+      item_type: 'header_nav',
+      page: CS_PAGE,
+      device: window.innerWidth <= 767 ? 'mobile' : 'desktop',
+      link_text: label,
+      link_url: (a && a.getAttribute && a.getAttribute('href')) || '',
+      value: label,
+      transport_type: 'beacon'
+    });
   }
   function hxHeaderRoot() {
     return document.querySelector('.navbar1_component') ||
@@ -457,8 +473,10 @@
   document.addEventListener('click', function (e) {
     var t = e.target;
     if (!t || !t.closest) return;
-    if (t.closest('[' + HDR_GA_ATTR + '="logo"]')) hxHeaderGa('header_logo_home', {});
-    else if (t.closest('[' + HDR_GA_ATTR + '="services"]')) hxHeaderGa('header_services_click', {});
+    var hdrLogo = t.closest('[' + HDR_GA_ATTR + '="logo"]');
+    if (hdrLogo) { hxHeaderGa('header_logo_home', hdrLogo, '로고'); return; }
+    var hdrSvc = t.closest('[' + HDR_GA_ATTR + '="services"]');
+    if (hdrSvc) hxHeaderGa('header_services_click', hdrSvc, '진료과목');
   }, true);
 
   /* Webflow Designer 컴포넌트 정의/인스턴스에 custom attribute 로 박혀 있는
