@@ -116,6 +116,8 @@
     'home/global/hamburger.js',
     /* 서초본원 전용 */
     'seocho/seocho.css',
+    /* 좁은 화면 글자 하한 — seocho.css 뒤에 둬야 이 파일이 이긴다 */
+    'seocho/seocho-responsive.css',
     'seocho/seocho.js',
     /* 여기 있던 서초용 renewal-bar (css/js) 등록은 리포에 만들어진 적이 없는
        파일이라 제거했다(응급 페이지의 같은 이름 파일에서 옮겨 적힌 흔적).
