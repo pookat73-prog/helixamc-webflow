@@ -1,0 +1,184 @@
+/* ================================================================
+   HELIX AMC — 서초 본원 페이지: 좁은 화면 글자 하한
+
+   ■ 무엇이 문제였나
+   서초 페이지 글자는 데스크탑에선 px 로 잘 잡혀 있는데, Webflow 의 좁은
+   화면 예외값이 대부분 vw(화면 폭 비례)다. vw 는 바닥이 없어서 화면이
+   좁아질수록 끝없이 작아진다. 실측(Webflow 값 그대로 계산):
+
+     주소(.adress)            480px 화면에서 7.2px   / 360px 에서 10.8px
+     예약 안내 본문           480px 에서 8.6px      / 360px 에서 10.8px
+     예약 안내 소제목         480px 에서 9.6px      / 360px 에서 14.4px
+     인라인 상담 버튼 글자    768px 에서 6.5px      ← 좁은 화면 예외값이
+                                                    아예 없어 데스크탑용
+                                                    0.85vw 가 그대로 적용됨
+
+   특히 인라인 상담 버튼은 예외값이 '아주 좁은 화면(≤479)' 에만 있어서,
+   480~991px 구간이 통째로 무방비였다. 이 버튼은 상담 신청 전환을 재고
+   있는 진입점이라(cta_src=inline_cta) 읽히지 않으면 측정 자체가 무의미해진다.
+
+   ■ 어떻게 고쳤나 — 바닥만 씌운다 (천장 없음)
+   max(하한, 원래값) 이라, 원래값이 하한보다 크면 지금 그대로다.
+   그리고 규칙 전체를 ≤991px 안에만 뒀다 → 데스크탑(≥992)은 한 글자도
+   안 바뀐다. 화면 구간은 Webflow 것(991 / 767 / 479)을 그대로 따라가서,
+   각 구간의 원래 vw 기울기를 유지한 채 바닥만 받친다.
+
+   ■ 줄 높이도 같이 올린다
+   글자만 키우고 줄 높이를 vw 로 두면 글자가 자기 줄 상자를 넘쳐 위아래
+   요소와 겹친다(FAQ 페이지에서 실제로 겪은 회귀). 각 클래스가 원래 갖고
+   있던 줄높이/글자 비율을 유지해 함께 바닥을 씌운다.
+
+   ■ 조절
+   아래 :root 값 한 줄만 바꾸면 해당 부류의 최소 크기가 바뀐다.
+   ⚠ 이 파일은 seocho/bootstrap.js 로 서초 페이지에서만 로드된다.
+   ================================================================ */
+
+:root {
+  --sc-min-body: 13px;  /* 주소 · 예약 안내 본문 */
+  --sc-min-sub:  14px;  /* 예약 안내 소제목 */
+  --sc-min-head: 20px;  /* 섹션 제목 · 지점명 */
+  --sc-min-fine: 11px;  /* 인증 안내 잔글씨 */
+  --sc-min-cta:  14px;  /* 인라인 상담 버튼 글자 */
+}
+
+/* ================================================================
+   1. 태블릿 구간 768 ~ 991px  (Webflow 'medium')
+   ================================================================ */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* 주소 — 원래 1.3vw (768px 에서 10.0px) */
+  .adress {
+    font-size:   max(var(--sc-min-body), 1.3vw) !important;
+    line-height: max(var(--sc-min-body), 1.3vw) !important;
+  }
+  /* 예약 안내 소제목 — 원래 1.4vw (768px 에서 10.8px) */
+  .branch_rv_title {
+    font-size:   max(var(--sc-min-sub), 1.4vw) !important;
+    line-height: max(var(--sc-min-sub), 1.4vw) !important;
+  }
+  /* 섹션 제목 — 원래 2.5vw (768px 에서 19.2px) */
+  .branch_section_head {
+    font-size:   max(var(--sc-min-head), 2.5vw) !important;
+    line-height: max(var(--sc-min-head), 2.5vw) !important;
+  }
+  /* 지점명 — 원래 2.5vw. 줄 높이는 데스크탑 값(32.98px)을 물려받아 충분 */
+  .branch_title {
+    font-size: max(var(--sc-min-head), 2.5vw) !important;
+  }
+  /* 인증 안내 잔글씨 — 원래 0.8vw (768px 에서 6.1px) */
+  .seocho_cert_info,
+  .seocho_cert_info-copy {
+    font-size:   max(var(--sc-min-fine), 0.8vw) !important;
+    line-height: max(calc(var(--sc-min-fine) * 1.6), 1.3vw) !important;
+  }
+  /* 예약 안내 본문은 이 구간에서 데스크탑 값 13px 을 그대로 물려받아
+     이미 하한과 같다 → 건드리지 않음 */
+}
+
+/* ================================================================
+   2. 큰 폰 · 작은 태블릿 구간 480 ~ 767px  (Webflow 'small')
+   가장 심한 구간 — 아래쪽 끝(480px)에서 본문이 7~9px 까지 내려갔다.
+   ================================================================ */
+@media (min-width: 480px) and (max-width: 767px) {
+  /* 주소 — 원래 1.5vw (480px 에서 7.2px) */
+  .adress {
+    font-size:   max(var(--sc-min-body), 1.5vw) !important;
+    line-height: max(var(--sc-min-body), 1.5vw) !important;
+  }
+  /* 예약 안내 본문 — 원래 1.8vw / 줄높이 2.8vw (480px 에서 8.6 / 13.4px) */
+  .branch_rv_para {
+    font-size:   max(var(--sc-min-body), 1.8vw) !important;
+    line-height: max(calc(var(--sc-min-body) * 1.55), 2.8vw) !important;
+  }
+  /* 예약 안내 소제목 — 원래 2vw (480px 에서 9.6px) */
+  .branch_rv_title {
+    font-size:   max(var(--sc-min-sub), 2vw) !important;
+    line-height: max(var(--sc-min-sub), 2vw) !important;
+  }
+  /* 섹션 제목 — 원래 2.9vw (480px 에서 13.9px) */
+  .branch_section_head {
+    font-size:   max(var(--sc-min-head), 2.9vw) !important;
+    line-height: max(var(--sc-min-head), 2.9vw) !important;
+  }
+  /* 지점명 — 원래 4vw (480px 에서 19.2px) */
+  .branch_title {
+    font-size:   max(var(--sc-min-head), 4vw) !important;
+    line-height: max(var(--sc-min-head), 4vw) !important;
+  }
+  /* 인증 안내 잔글씨 — 원래 1.3vw (480px 에서 6.2px) */
+  .seocho_cert_info,
+  .seocho_cert_info-copy {
+    font-size:   max(var(--sc-min-fine), 1.3vw) !important;
+    line-height: max(calc(var(--sc-min-fine) * 1.6), 2vw) !important;
+  }
+}
+
+/* ================================================================
+   3. 폰 구간 ≤ 479px  (Webflow 'tiny')
+   여기는 예외값이 대체로 잘 잡혀 있다. 아주 좁은 기기(360px 갤럭시 S 계열)
+   에서만 바닥에 걸린다.
+   ================================================================ */
+@media (max-width: 479px) {
+  /* 주소 — 원래 3vw (360px 에서 10.8px) */
+  .adress {
+    font-size:   max(var(--sc-min-body), 3vw) !important;
+    line-height: max(var(--sc-min-body), 3vw) !important;
+  }
+  /* 예약 안내 본문 — 원래 3vw / 줄높이 4.8vw (360px 에서 10.8 / 17.3px) */
+  .branch_rv_para {
+    font-size:   max(var(--sc-min-body), 3vw) !important;
+    line-height: max(calc(var(--sc-min-body) * 1.6), 4.8vw) !important;
+  }
+  /* 예약 안내 소제목 — 원래 4vw (360px 에서 14.4px, 이미 하한 이상) */
+  .branch_rv_title {
+    font-size:   max(var(--sc-min-sub), 4vw) !important;
+    line-height: max(var(--sc-min-sub), 4vw) !important;
+  }
+  /* 섹션 제목 — 원래 6vw / 줄높이 9vw */
+  .branch_section_head {
+    font-size:   max(var(--sc-min-head), 6vw) !important;
+    line-height: max(calc(var(--sc-min-head) * 1.5), 9vw) !important;
+  }
+  /* 인증 안내 잔글씨 — 원래 2.3vw / 3vw (360px 에서 8.3 / 10.8px) */
+  .seocho_cert_info {
+    font-size:   max(var(--sc-min-fine), 2.3vw) !important;
+    line-height: max(calc(var(--sc-min-fine) * 1.6), 4vw) !important;
+  }
+  .seocho_cert_info-copy {
+    font-size:   max(var(--sc-min-fine), 3vw) !important;
+    line-height: max(calc(var(--sc-min-fine) * 1.6), 4.6vw) !important;
+  }
+}
+
+/* ================================================================
+   4. 인라인 상담 버튼 — 480~991px 이 통째로 무방비였던 곳
+
+   Webflow 에 '아주 좁은 화면(≤479)' 예외값만 있고 그 위 구간이 없어서,
+   데스크탑용 0.85vw 가 480~991px 에 그대로 적용됐다.
+     991px 에서 8.4px / 768px 에서 6.5px / 480px 에서 4.1px
+   글자뿐 아니라 안쪽 여백도 vw 라 버튼 자체가 같이 쪼그라들었다.
+   이 버튼은 상담 신청 전환을 재고 있는 진입점(cta_src=inline_cta)이다.
+   ================================================================ */
+@media (max-width: 991px) {
+  .seocho_reserve_inline_cta {
+    font-size: max(var(--sc-min-cta), 0.85vw) !important;
+    /* 버튼이 글자만 커지고 상자는 그대로면 글자가 테두리에 닿는다 →
+       안쪽 여백과 위 간격도 같은 방식으로 바닥을 씌운다 */
+    padding-top:    max(8px,  0.6vw) !important;
+    padding-bottom: max(8px,  0.6vw) !important;
+    padding-left:   max(16px, 1.5vw) !important;
+    padding-right:  max(16px, 1.5vw) !important;
+    margin-top:     max(10px, 0.9vw) !important;
+  }
+}
+/* ≤479 는 Webflow 예외값(3.6vw)이 이미 크다. 360px 에서 13px 이라
+   하한에만 살짝 걸린다. 여백은 그쪽 예외값(2.6vw / 5vw)이 충분해 그대로 둔다. */
+@media (max-width: 479px) {
+  .seocho_reserve_inline_cta {
+    font-size: max(var(--sc-min-cta), 3.6vw) !important;
+    padding-top:    2.6vw !important;
+    padding-bottom: 2.6vw !important;
+    padding-left:   5vw !important;
+    padding-right:  5vw !important;
+    margin-top:     3.5vw !important;
+  }
+}
