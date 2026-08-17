@@ -30,12 +30,17 @@
     if (!container || !container.getAttribute) return CLINIC;
     var lat = parseFloat(container.getAttribute('data-map-lat'));
     var lng = parseFloat(container.getAttribute('data-map-lng'));
+    var addr = container.getAttribute('data-map-address');
+    var hasCoords = isFinite(lat) && isFinite(lng);
     return {
       name: container.getAttribute('data-map-name') || CLINIC.name,
-      address: container.getAttribute('data-map-address') || CLINIC.address,
-      lat: isFinite(lat) ? lat : CLINIC.lat,
-      lng: isFinite(lng) ? lng : CLINIC.lng,
-      naverPlaceId: container.getAttribute('data-map-place') || CLINIC.naverPlaceId
+      address: addr || CLINIC.address,
+      lat: hasCoords ? lat : CLINIC.lat,
+      lng: hasCoords ? lng : CLINIC.lng,
+      naverPlaceId: container.getAttribute('data-map-place') || CLINIC.naverPlaceId,
+      /* 주소만 주고 좌표를 안 준 지점 → 런타임에 주소로 좌표를 찾는다.
+         좌표를 준 지점(서초)은 false 라 지오코딩을 타지 않는다. */
+      needsGeocode: !hasCoords && !!addr
     };
   }
 
@@ -130,8 +135,50 @@
     containers.forEach(mountMap);
   }
 
+  /* 주소 → 좌표. 같은 주소를 두 컨테이너(데스크탑/모바일)가 함께 쓰므로
+     한 번만 조회하고 결과를 공유한다. */
+  var geoCache = {};
+  function geocode(address, cb) {
+    var hit = geoCache[address];
+    if (hit) {
+      if (hit.done) { cb(hit.coords); return; }
+      hit.waiting.push(cb); return;
+    }
+    var entry = geoCache[address] = { done: false, coords: null, waiting: [cb] };
+    function settle(coords) {
+      entry.done = true; entry.coords = coords;
+      entry.waiting.splice(0).forEach(function (f) { f(coords); });
+    }
+    if (!naver.maps.Service || !naver.maps.Service.geocode) { settle(null); return; }
+    naver.maps.Service.geocode({ query: address }, function (status, res) {
+      var list = res && res.v2 && res.v2.addresses;
+      if (status !== naver.maps.Service.Status.OK || !list || !list.length) {
+        log('geocode failed', address, status); settle(null); return;
+      }
+      var lat = parseFloat(list[0].y), lng = parseFloat(list[0].x);
+      settle(isFinite(lat) && isFinite(lng) ? { lat: lat, lng: lng } : null);
+    });
+  }
+
+  /* 좌표가 지정된 컨테이너는 그 값을 그대로 쓴다 (서초가 이 경우).
+     ⚠️ 아래 187행 주석 참고 — 정확 좌표를 주소 지오코딩으로 덮어쓰면 핀이
+     라벨에서 밀려나므로, 지오코딩은 좌표가 "없을 때만" 쓴다. */
   function mountMap(container) {
     var clinic = clinicFor(container);
+    if (!clinic.needsGeocode) { drawMap(container, clinic); return; }
+    geocode(clinic.address, function (coords) {
+      if (!coords) {
+        /* 위치를 못 찾았는데 기본값(서초)으로 그리면 다른 지점 페이지에
+           엉뚱한 위치가 뜬다 → 차라리 안내 패널을 띄운다. */
+        renderFallback(container, '지도 위치를 불러오지 못했습니다.');
+        return;
+      }
+      clinic.lat = coords.lat; clinic.lng = coords.lng;
+      drawMap(container, clinic);
+    });
+  }
+
+  function drawMap(container, clinic) {
     var center = new naver.maps.LatLng(clinic.lat, clinic.lng);
     var map = new naver.maps.Map(container, {
       center: center,
