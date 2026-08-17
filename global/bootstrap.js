@@ -19,6 +19,8 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 뷰포트 판정 — 다른 모듈이 window.HelixVP 를 쓰므로 항상 맨 앞 */
+    'global/viewport.js',
     'global/global.css',
     'global/floating-cta.css',
     'global/floating-cta.js',
