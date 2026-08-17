@@ -21,6 +21,24 @@
     naverPlaceId: '36786130'
   };
 
+  /* ----- 지점별 위치 덮어쓰기 -----
+     지도 컨테이너(.map_naver)에 data-map-* 속성이 붙어 있으면 그 값이 이긴다.
+     속성이 없으면 위 서초 기본값 그대로 → 서초 페이지는 동작 변화 없음.
+     일산 등 다른 지점 페이지는 Webflow 에서 속성만 박으면 되고 코드 복제 불필요.
+       data-map-lat / data-map-lng / data-map-name / data-map-address / data-map-place */
+  function clinicFor(container) {
+    if (!container || !container.getAttribute) return CLINIC;
+    var lat = parseFloat(container.getAttribute('data-map-lat'));
+    var lng = parseFloat(container.getAttribute('data-map-lng'));
+    return {
+      name: container.getAttribute('data-map-name') || CLINIC.name,
+      address: container.getAttribute('data-map-address') || CLINIC.address,
+      lat: isFinite(lat) ? lat : CLINIC.lat,
+      lng: isFinite(lng) ? lng : CLINIC.lng,
+      naverPlaceId: container.getAttribute('data-map-place') || CLINIC.naverPlaceId
+    };
+  }
+
   var DEBUG = /[?&]debug-naver=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[naver-map]'].concat([].slice.call(arguments))); }
 
@@ -38,18 +56,19 @@
     return list[0] || null;
   }
 
-  function buildDirectionsUrl() {
+  function buildDirectionsUrl(c) {
     /* 사용자 요청: "길찾기" 버튼이 실제 길찾기 화면이 아니라
        네이버 지도의 서초 본원 플레이스(업체) 페이지로 가야 함.
        플레이스 페이지 안에 영업정보·리뷰·길찾기 버튼이 다 들어 있어
        사용자가 원하는 정보를 원스톱으로 봄. */
-    return CLINIC.naverPlaceId
-      ? 'https://map.naver.com/p/entry/place/' + CLINIC.naverPlaceId
-      : 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
+    c = c || CLINIC;
+    return c.naverPlaceId
+      ? 'https://map.naver.com/p/entry/place/' + c.naverPlaceId
+      : 'https://map.naver.com/p/search/' + encodeURIComponent(c.address);
   }
 
   function renderFallback(container, msg) {
-    var url = 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
+    var url = 'https://map.naver.com/p/search/' + encodeURIComponent(clinicFor(container).address);
     container.innerHTML =
       '<div class="naver-map-fallback">' +
         '<div>' + (msg || '지도를 불러올 수 없습니다.') + '</div>' +
@@ -61,7 +80,7 @@
     if (container.querySelector('.naver-map-directions')) return;
     var a = document.createElement('a');
     a.className = 'naver-map-directions';
-    a.href = buildDirectionsUrl();
+    a.href = buildDirectionsUrl(clinicFor(container));
     a.target = '_blank';
     a.rel = 'noopener';
     a.innerHTML =
@@ -112,7 +131,8 @@
   }
 
   function mountMap(container) {
-    var center = new naver.maps.LatLng(CLINIC.lat, CLINIC.lng);
+    var clinic = clinicFor(container);
+    var center = new naver.maps.LatLng(clinic.lat, clinic.lng);
     var map = new naver.maps.Map(container, {
       center: center,
       zoom: 16,
@@ -133,20 +153,17 @@
     var marker = new naver.maps.Marker({
       position: center,
       map: map,
-      title: CLINIC.name
+      title: clinic.name
     });
 
     /* InfoWindow 제거 — 병원명/주소는 페이지에 이미 텍스트로 노출되어 중복.
        마커 클릭 시 네이버 지도 검색으로 새 창 오픈 (모바일 대응 포함). */
     naver.maps.Event.addListener(marker, 'click', function () {
-      var url = CLINIC.naverPlaceId
-        ? 'https://map.naver.com/p/entry/place/' + CLINIC.naverPlaceId
-        : 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
-      window.open(url, '_blank', 'noopener');
+      window.open(buildDirectionsUrl(clinic), '_blank', 'noopener');
     });
 
     addDirectionsButton(container);
-    log('initialized at', CLINIC.lat, CLINIC.lng);
+    log('initialized at', clinic.lat, clinic.lng, clinic.name);
 
     /* 컨테이너가 처음에 0×0 이거나 미디어쿼리로 늦게 보이는 경우, naver
        지도는 자동으로 재측정하지 않아 타일이 영영 안 그려짐 (검정 박스).
