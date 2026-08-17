@@ -221,14 +221,31 @@
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: max(12px, 2.5vw) !important;
+    /* AAHA 설명 덩어리와 그 아래 '헬릭스동물메디컬센터 서초 본원은…' 사이 간격.
+       원래 5vw 라 360px 화면에서 18px 뿐이라 두 문단이 붙어 보였다. 좁은
+       화면일수록 글이 세로로 길어져 문단 경계가 흐려지므로 넉넉히 준다.
+         360px → 28px / 480px → 29px / 600px → 36px / 767px → 46px */
+    margin-bottom: max(28px, 6vw) !important;
   }
   /* 위 gap 이 간격을 담당하므로 원래 있던 위쪽 여백은 뺀다 (이중 간격 방지) */
   .div-block-98 {
     margin-top: 0 !important;
   }
-  /* 120px 바닥 · 180px 천장, 그 사이는 폭과 높이 중 짧은 쪽을 따라감 */
+  /* 120px 바닥 · 180px 천장, 그 사이는 폭과 높이 중 짧은 쪽을 따라감.
+
+     ■ 왼쪽 맞춤 — 뱃지 그림 시작선을 글자 시작선에 맞춘다
+     이 PNG 는 그림 둘레에 투명 여백을 품고 있다. 빨간 마크는 파일 폭의
+     약 14% 지점에서 시작한다(좌우 대칭). 그래서 상자를 왼쪽 끝에 붙여도
+     눈에는 마크가 안으로 들어가 보인다.
+     상자를 그 여백만큼 왼쪽으로 당겨, 상자가 아니라 '보이는 그림' 이
+     글자 시작선과 맞게 한다. 인쇄·타이포에서 쓰는 시각 보정과 같은 방식.
+     ⚠ 여백 비율은 이미지 파일에 딸린 값이라, 뱃지 이미지를 교체하면
+       --badge-trim 을 다시 재야 한다. 어긋나 보이면 이 숫자만 조절. */
   .image-26 {
-    width: clamp(120px, min(30vw, 34vh), 180px) !important;
+    --badge-w: clamp(120px, min(30vw, 34vh), 180px);
+    --badge-trim: 0.14;   /* 파일 좌우 투명 여백 비율 */
+    width: var(--badge-w) !important;
     height: auto !important;
+    margin-left: calc(var(--badge-w) * var(--badge-trim) * -1) !important;
   }
 }
