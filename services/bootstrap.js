@@ -23,6 +23,13 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 기기 오분류 교정 — 화면 폭을 바꾸므로 무엇보다 먼저.
+       이 페이지에만 있던 services/landscape-mobile.js 를 전 페이지용으로
+       옮긴 것. 같은 판정·같은 처방이며, 둘을 함께 두면 meta 를 서로
+       덮어써 깜빡이므로 옛 파일은 제거했다. */
+    'global/viewport-fix.js',
+    /* 뷰포트 판정 (window.HelixVP) — 교정된 폭을 봐야 하므로 그 다음 */
+    'global/viewport.js',
     /* 운영자 제외 스위치 — ?helix-noga=1 로 켠 브라우저는 측정 안 함.
        gtag 가 만들어지기 전에 가로채야 해서 ga4-base 보다 앞에 둔다. */
     'global/measure-gate.js',
@@ -58,8 +65,6 @@
        (남아있을 수 있는 Webflow legacy 버튼 .link-block-11 은 services.css 에서 숨김) */
     /* 진료과목 전용 — 페이지 오버라이드(영상의학과 카드 모바일 사진 제거 등) */
     'services/services.css',
-    /* 진료과목 전용 — 가로 폰을 태블릿이 아닌 가로모바일 레이아웃으로 강제 */
-    'services/landscape-mobile.js',
     /* 진료과목 전용 — 카드 U자 테두리(기존 deptUshapeBorder) */
     'services/dept-border.js',
     /* 진료과목 전용 — 화살표 상세이동 버튼 + 카드 강조 호버(기존 deptDetailNav) */
