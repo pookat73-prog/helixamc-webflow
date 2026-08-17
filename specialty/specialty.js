@@ -2,6 +2,14 @@
    HELIX AMC — 특화진료(/specialty-care) 코멧 선  v4.1
    specialty/bootstrap.js 가 로드. 짝: specialty/specialty.css
 
+   ⚠ 이 파일에는 덩어리가 둘 있다 (서로 완전히 독립)
+       ① 코멧 선 — 아래. 데스크톱(≥992px) 전용.
+       ② 그룹 바 — 파일 맨 아래. 좁은 화면(≤991px) 전용. v6.0 에서 추가.
+     한쪽이 실패해도 다른 쪽은 그대로 돈다. 파일을 나누지 않은 이유는,
+     새 파일을 만들면 bootstrap.js 의 FILES 배열과 워크플로우 퍼지 목록을 같이
+     늘려야 하고 jsDelivr 엣지 캐시가 옛 목록을 들고 있으면 새 파일이 영영
+     안 닿기 때문 (CLAUDE.md 의 PR #703~#713 교훈).
+
    하는 일 — 사용자 목업(card_comet_v3) 그대로
    -----------------------------------------------------------------
    항목(.hst-item-wrap)에 마우스를 올리면
@@ -584,6 +592,281 @@
         for (var k = 0; k < kids.length; k++) ro.observe(kids[k]);  /* 설명·CTA 높이 */
       });
     }
+  }
+
+  if (document.readyState !== 'loading') init();
+  else document.addEventListener('DOMContentLoaded', init);
+})();
+
+/* ================================================================
+   HELIX AMC — 특화진료 그룹 바 (좁은 화면 전용)  v6.0
+   짝: specialty.css 의 `.hx-spec-groupbar` 블록
+
+   무엇을 하나
+   -----------------------------------------------------------------
+   태블릿·휴대폰에서는 4칸 표가 2칸·1칸으로 접혀 그룹이 세로로 길게 늘어선다.
+   그러면 스크롤하는 동안 "지금 보고 있는 게 어느 그룹인지" 를 잃어버린다.
+   그래서 헤더 바로 밑에 붙어 따라다니는 띠를 하나 만들어
+     · 스크롤하면 지금 화면 위쪽에 걸린 그룹이 켜지고
+     · 누르면 그 그룹 머리로 이동한다.
+
+   ⚠ 그룹 이름을 여기 적어 두지 않는다
+     실제 그룹 제목(.hst_group_title 안의 번호 + .spec-cat-name)을 읽어서
+     만든다. Designer 에서 이름을 고치거나 그룹을 늘려도 이 파일을 고칠 일이
+     없다. 코멧 선이 좌표를 하드코딩하지 않는 것과 같은 원칙.
+
+   ⚠ 탭은 <button> 이다
+     위 initCta() 의 클릭 위임이 `a[href], button` 은 건드리지 않고 지나가므로,
+     탭을 눌러도 "준비중입니다" 토스트가 뜨지 않는다. <div> 로 바꾸면 탭을
+     누를 때마다 토스트가 같이 뜬다 — 바꾸지 말 것.
+
+   ⚠ 이 띠는 데스크톱에도 DOM 에는 만들어 두고 CSS 로만 숨긴다
+     폭을 바꿔 가며 볼 때(브라우저 창 조절·기기 회전) 다시 만들 필요가 없어
+     상태가 꼬이지 않는다. 계산은 좁은 폭에서만 돈다.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  if (window.__helixSpecialtyGroupbarInit) return;
+  window.__helixSpecialtyGroupbarInit = true;
+
+  var NARROW_MAX = 991;   /* specialty.css 의 좁은 화면 기준과 같아야 함 */
+  var GRID    = '.hst_grid';
+  var COL     = '.hst_col';
+  var TITLE   = '.hst_group_title';
+  var CATNAME = '.spec-cat-name';
+  var NUMBOX  = '.div-block-302';   /* 그룹 제목 안 '01' 칸 (Webflow: Div Block 302) */
+  var LOCK_MS = 600;                /* 탭을 눌러 이동하는 동안 스크롤 판정을 잠깐 멈춤 */
+
+  var bar = null, track = null;
+  var tabs = [], cols = [];
+  var activeKey = '', ticking = false, lockUntil = 0;
+
+  /* ── 헤더 높이를 --header-h 로 알려 준다 ──
+     헤더는 position:fixed (global.css) 라 문서 흐름에서 빠져 있어, 띠가 그
+     바로 밑에 붙으려면 실제 높이를 알아야 한다. 이 값을 넣어 주는 파일
+     (seocho.js / about.js)을 이 페이지는 안 싣기 때문에 여기서 직접 잰다.
+
+     ⚠ 데스크톱용 헤더와 모바일용 헤더가 둘 다 DOM 에 있고 미디어쿼리로 한쪽만
+       보인다. 안 보이는 쪽은 높이가 0 으로 잡히므로, 화면 맨 위에 붙어 있는
+       것들 중 가장 높은 것(=지금 보이는 것)을 택한다. seocho.js 와 같은 방식. */
+  function syncHeaderH() {
+    var cands = document.querySelectorAll(
+      'header.header, header.header_mobile, header, .w-nav, nav[role="banner"]'
+    );
+    var maxH = 0;
+    for (var i = 0; i < cands.length; i++) {
+      var r = cands[i].getBoundingClientRect();
+      if (r.top <= 1 && r.height > maxH) maxH = r.height;
+    }
+    if (maxH > 0) document.documentElement.style.setProperty('--header-h', maxH + 'px');
+  }
+
+  function headerH() {
+    var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h'));
+    return v > 0 ? v : 56;
+  }
+
+  function barH() {
+    return bar ? bar.getBoundingClientRect().height : 0;
+  }
+
+  function isNarrow()      { return window.innerWidth <= NARROW_MAX; }
+  function reducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+
+  /* 그룹 제목에서 번호('01')와 이름('통합 종양 진료')을 꺼낸다.
+     번호 칸의 클래스가 바뀌어도 첫 번째 자식으로 폴백해 계속 찾는다. */
+  function readGroup(col, i) {
+    var title  = col.querySelector(TITLE);
+    var nameEl = title ? title.querySelector(CATNAME) : null;
+    var numEl  = title ? (title.querySelector(NUMBOX) || title.firstElementChild) : null;
+
+    var name = nameEl ? (nameEl.textContent || '').trim() : '';
+    var num  = (numEl && numEl !== nameEl && !numEl.contains(nameEl))
+                 ? (numEl.textContent || '').trim() : '';
+
+    if (!name) name = num ? '' : '그룹 ' + (i + 1);   /* 이름이 없으면 번호만 보여준다 */
+    return { num: num, name: name };
+  }
+
+  function build() {
+    var grid = document.querySelector(GRID);
+    if (!grid) return false;
+
+    cols = [].slice.call(grid.querySelectorAll(COL));
+    if (cols.length < 2) return false;   /* 그룹이 하나뿐이면 띠가 무의미 */
+
+    bar = document.createElement('nav');
+    bar.className = 'hx-spec-groupbar';
+    bar.setAttribute('aria-label', '특화진료 그룹');
+
+    track = document.createElement('div');
+    track.className = 'hx-spec-groupbar_track';
+    bar.appendChild(track);
+
+    cols.forEach(function (col, i) {
+      if (!col.id) col.id = 'hx-spec-group-' + (i + 1);
+      var g = readGroup(col, i);
+
+      var tab = document.createElement('button');
+      tab.type = 'button';                    /* 폼 안에 들어가도 제출되지 않게 */
+      tab.className = 'hx-spec-gtab';
+      tab.setAttribute('aria-controls', col.id);
+
+      if (g.num) {
+        var n = document.createElement('span');
+        n.className = 'hx-spec-gtab_num';
+        n.textContent = g.num;
+        tab.appendChild(n);
+      }
+      if (g.name) {
+        var s = document.createElement('span');
+        s.className = 'hx-spec-gtab_name';
+        s.textContent = g.name;
+        tab.appendChild(s);
+      }
+
+      tab.addEventListener('click', function () { goTo(i); });
+      track.appendChild(tab);
+      tabs.push(tab);
+    });
+
+    grid.parentNode.insertBefore(bar, grid);
+    return true;
+  }
+
+  /* ── 같은 줄에 있는 그룹들 ──
+     태블릿(2칸)에서는 한 줄에 그룹이 둘 나란히 선다. 그 줄을 보고 있으면 둘 다
+     보고 있는 것이므로 둘 다 켠다.
+     ⚠ 하나만 켜려고 하면 반드시 틀린다 — 나란한 두 열은 윗변 높이가 같아서
+       '기준선을 지난 마지막 것' 이 항상 오른쪽 열이 되고, 왼쪽 그룹은 영영
+       안 켜진다(실측 확인: 900px·768px 에서 1·3번만 켜졌음).
+     휴대폰(1칸)에서는 줄마다 그룹이 하나뿐이라 자연히 하나만 켜진다. */
+  function rowOf(idx) {
+    var top = cols[idx].getBoundingClientRect().top;
+    var row = [];
+    for (var j = 0; j < cols.length; j++) {
+      if (Math.abs(cols[j].getBoundingClientRect().top - top) <= 2) row.push(j);
+    }
+    return row;
+  }
+
+  /* 화면 위쪽(헤더 + 띠 바로 아래)에 기준선을 하나 긋고, 그 선을 이미 지나간
+     그룹 중 마지막 것이 속한 줄을 '지금 보고 있는 줄' 로 삼는다. */
+  function activeRow() {
+    var probe = headerH() + barH() + 10;
+    var idx = 0;
+    for (var i = 0; i < cols.length; i++) {
+      if (cols[i].getBoundingClientRect().top <= probe) idx = i;
+    }
+
+    /* 페이지 바닥에 닿았으면 마지막 그룹을 켠다. 마지막 그룹이 짧으면 아무리
+       내려도 기준선까지 못 올라와, 바닥에 서 있는데 앞 그룹이 켜져 있게 된다. */
+    var doc = document.documentElement;
+    if (window.innerHeight + window.pageYOffset >= doc.scrollHeight - 2) {
+      idx = cols.length - 1;
+    }
+    return rowOf(idx);
+  }
+
+  /* 지금 어느 쪽이 잘려 있는지 알려 준다 → specialty.css 가 그쪽 끝을 흐리게
+     지워 "이쪽에 더 있다" 는 신호를 만든다. 끝까지 밀면 그쪽은 떼어낸다. */
+  function updateEdges() {
+    if (!track) return;
+    var max = track.scrollWidth - track.clientWidth;
+    track.classList.toggle('hx-more-l', track.scrollLeft > 2);
+    track.classList.toggle('hx-more-r', track.scrollLeft < max - 2);
+  }
+
+  /* 켜진 탭이 띠 밖으로 밀려나 안 보이는 일이 없게 가운데로 끌어온다 */
+  function centerTab(tab) {
+    if (!tab || !track) return;
+    var t = track.getBoundingClientRect();
+    var b = tab.getBoundingClientRect();
+    var target = track.scrollLeft + (b.left - t.left) - (t.width - b.width) / 2;
+    target = Math.max(0, Math.min(track.scrollWidth - track.clientWidth, target));
+    if (Math.abs(target - track.scrollLeft) < 2) return;
+
+    if (track.scrollTo) {
+      track.scrollTo({ left: target, behavior: reducedMotion() ? 'auto' : 'smooth' });
+    } else {
+      track.scrollLeft = target;
+    }
+  }
+
+  function setActive(row) {
+    if (!row || !row.length) return;
+    var key = row.join(',');
+    if (key === activeKey) return;
+    activeKey = key;
+
+    for (var n = 0; n < tabs.length; n++) {
+      var on = (row.indexOf(n) !== -1);
+      tabs[n].classList.toggle('is-on', on);
+      if (on) tabs[n].setAttribute('aria-current', 'true');
+      else    tabs[n].removeAttribute('aria-current');
+    }
+    centerTab(tabs[row[0]]);   /* 한 줄에 둘이면 왼쪽 것 기준으로 끌어온다 */
+  }
+
+  function goTo(i) {
+    var col = cols[i];
+    if (!col) return;
+
+    /* 그룹 머리가 헤더와 띠 바로 밑에 오도록. 띠는 이동이 끝나면 헤더 밑에
+       붙어 있으므로(sticky), 지금 붙어 있든 아니든 같은 식으로 맞는다. */
+    var y = window.pageYOffset + col.getBoundingClientRect().top - headerH() - barH() + 1;
+    y = Math.max(0, y);
+
+    if ('scrollBehavior' in document.documentElement.style) {
+      window.scrollTo({ top: y, behavior: reducedMotion() ? 'auto' : 'smooth' });
+    } else {
+      window.scrollTo(0, y);
+    }
+
+    /* 스르륵 이동하는 동안에는 중간 위치로 판정이 계속 바뀌어 탭이 깜빡인다.
+       잠깐 판정을 멈추고, 누른 그룹(이 든 줄)을 바로 켠다. */
+    lockUntil = Date.now() + LOCK_MS;
+    activeKey = '';
+    setActive(rowOf(i));
+  }
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false;
+      if (!isNarrow() || Date.now() < lockUntil) return;
+      setActive(activeRow());
+    });
+  }
+
+  function init() {
+    if (!build()) {
+      console.warn('[specialty] 그룹 바를 만들 수 없음 — ' + GRID + ' / ' + COL + ' 확인');
+      return;
+    }
+
+    /* 헤더 높이는 폰트·이미지가 늦게 와도 바뀔 수 있어 잠깐 지켜본다 (about.js 와 동일) */
+    syncHeaderH();
+    var n = 0;
+    var poll = setInterval(function () {
+      syncHeaderH();
+      if (++n >= 20) clearInterval(poll);
+    }, 200);
+
+    track.addEventListener('scroll', updateEdges, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('load', function () { onScroll(); updateEdges(); });
+    window.addEventListener('resize', function () {
+      syncHeaderH();
+      activeKey = '';      /* 폭이 바뀌면 줄 배치가 통째로 달라진다 → 다시 판정 */
+      onScroll();
+      updateEdges();
+    });
+
+    onScroll();
+    updateEdges();
   }
 
   if (document.readyState !== 'loading') init();
