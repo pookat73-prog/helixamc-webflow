@@ -19,6 +19,10 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 기기 오분류 교정 — 화면 폭을 바꾸므로 무엇보다 먼저 */
+    'global/viewport-fix.js',
+    /* 뷰포트 판정 — 다른 모듈이 window.HelixVP 를 쓰므로 그 다음 */
+    'global/viewport.js',
     'global/global.css',
     'global/floating-cta.css',
     'global/floating-cta.js',
