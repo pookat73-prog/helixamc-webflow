@@ -93,6 +93,10 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 기기 오분류 교정 — 화면 폭을 바꾸므로 무엇보다 먼저 */
+    'global/viewport-fix.js',
+    /* 뷰포트 판정 (window.HelixVP) — 교정된 폭을 봐야 하므로 그 다음 */
+    'global/viewport.js',
     /* 운영자 제외 스위치 — ?helix-noga=1 로 켠 브라우저는 측정 안 함.
        gtag 가 만들어지기 전에 가로채야 해서 ga4-base 보다 앞에 둔다. */
     'global/measure-gate.js',

@@ -24,6 +24,10 @@
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
+    /* 기기 오분류 교정 — 화면 폭을 바꾸므로 무엇보다 먼저 */
+    'global/viewport-fix.js',
+    /* 뷰포트 판정 (window.HelixVP) — 교정된 폭을 봐야 하므로 그 다음 */
+    'global/viewport.js',
     /* 전역 스타일 — 헤더 링크 스타일·호버 효과가 여기 들어 있다 */
     'global/global.css',
     /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
