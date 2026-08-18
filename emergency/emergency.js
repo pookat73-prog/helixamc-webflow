@@ -23,8 +23,8 @@
      위에 오도록 브라우저 기본 동작 활용. */
   var MAP_BLOCKS = [
     { selector: '.map.seocho, .map-seocho', href: '/seocho#map_naver', key: 'seocho', branch: '서초' },
-    /* 일산분원 방문안내 상세 페이지 미완성 — 이동 차단, 토스트만. */
-    { selector: '.map.ilsan, .map-ilsan',   pending: true, key: 'ilsan', branch: '일산' }
+    /* 일산 분원 페이지 오시는길 anchor 는 #map (서초 페이지는 #map_naver) */
+    { selector: '.map.ilsan, .map-ilsan',   href: '/ilsan#map', key: 'ilsan', branch: '일산' }
   ];
 
   /* GA4 — 사이트 공통 패턴(<이벤트>_<device>, beacon). 측정은 정식 도메인에서만
