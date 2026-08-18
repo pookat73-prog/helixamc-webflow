@@ -34,7 +34,7 @@
     console.log.apply(console, ['[FAQ-GA]'].concat(Array.prototype.slice.call(arguments)));
   }
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   /* 다른 모듈(scroll-depth/seocho)과 동일한 전송 규약:
      gtag 있으면 gtag('event', ...), 없으면 dataLayer.push 폴백. */

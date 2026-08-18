@@ -294,7 +294,7 @@
           branchKey = 'ilsan';  branchLabel = '일산';
         }
 
-        var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+        var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
         var eventName = 'copy_address_' + branchKey + '_' + device;
 
         function trackCopy() {
@@ -467,7 +467,7 @@
         a.__helixDetailTracked = true;
 
         a.addEventListener('click', function () {
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           /* 사진(img/picture) 을 품은 링크면 'image', 아니면 'text' */
           var clickArea = a.querySelector('img, picture') ? 'image' : 'text';
           var eventName = 'open_detail_' + dBranchKey + '_' + device;

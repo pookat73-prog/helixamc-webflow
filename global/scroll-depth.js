@@ -59,7 +59,7 @@
   }
 
   var PAGE = pageKey();
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   function send(eventName, params) {
     try {

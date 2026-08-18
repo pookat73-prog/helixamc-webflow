@@ -69,7 +69,7 @@
       el.dataset.helixSviccTrack = '1';
       el.addEventListener('click', function () {
         try {
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var eventName = 'svicc_click_' + device;
           var anchor = el.tagName === 'A' ? el : el.querySelector('a');
           var href = anchor ? anchor.href : '';
@@ -103,7 +103,7 @@
       el.dataset.helixHeroTrack = '1';
       el.addEventListener('click', function () {
         try {
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var eventName = 'hero_cta_click_' + device;
           var anchor = el.tagName === 'A' ? el : el.querySelector('a');
           var href = anchor ? anchor.href : '';
@@ -139,7 +139,7 @@
       el.dataset.helixEmgTrack = '1';
       el.addEventListener('click', function () {
         try {
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var eventName = 'emergency_symptom_cta_' + device;
           var anchor = el.tagName === 'A' ? el : el.querySelector('a');
           var href = anchor ? anchor.href : '';

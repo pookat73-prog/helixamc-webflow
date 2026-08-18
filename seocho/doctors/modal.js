@@ -306,7 +306,7 @@
     /* GA4 — 의료진 상세보기(+) 클릭. 어느 분과(group) 의 누구(slug) 를 열었는지
        집계. 모달만 열리고 페이지 이동은 없어 일반 gtag 로 충분. */
     (function () {
-      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var payload = {
         item_type: 'doctor_detail_open',
         branch: '서초',

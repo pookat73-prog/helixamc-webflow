@@ -217,7 +217,7 @@
 
   function trackComingSoon(el) {
     try {
-      var d = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var d = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var label = csLabel(el);
       var p = {
         item_type: 'coming_soon_click',
@@ -449,7 +449,7 @@
     window.gtag('event', name, {
       item_type: 'header_nav',
       page: CS_PAGE,
-      device: window.innerWidth <= 767 ? 'mobile' : 'desktop',
+      device: window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'),
       link_text: label,
       link_url: (a && a.getAttribute && a.getAttribute('href')) || '',
       value: label,

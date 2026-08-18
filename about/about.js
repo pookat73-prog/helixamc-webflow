@@ -2644,7 +2644,7 @@
     return true;
   }
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
   function txt(el) { return ((el && el.innerText) || '').replace(/\s+/g, ' ').trim().slice(0, 60); }
   function hrefOf(el) {
     var a = el && (el.tagName === 'A' ? el : (el.querySelector && el.querySelector('a')));
