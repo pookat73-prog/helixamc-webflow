@@ -208,3 +208,53 @@ a[href^="tel:"]:hover .home_branch-card_call-number {
   }
 }
 
+
+/* ================================================================
+   좁은 화면 글자 하한 — 홈 지점 카드
+
+   ⚠ 새 CSS 파일을 만들지 않고 여기에 이어 붙인다. 새 파일은 로더
+     (home/bootstrap.js)에도 등록해야 하는데, 그 로더가 CDN 에 옛 버전으로
+     캐시돼 있으면 새 파일이 영영 사용자에게 도달하지 않는다. 이 파일은
+     오래전부터 로더 목록에 있어 그런 사고가 나지 않는다.
+     (2026-08-17 서초에서 실제로 겪은 사고 — CLAUDE.md 예방 규칙 참고)
+
+   ■ 무엇이 문제였나
+   .home_branch-card_info-link (지점 카드의 정보 링크) 는 Webflow 에
+   좁은 화면 예외값이 하나도 없어, 데스크탑용 0.85vw 가 전 구간에
+   그대로 적용된다.
+
+     360px 화면   3.06px   ← 글자로 안 보이는 크기
+     393px 화면   3.34px
+     480px 화면   4.08px
+     767px 화면   6.52px
+     991px 화면   8.42px
+
+   홈은 방문이 가장 많은 페이지고(월 819), 이 링크는 지점 상세로 가는
+   진입점이다. 서초 페이지의 인라인 상담 버튼과 완전히 같은 유형
+   (0.85vw + 예외값 없음)이라 같은 방식으로 바닥을 씌운다.
+
+   글자만 키우고 아이콘 간격·위 여백을 vw 로 두면 줄이 무너지므로 함께
+   바닥을 씌운다(360px 에서 각각 1.1px / 2.5px 였다).
+
+   ■ 범위
+   ≤991 에만 적용 → 데스크탑(≥992)은 지금 그대로.
+   ================================================================ */
+@media (max-width: 991px) {
+  .home_branch-card_info-link {
+    font-size:   max(14px, 0.85vw) !important;
+    /* 원래 줄 높이가 글자 크기와 같았다(비율 1.0). 그 관계를 유지한다 */
+    line-height: max(14px, 0.85vw) !important;
+    margin-top:  max(10px, 0.7vw) !important;
+    column-gap:  max(6px,  0.3vw) !important;
+  }
+}
+
+/* 섹션 본문(.main-colum_bonmoon) — 480~767 구간만 0.7rem(11.2px)로
+   한 단계 내려가 있다. 그 위(0.8rem=12.8px)·아래(0.8rem)보다 오히려
+   작아지는 구멍이라 이 구간만 메운다. */
+@media (min-width: 480px) and (max-width: 767px) {
+  .main-colum_bonmoon {
+    font-size:   max(13px, 0.7rem) !important;
+    line-height: max(21px, 1.2rem) !important;
+  }
+}
