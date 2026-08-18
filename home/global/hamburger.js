@@ -8,7 +8,7 @@
      안에 묻혀 있어 합산이 안 됐다. 전용 이름을 줘서 세 입구를 합칠 수 있게 함. */
   var BRANCHES = [
     { text: '서초 본원',          href: '/seocho' },
-    { text: '일산 분원',          href: '#' },
+    { text: '일산 분원',          href: '/ilsan' },
     { text: '서울동물영상종양센터', href: 'https://www.svicc.co.kr/', event: 'menu_svicc_click' }
   ];
 
@@ -31,9 +31,9 @@
      true  → 아이콘 클릭해도 메뉴 안 열리고 "준비중입니다" 토스트만 뜸
      false → 정상 동작 (메뉴 열림)
      ── 전체 개방 ──
-     주요 메뉴(서초본원·SVICC·discover HELIX·진료과목·특화진료·응급증상안내)가
-     연결되어 메뉴를 도메인 무관 전체 개방. 아직 미연결 항목(일산분원·의료인프라·
-     뉴스룸·칼럼·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
+     주요 메뉴(서초본원·일산분원·SVICC·discover HELIX·진료과목·특화진료·
+     응급증상안내)가 연결되어 메뉴를 도메인 무관 전체 개방. 아직 미연결 항목
+     (의료인프라·뉴스룸·칼럼·수의사용 웹차트)은 호버하면 흐려지고(hamburger.css) 클릭하면
      coming-soon.js 가 "준비중입니다" 토스트로 안내. */
   var MENU_COMING_SOON = false;
 

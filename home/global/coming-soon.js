@@ -105,7 +105,7 @@
 
   /* 라이브 지점 패턴 — 마킹 레이스/셀렉터 미스매치 폴백.
      클릭 시점에 카드 텍스트가 이 패턴을 포함하면 토스트 차단 (페이지 이동 전용). */
-  var LIVE_BRANCH_PATTERN = /서초|2135-9119/;
+  var LIVE_BRANCH_PATTERN = /서초|2135-9119|일산|고양시|덕양구|978-7575/;
   var LIVE_BRANCH_CARD_SEL = '.home_branch-card, .flex-block-22 > .div-block-151';
 
   /* 이미 열려 있는 페이지로 가는 링크는 토스트로 막지 않는다.
@@ -118,7 +118,7 @@
 
      아직 비공개인 페이지는 아래 목록에 없으므로 그대로 토스트가 뜬다.
      페이지를 열 때마다 여기 한 줄 추가. */
-  var LIVE_PATHS = ['/symptoms', '/specialty-care'];
+  var LIVE_PATHS = ['/symptoms', '/specialty-care', '/ilsan'];
 
   function isLivePathLink(node) {
     if (!node || !node.closest) return false;
@@ -309,7 +309,8 @@
   /* 지점 카드 중 "라이브" 처리할 카드 (준비중 해제 + 클릭 시 페이지 이동).
      식별: 카드 텍스트에 매칭 패턴 포함 시 해당 URL 로 이동. */
   var LIVE_BRANCH_CARDS = [
-    { match: /서초|2135-9119/, url: '/seocho', label: '서초본원' }
+    { match: /서초|2135-9119/, url: '/seocho', label: '서초본원' },
+    { match: /일산|고양시|덕양구|978-7575/, url: '/ilsan', label: '일산분원' }
   ];
   var BRANCH_CARD_SEL = '.home_branch-card, .flex-block-22 > .div-block-151';
   var LIVE_ATTR = 'data-helix-link';
@@ -343,8 +344,28 @@
   var LIVE_NAV = [
     { text: '진료과목', url: '/services' },
     /* 헤더와 햄버거 메뉴 양쪽 모두 텍스트가 '특화진료' 라 이 한 줄로 둘 다 열린다. */
-    { text: '특화진료', url: '/specialty-care' }
+    { text: '특화진료', url: '/specialty-care' },
+    /* 일산 분원 — 페이지 개설 완료. 헤더·햄버거·소개 페이지 CTA 등 글자가
+       '일산 분원'/'일산분원' 인 링크를 모두 /ilsan 로 연다 (띄어쓰기 두 형태 모두). */
+    { text: '일산 분원', url: '/ilsan' },
+    { text: '일산분원', url: '/ilsan' }
   ];
+
+  /* 이미 그 페이지로 가는 "살아있는" 링크인가 (예: 햄버거 메뉴의 '일산 분원'
+     href="/ilsan"). 이런 링크는 승격하지 않는다 — 승격하면 아래
+     handleLiveCardClick 이 stopPropagation 을 불러, 링크 자체에 붙은 핸들러
+     (햄버거 메뉴의 GA 전송·메뉴 닫기 등)가 실행되지 않기 때문. */
+  function pointsToSamePage(el, url) {
+    if (!el || el.tagName !== 'A') return false;
+    if (el.hasAttribute('data-coming-soon')) return false;
+    var href = el.getAttribute('href');
+    if (!href || href === '#') return false;
+    try {
+      var u = new URL(href, location.href);
+      if (u.origin !== location.origin) return false;
+      return u.pathname.replace(/\/$/, '') === url.replace(/\/$/, '');
+    } catch (_) { return false; }
+  }
 
   function markLiveNav() {
     var cands = document.querySelectorAll('a,[data-coming-soon]');
@@ -352,6 +373,7 @@
       var txt = (el.textContent || '').replace(/\s+/g, ' ').trim();
       for (var i = 0; i < LIVE_NAV.length; i++) {
         if (txt !== LIVE_NAV[i].text) continue;
+        if (pointsToSamePage(el, LIVE_NAV[i].url)) continue;
         if (el.hasAttribute('data-coming-soon')) el.removeAttribute('data-coming-soon');
         if (el.getAttribute(LIVE_ATTR) !== LIVE_NAV[i].url) {
           el.setAttribute(LIVE_ATTR, LIVE_NAV[i].url);
