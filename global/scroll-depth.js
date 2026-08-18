@@ -51,6 +51,13 @@
         document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
     /* FAQ 페이지 — 경로/DOM 마커로 우선 판정(안 그러면 home 으로 오분류됨) */
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
+    /* 일산 분원 — 서초 페이지를 복제해 만든 페이지라 .map_naver 를 그대로
+       갖고 있다. 아래 서초 판정보다 먼저 걸러내지 않으면 일산 방문·전화·
+       스크롤이 통째로 서초 실적에 합산된다. URL 우선, 지도 컨테이너에
+       박아둔 data-map-name 을 폴백으로 본다(슬러그가 바뀌어도 살아남게). */
+    var mapName = document.querySelector('[data-map-name]');
+    if (/(^|\/)ilsan(\/|$)/.test(p) ||
+        (mapName && /일산/.test(mapName.getAttribute('data-map-name') || ''))) return 'ilsan';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
