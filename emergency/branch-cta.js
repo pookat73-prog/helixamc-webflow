@@ -63,7 +63,7 @@
      gtag 있으면 gtag('event'), 없으면 dataLayer.push 폴백 (사이트 공통 패턴) */
   function gaSend(eventName, branch, value) {
     try {
-      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var params = {
         item_type: 'emergency_cta',
         branch: branch || 'unknown',

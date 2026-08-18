@@ -99,7 +99,7 @@
     /* GA4 — 길찾기(네이버 플레이스) 클릭. target=_blank 라 페이지는 유지되지만
        안전하게 beacon 전송. 지도 마커 클릭이 아니라 명시적 "길찾기" 버튼만 집계. */
     a.addEventListener('click', function () {
-      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var payload = {
         item_type: 'directions',
         branch: '서초',
@@ -351,7 +351,7 @@
         tabLink.__helixTabTracked = true;
         tabLink.addEventListener('click', function () {
           var dept = (tabLink.textContent || '').replace(/\s+/g, ' ').trim();
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var payload = {
             item_type: 'doctor_dept_tab',
             branch: '서초',
@@ -618,7 +618,7 @@
         (function () {
           var titleEl = a.querySelector('.subheader_title') || a;
           var menu = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var payload = {
             item_type: 'subheader_nav',
             branch: '서초',
@@ -1192,7 +1192,7 @@
   var DEBUG = /[?&]debug-phone=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[seocho-phone]'].concat([].slice.call(arguments))); }
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   function digitsOnly(s) { return (s || '').replace(/\D+/g, ''); }
 

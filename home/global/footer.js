@@ -148,7 +148,7 @@
         copyText(email).then(function () {
           showToast('복사완료 · ' + email);
           try {
-            var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+            var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
             var eventName = 'copy_email_' + device;
             if (typeof window.gtag === 'function') {
               window.gtag('event', eventName, {
@@ -270,7 +270,7 @@
       function go(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
         try {
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var eventName = 'sns_click_' + entry.key + '_' + device;
           if (typeof window.gtag === 'function') {
             window.gtag('event', eventName, {

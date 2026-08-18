@@ -41,7 +41,7 @@
     dt: '치과'
   };
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   function send(key, card) {
     var name = 'services_dept_click_' + device();

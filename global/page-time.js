@@ -66,7 +66,7 @@
   }
 
   var PAGE = pageKey();
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   var MIN_MS  = 1000;    /* 1초 미만은 '스쳐 지나감' — 기록 안 함 */
   var IDLE_MS = 60000;   /* 60초간 조작 없으면 자리 비움으로 간주 */

@@ -90,7 +90,7 @@
       payload = {
         event_name: eventName,
         page: params.page || '',
-        device: params.device || (window.innerWidth <= 767 ? 'mobile' : 'desktop'),
+        device: params.device || (window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop')),
         value: params.value || '',
         params: params
       };
