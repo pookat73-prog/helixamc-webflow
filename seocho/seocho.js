@@ -6,6 +6,40 @@
    - Naver Maps JS SDK 는 bootstrap 이 ncpClientId 와 함께 inject.
    ================================================================ */
 
+/* ----- 어느 지점 페이지인가 (파일 전역) -----
+   이 파일은 서초·일산 두 페이지가 함께 쓴다 (일산 페이지가 서초 복제본이라
+   클래스·구조가 같다). 측정 이벤트 이름과 branch 값을 지점별로 갈라두지
+   않으면 일산에서 누른 전화·길찾기가 전부 서초 실적에 합산된다.
+
+   ⚠️ 이 파일은 IIFE 가 여러 개다. 판정값을 어느 한 IIFE 안에 var 로 두면
+      다른 IIFE 에서 ReferenceError 가 나 그 블록의 측정이 통째로 죽는다
+      (예전 헬릭스 라인의 navbar 스코프 사고와 같은 형태). 그래서 window 에
+      얹어 공유한다.
+
+   ⚠️ 값은 호출 시점에 계산한다. bootstrap 이 이 파일을 본문보다 먼저 실행할
+      수 있어, 로드 시점에 data-map-name 을 찾으면 아직 없을 수 있다.
+      실제 호출은 전부 클릭 핸들러 안이라 그때는 본문이 이미 있다. */
+window.HelixBranch = window.HelixBranch || (function () {
+  var cached = null;
+  function key() {
+    if (cached) return cached;
+    var k = 'seocho';
+    if (/(^|\/)ilsan(\/|$)/.test((location.pathname || '/').toLowerCase())) {
+      k = 'ilsan';
+    } else {
+      var el = document.querySelector('[data-map-name]');
+      if (el && /일산/.test(el.getAttribute('data-map-name') || '')) k = 'ilsan';
+      else if (document.readyState === 'loading') return k;  /* 본문 전 — 캐시 보류 */
+    }
+    cached = k;
+    return k;
+  }
+  return {
+    key:  key,                                                    /* 이벤트 이름 앞머리 */
+    name: function () { return key() === 'ilsan' ? '일산' : '서초'; }  /* branch 파라미터 */
+  };
+})();
+
 (function () {
   'use strict';
 
@@ -78,16 +112,16 @@
       var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
       var payload = {
         item_type: 'directions',
-        branch: '서초',
+        branch: window.HelixBranch.name(),
         device: device,
         value: a.href,
         transport_type: 'beacon'
       };
       try {
         if (typeof window.gtag === 'function') {
-          window.gtag('event', 'seocho_directions_' + device, payload);
+          window.gtag('event', window.HelixBranch.key() + '_directions_' + device, payload);
         } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
-          payload.event = 'seocho_directions_' + device;
+          payload.event = window.HelixBranch.key() + '_directions_' + device;
           window.dataLayer.push(payload);
         }
       } catch (e) {}
@@ -290,15 +324,15 @@
           var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
           var payload = {
             item_type: 'doctor_dept_tab',
-            branch: '서초',
+            branch: window.HelixBranch.name(),
             device: device,
             dept: dept || 'unknown'
           };
           try {
             if (typeof window.gtag === 'function') {
-              window.gtag('event', 'seocho_dept_tab_' + device, payload);
+              window.gtag('event', window.HelixBranch.key() + '_dept_tab_' + device, payload);
             } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
-              payload.event = 'seocho_dept_tab_' + device;
+              payload.event = window.HelixBranch.key() + '_dept_tab_' + device;
               window.dataLayer.push(payload);
             }
           } catch (e) {}
@@ -557,16 +591,16 @@
           var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
           var payload = {
             item_type: 'subheader_nav',
-            branch: '서초',
+            branch: window.HelixBranch.name(),
             device: device,
             menu: menu || 'unknown',
             value: href
           };
           try {
             if (typeof window.gtag === 'function') {
-              window.gtag('event', 'seocho_subheader_nav_' + device, payload);
+              window.gtag('event', window.HelixBranch.key() + '_subheader_nav_' + device, payload);
             } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
-              payload.event = 'seocho_subheader_nav_' + device;
+              payload.event = window.HelixBranch.key() + '_subheader_nav_' + device;
               window.dataLayer.push(payload);
             }
           } catch (e) {}
@@ -1117,7 +1151,7 @@
      seocho_phone_intent  번호를 누른 순간 (확인창 뜨기 전, 취소해도 남음)
        params: { item_type: 'phone_intent', ... }
      seocho_phone_call    확인창에서 '확인' 을 누른 뒤 (실제 연결)
-       params: { item_type: 'phone_call', branch: '서초',
+       params: { item_type: 'phone_call', branch: '서초'|'일산',
                  device: 'mobile'|'desktop', value: '0221359119' }
      두 값의 차이 = 확인창에서 되돌아간 사람. 데스크탑은 실제 통화로
      이어지지 않으니 '전화 의향' 은 intent 쪽으로 읽는다.
@@ -1170,7 +1204,7 @@
   function trackIntent(digits, sectionLabel) {
     var params = {
       item_type: 'phone_intent',
-      branch: '서초',
+      branch: window.HelixBranch.name(),
       device: device(),
       section: sectionLabel || 'unknown',
       value: digits
@@ -1178,10 +1212,10 @@
     try {
       if (typeof window.gtag === 'function') {
         params.transport_type = 'beacon';
-        window.gtag('event', 'seocho_phone_intent', params);
+        window.gtag('event', window.HelixBranch.key() + '_phone_intent', params);
         log('intent sent', params);
       } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
-        params.event = 'seocho_phone_intent';
+        params.event = window.HelixBranch.key() + '_phone_intent';
         window.dataLayer.push(params);
       }
     } catch (e) { log('intent error', e); }
@@ -1190,7 +1224,7 @@
   function trackCall(digits, sectionLabel, cb) {
     var params = {
       item_type: 'phone_call',
-      branch: '서초',
+      branch: window.HelixBranch.name(),
       device: device(),
       section: sectionLabel || 'unknown',
       value: digits
@@ -1201,7 +1235,7 @@
       if (typeof window.gtag === 'function') {
         params.transport_type = 'beacon';
         params.event_callback = done;
-        window.gtag('event', 'seocho_phone_call', params);
+        window.gtag('event', window.HelixBranch.key() + '_phone_call', params);
         /* 안전 타임아웃 — gtag callback 누락 대비 */
         setTimeout(done, 1000);
         log('gtag sent', params);
@@ -1210,7 +1244,7 @@
       if (window.dataLayer && typeof window.dataLayer.push === 'function') {
         var dlParams = {};
         for (var k in params) { if (params.hasOwnProperty(k) && k !== 'event_callback') dlParams[k] = params[k]; }
-        dlParams.event = 'seocho_phone_call';
+        dlParams.event = window.HelixBranch.key() + '_phone_call';
         window.dataLayer.push(dlParams);
         log('dataLayer pushed', dlParams);
       }

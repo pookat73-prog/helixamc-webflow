@@ -470,6 +470,13 @@
     /* FAQ 판정이 아예 없어서 FAQ 페이지의 상담 CTA 가 page:'home' 으로
        찍히고 있었다. 다른 측정 모듈과 동일 조건으로 추가. */
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
+    /* 일산 분원 — 서초 페이지를 복제해 만든 페이지라 .map_naver 를 그대로
+       갖고 있다. 아래 서초 판정보다 먼저 걸러내지 않으면 일산 방문·전화·
+       스크롤이 통째로 서초 실적에 합산된다. URL 우선, 지도 컨테이너에
+       박아둔 data-map-name 을 폴백으로 본다(슬러그가 바뀌어도 살아남게). */
+    var mapName = document.querySelector('[data-map-name]');
+    if (/(^|\/)ilsan(\/|$)/.test(p) ||
+        (mapName && /일산/.test(mapName.getAttribute('data-map-name') || ''))) return 'ilsan';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초|seoco/.test(p)) return 'seocho';
@@ -632,6 +639,10 @@
         utm_campaign: qp.get('utm_campaign') || '',
         utm_content:  qp.get('utm_content')  || '',
         media:        '홈페이지',
+        /* 어느 페이지에서 넣은 신청인가 — 일산 페이지 상담도 접수는 서초
+           칸으로 일원화해 받기로 했다(사용자 확정). 그래서 지점 구분은
+           저장 경로가 아니라 이 값으로 한다. */
+        fromPage:     CTA_PAGE,
 
         /* 새 칸 — 대시보드 개편 시 이쪽을 쓰면 됨 */
         petName:      petName,
