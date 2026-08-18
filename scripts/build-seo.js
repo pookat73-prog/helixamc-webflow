@@ -77,6 +77,38 @@ const SEOCHO_BRANCH = {
   ],
 };
 
+/* 일산 분원 — VeterinaryCare (LocalBusiness)
+
+   ⚠️ 아래 세 가지는 **일부러 비워 뒀다.** 확정되기 전에 채우지 말 것.
+
+   openingHours   일산 진료시간 미정. 지금 페이지에 적힌 시간은 서초 페이지를
+                  복제하면서 딸려온 값이라 사실 확인 전이다. 틀린 진료시간을
+                  구글에 보내면 새벽에 차 몰고 온 보호자가 닫힌 문 앞에 선다.
+                  → 확정되면 SEOCHO_BRANCH.openingHours 와 같은 형태로 채운다.
+   certifications 일산은 AAHA 인증 지점이 아니다(확인 완료). 병원 공통
+                  인증(HOSPITAL.certifications)을 여기에 얹지 말 것.
+   employee       일산 의료진은 인스타 공지로 안내할 예정이라 명단이 없다.
+                  서초 의료진(_all.json)을 끌어다 쓰면 없는 사람이 이 지점에
+                  있다고 구글에 알리는 셈이 된다. */
+const ILSAN_BRANCH = {
+  branchId: 'ilsan',
+  branchNameKo: '일산 분원',
+  url: HOSPITAL.origin + '/ilsan',
+  phone: '+82-31-978-7575',
+  phoneDisplay: '031-978-7575',
+  address: {
+    streetAddress: '중앙로 439',
+    addressLocality: '고양시 덕양구',
+    addressRegion: '경기도',
+    postalCode: null /* 알려주시면 추가 */,
+    addressCountry: 'KR',
+  },
+  geo: null /* 좌표 미지정 — 지도는 주소로 찾아간다(seocho.js 지오코딩 폴백) */,
+  openingHours: null /* 위 주석 참고 — 미정 */,
+  /* 네이버 지도 업체 페이지 (일산). 서초와 다른 번호다. */
+  naverPlace: 'https://map.naver.com/p/entry/place/83218352',
+};
+
 /* ===================== 빌드 ===================== */
 
 const ROOT = path.resolve(__dirname, '..');
@@ -118,14 +150,13 @@ function groupToDepartment(groupId) {
 }
 
 function postalAddress(addr) {
-  return {
-    '@type': 'PostalAddress',
-    streetAddress: addr.streetAddress,
-    addressLocality: addr.addressLocality,
-    addressRegion: addr.addressRegion,
-    postalCode: addr.postalCode,
-    addressCountry: addr.addressCountry,
-  };
+  /* 값이 없는 칸은 아예 빼고 낸다. 빈 문자열/null 을 그대로 실으면 구글이
+     "우편번호가 비어 있다" 로 읽는다 (일산 우편번호가 아직 미확인). */
+  const out = { '@type': 'PostalAddress' };
+  for (const k of ['streetAddress','addressLocality','addressRegion','postalCode','addressCountry']) {
+    if (addr[k]) out[k] = addr[k];
+  }
+  return out;
 }
 
 function openingHoursSpec(hours) {
@@ -373,6 +404,57 @@ function buildSeocho(doctors) {
   return wrapJsonLd(jsonld) + '\n' + fallback;
 }
 
+function buildIlsan() {
+  const B = ILSAN_BRANCH;
+  const branchNode = {
+    '@type': 'VeterinaryCare',
+    '@id': B.url + '#branch',
+    name: `${HOSPITAL.nameKo} ${B.branchNameKo}`,
+    alternateName: `${HOSPITAL.nameEn} Ilsan Branch`,
+    url: B.url,
+    logo: HOSPITAL.logo,
+    image: HOSPITAL.logo,
+    telephone: B.phone,
+    email: HOSPITAL.email,
+    address: postalAddress(B.address),
+    ...(B.geo ? {
+      geo: { '@type': 'GeoCoordinates', latitude: B.geo.lat, longitude: B.geo.lng },
+    } : {}),
+    /* 진료시간이 확정되기 전엔 이 칸 자체를 내보내지 않는다 (위 주석 참고) */
+    ...(B.openingHours ? { openingHoursSpecification: openingHoursSpec(B.openingHours) } : {}),
+    parentOrganization: { '@id': `${HOSPITAL.origin}/#org` },
+    /* 인스타·블로그는 병원 공통, 네이버 플레이스는 지점별로 다르다 */
+    sameAs: HOSPITAL.sameAs.filter(u => !/map\.naver\.com/.test(u)).concat([B.naverPlace]),
+  };
+
+  const graph = [
+    branchNode,
+    breadcrumb([
+      { name: '홈', url: HOSPITAL.origin },
+      { name: B.branchNameKo, url: B.url },
+    ]),
+    {
+      '@type': 'MedicalOrganization',
+      '@id': `${HOSPITAL.origin}/#org`,
+      name: HOSPITAL.nameKo,
+      url: HOSPITAL.origin,
+      logo: HOSPITAL.logo,
+    },
+  ];
+  const jsonld = { '@context': 'https://schema.org', '@graph': graph };
+
+  /* 숨김 폴백 — 확정된 사실만 적는다. 진료시간·인증·의료진은 넣지 않는다. */
+  const a = B.address;
+  const fallback = fallbackHtmlBlock(
+    `${HOSPITAL.nameKo} ${B.branchNameKo}`,
+    [
+      `주소: ${a.addressRegion} ${a.addressLocality} ${a.streetAddress}`,
+      `전화: ${B.phoneDisplay}`,
+    ]
+  );
+  return wrapJsonLd(jsonld) + '\n' + fallback;
+}
+
 function conditionNode(url, c) {
   const node = {
     '@type': 'MedicalCondition',
@@ -578,6 +660,7 @@ function main() {
     'home.html':              buildHome(),
     'discover-helix.html':    buildAbout(),
     'seocho.html':            buildSeocho(doctors),
+    'ilsan.html':             buildIlsan(),
     'symptoms.html':          buildEmergency(conditions),
     'faq.html':               buildFaq(faq),
     'services.html':          buildServices(),
