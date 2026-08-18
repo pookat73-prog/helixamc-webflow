@@ -121,12 +121,29 @@ body {
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   font-variant-ligatures: common-ligatures;
   font-kerning: normal;
-  /* 본문 기본 두께 400 → 500 (전역). 가변 폰트면 'wght' 500 으로 연속 보간,
-     비가변 폰트면 font-weight 500 면이 있으면 그쪽, 없으면 400 그대로.
+  /* 본문 기본 두께 400 → 500 (전역).
      섹션 root 한 곳에만 적용 → 자식은 상속, 명시 weight (700 등) 박힌 건 유지.
-     div/span 일괄 셀렉터는 쓰지 않음 (글자 크기 swap 회귀 방지). */
+     div/span 일괄 셀렉터는 쓰지 않음 (글자 크기 swap 회귀 방지).
+
+     ⚠️ 여기에 font-variation-settings: 'wght' 500 을 같이 두지 말 것 (재발 금지)
+
+     원래 "가변 폰트면 'wght' 500 으로 연속 보간" 을 노리고 아래 font-weight 와
+     나란히 박아뒀던 줄이다. 그런데 이 속성은 (1) 상속되고 (2) 가변 폰트에서는
+     자식의 font-weight 를 이긴다. 그래서 body 에 한 줄 두면 페이지 안의 700 짜리
+     글자가 전부 500 으로 눌린다 — 바로 윗줄 주석의 "명시 weight 박힌 건 유지" 가
+     지켜지지 않았다.
+
+     실제 사고: 일산 인트로 버튼(.button-title-for-ilsan)과 '15년의 깊이'
+     (.hero15y-heading) 가 Webflow 에선 700 인데 발행 사이트에서만 얇게 나왔다.
+     Designer 캔버스는 이 CSS 를 아예 안 불러와서 캔버스에선 멀쩡해 보이는 탓에
+     원인을 찾기가 어렵다. 확인법 — 발행 사이트 콘솔에서
+       getComputedStyle(el).fontWeight            → 700
+       getComputedStyle(el).fontVariationSettings → "wght" 500   ← 이게 이긴다
+
+     가변 폰트는 font-weight 만으로도 연속 보간되므로 아래 한 줄이면 충분하다.
+     굵기 축을 강제해야 하는 경우에만 그 요소에 직접 쓸 것 (영문 공식 폰트의
+     en-w400~en-w800 유틸리티가 그 예 — CLAUDE.md 폰트 절 참고). */
   font-weight: 500;
-  font-variation-settings: 'wght' 500;
 }
 /* 윈도우 Chrome 등에서도 transform 적용된 픽셀 정렬 텍스트가 흐려지지 않도록.
    transform/translate3d 가 걸린 컨테이너의 텍스트는 subpixel 위치로 떨어져
