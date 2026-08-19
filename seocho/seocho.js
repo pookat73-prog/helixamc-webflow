@@ -73,7 +73,9 @@
   }
 
   function renderFallback(container, msg) {
-    var url = 'https://map.naver.com/p/search/' + encodeURIComponent(clinicFor(container).address);
+    /* 지도를 못 그릴 때의 탈출구 — 업체 페이지가 있으면 그쪽(영업정보·길찾기가
+       한 화면에 있음), 없으면 주소 검색으로 보낸다. */
+    var url = buildDirectionsUrl(clinicFor(container));
     container.innerHTML =
       '<div class="naver-map-fallback">' +
         '<div>' + (msg || '지도를 불러올 수 없습니다.') + '</div>' +
@@ -149,10 +151,18 @@
       entry.done = true; entry.coords = coords;
       entry.waiting.splice(0).forEach(function (f) { f(coords); });
     }
-    if (!naver.maps.Service || !naver.maps.Service.geocode) { settle(null); return; }
+    if (!naver.maps.Service || !naver.maps.Service.geocode) {
+      console.warn('[naver-map] geocoder 서브모듈 없음 — 주소로 좌표를 찾을 수 없음');
+      settle(null); return;
+    }
     naver.maps.Service.geocode({ query: address }, function (status, res) {
       var list = res && res.v2 && res.v2.addresses;
       if (status !== naver.maps.Service.Status.OK || !list || !list.length) {
+        /* debug 플래그 없이도 남긴다 — 지도가 빈 채로 뜨는 사고는 콘솔 한 줄이
+           있느냐로 진단 시간이 갈린다. 좌표(data-map-lat/lng)를 박아두면
+           이 경로 자체를 안 탄다. */
+        console.warn('[naver-map] 주소로 좌표를 못 찾음 (NCP Geocoding 미사용 설정 가능성):',
+                     address, status);
         log('geocode failed', address, status); settle(null); return;
       }
       var lat = parseFloat(list[0].y), lng = parseFloat(list[0].x);
