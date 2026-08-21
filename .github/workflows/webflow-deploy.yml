@@ -249,6 +249,7 @@ jobs:
             "global/ga-inspector.js"
             "global/sheet-log.js"
             "global/global.css"
+            "global/ilsan-type.css"
             "global/floating-cta.css"
             "global/floating-cta.js"
             "global/scroll-depth.js"
