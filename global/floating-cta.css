@@ -40,7 +40,12 @@
   display: block;
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.10)) drop-shadow(0 4px 9px rgba(0, 0, 0, 0.13));
+  /* 후광 — 검은 그림자 대신 메인 블루(#0075d6) 를 일러스트 윤곽 둘레에
+     고르게 퍼뜨린다. drop-shadow 는 이미지의 투명 영역을 따라가므로
+     사각형이 아니라 캐릭터 모양대로 빛이 번진다. 안쪽 진한 층 +
+     바깥 옅은 층 2겹으로 가장자리가 뚝 끊기지 않게 함. */
+  filter: drop-shadow(0 0 5px rgba(0, 117, 214, 0.50))
+          drop-shadow(0 0 14px rgba(0, 117, 214, 0.32));
 }
 
 /* 흰 카드 빈칸 '가운데'에 겹치는 라벨 — 메인 블랙 / 공식 폰트.

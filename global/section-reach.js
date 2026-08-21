@@ -56,6 +56,13 @@
     if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
         document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
+    /* 일산 분원 — 서초 페이지를 복제해 만든 페이지라 .map_naver 를 그대로
+       갖고 있다. 아래 서초 판정보다 먼저 걸러내지 않으면 일산 방문·전화·
+       스크롤이 통째로 서초 실적에 합산된다. URL 우선, 지도 컨테이너에
+       박아둔 data-map-name 을 폴백으로 본다(슬러그가 바뀌어도 살아남게). */
+    var mapName = document.querySelector('[data-map-name]');
+    if (/(^|\/)ilsan(\/|$)/.test(p) ||
+        (mapName && /일산/.test(mapName.getAttribute('data-map-name') || ''))) return 'ilsan';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
@@ -102,6 +109,17 @@
     ],
     seocho: [
       { key: 'hero',  label: '첫화면',   sel: 'section[class*="intro_backgra"]' },
+      { key: 'map',   label: '지도',     sel: '#map_naver, .map_naver' },
+      { key: 'vets',  label: '의료진',   sel: '#vets, #vets_M' },
+      { key: 'phone', label: '전화문의', sel: '#phone' },
+      { key: 'photo', label: '공간사진', sel: '#photo' }
+    ],
+    /* 일산 분원 — 파트 구성은 서초와 같지만 첫화면 섹션 클래스가 다르다
+       (서초 intro_backgra / 일산 intro(ilsan)_backgra). 클래스 대신 앵커
+       id 를 먼저 본다. 이 목록이 없으면 DEFS 가 비어 일산은 파트 도달이
+       통째로 측정되지 않는다. */
+    ilsan: [
+      { key: 'hero',  label: '첫화면',   sel: '#intro, #intro_M, section[class*="intro_backgra"]' },
       { key: 'map',   label: '지도',     sel: '#map_naver, .map_naver' },
       { key: 'vets',  label: '의료진',   sel: '#vets, #vets_M' },
       { key: 'phone', label: '전화문의', sel: '#phone' },
