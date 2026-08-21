@@ -114,6 +114,9 @@
     'home/global/coming-soon.js',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
+    /* 일산 분원 전용 — 굳어버린 px 글자 크기를 원래 화면 비례로 되돌린다.
+       :has() 로 일산 페이지에서만 적용되므로 서초에서는 무해. */
+    'global/ilsan-type.css',
     /* 서초본원 전용 */
     'seocho/seocho.css',
     'seocho/seocho.js',
