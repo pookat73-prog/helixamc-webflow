@@ -1471,3 +1471,158 @@ window.HelixBranch = window.HelixBranch || (function () {
     run();
   }
 })();
+
+/* ================================================================
+   주소 복사 버튼 — [data-copy-address] 가 박힌 요소 옆에 자동 생성
+   ================================================================
+   왜 필요한가: 지도를 눌러 네이버로 넘어가는 길은 "이미 네이버 지도를
+   쓰는 사람" 에게만 편하다. 티맵·카카오내비를 쓰거나, 보호자끼리 주소를
+   메시지로 보내는 경우엔 붙여넣을 텍스트가 있어야 한다. 특히 일산 분원의
+   공영주차장 안내처럼 병원 주소와 다른 장소는 지도 핀으로는 전달이 안 된다.
+
+   쓰는 법 (Webflow Designer 의 Element settings > Custom attributes):
+     data-copy-address   복사할 문자열. 값이 'self' 면 그 요소의 텍스트를 복사
+     data-copy-label     측정용 이름 (예: parking1). 없으면 요소 텍스트 앞부분
+     data-copy-text      버튼 문구 (기본 '주소 복사')
+
+   동작: 클릭 → 클립보드 복사 → 버튼이 1.6초간 '복사됨' 으로 바뀜 → GA4
+     <branch>_address_copy  { item_type:'address_copy', branch, device,
+                              section:<label>, value:<복사한 문자열> }
+
+   ⚠️ 페이지에 [data-copy-address] 가 하나도 없으면 아무 일도 하지 않는다
+      (서초 페이지는 현재 이 attribute 가 없어 무해).
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var DEBUG = /[?&]debug-copy=1/.test(location.search);
+  function log() { if (DEBUG) console.log.apply(console, ['[copy-address]'].concat([].slice.call(arguments))); }
+
+  /* 기기 판정은 다른 블록과 같은 창구(HelixVP)를 쓴다 — 폭만 보고 나누면
+     태블릿·확대 화면이 모바일로 잘못 잡히던 문제를 global/viewport.js 가
+     이미 교정해 두었기 때문. */
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
+
+  /* 전화번호 블록의 것과 같은 방식 — 최신 API 우선, 막히면 textarea 폴백.
+     (iOS 사파리·비-HTTPS 프리뷰에서 navigator.clipboard 가 없는 경우 대비) */
+  function copyText(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text)
+          .then(function () { return true; })
+          .catch(function () { return fallbackCopy(text); });
+      }
+    } catch (e) {}
+    return Promise.resolve(fallbackCopy(text));
+  }
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function track(label, value) {
+    var params = {
+      item_type: 'address_copy',
+      branch: window.HelixBranch.name(),
+      device: device(),
+      section: label || 'unknown',
+      value: value
+    };
+    try {
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';
+        window.gtag('event', window.HelixBranch.key() + '_address_copy', params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = window.HelixBranch.key() + '_address_copy';
+        window.dataLayer.push(params);
+      }
+    } catch (e) {}
+    log('tracked', label, value);
+  }
+
+  var ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<rect x="9" y="9" width="11" height="11" rx="2"/>' +
+      '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>' +
+    '</svg>';
+  var ICON_DONE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M20 6 9 17l-5-5"/>' +
+    '</svg>';
+
+  /* 복사할 문자열. 'self' 면 요소 자신의 텍스트(버튼 문구는 제외). */
+  function valueOf(host) {
+    var raw = (host.getAttribute('data-copy-address') || '').trim();
+    if (raw && raw.toLowerCase() !== 'self') return raw;
+    var clone = host.cloneNode(true);
+    var btn = clone.querySelector('.helix-copy-btn');
+    if (btn) btn.parentNode.removeChild(btn);
+    return (clone.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function labelOf(host) {
+    var l = (host.getAttribute('data-copy-label') || '').trim();
+    if (l) return l;
+    return (host.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24) || 'unknown';
+  }
+
+  function bind(host) {
+    if (host.__helixCopyBound) return;
+    host.__helixCopyBound = true;
+
+    var text = (host.getAttribute('data-copy-text') || '주소 복사').trim();
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'helix-copy-btn';
+    btn.innerHTML = ICON + '<span>' + text + '</span>';
+    btn.setAttribute('aria-label', labelOf(host) + ' 주소 복사');
+
+    var resetTimer = null;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var value = valueOf(host);
+      if (!value) { log('empty value — skip'); return; }
+
+      Promise.resolve(copyText(value)).then(function (ok) {
+        btn.classList.add(ok ? 'is-done' : 'is-failed');
+        btn.innerHTML = (ok ? ICON_DONE : ICON) +
+                        '<span>' + (ok ? '복사됨' : '복사 실패') + '</span>';
+        if (resetTimer) clearTimeout(resetTimer);
+        resetTimer = setTimeout(function () {
+          btn.classList.remove('is-done', 'is-failed');
+          btn.innerHTML = ICON + '<span>' + text + '</span>';
+        }, 1600);
+        if (ok) track(labelOf(host), value);
+      });
+    });
+
+    host.appendChild(btn);
+    log('bound', labelOf(host));
+  }
+
+  function scan() {
+    var hosts = document.querySelectorAll('[data-copy-address]');
+    if (!hosts.length) { log('no [data-copy-address] on this page'); return; }
+    [].slice.call(hosts).forEach(bind);
+  }
+
+  /* Webflow 가 요소를 늦게 그리는 경우가 있어 진입 시점 + 보강 1회. */
+  function run() { scan(); setTimeout(scan, 1200); }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
