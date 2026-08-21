@@ -186,7 +186,10 @@ window.HelixBranch = window.HelixBranch || (function () {
       entry.waiting.splice(0).forEach(function (f) { f(coords); });
     }
     if (!naver.maps.Service || !naver.maps.Service.geocode) {
-      console.warn('[naver-map] geocoder 서브모듈 없음 — 주소로 좌표를 찾을 수 없음');
+      /* 여기까지 왔다는 건 아래 waitForSdk 의 대기 시간(6초) 안에도 부가 기능이
+         안 왔다는 뜻이다. 네트워크가 아주 느리거나 네이버 쪽 장애. */
+      console.warn('[naver-map] geocoder 서브모듈이 끝내 도착하지 않음 — ' +
+                   'data-map-lat / data-map-lng 를 박아두면 이 경로 자체를 안 탄다');
       settle(null); return;
     }
     naver.maps.Service.geocode({ query: address }, function (status, res) {
@@ -195,8 +198,8 @@ window.HelixBranch = window.HelixBranch || (function () {
         /* debug 플래그 없이도 남긴다 — 지도가 빈 채로 뜨는 사고는 콘솔 한 줄이
            있느냐로 진단 시간이 갈린다. 좌표(data-map-lat/lng)를 박아두면
            이 경로 자체를 안 탄다. */
-        console.warn('[naver-map] 주소로 좌표를 못 찾음 (NCP Geocoding 미사용 설정 가능성):',
-                     address, status);
+        console.warn('[naver-map] 네이버가 이 주소의 좌표를 못 돌려줌:', address, status,
+                     '— 주소 표기를 바꾸거나 data-map-lat / data-map-lng 로 좌표를 박을 것');
         log('geocode failed', address, status); settle(null); return;
       }
       var lat = parseFloat(list[0].y), lng = parseFloat(list[0].x);
@@ -279,11 +282,41 @@ window.HelixBranch = window.HelixBranch || (function () {
        (이전의 주소 재지오코딩 덮어쓰기는 핀을 라벨에서 밀어내 제거) */
   }
 
+  /* 이 페이지에 "주소만 있고 좌표는 없는" 지도가 있나.
+     그런 지도는 주소를 좌표로 바꿔주는 부가 기능이 있어야 그릴 수 있다. */
+  function needsGeocoder() {
+    var list = findContainers();
+    for (var i = 0; i < list.length; i++) {
+      if (clinicFor(list[i]).needsGeocode) return true;
+    }
+    return false;
+  }
+  function geocoderReady() {
+    return !!(window.naver && naver.maps && naver.maps.Service && naver.maps.Service.geocode);
+  }
+
   /* SDK 가 늦게 도달할 수 있으므로 다중 시점 시도 */
   function waitForSdk(retries) {
     retries = retries == null ? 30 : retries;
-    if (window.naver && window.naver.maps) { initMap(); return; }
+    var sdkReady = !!(window.naver && window.naver.maps);
+
+    /* ⚠️ 지도 본체(naver.maps)가 왔다고 바로 출발하면 안 되는 경우가 있다.
+       네이버는 본체를 먼저 띄우고, 주소→좌표 변환 같은 부가 기능은 그 뒤에
+       따로 불러온다. 본체만 보고 출발하면 좌표를 주소로 찾아야 하는 지점
+       (일산)에서 "부가 기능이 없다" 며 지도를 통째로 포기해 버린다.
+
+       실제로 일산 지도가 안내문만 뜬 채였던 원인이 이것이었다. 네이버
+       콘솔의 Geocoding 사용량이 0 이었던 게 증거 — 변환 요청을 보내기도
+       전에 포기하고 있었다.
+
+       좌표가 코드에 박혀 있는 서초는 부가 기능이 필요 없어, 예전과 똑같이
+       기다리지 않고 즉시 출발한다. */
+    if (sdkReady && (!needsGeocoder() || geocoderReady())) { initMap(); return; }
+
     if (retries <= 0) {
+      /* 본체는 왔는데 부가 기능만 안 온 경우 — 그래도 initMap 까지는 간다.
+         (거기서 안내 패널과 콘솔 경고로 원인이 남는다) */
+      if (sdkReady) { log('geocoder submodule timeout — proceeding anyway'); initMap(); return; }
       var c = findContainer();
       if (c) renderFallback(c, '지도 SDK 로드 시간 초과');
       log('SDK timeout');
