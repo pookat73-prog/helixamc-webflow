@@ -275,6 +275,8 @@ jobs:
             "home/global/footer.js"
             "home/global/card-stack.css"
             "home/global/card-stack.js"
+            "home/global/scroll-hint.css"
+            "home/global/scroll-hint.js"
             "home/equipment/equipment.js"
             "about/about.css"
             "about/about.js"
