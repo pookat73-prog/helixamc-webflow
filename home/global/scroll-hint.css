@@ -11,7 +11,7 @@
 .hx-scroll-hint {
   position: fixed;
   left: 50%;
-  bottom: 26px;
+  bottom: 46px;
   transform: translateX(-50%);
   z-index: 900;                 /* 위로가기(1000)·플로팅 CTA(9000) 아래 */
   pointer-events: none;         /* 화면을 가로막지 않음 */
@@ -32,8 +32,8 @@
   display: block;
   width: 13px;
   height: 13px;
-  border-right: 2px solid rgba(255, 255, 255, 0.85);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.85);
+  border-right: 3px solid rgba(255, 255, 255, 0.85);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.85);
   transform: rotate(45deg);
   animation: hxScrollHintBob 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite,
              hxScrollHintShine 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
@@ -59,8 +59,9 @@
 
 /* 모바일 — 살짝 작게, 하단 여백도 줄임 */
 @media (max-width: 767px) {
-  .hx-scroll-hint { bottom: 18px; }
-  .hx-scroll-hint__chevron { width: 11px; height: 11px; border-width: 2px; }
+  .hx-scroll-hint { bottom: 34px; }
+  /* 두께는 정수로 — 브라우저가 소수 border-width 를 내림해 2.5px 가 2px 이 됨 */
+  .hx-scroll-hint__chevron { width: 12px; height: 12px; border-width: 3px; }
 }
 
 /* 움직임 최소화를 선호하는 사용자 — 화살표는 두되 움직임/반짝임만 끔 */
