@@ -15,23 +15,31 @@
 
 리포트의 처방을 그대로 따르면 안 되는 지점이 몇 군데 있다. 실제 저장소를 grep/읽기로 확인한 결과다.
 
-- **`lead_phone_call`, `lead_form_submit`, `tel_copy_seocho_mobile`는 저장소 코드 어디에도 실제로 발화되지 않는다.** GA4 관리자 화면에 이름만 등록돼 있고 사이트는 다른 이름을 쏘고 있는 것으로 보인다. 실제 발화 이름은 아래 "실제 이벤트 이름표" 참고.
+- **`lead_phone_call`, `lead_form_submit`, `lead_directions`, `lead_phone_copy`는 저장소 코드 어디에도 실제로 발화되지 않는다** (`grep "lead_"` 결과 0건, 2026-08-25 재확인). 그런데 GA4 관리자 화면(사용자 캡처, 2026-08-25)에는 이 네 개가 **주요 이벤트로 등록돼 있고, `lead_directions`/`lead_form_submit`/`lead_phone_call` 세 개는 실제로 "헬릭스 홈" 스트림에 데이터가 잡히는 중**이다. 코드에 없는 이름인데 실 데이터가 있다는 건, **GA4 관리자 화면의 "이벤트 만들기"(Create Event) 기능으로 원본 이벤트를 이 이름으로 다시 만드는 규칙이 이미 설정돼 있다는 뜻**이다(저장소 밖, GA4 쪽 설정이라 코드 조사로는 안 보임). 리포트가 "이름이 서로 달라 23%만 잡힌다"고 한 것도 이 규칙이 원본 이벤트 중 일부만 매칭하고 있어서일 가능성이 높다. → **P02의 실제 작업 지점은 코드가 아니라 이 "이벤트 만들기" 규칙의 일치 조건을 넓히는 것**. 다음에 필요한 건 관리 > 이벤트 화면 상단의 "이벤트 만들기" 진입 후 `lead_phone_call`/`lead_form_submit`/`lead_directions` 각각을 클릭해서 나오는 "일치 조건" 상세 캡처.
+- 사용자가 공유한 "최근 활동"(실제 발생 이벤트 전체 목록, 2026-08-25 캡처) 덕분에 아래 표를 크게 보강함. 실제 발화 이름은 아래 "실제 이벤트 이름표" 참고.
 - **응급증상 카드의 전화 버튼은 이미 지점(서초/일산)과 기기(모바일/데스크톱)를 파라미터로 남기고 있다.** 다만 `emergency.js`/`modal.js`는 코드 주석("일산 제외 — 사용자 요청")으로 **일산을 의도적으로 집계에서 뺀다.** `branch-cta.js`만 일산을 포함한다. 같은 폴더 안에서 정책이 갈린다 — 리포트가 "일산 근거로 쓰자"고 제안한 것과 정면으로 충돌하므로 손대기 전 확인 필요.
 - **내부 링크에 UTM 파라미터가 하드코딩된 곳을 못 찾았다.** `floating_cta/(not set)` 197세션의 원인이 리포트가 말한 "내부 링크 UTM"이 아닐 가능성이 있다. `floating-cta.js`엔 과거 비슷한 사고(커스텀 파라미터 이름이 GA4 예약어 `source`와 겹쳐 유입경로를 덮어쓴 사고, 165세션 왜곡)가 있었고 이미 `cta_src`로 개명해 고쳐진 상태 — 지금 197세션은 다른 원인일 수 있어 재조사가 먼저다.
 - **`lead_form_submit`이라는 별도 이벤트는 없다.** `cta_form_submit` 하나뿐이고, `session.js`가 이걸 `conv_type: 'lead'`로 태깅한다. 리포트의 "폼 제출 숫자가 두 개" 항목은 GA4 쪽 등록 이름 착오로 보인다 — P02 처리 시 자연히 해소.
 - **스크롤 이중측정**: 커스텀 코드(`scroll-depth.js`) 안에서는 마일스톤(25/50/75/100%)과 연속값(`percent_scrolled`)이 섞이지 않는다. 리포트가 말한 "섹션 이벤트에도 연속값이 붙는다"는 GA4 자체 내장 자동 스크롤 이벤트(향상된 측정, 90% 지점 자동 발사)와 혼동됐을 가능성이 높다 → 코드 문제가 아니라 GA4 관리자 화면에서 끌 스위치일 수 있음.
 - **섹션 순서(`section_index`) 안 맞는 문제의 원인은 확인됨**: 홈에서 지점 카드와 SVICC 배너가 같은 `<section>` 태그 안에 있어, 실제 DOM 순회가 아니라 배열 선언 순서로 번호가 매겨진다. 과거 이 자리에서 승격 충돌 버그(한쪽이 0건으로 관측되던 사고)를 이미 한 번 겪어 우회 처리한 이력이 있다 — 다시 건드릴 땐 신중하게.
 
-### 실제 이벤트 이름표 (전화 관련, P02/P03 착수 시 참고)
+### 실제 이벤트 이름표 (전화·유입 관련, P02/P03 착수 시 참고, 2026-08-25 GA4 최근활동 캡처로 확정)
 
 | 파일 | 실제 이벤트명 | 지점 구분 | 기기 구분 |
 |---|---|---|---|
 | `global/floating-cta.js` | `cta_call` | – | – |
-| `home/global/sections-animations.js` | `home_phone_call_<지점>_<기기>` | O | O |
-| `emergency/emergency.js` | `emergency_card_cta_<기기>` | 서초만 (일산 의도적 제외) | O |
-| `emergency/modal.js` | `emergency_modal_call_<기기>` | 서초만 (일산 의도적 제외) | O |
+| `home/global/sections-animations.js` | `home_phone_call_<지점>_<기기>` (지점: seocho/ilsan/other) | O | O |
+| `emergency/emergency.js` | `emergency_card_cta_<기기>` | 서초만 (일산 제외 조건 2026-08-25 제거함, PR #1452) | O |
+| `emergency/modal.js` | `emergency_modal_call_<기기>` | 서초만 (일산 제외 조건 2026-08-25 제거함, PR #1452) | O |
 | `emergency/branch-cta.js` | `emergency_call_<기기>` | 서초+일산 모두 | O |
-| `faq/cta-call.js`, `seocho/seocho.js` | 파일별 별도 확인 필요 | – | – |
+| `seocho/seocho.js` | `seocho_phone_intent`(번호 누른 순간, 확인창 뜨기 전) / `seocho_phone_call`(확인창에서 확인 누른 뒤) | 서초 고정 | – |
+| `faq/cta-call.js` | `faq_phone_call` | – | – |
+| (미상 — copy 계열) | `tel_copy_seocho_mobile`, `tel_copy_ilsan_desktop`, `tel_copy_ilsan_mobile`, `tel_copy_other_desktop`, `tel_copy_other_mobile` | O | O |
+| (미상 — 주소 복사) | `copy_address_seocho_desktop/mobile`, `copy_address_ilsan_desktop/mobile` | O | O |
+
+**GA4 "최근 활동" 탭에서 확인된, 코드 조사로는 못 찾은 이벤트**: `tel_copy_*`, `copy_address_*`, `copy_email_*`는 실제 발화 위치를 아직 못 찾음(아마 seocho.js 또는 about.js 안, 재검색 필요). `seocho_phone_intent`/`seocho_phone_call`/`faq_phone_call`은 2026-08-25 grep으로 위치 확정.
+
+**주요 이벤트(키 이벤트) 4개의 실제 상태 (2026-08-25 GA4 캡처, "지난 28일" 기준)**: `lead_directions`·`lead_form_submit`·`lead_phone_call` = 헬릭스 홈 스트림에 데이터 있음 / `lead_phone_copy`·`purchase` = 스트림 데이터 감지 안 됨(0건).
 
 ---
 
@@ -47,9 +55,9 @@
 - [ ] 🖱 실제 발화 이름(`cta_call`, `home_phone_call_*`, `emergency_call_*`, `emergency_card_cta_*`, `emergency_modal_call_*`, `cta_form_submit`, `lead_directions` 등)으로 GA4 키 이벤트 재등록. 존재하지 않는 `lead_phone_call`/`lead_form_submit`는 등록 해제.
 
 ### P03. 응급증상 카드 전화버튼 지점 기록 🤖❓
-- [ ] ❓ 사용자 확인: `emergency.js`/`modal.js`의 "일산 제외" 정책이 지금도 유효한지, 일산 수요 근거 확보를 위해 지금 풀어도 되는지
-- [ ] 🤖 (확인되면) 일산 제외 조건 제거해 세 파일 정책 통일
-- [ ] P02와 묶어서 GA4 키 이벤트 등록까지 마무리
+- [x] ❓→✅ 사용자 확인 완료: 지금 풀어도 됨
+- [x] 🤖 `emergency.js`(카드 옆 전화·지도 블록 2곳), `modal.js`(상세모달 분원 전화)에서 "일산 제외(사용자 요청)" 조건 제거 — 이제 `branch-cta.js`와 동일하게 서초·일산 모두 `branch` 파라미터로 집계됨
+- [ ] P02와 묶어서 GA4 키 이벤트 등록까지 마무리 (GA4 관리자 화면 확인 필요, 아직 대기)
 
 ### P04. 내부 링크 발 "새 세션" 문제 🤖⚠️ — 재조사 먼저
 - [ ] 🤖 `session.js`의 `decorate()`/`entry_src` 로직과 `floating-cta.js`의 파라미터를 GA4 예약 파라미터 목록과 전부 대조
@@ -65,8 +73,11 @@
 
 ### 실행우선순위 15개엔 없지만 결함목록에 있는 추가 항목
 
-- [ ] **D5 (치명)** 유입처 필드에 토큰 문자열 34건 — 🤖 `sheet-log.js`에 유입처 값 길이·형식 검증 추가, 어느 링크가 토큰을 실어 보내는지 추적. main 직행.
-- [ ] **D21** `home_page_view`/`seocho_page_view` 등 자체 page_view 이벤트 제거, 표준 `page_view`만 사용 — 🤖 `scroll-depth.js`의 `trackPageView()` 정리.
+- [x] **D5 (치명)** 유입처 필드에 토큰 문자열 34건 — 코드에서 두 후보 지점을 찾아 둘 다 고침:
+  1. `session.js`의 `s.ref`(`document.referrer` 원문 저장) — 조사 결과 이 필드는 현재 GA4/시트로 실제 전송되진 않고 있었지만(디코레이트 단계에서 안 실림), 앞으로 실릴 경우를 대비해 origin+pathname만 남기고 쿼리·해시는 버리도록 `safeRef()` 헬퍼 추가.
+  2. `floating-cta.js:670` — Webflow 폼 제출 payload의 `source` 필드가 `location.href`(쿼리스트링 포함 전체 URL)를 그대로 담고 있던 것을 확인. **이쪽이 실제 원인일 가능성이 더 높음**(필드명이 "source"라 리포트의 "유입처"와 직접 대응, 폼 제출마다 매번 나감). `location.origin + location.pathname`으로 교체.
+  - ⚠️ 리포트가 말한 정확히 그 34건이 어느 파이프라인 값인지는 값 자체를 리포트에 안 옮겨놔서 100% 확정은 못 함 — 원본 시트를 직접 봐야 완전히 닫힌다. 다음 회차 확인 과제에 추가.
+- [ ] **D21** `home_page_view`/`seocho_page_view` 등 자체 page_view 이벤트 제거 — **보류로 전환**. 조사 결과 원본 로그(구글시트)는 이 이벤트가 유일한 "페이지만 열고 아무 행동 없이 나감" 신호원이었음(GA4의 자동 page_view는 sheet-log.js가 가로채는 경로를 안 거쳐서 로그에 안 남음). 지우면 GA4 쪽 리포트는 깔끔해지지만 원본 로그의 "확실한 실패"류 집계가 통째로 사라짐 — 착수 전 더 안전한 대안 설계 필요.
 - [ ] **D15** 스크롤 이중측정 — 🖱 GA4 관리자 > 데이터 스트림 > 향상된 측정에서 자동 "스크롤" 이벤트 끄기(커스텀 측정과 중복). 코드 변경 불필요.
 - [ ] **D16** `section_index` 순서 — 🤖 홈의 지점카드+SVICC를 실제 DOM 순서 기준으로 다시 매기거나, 최소한 "같은 섹션 내 상하 배치를 나타내는 값"이라 문서화. 과거 회귀 이력 있어 신중히 접근.
 - [ ] **D17** 전화 이벤트 10개 이름 통합 — 사이트 전역(6곳 이상)을 건드리는 큰 리팩터링. **P02 완료 후 별도 세션에서 전용으로 진행** 권장. 지금은 통일하지 말고 파라미터 정합만 맞춘다.
@@ -105,6 +116,7 @@
 - [ ] 상담 버튼 클릭 236건 vs 상담창 열림 83건 — 같은 흐름인지 코드 확인
 - [ ] 인증 모달 열기 GA4 115건 vs 원본 19건 — 전송 누락 여부
 - [ ] 응급 증상 미열람 카드 3개(실신·과다출혈·안구돌출) — 순서 조정(P09) 후 2주 재측정
+- [ ] 유입처 토큰 문자열 34건(D5)이 정확히 어느 필드/파이프라인에서 나왔는지 원본 시트에서 직접 확인 — session.js(ref)/floating-cta.js(source) 두 곳을 고쳤지만 어느 쪽이 실제 원인이었는지 미확정
 
 ---
 
