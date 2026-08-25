@@ -667,7 +667,10 @@
     /* Webflow 폼 엔드포인트로 제출 */
     var payload = {
       name:           'floating-cta-form',
-      source:         location.href,
+      /* 2026-08 측정 개선: 전체 URL(location.href)을 그대로 넣으면 쿼리스트링에
+         실려온 토큰 같은 문자열이 그대로 폼 제출 기록에 남는다. 페이지 식별에는
+         경로만 있으면 충분하므로 쿼리·해시는 버린다. */
+      source:         location.origin + location.pathname,
       'email-subject': '[상담신청] ' + ownerVal,
       '보호자성함':   ownerVal,
       '연락처':       digits,
