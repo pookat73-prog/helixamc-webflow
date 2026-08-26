@@ -236,10 +236,9 @@
       if (branch) {
         var tel = branch.getAttribute('data-tel') || '';
         var bkey = branch.getAttribute('data-branch') || '';
-        /* 상세모달 CTA 측정 — 일산 제외(사용자 요청), 서초만 집계 */
-        if (bkey === 'seocho') {
-          emGa('emergency_modal_call', { item_type: 'emergency_modal_cta', branch: '서초', value: tel });
-        }
+        /* 상세모달 CTA 측정 — 서초·일산 모두 집계 (일산 수요 근거 확보, 2026-08 측정 개선) */
+        var bname = bkey === 'ilsan' ? '일산' : '서초';
+        emGa('emergency_modal_call', { item_type: 'emergency_modal_cta', branch: bname, value: tel });
         if (tel) {
           var ok = window.confirm(tel + ' 로 전화 연결하시겠습니까?');
           if (!ok) e.preventDefault();

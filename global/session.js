@@ -105,6 +105,20 @@
     return host;   /* 그 외는 도메인 그대로 — 나중에 시트에서 눈으로 확인 */
   }
 
+  /* ── 유입처 원문 정제 (2026-08 측정 개선) ─────────────────────
+     document.referrer 를 그대로 저장하면 쿼리스트링에 실려온 인증
+     토큰 같은 긴 문자열이 로그에 그대로 남을 수 있다(34행 실측 발견).
+     도메인+경로만 남기고 쿼리·해시는 버린다. 길이도 다시 한 번 자른다. */
+  function safeRef(ref) {
+    if (!ref) return '';
+    try {
+      var u = new URL(ref);
+      return (u.origin + u.pathname).slice(0, 200);
+    } catch (e) {
+      return '';
+    }
+  }
+
   /* ── 현재 방문 확보 (없거나 30분 지났으면 새로 시작) ───────── */
   function ensure() {
     var now = Date.now();
@@ -129,7 +143,7 @@
       id: newId(),
       ts: now,
       src: src,
-      ref: (document.referrer || '').slice(0, 200),
+      ref: safeRef(document.referrer),
       land: location.pathname,                      /* 이번 방문의 첫 페이지 */
       utm_source:   qp.get('utm_source')   || '',
       utm_medium:   qp.get('utm_medium')   || '',

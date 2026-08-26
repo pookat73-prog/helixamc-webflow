@@ -68,10 +68,8 @@
       if (!hit) continue;
       e.preventDefault();
       var tel = CALL_BLOCKS[i].tel;
-      /* 카드 옆 진열 CTA 측정 — 일산 제외(사용자 요청), 서초만 집계 */
-      if (CALL_BLOCKS[i].key === 'seocho') {
-        emGa('emergency_card_cta', { item_type: 'emergency_card_cta', action: 'call', branch: CALL_BLOCKS[i].branch, value: tel });
-      }
+      /* 카드 옆 진열 CTA 측정 — 서초·일산 모두 집계 (일산 수요 근거 확보, 2026-08 측정 개선) */
+      emGa('emergency_card_cta', { item_type: 'emergency_card_cta', action: 'call', branch: CALL_BLOCKS[i].branch, value: tel });
       var ok = window.confirm(tel + ' 로 전화 연결하시겠습니까?');
       if (ok) {
         location.href = 'tel:' + tel.replace(/\D/g, '');
@@ -83,10 +81,8 @@
       var mhit = e.target.closest(MAP_BLOCKS[j].selector);
       if (!mhit) continue;
       e.preventDefault();
-      /* 카드 옆 진열 CTA 측정 — 일산 제외, 서초만 집계 */
-      if (MAP_BLOCKS[j].key === 'seocho') {
-        emGa('emergency_card_cta', { item_type: 'emergency_card_cta', action: 'map', branch: MAP_BLOCKS[j].branch, value: MAP_BLOCKS[j].href || '' });
-      }
+      /* 카드 옆 진열 CTA 측정 — 서초·일산 모두 집계 (일산 수요 근거 확보, 2026-08 측정 개선) */
+      emGa('emergency_card_cta', { item_type: 'emergency_card_cta', action: 'map', branch: MAP_BLOCKS[j].branch, value: MAP_BLOCKS[j].href || '' });
       if (MAP_BLOCKS[j].pending) {
         showPendingToast('준비중입니다');
       } else {
