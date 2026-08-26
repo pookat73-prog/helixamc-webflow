@@ -1,5 +1,9 @@
 # Helix AMC Webflow — Claude 작업 가이드
 
+> 📌 **진행 중인 작업**: 반응형 정리 작업이 `staging` 에서 진행 중이다.
+> 이어서 작업하기 전에 **`HANDOVER-반응형-2026-08-17.md` 를 먼저 읽을 것.**
+> (오늘 무엇을 왜 했는지 · 다음 할 일 · 재발 방지 교훈이 정리돼 있음)
+
 ## 🗣 용어 순화해서 표현하기 (LOCKED v1)
 
 사용자에게 답할 때 **전문 용어를 그대로 던지지 말 것**. 코드 안에서는 정확한 명칭 그대로 써도 되지만, 사용자 대화·요약·진단 설명에서는 한 번에 들어오게 풀어 써야 함.
@@ -147,6 +151,27 @@ fetch(document.querySelector('script[src*="seocho/bootstrap"]').src + '?cb=' + D
 ### 실패 사례 (재발 금지)
 
 `seocho/doctors/` 의료진 모달 인프라 추가 (PR #703~#711) 후 사용자가 스테이징에서 검증 — Webflow Publish OK, attribute 84개 다 박힘, 그러나 모달 안 뜸. 콘솔에 `__helixDoctorModalInit=undefined`. PR #713 으로 bootstrap.js v1.3→v1.4 버전 bump 푸시 — 워크플로우 그린이지만 여전히 jsDelivr edge 캐시 stale. 결국 사용자가 콘솔에서 직접 `purge.jsdelivr.net` 강제 호출 후에야 동작. 사용자 "어휴 진짜". 본 처방 콘솔 명령 한 줄을 처음부터 안내했으면 30초였을 일.
+
+### 🔒 예방 규칙 — 새 CSS/JS 파일을 만들지 말 것 (LOCKED v1, 2026-08-17 사고)
+
+**증상**: 서초 페이지 반응형 규칙을 `seocho/seocho-responsive.css` 라는 **새 파일**로 만들고 bootstrap FILES 에 등록·워크플로우 퍼지까지 다 했는데, 사용자 브라우저에 **한 번도 도달하지 않았다.** 그동안 "고쳤습니다" 라고 4차례 보고했으나 실제로는 전부 미적용. 사용자가 진단 명령을 돌려 `CSS로드 false` 가 나오고서야 발각.
+
+**원인**: 새 파일을 불러오려면 **로더(`<page>/bootstrap.js`) 자신이 갱신**되어야 하는데, 그 로더가 jsDelivr edge 에 옛 버전으로 캐시돼 있으면 **새 파일의 존재 자체를 모른 채** 예전 FILES 만 불러온다. 워크플로우 퍼지가 성공해도 일부 edge 노드는 옛 로더를 계속 준다. 위 PR #703~#713 과 같은 뿌리.
+
+**규칙**:
+
+1. **페이지에 CSS/JS 를 추가할 때 새 파일을 만들지 않는다.** 이미 그 페이지의 FILES 에 오래전부터 있는 파일(`seocho/seocho.css`, `home/global/sections-animations.css` 등)에 **이어 붙인다.** 로더를 건드리지 않으므로 이 사고가 구조적으로 불가능해진다.
+2. 새 파일이 정말 필요하면(전용 모듈 등) **파일 추가 + FILES 등록 + 워크플로우 퍼지/워밍업 + 로더 강제 퍼지 안내**를 한 세트로 처리한다. 로더 퍼지를 빼면 안 된다.
+3. **"고쳤습니다" 라고 말하기 전에 적용 여부를 확인시킨다.** 코드가 맞다는 것과 화면에 도달했다는 것은 다르다. 확인용 한 줄:
+
+```js
+(()=>{const c=document.querySelector('.대상클래스');
+console.log('화면폭', innerWidth+'×'+innerHeight,
+'| CSS로드', [...document.styleSheets].some(s=>/파일이름/.test(s.href||'')),
+'| 실제값', getComputedStyle(c).속성);})()
+```
+
+**재발 금지**: 새 CSS 파일을 만들어 로더에 등록하고 "머지했으니 반영됨" 으로 보고하기. 실제 도달을 확인하기 전에는 미적용으로 간주할 것.
 
 ---
 

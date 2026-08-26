@@ -55,6 +55,29 @@ window.HelixBranch = window.HelixBranch || (function () {
     naverPlaceId: '36786130'
   };
 
+  /* ----- 지점별 위치 덮어쓰기 -----
+     지도 컨테이너(.map_naver)에 data-map-* 속성이 붙어 있으면 그 값이 이긴다.
+     속성이 없으면 위 서초 기본값 그대로 → 서초 페이지는 동작 변화 없음.
+     일산 등 다른 지점 페이지는 Webflow 에서 속성만 박으면 되고 코드 복제 불필요.
+       data-map-lat / data-map-lng / data-map-name / data-map-address / data-map-place */
+  function clinicFor(container) {
+    if (!container || !container.getAttribute) return CLINIC;
+    var lat = parseFloat(container.getAttribute('data-map-lat'));
+    var lng = parseFloat(container.getAttribute('data-map-lng'));
+    var addr = container.getAttribute('data-map-address');
+    var hasCoords = isFinite(lat) && isFinite(lng);
+    return {
+      name: container.getAttribute('data-map-name') || CLINIC.name,
+      address: addr || CLINIC.address,
+      lat: hasCoords ? lat : CLINIC.lat,
+      lng: hasCoords ? lng : CLINIC.lng,
+      naverPlaceId: container.getAttribute('data-map-place') || CLINIC.naverPlaceId,
+      /* 주소만 주고 좌표를 안 준 지점 → 런타임에 주소로 좌표를 찾는다.
+         좌표를 준 지점(서초)은 false 라 지오코딩을 타지 않는다. */
+      needsGeocode: !hasCoords && !!addr
+    };
+  }
+
   var DEBUG = /[?&]debug-naver=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[naver-map]'].concat([].slice.call(arguments))); }
 
@@ -72,18 +95,21 @@ window.HelixBranch = window.HelixBranch || (function () {
     return list[0] || null;
   }
 
-  function buildDirectionsUrl() {
+  function buildDirectionsUrl(c) {
     /* 사용자 요청: "길찾기" 버튼이 실제 길찾기 화면이 아니라
        네이버 지도의 서초 본원 플레이스(업체) 페이지로 가야 함.
        플레이스 페이지 안에 영업정보·리뷰·길찾기 버튼이 다 들어 있어
        사용자가 원하는 정보를 원스톱으로 봄. */
-    return CLINIC.naverPlaceId
-      ? 'https://map.naver.com/p/entry/place/' + CLINIC.naverPlaceId
-      : 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
+    c = c || CLINIC;
+    return c.naverPlaceId
+      ? 'https://map.naver.com/p/entry/place/' + c.naverPlaceId
+      : 'https://map.naver.com/p/search/' + encodeURIComponent(c.address);
   }
 
   function renderFallback(container, msg) {
-    var url = 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
+    /* 지도를 못 그릴 때의 탈출구 — 업체 페이지가 있으면 그쪽(영업정보·길찾기가
+       한 화면에 있음), 없으면 주소 검색으로 보낸다. */
+    var url = buildDirectionsUrl(clinicFor(container));
     container.innerHTML =
       '<div class="naver-map-fallback">' +
         '<div>' + (msg || '지도를 불러올 수 없습니다.') + '</div>' +
@@ -95,7 +121,7 @@ window.HelixBranch = window.HelixBranch || (function () {
     if (container.querySelector('.naver-map-directions')) return;
     var a = document.createElement('a');
     a.className = 'naver-map-directions';
-    a.href = buildDirectionsUrl();
+    a.href = buildDirectionsUrl(clinicFor(container));
     a.target = '_blank';
     a.rel = 'noopener';
     a.innerHTML =
@@ -109,7 +135,7 @@ window.HelixBranch = window.HelixBranch || (function () {
     /* GA4 — 길찾기(네이버 플레이스) 클릭. target=_blank 라 페이지는 유지되지만
        안전하게 beacon 전송. 지도 마커 클릭이 아니라 명시적 "길찾기" 버튼만 집계. */
     a.addEventListener('click', function () {
-      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var payload = {
         item_type: 'directions',
         branch: window.HelixBranch.name(),
@@ -145,8 +171,62 @@ window.HelixBranch = window.HelixBranch || (function () {
     containers.forEach(mountMap);
   }
 
+  /* 주소 → 좌표. 같은 주소를 두 컨테이너(데스크탑/모바일)가 함께 쓰므로
+     한 번만 조회하고 결과를 공유한다. */
+  var geoCache = {};
+  function geocode(address, cb) {
+    var hit = geoCache[address];
+    if (hit) {
+      if (hit.done) { cb(hit.coords); return; }
+      hit.waiting.push(cb); return;
+    }
+    var entry = geoCache[address] = { done: false, coords: null, waiting: [cb] };
+    function settle(coords) {
+      entry.done = true; entry.coords = coords;
+      entry.waiting.splice(0).forEach(function (f) { f(coords); });
+    }
+    if (!naver.maps.Service || !naver.maps.Service.geocode) {
+      /* 여기까지 왔다는 건 아래 waitForSdk 의 대기 시간(6초) 안에도 부가 기능이
+         안 왔다는 뜻이다. 네트워크가 아주 느리거나 네이버 쪽 장애. */
+      console.warn('[naver-map] geocoder 서브모듈이 끝내 도착하지 않음 — ' +
+                   'data-map-lat / data-map-lng 를 박아두면 이 경로 자체를 안 탄다');
+      settle(null); return;
+    }
+    naver.maps.Service.geocode({ query: address }, function (status, res) {
+      var list = res && res.v2 && res.v2.addresses;
+      if (status !== naver.maps.Service.Status.OK || !list || !list.length) {
+        /* debug 플래그 없이도 남긴다 — 지도가 빈 채로 뜨는 사고는 콘솔 한 줄이
+           있느냐로 진단 시간이 갈린다. 좌표(data-map-lat/lng)를 박아두면
+           이 경로 자체를 안 탄다. */
+        console.warn('[naver-map] 네이버가 이 주소의 좌표를 못 돌려줌:', address, status,
+                     '— 주소 표기를 바꾸거나 data-map-lat / data-map-lng 로 좌표를 박을 것');
+        log('geocode failed', address, status); settle(null); return;
+      }
+      var lat = parseFloat(list[0].y), lng = parseFloat(list[0].x);
+      settle(isFinite(lat) && isFinite(lng) ? { lat: lat, lng: lng } : null);
+    });
+  }
+
+  /* 좌표가 지정된 컨테이너는 그 값을 그대로 쓴다 (서초가 이 경우).
+     ⚠️ 아래 187행 주석 참고 — 정확 좌표를 주소 지오코딩으로 덮어쓰면 핀이
+     라벨에서 밀려나므로, 지오코딩은 좌표가 "없을 때만" 쓴다. */
   function mountMap(container) {
-    var center = new naver.maps.LatLng(CLINIC.lat, CLINIC.lng);
+    var clinic = clinicFor(container);
+    if (!clinic.needsGeocode) { drawMap(container, clinic); return; }
+    geocode(clinic.address, function (coords) {
+      if (!coords) {
+        /* 위치를 못 찾았는데 기본값(서초)으로 그리면 다른 지점 페이지에
+           엉뚱한 위치가 뜬다 → 차라리 안내 패널을 띄운다. */
+        renderFallback(container, '지도 위치를 불러오지 못했습니다.');
+        return;
+      }
+      clinic.lat = coords.lat; clinic.lng = coords.lng;
+      drawMap(container, clinic);
+    });
+  }
+
+  function drawMap(container, clinic) {
+    var center = new naver.maps.LatLng(clinic.lat, clinic.lng);
     var map = new naver.maps.Map(container, {
       center: center,
       zoom: 16,
@@ -167,20 +247,17 @@ window.HelixBranch = window.HelixBranch || (function () {
     var marker = new naver.maps.Marker({
       position: center,
       map: map,
-      title: CLINIC.name
+      title: clinic.name
     });
 
     /* InfoWindow 제거 — 병원명/주소는 페이지에 이미 텍스트로 노출되어 중복.
        마커 클릭 시 네이버 지도 검색으로 새 창 오픈 (모바일 대응 포함). */
     naver.maps.Event.addListener(marker, 'click', function () {
-      var url = CLINIC.naverPlaceId
-        ? 'https://map.naver.com/p/entry/place/' + CLINIC.naverPlaceId
-        : 'https://map.naver.com/p/search/' + encodeURIComponent(CLINIC.address);
-      window.open(url, '_blank', 'noopener');
+      window.open(buildDirectionsUrl(clinic), '_blank', 'noopener');
     });
 
     addDirectionsButton(container);
-    log('initialized at', CLINIC.lat, CLINIC.lng);
+    log('initialized at', clinic.lat, clinic.lng, clinic.name);
 
     /* 컨테이너가 처음에 0×0 이거나 미디어쿼리로 늦게 보이는 경우, naver
        지도는 자동으로 재측정하지 않아 타일이 영영 안 그려짐 (검정 박스).
@@ -205,11 +282,41 @@ window.HelixBranch = window.HelixBranch || (function () {
        (이전의 주소 재지오코딩 덮어쓰기는 핀을 라벨에서 밀어내 제거) */
   }
 
+  /* 이 페이지에 "주소만 있고 좌표는 없는" 지도가 있나.
+     그런 지도는 주소를 좌표로 바꿔주는 부가 기능이 있어야 그릴 수 있다. */
+  function needsGeocoder() {
+    var list = findContainers();
+    for (var i = 0; i < list.length; i++) {
+      if (clinicFor(list[i]).needsGeocode) return true;
+    }
+    return false;
+  }
+  function geocoderReady() {
+    return !!(window.naver && naver.maps && naver.maps.Service && naver.maps.Service.geocode);
+  }
+
   /* SDK 가 늦게 도달할 수 있으므로 다중 시점 시도 */
   function waitForSdk(retries) {
     retries = retries == null ? 30 : retries;
-    if (window.naver && window.naver.maps) { initMap(); return; }
+    var sdkReady = !!(window.naver && window.naver.maps);
+
+    /* ⚠️ 지도 본체(naver.maps)가 왔다고 바로 출발하면 안 되는 경우가 있다.
+       네이버는 본체를 먼저 띄우고, 주소→좌표 변환 같은 부가 기능은 그 뒤에
+       따로 불러온다. 본체만 보고 출발하면 좌표를 주소로 찾아야 하는 지점
+       (일산)에서 "부가 기능이 없다" 며 지도를 통째로 포기해 버린다.
+
+       실제로 일산 지도가 안내문만 뜬 채였던 원인이 이것이었다. 네이버
+       콘솔의 Geocoding 사용량이 0 이었던 게 증거 — 변환 요청을 보내기도
+       전에 포기하고 있었다.
+
+       좌표가 코드에 박혀 있는 서초는 부가 기능이 필요 없어, 예전과 똑같이
+       기다리지 않고 즉시 출발한다. */
+    if (sdkReady && (!needsGeocoder() || geocoderReady())) { initMap(); return; }
+
     if (retries <= 0) {
+      /* 본체는 왔는데 부가 기능만 안 온 경우 — 그래도 initMap 까지는 간다.
+         (거기서 안내 패널과 콘솔 경고로 원인이 남는다) */
+      if (sdkReady) { log('geocoder submodule timeout — proceeding anyway'); initMap(); return; }
       var c = findContainer();
       if (c) renderFallback(c, '지도 SDK 로드 시간 초과');
       log('SDK timeout');
@@ -321,7 +428,7 @@ window.HelixBranch = window.HelixBranch || (function () {
         tabLink.__helixTabTracked = true;
         tabLink.addEventListener('click', function () {
           var dept = (tabLink.textContent || '').replace(/\s+/g, ' ').trim();
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var payload = {
             item_type: 'doctor_dept_tab',
             branch: window.HelixBranch.name(),
@@ -588,7 +695,7 @@ window.HelixBranch = window.HelixBranch || (function () {
         (function () {
           var titleEl = a.querySelector('.subheader_title') || a;
           var menu = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
-          var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+          var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
           var payload = {
             item_type: 'subheader_nav',
             branch: window.HelixBranch.name(),
@@ -1162,7 +1269,7 @@ window.HelixBranch = window.HelixBranch || (function () {
   var DEBUG = /[?&]debug-phone=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[seocho-phone]'].concat([].slice.call(arguments))); }
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   function digitsOnly(s) { return (s || '').replace(/\D+/g, ''); }
 
@@ -1390,6 +1497,161 @@ window.HelixBranch = window.HelixBranch || (function () {
     setTimeout(tryScroll, 600);
     setTimeout(tryScroll, 1500);
   }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();
+
+/* ================================================================
+   주소 복사 버튼 — [data-copy-address] 가 박힌 요소 옆에 자동 생성
+   ================================================================
+   왜 필요한가: 지도를 눌러 네이버로 넘어가는 길은 "이미 네이버 지도를
+   쓰는 사람" 에게만 편하다. 티맵·카카오내비를 쓰거나, 보호자끼리 주소를
+   메시지로 보내는 경우엔 붙여넣을 텍스트가 있어야 한다. 특히 일산 분원의
+   공영주차장 안내처럼 병원 주소와 다른 장소는 지도 핀으로는 전달이 안 된다.
+
+   쓰는 법 (Webflow Designer 의 Element settings > Custom attributes):
+     data-copy-address   복사할 문자열. 값이 'self' 면 그 요소의 텍스트를 복사
+     data-copy-label     측정용 이름 (예: parking1). 없으면 요소 텍스트 앞부분
+     data-copy-text      버튼 문구 (기본 '주소 복사')
+
+   동작: 클릭 → 클립보드 복사 → 버튼이 1.6초간 '복사됨' 으로 바뀜 → GA4
+     <branch>_address_copy  { item_type:'address_copy', branch, device,
+                              section:<label>, value:<복사한 문자열> }
+
+   ⚠️ 페이지에 [data-copy-address] 가 하나도 없으면 아무 일도 하지 않는다
+      (서초 페이지는 현재 이 attribute 가 없어 무해).
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var DEBUG = /[?&]debug-copy=1/.test(location.search);
+  function log() { if (DEBUG) console.log.apply(console, ['[copy-address]'].concat([].slice.call(arguments))); }
+
+  /* 기기 판정은 다른 블록과 같은 창구(HelixVP)를 쓴다 — 폭만 보고 나누면
+     태블릿·확대 화면이 모바일로 잘못 잡히던 문제를 global/viewport.js 가
+     이미 교정해 두었기 때문. */
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
+
+  /* 전화번호 블록의 것과 같은 방식 — 최신 API 우선, 막히면 textarea 폴백.
+     (iOS 사파리·비-HTTPS 프리뷰에서 navigator.clipboard 가 없는 경우 대비) */
+  function copyText(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text)
+          .then(function () { return true; })
+          .catch(function () { return fallbackCopy(text); });
+      }
+    } catch (e) {}
+    return Promise.resolve(fallbackCopy(text));
+  }
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  function track(label, value) {
+    var params = {
+      item_type: 'address_copy',
+      branch: window.HelixBranch.name(),
+      device: device(),
+      section: label || 'unknown',
+      value: value
+    };
+    try {
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';
+        window.gtag('event', window.HelixBranch.key() + '_address_copy', params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = window.HelixBranch.key() + '_address_copy';
+        window.dataLayer.push(params);
+      }
+    } catch (e) {}
+    log('tracked', label, value);
+  }
+
+  var ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<rect x="9" y="9" width="11" height="11" rx="2"/>' +
+      '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>' +
+    '</svg>';
+  var ICON_DONE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M20 6 9 17l-5-5"/>' +
+    '</svg>';
+
+  /* 복사할 문자열. 'self' 면 요소 자신의 텍스트(버튼 문구는 제외). */
+  function valueOf(host) {
+    var raw = (host.getAttribute('data-copy-address') || '').trim();
+    if (raw && raw.toLowerCase() !== 'self') return raw;
+    var clone = host.cloneNode(true);
+    var btn = clone.querySelector('.helix-copy-btn');
+    if (btn) btn.parentNode.removeChild(btn);
+    return (clone.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function labelOf(host) {
+    var l = (host.getAttribute('data-copy-label') || '').trim();
+    if (l) return l;
+    return (host.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24) || 'unknown';
+  }
+
+  function bind(host) {
+    if (host.__helixCopyBound) return;
+    host.__helixCopyBound = true;
+
+    var text = (host.getAttribute('data-copy-text') || '주소 복사').trim();
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'helix-copy-btn';
+    btn.innerHTML = ICON + '<span>' + text + '</span>';
+    btn.setAttribute('aria-label', labelOf(host) + ' 주소 복사');
+
+    var resetTimer = null;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var value = valueOf(host);
+      if (!value) { log('empty value — skip'); return; }
+
+      Promise.resolve(copyText(value)).then(function (ok) {
+        btn.classList.add(ok ? 'is-done' : 'is-failed');
+        btn.innerHTML = (ok ? ICON_DONE : ICON) +
+                        '<span>' + (ok ? '복사됨' : '복사 실패') + '</span>';
+        if (resetTimer) clearTimeout(resetTimer);
+        resetTimer = setTimeout(function () {
+          btn.classList.remove('is-done', 'is-failed');
+          btn.innerHTML = ICON + '<span>' + text + '</span>';
+        }, 1600);
+        if (ok) track(labelOf(host), value);
+      });
+    });
+
+    host.appendChild(btn);
+    log('bound', labelOf(host));
+  }
+
+  function scan() {
+    var hosts = document.querySelectorAll('[data-copy-address]');
+    if (!hosts.length) { log('no [data-copy-address] on this page'); return; }
+    [].slice.call(hosts).forEach(bind);
+  }
+
+  /* Webflow 가 요소를 늦게 그리는 경우가 있어 진입 시점 + 보강 1회. */
+  function run() { scan(); setTimeout(scan, 1200); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', run);

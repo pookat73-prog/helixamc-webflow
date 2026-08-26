@@ -39,7 +39,7 @@
      (ga4-base 도메인 게이트가 스테이징에선 no-op). */
   function emGa(eventName, params) {
     try {
-      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var p = params || {};
       p.device = device;
       var name = eventName + '_' + device;

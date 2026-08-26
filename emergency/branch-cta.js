@@ -26,7 +26,8 @@
     },
     {
       key: 'ilsan', name: '일산분원', tel: '031-978-7575',
-      mapPending: true,
+      /* 일산 분원 페이지 개설 — 오시는길 섹션 anchor 는 #map (서초는 #map_naver) */
+      mapHref: '/ilsan#map',
       img: 'https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d39160a58d7071c8161446_%EC%9E%90%EC%82%B0%2010.png',
       alt: '헬릭스동물메디컬센터 일산분원'
     }
@@ -62,7 +63,7 @@
      gtag 있으면 gtag('event'), 없으면 dataLayer.push 폴백 (사이트 공통 패턴) */
   function gaSend(eventName, branch, value) {
     try {
-      var device = window.innerWidth <= 767 ? 'mobile' : 'desktop';
+      var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var params = {
         item_type: 'emergency_cta',
         branch: branch || 'unknown',
@@ -159,7 +160,7 @@
         } else if (act === 'map') {
           gaSend('emergency_map_click', branch.name, branch.mapHref || '');
           if (branch.mapPending) {
-            alert('일산분원 방문 안내 페이지는 준비 중입니다.');
+            alert(branch.name + ' 방문 안내 페이지는 준비 중입니다.');
           } else if (branch.mapHref) {
             location.href = branch.mapHref;
           }

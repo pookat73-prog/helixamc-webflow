@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - AUTO BOOTSTRAP LOADER (v3.3 — floating CTA, cache refresh)
+   HELIX AMC - AUTO BOOTSTRAP LOADER (v3.4 — home scroll hint)
    Pasted once in Webflow. Always serves the latest commit.
 
    Strategy:
@@ -174,6 +174,9 @@
     /* 카드덱 (.just-box_qqqqqqq) — 카드 없으면 자동 스킵 */
     'home/global/card-stack.css',
     'home/global/card-stack.js',
+    /* 첫 화면 스크롤 유도 꺽쇠 화살표 — 히어로 끝나면 등장, 스크롤하면 사라짐 */
+    'home/global/scroll-hint.css',
+    'home/global/scroll-hint.js',
     /* 핵심 장비 섹션 — 캐논 알페닉스 빛반사만 (콘텐츠 페이드는 Webflow IX2) */
     'home/equipment/equipment.js'
   ];

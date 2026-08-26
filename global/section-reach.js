@@ -131,7 +131,7 @@
   var DEFS = SECTIONS[PAGE];
   if (!DEFS) { log('no section map for page =', PAGE, '- skip'); return; }
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   /* 데스크탑/모바일 듀얼 마크업 — 같은 셀렉터가 2벌 존재하고 한쪽만 보인다.
      숨은 쪽이 관측되면 스크롤과 무관하게 오발사되므로 반드시 걸러낸다. */

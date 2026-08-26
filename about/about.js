@@ -1128,9 +1128,9 @@
     });
   }
 
-  /* ── Section 2-2 컬럼 reveal — 그림자 박스 → 0.1s 갭 → 파란 세리프 ─
+  /* ── Section 2-2 컬럼 reveal — 파란 세리프 → 0.1s 갭 → 그림자 박스 ─
      데스크탑 wrapper: 단일 IO → 내부 모든 .div-block-176 에 동시 .is-col-in
-       (3 그림자 동시 + 3 세리프 동시)
+       (3 세리프 동시 + 3 그림자 동시)
      모바일 wrapper:   컬럼별 개별 IO → 위→아래 자연 순차 발사
 
      타이밍/순서는 about.css 의 컬럼 reveal 규칙이 통제 (delay 1.1s 갭).
@@ -1177,10 +1177,10 @@
     });
 
     /* 모바일 — 카드별 IO 발사 + 시리얼 큐 (한 카드 사이클 끝나야 다음 카드).
-       카드 3개가 viewport 에 거의 동시에 들어와도 (그림자→세리프) × 3 으로
+       카드 3개가 viewport 에 거의 동시에 들어와도 (세리프→그림자) × 3 으로
        순차 재생되도록 큐로 직렬화. 동일 callback 안 다중 entry 는 화면
        위→아래 순서로 정렬해 큐 진입. */
-    var CARD_CYCLE_MS = 2400; /* CSS: 그림자 1.0s + 갭 0.1s + 세리프 1.2s = 2.3s + α */
+    var CARD_CYCLE_MS = 2400; /* CSS: 세리프 1.2s + 갭 0.1s + 그림자 1.0s = 2.3s + α */
     var queue = { items: [], running: false };
     function drain() {
       if (queue.running) return;
@@ -2644,7 +2644,7 @@
     return true;
   }
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
   function txt(el) { return ((el && el.innerText) || '').replace(/\s+/g, ' ').trim().slice(0, 60); }
   function hrefOf(el) {
     var a = el && (el.tagName === 'A' ? el : (el.querySelector && el.querySelector('a')));

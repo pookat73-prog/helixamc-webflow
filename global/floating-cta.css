@@ -40,7 +40,42 @@
   display: block;
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.10)) drop-shadow(0 4px 9px rgba(0, 0, 0, 0.13));
+  /* 후광 — 검은 그림자 대신 메인 블루(#0075d6) 를 일러스트 윤곽 둘레에
+     고르게 퍼뜨린다. drop-shadow 는 이미지의 투명 영역을 따라가므로
+     사각형이 아니라 캐릭터 모양대로 빛이 번진다.
+     3겹인 이유: 흰 배경에선 메인 블루만으로 충분하지만, 메인 블랙
+     (#0d1117) 배경에선 블루가 배경보다 밝지 않아 후광이 묻힌다.
+     그래서 윤곽에 딱 붙는 '심지'를 한 톤 밝은 하늘빛으로 깔아 어두운
+     배경에서도 빛이 살아 있게 하고, 그 위에 메인 블루 본체 + 넓게
+     퍼지는 여운을 얹는다. */
+  filter: drop-shadow(0 0 3px rgba(74, 168, 255, 0.85))
+          drop-shadow(0 0 9px rgba(0, 117, 214, 0.85))
+          drop-shadow(0 0 22px rgba(0, 117, 214, 0.45));
+  /* 은은한 숨쉬기 — 사이트 다른 버튼 글로우(.bt-box-*)와 같은 호흡:
+     주기 5초, easeInOutSine, 번짐 폭은 고정하고 진하기만 오르내린다.
+     폭까지 같이 움직이면 버튼이 커졌다 작아지는 것처럼 보여서. */
+  animation: hxFctaHaloShimmer 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+}
+
+/* 위 filter 값이 피크(0%/100%), 아래 50% 가 밸리. 밸리는 피크의 약 55%
+   진하기 — 이 비율도 사이트 다른 버튼 글로우와 같은 값. */
+@keyframes hxFctaHaloShimmer {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px rgba(74, 168, 255, 0.85))
+            drop-shadow(0 0 9px rgba(0, 117, 214, 0.85))
+            drop-shadow(0 0 22px rgba(0, 117, 214, 0.45));
+  }
+  50% {
+    filter: drop-shadow(0 0 3px rgba(74, 168, 255, 0.47))
+            drop-shadow(0 0 9px rgba(0, 117, 214, 0.47))
+            drop-shadow(0 0 22px rgba(0, 117, 214, 0.25));
+  }
+}
+
+/* 기기에서 '움직임 줄이기'를 켠 사용자에겐 숨쉬기를 멈추고
+   피크 상태로 고정 (후광 자체는 그대로 보임). */
+@media (prefers-reduced-motion: reduce) {
+  .hx-fcta-btn__img { animation: none; }
 }
 
 /* 흰 카드 빈칸 '가운데'에 겹치는 라벨 — 메인 블랙 / 공식 폰트.

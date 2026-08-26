@@ -1,0 +1,74 @@
+/* ================================================================
+   HOME — 스크롤 유도 꺽쇠 화살표 (v1.0)
+
+   첫 화면 하단 가운데에 작은 꺽쇠(∨) 하나.
+   · 아주 살짝 위아래로 움직이고(bob), 은은하게 밝아졌다 어두워짐(shimmer)
+   · 스크롤을 시작하면 그 정도에 맞춰 서서히 사라짐
+   · 클릭 대상이 아님 (pointer-events:none) — 아래 콘텐츠를 절대 안 막음
+   · 자리: 화면 하단 정중앙. 오른쪽 아래 플로팅 상담 버튼/위로가기와 안 겹침
+   ================================================================ */
+
+.hx-scroll-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 46px;
+  transform: translateX(-50%);
+  z-index: 900;                 /* 위로가기(1000)·플로팅 CTA(9000) 아래 */
+  pointer-events: none;         /* 화면을 가로막지 않음 */
+  opacity: 0;                   /* 등장은 JS 가 통제 */
+  transition: opacity 0.6s ease;   /* 처음 나타날 때만 쓰는 느린 전환 */
+  will-change: opacity;
+  line-height: 0;
+}
+
+/* 등장이 끝난 뒤 — 스크롤에 즉각 반응해야 해서 전환을 짧게 바꿈.
+   0.6s 그대로 두면 스크롤을 내려도 화살표가 한 박자 늦게 옅어져 굼떠 보임. */
+.hx-scroll-hint.is-tracking {
+  transition: opacity 0.12s linear;
+}
+
+/* 꺽쇠 본체 — 정사각형의 오른쪽·아래 테두리만 남기고 45도 회전 */
+.hx-scroll-hint__chevron {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border-right: 3px solid rgba(255, 255, 255, 0.85);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.85);
+  transform: rotate(45deg);
+  animation: hxScrollHintBob 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite,
+             hxScrollHintShine 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* 미세한 상하 이동 — 5px 이상 가면 산만해짐 */
+@keyframes hxScrollHintBob {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50%      { transform: rotate(45deg) translate(3px, 3px); }  /* 회전축 기준 = 화면상 아래쪽 */
+}
+
+/* 반짝임 — 테두리 밝기 + 메인 블루 글로우를 같은 주기로 */
+@keyframes hxScrollHintShine {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.55);
+    filter: drop-shadow(0 0 2px rgba(0, 117, 214, 0.35));
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 1);
+    filter: drop-shadow(0 0 7px rgba(0, 117, 214, 0.9));
+  }
+}
+
+/* 모바일 — 살짝 작게, 하단 여백도 줄임 */
+@media (max-width: 767px) {
+  .hx-scroll-hint { bottom: 34px; }
+  /* 두께는 정수로 — 브라우저가 소수 border-width 를 내림해 2.5px 가 2px 이 됨 */
+  .hx-scroll-hint__chevron { width: 12px; height: 12px; border-width: 3px; }
+}
+
+/* 움직임 최소화를 선호하는 사용자 — 화살표는 두되 움직임/반짝임만 끔 */
+@media (prefers-reduced-motion: reduce) {
+  .hx-scroll-hint__chevron {
+    animation: none;
+    border-color: rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 0 4px rgba(0, 117, 214, 0.5));
+  }
+}

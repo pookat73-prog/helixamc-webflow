@@ -42,7 +42,7 @@
     console.log.apply(console, ['[FAQ-CALL]'].concat(Array.prototype.slice.call(arguments)));
   }
 
-  function device() { return window.innerWidth <= 767 ? 'mobile' : 'desktop'; }
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
   function digitsOnly(s) { return (s || '').replace(/\D+/g, ''); }
 
   function formatDisplay(d) {

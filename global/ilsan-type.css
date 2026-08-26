@@ -1,0 +1,133 @@
+/* ================================================================
+   HELIX AMC — 일산 분원 글자 크기 되돌리기 v1
+
+   ■ 무슨 문제인가
+   일산 페이지의 본문·주차안내·주소 글자가 데스크탑에서만 px 로 굳어 있다.
+   값을 보면 전부 "1440 폭에서의 vw" 와 정확히 일치한다.
+     11.52px = 0.8vw @1440   /  12.96px = 0.9vw @1440
+   원래 화면 비례였던 값이 1440 기준 px 로 변환돼 굳은 것. 그래서
+     - 1920 대형 모니터에서 안 커짐 → 본문이 11.5px 로 쪼그맣게 보임
+     - 992px 아래로 내려가는 순간 Webflow 태블릿 값(vw)으로 넘어가며 뚝 떨어짐
+       (991px 에서 9.9px, 768px 에서 7.7px — 읽기 거의 불가)
+
+   ■ 어떻게 고치나 — clamp(하한, 원래 vw, 상한)
+   굳기 전의 vw 기울기를 되살리고, 바닥과 천장만 씌운다.
+     하한 = 지금 1440 에서의 크기  → 992~1440 구간은 지금과 100% 동일
+     기울기 = 굳기 전의 vw          → 1440 위로 다시 커짐 (1920 에서 15.4px)
+     상한 = 더 큰 모니터에서 과하게 커지지 않도록 정지
+   768~991 구간은 별도로 바닥을 깔아 계단을 메운다.
+
+   ■ 왜 여기(global/)에 있나
+   일산 페이지는 서초 페이지 복제본이라 head 가 seocho/bootstrap.js 를 부르고,
+   사이트 전역 로더가 global/** 를 부른다. ilsan/ 폴더를 새로 만들면 워크플로우
+   paths 필터에 안 걸려 배포가 안 되므로(CLAUDE.md 참고) global/ 에 둔다.
+   대신 아래 :has() 게이트로 일산 페이지에서만 적용된다.
+
+   ■ 일산 페이지 판정
+   html:has(.intro-ilsan-_backgra, .ilsan-photo-stack)
+   두 클래스는 일산 페이지에만 있다. :has() 를 모르는 옛 브라우저는 규칙 전체를
+   무시 → 지금 모습 그대로 (안전한 폴백). JS 를 안 쓰므로 첫 화면 깜빡임 없음.
+
+   ⚠ 건드리지 않은 것
+   Hero15Y / Circle Card / Q69 세 섹션은 글자뿐 아니라 박스도 px 고정이라
+   (원 400px, 문단 폭 443px) 글자만 키우면 넘친다. 별건으로 둔다.
+   767px 이하 Webflow 값도 대체로 정상이라 그대로 둔다. 단 하나, 아래 4번의
+   .adress 만 480~767 구간에서 7.2px 까지 떨어져 예외로 바닥을 깐다.
+   ================================================================ */
+
+/* ================================================================
+   1. 데스크탑 (992px 이상) — 굳은 px 를 원래 vw 로 되돌린다
+   하한이 곧 현재 1440 값이라 992~1440 구간은 지금과 달라지지 않는다.
+   ================================================================ */
+@media (min-width: 992px) {
+
+  /* 본문 문단 — 11.52px 고정 → 1440 그대로, 1920 에서 15.4px */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .nomal-parag_black-left-align {
+    font-size:   clamp(11.52px, 0.8vw, 17px) !important;
+    line-height: clamp(20.16px, 1.4vw, 29.8px) !important;
+  }
+
+  /* 주차 안내 (지도 옆 4줄, 데스크탑·모바일 두 벌) */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .text-block-355 {
+    font-size:   clamp(11.52px, 0.8vw, 17px) !important;
+    line-height: clamp(18.72px, 1.3vw, 27.6px) !important;
+    /* 위아래 여백을 같은 값으로 통일 — 원래 태블릿부터 위 0.9vw / 아래 1vw 로
+       짝이 안 맞아 글자가 상자 안에서 위로 붙어 보였다. */
+    padding-top:    clamp(10.08px, 0.7vw, 14.9px) !important;
+    padding-bottom: clamp(10.08px, 0.7vw, 14.9px) !important;
+    padding-left:   clamp(11.52px, 0.8vw, 17px) !important;
+    padding-right:  clamp(11.52px, 0.8vw, 17px) !important;
+  }
+
+  /* 주소 */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .adress {
+    font-size:   clamp(12.96px, 0.9vw, 19px) !important;
+    line-height: clamp(14.4px, 1.0vw, 21px) !important;
+  }
+}
+
+/* ================================================================
+   2. 태블릿 구간 (768~991px) — 계단 메우기
+   Webflow 태블릿 값이 1vw~1.3vw 라 991px 에서 9.9px, 768px 에서 7.7px 까지
+   떨어졌다. 바닥을 깔아 12px 아래로는 안 내려가게 한다.
+   ⚠ 아이패드 프로 13"(폭 1032) 는 global/viewport-fix.js 가 991 로 알려 주므로
+     이 구간에 정상적으로 들어온다.
+   ================================================================ */
+@media (min-width: 768px) and (max-width: 991px) {
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .nomal-parag_black-left-align {
+    font-size:   clamp(12.5px, 1.45vw, 14.4px) !important;
+    line-height: 1.7 !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .text-block-355 {
+    font-size:   clamp(12px, 1.35vw, 13.4px) !important;
+    line-height: 1.6 !important;
+    padding-top:    1.1vw !important;
+    padding-bottom: 1.1vw !important;
+    padding-left:   1.2vw !important;
+    padding-right:  1.2vw !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .adress {
+    font-size:   clamp(13px, 1.45vw, 14.4px) !important;
+    line-height: 1.25 !important;
+  }
+}
+
+/* ================================================================
+   3. 큰 폰 ~ 작은 태블릿 (480~767px) — 바닥 깔기
+   이 구간 Webflow 값이 vw 라 구간 위쪽(767px)에서는 멀쩡한데 아래쪽(480px)
+   으로 갈수록 무너진다. 실측: 본문 9.6px / 주차안내 8.6px / 주소 7.2px.
+   구간 위쪽 크기는 그대로 두고 바닥만 깐다.
+   ================================================================ */
+@media (min-width: 480px) and (max-width: 767px) {
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .nomal-parag_black-left-align {
+    font-size: clamp(12px, 2vw, 15.4px) !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .text-block-355 {
+    font-size: clamp(11.5px, 1.8vw, 13.9px) !important;
+    /* 위아래 여백 통일 (원래 위 1.8vw / 아래 2vw 로 어긋나 있었다) */
+    padding-top:    clamp(9px, 1.8vw, 13.9px) !important;
+    padding-bottom: clamp(9px, 1.8vw, 13.9px) !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .adress {
+    font-size:   clamp(11px, 1.5vw, 11.5px) !important;
+    line-height: 1.25 !important;
+  }
+}
+
+/* ================================================================
+   4. 폰 (479px 이하) — 글자 크기는 Webflow 값이 적절해서 그대로 두고,
+   주차안내 상자의 어긋난 위아래 여백만 통일한다.
+   ================================================================ */
+@media (max-width: 479px) {
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .text-block-355 {
+    padding-top:    1.9vw !important;
+    padding-bottom: 1.9vw !important;
+  }
+}
