@@ -56,20 +56,28 @@
      바뀐 파일의 diff 가 통째로 실려 있어 한 번에 수 KB~수십 KB 다. 우리가 필요한
      건 40자짜리 SHA 하나뿐인데 그 값 하나 얻자고 매번 그만큼을 받아왔다.
      지금: SHA 만 들어 있는 /git/ref/heads/<branch>(수백 바이트) 를 쓰고, 받은
-     SHA 를 이 탭 안에서 60초 동안 재사용한다. 방문자가 여러 페이지를 둘러봐도
-     조회는 사실상 1회. 60초라 배포 직후 새로고침 검증에는 지장이 없다. */
+     SHA 를 브라우저에 10분 보관해 재사용한다(아래 SHA_TTL). 방문자가 여러
+     페이지를 둘러봐도 조회는 사실상 1회. 배포 직후 즉시 확인이 필요하면
+     주소에 ?fresh=1 을 붙여 보관분을 건너뛴다. */
   var SHA_KEY = 'helix.sha.' + BRANCH;
-  var SHA_TTL = 60000;
+  var SHA_TTL = 600000;             /* 10분 — 보관분 재사용(조회 횟수를 크게 줄임) */
+  var SHA_FALLBACK_MAX = 43200000;  /* 12시간 — 이보다 오래된 보관분은 @BRANCH 가 더 최신 */
+  var FRESH = /[?&]fresh=1\b/.test(location.search);
 
-  try {
-    var c = JSON.parse(sessionStorage.getItem(SHA_KEY) || 'null');
-    if (c && c.sha && (Date.now() - c.t) < SHA_TTL) {
-      window.__helixCommitSha = c.sha;
-      console.log('[helix-bootstrap] v3 → 세션 캐시 SHA 재사용 @' + c.sha.substring(0, 10));
-      load(bodyUrl(c.sha));
-      return;
-    }
-  } catch (e) {}
+  /* sessionStorage(탭 하나) → localStorage(브라우저 전체). 탭·방문이 바뀌어도
+     같은 SHA 를 재사용하므로 GitHub 조회(비로그인 시간당 60회 제한)에 걸릴
+     일이 크게 줄어든다. 배포 직후 바로 확인하려면 주소에 ?fresh=1 을 붙인다. */
+  function readSha() {
+    try { return JSON.parse(localStorage.getItem(SHA_KEY) || 'null'); } catch (e) { return null; }
+  }
+  var cached = readSha();
+
+  if (!FRESH && cached && cached.sha && (Date.now() - cached.t) < SHA_TTL) {
+    window.__helixCommitSha = cached.sha;
+    console.log('[helix-bootstrap] v3 → 보관된 SHA 재사용 @' + cached.sha.substring(0, 10));
+    load(bodyUrl(cached.sha));
+    return;
+  }
 
   fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH +
         '?t=' + Math.floor(Date.now() / 60000),
@@ -79,12 +87,18 @@
       var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 40);
       if (!sha) throw new Error('no sha');
       window.__helixCommitSha = sha;
-      try { sessionStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
+      try { localStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
       console.log('[helix-bootstrap] v3 → loading bootstrap @' + sha.substring(0, 10) + ' (immutable)');
       load(bodyUrl(sha));
     })
     .catch(function (err) {
-      console.warn('[helix-bootstrap] v3 SHA resolve failed, fallback @' + BRANCH, err);
-      load(bodyUrl(BRANCH));
+      /* ⚠ 여기서 곧장 @BRANCH 로 떨어지면 jsDelivr 엣지 캐시가 최대 12시간 묵은
+         파일을 계속 내줘 "고쳤는데 화면에 안 나온다" 가 반복된다(2026-08-27 사고).
+         조회가 실패해도 마지막으로 알던 커밋 번호(고정 주소 = 캐시가 꼬일 수 없음)가
+         12시간 안쪽이면 그걸 쓴다. 그보다 오래됐을 때만 @BRANCH 로 간다. */
+      var usable = cached && cached.sha && (Date.now() - cached.t) < SHA_FALLBACK_MAX;
+      console.warn('[helix-bootstrap] v3 SHA resolve failed → ' +
+        (usable ? '마지막 SHA @' + cached.sha.substring(0, 10) : '@' + BRANCH), err);
+      load(bodyUrl(usable ? cached.sha : BRANCH));
     });
 })();
