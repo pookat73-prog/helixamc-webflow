@@ -173,6 +173,42 @@ console.log('화면폭', innerWidth+'×'+innerHeight,
 
 **재발 금지**: 새 CSS 파일을 만들어 로더에 등록하고 "머지했으니 반영됨" 으로 보고하기. 실제 도달을 확인하기 전에는 미적용으로 간주할 것.
 
+### ✅ 구조적 해결 — 로더의 `@BRANCH` 폴백 제거 (LOCKED v1, PR #1462, 2026-08-27)
+
+위 stale 사고들의 **공통 진원지는 딱 하나**였다: 진입점이 커밋 SHA 조회에 실패하면 `@main`/`@staging` 으로 폴백하는 코드. **브랜치 주소는 jsDelivr 엣지 캐시가 최대 12시간 묵은 파일을 내주는 유일한 경로**라, 조회가 한 번만 실패해도 옛 코드가 그대로 보인다. 비로그인 GitHub API 는 **IP 당 시간당 60회** 제한인데 캐시가 **탭 하나·60초** 짜리라 조회가 잦아 실패가 흔했다(통신사 NAT 환경에선 여러 사용자가 IP 공유).
+
+| | 전 | 후 |
+|---|---|---|
+| 보관 위치 | `sessionStorage` (탭 하나) | `localStorage` (브라우저 전체) |
+| 보관 시간 | 60초 | 10분 (`SHA_TTL`) |
+| 조회 실패 시 | `@BRANCH` (최대 12h stale) | **마지막으로 알던 커밋 SHA** (고정 주소 = 캐시 꼬임 불가) |
+| 즉시 확인 | — | `?fresh=1` (보관분 건너뜀) |
+
+보관분이 12시간(`SHA_FALLBACK_MAX`)을 넘겼을 때만 `@BRANCH` 로 간다 — 그 시점엔 `@BRANCH` 가 더 최신이므로.
+
+적용 파일: `home/bootstrap-v3.js` · `about/bootstrap.js` · `seocho/bootstrap.js` · FAQ/services 페이지 head 로더.
+
+**변경하면 안 되는 것**
+- ❌ 폴백을 다시 `@BRANCH` 직행으로 되돌리기 (stale 사고 재발)
+- ❌ `localStorage` → `sessionStorage` 회귀 (조회 폭증 → 60회 제한 → 폴백 → stale)
+- ❌ `SHA_TTL` 을 1분 이하로 낮추기 (같은 이유)
+
+**⚠️ 남은 구멍**: `home` · `discover-helix` · `seocho` · `ilsan` 페이지 head 는 아직 `@main/…/bootstrap.js` 를 직접 가리킨다(SHA 고정 아님). 정식 도메인에서 **bootstrap.js 파일 자체**는 여전히 최대 12h stale 가능 → FILES 배열에 **새 파일을 추가**하는 변경이 늦게 반영되는 케이스가 남아 있다. FAQ/services 처럼 head 를 SHA 고정으로 바꾸면 해결되나, 각 bootstrap 상단의 staging self-redirect 가드(`__helix*BootstrapRedirected`)를 head 에서 미리 세워주지 않으면 이중 로드가 되므로 함께 손봐야 한다.
+
+### 🔒 검은 줄(margin collapse) — `flow-root` 로 원천 차단 (LOCKED v1, PR #1462)
+
+**증상**: FAQ 필터 박스 밑에 화면 폭 전체로 검은 가로줄. "뭐만 하면 생긴다" 고 할 만큼 반복 재발.
+
+**원인**: 섹션은 밝은 배경, `body` 는 어두움(`#0d1117`). 목록 첫 카드(`.faq_q`)의 `margin-top` 이 목록·섹션을 타고 밖으로 빠져나가면(**margin collapse**) 그 틈으로 어두운 body 가 드러난다. Webflow 원본 `.faq-list` 는 `display:flex` 라 원래 이 문제가 없었는데, `faq-stack.css` 가 `display:block !important` 로 덮으면서 collapse 경로가 열렸다.
+
+**그동안의 잘못된 처방**: 섹션마다 `padding-top` 을 덧대 개별 대응 — `faq-stack.css`(`[data-faq-section="disease-list"]`), `faq-general.css`(`.helix-gfaq-section`), `faq-general.js`(런타임 클래스 주입). **세 군데나 같은 처방이 흩어져 있었고**, 새 섹션·클래스가 생길 때마다 재발했다.
+
+**확정 해법**: `.helix-faq-list { display: flow-root !important }`
+`flow-root` 는 배치는 `block` 과 완전히 동일하면서 **자식 margin 이 상자를 넘지 못하게 막는다(BFC)** → 버그 경로 자체가 사라짐. 기존 섹션 `padding` 은 그대로 둬 여백 값은 변하지 않음.
+
+- ❌ `.helix-faq-list` 를 `display:block` 으로 되돌리기 — 검은 줄 즉시 재발
+- ✅ 새 목록/카드 컨테이너를 만들 때도 `block` 대신 `flow-root` 를 기본으로 쓸 것
+
 ---
 
 ## 🔤 영문 공식 폰트 굵기 — Adobe 가변 폰트 + Webflow 한계 (LOCKED v1)
