@@ -22,7 +22,13 @@
    ================================================================ */
 
 .helix-faq-list {
-  display: block !important;
+  /* ⚠ block 으로 되돌리지 말 것 — 필터 밑 '검은 줄' 재발.
+     Webflow 원본 .faq-list 는 flex 라 자식 margin 이 밖으로 새지 않았는데,
+     여기서 block 으로 덮으면서 첫 카드(.faq_q)의 margin-top 이 목록·섹션을
+     타고 밖으로 빠져나가(margin collapse) 어두운 body 가 가로줄로 드러났다.
+     flow-root 는 배치는 block 과 완전히 같으면서 자식 margin 이 이 상자를
+     넘어가지 못하게 막는다 → 그 경로 자체가 사라져 재발이 구조적으로 불가능. */
+  display: flow-root !important;
   position: relative;
   --faq-dur: var(--dur);      /* 전역 토큰 사용 */
   --faq-ease: var(--ease);
