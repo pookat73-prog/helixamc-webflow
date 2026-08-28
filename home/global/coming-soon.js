@@ -527,6 +527,20 @@
     } catch (e) { return false; }
   }
   var HDR_GA_ATTR = 'data-hx-hdr-ga';
+  /* 로고 → 홈. Webflow 헤더의 로고 링크는 주소가 비어 있어(linkType none)
+     눌러도 아무 일도 안 났다. 로고는 홈으로 가는 게 관례라 사용자 지시로 붙인다.
+     Designer 에서 고치면 Publish 가 필요해 손대지 않은 다른 작업까지 함께
+     나가므로, 헤더 탭을 실제 링크로 승격하는 markLiveNav 와 같은 방식으로
+     여기서 붙인다.
+     ⚠ 이미 주소가 있는 로고는 건드리지 않는다 — 나중에 Designer 에서 링크를
+       넣으면 그쪽이 이긴다. */
+  function ensureLogoHome(a) {
+    var href = a.getAttribute('href');
+    if (href && href !== '#') return;
+    a.setAttribute('href', '/');
+    a.style.cursor = 'pointer';
+  }
+
   function markHeaderGa() {
     hxHeaderRoots().forEach(function (header) {
       /* 헤더 안에 또 다른 네비 컨테이너(.navbar1_component 등)가 들어 있으면
@@ -540,6 +554,7 @@
         var byHref = hxIsHomeHref(a) && (a.querySelector('img,svg') || /logo/i.test(a.className || ''));
         if (byHref || hxIsLogoLink(a)) {
           a.setAttribute(HDR_GA_ATTR, 'logo');
+          ensureLogoHome(a);
           claimed = true;
         }
       });
