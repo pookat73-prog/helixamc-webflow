@@ -69,6 +69,9 @@ window.HelixBranch = window.HelixBranch || (function () {
     return {
       name: container.getAttribute('data-map-name') || CLINIC.name,
       address: addr || CLINIC.address,
+      /* 도로명이 안 걸릴 때 쓸 지번 주소. 네이버 지오코더는 같은 자리라도
+         도로명은 못 찾고 지번은 찾아주는 경우가 있어, 실패 시 한 번 더 던진다. */
+      addressAlt: container.getAttribute('data-map-address-alt') || '',
       lat: hasCoords ? lat : CLINIC.lat,
       lng: hasCoords ? lng : CLINIC.lng,
       naverPlaceId: container.getAttribute('data-map-place') || CLINIC.naverPlaceId,
@@ -214,14 +217,25 @@ window.HelixBranch = window.HelixBranch || (function () {
     var clinic = clinicFor(container);
     if (!clinic.needsGeocode) { drawMap(container, clinic); return; }
     geocode(clinic.address, function (coords) {
-      if (!coords) {
-        /* 위치를 못 찾았는데 기본값(서초)으로 그리면 다른 지점 페이지에
-           엉뚱한 위치가 뜬다 → 차라리 안내 패널을 띄운다. */
-        renderFallback(container, '지도 위치를 불러오지 못했습니다.');
+      if (coords) {
+        clinic.lat = coords.lat; clinic.lng = coords.lng;
+        drawMap(container, clinic);
         return;
       }
-      clinic.lat = coords.lat; clinic.lng = coords.lng;
-      drawMap(container, clinic);
+      if (clinic.addressAlt) {
+        geocode(clinic.addressAlt, function (alt) {
+          if (!alt) {
+            /* 위치를 못 찾았는데 기본값(서초)으로 그리면 다른 지점 페이지에
+               엉뚱한 위치가 뜬다 → 차라리 안내 패널을 띄운다. */
+            renderFallback(container, '지도 위치를 불러오지 못했습니다.');
+            return;
+          }
+          clinic.lat = alt.lat; clinic.lng = alt.lng;
+          drawMap(container, clinic);
+        });
+        return;
+      }
+      renderFallback(container, '지도 위치를 불러오지 못했습니다.');
     });
   }
 
