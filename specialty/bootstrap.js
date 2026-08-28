@@ -71,7 +71,11 @@
                            그룹 탭). 서로 독립된 덩어리 셋이 한 파일에 있다.
        둘을 나눠 둔 이유: js 가 CDN 에서 못 와도 설명은 정상적으로 펼쳐진다. */
     'specialty/specialty.css',
-    'specialty/specialty.js'
+    'specialty/specialty.js',
+    /* 푸터 (다른 페이지와 동일). 이 페이지만 빠져 있어 푸터의 이메일 복사·
+       SNS 이동이 동작도 안 하고 측정도 안 됐다. */
+    'home/global/footer.css',
+    'home/global/footer.js'
   ];
 
   function cdn(ref, path) {
