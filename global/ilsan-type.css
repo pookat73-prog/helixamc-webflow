@@ -156,10 +156,19 @@
    Webflow 가 앵커를 그대로 "#vets" 로 낼 때도 있고 "/ilsan#vets" 처럼
    페이지 경로를 앞에 붙여 낼 때도 있는데, "=" 로 잡으면 후자를 놓친다.
    글자를 감싼 div 가 없는 변형까지 대비해 두 번째 줄을 함께 둔다. */
+/* 메뉴 칸이 글자 폭에 딱 맞춰져 있으면 딱지가 상자 밖으로 나가 잘린다.
+   딱지가 걸리는 칸에 한해 넘침을 허용한다 (다른 메뉴는 그대로). */
+html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"],
+html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"] > div {
+  overflow: visible !important;
+}
+
 html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"] > div::after,
 html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"]:not(:has(> div))::after {
-  content: "준비중";
-  display: inline-block;
+  /* "준비중" 을 글자 코드로 적는다. CSS 파일이 어떤 문자셋으로 전달되든
+     한글이 깨지지 않는다 (CDN 이 charset 을 안 붙여 주는 경우 대비). */
+  content: "\c900 \be44 \c911";
+  display: inline-block !important;
   margin-left: 0.4em;
   padding: 0.15em 0.5em;
   border: 1px solid rgba(0, 117, 214, 0.35);
