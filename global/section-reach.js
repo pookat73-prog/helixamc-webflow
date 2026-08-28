@@ -52,6 +52,12 @@
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';
+    /* 특화진료 페이지 — 이 분기가 없으면 방문·스크롤·체류가 전부 home 으로
+       잘못 집계된다 (진료과목·응급증상이 겪었던 것과 같은 문제).
+       판정은 floating-cta.js 와 동일하게 맞춘다 — 한 페이지의 page 값이
+       모듈마다 달라지면 시트에서 합산이 안 된다. */
+    if (/(^|\/)specialty(-care)?(\/|$)/.test(p) ||
+        document.querySelector('.hst_grid, .hst-item-wrap')) return 'specialty';
     /* 응급증상은 슬러그가 /symptoms — scroll-depth.js 와 동일 판정 유지 */
     if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
         document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
@@ -107,6 +113,18 @@
       { key: 'oc', label: '안과',       sel: '.dept-card_oc' },
       { key: 'dt', label: '치과',       sel: '.dept-card_dt' }
     ],
+    /* 특화진료 — 페이지 전체가 <section> 하나뿐이고, 그 안에 첫화면(제목)과
+       그룹 열 4개가 들어 있다. 그래서 다섯 파트 모두 self:true 로 승격을 끄고
+       요소 자체를 본다 — 하나라도 승격하면 그 파트가 페이지 전체를 차지해,
+       열자마자 도달이 찍히고 체류가 '페이지 전체 시간'이 되어 버린다.
+       열 순서 = 화면상 왼쪽→오른쪽, 좁은 화면에서는 위→아래. */
+    specialty: [
+      { key: 'hero',  label: '첫화면(특화진료 제목)', sel: '.spec-header-wrap', self: true },
+      { key: 'g1',    label: '통합 종양 진료',        sel: '.hst_col', nth: 0, self: true },
+      { key: 'g2',    label: '인터벤션',              sel: '.hst_col', nth: 1, self: true },
+      { key: 'g3',    label: '고난도 수술',           sel: '.hst_col', nth: 2, self: true },
+      { key: 'g4',    label: '특수 전문 치료',        sel: '.hst_col', nth: 3, self: true }
+    ],
     seocho: [
       { key: 'hero',  label: '첫화면',   sel: 'section[class*="intro_backgra"]' },
       { key: 'map',   label: '지도',     sel: '#map_naver, .map_naver' },
@@ -142,7 +160,11 @@
   }
 
   /* 대표 요소 → 실제 관측 대상. 요소가 section 안에 있으면 그 section 을
-     쓴다(섹션 전체 진입을 재려는 의도). section 이 없으면 요소 자체. */
+     쓴다(섹션 전체 진입을 재려는 의도). section 이 없으면 요소 자체.
+     ⚠ 정의에 self:true 를 주면 승격하지 않고 요소 자체를 본다. 페이지 전체가
+       <section> 하나뿐인 곳(특화진료)에서 첫 파트가 그 하나를 차지해 버리면
+       도달이 페이지 열자마자 발사되고 체류가 사실상 '페이지 전체 시간'이
+       되어 page-time 과 같은 값이 된다 — 그 자리를 막는 스위치. */
   function resolve(el) {
     if (!el) return null;
     if (el.tagName && el.tagName.toLowerCase() === 'section') return el;
@@ -385,7 +407,7 @@
       var observed = 0;
       var els = [];
       for (var j = 0; j < picked.length; j++) {
-        var target = resolve(picked[j]);
+        var target = def.self ? picked[j] : resolve(picked[j]);
         /* ⚠️ 한 <section> 안에 여러 파트가 들어 있는 경우(홈: 지점 카드 +
            SVICC 배너 / 진료과목: 진료과 카드 5장) 승격하면 전부 같은
            section 을 가리킨다. 먼저 온 파트가 그 section 을 차지해 버려

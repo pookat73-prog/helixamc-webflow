@@ -34,6 +34,9 @@
 | `emergency/branch-cta.js` | `emergency_call_<기기>` | 서초+일산 모두 | O |
 | `seocho/seocho.js` | `seocho_phone_intent`(번호 누른 순간, 확인창 뜨기 전) / `seocho_phone_call`(확인창에서 확인 누른 뒤) | 서초 고정 | – |
 | `faq/cta-call.js` | `faq_phone_call` | – | – |
+| `specialty/specialty.js` | `specialty_item_click_<기기>` / `specialty_item_hover_<기기>` / `specialty_group_tab_<기기>` | – | O |
+| `home/global/coming-soon.js` | `header_logo_home` / `header_services_click` / `header_specialty_click` | – | – |
+| `home/global/hamburger.js` | `menu_specialty_click` (그 외 `menu_*_click`) | – | – |
 | (미상 — copy 계열) | `tel_copy_seocho_mobile`, `tel_copy_ilsan_desktop`, `tel_copy_ilsan_mobile`, `tel_copy_other_desktop`, `tel_copy_other_mobile` | O | O |
 | (미상 — 주소 복사) | `copy_address_seocho_desktop/mobile`, `copy_address_ilsan_desktop/mobile` | O | O |
 
@@ -45,6 +48,14 @@
 
 ## 0단계 — 이미 끝난 것
 
+- [x] **특화진료(/specialty-care) 측정 공백 해소 (2026-08-28)** — 이 페이지는 측정 파일이 하나도 안 실려 방문·스크롤·체류·클릭이 통째로 0건이었다(진료과목 페이지가 겪었던 것과 같은 공백). 붙인 것:
+  - 로더(`specialty/bootstrap.js`)에 공용 측정 묶음 추가 — `measure-gate` / `ga4-base` / `session` / `ga-inspector` / `sheet-log` / `scroll-depth` / `page-time` / `section-reach`. (플로팅 상담 CTA 는 원래 실려 있었지만 `ga4-base` 가 없어 자기 이벤트가 전부 허공으로 날아가고 있었음 — 같이 해소)
+  - `scroll-depth` / `page-time` / `section-reach` / `ga-inspector` 의 페이지 판정에 `specialty` 분기 추가 (없으면 이 페이지 방문이 전부 `home` 으로 잘못 집계됨)
+  - 파트 도달·체류: 첫화면 + 그룹 4개(`specialty_sec_*` / `specialty_dwell_*`). 이 페이지는 `<section>` 이 하나뿐이라 다섯 파트 모두 `self:true` 로 승격을 껐다 (`section-reach.js` 에 이 옵션을 새로 둠)
+  - 페이지 전용(`specialty/specialty.js` 끝 덩어리): `specialty_item_click_*`(12개 항목 중 무엇을 눌렀나, `has_page` 로 이동/준비중 토스트 구분) · `specialty_item_hover_*`(넓은 화면에서 0.6초 이상 머문 항목 = 설명을 실제로 읽음) · `specialty_group_tab_*`(좁은 화면 그룹 띠)
+  - 메뉴 탭: 헤더 `header_specialty_click`(신규) · 햄버거 `menu_specialty_click`(공용 `menu_nav_click` 에서 분리)
+  - ⚠️ **덤으로 드러난 버그**: `home/global/coming-soon.js` 의 헤더 GA 덩어리가 다른 IIFE 의 `csText` / `CS_PAGE` 를 부르고 있어 **ReferenceError 로 매번 죽었다** → `header_logo_home` · `header_services_click` 도 여태 한 줄도 안 남았음. 같은 IIFE 안 helper 로 교체해 함께 해소.
+  - 남은 일: 🖱 새 이벤트들의 GA4 주요 이벤트 등록(P02 와 같은 방식) + 맞춤 측정기준에 `item` / `group` / `has_page` 추가 검토(P13)
 - [x] 내부 트래픽 제외 필터 "사용 중" 전환 (8/11). 8/11 이전 데이터 인용 시 내부 접속 혼입 가능성만 함께 적으면 됨. 추가 조치 없음.
 
 ## 1단계 — 지금 코드로 바로 손댈 수 있는 것 (main 직행 대상)
