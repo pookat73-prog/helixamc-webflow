@@ -79,12 +79,32 @@ var PAGE_LABEL = {
    열 때 구글이 알아서 부른다(따로 실행할 필요 없음).
    → 붙여넣고 저장한 뒤 시트를 새로고침(F5) 해야 메뉴가 나타난다. */
 function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('📊 체류·동선')
+  var ui = SpreadsheetApp.getUi();
+
+  ui.createMenu('📊 체류·동선')
     .addItem('지금 새로 만들기', 'buildDwellJourney')
     .addSeparator()
     .addItem('매일 아침 자동 갱신 켜기', 'installDailyTrigger')
     .addItem('자동 갱신 끄기', 'removeDailyTrigger')
+    .addToUi();
+
+  /* 로그가 한없이 길어지지 않게 달별 탭으로 덜어내는 메뉴.
+     실제 기능은 같은 프로젝트의 sheet-log-monthly.gs 에 있다 —
+     그 파일을 안 넣었으면 눌렀을 때 '함수를 찾을 수 없습니다' 가 뜬다. */
+  ui.createMenu('📁 로그 달별 정리')
+    .addItem('지금 상태 보기', 'showLogSheetStatus')
+    .addItem('지금 달별로 나누기', 'rollLogByMonth')
+    .addSeparator()
+    .addItem('매일 새벽 자동 정리 켜기', 'installMonthlyLogTrigger')
+    .addItem('자동 정리 끄기', 'removeMonthlyLogTrigger')
+    .addToUi();
+
+  /* 이 시트가 어떻게 짜여 있는지(수식·표 제목) 글 파일로 뽑는다.
+     Claude 는 시트의 수식을 볼 수 없어서, 이걸 한 번 돌려 두면
+     "어느 칸을 어떻게 고쳐야 하는지" 를 정확히 짚을 수 있다.
+     실제 기능은 같은 프로젝트의 sheet-structure-export.gs 에 있다. */
+  ui.createMenu('🧰 진단')
+    .addItem('요약 시트 구조 내보내기', 'exportSummaryStructure')
     .addToUi();
 }
 
@@ -92,8 +112,8 @@ function onOpen() {
    메인
    ================================================================ */
 function buildDwellJourney() {
-  var rows = readLog_();
   var since = PERIOD_DAYS > 0 ? Date.now() - PERIOD_DAYS * 86400000 : 0;
+  var rows = readLog_(since);
   var events = parseEvents_(rows, since);
 
   if (!events.length) {
@@ -161,17 +181,24 @@ function toast_(msg) {
 /* ================================================================
    ① 로그 읽기 · 해석
    ================================================================ */
-/* 원본 로그 파일에서 '진짜 기록이 있는 탭' 을 찾아 읽는다.
+/* 원본 로그 파일에서 '진짜 기록이 있는 탭' 을 모두 찾아 읽는다.
 
    처음엔 그냥 첫 번째 탭(getSheets()[0])을 읽었는데, 로그 파일의 첫
-   탭이 비어 있어서 "기록이 없습니다" 만 나왔다. 탭 순서나 이름이
-   언제든 바뀔 수 있으니, ① 머리글에 '이벤트명' 이 있는 탭을 먼저 찾고
-   ② 없으면 줄 수가 가장 많은 탭을 쓴다. */
+   탭이 비어 있어서 "기록이 없습니다" 만 나왔다. 그래서 머리글에
+   '이벤트명' 이 있는 탭을 찾도록 바꿨다.
+
+   [2026-08-28] 로그가 달별로 나뉘면서(받는 탭 [log] + 지난달 탭
+   [log 2026-07] …) 한 탭만 읽으면 지난달 기록이 통째로 빠진다.
+   그래서 '이벤트명' 머리글을 가진 탭을 **전부** 읽어 이어붙인다.
+   조회 기간 밖인 달 탭은 아예 열지 않는다(느려지지 않게).
+   머리글 줄이 섞여 들어와도 parseEvents_ 가 시간 칸을 못 읽어
+   알아서 건너뛴다. */
 var LOG_SOURCE_NAME = '';   /* 어느 탭을 읽었는지 — 시트 맨 윗줄에 적는다 */
 
-function readLog_() {
+function readLog_(sinceMs) {
   var sheets = SpreadsheetApp.openById(LOG_SPREADSHEET_ID).getSheets();
-  var best = null, bestRows = -1;
+  var picked = [];
+  var fallback = null, fallbackRows = -1;
 
   for (var i = 0; i < sheets.length; i++) {
     var sh = sheets[i];
@@ -179,13 +206,38 @@ function readLog_() {
     if (rows < 2) continue;
 
     var head = sh.getRange(1, 1, 1, Math.min(8, sh.getLastColumn() || 1)).getValues()[0].join('|');
-    if (head.indexOf('이벤트명') >= 0) { best = sh; bestRows = rows; break; }
-    if (rows > bestRows) { best = sh; bestRows = rows; }
+    if (head.indexOf('이벤트명') >= 0) {
+      if (monthTabOutOfPeriod_(sh.getName(), sinceMs)) continue;
+      picked.push(sh);
+      continue;
+    }
+    if (rows > fallbackRows) { fallback = sh; fallbackRows = rows; }
   }
 
-  if (!best) { LOG_SOURCE_NAME = '(빈 파일)'; return []; }
-  LOG_SOURCE_NAME = best.getName() + ' 탭 ' + bestRows + '줄';
-  return best.getDataRange().getValues();
+  /* 머리글로 못 찾으면 예전처럼 '줄 수가 가장 많은 탭' 하나를 쓴다 */
+  if (!picked.length && fallback) picked.push(fallback);
+
+  if (!picked.length) { LOG_SOURCE_NAME = '(빈 파일)'; return []; }
+
+  var all = [];
+  var names = [];
+  for (var j = 0; j < picked.length; j++) {
+    var values = picked[j].getDataRange().getValues();
+    names.push(picked[j].getName() + ' ' + values.length + '줄');
+    for (var k = 0; k < values.length; k++) all.push(values[k]);
+  }
+  LOG_SOURCE_NAME = names.join(' + ') + ' 탭';
+  return all;
+}
+
+/* 'log 2026-07' 처럼 달 이름이 붙은 탭이 조회 기간보다 앞서면 건너뛴다.
+   달 이름이 없는 탭([log] 등)은 항상 읽는다. */
+function monthTabOutOfPeriod_(name, sinceMs) {
+  if (!sinceMs) return false;
+  var m = String(name).match(/(\d{4})-(\d{1,2})$/);
+  if (!m) return false;
+  var monthEnd = new Date(+m[1], +m[2], 1).getTime();   /* 그 달의 다음 달 1일 0시 */
+  return monthEnd < sinceMs;
 }
 
 /** 한 줄을 {t, name, page, device, sid, step, prev, source, activeSec} 로 */

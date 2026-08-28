@@ -32,6 +32,31 @@
 
   var EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
 
+  /* 어느 페이지의 푸터에서 눌렀나 — 푸터는 전 페이지 공통이라 이 값이 없으면
+     "이메일을 복사해 간 사람이 어느 페이지를 보다가 그랬는지" 를 영영 못 
+     가린다. 여태 page 를 안 실어 보내 시트에서 전부 빈칸이었다.
+     판정 규칙은 다른 측정 모듈(scroll-depth 등)과 동일하게 맞춘다. */
+  function footerPage() {
+    var p = (location.pathname || '/').toLowerCase();
+    if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)services(\/|$)/.test(p) ||
+        document.querySelector('[class*="dept-card_"]')) return 'services';
+    if (/(^|\/)specialty(-care)?(\/|$)/.test(p) ||
+        document.querySelector('.hst_grid, .hst-item-wrap')) return 'specialty';
+    if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
+        document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
+    if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';
+    var mapName = document.querySelector('[data-map-name]');
+    if (/(^|\/)ilsan(\/|$)/.test(p) ||
+        (mapName && /일산/.test(mapName.getAttribute('data-map-name') || ''))) return 'ilsan';
+    if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
+    if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
+    if (/seocho|서초/.test(p)) return 'seocho';
+    if (/about/.test(p)) return 'about';
+    return 'home';
+  }
+  var FOOTER_PAGE = footerPage();
+
   function fallbackCopy(text) {
     var ta = document.createElement('textarea');
     ta.value = text;
@@ -153,6 +178,7 @@
             if (typeof window.gtag === 'function') {
               window.gtag('event', eventName, {
                 item_type: 'footer_email',
+                page: FOOTER_PAGE,
                 device: device,
                 value: email
               });
@@ -160,6 +186,7 @@
               window.dataLayer.push({
                 event: eventName,
                 item_type: 'footer_email',
+                page: FOOTER_PAGE,
                 device: device,
                 value: email
               });
@@ -275,6 +302,7 @@
           if (typeof window.gtag === 'function') {
             window.gtag('event', eventName, {
               item_type: 'sns_click',
+              page: FOOTER_PAGE,
               sns: entry.key,
               device: device,
               value: entry.url
@@ -283,6 +311,7 @@
             window.dataLayer.push({
               event: eventName,
               item_type: 'sns_click',
+              page: FOOTER_PAGE,
               sns: entry.key,
               device: device,
               value: entry.url

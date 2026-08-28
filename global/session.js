@@ -148,6 +148,12 @@
       utm_source:   qp.get('utm_source')   || '',
       utm_medium:   qp.get('utm_medium')   || '',
       utm_campaign: qp.get('utm_campaign') || '',
+      /* 검색광고 키워드(utm_term)와 소재 구분(utm_content). 이 둘이 없으면
+         "광고로 들어왔나" 까지만 알고 "어떤 키워드가 전화로 이어졌나" 는
+         영영 못 본다. ⚠️ 맨이름 term / content 로 실으면 GA4 가 유입 경로로
+         덮어쓴다 — utm_ 접두어를 반드시 유지할 것(머리말 '이름을 바꾼 이유'). */
+      utm_term:     qp.get('utm_term')     || '',
+      utm_content:  qp.get('utm_content')  || '',
       visitor: seen ? 'returning' : 'new'
     };
     set(KEY_SESS, JSON.stringify(s));
@@ -240,6 +246,8 @@
     if (s.utm_source   && !params.utm_source)   params.utm_source   = s.utm_source;
     if (s.utm_medium   && !params.utm_medium)   params.utm_medium   = s.utm_medium;
     if (s.utm_campaign && !params.utm_campaign) params.utm_campaign = s.utm_campaign;
+    if (s.utm_term     && !params.utm_term)     params.utm_term     = s.utm_term;
+    if (s.utm_content  && !params.utm_content)  params.utm_content  = s.utm_content;
     return params;
   }
 

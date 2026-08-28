@@ -396,6 +396,8 @@
         el.setAttribute(BRANCH_SCROLL_ATTR, '1');
         el.style.cursor = 'pointer';
       }
+      /* 측정 점검 오버레이(?ga-inspect=1)가 네모를 그릴 자리 표시 */
+      if (!el.getAttribute(HDR_GA_ATTR)) el.setAttribute(HDR_GA_ATTR, 'branch');
     });
   }
   function scrollToBranchSection() {
@@ -411,6 +413,11 @@
       if (el.hasAttribute && el.hasAttribute(BRANCH_SCROLL_ATTR)) {
         e.preventDefault();
         e.stopPropagation();
+        /* 측정 — 이 탭만 여태 이벤트가 아예 없어서, 지점을 찾으러 누른
+           사람이 한 명도 기록되지 않았다. 여기서 직접 쏜다(아래 document
+           리스너에 맡기지 않는 이유: 바로 위에서 stopPropagation 을 부르고,
+           홈에서는 페이지 이동 없이 스크롤만 하기 때문). */
+        hxHeaderGa('header_branch_click', el, '지점안내');
         if (isHomePath()) scrollToBranchSection();
         else window.location.href = '/?to=branches';
         return;
@@ -431,24 +438,52 @@
   }
 
   /* ── 헤더 GA 측정 (전 페이지 공통 헤더) ──
-     홈 로고 / 진료과목 탭 클릭에 전용 GA 이벤트를 붙인다. window.gtag(ga4-base)
-     에 편승 → 스테이징(*.webflow.io)에선 no-op stub 이라 자동 비활성(측정 안 감).
-     실제 발사는 아래 document 캡처 리스너가 담당하고, 여기선 인스펙터 네모용
-     마커(data-hx-hdr-ga)만 부여한다.
+     홈 로고 / 진료과목 / 특화진료 탭 클릭에 전용 GA 이벤트를 붙인다.
+     window.gtag(ga4-base) 에 편승 → 스테이징(*.webflow.io)에선 no-op stub 이라
+     자동 비활성(측정 안 감). 실제 발사는 아래 document 캡처 리스너가 담당하고,
+     여기선 인스펙터 네모용 마커(data-hx-hdr-ga)만 부여한다.
        - 로고: 헤더 안에서 홈(/)으로 가는, 이미지 품은 링크
-       - 진료과목: markLiveNav 가 승격한 data-helix-link="/services" 요소 */
+       - 진료과목: markLiveNav 가 승격한 data-helix-link="/services" 요소
+       - 특화진료: 같은 방식으로 승격된 data-helix-link="/specialty-care" 요소.
+         이 탭만 여태 빠져 있어 헤더에서 특화진료로 들어간 사람이 한 명도
+         기록되지 않았다(로고·진료과목은 잡히는데 특화진료만 0건).
+         ⚠ 햄버거 메뉴의 '특화진료' 는 이미 href="/specialty-care" 인 진짜
+           링크라 markLiveNav 가 승격하지 않는다(pointsToSamePage) → 여기
+           마커가 안 붙고 hamburger.js 의 menu_specialty_click 만 발사된다.
+           헤더 탭과 메뉴 항목이 이중으로 세어질 일이 없다. */
   /* 예전엔 이 두 이벤트를 빈 객체 {} 로 쏴서, 헤더 클릭이 기록은 남는데
      "어느 페이지에서 / 무엇을 / 어느 기기로" 눌렀는지가 하나도 안 남았다.
      다른 클릭 이벤트와 같은 칸(page·device·link_text·link_url·value)을 채운다.
      헤더 링크는 누르는 즉시 페이지가 넘어가므로 beacon 으로 보내 유실 방지. */
+  /* ⚠️ 이 덩어리는 위 준비중 토스트와 다른 IIFE 안에 있다 → 그쪽의 csText /
+     CS_PAGE 를 그대로 부르면 ReferenceError 로 죽는다. 실제로 그렇게 돼 있어
+     헤더 클릭 이벤트(로고·진료과목)가 gtag 에 닿기 전에 매번 예외로 끊겼고,
+     기록이 한 줄도 남지 않았다. 여기 쓸 helper 를 이 IIFE 안에 따로 둔다.
+     (판정 규칙은 위쪽 csText/csPage 와 동일하게 유지 — page 값이 갈리면
+      시트에서 합산이 안 된다.) */
+  function hxText(el) {
+    return ((el && (el.innerText || el.textContent)) || '').replace(/\s+/g, ' ').trim();
+  }
+  function hxPage() {
+    var p = (location.pathname || '/').toLowerCase();
+    if (/discover/.test(p))            return 'discover';
+    if (/seocho|seoco/.test(p))        return 'seocho';
+    if (/emergency|symptoms/.test(p))  return 'emergency';
+    if (/specialty/.test(p))           return 'specialty';
+    if (/services/.test(p))            return 'services';
+    if (/faq/.test(p))                 return 'faq';
+    return 'home';
+  }
+  var HX_PAGE = hxPage();
+
   function hxHeaderGa(name, el, fallbackLabel) {
     if (typeof window.gtag !== 'function') return;
     var a = (el && el.closest) ? (el.closest('a') || el) : null;
     /* 로고는 이미지 링크라 글자가 없다 → fallbackLabel 로 갈음 */
-    var label = csText(a) || fallbackLabel || '';
+    var label = hxText(a) || fallbackLabel || '';
     window.gtag('event', name, {
       item_type: 'header_nav',
-      page: CS_PAGE,
+      page: HX_PAGE,
       device: window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'),
       link_text: label,
       link_url: (a && a.getAttribute && a.getAttribute('href')) || '',
@@ -456,11 +491,31 @@
       transport_type: 'beacon'
     });
   }
-  function hxHeaderRoot() {
-    return document.querySelector('.navbar1_component') ||
-           document.querySelector('header') ||
-           document.querySelector('[class*="navbar" i]') ||
-           document.querySelector('nav');
+  /* 헤더는 한 페이지에 둘 이상 있다 — 데스크톱용 <header.header> 와 모바일용
+     <header.header_mobile> 가 둘 다 DOM 에 들어 있고 화면 폭으로 한쪽만 보인다.
+     예전엔 '첫 번째 하나'만 훑어서, 나머지 한쪽(주로 모바일)의 로고 클릭은
+     영영 기록되지 않았다. 전부 훑는다. */
+  function hxHeaderRoots() {
+    var found = document.querySelectorAll('header, .navbar1_component, [class*="navbar" i], nav');
+    return [].slice.call(found);
+  }
+
+  /* 로고인가 — href 로 판정하지 않는다.
+     실제 헤더의 로고 링크는 Webflow 에서 링크가 비어 있고(linkType none),
+     모바일 로고 이미지는 alt 도 클래스도 'logo' 와 무관하다. 그래서 예전
+     조건('홈으로 가는 href' + 이미지)에 한 번도 걸리지 않아 로고 클릭이
+     통째로 기록되지 않았다.
+     대신 생김새로 가린다 — 헤더 안에서 '이미지만 있고 글자가 없는 링크'.
+     메뉴 탭(진료과목·특화진료)은 글자뿐이고, 지점안내는 핀 아이콘이 있지만
+     '지점안내' 글자가 있어 자연히 걸러진다. 그래도 헤더마다 첫 번째 하나만
+     로고로 인정해, 아이콘 링크가 더 있어도 오인하지 않는다. */
+  function hxIsLogoLink(a) {
+    if (!a || a.tagName !== 'A') return false;
+    if (a.hasAttribute('data-coming-soon')) return false;
+    if (a.hasAttribute(LIVE_ATTR) || a.hasAttribute(BRANCH_SCROLL_ATTR)) return false;
+    if (!a.querySelector('img, svg')) return false;
+    if (hxText(a)) return false;                 /* 글자가 있으면 로고가 아니다 */
+    return true;
   }
   function hxIsHomeHref(a) {
     var href = a.getAttribute('href');
@@ -472,21 +527,47 @@
     } catch (e) { return false; }
   }
   var HDR_GA_ATTR = 'data-hx-hdr-ga';
+  /* 로고 → 홈. Webflow 헤더의 로고 링크는 주소가 비어 있어(linkType none)
+     눌러도 아무 일도 안 났다. 로고는 홈으로 가는 게 관례라 사용자 지시로 붙인다.
+     Designer 에서 고치면 Publish 가 필요해 손대지 않은 다른 작업까지 함께
+     나가므로, 헤더 탭을 실제 링크로 승격하는 markLiveNav 와 같은 방식으로
+     여기서 붙인다.
+     ⚠ 이미 주소가 있는 로고는 건드리지 않는다 — 나중에 Designer 에서 링크를
+       넣으면 그쪽이 이긴다. */
+  function ensureLogoHome(a) {
+    var href = a.getAttribute('href');
+    if (href && href !== '#') return;
+    a.setAttribute('href', '/');
+    a.style.cursor = 'pointer';
+  }
+
   function markHeaderGa() {
-    var header = hxHeaderRoot();
-    if (header) {
+    hxHeaderRoots().forEach(function (header) {
+      /* 헤더 안에 또 다른 네비 컨테이너(.navbar1_component 등)가 들어 있으면
+         같은 헤더를 두 번 훑게 된다. 이미 이 안에서 로고를 찾았으면 건너뛴다
+         — 안 그러면 두 번째 훑기에서 엉뚱한 아이콘 링크가 로고로 찍힌다. */
+      if (header.querySelector('[' + HDR_GA_ATTR + '="logo"]')) return;
       var anchors = header.querySelectorAll('a');
+      var claimed = false;                        /* 헤더당 로고 하나만 */
       Array.prototype.forEach.call(anchors, function (a) {
-        if (a.getAttribute(HDR_GA_ATTR)) return;
-        if (hxIsHomeHref(a) && (a.querySelector('img,svg') || /logo/i.test(a.className || ''))) {
+        if (claimed || a.getAttribute(HDR_GA_ATTR)) return;
+        var byHref = hxIsHomeHref(a) && (a.querySelector('img,svg') || /logo/i.test(a.className || ''));
+        if (byHref || hxIsLogoLink(a)) {
           a.setAttribute(HDR_GA_ATTR, 'logo');
+          ensureLogoHome(a);
+          claimed = true;
         }
       });
-    }
+    });
     /* 진료과목 링크는 data-helix-link="/services" 로 유일 식별(헤더 스코프 불필요) */
     var svc = document.querySelectorAll('[' + LIVE_ATTR + '="/services"]');
     Array.prototype.forEach.call(svc, function (el) {
       if (!el.getAttribute(HDR_GA_ATTR)) el.setAttribute(HDR_GA_ATTR, 'services');
+    });
+    /* 특화진료 탭도 같은 방식 — data-helix-link="/specialty-care" 로 식별 */
+    var spc = document.querySelectorAll('[' + LIVE_ATTR + '="/specialty-care"]');
+    Array.prototype.forEach.call(spc, function (el) {
+      if (!el.getAttribute(HDR_GA_ATTR)) el.setAttribute(HDR_GA_ATTR, 'specialty');
     });
   }
   /* 발사 리스너 — document 캡처. handleLiveCardClick 이 진료과목 클릭에서
@@ -498,7 +579,9 @@
     var hdrLogo = t.closest('[' + HDR_GA_ATTR + '="logo"]');
     if (hdrLogo) { hxHeaderGa('header_logo_home', hdrLogo, '로고'); return; }
     var hdrSvc = t.closest('[' + HDR_GA_ATTR + '="services"]');
-    if (hdrSvc) hxHeaderGa('header_services_click', hdrSvc, '진료과목');
+    if (hdrSvc) { hxHeaderGa('header_services_click', hdrSvc, '진료과목'); return; }
+    var hdrSpc = t.closest('[' + HDR_GA_ATTR + '="specialty"]');
+    if (hdrSpc) hxHeaderGa('header_specialty_click', hdrSpc, '특화진료');
   }, true);
 
   /* Webflow Designer 컴포넌트 정의/인스턴스에 custom attribute 로 박혀 있는

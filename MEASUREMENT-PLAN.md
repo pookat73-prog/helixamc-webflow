@@ -34,6 +34,9 @@
 | `emergency/branch-cta.js` | `emergency_call_<기기>` | 서초+일산 모두 | O |
 | `seocho/seocho.js` | `seocho_phone_intent`(번호 누른 순간, 확인창 뜨기 전) / `seocho_phone_call`(확인창에서 확인 누른 뒤) | 서초 고정 | – |
 | `faq/cta-call.js` | `faq_phone_call` | – | – |
+| `specialty/specialty.js` | `specialty_item_click_<기기>` / `specialty_item_hover_<기기>` / `specialty_group_tab_<기기>` | – | O |
+| `home/global/coming-soon.js` | `header_logo_home` / `header_services_click` / `header_specialty_click` | – | – |
+| `home/global/hamburger.js` | `menu_specialty_click` (그 외 `menu_*_click`) | – | – |
 | (미상 — copy 계열) | `tel_copy_seocho_mobile`, `tel_copy_ilsan_desktop`, `tel_copy_ilsan_mobile`, `tel_copy_other_desktop`, `tel_copy_other_mobile` | O | O |
 | (미상 — 주소 복사) | `copy_address_seocho_desktop/mobile`, `copy_address_ilsan_desktop/mobile` | O | O |
 
@@ -45,6 +48,20 @@
 
 ## 0단계 — 이미 끝난 것
 
+- [x] **특화진료(/specialty-care) 측정 공백 해소 (2026-08-28)** — 이 페이지는 측정 파일이 하나도 안 실려 방문·스크롤·체류·클릭이 통째로 0건이었다(진료과목 페이지가 겪었던 것과 같은 공백). 붙인 것:
+  - 로더(`specialty/bootstrap.js`)에 공용 측정 묶음 추가 — `measure-gate` / `ga4-base` / `session` / `ga-inspector` / `sheet-log` / `scroll-depth` / `page-time` / `section-reach`. (플로팅 상담 CTA 는 원래 실려 있었지만 `ga4-base` 가 없어 자기 이벤트가 전부 허공으로 날아가고 있었음 — 같이 해소)
+  - `scroll-depth` / `page-time` / `section-reach` / `ga-inspector` 의 페이지 판정에 `specialty` 분기 추가 (없으면 이 페이지 방문이 전부 `home` 으로 잘못 집계됨)
+  - 파트 도달·체류: 첫화면 + 그룹 4개(`specialty_sec_*` / `specialty_dwell_*`). 이 페이지는 `<section>` 이 하나뿐이라 다섯 파트 모두 `self:true` 로 승격을 껐다 (`section-reach.js` 에 이 옵션을 새로 둠)
+  - 페이지 전용(`specialty/specialty.js` 끝 덩어리): `specialty_item_click_*`(12개 항목 중 무엇을 눌렀나, `has_page` 로 이동/준비중 토스트 구분) · `specialty_item_hover_*`(넓은 화면에서 0.6초 이상 머문 항목 = 설명을 실제로 읽음) · `specialty_group_tab_*`(좁은 화면 그룹 띠)
+  - 메뉴 탭: 헤더 `header_specialty_click`(신규) · 햄버거 `menu_specialty_click`(공용 `menu_nav_click` 에서 분리)
+  - ⚠️ **덤으로 드러난 버그**: `home/global/coming-soon.js` 의 헤더 GA 덩어리가 다른 IIFE 의 `csText` / `CS_PAGE` 를 부르고 있어 **ReferenceError 로 매번 죽었다** → `header_logo_home` · `header_services_click` 도 여태 한 줄도 안 남았음. 같은 IIFE 안 helper 로 교체해 함께 해소.
+- [x] **헤더 로고 · 지점안내 · 푸터 · 플로팅 CTA 측정 보강 (2026-08-28, 사용자 지적)** — 위 작업 직후 사용자가 "로고·지점안내·푸터·플로팅 CTA 에 측정이 없다" 고 지적. 확인 결과 네 건 모두 사실이었고 원인이 각각 달랐다.
+  - **헤더 로고**: 판정 조건이 "홈으로 가는 href + 이미지" 였는데, 실제 Webflow 헤더의 로고 링크는 **링크가 비어 있다**(linkType none) → 한 번도 안 걸렸음. 모바일 로고는 alt·클래스도 'logo' 와 무관. → href 를 안 보고 "헤더 안에서 이미지만 있고 글자가 없는 링크"로 판정하도록 교체. 헤더당 첫 하나만 인정 + 중첩 네비 이중마킹 가드.
+  - **헤더 로고(2)**: `hxHeaderRoot()` 가 헤더를 **하나만** 찾아, 데스크톱·모바일 헤더가 둘 다 DOM 에 있는 구조에서 나머지 한쪽 로고는 영영 마킹 안 됐음 → 전부 훑도록 변경.
+  - **지점안내 탭**: 이동(홈 지점 섹션 스크롤)만 하고 **GA 이벤트 자체가 없었음** → `header_branch_click` 신설. `stopPropagation` 을 부르는 핸들러 안에서 직접 발사.
+  - **푸터**: 특화진료 페이지는 `footer.js` 를 아예 안 실어 이메일 복사·SNS 이동이 **동작도 측정도** 안 됐음 → 로더에 추가. 또 `copy_email_*` / `sns_click_*` 이 **page 파라미터를 안 실어** 보내 시트에서 어느 페이지 푸터인지 빈칸이었음 → `page` 추가.
+  - **플로팅 CTA**: 특화진료 페이지에선 `ga4-base` 가 없어 이벤트가 통째로 유실(위 항목에서 해소). 추가로 `cta_*` 전 이벤트에 **device 가 없었음** → 추가(상담은 모바일 비중이 커 특히 필요).
+  - 남은 일: 🖱 새 이벤트들의 GA4 주요 이벤트 등록(P02 와 같은 방식) + 맞춤 측정기준에 `item` / `group` / `has_page` 추가 검토(P13)
 - [x] 내부 트래픽 제외 필터 "사용 중" 전환 (8/11). 8/11 이전 데이터 인용 시 내부 접속 혼입 가능성만 함께 적으면 됨. 추가 조치 없음.
 
 ## 1단계 — 지금 코드로 바로 손댈 수 있는 것 (main 직행 대상)
@@ -94,7 +111,9 @@
 - [ ] (가) 청크를 계속 늘리기 (임시방편, 손은 덜 가지만 시트가 계속 무거워짐)
 - [ ] (나, 권장) 원본 로그 시트에 `doctor`/`dept`/`sid`/`source`/`visitor`/`question`/`symptom` 열을 미리 파싱해서 만들어두고, 요약 시트는 무거운 JSON 대신 그 가벼운 열만 가져오도록 변경 — 데이터량이 크게 줄어 문제 근본 해결, 요약 탭 정규식 수식 7개도 제거 가능
 - [ ] (다) `IMPORTRANGE` 자체를 걷어내고 "체류·동선" 탭처럼 Apps Script가 로그를 직접 읽어 쓰는 방식으로 전환 — 가장 튼튼하지만 작업량 큼
-- [ ] 오래된 로그(지난달 이전) 아카이빙 탭 분리도 함께 검토하면 위 (나)(다)와 시너지
+- [x] 오래된 로그(지난달 이전) 아카이빙 탭 분리 — **2026-08-28 구현**. `scripts/sheet-log-monthly.gs` 가 `log` 탭에서 지난달 이전 줄을 `log YYYY-MM` 탭으로 매일 새벽 옮긴다. 받는 쪽(웹앱)은 무변경(재배포 시 주소가 바뀌어 기록이 끊길 위험 회피). `sheet-dwell-journey.gs` 의 `readLog_()` 도 달별 탭 전부를 읽도록 수정.
+  - 남은 일 🖱: 요약 시트에 **지난달 탭을 가리키는 IMPORTRANGE 칸** 추가 (`=IFERROR(IMPORTRANGE($Z$1,"log "&TEXT(EOMONTH(TODAY(),-1),"yyyy-mm")&"!A2:F"), )`). 9월 1일 첫 자동 정리가 돌기 전에 넣어야 요약 표에서 8월치가 안 사라진다.
+  - 이것만으로 한 달치(약 4.8만 줄)는 여전히 크다 → 위 (나) 파싱 열 만들기와 병행해야 근본 해결.
 
 ## 2단계 — 콘텐츠·디자인 작업 (Webflow, staging 우선)
 
