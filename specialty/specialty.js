@@ -163,6 +163,9 @@
      여기에 주소만 넣으면 그 항목만 이동으로 바뀐다.
      예) '종양 색전술': '/specialty/tumor-embolization' */
   var LINKS = {};
+  /* 이 파일 맨 아래 측정 덩어리가 "상세페이지가 있는 항목인가"(has_page)를
+     판단할 때 읽는다. 여기 주소를 채우면 측정 쪽도 자동으로 따라간다. */
+  window.__helixSpecialtyLinks = LINKS;
 
   /* 좁은 화면은 설명을 처음부터 펼쳐 두므로 선도 안 그린다.
      CSS 의 @media (min-width: 992px) 와 판정을 일치시킨다.
@@ -871,4 +874,201 @@
 
   if (document.readyState !== 'loading') init();
   else document.addEventListener('DOMContentLoaded', init);
+})();
+
+/* ================================================================
+   HELIX AMC — 특화진료 페이지 측정  v1.0
+   위 두 덩어리(코멧 선 · 그룹 바)와 완전히 독립. 화면을 건드리지 않고
+   "무엇을 눌렀나 / 무엇을 들여다봤나" 만 기록한다.
+
+   ⚠ 새 파일로 나누지 않은 이유
+     새 파일을 만들면 bootstrap.js 의 FILES 배열과 워크플로우 퍼지 목록을
+     같이 늘려야 하고, jsDelivr 엣지가 옛 목록을 물고 있으면 새 파일이
+     영영 안 닿는다 (CLAUDE.md 의 PR #703~#713 교훈). 이 페이지가 이미
+     오래전부터 싣고 있는 파일에 이어 붙인다.
+
+   무엇을 남기나
+   -----------------------------------------------------------------
+   ① 항목 클릭   specialty_item_click_<기기>
+      12개 항목 중 무엇을 눌렀나. 지금은 상세페이지가 하나도 없어 "준비중"
+      토스트만 뜨지만, 그 클릭이야말로 "어느 항목부터 상세페이지를 만들까"
+      를 알려주는 신호다. has_page 로 이동/토스트를 구분해 둔다
+      (진료과목 페이지의 services_dept_click_* 과 같은 사고방식).
+
+   ② 항목 들여다보기  specialty_item_hover_<기기>   ← 넓은 화면 전용
+      설명이 마우스를 올려야 펼쳐지는 구조라, 0.6초 이상 머문 항목 =
+      "설명을 실제로 읽은 항목". 스쳐 지나간 것과 갈라내려고 시간 문턱을
+      둔다. 항목당 방문 1회만 보낸다(같은 항목 위를 오가도 한 줄).
+      좁은 화면은 설명이 처음부터 펼쳐져 있어 hover 자체가 없다 — 그쪽은
+      ①(탭)과 파트 도달(global/section-reach.js)이 같은 질문에 답한다.
+
+   ③ 그룹 탭 클릭  specialty_group_tab_<기기>       ← 좁은 화면 전용
+      머리에 붙어 따라다니는 띠에서 어느 그룹으로 건너뛰었나.
+
+   ⚠ 이름·그룹은 코드에 적어두지 않는다
+     항목 한글명(.spec-item-name)과 그룹명(.spec-cat-name)을 그때그때
+     DOM 에서 읽는다. Designer 에서 이름을 고치거나 항목을 늘려도 이 파일을
+     고칠 일이 없다 (코멧 선이 좌표를 하드코딩하지 않는 것과 같은 원칙).
+
+   ⚠ 측정은 정식 사이트에서만 — 스테이징(*.webflow.io)은 즉시 종료.
+     운영자 제외 스위치(?helix-noga=1, global/measure-gate.js)도 존중.
+   디버그: URL 에 ?debug-ga=1
+   ================================================================ */
+(function () {
+  'use strict';
+
+  if (window.__helixSpecialtyGaInit) return;
+  window.__helixSpecialtyGaInit = true;
+
+  if (/\.webflow\.io$/i.test(location.hostname)) return;
+  if (window.__helixNoMeasure) return;
+
+  var WRAP    = '.hst-item-wrap';
+  var NAME    = '.spec-item-name';
+  var COL     = '.hst_col';
+  var CATNAME = '.spec-cat-name';
+  var GTAB    = '.hx-spec-gtab';
+
+  var DESKTOP_MIN = 992;   /* specialty.css 의 펼침 기준과 같아야 함 */
+  var HOVER_MS    = 600;   /* 이만큼 머물러야 "읽었다" 로 본다 */
+
+  var DEBUG = /[?&]debug-ga=1/.test(location.search);
+  function log() {
+    if (!DEBUG) return;
+    console.log.apply(console, ['[helix-specialty-ga]'].concat([].slice.call(arguments)));
+  }
+
+  function device() {
+    return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+  }
+  function txt(el) {
+    return ((el && (el.innerText || el.textContent)) || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function send(name, params) {
+    try {
+      params.page = 'specialty';
+      params.device = device();
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';   /* 클릭 직후 페이지가 넘어가도 유실 방지 */
+        window.gtag('event', name, params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = name;
+        window.dataLayer.push(params);
+      }
+      log('sent', name, params);
+    } catch (e) { log('send error', e); }
+  }
+
+  /* 항목 하나를 "어느 그룹의 몇 번째 무엇" 으로 풀어낸다 */
+  function describe(wrap) {
+    var item = txt(wrap.querySelector(NAME));
+    var col  = wrap.closest ? wrap.closest(COL) : null;
+    var group = col ? txt(col.querySelector(CATNAME)) : '';
+
+    var cols = [].slice.call(document.querySelectorAll(COL));
+    var gi = col ? cols.indexOf(col) : -1;
+    var items = col ? [].slice.call(col.querySelectorAll(WRAP)) : [];
+    var ii = items.indexOf(wrap);
+
+    var links = window.__helixSpecialtyLinks || {};
+    return {
+      item_type:   'specialty_item',
+      item:        item,
+      group:       group,
+      group_index: gi >= 0 ? gi + 1 : null,
+      item_index:  ii >= 0 ? ii + 1 : null,
+      /* 상세페이지가 연결된 항목인가 — 아직 하나도 없어 지금은 전부 false.
+         false 클릭이 쌓이는 순서가 곧 "상세페이지 제작 우선순위". */
+      has_page:    !!links[item] || !!wrap.querySelector('a[href]:not([href="#"])'),
+      value:       item
+    };
+  }
+
+  /* ── ① 항목 클릭 ──────────────────────────────────────────────
+     클릭을 캡처 단계에서 받는다. 위 initCta() 가 버블 단계에서 이동/토스트를
+     처리하므로, 이동이 일어나도 측정이 먼저 나간다. 그쪽 동작은 건드리지
+     않는다(측정은 듣기만 한다). */
+  function initClick() {
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var wrap = t.closest(WRAP);
+      if (!wrap) return;
+      /* 숨은 덱(넓은/좁은 화면 이중 마크업)의 항목은 눌릴 수 없지만 혹시 잡히면 거른다 */
+      if (!wrap.getBoundingClientRect().width) return;
+      send('specialty_item_click_' + device(), describe(wrap));
+    }, true);
+  }
+
+  /* ── ② 항목 들여다보기(넓은 화면) ────────────────────────────── */
+  function initHover() {
+    var timer = null, armed = null;
+
+    function clear() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      armed = null;
+    }
+
+    document.addEventListener('mouseover', function (e) {
+      if (window.innerWidth < DESKTOP_MIN) return;
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var wrap = t.closest(WRAP);
+      if (!wrap || wrap === armed) return;      /* 같은 항목 안에서의 이동은 무시 */
+      clear();
+      if (wrap.__helixGaHovered) return;        /* 이 방문에서 이미 보냈다 */
+      armed = wrap;
+      timer = setTimeout(function () {
+        timer = null;
+        if (!armed || armed.__helixGaHovered) return;
+        armed.__helixGaHovered = true;
+        var p = describe(armed);
+        p.item_type = 'specialty_item_hover';
+        p.hover_ms  = HOVER_MS;
+        send('specialty_item_hover_' + device(), p);
+      }, HOVER_MS);
+    }, true);
+
+    document.addEventListener('mouseout', function (e) {
+      if (!armed) return;
+      var to = e.relatedTarget;
+      /* 항목 안에서 자식 요소로 옮겨간 것뿐이면 계속 센다 */
+      if (to && armed.contains && armed.contains(to)) return;
+      clear();
+    }, true);
+  }
+
+  /* ── ③ 그룹 탭 클릭(좁은 화면) ────────────────────────────────
+     띠는 위 그룹 바 덩어리가 나중에 만들어 붙이므로, 요소마다 걸지 않고
+     문서에 한 번만 위임해 둔다. */
+  function initGroupTab() {
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var tab = t.closest(GTAB);
+      if (!tab) return;
+      var tabs = [].slice.call(document.querySelectorAll(GTAB));
+      var gi = tabs.indexOf(tab);
+      send('specialty_group_tab_' + device(), {
+        item_type:   'specialty_group_tab',
+        group:       txt(tab.querySelector('.hx-spec-gtab_name')) || txt(tab),
+        group_index: gi >= 0 ? gi + 1 : null,
+        value:       txt(tab)
+      });
+    }, true);
+  }
+
+  function init() {
+    initClick();
+    initHover();
+    initGroupTab();
+    log('ready');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

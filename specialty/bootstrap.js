@@ -28,11 +28,35 @@
     'global/viewport-fix.js',
     /* 뷰포트 판정 (window.HelixVP) — 교정된 폭을 봐야 하므로 그 다음 */
     'global/viewport.js',
+
+    /* ── 측정 (다른 페이지와 동일 구성) ──────────────────────────
+       이 페이지는 그동안 측정 파일이 하나도 실리지 않아 방문·스크롤·
+       머문 시간·클릭이 통째로 기록되지 않았다(진료과목 페이지가 겪었던 것과
+       같은 공백). 순서가 중요하다 — 운영자 제외 스위치가 gtag 를 만들기
+       전에 가로채야 하고, ga4-base 가 만든 gtag 에 나머지가 편승한다.
+       ⚠ 측정은 정식 사이트에서만 — 각 모듈이 스테이징(*.webflow.io)에서
+         스스로 꺼진다(도메인 게이트, CLAUDE.md GA4 정책). */
+    'global/measure-gate.js',
+    'global/ga4-base.js',
+    'global/session.js',
+    'global/ga-inspector.js',
+    'global/sheet-log.js',
+
     /* 전역 스타일 — 헤더 링크 스타일·호버 효과가 여기 들어 있다 */
     'global/global.css',
-    /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
+    /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정.
+       자체 GA 이벤트(cta_open / cta_call / cta_form_*)를 쏘는데, 여태 이
+       페이지엔 ga4-base 가 없어 전부 허공으로 날아가고 있었다. */
     'global/floating-cta.css',
     'global/floating-cta.js',
+
+    /* 스크롤 깊이(25/50/75/100%) + 페이지 뷰 */
+    'global/scroll-depth.js',
+    /* 페이지 체류시간 — 이 페이지에 실제로 몇 초 있었나 */
+    'global/page-time.js',
+    /* 파트 도달·체류 — 첫화면 / 그룹 4개(통합 종양 진료·인터벤션·
+       고난도 수술·특수 전문 치료) 중 어디까지 봤나 */
+    'global/section-reach.js',
     /* 헤더 햄버거 메뉴 (GSAP 의존) */
     'home/global/hamburger.css',
     'home/global/hamburger.js',
@@ -42,10 +66,16 @@
     'home/global/coming-soon.js',
     /* 특화진료 항목 hover 인터랙션
          · specialty.css — 설명 펼침/접힘. js 없이 단독으로 동작한다.
-         · specialty.js  — 코멧 선(ㄱ자 경로 + 바닥 가로선). 선만 담당.
+         · specialty.js  — 코멧 선(ㄱ자 경로 + 바닥 가로선) + 좁은 화면
+                           그룹 바 + 이 페이지 전용 측정(항목 클릭·훑어보기,
+                           그룹 탭). 서로 독립된 덩어리 셋이 한 파일에 있다.
        둘을 나눠 둔 이유: js 가 CDN 에서 못 와도 설명은 정상적으로 펼쳐진다. */
     'specialty/specialty.css',
-    'specialty/specialty.js'
+    'specialty/specialty.js',
+    /* 푸터 (다른 페이지와 동일). 이 페이지만 빠져 있어 푸터의 이메일 복사·
+       SNS 이동이 동작도 안 하고 측정도 안 됐다. */
+    'home/global/footer.css',
+    'home/global/footer.js'
   ];
 
   function cdn(ref, path) {

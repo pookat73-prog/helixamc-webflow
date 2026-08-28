@@ -43,6 +43,12 @@
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';
+    /* 특화진료 페이지 — 이 분기가 없으면 방문·스크롤·체류가 전부 home 으로
+       잘못 집계된다 (진료과목·응급증상이 겪었던 것과 같은 문제).
+       판정은 floating-cta.js 와 동일하게 맞춘다 — 한 페이지의 page 값이
+       모듈마다 달라지면 시트에서 합산이 안 된다. */
+    if (/(^|\/)specialty(-care)?(\/|$)/.test(p) ||
+        document.querySelector('.hst_grid, .hst-item-wrap')) return 'specialty';
     /* 응급증상 페이지 — 실제 슬러그가 /symptoms 라서 'emergency' 라는 글자를
        찾는 방식으로는 못 잡는다. 이걸 빠뜨려 응급 방문이 전부 home 으로
        집계되고 있었다(홈은 부풀고 응급은 0으로 보임).
