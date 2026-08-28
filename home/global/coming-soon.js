@@ -431,24 +431,52 @@
   }
 
   /* ── 헤더 GA 측정 (전 페이지 공통 헤더) ──
-     홈 로고 / 진료과목 탭 클릭에 전용 GA 이벤트를 붙인다. window.gtag(ga4-base)
-     에 편승 → 스테이징(*.webflow.io)에선 no-op stub 이라 자동 비활성(측정 안 감).
-     실제 발사는 아래 document 캡처 리스너가 담당하고, 여기선 인스펙터 네모용
-     마커(data-hx-hdr-ga)만 부여한다.
+     홈 로고 / 진료과목 / 특화진료 탭 클릭에 전용 GA 이벤트를 붙인다.
+     window.gtag(ga4-base) 에 편승 → 스테이징(*.webflow.io)에선 no-op stub 이라
+     자동 비활성(측정 안 감). 실제 발사는 아래 document 캡처 리스너가 담당하고,
+     여기선 인스펙터 네모용 마커(data-hx-hdr-ga)만 부여한다.
        - 로고: 헤더 안에서 홈(/)으로 가는, 이미지 품은 링크
-       - 진료과목: markLiveNav 가 승격한 data-helix-link="/services" 요소 */
+       - 진료과목: markLiveNav 가 승격한 data-helix-link="/services" 요소
+       - 특화진료: 같은 방식으로 승격된 data-helix-link="/specialty-care" 요소.
+         이 탭만 여태 빠져 있어 헤더에서 특화진료로 들어간 사람이 한 명도
+         기록되지 않았다(로고·진료과목은 잡히는데 특화진료만 0건).
+         ⚠ 햄버거 메뉴의 '특화진료' 는 이미 href="/specialty-care" 인 진짜
+           링크라 markLiveNav 가 승격하지 않는다(pointsToSamePage) → 여기
+           마커가 안 붙고 hamburger.js 의 menu_specialty_click 만 발사된다.
+           헤더 탭과 메뉴 항목이 이중으로 세어질 일이 없다. */
   /* 예전엔 이 두 이벤트를 빈 객체 {} 로 쏴서, 헤더 클릭이 기록은 남는데
      "어느 페이지에서 / 무엇을 / 어느 기기로" 눌렀는지가 하나도 안 남았다.
      다른 클릭 이벤트와 같은 칸(page·device·link_text·link_url·value)을 채운다.
      헤더 링크는 누르는 즉시 페이지가 넘어가므로 beacon 으로 보내 유실 방지. */
+  /* ⚠️ 이 덩어리는 위 준비중 토스트와 다른 IIFE 안에 있다 → 그쪽의 csText /
+     CS_PAGE 를 그대로 부르면 ReferenceError 로 죽는다. 실제로 그렇게 돼 있어
+     헤더 클릭 이벤트(로고·진료과목)가 gtag 에 닿기 전에 매번 예외로 끊겼고,
+     기록이 한 줄도 남지 않았다. 여기 쓸 helper 를 이 IIFE 안에 따로 둔다.
+     (판정 규칙은 위쪽 csText/csPage 와 동일하게 유지 — page 값이 갈리면
+      시트에서 합산이 안 된다.) */
+  function hxText(el) {
+    return ((el && (el.innerText || el.textContent)) || '').replace(/\s+/g, ' ').trim();
+  }
+  function hxPage() {
+    var p = (location.pathname || '/').toLowerCase();
+    if (/discover/.test(p))            return 'discover';
+    if (/seocho|seoco/.test(p))        return 'seocho';
+    if (/emergency|symptoms/.test(p))  return 'emergency';
+    if (/specialty/.test(p))           return 'specialty';
+    if (/services/.test(p))            return 'services';
+    if (/faq/.test(p))                 return 'faq';
+    return 'home';
+  }
+  var HX_PAGE = hxPage();
+
   function hxHeaderGa(name, el, fallbackLabel) {
     if (typeof window.gtag !== 'function') return;
     var a = (el && el.closest) ? (el.closest('a') || el) : null;
     /* 로고는 이미지 링크라 글자가 없다 → fallbackLabel 로 갈음 */
-    var label = csText(a) || fallbackLabel || '';
+    var label = hxText(a) || fallbackLabel || '';
     window.gtag('event', name, {
       item_type: 'header_nav',
-      page: CS_PAGE,
+      page: HX_PAGE,
       device: window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'),
       link_text: label,
       link_url: (a && a.getAttribute && a.getAttribute('href')) || '',
@@ -488,6 +516,11 @@
     Array.prototype.forEach.call(svc, function (el) {
       if (!el.getAttribute(HDR_GA_ATTR)) el.setAttribute(HDR_GA_ATTR, 'services');
     });
+    /* 특화진료 탭도 같은 방식 — data-helix-link="/specialty-care" 로 식별 */
+    var spc = document.querySelectorAll('[' + LIVE_ATTR + '="/specialty-care"]');
+    Array.prototype.forEach.call(spc, function (el) {
+      if (!el.getAttribute(HDR_GA_ATTR)) el.setAttribute(HDR_GA_ATTR, 'specialty');
+    });
   }
   /* 발사 리스너 — document 캡처. handleLiveCardClick 이 진료과목 클릭에서
      stopPropagation 을 부르지만, 그건 "다른 타깃으로의 전파"만 막을 뿐
@@ -498,7 +531,9 @@
     var hdrLogo = t.closest('[' + HDR_GA_ATTR + '="logo"]');
     if (hdrLogo) { hxHeaderGa('header_logo_home', hdrLogo, '로고'); return; }
     var hdrSvc = t.closest('[' + HDR_GA_ATTR + '="services"]');
-    if (hdrSvc) hxHeaderGa('header_services_click', hdrSvc, '진료과목');
+    if (hdrSvc) { hxHeaderGa('header_services_click', hdrSvc, '진료과목'); return; }
+    var hdrSpc = t.closest('[' + HDR_GA_ATTR + '="specialty"]');
+    if (hdrSpc) hxHeaderGa('header_specialty_click', hdrSpc, '특화진료');
   }, true);
 
   /* Webflow Designer 컴포넌트 정의/인스턴스에 custom attribute 로 박혀 있는

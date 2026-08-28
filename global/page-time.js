@@ -55,6 +55,12 @@
     if (/discover/.test(p)) return 'discover';
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';
+    /* 특화진료 페이지 — 이 분기가 없으면 방문·스크롤·체류가 전부 home 으로
+       잘못 집계된다 (진료과목·응급증상이 겪었던 것과 같은 문제).
+       판정은 floating-cta.js 와 동일하게 맞춘다 — 한 페이지의 page 값이
+       모듈마다 달라지면 시트에서 합산이 안 된다. */
+    if (/(^|\/)specialty(-care)?(\/|$)/.test(p) ||
+        document.querySelector('.hst_grid, .hst-item-wrap')) return 'specialty';
     if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
         document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
     if (/faq/.test(p) || document.querySelector('.faq_tab-name, [class*="faq-list" i]')) return 'faq';

@@ -17,7 +17,10 @@
      (전환 성격이 다른 링크를 GA 에서 한 줄로 따로 집계하기 위함). */
   var NAV_LINKS = [
     { text: 'discover HELIX', href: '/discover-helix' },
-    { group: [ { text: '진료과목', href: '/services', event: 'menu_services_click' }, { text: '특화진료', href: '/specialty-care' } ] },
+    /* 특화진료도 진료과목처럼 전용 이벤트를 준다. 여태 공용 menu_nav_click
+       안에 묻혀 있어, 헤더 탭·메뉴 어느 쪽으로 특화진료에 들어왔는지 갈라
+       볼 수가 없었다(헤더 쪽은 coming-soon.js 의 header_specialty_click). */
+    { group: [ { text: '진료과목', href: '/services', event: 'menu_services_click' }, { text: '특화진료', href: '/specialty-care', event: 'menu_specialty_click' } ] },
     { text: '의료 인프라',   href: '#' },
     { group: [ { text: 'FAQ', href: '/faq' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
     { text: '응급증상안내',  href: '/symptoms', event: 'menu_emergency_click' }
@@ -127,6 +130,10 @@
   function menuPage() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
+    /* 특화진료 — 이 분기가 없으면 그 페이지에서 연 메뉴가 전부 page:'home'
+       으로 찍힌다(다른 측정 모듈과 같은 판정으로 통일). */
+    if (/(^|\/)specialty(-care)?(\/|$)/.test(p) ||
+        document.querySelector('.hst_grid, .hst-item-wrap')) return 'specialty';
     if (document.querySelector('.map_naver, #map_naver')) return 'seocho';
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초|seoco/.test(p)) return 'seocho';
