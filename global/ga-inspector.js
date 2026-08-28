@@ -49,6 +49,12 @@
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';
+    /* 특화진료 페이지 — 이 분기가 없으면 방문·스크롤·체류가 전부 home 으로
+       잘못 집계된다 (진료과목·응급증상이 겪었던 것과 같은 문제).
+       판정은 floating-cta.js 와 동일하게 맞춘다 — 한 페이지의 page 값이
+       모듈마다 달라지면 시트에서 합산이 안 된다. */
+    if (/(^|\/)specialty(-care)?(\/|$)/.test(p) ||
+        document.querySelector('.hst_grid, .hst-item-wrap')) return 'specialty';
     /* 응급증상은 슬러그가 /symptoms — 다른 측정 모듈과 동일 판정으로 통일 */
     if (/(^|\/)(symptoms|emergency)(\/|$)/.test(p) ||
         document.querySelector('.em_card, [data-emergency-open]')) return 'emergency';
@@ -82,6 +88,7 @@
     /* 전 페이지 공통 — 헤더 홈 로고 / 진료과목 탭 (coming-soon.js 가 data-hx-hdr-ga 마킹) */
     { sel: '[data-hx-hdr-ga="logo"]',     label: '헤더 · 홈 로고',   event: 'header_logo_home' },
     { sel: '[data-hx-hdr-ga="services"]', label: '헤더 · 진료과목',  event: 'header_services_click' },
+    { sel: '[data-hx-hdr-ga="specialty"]', label: '헤더 · 특화진료', event: 'header_specialty_click' },
     /* 전 페이지 공통 — 햄버거 메뉴 (홈: .image-18 / about: .menu-bar_mobile).
        메뉴 오버레이(.hx-menu-*)는 클릭으로 열릴 때 주입·표시되며, 인스펙터가
        클릭·DOM 변동 때 재스캔하므로 열면 네모가 따라붙는다. */
@@ -91,6 +98,7 @@
        공용 항목보다 먼저 둬야 seen-dedup 에서 전용 라벨이 이김. */
     { sel: '[data-ga-event="menu_emergency_click"]', label: '햄버거 · 응급증상 안내', event: 'menu_emergency_click' },
     { sel: '[data-ga-event="menu_services_click"]',  label: '햄버거 · 진료과목',     event: 'menu_services_click' },
+    { sel: '[data-ga-event="menu_specialty_click"]', label: '햄버거 · 특화진료',    event: 'menu_specialty_click' },
     { sel: '[data-ga-event="vet_chart_click"]',      label: '햄버거 · 수의사용 웹차트', event: 'vet_chart_click' },
     { sel: '[data-ga-event="menu_svicc_click"]',     label: '햄버거 · 스빅(SVICC)',   event: 'menu_svicc_click' },
     { sel: '.hx-menu-branch, .hx-menu-nav-link, .hx-menu-footer-link',
@@ -122,6 +130,10 @@
     { sel: '.call.seocho, .call-seocho', label: '응급 · 서초 전화(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.map.seocho, .map-seocho',   label: '응급 · 서초 오시는길(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' },
+    /* 특화진료 페이지 — 항목 12개(클릭 + 넓은 화면에선 0.6초 이상 머무름)와
+       좁은 화면 그룹 띠. 둘 다 specialty/specialty.js 의 측정 덩어리가 담당. */
+    { sel: '.hst-item-wrap', label: '특화진료 · 항목',    event: 'specialty_item_click_* / _hover_*' },
+    { sel: '.hx-spec-gtab',  label: '특화진료 · 그룹 탭', event: 'specialty_group_tab_*' },
     /* 준비중(토스트) 자리 — coming-soon.js 가 런타임에 data-coming-soon 을
        박으므로 인스펙터의 재스캔이 뒤늦게 잡는다. 지점 카드처럼 마킹이
        겹쳐 박히는 자리가 있어, 가장 바깥 하나에만 네모를 그린다. */
