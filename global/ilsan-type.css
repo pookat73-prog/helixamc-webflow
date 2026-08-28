@@ -152,7 +152,12 @@
 
    ⚠ 의료진 정보가 올라가면 이 5번 블록만 지우면 된다.
    ================================================================ */
-html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href="#vets"] > div::after {
+/* ⚠ 주소 매칭은 "="가 아니라 "$=" (끝이 #vets 인 것) 로 잡는다.
+   Webflow 가 앵커를 그대로 "#vets" 로 낼 때도 있고 "/ilsan#vets" 처럼
+   페이지 경로를 앞에 붙여 낼 때도 있는데, "=" 로 잡으면 후자를 놓친다.
+   글자를 감싼 div 가 없는 변형까지 대비해 두 번째 줄을 함께 둔다. */
+html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"] > div::after,
+html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"]:not(:has(> div))::after {
   content: "준비중";
   display: inline-block;
   margin-left: 0.4em;
@@ -172,7 +177,8 @@ html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href="#vets"] > div::after
 
 /* 폰에서는 메뉴 칸이 더 좁다 — 딱지를 한 단계 더 줄여 글자를 안 밀어낸다. */
 @media (max-width: 479px) {
-  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href="#vets"] > div::after {
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"] > div::after,
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href$="#vets"]:not(:has(> div))::after {
     margin-left: 0.3em;
     padding: 0.1em 0.4em;
     font-size: 0.66em;
