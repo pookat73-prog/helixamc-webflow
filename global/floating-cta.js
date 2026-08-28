@@ -497,6 +497,11 @@
     if (typeof window.gtag === 'function') {
       var p = params || {};
       p.page = CTA_PAGE;
+      /* 기기 구분 — 다른 측정 이벤트는 전부 device 를 싣는데 상담 CTA 만
+         빠져 있어, "휴대폰에서 연 상담과 PC 에서 연 상담" 을 가를 수가
+         없었다. 상담은 모바일 비중이 큰 행동이라 이 칸이 특히 아쉬웠다. */
+      p.device = window.HelixVP ? HelixVP.device()
+                                : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       window.gtag('event', eventName, p);
     }
   }

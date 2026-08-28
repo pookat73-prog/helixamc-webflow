@@ -89,6 +89,7 @@
     { sel: '[data-hx-hdr-ga="logo"]',     label: '헤더 · 홈 로고',   event: 'header_logo_home' },
     { sel: '[data-hx-hdr-ga="services"]', label: '헤더 · 진료과목',  event: 'header_services_click' },
     { sel: '[data-hx-hdr-ga="specialty"]', label: '헤더 · 특화진료', event: 'header_specialty_click' },
+    { sel: '[data-hx-hdr-ga="branch"]',    label: '헤더 · 지점안내', event: 'header_branch_click' },
     /* 전 페이지 공통 — 햄버거 메뉴 (홈: .image-18 / about: .menu-bar_mobile).
        메뉴 오버레이(.hx-menu-*)는 클릭으로 열릴 때 주입·표시되며, 인스펙터가
        클릭·DOM 변동 때 재스캔하므로 열면 네모가 따라붙는다. */

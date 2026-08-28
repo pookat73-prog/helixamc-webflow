@@ -396,6 +396,8 @@
         el.setAttribute(BRANCH_SCROLL_ATTR, '1');
         el.style.cursor = 'pointer';
       }
+      /* 측정 점검 오버레이(?ga-inspect=1)가 네모를 그릴 자리 표시 */
+      if (!el.getAttribute(HDR_GA_ATTR)) el.setAttribute(HDR_GA_ATTR, 'branch');
     });
   }
   function scrollToBranchSection() {
@@ -411,6 +413,11 @@
       if (el.hasAttribute && el.hasAttribute(BRANCH_SCROLL_ATTR)) {
         e.preventDefault();
         e.stopPropagation();
+        /* 측정 — 이 탭만 여태 이벤트가 아예 없어서, 지점을 찾으러 누른
+           사람이 한 명도 기록되지 않았다. 여기서 직접 쏜다(아래 document
+           리스너에 맡기지 않는 이유: 바로 위에서 stopPropagation 을 부르고,
+           홈에서는 페이지 이동 없이 스크롤만 하기 때문). */
+        hxHeaderGa('header_branch_click', el, '지점안내');
         if (isHomePath()) scrollToBranchSection();
         else window.location.href = '/?to=branches';
         return;
@@ -484,11 +491,31 @@
       transport_type: 'beacon'
     });
   }
-  function hxHeaderRoot() {
-    return document.querySelector('.navbar1_component') ||
-           document.querySelector('header') ||
-           document.querySelector('[class*="navbar" i]') ||
-           document.querySelector('nav');
+  /* 헤더는 한 페이지에 둘 이상 있다 — 데스크톱용 <header.header> 와 모바일용
+     <header.header_mobile> 가 둘 다 DOM 에 들어 있고 화면 폭으로 한쪽만 보인다.
+     예전엔 '첫 번째 하나'만 훑어서, 나머지 한쪽(주로 모바일)의 로고 클릭은
+     영영 기록되지 않았다. 전부 훑는다. */
+  function hxHeaderRoots() {
+    var found = document.querySelectorAll('header, .navbar1_component, [class*="navbar" i], nav');
+    return [].slice.call(found);
+  }
+
+  /* 로고인가 — href 로 판정하지 않는다.
+     실제 헤더의 로고 링크는 Webflow 에서 링크가 비어 있고(linkType none),
+     모바일 로고 이미지는 alt 도 클래스도 'logo' 와 무관하다. 그래서 예전
+     조건('홈으로 가는 href' + 이미지)에 한 번도 걸리지 않아 로고 클릭이
+     통째로 기록되지 않았다.
+     대신 생김새로 가린다 — 헤더 안에서 '이미지만 있고 글자가 없는 링크'.
+     메뉴 탭(진료과목·특화진료)은 글자뿐이고, 지점안내는 핀 아이콘이 있지만
+     '지점안내' 글자가 있어 자연히 걸러진다. 그래도 헤더마다 첫 번째 하나만
+     로고로 인정해, 아이콘 링크가 더 있어도 오인하지 않는다. */
+  function hxIsLogoLink(a) {
+    if (!a || a.tagName !== 'A') return false;
+    if (a.hasAttribute('data-coming-soon')) return false;
+    if (a.hasAttribute(LIVE_ATTR) || a.hasAttribute(BRANCH_SCROLL_ATTR)) return false;
+    if (!a.querySelector('img, svg')) return false;
+    if (hxText(a)) return false;                 /* 글자가 있으면 로고가 아니다 */
+    return true;
   }
   function hxIsHomeHref(a) {
     var href = a.getAttribute('href');
@@ -501,16 +528,22 @@
   }
   var HDR_GA_ATTR = 'data-hx-hdr-ga';
   function markHeaderGa() {
-    var header = hxHeaderRoot();
-    if (header) {
+    hxHeaderRoots().forEach(function (header) {
+      /* 헤더 안에 또 다른 네비 컨테이너(.navbar1_component 등)가 들어 있으면
+         같은 헤더를 두 번 훑게 된다. 이미 이 안에서 로고를 찾았으면 건너뛴다
+         — 안 그러면 두 번째 훑기에서 엉뚱한 아이콘 링크가 로고로 찍힌다. */
+      if (header.querySelector('[' + HDR_GA_ATTR + '="logo"]')) return;
       var anchors = header.querySelectorAll('a');
+      var claimed = false;                        /* 헤더당 로고 하나만 */
       Array.prototype.forEach.call(anchors, function (a) {
-        if (a.getAttribute(HDR_GA_ATTR)) return;
-        if (hxIsHomeHref(a) && (a.querySelector('img,svg') || /logo/i.test(a.className || ''))) {
+        if (claimed || a.getAttribute(HDR_GA_ATTR)) return;
+        var byHref = hxIsHomeHref(a) && (a.querySelector('img,svg') || /logo/i.test(a.className || ''));
+        if (byHref || hxIsLogoLink(a)) {
           a.setAttribute(HDR_GA_ATTR, 'logo');
+          claimed = true;
         }
       });
-    }
+    });
     /* 진료과목 링크는 data-helix-link="/services" 로 유일 식별(헤더 스코프 불필요) */
     var svc = document.querySelectorAll('[' + LIVE_ATTR + '="/services"]');
     Array.prototype.forEach.call(svc, function (el) {
