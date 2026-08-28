@@ -131,3 +131,50 @@
     padding-bottom: 1.9vw !important;
   }
 }
+
+/* ================================================================
+   5. 서브헤더 "의료진 안내" 옆 준비중 딱지
+
+   ■ 왜
+   일산 분원 의료진 정보가 아직 없다. 메뉴를 눌러 섹션까지 내려간 뒤에야
+   준비중인 걸 알게 되면 헛걸음이라, 메뉴 글자 옆에서 미리 알려준다.
+   (섹션 안 긴 안내문은 Webflow 쪽 소제목에 넣어 뒀다.)
+
+   ■ 어떻게 고르나 — 글자가 아니라 "어디로 가는 링크인가"로
+   서브헤더 메뉴 한 칸은 컴포넌트라 항목마다 속성을 따로 못 박는다.
+   대신 의료진 메뉴만 #vets 로 가므로 그 주소로 집어낸다. 데스크탑·모바일
+   서브헤더가 같은 메뉴 컴포넌트를 쓰기 때문에 이 한 줄로 양쪽 다 붙는다.
+   구조: <a href="#vets"><div>의료진 안내</div></a>
+
+   ■ 왜 여기(일산 게이트 안)에
+   서초 페이지도 같은 컴포넌트와 #vets 앵커를 쓴다. 위 :has() 게이트가
+   없으면 서초 메뉴에도 준비중이 붙는다.
+
+   ⚠ 의료진 정보가 올라가면 이 5번 블록만 지우면 된다.
+   ================================================================ */
+html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href="#vets"] > div::after {
+  content: "준비중";
+  display: inline-block;
+  margin-left: 0.4em;
+  padding: 0.15em 0.5em;
+  border: 1px solid rgba(0, 117, 214, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 117, 214, 0.1);
+  color: #0075d6;
+  /* 메뉴 글자를 따라 줄어들도록 em 기준. 메뉴 칸이 좁아 줄바꿈은 막는다. */
+  font-size: 0.72em;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* 폰에서는 메뉴 칸이 더 좁다 — 딱지를 한 단계 더 줄여 글자를 안 밀어낸다. */
+@media (max-width: 479px) {
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) a[href="#vets"] > div::after {
+    margin-left: 0.3em;
+    padding: 0.1em 0.4em;
+    font-size: 0.66em;
+  }
+}
