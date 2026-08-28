@@ -98,6 +98,14 @@ function onOpen() {
     .addItem('매일 새벽 자동 정리 켜기', 'installMonthlyLogTrigger')
     .addItem('자동 정리 끄기', 'removeMonthlyLogTrigger')
     .addToUi();
+
+  /* 이 시트가 어떻게 짜여 있는지(수식·표 제목) 글 파일로 뽑는다.
+     Claude 는 시트의 수식을 볼 수 없어서, 이걸 한 번 돌려 두면
+     "어느 칸을 어떻게 고쳐야 하는지" 를 정확히 짚을 수 있다.
+     실제 기능은 같은 프로젝트의 sheet-structure-export.gs 에 있다. */
+  ui.createMenu('🧰 진단')
+    .addItem('요약 시트 구조 내보내기', 'exportSummaryStructure')
+    .addToUi();
 }
 
 /* ================================================================
