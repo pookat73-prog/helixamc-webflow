@@ -802,9 +802,13 @@ function sbDateKey_(y, m, d) {
   return y + '-' + p(m) + '-' + p(d);
 }
 
+/* 갱신 시각도 원본 로그 쪽 시간대(한국)로 적는다.
+   요약 스프레드시트가 America/Los_Angeles 라, 그쪽 시간대로 적으면
+   9월 1일 아침에 만든 표에 '2026-08-31 18:45' 이 찍힌다. 표 안의
+   날짜·시각은 전부 한국 기준인데 머리말만 16시간 뒤로 가 있으면
+   어느 쪽을 믿어야 할지 알 수 없다. */
 function sbNowText_() {
-  var tz = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
-  return Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd HH:mm');
+  return Utilities.formatDate(new Date(), sbLogTimeZone_(), 'yyyy-MM-dd HH:mm');
 }
 
 function sbToast_(msg) {
