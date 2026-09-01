@@ -1639,7 +1639,7 @@ window.HelixBranch = window.HelixBranch || (function () {
     var raw = (host.getAttribute('data-copy-address') || '').trim();
     if (raw && raw.toLowerCase() !== 'self') return raw;
     var clone = host.cloneNode(true);
-    var chips = clone.querySelectorAll('.helix-copy-btn, .helix-map-btn');
+    var chips = clone.querySelectorAll('.helix-chip-row, .helix-copy-btn, .helix-map-btn');
     [].slice.call(chips).forEach(function (c) { c.parentNode.removeChild(c); });
     return (clone.textContent || '').replace(/\s+/g, ' ').trim();
   }
@@ -1725,7 +1725,14 @@ window.HelixBranch = window.HelixBranch || (function () {
       });
     });
 
-    host.appendChild(btn);
+    /* 칩 두 개를 한 겹으로 묶는다(.helix-chip-row).
+       큰 화면에서는 이 묶음이 글줄에 그대로 얹혀(inline-flex) 지금과 똑같이
+       보이고, 모바일 첫 화면에서만 CSS 가 이 묶음을 한 줄짜리 상자로 바꿔
+       주소 아래로 내린다. 묶음이 없으면 "주소 / 복사 / 길찾기" 세 줄이 되어
+       버려서, 둘을 함께 내리려면 이 겹이 필요하다. */
+    var row = document.createElement('span');
+    row.className = 'helix-chip-row';
+    row.appendChild(btn);
 
     /* 길찾기 칩 — 복사 칩 바로 뒤. 첫 화면 주소는 지도(페이지 한참 아래)까지
        내려가지 않아도 바로 지도를 열 수 있어야 한다. */
@@ -1742,8 +1749,10 @@ window.HelixBranch = window.HelixBranch || (function () {
         e.stopPropagation();
         trackDirections(labelOf(host), mapUrl);
       });
-      host.appendChild(link);
+      row.appendChild(link);
     }
+
+    host.appendChild(row);
 
     log('bound', labelOf(host));
   }
