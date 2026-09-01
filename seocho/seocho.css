@@ -525,10 +525,14 @@ section.section > .div-block-220 {
 }
 
 /* ================================================================
-   예약 안내 전화번호 — "눌러도 되는 것" 으로 보이게
+   전화번호 — "눌러도 되는 것" 으로 보이게
    ================================================================
-   문제: 번호(.tel-link-row 안의 02.2135.9 + 119)는 이미 누르면 전화가
-   연결되는데, 큼직한 글씨로만 놓여 있어 그냥 적어 둔 정보로 읽힌다.
+   대상 두 곳
+     .tel-link-row  예약 안내 섹션 (02.2135.9 + 119 / 031-978-7575)
+     .tel-link      첫 화면 인트로 배너 번호
+
+   문제: 번호는 이미 누르면 전화가 연결되는데, 큼직한 글씨로만 놓여 있어
+   그냥 적어 둔 정보로 읽힌다.
    실제로 전화까지 간 방문이 8월 13일 기준 819건 중 19건(2.3%)뿐이라,
    누를 수 있다는 걸 모르고 지나가는 경우가 섞여 있다고 봤다.
 
@@ -547,19 +551,28 @@ section.section > .div-block-220 {
    (그런 브라우저에선 아이콘만 안 나오고 번호는 그대로 동작)
 
    ⚠️ 클릭 동작 자체는 seocho.js 가 맡는다 (확인창 → 번호 복사 → 연결 +
-   GA4 seocho_phone_intent / seocho_phone_call). 여기는 보이는 것만 손댐.
+   GA4 <지점>_phone_intent / <지점>_phone_call). 여기는 보이는 것만 손댐.
+
+   ⚠️ 인트로 배너(.tel-link)를 뒤늦게 더한 이유: 예약 안내에만 아이콘을
+   붙여 놨더니, 정작 방문자가 가장 먼저 보는 첫 화면 번호에는 아무 단서가
+   없어 "그냥 적힌 번호" 로 지나간다. 아래로 스크롤해야 나오는 곳에만
+   신호를 주는 셈이라 앞뒤가 맞지 않았다. 두 지점 페이지가 같은 클래스를
+   쓰므로 서초 첫 화면에도 같이 붙는다 (일부러 맞춘 것).
    ================================================================ */
-.tel-link-row {
+.tel-link-row,
+.tel-link {
   cursor: pointer;
   transition: opacity 0.18s ease;
 }
 
-.tel-link-row:hover {
+.tel-link-row:hover,
+.tel-link:hover {
   opacity: 0.78;
 }
 
 @supports ((-webkit-mask-image: url('')) or (mask-image: url(''))) {
-  .tel-link-row .branch_phoneno::before {
+  .tel-link-row .branch_phoneno::before,
+  .tel-link .heading-2::before {
     content: '';
     display: inline-block;
     width: 0.6em;
@@ -865,13 +878,15 @@ section.section > .div-block-220 {
 }
 
 /* ================================================================
-   주소 복사 버튼 (.helix-copy-btn) — seocho.js 가 [data-copy-address]
-   요소 안에 만들어 넣는다. 본문 글줄에 섞여 앉는 작은 알약 버튼.
+   주소 칩 (.helix-copy-btn / .helix-map-btn) — seocho.js 가
+   [data-copy-address] 요소 안에 만들어 넣는다. 본문 글줄에 섞여 앉는
+   작은 알약 버튼 두 개: 왼쪽이 '주소 복사', 오른쪽이 '길찾기'.
    ================================================================
    글자 크기를 px 로 박지 않고 em 으로 둔 이유: 이 버튼은 본문 텍스트
    블록 안에 들어가는데, 그 블록의 크기가 데스크탑/모바일에서 서로 다르다.
    em 이면 어느 쪽에 놓이든 옆 글자와 어울리는 크기가 알아서 나온다. */
-.helix-copy-btn {
+.helix-copy-btn,
+.helix-map-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
@@ -891,18 +906,36 @@ section.section > .div-block-220 {
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.helix-copy-btn:hover {
+.helix-copy-btn:hover,
+.helix-map-btn:hover {
   background: rgba(0, 117, 214, 0.16);
   border-color: rgba(0, 117, 214, 0.6);
 }
-.helix-copy-btn:focus-visible {
+.helix-copy-btn:focus-visible,
+.helix-map-btn:focus-visible {
   outline: 2px solid #0075d6;
   outline-offset: 2px;
 }
-.helix-copy-btn svg {
+.helix-copy-btn svg,
+.helix-map-btn svg {
   width: 1em;
   height: 1em;
   flex: 0 0 auto;
+}
+
+/* 길찾기 칩 — 새 창으로 나가는 '이동' 이라 복사 칩보다 한 톤 진하게 두어
+   둘이 같은 일을 하는 것처럼 보이지 않게 한다. <a> 라 밑줄만 지운다. */
+.helix-map-btn {
+  margin-left: 0.35em;
+  color: #ffffff;
+  background: #0075d6;
+  border-color: #0075d6;
+  text-decoration: none;
+}
+.helix-map-btn:hover {
+  color: #ffffff;
+  background: #0063b5;
+  border-color: #0063b5;
 }
 
 /* 복사 성공 — 초록으로 1.6초간 바뀌었다가 원래대로 */
@@ -920,7 +953,8 @@ section.section > .div-block-220 {
 
 /* 손가락으로 누르는 화면에선 최소 터치 영역(44px 권장)에 가깝게 키운다 */
 @media (max-width: 767px) {
-  .helix-copy-btn {
+  .helix-copy-btn,
+  .helix-map-btn {
     padding: 0.4em 0.85em;
     font-size: 0.86em;
   }

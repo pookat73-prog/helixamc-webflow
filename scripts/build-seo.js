@@ -606,8 +606,9 @@ function buildFaq(faq) {
   const diseaseQAs = (faq.disease || []).map(x => ({
     q: x.q,
     a: [x.summary, x.detail].filter(Boolean).join('\n\n'),
+    id: x.id,
   }));
-  const generalQAs = (faq.general || []).map(x => ({ q: x.q, a: x.a }));
+  const generalQAs = (faq.general || []).map(x => ({ q: x.q, a: x.a, id: x.id }));
   const allQAs = diseaseQAs.concat(generalQAs).filter(qa => qa.q && qa.a);
 
   const faqNode = {
@@ -618,8 +619,12 @@ function buildFaq(faq) {
     inLanguage: 'ko',
     isPartOf: { '@id': `${HOSPITAL.origin}/#website` },
     about: { '@id': `${HOSPITAL.origin}/#org` },
+    /* 질문마다 앵커(#id)를 달아 개별 인용·직접 링크가 가능하게 함
+       (본문 페이지의 각 질문 카드에도 같은 id 를 DOM id 로 심어 둠). */
     mainEntity: allQAs.map(qa => ({
       '@type': 'Question',
+      '@id': qa.id ? `${url}#${qa.id}` : undefined,
+      url: qa.id ? `${url}#${qa.id}` : undefined,
       name: qa.q,
       acceptedAnswer: { '@type': 'Answer', text: qa.a },
     })),
