@@ -124,6 +124,8 @@
     { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },
+    /* 홈 특화진료 CTA */
+    { sel: '.bt-box-2',             label: '홈 · 특화진료 CTA',   event: 'home_specialty_cta_click_*' },
     /* 홈 "응급상황인가요?" 응급증상 CTA */
     { sel: '.bt-box-3',             label: '홈 · 응급증상 CTA',   event: 'emergency_symptom_cta_*' },
     /* 홈 SVICC 버튼 */
