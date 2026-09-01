@@ -2711,7 +2711,9 @@
 })();
 
 /* ================================================================
-   원장 의료진 카드 — "일산 분원" 라벨 준비중 처리
+   원장 의료진 카드 — 지점 라벨 두 가지 손질
+   (1) 사진만 잘라내는 층을 만들어, 삐져나온 지점 라벨이 안 잘리게
+   (2) "일산 분원" 라벨은 누르면 "준비중입니다" 안내
    ----------------------------------------------------------------
    일산 분원 라벨은 Webflow 컴포넌트(TextBox(Bo/W/Sh))로 만든, 주소가
    안 걸린 <a>. 그동안 coming-soon.js 가 글자('일산 분원')만 보고 /ilsan
@@ -2733,8 +2735,40 @@
   var VET_SEL = '.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet';
   var LABEL_SEL = '.textbox-bo-w-sh';
 
+  /* ── 사진만 잘라내는 층 만들기 ────────────────────────────────
+     카드 자체에 걸린 "밖으로 나간 건 잘라내라" 설정이 라벨까지 잘라서,
+     "서울동물영상종양센터" 라벨이 옆으로 삐져나온 부분이 안 보였다.
+     사진(.vet-photo)과 그 위 그라데이션(.vet-fade)만 별도 층에 담아
+     거기서 잘라내면, 카드는 잘라내기를 풀어도 되고 라벨은 온전히 보인다.
+
+     카드에 안쪽 여백이 없어서 새 층은 카드와 정확히 같은 상자가 된다
+     → 사진의 % 좌표·크기 값이 그대로 유지된다 (사진은 안 건드림).
+     ──────────────────────────────────────────────────────────── */
+  function clipPhotos(card) {
+    /* 삐져나오는 라벨을 가진 카드만 손댄다 — 나머지 카드는 지금 그대로 둔다
+       (건드릴 이유가 없고, 손대는 곳이 적을수록 안전하다). */
+    if (!card.querySelector('.div-block-173')) return;
+    if (card.querySelector('.helix-vet-clip')) return;
+    var photo = card.querySelector('.vet-photo');
+    if (!photo || photo.parentElement !== card) return;
+
+    var clip = document.createElement('div');
+    clip.className = 'helix-vet-clip';
+    clip.setAttribute('aria-hidden', 'true');
+    card.insertBefore(clip, photo);
+
+    /* 그리는 순서(사진 → 그라데이션)를 그대로 옮긴다 */
+    clip.appendChild(photo);
+    var fade = card.querySelector('.vet-fade');
+    if (fade && fade.parentElement === card) clip.appendChild(fade);
+
+    /* 층이 자리잡은 뒤에야 카드의 잘라내기를 푼다 (순서 지킬 것) */
+    card.classList.add('is-vet-clipped');
+  }
+
   function mark() {
     document.querySelectorAll(VET_SEL).forEach(function (card) {
+      clipPhotos(card);
       card.querySelectorAll(LABEL_SEL).forEach(function (el) {
         var t = ((el.innerText || el.textContent) || '').replace(/\s+/g, ' ').trim();
         if (!/^일산\s*분원$/.test(t)) return;
