@@ -2,6 +2,12 @@
    HELIX AMC - ABOUT PAGE CSS
    ================================================================ */
 
+/* 인트로 세 번째 텍스트 — Webflow 원본 두께(400) 유지.
+   global.css 의 body 500 상속으로 발행본에서만 굵어지는 현상 차단. */
+.about_contents_sub-title {
+  font-weight: 400;
+}
+
 /* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
 .diagram-place-holder {
   /* Section 2 스크롤 시퀀스 — ScrollTrigger pin 이 런타임에 position:fixed
