@@ -865,13 +865,15 @@ section.section > .div-block-220 {
 }
 
 /* ================================================================
-   주소 복사 버튼 (.helix-copy-btn) — seocho.js 가 [data-copy-address]
-   요소 안에 만들어 넣는다. 본문 글줄에 섞여 앉는 작은 알약 버튼.
+   주소 칩 (.helix-copy-btn / .helix-map-btn) — seocho.js 가
+   [data-copy-address] 요소 안에 만들어 넣는다. 본문 글줄에 섞여 앉는
+   작은 알약 버튼 두 개: 왼쪽이 '주소 복사', 오른쪽이 '길찾기'.
    ================================================================
    글자 크기를 px 로 박지 않고 em 으로 둔 이유: 이 버튼은 본문 텍스트
    블록 안에 들어가는데, 그 블록의 크기가 데스크탑/모바일에서 서로 다르다.
    em 이면 어느 쪽에 놓이든 옆 글자와 어울리는 크기가 알아서 나온다. */
-.helix-copy-btn {
+.helix-copy-btn,
+.helix-map-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
@@ -891,18 +893,36 @@ section.section > .div-block-220 {
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.helix-copy-btn:hover {
+.helix-copy-btn:hover,
+.helix-map-btn:hover {
   background: rgba(0, 117, 214, 0.16);
   border-color: rgba(0, 117, 214, 0.6);
 }
-.helix-copy-btn:focus-visible {
+.helix-copy-btn:focus-visible,
+.helix-map-btn:focus-visible {
   outline: 2px solid #0075d6;
   outline-offset: 2px;
 }
-.helix-copy-btn svg {
+.helix-copy-btn svg,
+.helix-map-btn svg {
   width: 1em;
   height: 1em;
   flex: 0 0 auto;
+}
+
+/* 길찾기 칩 — 새 창으로 나가는 '이동' 이라 복사 칩보다 한 톤 진하게 두어
+   둘이 같은 일을 하는 것처럼 보이지 않게 한다. <a> 라 밑줄만 지운다. */
+.helix-map-btn {
+  margin-left: 0.35em;
+  color: #ffffff;
+  background: #0075d6;
+  border-color: #0075d6;
+  text-decoration: none;
+}
+.helix-map-btn:hover {
+  color: #ffffff;
+  background: #0063b5;
+  border-color: #0063b5;
 }
 
 /* 복사 성공 — 초록으로 1.6초간 바뀌었다가 원래대로 */
@@ -920,7 +940,8 @@ section.section > .div-block-220 {
 
 /* 손가락으로 누르는 화면에선 최소 터치 영역(44px 권장)에 가깝게 키운다 */
 @media (max-width: 767px) {
-  .helix-copy-btn {
+  .helix-copy-btn,
+  .helix-map-btn {
     padding: 0.4em 0.85em;
     font-size: 0.86em;
   }

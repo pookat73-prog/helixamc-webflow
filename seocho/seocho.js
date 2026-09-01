@@ -1288,9 +1288,15 @@ window.HelixBranch = window.HelixBranch || (function () {
   function digitsOnly(s) { return (s || '').replace(/\D+/g, ''); }
 
   function formatDisplay(d) {
-    /* 0221359119 → 02-2135-9119 (서울 지역번호 02 기준) */
+    /* 0221359119 → 02-2135-9119 (서울은 지역번호가 두 자리)
+       0319787575 → 031-978-7575 (그 밖 지역은 세 자리 — 일산 분원)
+       ⚠ 세 자리 가지가 없으면 일산 번호가 확인창과 복사본에 '0319787575'
+         로 나간다. 붙여넣는 사람이 다시 손봐야 해서 복사의 뜻이 없어진다. */
     if (d.length === 10 && d.indexOf('02') === 0) {
       return d.slice(0, 2) + '-' + d.slice(2, 6) + '-' + d.slice(6);
+    }
+    if (d.length === 10) {
+      return d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6);
     }
     if (d.length === 11) {
       return d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7);
@@ -1441,13 +1447,20 @@ window.HelixBranch = window.HelixBranch || (function () {
   }
 
   /* ── 첫 섹션(인트로) 전화번호 ───────────────────────────────
-     대상: section.intro_backgra / .intro_backgra_m / .intro_backgra_m2
-           (데스크탑 + 모바일 반응형 변형) 안의 H1.heading-2 = "02-2135-9119".
+     대상: section.intro_backgra / .intro_backgra_m / .intro_backgra_m2 (서초)
+           + section.intro-ilsan-_backgra (일산 데스크탑)
+           안의 H1.heading-2 = "02-2135-9119" / "031-978-7575".
+
+     ⚠ 일산 데스크탑 첫 화면은 클래스가 intro-ilsan-_backgra 라 서초용
+        'intro_backgra' 문자열에 안 걸렸다. 그래서 그 번호만 눌러도 복사가
+        안 되고 눌린 기록도 안 남았다 (일산 모바일 첫 화면은 정상 동작).
      .heading-2 는 Webflow 자동 클래스라 흔하므로, 인트로 섹션 안 + 전화번호
      텍스트(숫자 9자리+) 로 좁혀 오검출 방지. 예약 섹션과 동일 동작
      (확인창 → 복사 → tel: 연결 → GA4). section='hero' 로 구분 집계. */
   function initHeroPhone() {
-    var introSecs = document.querySelectorAll('section[class*="intro_backgra"]');
+    var introSecs = document.querySelectorAll(
+      'section[class*="intro_backgra"], section[class*="intro-ilsan"]'
+    );
     if (!introSecs.length) { log('intro section not found'); return; }
 
     Array.prototype.forEach.call(introSecs, function (sec) {
@@ -1531,10 +1544,17 @@ window.HelixBranch = window.HelixBranch || (function () {
      data-copy-address   복사할 문자열. 값이 'self' 면 그 요소의 텍스트를 복사
      data-copy-label     측정용 이름 (예: parking1). 없으면 요소 텍스트 앞부분
      data-copy-text      버튼 문구 (기본 '주소 복사')
+     data-copy-map       (선택) 옆에 '길찾기' 칩을 하나 더 붙인다
+                           place   지도 블록의 업체 페이지로 (병원 본 주소용)
+                           search  복사할 주소를 네이버 지도에서 검색
+                                   (주차장처럼 병원과 다른 자리)
+                           https:… 적어 준 주소 그대로
 
    동작: 클릭 → 클립보드 복사 → 버튼이 1.6초간 '복사됨' 으로 바뀜 → GA4
      <branch>_address_copy  { item_type:'address_copy', branch, device,
                               section:<label>, value:<복사한 문자열> }
+   길찾기 칩은 지도 위 '길찾기' 버튼과 같은 이름으로 기록한다
+     <branch>_directions_<device>  { item_type:'directions', section:<label> }
 
    ⚠️ 페이지에 [data-copy-address] 가 하나도 없으면 아무 일도 하지 않는다
       (서초 페이지는 현재 이 attribute 가 없어 무해).
@@ -1607,14 +1627,63 @@ window.HelixBranch = window.HelixBranch || (function () {
       '<path d="M20 6 9 17l-5-5"/>' +
     '</svg>';
 
-  /* 복사할 문자열. 'self' 면 요소 자신의 텍스트(버튼 문구는 제외). */
+  var ICON_MAP =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/>' +
+      '<circle cx="12" cy="9" r="2.5"/>' +
+    '</svg>';
+
+  /* 복사할 문자열. 'self' 면 요소 자신의 텍스트(우리가 붙인 칩 문구는 제외). */
   function valueOf(host) {
     var raw = (host.getAttribute('data-copy-address') || '').trim();
     if (raw && raw.toLowerCase() !== 'self') return raw;
     var clone = host.cloneNode(true);
-    var btn = clone.querySelector('.helix-copy-btn');
-    if (btn) btn.parentNode.removeChild(btn);
+    var chips = clone.querySelectorAll('.helix-copy-btn, .helix-map-btn');
+    [].slice.call(chips).forEach(function (c) { c.parentNode.removeChild(c); });
     return (clone.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
+  /* 길찾기 칩이 열 주소. data-copy-map 값에 따라 갈린다 (위 설명 참고).
+     'place' 는 지도 블록이 들고 있는 업체 번호를 재사용하므로, 지점마다
+     주소를 또 적어 넣을 필요가 없다. */
+  function mapUrlFor(host, value) {
+    var mode = (host.getAttribute('data-copy-map') || '').trim();
+    if (!mode) return '';
+    if (/^https?:\/\//i.test(mode)) return mode;
+
+    if (mode.toLowerCase() === 'place') {
+      var withPlace = document.querySelector('[data-map-place]');
+      var place = withPlace && (withPlace.getAttribute('data-map-place') || '').trim();
+      if (place) return 'https://map.naver.com/p/entry/place/' + place;
+      var withAddr = document.querySelector('[data-map-address]');
+      var addr = (withAddr && withAddr.getAttribute('data-map-address')) || value;
+      return addr ? 'https://map.naver.com/p/search/' + encodeURIComponent(addr) : '';
+    }
+    return value ? 'https://map.naver.com/p/search/' + encodeURIComponent(value) : '';
+  }
+
+  /* 지도 위 '길찾기' 버튼과 같은 이름으로 남긴다 — 두 진입점을 한 눈금으로
+     보되, section 으로 어디서 눌렀는지는 갈라 볼 수 있게. */
+  function trackDirections(label, url) {
+    var dev = device();
+    var params = {
+      item_type: 'directions',
+      branch: window.HelixBranch.name(),
+      device: dev,
+      section: label || 'unknown',
+      value: url
+    };
+    try {
+      if (typeof window.gtag === 'function') {
+        params.transport_type = 'beacon';
+        window.gtag('event', window.HelixBranch.key() + '_directions_' + dev, params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = window.HelixBranch.key() + '_directions_' + dev;
+        window.dataLayer.push(params);
+      }
+    } catch (e) {}
+    log('directions', label, url);
   }
 
   function labelOf(host) {
@@ -1627,6 +1696,8 @@ window.HelixBranch = window.HelixBranch || (function () {
     if (host.__helixCopyBound) return;
     host.__helixCopyBound = true;
 
+    /* 칩을 붙이기 전에 먼저 읽는다 — 'self' 일 때 칩 문구가 섞이지 않게. */
+    var initialValue = valueOf(host);
     var text = (host.getAttribute('data-copy-text') || '주소 복사').trim();
     var btn = document.createElement('button');
     btn.type = 'button';
@@ -1655,6 +1726,25 @@ window.HelixBranch = window.HelixBranch || (function () {
     });
 
     host.appendChild(btn);
+
+    /* 길찾기 칩 — 복사 칩 바로 뒤. 첫 화면 주소는 지도(페이지 한참 아래)까지
+       내려가지 않아도 바로 지도를 열 수 있어야 한다. */
+    var mapUrl = mapUrlFor(host, initialValue);
+    if (mapUrl) {
+      var link = document.createElement('a');
+      link.className = 'helix-map-btn';
+      link.href = mapUrl;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.innerHTML = ICON_MAP + '<span>길찾기</span>';
+      link.setAttribute('aria-label', labelOf(host) + ' 길찾기 (네이버 지도 새 창)');
+      link.addEventListener('click', function (e) {
+        e.stopPropagation();
+        trackDirections(labelOf(host), mapUrl);
+      });
+      host.appendChild(link);
+    }
+
     log('bound', labelOf(host));
   }
 
