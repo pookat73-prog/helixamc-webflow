@@ -921,3 +921,27 @@ header.header {
   -webkit-mask-size: 100% 100%;
           mask-size: 100% 100%;
 }
+
+/* ── 원장 의료진 카드 — 지점 라벨 두 가지 손질 ─────────────────────
+   (1) "서울동물영상종양센터" 라벨이 반쯤 잘려 보이던 것
+       원인: 이 라벨을 감싼 링크(.div-block-173)가 왼쪽으로 9.3vw 밀려
+       있는데, 카드(.hs-vet 등)는 삐져나온 부분을 잘라내도록(overflow:hidden)
+       돼 있어 밀린 만큼이 카드 밖에서 잘림. 작은 화면(tiny)에선 이미
+       0 으로 되돌려 놨던 것을 큰 화면에도 똑같이 맞춤.
+       max-width 는 되돌린 뒤 라벨이 카드보다 길어져 이번엔 오른쪽이
+       잘리는 일이 없도록 하는 안전장치.
+   (2) "일산 분원" 라벨 — 누르면 "준비중입니다" 안내가 뜨도록
+       about.js 가 표식을 달아 준다. 눌리는 것으로 보이게 손 모양 커서.
+   ─────────────────────────────────────────────────────────────── */
+.div-block-173 {
+  left: 0 !important;
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+}
+.div-block-173 > .textbox-bo-w-sh-2 {
+  max-width: 100%;
+}
+.textbox-bo-w-sh[data-coming-soon] {
+  cursor: pointer;
+}

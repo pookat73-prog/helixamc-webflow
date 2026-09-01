@@ -2709,3 +2709,63 @@
     }
   }, true);
 })();
+
+/* ================================================================
+   원장 의료진 카드 — "일산 분원" 라벨 준비중 처리
+   ----------------------------------------------------------------
+   일산 분원 라벨은 Webflow 컴포넌트(TextBox(Bo/W/Sh))로 만든, 주소가
+   안 걸린 <a>. 그동안 coming-soon.js 가 글자('일산 분원')만 보고 /ilsan
+   으로 열리게 승격시켜 왔다. 사용자 요청으로 이 자리만 눌렀을 때
+   "준비중입니다" 안내가 뜨게 바꿈.
+
+   방법: coming-soon.js 가 이미 data-coming-soon 표식이 달린 요소를
+   가로채 안내를 띄운다. 여기서는 의료진 카드 안의 "일산 분원" 라벨에만
+   그 표식을 달아 준다. (서초 본원 · 서울동물영상종양센터 라벨은 그대로)
+
+   ⚠️ 범위를 의료진 카드 안으로 좁힌 이유 — 같은 컴포넌트가 다른 자리에
+   쓰이더라도 거기까지 막히지 않게 하기 위함.
+   ================================================================ */
+(function () {
+  'use strict';
+  if (window.__helixAboutIlsanComingSoon) return;
+  window.__helixAboutIlsanComingSoon = true;
+
+  var VET_SEL = '.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet';
+  var LABEL_SEL = '.textbox-bo-w-sh';
+
+  function mark() {
+    document.querySelectorAll(VET_SEL).forEach(function (card) {
+      card.querySelectorAll(LABEL_SEL).forEach(function (el) {
+        var t = ((el.innerText || el.textContent) || '').replace(/\s+/g, ' ').trim();
+        if (!/^일산\s*분원$/.test(t)) return;
+        /* 잠금 표식 — coming-soon.js 는 글자가 '일산 분원' 인 링크를
+           /ilsan 로 열리게 승격시킨다. 이 자리만 승격 대상에서 빼 둔다.
+           (헤더·햄버거의 같은 글자 링크는 그대로 열림) */
+        if (!el.hasAttribute('data-coming-soon-lock')) {
+          el.setAttribute('data-coming-soon-lock', '1');
+        }
+        /* 이미 승격돼 있었다면 되돌림 */
+        if (el.hasAttribute('data-helix-link')) el.removeAttribute('data-helix-link');
+        if (el.getAttribute('data-coming-soon') !== '1') {
+          el.setAttribute('data-coming-soon', '1');
+        }
+      });
+    });
+  }
+
+  /* coming-soon.js 도 5초 동안 계속 훑으며 승격을 시도하므로, 잠금 표식을
+     그보다 조금 더 오래(약 6초) 다시 확인해 늦게 그려지는 경우도 덮는다. */
+  var tries = 0;
+  function run() {
+    mark();
+    if (++tries >= 25) return;
+    setTimeout(run, 250);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+  window.addEventListener('load', mark);
+})();
