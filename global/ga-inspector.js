@@ -135,12 +135,14 @@
     /* 응급 페이지 하단 24시 응급 진료 CTA */
     { sel: '.helix-branch-cta__row', label: '응급 · 지점 전화',   event: 'emergency_call_*' },
     { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' },
-    /* 응급 페이지 증상 카드 + 카드 옆/모달 CTA (모두 응급 페이지에만 존재하는 셀렉터).
-       카드 옆·모달 CTA 는 일산 제외(서초만) — data-branch/클래스로 서초만 배지. */
+    /* 응급 페이지 증상 카드 + 카드 옆/모달 CTA (모두 응급 페이지에만 존재하는 셀렉터). */
     { sel: '.em_card, [data-emergency-open]', label: '응급 · 증상 카드', event: 'emergency_symptom_open_*' },
     { sel: '.call.seocho, .call-seocho', label: '응급 · 서초 전화(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.map.seocho, .map-seocho',   label: '응급 · 서초 오시는길(카드옆)', event: 'emergency_card_cta_*' },
+    { sel: '.call.ilsan, .call-ilsan',   label: '응급 · 일산 전화(카드옆)', event: 'emergency_card_cta_*' },
+    { sel: '.map.ilsan, .map-ilsan',     label: '응급 · 일산 오시는길(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' },
+    { sel: '.helix-emergency-modal_branch[data-branch="ilsan"]',  label: '응급 · 모달 일산 전화', event: 'emergency_modal_call_*' },
     /* 진료과목 페이지 — 내과·외과·영상의학과·안과·치과 카드 */
     { sel: '[class*="dept-card_"]', label: '진료과목 · 카드', event: 'services_dept_click_*' },
     /* 특화진료 페이지 — 항목 12개(클릭 + 넓은 화면에선 0.6초 이상 머무름)와
