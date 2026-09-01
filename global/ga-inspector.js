@@ -85,6 +85,12 @@
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
+    /* 전 페이지 공통 — 본문에 심은 인라인 상담 버튼 (예: 서초 '예약 안내'의
+       '상담 신청하기'). 플로팅 버튼과 같은 폼을 열지만 출처를 따로 담는다
+       (cta_src: 'inline_cta', cta_id: 그 버튼의 id). floating-cta.js 가
+       document 전역 클릭 위임으로 처리해서 버튼 자체엔 핸들러가 없다 —
+       그래서 이 목록에 없으면 "측정이 안 붙은 자리" 처럼 보인다. */
+    { sel: '[data-cta-target="hxFctaFormBtn"]', label: '본문 · 상담 신청하기', event: 'cta_form_open (inline_cta)' },
     /* 전 페이지 공통 — 헤더 홈 로고 / 진료과목 탭 (coming-soon.js 가 data-hx-hdr-ga 마킹) */
     { sel: '[data-hx-hdr-ga="logo"]',     label: '헤더 · 홈 로고',   event: 'header_logo_home' },
     { sel: '[data-hx-hdr-ga="services"]', label: '헤더 · 진료과목',  event: 'header_services_click' },
@@ -178,7 +184,16 @@
       { sel: '.subheader_click-area',   label: '서초 · 서브헤더 링크',  event: 'seocho_subheader_nav_*' },
       { sel: '.w-tab-menu .w-tab-link', label: '서초 · 분과 탭',       event: 'seocho_dept_tab_*' },
       { sel: '[data-doctor-open]',      label: '서초 · 의료진 상세(+)', event: 'seocho_doctor_detail_*' },
-      { sel: '.naver-map-directions',   label: '서초 · 길찾기',        event: 'seocho_directions_*' }
+      { sel: '.naver-map-directions',   label: '서초 · 길찾기',        event: 'seocho_directions_*' },
+      /* 첫 화면 주소 옆 칩 두 개 — seocho.js 가 [data-copy-address] 요소 안에
+         만들어 넣는다. 로드 뒤에 생기지만 인스펙터가 DOM 변동 때 재스캔하므로
+         뒤늦게 배지가 따라붙는다. 길찾기 칩은 지도 위 길찾기 버튼과 같은
+         이름으로 기록되고, section 항목(hero / hero_m / hero_m2)으로 갈린다. */
+      { sel: '.helix-copy-btn', label: '서초 · 주소 복사(칩)', event: 'seocho_address_copy' },
+      { sel: '.helix-map-btn',  label: '서초 · 길찾기(칩)',    event: 'seocho_directions_*' },
+      /* 공간 갤러리 화살표 — 슬라이더 동작은 Webflow 가, 기록만 seocho.js 가 맡는다 */
+      { sel: '#photo .w-slider-arrow-left, #photo .w-slider-arrow-right',
+        label: '서초 · 갤러리 화살표', event: 'seocho_gallery_nav' }
     ]);
   }
 
