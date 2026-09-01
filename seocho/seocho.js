@@ -1659,3 +1659,110 @@ window.HelixBranch = window.HelixBranch || (function () {
     run();
   }
 })();
+
+/* ================================================================
+   공간 갤러리 화살표 — 사진을 넘겼는지 측정
+   ================================================================
+   왜 재나: 페이지 맨 아래 '공간 갤러리'(#photo)는 체류시간이 긴 서초
+   페이지에서도 마지막 블록이라, 여기까지 내려온 사람이 사진을 실제로
+   넘겨 보는지 아니면 첫 장만 보고 나가는지가 지금은 전혀 안 보인다.
+   섹션 도달(section-reach)만으로는 "봤다" 와 "훑고 지나갔다" 가 안 갈린다.
+
+   대상: section#photo 안 Webflow 슬라이더의 좌/우 화살표
+     .w-slider-arrow-left / .w-slider-arrow-right
+   점(dot)과 손가락 스와이프는 대상이 아니다 — 사용자가 요청한 것은
+   화살표이고, 진입점을 늘리면 같은 행동이 여러 이름으로 갈린다.
+
+   GA4 이벤트
+     <branch>_gallery_nav
+       { item_type:'gallery_nav', branch:'서초'|'일산',
+         device:'mobile'|'desktop', section:'photo',
+         direction:'next'|'prev',
+         value:'<넘긴 뒤 몇 번째 장인지>', total:<전체 장수> }
+
+   value 를 클릭 직후가 아니라 80ms 뒤에 읽는 이유: Webflow 슬라이더는
+   누른 순간이 아니라 애니메이션이 시작된 뒤에 활성 점(dot)을 옮긴다.
+   바로 읽으면 넘기기 전 번호가 찍혀 한 칸씩 밀린 기록이 남는다.
+
+   ⚠️ 이름에 device 를 붙이지 않았다 — 같은 파일의 주소 복사·전화
+      (<branch>_address_copy / _phone_intent) 와 맞췄다. 기기별로 보려면
+      GA4 에서 device 항목으로 나눠 보면 된다.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var DEBUG = /[?&]debug-gallery=1/.test(location.search);
+  function log() { if (DEBUG) console.log.apply(console, ['[gallery]'].concat([].slice.call(arguments))); }
+
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
+
+  /* 지금 몇 번째 장인지 — Webflow 가 활성 점에 붙이는 w-active 로 읽는다.
+     점을 숨겨 둔 슬라이더도 있어 못 찾으면 빈 값으로 두고 넘어간다. */
+  function slideInfo(slider) {
+    var dots = slider.querySelectorAll('.w-slider-nav > .w-slider-dot');
+    if (!dots.length) return { index: '', total: 0 };
+    for (var i = 0; i < dots.length; i++) {
+      if (dots[i].classList.contains('w-active')) {
+        return { index: String(i + 1), total: dots.length };
+      }
+    }
+    return { index: '', total: dots.length };
+  }
+
+  function track(direction, info) {
+    var params = {
+      item_type: 'gallery_nav',
+      branch: window.HelixBranch.name(),
+      device: device(),
+      section: 'photo',
+      direction: direction,
+      value: info.index,
+      total: info.total
+    };
+    try {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', window.HelixBranch.key() + '_gallery_nav', params);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        params.event = window.HelixBranch.key() + '_gallery_nav';
+        window.dataLayer.push(params);
+      }
+    } catch (e) {}
+    log('tracked', direction, params);
+  }
+
+  function bindArrow(slider, arrow, direction) {
+    if (arrow.__helixGalleryBound) return;
+    arrow.__helixGalleryBound = true;
+    /* 슬라이더 자체 동작은 그대로 둔다 — preventDefault 하지 않는다. */
+    arrow.addEventListener('click', function () {
+      setTimeout(function () { track(direction, slideInfo(slider)); }, 80);
+    });
+  }
+
+  function scan() {
+    var section = document.getElementById('photo');
+    if (!section) { log('section#photo not found'); return; }
+
+    var sliders = section.querySelectorAll('.w-slider');
+    if (!sliders.length) { log('slider not found in #photo'); return; }
+
+    [].slice.call(sliders).forEach(function (slider) {
+      var prev = slider.querySelector('.w-slider-arrow-left');
+      var next = slider.querySelector('.w-slider-arrow-right');
+      if (prev) bindArrow(slider, prev, 'prev');
+      if (next) bindArrow(slider, next, 'next');
+      log('bound', !!prev, !!next);
+    });
+  }
+
+  /* Webflow 슬라이더는 webflow.js 가 초기화하면서 화살표를 다시 그리는
+     경우가 있어, 진입 시점 + 보강 두 번(0.6s / 1.5s) 걸어 둔다. */
+  function run() { scan(); setTimeout(scan, 600); setTimeout(scan, 1500); }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+  window.addEventListener('load', run);
+})();
