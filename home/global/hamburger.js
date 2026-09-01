@@ -16,12 +16,12 @@
      event 가 지정된 항목은 공용 menu_nav_click 대신 그 전용 이벤트를 쏨
      (전환 성격이 다른 링크를 GA 에서 한 줄로 따로 집계하기 위함). */
   var NAV_LINKS = [
-    { text: 'discover HELIX', href: '/discover-helix' },
+    { text: 'discover HELIX', href: '/discover-helix', event: 'menu_discover_click' },
     /* 특화진료도 진료과목처럼 전용 이벤트를 준다. 여태 공용 menu_nav_click
        안에 묻혀 있어, 헤더 탭·메뉴 어느 쪽으로 특화진료에 들어왔는지 갈라
        볼 수가 없었다(헤더 쪽은 coming-soon.js 의 header_specialty_click). */
     { group: [ { text: '진료과목', href: '/services', event: 'menu_services_click' }, { text: '특화진료', href: '/specialty-care', event: 'menu_specialty_click' } ] },
-    { text: '의료 인프라',   href: '#' },
+    { text: '의료 인프라',   href: '#', event: 'menu_infrastructure_click' },
     { group: [ { text: 'FAQ', href: '/faq' }, { text: '뉴스룸', href: '#' }, { text: '칼럼', href: '#' } ] },
     { text: '응급증상안내',  href: '/symptoms', event: 'menu_emergency_click' }
   ];
@@ -310,7 +310,7 @@
     overlay.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () {
         var comingSoon = a.hasAttribute('data-coming-soon');
-        /* 전용 이벤트가 지정된 링크(응급증상·진료과목·수의사용 웹차트)는
+        /* 전용 이벤트가 지정된 링크(디스커버·의료인프라·응급증상·진료과목·수의사용 웹차트)는
            공용 menu_nav_click 대신 그 이벤트를 쏨 → 전환 성격별 분리 집계.
            나머지 링크는 기존대로 공용 menu_nav_click. */
         var dedicated = a.getAttribute('data-ga-event');

@@ -97,6 +97,8 @@
     { sel: '.hx-menu-close',        label: '햄버거 · 메뉴 닫기',  event: 'menu_close' },
     /* 전환 성격이 다른 링크는 전용 이벤트 → 전용 네모 (data-ga-event 로 정밀 타깃).
        공용 항목보다 먼저 둬야 seen-dedup 에서 전용 라벨이 이김. */
+    { sel: '[data-ga-event="menu_discover_click"]', label: '햄버거 · 디스커버 헬릭스', event: 'menu_discover_click' },
+    { sel: '[data-ga-event="menu_infrastructure_click"]', label: '햄버거 · 의료 인프라', event: 'menu_infrastructure_click' },
     { sel: '[data-ga-event="menu_emergency_click"]', label: '햄버거 · 응급증상 안내', event: 'menu_emergency_click' },
     { sel: '[data-ga-event="menu_services_click"]',  label: '햄버거 · 진료과목',     event: 'menu_services_click' },
     { sel: '[data-ga-event="menu_specialty_click"]', label: '햄버거 · 특화진료',    event: 'menu_specialty_click' },
