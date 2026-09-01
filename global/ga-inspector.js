@@ -141,6 +141,8 @@
     { sel: '.call.seocho, .call-seocho', label: '응급 · 서초 전화(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.map.seocho, .map-seocho',   label: '응급 · 서초 오시는길(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' },
+    /* 진료과목 페이지 — 내과·외과·영상의학과·안과·치과 카드 */
+    { sel: '[class*="dept-card_"]', label: '진료과목 · 카드', event: 'services_dept_click_*' },
     /* 특화진료 페이지 — 항목 12개(클릭 + 넓은 화면에선 0.6초 이상 머무름)와
        좁은 화면 그룹 띠. 둘 다 specialty/specialty.js 의 측정 덩어리가 담당. */
     { sel: '.hst-item-wrap', label: '특화진료 · 항목',    event: 'specialty_item_click_* / _hover_*' },
