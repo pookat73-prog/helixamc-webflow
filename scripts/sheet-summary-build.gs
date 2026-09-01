@@ -674,6 +674,16 @@ function sbColNum_(letters) {
   return n;
 }
 
+function sbColLetter_(n) {
+  var s = '';
+  while (n > 0) {
+    var r = (n - 1) % 26;
+    s = String.fromCharCode(65 + r) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
 function sbCount_(rows, fn) {
   var n = 0;
   for (var i = 0; i < rows.length; i++) if (fn(rows[i])) n++;
@@ -842,6 +852,22 @@ function sbWriteSheet_(rows) {
     }
   }
 
+  /* 백분율 칸의 서식을 못박는다.
+     '80.6%' 라고 써 넣으면 시트가 그걸 글자가 아니라 숫자 0.806 으로
+     바꿔 저장하고, 서식은 시트가 알아서 고른다(브라우저·지역 설정에
+     따라 '80.60%' 로 보일 수 있다). 보이는 모양을 옛 표와 똑같이
+     소수 한 자리로 두려면 여기서 직접 지정해야 한다. */
+  var pctCells = [];
+  for (var pr = 0; pr < grid.length; pr++) {
+    for (var pc = 0; pc < width; pc++) {
+      var pv2 = grid[pr][pc];
+      if (typeof pv2 === 'string' && /^-?\d+(\.\d+)?%$/.test(pv2)) {
+        pctCells.push(sbColLetter_(pc + 1) + (pr + 1));
+      }
+    }
+  }
+  if (pctCells.length) sh.getRangeList(pctCells).setNumberFormat('0.0%');
+
   var widths = [320, 110, 110, 320, 110, 230, 200, 110, 40, 200, 110];
   for (var c = 0; c < widths.length && c < width; c++) sh.setColumnWidth(c + 1, widths[c]);
   sh.getRange(1, 1, grid.length, width).setVerticalAlignment('middle');
@@ -945,13 +971,26 @@ function sbFindValue_(sh, keyCol, valCol, key) {
   return null;
 }
 
-/** 숫자는 아주 작은 오차까지, 글자는 그대로 견준다 */
+/* 기준값과 견주기 — 숫자는 아주 작은 오차까지, 글자는 그대로.
+
+   백분율은 따로 본다. '80.6%' 라고 써 넣어도 시트는 그걸 숫자
+   0.806 으로 바꿔 저장하기 때문에, 글자끼리 견주면 맞는 값도
+   틀렸다고 나온다(2026-09-01 첫 대조에서 실제로 두 줄이 그렇게
+   걸렸다 — 숫자는 맞고 견주는 쪽이 틀렸던 것). */
 function sbSame_(got, want) {
   if (typeof want === 'number') {
     var n = Number(got);
     return !isNaN(n) && Math.abs(n - want) < 0.05;
   }
-  return String(got) === String(want);
+
+  var w = String(want);
+  if (/%$/.test(w)) {
+    var wantPct = parseFloat(w);
+    var gotPct = typeof got === 'number' ? got * 100 : parseFloat(String(got));
+    return !isNaN(gotPct) && Math.abs(gotPct - wantPct) < 0.05;
+  }
+
+  return String(got) === w;
 }
 
 /** 결과 알림 — 시트에서 돌리면 창으로, 편집기에서 돌리면 기록으로 */
