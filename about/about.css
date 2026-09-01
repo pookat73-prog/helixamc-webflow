@@ -923,25 +923,57 @@ header.header {
 }
 
 /* ── 원장 의료진 카드 — 지점 라벨 두 가지 손질 ─────────────────────
-   (1) "서울동물영상종양센터" 라벨이 반쯤 잘려 보이던 것
-       원인: 이 라벨을 감싼 링크(.div-block-173)가 왼쪽으로 9.3vw 밀려
-       있는데, 카드(.hs-vet 등)는 삐져나온 부분을 잘라내도록(overflow:hidden)
-       돼 있어 밀린 만큼이 카드 밖에서 잘림. 작은 화면(tiny)에선 이미
-       0 으로 되돌려 놨던 것을 큰 화면에도 똑같이 맞춤.
-       max-width 는 되돌린 뒤 라벨이 카드보다 길어져 이번엔 오른쪽이
-       잘리는 일이 없도록 하는 안전장치.
+   (1) "서울동물영상종양센터" 라벨은 카드 왼쪽으로 조금 삐져나오는 게
+       원래 디자인인데, 삐져나온 부분이 통째로 잘려 보이지 않았다.
+
+       원인: 카드(.hs-vet 등)에 "밖으로 나간 건 다 잘라내라"(overflow:hidden)
+       가 걸려 있다. 이건 원장 사진 때문에 필요한 설정이다 — 사진이 카드보다
+       훨씬 커서(30~42vw) 가둬두지 않으면 옆 카드까지 덮는다.
+       문제는 그 잘라내기가 사진뿐 아니라 라벨까지 같이 잘랐던 것.
+
+       해법: 잘라내기를 카드가 아니라 "사진만 담는 층"으로 옮긴다.
+       about.js 가 사진(.vet-photo)과 그 위 그라데이션(.vet-fade)을
+       .helix-vet-clip 층 안으로 옮기고 카드에 .is-vet-clipped 를 붙이면,
+       그때부터 카드는 잘라내기를 풀어도 안전하다 → 라벨은 삐져나온 채로
+       다 보이고, 사진은 그대로 카드 안에 갇힌다.
+
+       ⚠️ 잘라내기 해제를 .is-vet-clipped 가 붙은 뒤로 미루는 이유:
+       사진을 옮기기 전에 먼저 풀어버리면 그 찰나에 큰 사진이 화면으로
+       쏟아진다. JS 가 실패하면 지금처럼 잘린 상태로 남을 뿐 사고는 없다.
+
    (2) "일산 분원" 라벨 — 누르면 "준비중입니다" 안내가 뜨도록
        about.js 가 표식을 달아 준다. 눌리는 것으로 보이게 손 모양 커서.
    ─────────────────────────────────────────────────────────────── */
+
+/* 사진 전용 잘라내기 층 — 카드와 정확히 같은 크기·같은 둥근 모서리.
+   카드에 padding 이 없어 inset:0 이면 사진의 % 좌표 기준이 그대로 유지된다
+   (사진 위치·크기 값은 하나도 안 건드림). */
+.helix-vet-clip {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* 사진을 옮겨 담은 뒤에만 카드의 잘라내기를 푼다 */
+.ts-vet.is-vet-clipped,
+.hj-vet.is-vet-clipped,
+.sy-vet.is-vet-clipped,
+.si-vet.is-vet-clipped,
+.sh-vet.is-vet-clipped,
+.ys-vet.is-vet-clipped,
+.hs-vet.is-vet-clipped,
+.hc-vet.is-vet-clipped {
+  overflow: visible;
+}
+
+/* 삐져나온 라벨이 옆 카드나 사진 밑으로 들어가지 않게 위로 올림 */
 .div-block-173 {
-  left: 0 !important;
-  position: relative;
   z-index: 2;
-  max-width: 100%;
 }
-.div-block-173 > .textbox-bo-w-sh-2 {
-  max-width: 100%;
-}
+
 .textbox-bo-w-sh[data-coming-soon] {
   cursor: pointer;
 }
