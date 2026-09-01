@@ -29,10 +29,12 @@
    무시 → 지금 모습 그대로 (안전한 폴백). JS 를 안 쓰므로 첫 화면 깜빡임 없음.
 
    ⚠ 건드리지 않은 것
-   Hero15Y / Circle Card / Q69 세 섹션은 글자뿐 아니라 박스도 px 고정이라
-   (원 400px, 문단 폭 443px) 글자만 키우면 넘친다. 별건으로 둔다.
    767px 이하 Webflow 값도 대체로 정상이라 그대로 둔다. 단 하나, 아래 4번의
    .adress 만 480~767 구간에서 7.2px 까지 떨어져 예외로 바닥을 깐다.
+
+   ※ Hero15Y / Circle Card / Q69 세 섹션은 v1 에서 "글자뿐 아니라 박스도 px
+     고정이라 글자만 키우면 넘친다" 는 이유로 미뤄 뒀다. 아래 5~6번(v2) 에서
+     박스까지 함께 다루며 해결했다.
    ================================================================ */
 
 /* ================================================================
@@ -129,5 +131,253 @@
   html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .text-block-355 {
     padding-top:    1.9vw !important;
     padding-bottom: 1.9vw !important;
+  }
+}
+
+/* ================================================================
+   HELIX AMC — 일산 분원 v2 : 480~991px 빈 구간 채우기 (2026-09-01)
+
+   ■ 무슨 문제인가
+   일산 전용으로 새로 만든 세 블록(15년의 깊이 히어로 · 인사말 문단 ·
+   시설 안내 원형 카드)은 Webflow 에 "큰 화면(992 이상)" 과 "폰(479 이하)"
+   두 벌만 있고 그 사이가 비어 있다. 비어 있으면 큰 화면 값이 그대로 내려와,
+   480~991 구간에서 박스가 제 칸을 넘는다.
+
+     · 시설 안내 원형 카드 — 원이 400px 로 굳어 있는데 들어갈 칸은 화면의
+       약 42% 뿐이다. 칸 = (화면폭 − 좌우 8vw − 칸사이 16px) ÷ 2.
+         991px → 408px (겨우 들어감)   768px → 314px (86px 넘침)
+         600px → 244px               480px → 194px (206px 넘침)
+       넘친 원이 옆 사진 위를 덮는다. 셋 중 제일 심하다.
+     · 15년의 깊이 히어로 / 인사말 문단 — 좌우 2단이 그대로 유지된 채
+       제목 45px · 로고 200px 가 반쪽 칸에 갇힌다. 600px 아래에서 삐져나온다.
+
+   ■ 어떻게 고치나 (사용자 확정: 절충안, 2026-09-01)
+     768~991 (태블릿) → 지금의 좌우 2단 구성을 그대로 두고,
+                        원형 카드만 칸 폭에 맞춰 통째로 비례 축소
+     480~767 (큰 폰)  → 폰(479 이하) 구성을 그대로 끌어올린다
+     992 이상 / 479 이하 → 한 줄도 손대지 않음
+
+   ■ "통째로 비례 축소" 를 어떻게 하나
+   원 안의 값들은 전부 원 지름 400px 을 기준으로 잡혀 있고, 폰(300px) 값은
+   정확히 그 75% 다 (18.75→14.1 / 26.25→19.7 / 14→10.5 / 300→225 / 50→37.5).
+   즉 이 카드는 원래부터 "지름에 비례" 하도록 설계돼 있다. 그래서 원 지름을
+   1cqw = 지름의 1% 로 삼아(container-type) 안쪽 값을 전부 비율로 다시 쓴다.
+     지름 400px → 지금 데스크탑 값과 소수점까지 동일
+     지름 300px → 지금 폰 값과 소수점까지 동일
+   두 끝이 기존 디자인과 정확히 맞으므로 그 사이도 디자이너 의도대로 이어진다.
+
+   ⚠ container query(cqw) 를 모르는 옛 브라우저는 이 규칙을 무시해 v1 이전
+     모습으로 남는다. :has() 와 지원 시기가 같아(크롬 105 / 사파리 16) 이미
+     이 파일 전체가 같은 전제 위에 있다.
+   ================================================================ */
+
+/* ================================================================
+   5. 시설 안내 원형 카드 — 원과 그 안의 모든 것을 함께 줄인다 (480~991)
+   ================================================================ */
+@media (min-width: 480px) and (max-width: 991px) {
+
+  /* 5-1. 원 자체. 안쪽 값들이 이 폭을 기준(1cqw = 폭의 1%)으로 계산된다. */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-card {
+    container-type: inline-size;
+  }
+
+  /* 5-2. 원 안의 값 — 전부 "400px 일 때의 원래 값 ÷ 400" 이다. */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-card-text,
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-card-text_2 {
+    padding-left:  12.5cqw !important;   /* 50 / 400 */
+    padding-right: 12.5cqw !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-label {
+    font-size:      4.6875cqw !important;  /* 18.75 / 400 */
+    line-height:    6.5cqw !important;     /* 26    / 400 */
+    letter-spacing: -0.095cqw !important;  /* -0.38 / 400 */
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-headline {
+    font-size:      6.5625cqw !important;  /* 26.25 / 400 */
+    line-height:    9.75cqw !important;    /* 39    / 400 */
+    letter-spacing: -0.1975cqw !important; /* -0.79 / 400 */
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-paragraph {
+    font-size:      3.5cqw !important;     /* 14    / 400 */
+    line-height:    6.25cqw !important;    /* 25    / 400 */
+    letter-spacing: -0.0825cqw !important; /* -0.33 / 400 */
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-divider {
+    width:         75cqw !important;       /* 300 / 400 */
+    margin-top:    4cqw !important;        /* 16  / 400 */
+    margin-bottom: 4cqw !important;
+  }
+}
+
+/* ================================================================
+   5-B. 태블릿 (768~991) — 좌우 2단은 그대로, 원만 칸 폭에 맞춘다
+   width:100% 라 원이 언제나 자기 칸에 정확히 들어가고, max-width 400px 이
+   있어 칸이 넓어져도 지금보다 커지지 않는다 (991px 에서 현재와 동일).
+   ================================================================ */
+@media (min-width: 768px) and (max-width: 991px) {
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-card {
+    width:      100% !important;
+    max-width:  400px !important;
+    height:     auto !important;   /* 정사각 비율(1:1)이 이미 걸려 있어 원 유지 */
+  }
+
+  /* 두 번째 원이 첫 원에 겹쳐 올라가는 정도도 지름에 비례해야 한다.
+     겹침 값은 원 바깥으로 나가는 값이라 cqw 를 쓸 수 없어(자기 자신이
+     기준이 아님) 칸 폭 공식으로 직접 계산한다.
+       칸 폭 = 0.42 × 화면폭 − 8px
+       top        = −21 × 칸폭/400 = 0.42px − 2.205vw
+       margin-top = −46 × 칸폭/400 = 0.92px − 4.83vw  */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-card.circle-card-overlap {
+    top:        calc(0.42px - 2.205vw) !important;
+    margin-top: calc(0.92px - 4.83vw) !important;
+  }
+}
+
+/* ================================================================
+   6. 큰 폰 (480~767) — 폰(479 이하) 구성을 그대로 끌어올린다
+   아래 값은 전부 Webflow 의 폰 화면단에 이미 들어 있는 값을 그대로 옮긴 것이다
+   (새로 만든 값이 아니다). 그래서 479px 과 480px 사이에 눈에 띄는 변화가 없다.
+   ================================================================ */
+@media (min-width: 480px) and (max-width: 767px) {
+
+  /* ---- 6-1. "15년의 깊이" 히어로 : 좌우 2단 → 한 줄 세로 ---- */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .hero15y-wrap {
+    grid-template-columns: 1fr !important;
+    justify-items: start !important;
+    align-items:   start !important;
+    padding-top:   48px !important;
+    padding-left:  43px !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .hero15y-heading {
+    font-size:      28px !important;
+    line-height:    40px !important;
+    letter-spacing: -0.84px !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .hero15y-logo {
+    left:       -4px !important;
+    width:      120px !important;
+    margin-top: 32px !important;
+  }
+
+  /* ---- 6-2. 인사말(따옴표) 문단 : 반쪽 칸 해제 ---- */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .div-block-305 {
+    display:               flex !important;
+    flex-direction:        column !important;
+    flex-wrap:             nowrap !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .q69-container {
+    max-width:      100% !important;
+    padding-top:    109px !important;
+    padding-bottom: 48px !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .q69-quote {
+    margin-bottom:  20px !important;
+    font-size:      17px !important;
+    line-height:    26px !important;
+    letter-spacing: -0.34px !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .q69-body {
+    font-size:      13px !important;
+    line-height:    21px !important;
+    text-align:     center !important;
+    letter-spacing: -0.3px !important;
+  }
+
+  /* ---- 6-3. 시설 안내 : 사진을 가운데로, 원형 카드를 그 위 한 줄로 ---- */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .div-block-306.is-above-photos {
+    grid-template-columns: 1fr !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-chain {
+    padding-top:    70px !important;
+    padding-bottom: 32px !important;
+    align-items:    center !important;
+  }
+
+  /* 폰과 같은 지름 300px. 5번의 비율 규칙이 이 값을 받아
+     글자 14.1 / 19.7 / 10.5 · 선 225 · 안쪽 여백 37.5 를 그대로 만들어 낸다. */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-card {
+    width:     300px !important;
+    max-width: 100% !important;
+    height:    300px !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .circle-card.circle-card-overlap {
+    top:        -15.75px !important;
+    margin-top: -34.5px !important;
+  }
+
+  /* 사진 틀 — 화면 가운데 300px 로 세우고, 사진들이 그 밖으로 나가게 둔다.
+     틀이 300px 고정이라 사진 위치값(px)이 화면 폭과 무관하게 폰과 같아진다. */
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .ilsan-photo-frame {
+    left:      50% !important;
+    top:       0px !important;
+    display:   block !important;
+    overflow:  visible !important;
+    width:     300px !important;
+    height:    100% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .ilsan-photo-stack {
+    position:  static !important;
+    top:       auto !important;
+    width:     100% !important;
+    transform: none !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .ilsan-photo {
+    position:      absolute !important;
+    left:          auto !important;
+    top:           -82px !important;
+    right:         -78px !important;
+    overflow:      visible !important;
+    width:         91% !important;
+    height:        auto !important;
+    aspect-ratio:  1 / 1 !important;
+    border-radius: 100% !important;
+    object-fit:    cover !important;
+    -webkit-mask-image: radial-gradient(circle at center, black 0%, rgba(0,0,0,0.85) 15%, rgba(0,0,0,0.4) 40%, transparent 70%) !important;
+            mask-image: radial-gradient(circle at center, black 0%, rgba(0,0,0,0.85) 15%, rgba(0,0,0,0.4) 40%, transparent 70%) !important;
+    -webkit-mask-repeat: no-repeat !important;
+            mask-repeat: no-repeat !important;
+    -webkit-mask-size: 100% 100% !important;
+            mask-size: 100% 100% !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .ilsan-photo.is-ct {
+    left:       auto !important;
+    top:        377px !important;
+    right:      -116px !important;
+    box-sizing: content-box !important;
+    width:      120% !important;
+    height:     auto !important;
+    max-width:  none !important;
+    margin-top: 0px !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .ilsan-photo.is-mri {
+    left:       -230px !important;
+    top:        99px !important;
+    right:      auto !important;
+    width:      150% !important;
+    height:     auto !important;
+    max-width:  none !important;
+    margin-top: 0px !important;
+  }
+
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .ilsan-photo-fade-top {
+    display: none !important;
   }
 }
