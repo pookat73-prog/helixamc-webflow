@@ -525,10 +525,14 @@ section.section > .div-block-220 {
 }
 
 /* ================================================================
-   예약 안내 전화번호 — "눌러도 되는 것" 으로 보이게
+   전화번호 — "눌러도 되는 것" 으로 보이게
    ================================================================
-   문제: 번호(.tel-link-row 안의 02.2135.9 + 119)는 이미 누르면 전화가
-   연결되는데, 큼직한 글씨로만 놓여 있어 그냥 적어 둔 정보로 읽힌다.
+   대상 두 곳
+     .tel-link-row  예약 안내 섹션 (02.2135.9 + 119 / 031-978-7575)
+     .tel-link      첫 화면 인트로 배너 번호
+
+   문제: 번호는 이미 누르면 전화가 연결되는데, 큼직한 글씨로만 놓여 있어
+   그냥 적어 둔 정보로 읽힌다.
    실제로 전화까지 간 방문이 8월 13일 기준 819건 중 19건(2.3%)뿐이라,
    누를 수 있다는 걸 모르고 지나가는 경우가 섞여 있다고 봤다.
 
@@ -547,19 +551,28 @@ section.section > .div-block-220 {
    (그런 브라우저에선 아이콘만 안 나오고 번호는 그대로 동작)
 
    ⚠️ 클릭 동작 자체는 seocho.js 가 맡는다 (확인창 → 번호 복사 → 연결 +
-   GA4 seocho_phone_intent / seocho_phone_call). 여기는 보이는 것만 손댐.
+   GA4 <지점>_phone_intent / <지점>_phone_call). 여기는 보이는 것만 손댐.
+
+   ⚠️ 인트로 배너(.tel-link)를 뒤늦게 더한 이유: 예약 안내에만 아이콘을
+   붙여 놨더니, 정작 방문자가 가장 먼저 보는 첫 화면 번호에는 아무 단서가
+   없어 "그냥 적힌 번호" 로 지나간다. 아래로 스크롤해야 나오는 곳에만
+   신호를 주는 셈이라 앞뒤가 맞지 않았다. 두 지점 페이지가 같은 클래스를
+   쓰므로 서초 첫 화면에도 같이 붙는다 (일부러 맞춘 것).
    ================================================================ */
-.tel-link-row {
+.tel-link-row,
+.tel-link {
   cursor: pointer;
   transition: opacity 0.18s ease;
 }
 
-.tel-link-row:hover {
+.tel-link-row:hover,
+.tel-link:hover {
   opacity: 0.78;
 }
 
 @supports ((-webkit-mask-image: url('')) or (mask-image: url(''))) {
-  .tel-link-row .branch_phoneno::before {
+  .tel-link-row .branch_phoneno::before,
+  .tel-link .heading-2::before {
     content: '';
     display: inline-block;
     width: 0.6em;
