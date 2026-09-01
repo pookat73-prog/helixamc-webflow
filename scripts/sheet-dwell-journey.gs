@@ -64,11 +64,16 @@ var EXCLUDE_SIDS = [];
 var PAGE_LABEL = {
   home: '홈 /',
   seocho: '서초 /seocho',
+  /* 일산 분원(8/21~)·특화진료(8/28~) 가 빠져 있어 표에 'ilsan',
+     'specialty' 처럼 영어 키로 찍혔다. 세는 것 자체는 정상이었고
+     이름표만 없던 것 (2026-09-01 추가). */
+  ilsan: '일산 /ilsan',
   discover: '소개 /discover-helix',
   about: '소개 /discover-helix',
   faq: 'FAQ /faq',
   emergency: '응급증상 /symptoms',
-  services: '진료과목 /services'
+  services: '진료과목 /services',
+  specialty: '특화진료 /specialty-care'
 };
 
 /* ================================================================

@@ -1,5 +1,5 @@
 /* ================================================================
-   헬릭스 측정 요약 — 표 14개를 스크립트가 직접 그린다 (Google Apps Script)
+   헬릭스 측정 요약 — 표 23개를 스크립트가 직접 그린다 (Google Apps Script)
    ================================================================
    지금 요약 탭([헬릭스측정요약가져오기용])은 절반이 시트 수식이다.
    로그를 통째로 끌어오는 수식(IMPORTRANGE) 8벌 + 세는 수식 154자리.
@@ -14,16 +14,34 @@
    [체류·동선] 탭이 이미 그 방식이고 한 번도 안 터졌다.
 
    ▸ 이 파일이 하는 일
-     원본 로그를 직접 읽어(달별 탭 포함) 표 14개를 새 탭에 그린다.
+     원본 로그를 직접 읽어(달별 탭 포함) 표 23개를 새 탭에 그린다.
      기존 요약 탭은 손대지 않는다 — 숫자가 다 맞는 것을 확인한 뒤에
      사람이 옛 수식을 걷어낸다. 안 맞으면 새 탭만 지우면 끝이다.
 
-   ▸ 지금 있는 것을 그대로 옮긴 것이다 (일부러 안 고쳤다)
+   ▸ 처음엔 옛 수식을 그대로 옮기기만 했다 (표1~14)
      옮기는 김에 집계 규칙을 손보면, 숫자가 안 맞을 때 원인이 이사
-     때문인지 규칙 변경 때문인지 가릴 수 없다. 그래서 눈에 밟히는
-     것들도 그대로 뒀고, 어디가 왜 이상한지는 주석으로 남겼다.
+     때문인지 규칙 변경 때문인지 가릴 수 없어서다. 눈에 밟히는 것들도
+     그대로 뒀고, 어디가 왜 이상한지는 주석으로 남겼다.
      (표5 와 표8 의 전화 세는 법이 다른 것 · 표1 합계가 표2 와 89
       차이 나는 것 — 둘 다 아래 해당 자리에 설명이 있다.)
+
+   ▸ 2026-09-01 — 대조가 끝나서, 빠져 있던 것을 채웠다
+     · 표1 에 일산·특화진료 줄. 두 페이지는 이미 제 이름으로 기록을
+       남기는데(일산 8/21~, 특화진료 8/28~) 표에 자리가 없어 통째로
+       안 보였다. 일산이 갈라져 나가며 서초 숫자가 그 시점에 뚝 떨어져
+       보이는 것도 같은 이유다 — 방문이 준 게 아니다.
+     · 표4 에 일산·특화진료 파트. 도달·체류가 안 보이던 것.
+     · 표8 에 일산 전화 줄. 표3·표5 는 이름만 보고 이미 세고 있었는데
+       표8 만 빠져 있어, 같은 시트 안에서 전화 숫자가 서로 어긋났다.
+     · 표15~23 신설 — 로그에는 쌓이는데 볼 표가 없던 것들.
+       상담 폼 출처(인라인/플로팅) · 전화 누른 자리 · 지점 페이지 행동
+       (서초 vs 일산) · 메뉴/헤더 · 홈 버튼 · 특화진료 · 응급 · FAQ · 소개.
+
+   ▸ 줄 자리는 스크립트가 계산한다 — 손으로 박지 말 것
+     예전엔 표마다 줄 번호가 박혀 있어(표2 는 19줄…) 표1 에 두 줄만
+     더해도 아래 표와 겹쳤다. 지금은 cur 한 칸으로 이어 그린다.
+     그래서 대조(verifySummaryAgainstBaseline)도 줄 번호가 아니라
+     '표 제목을 찾고 그 표 안에서 몇 번째 줄' 로 짚는다.
 
    ── 쓰는 법 ──────────────────────────────────────────────────
    1) 요약 스프레드시트에서 [확장 프로그램] → [Apps Script]
@@ -106,9 +124,24 @@ var SB_SECTION_GROUPS = [
     ['hero', '첫화면'], ['map', '지도'], ['vets', '의료진'],
     ['phone', '전화문의'], ['photo', '공간사진']
   ]},
+  /* 일산 분원 — 서초 페이지를 복제해 만든 터라 파트 구성이 같다.
+     8/21 부터 이름이 ilsan_ 로 갈라져 따로 셀 수 있게 됐는데, 여기 목록이
+     없어 도달·체류가 통째로 안 보였다 (2026-09-01 추가). */
+  { label: '일산', prefix: 'ilsan', denom: 'ilsan', items: [
+    ['hero', '첫화면'], ['map', '지도'], ['vets', '의료진'],
+    ['phone', '전화문의'], ['photo', '공간사진']
+  ]},
   { label: '진료과목', prefix: 'services', denom: 'services', items: [
     ['im', '내과'], ['sg', '외과'], ['di', '영상의학과'],
     ['oc', '안과'], ['dt', '치과']
+  ]},
+  /* 특화진료 — 페이지가 첫화면 + 그룹 열 4개로 되어 있다.
+     순서는 화면상 왼쪽→오른쪽(좁은 화면에서는 위→아래).
+     항목 이름은 global/section-reach.js 의 SECTIONS.specialty 와 같아야
+     한다 — 한쪽만 고치면 이 표가 0으로 떨어진다 (2026-09-01 추가). */
+  { label: '특화진료', prefix: 'specialty', denom: 'specialty', items: [
+    ['hero', '첫화면(제목)'], ['g1', '통합 종양 진료'], ['g2', '인터벤션'],
+    ['g3', '고난도 수술'], ['g4', '특수 전문 치료']
   ]}
 ];
 
@@ -264,11 +297,11 @@ function sbParse_(rows, period) {
     if (!stamp) continue;                            /* 시간을 못 읽는 줄 */
     total++;
 
-    /* 기간 밖이면 params 를 뜯지 않는다 — 5만 줄 × 정규식 7벌은 비싸다 */
+    /* 기간 밖이면 params 를 뜯지 않는다 — 5만 줄은 비싸다 */
     if (stamp.dateKey < period.startKey || stamp.dateKey > period.endKey) continue;
 
-    var params = String(r[5] || '');
-    var sid = sbPick_(params, 'sid');
+    var p = sbPickAll_(r[5]);
+    var sid = p.sid || '';
     if (sid && drop[sid]) continue;
 
     var value = r[4];
@@ -279,12 +312,22 @@ function sbParse_(rows, period) {
       value: value,
       num: sbNum_(value),
       sid: sid,
-      doctor: sbDoctor_(params),
-      dept: sbPick_(params, 'dept'),
-      source: sbPick_(params, 'source'),
-      visitor: sbPick_(params, 'visitor'),
-      question: sbPick_(params, 'question'),
-      symptom: sbPick_(params, 'symptom'),
+      doctor: sbDoctor_(p),
+      dept: p.dept || '',
+      source: p.source || '',
+      visitor: p.visitor || '',
+      question: p.question || '',
+      symptom: p.symptom || '',
+      /* 아래는 2026-09-01 에 더한 것들 — 표15~23 이 쓴다 */
+      section: p.section || '',            /* 전화·주소복사·길찾기를 누른 자리 */
+      branch: p.branch || '',              /* 서초 / 일산 (모듈마다 '서초본원' 처럼 길기도 하다) */
+      cta_src: p.cta_src || '',            /* 상담 폼을 연 곳 — floating_cta / inline_cta */
+      item: p.item || '',                  /* 특화진료 항목 이름 */
+      group: p.group || '',                /* 특화진료 그룹 이름 */
+      link_text: p.link_text || '',        /* 메뉴·헤더에서 누른 링크 글자 */
+      sns: p.sns || '',                    /* 푸터 SNS 채널 */
+      filter_value: p.filter_value || '',  /* FAQ 필터 칩 */
+      action: p.action || '',              /* 응급 카드 옆 CTA — call / map */
       dateKey: stamp.dateKey,
       hour: stamp.hour,
       dow: sbWeekday_(stamp.dateKey)
@@ -294,22 +337,28 @@ function sbParse_(rows, period) {
   return { rows: out, total: total };
 }
 
-/* params 에서 값 하나 뽑기 — AG~AQ열의 REGEXEXTRACT 와 같은 규칙 */
-function sbPick_(params, key) {
-  if (!params) return '';
-  var m = params.match(new RegExp('"' + key + '":"([^"]+)"'));
-  return m ? m[1] : '';
+/* params 한 칸을 한 번만 훑어 "키":"값" 을 전부 사전으로 담는다.
+   예전엔 뽑을 값마다 정규식을 새로 돌렸다(7벌). 볼 것이 열 가지를
+   넘어가면 5만 줄 × 열몇 벌이라 눈에 띄게 느려진다 — 한 번 훑어 두면
+   몇 개를 보든 드는 시간이 같다. 뽑는 규칙은 옛 AG~AQ열 수식과 동일
+   ("키":"값" 꼴의 따옴표 안 글자). */
+function sbPickAll_(raw) {
+  var out = {};
+  if (!raw) return out;
+  var s = String(raw);
+  var re = /"([A-Za-z0-9_]+)":"([^"]+)"/g;
+  var m;
+  while ((m = re.exec(s)) !== null) out[m[1]] = m[2];
+  return out;
 }
 
 /* 의료진 이름 — doctor(한글)가 있으면 그대로, 없으면 slug 를 한글로.
    요즘 기록은 doctor 를 직접 싣지만(대응표에 없는 이름도 나온다),
    옛 기록은 slug 뿐이라 두 경로를 모두 살려 둔다. */
-function sbDoctor_(params) {
-  var direct = sbPick_(params, 'doctor');
-  if (direct) return direct;
-  var slug = sbPick_(params, 'slug');
-  if (!slug) return '';
-  return SB_DOCTOR_BY_SLUG[slug] || '';
+function sbDoctor_(p) {
+  if (p.doctor) return p.doctor;
+  if (!p.slug) return '';
+  return SB_DOCTOR_BY_SLUG[p.slug] || '';
 }
 
 /* 시간 칸 → { dateKey:'yyyy-MM-dd', hour:0~23 }
@@ -365,14 +414,21 @@ function sbLogTimeZone_() {
 }
 
 /* ================================================================
-   ④ 표 14개 그리기
+   ④ 표 23개 그리기
    ================================================================
-   줄·칸 자리를 지금 요약 탭과 똑같이 맞춘다(설계서 3절 결정).
-   표를 정리하거나 줄이는 일은 숫자가 다 맞은 뒤에 따로 한다 —
-   자리까지 같아야 두 탭을 나란히 놓고 눈으로 대조할 수 있다. */
+   표1~14 는 옛 요약 탭에서 그대로 옮겨온 것이고, 표15~23 은
+   2026-09-01 에 더한 것이다(로그에는 쌓이는데 볼 표가 없던 것들).
+   줄 자리는 cur 한 칸으로 이어 그린다 — 표가 길어지거나 새 표가
+   끼어들면 아래 표들이 알아서 밀리게. 줄 번호를 박지 말 것. */
 function sbBuildGrid_(period, log, data) {
   var g = sbGrid_();
   var ev = data.rows;
+
+  /* 줄 자리는 더 이상 손으로 박지 않는다. 표가 길어지거나(조회 기간에
+     따라 항목 수가 변한다) 새 표가 끼어들면 아래 표들이 알아서 밀리게,
+     cur 한 칸으로 이어 그린다. 예전엔 표마다 줄 번호를 박아 둬서, 표1에
+     두 줄만 더해도 표2와 겹쳤다. */
+  var cur = 10;
 
   /* ── 머리말 ─────────────────────────────────────────────── */
   g.set(1, 'A', '헬릭스 측정 요약');
@@ -391,48 +447,60 @@ function sbBuildGrid_(period, log, data) {
   /* ── 1. 페이지별 방문 · 끝까지 읽은 비율 ─────────────────── */
   /* 홈·서초·응급에 붙은 조건들은 옛 기록의 혼입과 중복을 걷어내려고
      일부러 넣은 것이다. 그래서 여섯 줄의 방문수 합(4,679)이 표2의
-     페이지 열린 횟수(4,768)보다 89 적다 — 버그가 아니다. */
+     페이지 열린 횟수(4,768)보다 89 적다 — 버그가 아니다.
+     [2026-09-01 추가] 특화진료·일산 두 줄을 더했다. 두 페이지는 이미
+     제 이름으로 기록을 남기는데(일산 8/21~, 특화진료 8/28~) 표에 자리가
+     없어 통째로 안 보였다. 일산이 갈라져 나가면서 서초 숫자가 그 시점에
+     뚝 떨어져 보이는 것도 이 때문이다 — 방문이 준 게 아니다. */
   var pv = {
     home: sbCount_(ev, function (e) { return e.name === 'home_page_view' && String(e.value) === '/'; }),
     seocho: sbCount_(ev, function (e) { return e.name === 'seocho_page_view' && e.page === 'seocho'; }),
+    ilsan: sbCountName_(ev, 'ilsan_page_view'),
     discover: sbCount_(ev, function (e) { return e.name === 'discover_page_view'; }),
     faq: sbCount_(ev, function (e) { return e.name === 'faq_page_view'; }),
     emergency: sbCount_(ev, function (e) {
       return e.name === 'emergency_page_view' ||
              (e.name === 'home_page_view' && String(e.value) === '/symptoms');
     }),
-    services: sbCount_(ev, function (e) { return e.name === 'services_page_view'; })
+    services: sbCount_(ev, function (e) { return e.name === 'services_page_view'; }),
+    specialty: sbCountName_(ev, 'specialty_page_view')
   };
   var done = {
     home: sbCount_(ev, function (e) { return e.name === 'home_scroll_depth' && e.num === 100; }),
     seocho: sbCount_(ev, function (e) { return e.name === 'seocho_scroll_depth' && e.page === 'seocho' && e.num === 100; }),
+    ilsan: sbCount_(ev, function (e) { return e.name === 'ilsan_scroll_depth' && e.num === 100; }),
     discover: sbCount_(ev, function (e) { return e.name === 'discover_scroll_depth' && e.num === 100; }),
     faq: sbCount_(ev, function (e) { return e.name === 'faq_scroll_depth' && e.num === 100; }),
     emergency: sbCount_(ev, function (e) { return e.name === 'emergency_scroll_depth' && e.num === 100; }),
-    services: sbCount_(ev, function (e) { return e.name === 'services_scroll_depth' && e.num === 100; })
+    services: sbCount_(ev, function (e) { return e.name === 'services_scroll_depth' && e.num === 100; }),
+    specialty: sbCount_(ev, function (e) { return e.name === 'specialty_scroll_depth' && e.num === 100; })
   };
 
-  g.set(10, 'A', '1. 페이지별 방문 · 끝까지 읽은 비율');
-  g.set(11, 'A', '페이지'); g.set(11, 'C', '방문수'); g.set(11, 'D', '끝까지(100%)');
-  g.set(11, 'E', '끝까지 비율'); g.set(11, 'F', '비고');
+  g.set(cur, 'A', '1. 페이지별 방문 · 끝까지 읽은 비율'); cur++;
+  g.set(cur, 'A', '페이지'); g.set(cur, 'C', '방문수'); g.set(cur, 'D', '끝까지(100%)');
+  g.set(cur, 'E', '끝까지 비율'); g.set(cur, 'F', '비고'); cur++;
 
   var pageRows = [
-    [12, '홈 /', 'home', '주소가 / 인 것만 — 응급증상 섞임 제거'],
-    [13, '서초 /seocho', 'seocho', '페이지칸 있는 것만 — 옛 2배 중복 제거'],
-    [14, '소개 /discover-helix', 'discover', ''],
-    [15, 'FAQ /faq', 'faq', ''],
-    [16, '응급증상 /symptoms', 'emergency', '옛 오분류(home) 합산 복구'],
-    [17, '진료과목 /services', 'services', '8/3 부터 측정 시작']
+    ['홈 /', 'home', '주소가 / 인 것만 — 응급증상 섞임 제거'],
+    ['서초 /seocho', 'seocho', '페이지칸 있는 것만 — 옛 2배 중복 제거'],
+    ['일산 /ilsan', 'ilsan', '8/21 부터 서초와 갈라져 따로 쌓임'],
+    ['소개 /discover-helix', 'discover', ''],
+    ['FAQ /faq', 'faq', ''],
+    ['응급증상 /symptoms', 'emergency', '옛 오분류(home) 합산 복구'],
+    ['진료과목 /services', 'services', '8/3 부터 측정 시작'],
+    ['특화진료 /specialty-care', 'specialty', '8/28 부터 측정 시작']
   ];
   for (var p = 0; p < pageRows.length; p++) {
-    var row = pageRows[p], key = row[2];
-    g.set(row[0], 'A', row[1]);
-    g.set(row[0], 'B', key);
-    g.set(row[0], 'C', pv[key]);
-    g.set(row[0], 'D', done[key]);
-    g.set(row[0], 'E', sbPct_(done[key], pv[key]));
-    if (row[3]) g.set(row[0], 'F', row[3]);
+    var row = pageRows[p], key = row[1];
+    g.set(cur, 'A', row[0]);
+    g.set(cur, 'B', key);
+    g.set(cur, 'C', pv[key]);
+    g.set(cur, 'D', done[key]);
+    g.set(cur, 'E', sbPct_(done[key], pv[key]));
+    if (row[2]) g.set(cur, 'F', row[2]);
+    cur++;
   }
+  cur++;
 
   /* ── 2. 사람 기준 ───────────────────────────────────────── */
   var allPv = sbCount_(ev, sbIsPageView_);
@@ -443,12 +511,13 @@ function sbBuildGrid_(period, log, data) {
   var visitCount = sbSetSize_(visits);
   var newPv = sbCount_(ev, function (e) { return sbIsPageView_(e) && e.visitor === 'new'; });
 
-  g.set(19, 'A', "2. 사람 기준 — 몇 '번' 이 아니라 몇 '명분' 인가  (8/3 부터 쌓임)");
-  g.set(20, 'A', '지표'); g.set(20, 'B', '값'); g.set(20, 'C', '설명');
-  g.set(21, 'A', '순 방문 횟수'); g.set(21, 'B', visitCount); g.set(21, 'C', '같은 사람이 새로고침해도 1로 셉니다');
-  g.set(22, 'A', '페이지 열린 횟수'); g.set(22, 'B', allPv); g.set(22, 'C', '새로고침도 각각 셈');
-  g.set(23, 'A', '방문당 페이지 수'); g.set(23, 'B', visitCount ? sbRound1_(allPv / visitCount) : ''); g.set(23, 'C', '1에 가까우면 첫 페이지만 보고 나감');
-  g.set(24, 'A', '신규 방문 비중'); g.set(24, 'B', sbPct_(newPv, allPv)); g.set(24, 'C', '처음 온 사람의 비중');
+  g.set(cur, 'A', "2. 사람 기준 — 몇 '번' 이 아니라 몇 '명분' 인가  (8/3 부터 쌓임)"); cur++;
+  g.set(cur, 'A', '지표'); g.set(cur, 'B', '값'); g.set(cur, 'C', '설명'); cur++;
+  g.set(cur, 'A', '순 방문 횟수'); g.set(cur, 'B', visitCount); g.set(cur, 'C', '같은 사람이 새로고침해도 1로 셉니다'); cur++;
+  g.set(cur, 'A', '페이지 열린 횟수'); g.set(cur, 'B', allPv); g.set(cur, 'C', '새로고침도 각각 셈'); cur++;
+  g.set(cur, 'A', '방문당 페이지 수'); g.set(cur, 'B', visitCount ? sbRound1_(allPv / visitCount) : ''); g.set(cur, 'C', '1에 가까우면 첫 페이지만 보고 나감'); cur++;
+  g.set(cur, 'A', '신규 방문 비중'); g.set(cur, 'B', sbPct_(newPv, allPv)); g.set(cur, 'C', '처음 온 사람의 비중'); cur++;
+  cur++;
 
   /* ── 3. 전화까지 간 방문의 특징 ─────────────────────────── */
   var callCount = sbSetSize_(callVisits);
@@ -457,27 +526,28 @@ function sbBuildGrid_(period, log, data) {
   var noVet = visitCount - vetCount;
   var noVetCall = callCount - vetCall;
 
-  g.set(26, 'A', '3. 전화까지 간 방문의 특징  ← 홈페이지 개선 판단의 핵심');
-  g.set(27, 'A', '지표'); g.set(27, 'B', '값'); g.set(27, 'C', '해석');
-  g.set(28, 'A', '전체 방문'); g.set(28, 'B', visitCount);
-  g.set(29, 'A', '전화까지 간 방문'); g.set(29, 'B', callCount); g.set(29, 'C', '전화·상담전화를 한 번이라도 누른 방문');
-  g.set(30, 'A', '전화 전환율'); g.set(30, 'B', sbPct_(callCount, visitCount)); g.set(30, 'C', '100명이 오면 몇 명이 전화하나');
-  g.set(32, 'A', '의료진 섹션을 본 방문'); g.set(32, 'B', vetCount); g.set(32, 'C', '서초 의료진 파트까지 스크롤한 방문');
-  g.set(33, 'A', '그중 전화까지 간 방문'); g.set(33, 'B', vetCall);
-  g.set(34, 'A', '→ 전환율 (A)'); g.set(34, 'B', sbPct_(vetCall, vetCount)); g.set(34, 'C', '의료진을 본 사람의 전화율');
-  g.set(35, 'A', '의료진을 안 본 방문'); g.set(35, 'B', noVet);
-  g.set(36, 'A', '그중 전화까지 간 방문'); g.set(36, 'B', noVetCall);
-  g.set(37, 'A', '→ 전환율 (B)'); g.set(37, 'B', sbPct_(noVetCall, noVet)); g.set(37, 'C', '의료진을 안 본 사람의 전화율');
-  g.set(38, 'A', '의료진 열람 효과 (A÷B)');
-  g.set(38, 'B', (vetCount && noVet && noVetCall) ? sbRound1_((vetCall / vetCount) / (noVetCall / noVet)) + '배' : '');
-  g.set(38, 'C', '1보다 크면 의료진 파트가 전화를 끌어낸다는 뜻');
+  g.set(cur, 'A', '3. 전화까지 간 방문의 특징  ← 홈페이지 개선 판단의 핵심'); cur++;
+  g.set(cur, 'A', '지표'); g.set(cur, 'B', '값'); g.set(cur, 'C', '해석'); cur++;
+  g.set(cur, 'A', '전체 방문'); g.set(cur, 'B', visitCount); cur++;
+  g.set(cur, 'A', '전화까지 간 방문'); g.set(cur, 'B', callCount); g.set(cur, 'C', '전화·상담전화를 한 번이라도 누른 방문'); cur++;
+  g.set(cur, 'A', '전화 전환율'); g.set(cur, 'B', sbPct_(callCount, visitCount)); g.set(cur, 'C', '100명이 오면 몇 명이 전화하나'); cur++;
+  cur++;
+  g.set(cur, 'A', '의료진 섹션을 본 방문'); g.set(cur, 'B', vetCount); g.set(cur, 'C', '서초 의료진 파트까지 스크롤한 방문'); cur++;
+  g.set(cur, 'A', '그중 전화까지 간 방문'); g.set(cur, 'B', vetCall); cur++;
+  g.set(cur, 'A', '→ 전환율 (A)'); g.set(cur, 'B', sbPct_(vetCall, vetCount)); g.set(cur, 'C', '의료진을 본 사람의 전화율'); cur++;
+  g.set(cur, 'A', '의료진을 안 본 방문'); g.set(cur, 'B', noVet); cur++;
+  g.set(cur, 'A', '그중 전화까지 간 방문'); g.set(cur, 'B', noVetCall); cur++;
+  g.set(cur, 'A', '→ 전환율 (B)'); g.set(cur, 'B', sbPct_(noVetCall, noVet)); g.set(cur, 'C', '의료진을 안 본 사람의 전화율'); cur++;
+  g.set(cur, 'A', '의료진 열람 효과 (A÷B)');
+  g.set(cur, 'B', (vetCount && noVet && noVetCall) ? sbRound1_((vetCall / vetCount) / (noVetCall / noVet)) + '배' : '');
+  g.set(cur, 'C', '1보다 크면 의료진 파트가 전화를 끌어낸다는 뜻'); cur++;
+  cur++;
 
   /* ── 4. 섹션별 도달 · 체류 · 이탈 ───────────────────────── */
-  g.set(40, 'A', '4. 섹션별 — 어디까지 읽고, 몇 초 머물고, 어디서 나가나');
-  g.set(41, 'A', '페이지'); g.set(41, 'B', '섹션'); g.set(41, 'C', '도달수');
-  g.set(41, 'D', '도달률'); g.set(41, 'E', '방문당 체류(초)'); g.set(41, 'F', '여기서 이탈');
+  g.set(cur, 'A', '4. 섹션별 — 어디까지 읽고, 몇 초 머물고, 어디서 나가나'); cur++;
+  g.set(cur, 'A', '페이지'); g.set(cur, 'B', '섹션'); g.set(cur, 'C', '도달수');
+  g.set(cur, 'D', '도달률'); g.set(cur, 'E', '방문당 체류(초)'); g.set(cur, 'F', '여기서 이탈'); cur++;
 
-  var r = 42;
   for (var gi = 0; gi < SB_SECTION_GROUPS.length; gi++) {
     var grp = SB_SECTION_GROUPS[gi];
     var denom = pv[grp.denom];
@@ -487,17 +557,18 @@ function sbBuildGrid_(period, log, data) {
     }
     for (var s2 = 0; s2 < grp.items.length; s2++) {
       var dwell = sbSumValue_(ev, grp.prefix + '_dwell_' + grp.items[s2][0]);
-      g.set(r, 'A', grp.label);
-      g.set(r, 'B', grp.items[s2][1]);
-      g.set(r, 'C', reach[s2]);
-      g.set(r, 'D', sbPct_(reach[s2], denom));
-      g.set(r, 'E', denom ? sbRound1_(dwell / denom) : '');
+      g.set(cur, 'A', grp.label);
+      g.set(cur, 'B', grp.items[s2][1]);
+      g.set(cur, 'C', reach[s2]);
+      g.set(cur, 'D', sbPct_(reach[s2], denom));
+      g.set(cur, 'E', denom ? sbRound1_(dwell / denom) : '');
       /* 이탈 = 이 섹션 도달수 − 바로 아래 섹션 도달수. 맨 아래 섹션은
          다음이 없어 뺄 수가 없다 → 숫자 대신 '(마지막)' */
-      g.set(r, 'F', s2 === grp.items.length - 1 ? '(마지막)' : Math.max(0, reach[s2] - reach[s2 + 1]));
-      r++;
+      g.set(cur, 'F', s2 === grp.items.length - 1 ? '(마지막)' : Math.max(0, reach[s2] - reach[s2 + 1]));
+      cur++;
     }
   }
+  cur++;
 
   /* ── 5. 모바일 vs PC ────────────────────────────────────── */
   /* ⚠️ 여기의 전화 세는 법은 표8과 다르다. 이 표는 이름에 phone_call 이
@@ -520,13 +591,14 @@ function sbBuildGrid_(period, log, data) {
   var mobileCall = deviceCalls('mobile');
   var deskCall = deviceCalls('desktop');
 
-  g.set(65, 'A', '5. 모바일 vs PC');
-  g.set(66, 'A', '기기'); g.set(66, 'B', '방문수'); g.set(66, 'C', '비중');
-  g.set(66, 'D', '전화 건수'); g.set(66, 'E', '전화 전환율');
-  g.set(67, 'A', '모바일'); g.set(67, 'B', mobilePv); g.set(67, 'C', sbPct_(mobilePv, allPv));
-  g.set(67, 'D', mobileCall); g.set(67, 'E', sbPct_(mobileCall, mobilePv));
-  g.set(68, 'A', 'PC'); g.set(68, 'B', deskPv); g.set(68, 'C', sbPct_(deskPv, allPv));
-  g.set(68, 'D', deskCall); g.set(68, 'E', sbPct_(deskCall, deskPv));
+  g.set(cur, 'A', '5. 모바일 vs PC'); cur++;
+  g.set(cur, 'A', '기기'); g.set(cur, 'B', '방문수'); g.set(cur, 'C', '비중');
+  g.set(cur, 'D', '전화 건수'); g.set(cur, 'E', '전화 전환율'); cur++;
+  g.set(cur, 'A', '모바일'); g.set(cur, 'B', mobilePv); g.set(cur, 'C', sbPct_(mobilePv, allPv));
+  g.set(cur, 'D', mobileCall); g.set(cur, 'E', sbPct_(mobileCall, mobilePv)); cur++;
+  g.set(cur, 'A', 'PC'); g.set(cur, 'B', deskPv); g.set(cur, 'C', sbPct_(deskPv, allPv));
+  g.set(cur, 'D', deskCall); g.set(cur, 'E', sbPct_(deskCall, deskPv)); cur++;
+  cur++;
 
   /* ── 6. 시간대별 ────────────────────────────────────────── */
   var byHour = [];
@@ -538,56 +610,65 @@ function sbBuildGrid_(period, log, data) {
     byDow[ev[i2].dow]++;
   }
 
-  g.set(70, 'A', '6. 시간대별 방문  ← 야간·새벽 응급 수요 파악');
-  g.set(71, 'A', '시각'); g.set(71, 'B', '방문수'); g.set(71, 'D', '시각'); g.set(71, 'E', '방문수');
+  g.set(cur, 'A', '6. 시간대별 방문  ← 야간·새벽 응급 수요 파악'); cur++;
+  g.set(cur, 'A', '시각'); g.set(cur, 'B', '방문수'); g.set(cur, 'D', '시각'); g.set(cur, 'E', '방문수'); cur++;
   for (var hh = 0; hh < 12; hh++) {
-    g.set(72 + hh, 'A', hh + '시');
-    g.set(72 + hh, 'B', byHour[hh]);
-    g.set(72 + hh, 'D', (hh + 12) + '시');
-    g.set(72 + hh, 'E', byHour[hh + 12]);
+    g.set(cur + hh, 'A', hh + '시');
+    g.set(cur + hh, 'B', byHour[hh]);
+    g.set(cur + hh, 'D', (hh + 12) + '시');
+    g.set(cur + hh, 'E', byHour[hh + 12]);
   }
+  cur += 13;
 
   /* ── 7. 요일별 ──────────────────────────────────────────── */
   var dowName = ['', '일', '월', '화', '수', '목', '금', '토'];
-  g.set(85, 'A', '7. 요일별 방문');
-  g.set(86, 'A', '요일'); g.set(86, 'B', '방문수');
+  g.set(cur, 'A', '7. 요일별 방문'); cur++;
+  g.set(cur, 'A', '요일'); g.set(cur, 'B', '방문수'); cur++;
   for (var w = 1; w <= 7; w++) {
-    g.set(86 + w, 'A', dowName[w]);
-    g.set(86 + w, 'B', byDow[w]);
+    g.set(cur, 'A', dowName[w]);
+    g.set(cur, 'B', byDow[w]);
+    cur++;
   }
+  cur++;
 
   /* ── 8. 전화 · 상담 ─────────────────────────────────────── */
+  /* [2026-09-01 추가] 일산 전화 줄. 일산 페이지의 전화는 ilsan_phone_call
+     이라는 제 이름으로 남는데 여기 자리가 없어, 표8 '전화 합계'에서만
+     통째로 빠져 있었다(표3·표5 는 이름에 phone_call 이 들었다는 이유로
+     이미 세고 있었다 — 그래서 두 표가 서로 어긋났다). */
   var homeCall = sbCountPrefix_(ev, 'home_phone_call_') + sbCountPrefix_(ev, 'tel_copy_');
   var seochoCall = sbCountName_(ev, 'seocho_phone_call');
+  var ilsanCall = sbCountName_(ev, 'ilsan_phone_call');
   var faqCall = sbCountName_(ev, 'faq_phone_call');
   var emCall = sbCountPrefix_(ev, 'emergency_call_') + sbCountPrefix_(ev, 'emergency_modal_call_');
   var ctaFormOpen = sbCountName_(ev, 'cta_form_open');
   var ctaFormSubmit = sbCountName_(ev, 'cta_form_submit');
 
-  g.set(95, 'A', '8. 전화 · 상담 (전환 행동)');
-  g.set(96, 'A', '행동'); g.set(96, 'B', '건수'); g.set(96, 'C', '비고');
-  g.set(97, 'A', '홈 지점카드 전화'); g.set(97, 'B', homeCall); g.set(97, 'C', '옛 이름 합산');
-  g.set(98, 'A', '서초 전화'); g.set(98, 'B', seochoCall);
-  g.set(99, 'A', 'FAQ 전화'); g.set(99, 'B', faqCall);
-  g.set(100, 'A', '응급 전화'); g.set(100, 'B', emCall);
-  g.set(101, 'A', '전화 합계'); g.set(101, 'B', homeCall + seochoCall + faqCall + emCall);
-  g.set(102, 'A', '상담 메뉴 열기'); g.set(102, 'B', sbCountName_(ev, 'cta_open'));
-  g.set(103, 'A', '상담 → 전화 걸기'); g.set(103, 'B', sbCountName_(ev, 'cta_call'));
-  g.set(104, 'A', '상담 폼 열기'); g.set(104, 'B', ctaFormOpen);
-  g.set(105, 'A', '상담 폼 제출'); g.set(105, 'B', ctaFormSubmit); g.set(105, 'C', '실제 상담 접수');
-  g.set(106, 'A', '폼 작성 완료율'); g.set(106, 'B', sbPct_(ctaFormSubmit, ctaFormOpen)); g.set(106, 'C', '낮으면 폼이 길거나 어렵다는 뜻');
+  g.set(cur, 'A', '8. 전화 · 상담 (전환 행동)'); cur++;
+  g.set(cur, 'A', '행동'); g.set(cur, 'B', '건수'); g.set(cur, 'C', '비고'); cur++;
+  g.set(cur, 'A', '홈 지점카드 전화'); g.set(cur, 'B', homeCall); g.set(cur, 'C', '옛 이름 합산'); cur++;
+  g.set(cur, 'A', '서초 전화'); g.set(cur, 'B', seochoCall); cur++;
+  g.set(cur, 'A', '일산 전화'); g.set(cur, 'B', ilsanCall); g.set(cur, 'C', '8/21 부터 서초와 갈라짐'); cur++;
+  g.set(cur, 'A', 'FAQ 전화'); g.set(cur, 'B', faqCall); cur++;
+  g.set(cur, 'A', '응급 전화'); g.set(cur, 'B', emCall); cur++;
+  g.set(cur, 'A', '전화 합계'); g.set(cur, 'B', homeCall + seochoCall + ilsanCall + faqCall + emCall); cur++;
+  g.set(cur, 'A', '상담 메뉴 열기'); g.set(cur, 'B', sbCountName_(ev, 'cta_open')); cur++;
+  g.set(cur, 'A', '상담 → 전화 걸기'); g.set(cur, 'B', sbCountName_(ev, 'cta_call')); cur++;
+  g.set(cur, 'A', '상담 폼 열기'); g.set(cur, 'B', ctaFormOpen); cur++;
+  g.set(cur, 'A', '상담 폼 제출'); g.set(cur, 'B', ctaFormSubmit); g.set(cur, 'C', '실제 상담 접수'); cur++;
+  g.set(cur, 'A', '폼 작성 완료율'); g.set(cur, 'B', sbPct_(ctaFormSubmit, ctaFormOpen)); g.set(cur, 'C', '낮으면 폼이 길거나 어렵다는 뜻'); cur++;
+  cur++;
 
   /* ── 9. 진료과목 카드 클릭 ──────────────────────────────── */
-  g.set(108, 'A', '9. 진료과목 카드 클릭  ← 어느 과 상세페이지부터 만들지');
-  g.set(109, 'A', '과'); g.set(109, 'B', '클릭수');
+  g.set(cur, 'A', '9. 진료과목 카드 클릭  ← 어느 과 상세페이지부터 만들지'); cur++;
+  g.set(cur, 'A', '과'); g.set(cur, 'B', '클릭수'); cur++;
   var depts = ['내과', '외과', '영상의학과', '안과', '치과'];
   for (var di = 0; di < depts.length; di++) {
-    var deptName = depts[di];
-    g.set(110 + di, 'A', deptName);
-    g.set(110 + di, 'B', sbCount_(ev, function (e) {
-      return e.name.indexOf('services_dept_click_') === 0 && e.dept === deptName;
-    }));
+    g.set(cur, 'A', depts[di]);
+    g.set(cur, 'B', sbCountDept_(ev, 'services_dept_click_', depts[di]));
+    cur++;
   }
+  cur++;
 
   /* ── 10. FAQ 질문별 · 11. 응급 증상별 ───────────────────── */
   var faqOpen = sbGroupCount_(ev, function (e) { return e.name === 'faq_open'; }, 'question');
@@ -595,41 +676,273 @@ function sbBuildGrid_(period, log, data) {
   var symOpen = sbGroupCount_(ev, function (e) { return e.name.indexOf('emergency_symptom_open') === 0; }, 'symptom');
   var symRead = sbGroupAvg_(ev, function (e) { return e.name.indexOf('emergency_symptom_read') === 0; }, 'symptom');
 
-  g.set(116, 'A', '10. FAQ 질문별  ← 많이 열렸는데 평균초가 짧으면 답변이 부실하다는 신호');
-  g.set(116, 'G', '11. 응급 증상별');
-  g.set(117, 'A', '질문 (열람 많은 순)'); g.set(117, 'B', '열람');
-  g.set(117, 'D', '질문 (오래 읽힌 순)'); g.set(117, 'E', '평균초');
-  g.set(117, 'G', '증상 (열람 많은 순)'); g.set(117, 'H', '열람');
-  g.set(117, 'J', '증상 (오래 읽힌 순)'); g.set(117, 'K', '평균초');
-  g.set(118, 'B', '열람'); g.set(118, 'E', '평균초');
-  g.set(118, 'H', '열람'); g.set(118, 'K', '평균초');
+  g.set(cur, 'A', '10. FAQ 질문별  ← 많이 열렸는데 평균초가 짧으면 답변이 부실하다는 신호');
+  g.set(cur, 'G', '11. 응급 증상별'); cur++;
+  g.set(cur, 'A', '질문 (열람 많은 순)'); g.set(cur, 'B', '열람');
+  g.set(cur, 'D', '질문 (오래 읽힌 순)'); g.set(cur, 'E', '평균초');
+  g.set(cur, 'G', '증상 (열람 많은 순)'); g.set(cur, 'H', '열람');
+  g.set(cur, 'J', '증상 (오래 읽힌 순)'); g.set(cur, 'K', '평균초'); cur++;
+  g.set(cur, 'B', '열람'); g.set(cur, 'E', '평균초');
+  g.set(cur, 'H', '열람'); g.set(cur, 'K', '평균초'); cur++;
 
-  sbPutPairs_(g, 119, 'A', 'B', faqOpen);
-  sbPutPairs_(g, 119, 'D', 'E', faqRead);
-  sbPutPairs_(g, 119, 'G', 'H', symOpen);
-  sbPutPairs_(g, 119, 'J', 'K', symRead);
+  sbPutPairs_(g, cur, 'A', 'B', faqOpen);
+  sbPutPairs_(g, cur, 'D', 'E', faqRead);
+  sbPutPairs_(g, cur, 'G', 'H', symOpen);
+  sbPutPairs_(g, cur, 'J', 'K', symRead);
+  cur += sbLongest_([faqOpen, faqRead, symOpen, symRead]) + 1;
 
   /* ── 12. 유입 경로 · 13. 의료진 상세보기 · 14. 분과탭 ───── */
-  /* 원래 자리는 142줄. 위의 FAQ·증상 표가 그보다 길어지면 겹치므로
-     그만큼만 아래로 민다(기간에 따라 줄 수가 변한다). */
-  var block1End = 119 + Math.max(faqOpen.length, faqRead.length, symOpen.length, symRead.length);
-  var base = Math.max(142, block1End + 2);
-
   var srcRows = sbGroupCount_(ev, sbIsPageView_, 'source');
   var docRows = sbGroupCount_(ev, function (e) { return e.name.indexOf('seocho_doctor_detail') === 0; }, 'doctor');
   var tabRows = sbGroupCount_(ev, function (e) { return e.name.indexOf('seocho_dept_tab') === 0; }, 'dept');
 
-  g.set(base, 'A', '12. 유입 경로');
-  g.set(base, 'D', '13. 의료진 상세보기');
-  g.set(base, 'G', '14. 분과탭');
-  g.set(base + 1, 'A', '유입처'); g.set(base + 1, 'B', '페이지 열림');
-  g.set(base + 1, 'D', '의료진'); g.set(base + 1, 'E', '클릭');
-  g.set(base + 1, 'G', '분과'); g.set(base + 1, 'H', '클릭');
-  g.set(base + 2, 'B', '열람'); g.set(base + 2, 'E', '열람'); g.set(base + 2, 'H', '열람');
+  g.set(cur, 'A', '12. 유입 경로');
+  g.set(cur, 'D', '13. 의료진 상세보기');
+  g.set(cur, 'G', '14. 분과탭'); cur++;
+  g.set(cur, 'A', '유입처'); g.set(cur, 'B', '페이지 열림');
+  g.set(cur, 'D', '의료진'); g.set(cur, 'E', '클릭');
+  g.set(cur, 'G', '분과'); g.set(cur, 'H', '클릭'); cur++;
+  g.set(cur, 'B', '열람'); g.set(cur, 'E', '열람'); g.set(cur, 'H', '열람'); cur++;
 
-  sbPutPairs_(g, base + 3, 'A', 'B', srcRows);
-  sbPutPairs_(g, base + 3, 'D', 'E', docRows);
-  sbPutPairs_(g, base + 3, 'G', 'H', tabRows);
+  sbPutPairs_(g, cur, 'A', 'B', srcRows);
+  sbPutPairs_(g, cur, 'D', 'E', docRows);
+  sbPutPairs_(g, cur, 'G', 'H', tabRows);
+  cur += sbLongest_([srcRows, docRows, tabRows]) + 1;
+
+  /* ================================================================
+     여기서부터는 2026-09-01 에 더한 표들이다.
+     로그에는 오래전부터 쌓이는데 표가 없어 아무도 못 보던 것들 —
+     메뉴·헤더·버튼·상담 폼 출처·지점 페이지 행동 따위.
+     ================================================================ */
+
+  /* ── 15. 상담 폼 — 어디서 열려 어디서 접수됐나 ──────────── */
+  /* 본문 인라인 버튼과 플로팅 버튼을 갈라 보려고 8/13 에 붙인 표시(cta_src)
+     가 여태 표에 없었다. 열림 대비 제출 비율이 이 태깅의 본래 목적이다.
+     ⚠️ 8/13 이전 기록에는 이 표시가 없어 '(표시 없음)' 줄로 모인다.
+     ⚠️ 건수가 한 자리면 비율은 한두 명 차이로 요동친다 — 원 건수를 먼저 볼 것. */
+  var openBySrc = sbGroupCountFb_(ev, function (e) { return e.name === 'cta_form_open'; }, 'cta_src', '(없음)');
+  var subBySrc = sbCountMap_(ev, function (e) { return e.name === 'cta_form_submit'; }, 'cta_src', '(없음)');
+
+  g.set(cur, 'A', '15. 상담 폼 — 어디서 열려 어디까지 갔나  ← 인라인 vs 플로팅'); cur++;
+  g.set(cur, 'A', '출처'); g.set(cur, 'B', '폼 열림'); g.set(cur, 'C', '폼 제출');
+  g.set(cur, 'D', '작성 완료율'); g.set(cur, 'F', '비고'); cur++;
+  if (!openBySrc.length) {
+    g.set(cur, 'A', '이 기간엔 기록 없음'); cur++;
+  } else {
+    for (var cs = 0; cs < openBySrc.length; cs++) {
+      var srcKey = openBySrc[cs][0];
+      var subN = subBySrc[srcKey] || 0;
+      g.set(cur, 'A', SB_CTA_SRC_LABEL[srcKey] || srcKey);
+      g.set(cur, 'B', openBySrc[cs][1]);
+      g.set(cur, 'C', subN);
+      g.set(cur, 'D', sbPct_(subN, openBySrc[cs][1]));
+      if (srcKey === '(없음)') g.set(cur, 'F', '8/13 이전 — 출처 표시가 없던 때');
+      cur++;
+    }
+  }
+  cur++;
+
+  /* ── 16. 전화 누르기 직전 · 실제로 누른 것 ──────────────── */
+  /* 8/14 에 예약 안내 번호 앞에 수화기 아이콘을 붙였다. 그게 전화를
+     늘렸는지 보려면 '번호를 누른 자리'별로 갈라 봐야 한다.
+     데스크탑은 눌러도 통화로 안 이어지니, PC 의 '전화 의향' 은 사실상
+     번호 누름(intent) 쪽 숫자로 봐야 한다. */
+  var phoneSpots = sbPhoneSpots_(ev);
+
+  g.set(cur, 'A', '16. 전화 — 어느 자리의 번호를 눌렀나  ← 8/14 수화기 아이콘 효과'); cur++;
+  g.set(cur, 'A', '지점 · 자리'); g.set(cur, 'B', '번호 누름'); g.set(cur, 'C', '전화 연결');
+  g.set(cur, 'D', '비중(번호 누름)'); g.set(cur, 'F', '비고'); cur++;
+  if (!phoneSpots.rows.length) {
+    g.set(cur, 'A', '이 기간엔 기록 없음'); cur++;
+  } else {
+    for (var ps = 0; ps < phoneSpots.rows.length; ps++) {
+      var sp = phoneSpots.rows[ps];
+      g.set(cur, 'A', sp.label);
+      g.set(cur, 'B', sp.intent);
+      g.set(cur, 'C', sp.call);
+      g.set(cur, 'D', sbPct_(sp.intent, phoneSpots.totalIntent));
+      cur++;
+    }
+    g.set(cur, 'A', '합계'); g.set(cur, 'B', phoneSpots.totalIntent); g.set(cur, 'C', phoneSpots.totalCall);
+    g.set(cur, 'F', '건수가 한 자리면 비율로 판단하지 말 것 (2~3개월 쌓은 뒤에)'); cur++;
+  }
+  cur++;
+
+  /* ── 17. 지점 페이지 행동 — 서초 vs 일산 ────────────────── */
+  /* 일산은 서초 페이지를 복제해 만든 터라 같은 이름의 행동을 낸다.
+     8/21 부터 앞의 이름만 갈라져(ilsan_) 따로 셀 수 있게 됐다. */
+  g.set(cur, 'A', '17. 지점 페이지에서 한 행동 — 서초 vs 일산'); cur++;
+  g.set(cur, 'A', '행동'); g.set(cur, 'B', '서초'); g.set(cur, 'C', '일산'); g.set(cur, 'D', '비고'); cur++;
+  var branchRows = [
+    ['페이지 방문', 'name', '_page_view', ''],
+    ['끝까지 읽음', 'done100', '', ''],
+    ['번호 누름', 'name', '_phone_intent', ''],
+    ['전화 연결', 'name', '_phone_call', ''],
+    ['주소 복사', 'name', '_address_copy', '8/28 부터'],
+    ['길찾기', 'prefix', '_directions_', ''],
+    ['분과 탭', 'prefix', '_dept_tab_', ''],
+    ['서브헤더 이동', 'prefix', '_subheader_nav_', ''],
+    ['공간 갤러리 화살표', 'name', '_gallery_nav', '9/1 부터'],
+    ['의료진 상세 열기', 'doctor', '', '⚠️ 일산 것도 서초로 기록됨 — 아래 설명']
+  ];
+  for (var br = 0; br < branchRows.length; br++) {
+    var bd = branchRows[br];
+    g.set(cur, 'A', bd[0]);
+    g.set(cur, 'B', sbBranchCount_(ev, 'seocho', bd[1], bd[2]));
+    g.set(cur, 'C', sbBranchCount_(ev, 'ilsan', bd[1], bd[2]));
+    if (bd[3]) g.set(cur, 'D', bd[3]);
+    cur++;
+  }
+  g.set(cur, 'A', '');
+  g.set(cur, 'D', '의료진 상세 팝업은 이름에 seocho 를 박아 보낸다. 일산 의료진을 올리기 전에 고쳐야 한다.'); cur++;
+  cur++;
+
+  /* ── 18. 메뉴 · 헤더에서 어디로 갔나 ────────────────────── */
+  var menuNav = sbGroupCount_(ev, function (e) { return e.name === 'menu_nav_click'; }, 'link_text');
+
+  g.set(cur, 'A', '18. 메뉴 · 헤더 — 어디로 들어갔나');
+  g.set(cur, 'D', '그 밖의 메뉴 링크 (menu_nav_click)'); cur++;
+  g.set(cur, 'A', '자리'); g.set(cur, 'B', '클릭수'); g.set(cur, 'C', '비고');
+  g.set(cur, 'D', '링크'); g.set(cur, 'E', '클릭'); cur++;
+  var menuRows = [
+    ['햄버거 · 메뉴 열기', ['menu_open'], ''],
+    ['햄버거 · 메뉴 닫기', ['menu_close'], ''],
+    ['햄버거 · 디스커버 헬릭스', ['menu_discover_click'], '9/1 부터 따로 셈'],
+    ['햄버거 · 의료 인프라', ['menu_infrastructure_click'], '9/1 부터 따로 셈'],
+    ['햄버거 · 진료과목', ['menu_services_click'], ''],
+    ['햄버거 · 특화진료', ['menu_specialty_click'], '8/28 부터 따로 셈'],
+    ['햄버거 · 응급증상 안내', ['menu_emergency_click'], ''],
+    ['햄버거 · 스빅(SVICC)', ['menu_svicc_click'], ''],
+    ['햄버거 · 수의사용 웹차트', ['vet_chart_click'], ''],
+    ['햄버거 · 그 밖의 링크', ['menu_nav_click'], '오른쪽에 링크별로 갈라 둠'],
+    ['헤더 · 홈 로고', ['header_logo_home'], ''],
+    ['헤더 · 진료과목', ['header_services_click'], ''],
+    ['헤더 · 특화진료', ['header_specialty_click'], '메뉴 쪽과 갈라 보려고 이름이 따로'],
+    ['헤더 · 지점안내', ['header_branch_click'], '']
+  ];
+  var menuStart = cur;
+  for (var mr = 0; mr < menuRows.length; mr++) {
+    g.set(cur, 'A', menuRows[mr][0]);
+    g.set(cur, 'B', sbCountNameOrPrefix_(ev, menuRows[mr][1]));
+    if (menuRows[mr][2]) g.set(cur, 'C', menuRows[mr][2]);
+    cur++;
+  }
+  sbPutPairs_(g, menuStart, 'D', 'E', menuNav);
+  cur = Math.max(cur, menuStart + Math.max(1, menuNav.length)) + 1;
+
+  /* ── 19. 홈 · 공통 버튼 ─────────────────────────────────── */
+  var snsRows = sbGroupCount_(ev, function (e) { return e.name.indexOf('sns_click_') === 0; }, 'sns');
+
+  g.set(cur, 'A', '19. 홈 화면 버튼 · 복사 · 푸터');
+  g.set(cur, 'D', 'SNS 아이콘별'); cur++;
+  g.set(cur, 'A', '자리'); g.set(cur, 'B', '클릭수'); g.set(cur, 'C', '비고');
+  g.set(cur, 'D', 'SNS'); g.set(cur, 'E', '클릭'); cur++;
+  var homeRows = [
+    ['첫화면 메인 버튼', ['hero_cta_click_'], ''],
+    ['특화진료 CTA', ['home_specialty_cta_click_'], '9/1 부터 측정'],
+    ['응급증상 CTA', ['emergency_symptom_cta_'], ''],
+    ['SVICC 버튼', ['svicc_click_'], ''],
+    ['지점 카드 → 상세페이지', ['open_detail_'], ''],
+    ['지점 주소 복사', ['copy_address_'], ''],
+    ['지점 전화(번호 누름)', ['home_phone_call_', 'tel_copy_'], '표8 홈 지점카드 전화와 같은 값'],
+    ['준비중 토스트', ['coming_soon_click_'], '아직 없는 페이지를 누른 횟수'],
+    ['푸터 이메일 복사', ['copy_email_'], ''],
+    ['푸터 SNS', ['sns_click_'], '오른쪽에 채널별로 갈라 둠']
+  ];
+  var homeStart = cur;
+  for (var hr = 0; hr < homeRows.length; hr++) {
+    g.set(cur, 'A', homeRows[hr][0]);
+    g.set(cur, 'B', sbCountNameOrPrefix_(ev, homeRows[hr][1]));
+    if (homeRows[hr][2]) g.set(cur, 'C', homeRows[hr][2]);
+    cur++;
+  }
+  sbPutPairs_(g, homeStart, 'D', 'E', snsRows);
+  cur = Math.max(cur, homeStart + Math.max(1, snsRows.length)) + 1;
+
+  /* ── 20. 특화진료 페이지 ────────────────────────────────── */
+  /* 상세페이지가 아직 하나도 없어 항목을 눌러도 '준비중' 토스트만 뜬다.
+     그 클릭이 쌓이는 순서가 곧 어느 항목부터 만들지의 근거다. */
+  var spItem = sbGroupCount_(ev, function (e) { return e.name.indexOf('specialty_item_click_') === 0; }, 'item');
+  var spHover = sbGroupCount_(ev, function (e) { return e.name.indexOf('specialty_item_hover_') === 0; }, 'item');
+  var spTab = sbGroupCount_(ev, function (e) { return e.name.indexOf('specialty_group_tab_') === 0; }, 'group');
+
+  g.set(cur, 'A', '20. 특화진료 — 어느 항목을 눌렀나  ← 상세페이지 제작 우선순위');
+  g.set(cur, 'D', '설명을 읽은 항목 (0.6초 이상, PC 만)');
+  g.set(cur, 'G', '그룹 탭 (좁은 화면)'); cur++;
+  g.set(cur, 'A', '항목'); g.set(cur, 'B', '클릭');
+  g.set(cur, 'D', '항목'); g.set(cur, 'E', '읽음');
+  g.set(cur, 'G', '그룹'); g.set(cur, 'H', '클릭'); cur++;
+  sbPutPairs_(g, cur, 'A', 'B', spItem);
+  sbPutPairs_(g, cur, 'D', 'E', spHover);
+  sbPutPairs_(g, cur, 'G', 'H', spTab);
+  cur += sbLongest_([spItem, spHover, spTab]) + 1;
+
+  /* ── 21. 응급증상 페이지 행동 ───────────────────────────── */
+  g.set(cur, 'A', '21. 응급증상 페이지 — 전화 · 오시는 길'); cur++;
+  g.set(cur, 'A', '행동'); g.set(cur, 'B', '서초'); g.set(cur, 'C', '일산'); g.set(cur, 'D', '합계'); cur++;
+  var emRows = [
+    ['지점 CTA · 전화', 'emergency_call_', ''],
+    ['지점 CTA · 오시는 길', 'emergency_map_click_', ''],
+    ['증상 카드 옆 · 전화', 'emergency_card_cta_', 'call'],
+    ['증상 카드 옆 · 오시는 길', 'emergency_card_cta_', 'map'],
+    ['증상 팝업 · 전화', 'emergency_modal_call_', '']
+  ];
+  for (var er = 0; er < emRows.length; er++) {
+    var seochoN = sbEmCount_(ev, emRows[er][1], emRows[er][2], '서초');
+    var ilsanN = sbEmCount_(ev, emRows[er][1], emRows[er][2], '일산');
+    var allN = sbEmCount_(ev, emRows[er][1], emRows[er][2], '');
+    g.set(cur, 'A', emRows[er][0]);
+    g.set(cur, 'B', seochoN);
+    g.set(cur, 'C', ilsanN);
+    g.set(cur, 'D', allN);
+    cur++;
+  }
+  cur++;
+
+  /* ── 22. FAQ 페이지 행동 ────────────────────────────────── */
+  var faqFilter = sbGroupCount_(ev, function (e) { return e.name === 'faq_filter_select'; }, 'filter_value');
+
+  g.set(cur, 'A', '22. FAQ 페이지 — 탭 · 필터 · 페이지 이동');
+  g.set(cur, 'D', '많이 고른 필터 칩'); cur++;
+  g.set(cur, 'A', '행동'); g.set(cur, 'B', '건수'); g.set(cur, 'C', '비고');
+  g.set(cur, 'D', '필터'); g.set(cur, 'E', '선택'); cur++;
+  var faqRows = [
+    ['탭 전환 (질환 ↔ 일반)', ['faq_tab_select'], ''],
+    ['필터 칩 고르기', ['faq_filter_select'], '오른쪽에 칩별로 갈라 둠'],
+    ['필터 초기화', ['faq_filter_reset'], '많으면 필터가 헷갈린다는 신호'],
+    ['페이지 이동', ['faq_page_nav'], ''],
+    ['질문 펼치기', ['faq_open'], '질문별 내역은 표10'],
+    ['전화 문의하기', ['faq_phone_call'], '']
+  ];
+  var faqStart = cur;
+  for (var fr = 0; fr < faqRows.length; fr++) {
+    g.set(cur, 'A', faqRows[fr][0]);
+    g.set(cur, 'B', sbCountNameOrPrefix_(ev, faqRows[fr][1]));
+    if (faqRows[fr][2]) g.set(cur, 'C', faqRows[fr][2]);
+    cur++;
+  }
+  sbPutPairs_(g, faqStart, 'D', 'E', faqFilter);
+  cur = Math.max(cur, faqStart + Math.max(1, faqFilter.length)) + 1;
+
+  /* ── 23. 소개 페이지 행동 ───────────────────────────────── */
+  g.set(cur, 'A', '23. 소개(discover-helix) 페이지 — 버튼 · 서브헤더'); cur++;
+  g.set(cur, 'A', '자리'); g.set(cur, 'B', '클릭수'); g.set(cur, 'C', '비고'); cur++;
+  var aboutRows = [
+    ['서초본원 CTA', ['about_seocho_cta_'], ''],
+    ['응급증상 CTA', ['about_emergency_cta_'], ''],
+    ['본문 CTA', ['about_cta_'], ''],
+    ['스빅(SVIC)', ['about_svic_cta_'], ''],
+    ['연혁 화살표', ['history_deck_nav_'], ''],
+    ['인증 카드 열기', ['cert_modal_open_'], ''],
+    ['서브헤더 이동', ['subheader_nav_'], '지점 페이지 서브헤더는 표17'],
+    ['의료진 지점 클릭', ['doctor_branch_click_'], '']
+  ];
+  for (var ar = 0; ar < aboutRows.length; ar++) {
+    g.set(cur, 'A', aboutRows[ar][0]);
+    g.set(cur, 'B', sbCountNameOrPrefix_(ev, aboutRows[ar][1]));
+    if (aboutRows[ar][2]) g.set(cur, 'C', aboutRows[ar][2]);
+    cur++;
+  }
 
   return g.rows;
 }
@@ -696,6 +1009,173 @@ function sbCountName_(rows, name) {
 
 function sbCountPrefix_(rows, prefix) {
   return sbCount_(rows, function (e) { return e.name.indexOf(prefix) === 0; });
+}
+
+/* ================================================================
+   ⑤-2 2026-09-01 에 더한 표들이 쓰는 잔심부름
+   ================================================================ */
+
+/* 상담 폼을 어디서 열었나 — 기록에 실리는 표시를 사람 말로 */
+var SB_CTA_SRC_LABEL = {
+  floating_cta: '플로팅 (화면에 떠 있는 상담 버튼)',
+  inline_cta: '본문 (예약 안내의 상담 신청하기)',
+  '(없음)': '(출처 표시 없음)'
+};
+
+/* 전화번호를 어느 자리에서 눌렀나 */
+var SB_PHONE_SECTION_LABEL = {
+  hero: '첫화면 번호',
+  reservation: '예약 안내 번호',
+  unknown: '(자리 미상)'
+};
+
+/** 옆으로 나란히 놓은 표들 중 가장 긴 것의 줄 수 (없으면 1 — '기록 없음' 한 줄) */
+function sbLongest_(lists) {
+  var n = 1;
+  for (var i = 0; i < lists.length; i++) n = Math.max(n, lists[i].length);
+  return n;
+}
+
+/** 묶어 세되 빈 값도 버리지 않고 한 줄로 모은다 (표15 의 8/13 이전 기록용) */
+function sbGroupCountFb_(rows, pred, field, fallback) {
+  var map = {};
+  for (var i = 0; i < rows.length; i++) {
+    var e = rows[i];
+    if (!pred(e)) continue;
+    var key = e[field] || fallback;
+    map[key] = (map[key] || 0) + 1;
+  }
+  return sbSortPairs_(map);
+}
+
+/** 묶어 센 결과를 이름→개수 사전으로 (짝을 맞춰 볼 때 쓴다) */
+function sbCountMap_(rows, pred, field, fallback) {
+  var map = {};
+  for (var i = 0; i < rows.length; i++) {
+    var e = rows[i];
+    if (!pred(e)) continue;
+    var key = e[field] || fallback || '';
+    if (!key) continue;
+    map[key] = (map[key] || 0) + 1;
+  }
+  return map;
+}
+
+/** 이름이 prefix 로 시작하면서 dept 칸이 그 과인 것 (표9) */
+function sbCountDept_(rows, prefix, dept) {
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].name.indexOf(prefix) === 0 && rows[i].dept === dept) n++;
+  }
+  return n;
+}
+
+/* 이름 하나 또는 여럿을 한 칸으로 센다.
+   같은 행동인데 기기별로 이름이 갈리는 것(hero_cta_click_mobile /
+   _desktop)과, 옛 이름·새 이름이 함께 있는 것(home_phone_call_* 와
+   tel_copy_*)을 한 줄로 보이게 하려는 것.
+   'menu_open' 처럼 뒤에 아무것도 안 붙는 이름은 그대로 맞춰 세고,
+   'hero_cta_click_' 처럼 밑줄로 끝나면 그것으로 시작하는 것을 모두 센다.
+   밑줄 없이 적어도 뒤에 '_기기' 가 붙은 형태까지 함께 세므로, 나중에
+   그 이벤트에 기기 구분이 붙어도 표가 0으로 떨어지지 않는다. */
+function sbCountNameOrPrefix_(rows, names) {
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var nm = rows[i].name;
+    for (var k = 0; k < names.length; k++) {
+      var want = names[k];
+      if (want.charAt(want.length - 1) === '_') {
+        if (nm.indexOf(want) === 0) { n++; break; }
+      } else if (nm === want || nm.indexOf(want + '_') === 0) {
+        n++; break;
+      }
+    }
+  }
+  return n;
+}
+
+/* 표17 — 지점(서초/일산) 한 칸 세기.
+   mode
+     name    : 이름이 정확히 <지점><뒷말>
+     prefix  : 이름이 <지점><뒷말> 로 시작
+     done100 : 그 지점 페이지를 끝까지(100%) 읽은 것
+     doctor  : 의료진 상세 열기 — 아래 설명 참고 */
+function sbBranchCount_(rows, branch, mode, suffix) {
+  if (mode === 'doctor') {
+    /* 의료진 상세 팝업은 이벤트 이름에 seocho 를 박아 보낸다(모듈이 서초
+       전용으로 만들어졌다). 그래서 일산 것을 갈라낼 방법이 지금은 없다 —
+       일산 칸은 숫자 대신 표시를 남긴다. 일산 의료진을 올리기 전에
+       seocho/doctors/modal.js 를 지점 판정(HelixBranch)으로 고쳐야 한다. */
+    if (branch === 'ilsan') return '(구분 안 됨)';
+    return sbCountPrefix_(rows, 'seocho_doctor_detail');
+  }
+
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var e = rows[i];
+    if (mode === 'done100') {
+      if (e.name !== branch + '_scroll_depth' || e.num !== 100) continue;
+      /* 서초는 옛 2배 중복이 있어 페이지 칸이 있는 것만 센다(표1과 같은 규칙) */
+      if (branch === 'seocho' && e.page !== 'seocho') continue;
+      n++;
+      continue;
+    }
+    if (mode === 'prefix') {
+      if (e.name.indexOf(branch + suffix) === 0) n++;
+      continue;
+    }
+    if (e.name !== branch + suffix) continue;
+    if (branch === 'seocho' && suffix === '_page_view' && e.page !== 'seocho') continue;
+    n++;
+  }
+  return n;
+}
+
+/* 표16 — 전화번호를 어느 자리에서 눌렀나.
+   번호 누름(intent) 과 실제 연결(call) 을 자리별로 나란히 놓는다.
+   데스크탑은 눌러도 통화로 안 이어지니, PC 의 '전화 의향' 은 사실상
+   번호 누름 쪽 숫자로 봐야 한다. */
+function sbPhoneSpots_(rows) {
+  var BRANCH = { seocho: '서초', ilsan: '일산' };
+  var map = {};
+  var totalIntent = 0, totalCall = 0;
+
+  for (var i = 0; i < rows.length; i++) {
+    var m = rows[i].name.match(/^(seocho|ilsan)_phone_(intent|call)$/);
+    if (!m) continue;
+    var key = m[1] + '|' + (rows[i].section || 'unknown');
+    if (!map[key]) map[key] = { branch: m[1], section: rows[i].section || 'unknown', intent: 0, call: 0 };
+    if (m[2] === 'intent') { map[key].intent++; totalIntent++; }
+    else { map[key].call++; totalCall++; }
+  }
+
+  var out = [];
+  for (var k in map) {
+    if (!map.hasOwnProperty(k)) continue;
+    var v = map[k];
+    v.label = BRANCH[v.branch] + ' · ' + (SB_PHONE_SECTION_LABEL[v.section] || v.section);
+    out.push(v);
+  }
+  out.sort(function (a, b) {
+    if (b.intent !== a.intent) return b.intent - a.intent;
+    return a.label < b.label ? -1 : (a.label > b.label ? 1 : 0);
+  });
+  return { rows: out, totalIntent: totalIntent, totalCall: totalCall };
+}
+
+/* 표21 — 응급 페이지의 지점별 행동.
+   지점 이름이 모듈마다 조금씩 다르다('서초본원' / '서초') → 글자가
+   들어 있는지로 본다. action 은 카드 옆 CTA 에서만 쓴다(전화/지도). */
+function sbEmCount_(rows, prefix, action, branchWord) {
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var e = rows[i];
+    if (e.name.indexOf(prefix) !== 0) continue;
+    if (action && e.action !== action) continue;
+    if (branchWord && String(e.branch).indexOf(branchWord) < 0) continue;
+    n++;
+  }
+  return n;
 }
 
 /** 값칸(초)의 합 — 표4의 체류에 쓴다 */
@@ -851,7 +1331,9 @@ function sbWriteSheet_(rows) {
       sh.getRange(k + 1, 1, 1, width).setFontWeight('bold').setBackground('#e8f0fe');
     } else if (first === '지표' || first === '페이지' || first === '기기' ||
                first === '시각' || first === '요일' || first === '행동' ||
-               first === '과' || first === '유입처' || first === '질문 (열람 많은 순)') {
+               first === '과' || first === '유입처' || first === '질문 (열람 많은 순)' ||
+               first === '출처' || first === '지점 · 자리' || first === '자리' ||
+               first === '항목') {
       sh.getRange(k + 1, 1, 1, width).setFontWeight('bold').setBackground('#f1f3f4');
     }
   }
@@ -899,30 +1381,58 @@ function verifySummaryAgainstBaseline() {
     return;
   }
 
+  /* 표가 늘어나면 아래 표들이 밀리므로 줄 번호를 박아 두지 않는다.
+     표 제목을 먼저 찾고, 그 표 안에서 몇 번째 줄인지로 짚는다.
+     (2026-09-01 에 표1·표8 에 줄이 늘고 표15~23 이 붙으면서, 예전처럼
+      'C12' 라고 박아 두면 통째로 어긋난다.) */
+  var at = {};
+  for (var t = 1; t <= 9; t++) at[t] = sbTitleRow_(sh, t + '. ');
+  var missing = [];
+  for (var t2 = 1; t2 <= 9; t2++) if (!at[t2]) missing.push('표' + t2);
+  if (missing.length) {
+    sbTell_('표 제목을 못 찾았습니다: ' + missing.join(', ') + '\n먼저 [지금 새로 만들기] 를 다시 눌러 주세요.');
+    return;
+  }
+
+  /* [표, 표 안에서 몇 번째 줄, 열, 기준값, 이름] */
   var cells = [
-    ['C12', 2581, '표1 홈 방문수'], ['D12', 478, '표1 홈 끝까지'],
-    ['C13', 1153, '표1 서초 방문수'], ['C14', 516, '표1 소개 방문수'],
-    ['C15', 44, '표1 FAQ 방문수'], ['C16', 74, '표1 응급 방문수'],
-    ['C17', 311, '표1 진료과목 방문수'],
-    ['B21', 2157, '표2 순 방문 횟수'], ['B22', 4768, '표2 페이지 열린 횟수'],
-    ['B23', 2.2, '표2 방문당 페이지 수'], ['B24', '80.6%', '표2 신규 방문 비중'],
-    ['B29', 49, '표3 전화까지 간 방문'], ['B32', 703, '표3 의료진 본 방문'],
-    ['B33', 18, '표3 그중 전화'], ['B35', 1454, '표3 안 본 방문'],
-    ['B36', 31, '표3 안 본 중 전화'], ['B38', '1.2배', '표3 열람 효과'],
-    ['B67', 3046, '표5 모바일 방문수'], ['B68', 1722, '표5 PC 방문수'],
-    ['D67', 58, '표5 모바일 전화'], ['D68', 15, '표5 PC 전화'],
-    ['B101', 54, '표8 전화 합계'], ['B102', 96, '표8 상담 메뉴 열기'],
-    ['B105', 7, '표8 폼 제출'], ['B106', '23.3%', '표8 폼 완료율'],
-    ['B110', 209, '표9 내과'], ['B111', 181, '표9 외과']
+    [1, 2, 'C', 2581, '표1 홈 방문수'], [1, 2, 'D', 478, '표1 홈 끝까지'],
+    [1, 3, 'C', 1153, '표1 서초 방문수'], [1, 5, 'C', 516, '표1 소개 방문수'],
+    [1, 6, 'C', 44, '표1 FAQ 방문수'], [1, 7, 'C', 74, '표1 응급 방문수'],
+    [1, 8, 'C', 311, '표1 진료과목 방문수'],
+    [2, 2, 'B', 2157, '표2 순 방문 횟수'], [2, 3, 'B', 4768, '표2 페이지 열린 횟수'],
+    [2, 4, 'B', 2.2, '표2 방문당 페이지 수'], [2, 5, 'B', '80.6%', '표2 신규 방문 비중'],
+    [3, 3, 'B', 49, '표3 전화까지 간 방문'], [3, 6, 'B', 703, '표3 의료진 본 방문'],
+    [3, 7, 'B', 18, '표3 그중 전화'], [3, 9, 'B', 1454, '표3 안 본 방문'],
+    [3, 10, 'B', 31, '표3 안 본 중 전화'], [3, 12, 'B', '1.2배', '표3 열람 효과'],
+    [5, 2, 'B', 3046, '표5 모바일 방문수'], [5, 3, 'B', 1722, '표5 PC 방문수'],
+    [5, 2, 'D', 58, '표5 모바일 전화'], [5, 3, 'D', 15, '표5 PC 전화'],
+    [8, 8, 'B', 96, '표8 상담 메뉴 열기'],
+    [8, 11, 'B', 7, '표8 폼 제출'], [8, 12, 'B', '23.3%', '표8 폼 완료율'],
+    [9, 2, 'B', 209, '표9 내과'], [9, 3, 'B', 181, '표9 외과']
   ];
 
   var bad = [];
   var ok = 0;
+  var val = function (tno, off, col) { return sh.getRange(col + (at[tno] + off)).getValue(); };
+
   for (var i = 0; i < cells.length; i++) {
-    var got = sh.getRange(cells[i][0]).getValue();
-    if (sbSame_(got, cells[i][1])) ok++;
-    else bad.push(cells[i][2] + ' (' + cells[i][0] + ') — 기준 ' + cells[i][1] + ' / 지금 ' + got);
+    var c = cells[i];
+    var got = val(c[0], c[1], c[2]);
+    if (sbSame_(got, c[3])) ok++;
+    else bad.push(c[4] + ' — 기준 ' + c[3] + ' / 지금 ' + got);
   }
+
+  /* 표8 전화 합계는 기준값을 그대로 못 쓴다.
+     2026-09-01 에 '일산 전화' 줄을 더했기 때문이다(그 전엔 일산 전화가
+     어느 줄에도 안 잡혀 합계에서 통째로 빠져 있었다 — 그게 고친 대목).
+     그래서 '합계에서 일산 몫을 뺀 값' 이 옛 기준 54 와 같은지 본다. */
+  var n = function (tno, off, col) { return Number(val(tno, off, col)) || 0; };
+  var sumCall = n(8, 7, 'B');
+  var ilsanCall = n(8, 4, 'B');
+  if (Math.abs((sumCall - ilsanCall) - 54) < 0.05) ok++;
+  else bad.push('표8 전화 합계(일산 제외) — 기준 54 / 지금 ' + (sumCall - ilsanCall) +
+                ' (합계 ' + sumCall + ' · 일산 ' + ilsanCall + ')');
 
   /* 표12~14 는 줄 자리가 기간에 따라 달라져, 이름으로 찾아 맞춘다 */
   var lookups = [
@@ -940,29 +1450,48 @@ function verifySummaryAgainstBaseline() {
   }
 
   /* 개별 값이 맞아도 이 관계가 깨지면 어딘가 새고 있다는 뜻 */
-  var v = function (a1) { return Number(sh.getRange(a1).getValue()) || 0; };
-  var pvTotal = v('B22');
+  var pvTotal = n(2, 3, 'B');
   var hourSum = 0, dowSum = 0;
-  for (var h = 0; h < 12; h++) hourSum += v('B' + (72 + h)) + v('E' + (72 + h));
-  for (var w = 0; w < 7; w++) dowSum += v('B' + (87 + w));
+  for (var h = 0; h < 12; h++) hourSum += n(6, 2 + h, 'B') + n(6, 2 + h, 'E');
+  for (var w = 0; w < 7; w++) dowSum += n(7, 2 + w, 'B');
+  /* 표1 합계는 옛 여섯 줄(홈·서초·소개·FAQ·응급·진료과목)만 더한다.
+     새로 더한 일산·특화진료 줄은 옛 기준값에 없던 것이라 함께 더하면
+     4,679 와 안 맞는다 — 그 둘은 대조 대상이 아니라 새로 보이게 된 것. */
+  var sixSum = n(1, 2, 'C') + n(1, 3, 'C') + n(1, 5, 'C') +
+               n(1, 6, 'C') + n(1, 7, 'C') + n(1, 8, 'C');
   var ties = [
-    ['표5 방문수 합 = 표2 페이지 열린 횟수', v('B67') + v('B68'), pvTotal],
+    ['표5 방문수 합 = 표2 페이지 열린 횟수', n(5, 2, 'B') + n(5, 3, 'B'), pvTotal],
     ['표6 시간대 합 = 표2 페이지 열린 횟수', hourSum, pvTotal],
     ['표7 요일 합 = 표2 페이지 열린 횟수', dowSum, pvTotal],
-    ['표3 전화 분해 (본 + 안 본 = 전체 전화)', v('B33') + v('B36'), v('B29')],
-    ['표3 방문 분해 (본 + 안 본 = 전체 방문)', v('B32') + v('B35'), v('B21')],
-    ['표1 방문수 합 (4,679 여야 정상 — 표2와 89 차이)',
-      v('C12') + v('C13') + v('C14') + v('C15') + v('C16') + v('C17'), 4679]
+    ['표3 전화 분해 (본 + 안 본 = 전체 전화)', n(3, 7, 'B') + n(3, 10, 'B'), n(3, 3, 'B')],
+    ['표3 방문 분해 (본 + 안 본 = 전체 방문)', n(3, 6, 'B') + n(3, 9, 'B'), n(2, 2, 'B')],
+    ['표1 옛 여섯 줄 합 (4,679 여야 정상 — 표2와 89 차이)', sixSum, 4679]
   ];
-  for (var t = 0; t < ties.length; t++) {
-    if (ties[t][1] === ties[t][2]) ok++;
-    else bad.push(ties[t][0] + ' — ' + ties[t][1] + ' ≠ ' + ties[t][2]);
+  for (var ti = 0; ti < ties.length; ti++) {
+    if (ties[ti][1] === ties[ti][2]) ok++;
+    else bad.push(ties[ti][0] + ' — ' + ties[ti][1] + ' ≠ ' + ties[ti][2]);
   }
 
+  var note = '\n\n※ 표15~23 과 표1 일산·특화진료 줄은 2026-09-01 에 새로 보이게 된 것이라\n' +
+             '   견줄 옛 기준값이 없습니다. 숫자가 0이 아닌지만 눈으로 확인하세요.';
   var msg = bad.length
-    ? '맞은 곳 ' + ok + ' · 어긋난 곳 ' + bad.length + '\n\n' + bad.join('\n')
-    : '기준값 ' + ok + '곳이 모두 맞습니다. 옛 수식을 걷어내도 됩니다.';
+    ? '맞은 곳 ' + ok + ' · 어긋난 곳 ' + bad.length + '\n\n' + bad.join('\n') + note
+    : '기준값 ' + ok + '곳이 모두 맞습니다.' + note;
   sbTell_(msg);
+}
+
+/* 표 제목이 있는 줄을 찾는다 ('8. ' 처럼 번호로).
+   제목은 A열에 쓰지만, 옆으로 나란히 놓은 표(11·13·14)는 G·D열에 있다. */
+function sbTitleRow_(sh, prefix) {
+  var last = sh.getLastRow();
+  if (last < 1) return 0;
+  var vals = sh.getRange(1, 1, last, 7).getValues();
+  for (var i = 0; i < vals.length; i++) {
+    if (String(vals[i][0]).indexOf(prefix) === 0) return i + 1;   /* A열 */
+    if (String(vals[i][3]).indexOf(prefix) === 0) return i + 1;   /* D열 */
+    if (String(vals[i][6]).indexOf(prefix) === 0) return i + 1;   /* G열 */
+  }
+  return 0;
 }
 
 /** 한 열에서 이름을 찾아 옆 칸 값을 돌려준다 (표12~14 대조용) */
