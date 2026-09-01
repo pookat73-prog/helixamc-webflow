@@ -367,9 +367,15 @@
     } catch (_) { return false; }
   }
 
+  /* 글자만 같아도 승격되면 곤란한 자리 — "여기는 계속 준비중으로 둬라" 표식.
+     (예: 소개 페이지 원장 의료진 카드의 '일산 분원' 라벨. 헤더·햄버거의
+      같은 글자 링크는 그대로 /ilsan 로 열리고, 이 자리만 안내가 뜬다.) */
+  var LOCK_ATTR = 'data-coming-soon-lock';
+
   function markLiveNav() {
     var cands = document.querySelectorAll('a,[data-coming-soon]');
     Array.prototype.forEach.call(cands, function (el) {
+      if (el.hasAttribute(LOCK_ATTR)) return;
       var txt = (el.textContent || '').replace(/\s+/g, ' ').trim();
       for (var i = 0; i < LIVE_NAV.length; i++) {
         if (txt !== LIVE_NAV[i].text) continue;

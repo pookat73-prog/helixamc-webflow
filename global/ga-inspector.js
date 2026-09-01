@@ -85,6 +85,12 @@
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
+    /* 전 페이지 공통 — 본문에 심은 인라인 상담 버튼 (예: 서초 '예약 안내'의
+       '상담 신청하기'). 플로팅 버튼과 같은 폼을 열지만 출처를 따로 담는다
+       (cta_src: 'inline_cta', cta_id: 그 버튼의 id). floating-cta.js 가
+       document 전역 클릭 위임으로 처리해서 버튼 자체엔 핸들러가 없다 —
+       그래서 이 목록에 없으면 "측정이 안 붙은 자리" 처럼 보인다. */
+    { sel: '[data-cta-target="hxFctaFormBtn"]', label: '본문 · 상담 신청하기', event: 'cta_form_open (inline_cta)' },
     /* 전 페이지 공통 — 헤더 홈 로고 / 진료과목 탭 (coming-soon.js 가 data-hx-hdr-ga 마킹) */
     { sel: '[data-hx-hdr-ga="logo"]',     label: '헤더 · 홈 로고',   event: 'header_logo_home' },
     { sel: '[data-hx-hdr-ga="services"]', label: '헤더 · 진료과목',  event: 'header_services_click' },
@@ -97,6 +103,8 @@
     { sel: '.hx-menu-close',        label: '햄버거 · 메뉴 닫기',  event: 'menu_close' },
     /* 전환 성격이 다른 링크는 전용 이벤트 → 전용 네모 (data-ga-event 로 정밀 타깃).
        공용 항목보다 먼저 둬야 seen-dedup 에서 전용 라벨이 이김. */
+    { sel: '[data-ga-event="menu_discover_click"]', label: '햄버거 · 디스커버 헬릭스', event: 'menu_discover_click' },
+    { sel: '[data-ga-event="menu_infrastructure_click"]', label: '햄버거 · 의료 인프라', event: 'menu_infrastructure_click' },
     { sel: '[data-ga-event="menu_emergency_click"]', label: '햄버거 · 응급증상 안내', event: 'menu_emergency_click' },
     { sel: '[data-ga-event="menu_services_click"]',  label: '햄버거 · 진료과목',     event: 'menu_services_click' },
     { sel: '[data-ga-event="menu_specialty_click"]', label: '햄버거 · 특화진료',    event: 'menu_specialty_click' },
@@ -116,6 +124,8 @@
     { sel: '.home_branch-card a[href]', label: '지점 · 상세페이지 이동', event: 'open_detail_*', match: isBranchDetailLink },
     /* 홈 히어로 메인 CTA */
     { sel: '.discover-helix_button', label: '히어로 · 메인 버튼',  event: 'hero_cta_click_*' },
+    /* 홈 특화진료 CTA */
+    { sel: '.bt-box-2',             label: '홈 · 특화진료 CTA',   event: 'home_specialty_cta_click_*' },
     /* 홈 "응급상황인가요?" 응급증상 CTA */
     { sel: '.bt-box-3',             label: '홈 · 응급증상 CTA',   event: 'emergency_symptom_cta_*' },
     /* 홈 SVICC 버튼 */
@@ -125,12 +135,16 @@
     /* 응급 페이지 하단 24시 응급 진료 CTA */
     { sel: '.helix-branch-cta__row', label: '응급 · 지점 전화',   event: 'emergency_call_*' },
     { sel: '.helix-branch-cta__icon-btn[data-action="map"]', label: '응급 · 오시는 길', event: 'emergency_map_click_*' },
-    /* 응급 페이지 증상 카드 + 카드 옆/모달 CTA (모두 응급 페이지에만 존재하는 셀렉터).
-       카드 옆·모달 CTA 는 일산 제외(서초만) — data-branch/클래스로 서초만 배지. */
+    /* 응급 페이지 증상 카드 + 카드 옆/모달 CTA (모두 응급 페이지에만 존재하는 셀렉터). */
     { sel: '.em_card, [data-emergency-open]', label: '응급 · 증상 카드', event: 'emergency_symptom_open_*' },
     { sel: '.call.seocho, .call-seocho', label: '응급 · 서초 전화(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.map.seocho, .map-seocho',   label: '응급 · 서초 오시는길(카드옆)', event: 'emergency_card_cta_*' },
+    { sel: '.call.ilsan, .call-ilsan',   label: '응급 · 일산 전화(카드옆)', event: 'emergency_card_cta_*' },
+    { sel: '.map.ilsan, .map-ilsan',     label: '응급 · 일산 오시는길(카드옆)', event: 'emergency_card_cta_*' },
     { sel: '.helix-emergency-modal_branch[data-branch="seocho"]', label: '응급 · 모달 서초 전화', event: 'emergency_modal_call_*' },
+    { sel: '.helix-emergency-modal_branch[data-branch="ilsan"]',  label: '응급 · 모달 일산 전화', event: 'emergency_modal_call_*' },
+    /* 진료과목 페이지 — 내과·외과·영상의학과·안과·치과 카드 */
+    { sel: '[class*="dept-card_"]', label: '진료과목 · 카드', event: 'services_dept_click_*' },
     /* 특화진료 페이지 — 항목 12개(클릭 + 넓은 화면에선 0.6초 이상 머무름)와
        좁은 화면 그룹 띠. 둘 다 specialty/specialty.js 의 측정 덩어리가 담당. */
     { sel: '.hst-item-wrap', label: '특화진료 · 항목',    event: 'specialty_item_click_* / _hover_*' },
@@ -178,7 +192,16 @@
       { sel: '.subheader_click-area',   label: '서초 · 서브헤더 링크',  event: 'seocho_subheader_nav_*' },
       { sel: '.w-tab-menu .w-tab-link', label: '서초 · 분과 탭',       event: 'seocho_dept_tab_*' },
       { sel: '[data-doctor-open]',      label: '서초 · 의료진 상세(+)', event: 'seocho_doctor_detail_*' },
-      { sel: '.naver-map-directions',   label: '서초 · 길찾기',        event: 'seocho_directions_*' }
+      { sel: '.naver-map-directions',   label: '서초 · 길찾기',        event: 'seocho_directions_*' },
+      /* 첫 화면 주소 옆 칩 두 개 — seocho.js 가 [data-copy-address] 요소 안에
+         만들어 넣는다. 로드 뒤에 생기지만 인스펙터가 DOM 변동 때 재스캔하므로
+         뒤늦게 배지가 따라붙는다. 길찾기 칩은 지도 위 길찾기 버튼과 같은
+         이름으로 기록되고, section 항목(hero / hero_m / hero_m2)으로 갈린다. */
+      { sel: '.helix-copy-btn', label: '서초 · 주소 복사(칩)', event: 'seocho_address_copy' },
+      { sel: '.helix-map-btn',  label: '서초 · 길찾기(칩)',    event: 'seocho_directions_*' },
+      /* 공간 갤러리 화살표 — 슬라이더 동작은 Webflow 가, 기록만 seocho.js 가 맡는다 */
+      { sel: '#photo .w-slider-arrow-left, #photo .w-slider-arrow-right',
+        label: '서초 · 갤러리 화살표', event: 'seocho_gallery_nav' }
     ]);
   }
 
