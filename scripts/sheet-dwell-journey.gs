@@ -99,6 +99,16 @@ function onOpen() {
     .addItem('자동 정리 끄기', 'removeMonthlyLogTrigger')
     .addToUi();
 
+  /* 요약 표 14개를 수식이 아니라 스크립트가 직접 그린다.
+     실제 기능은 같은 프로젝트의 sheet-summary-build.gs 에 있다 —
+     그 파일을 안 넣었으면 눌렀을 때 '함수를 찾을 수 없습니다' 가 뜬다.
+     기존 요약 탭은 건드리지 않고 [요약(새 방식)] 탭에 나란히 그린다. */
+  ui.createMenu('📊 요약 표(새 방식)')
+    .addItem('지금 새로 만들기', 'buildSummaryTables')
+    .addSeparator()
+    .addItem('기준값과 대조하기 (2026년 8월)', 'verifySummaryAgainstBaseline')
+    .addToUi();
+
   /* 이 시트가 어떻게 짜여 있는지(수식·표 제목) 글 파일로 뽑는다.
      Claude 는 시트의 수식을 볼 수 없어서, 이걸 한 번 돌려 두면
      "어느 칸을 어떻게 고쳐야 하는지" 를 정확히 짚을 수 있다.
