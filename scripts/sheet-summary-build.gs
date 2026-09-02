@@ -1,5 +1,5 @@
 /* ================================================================
-   헬릭스 측정 요약 — 표 23개를 스크립트가 직접 그린다 (Google Apps Script)
+   헬릭스 측정 요약 — 표 24개를 스크립트가 직접 그린다 (Google Apps Script)
    ================================================================
    지금 요약 탭([헬릭스측정요약가져오기용])은 절반이 시트 수식이다.
    로그를 통째로 끌어오는 수식(IMPORTRANGE) 8벌 + 세는 수식 154자리.
@@ -14,7 +14,7 @@
    [체류·동선] 탭이 이미 그 방식이고 한 번도 안 터졌다.
 
    ▸ 이 파일이 하는 일
-     원본 로그를 직접 읽어(달별 탭 포함) 표 23개를 새 탭에 그린다.
+     원본 로그를 직접 읽어(달별 탭 포함) 표 24개를 새 탭에 그린다.
      기존 요약 탭은 손대지 않는다 — 숫자가 다 맞는 것을 확인한 뒤에
      사람이 옛 수식을 걷어낸다. 안 맞으면 새 탭만 지우면 끝이다.
 
@@ -36,6 +36,12 @@
      · 표15~23 신설 — 로그에는 쌓이는데 볼 표가 없던 것들.
        상담 폼 출처(인라인/플로팅) · 전화 누른 자리 · 지점 페이지 행동
        (서초 vs 일산) · 메뉴/헤더 · 홈 버튼 · 특화진료 · 응급 · FAQ · 소개.
+
+   ▸ 2026-09-02 — 표24(측정 이력) 신설
+     새 표에 0이 뜨자 "측정이 안 붙은 건가, 나중에 붙어서 그 기간엔 없는
+     건가" 를 코드 이력을 뒤지며 짐작으로 답하다 시간을 버렸다. 표24 는
+     이벤트 이름마다 첫 기록·마지막 기록·건수를 로그에서 직접 읽어 준다.
+     이 표만 조회 기간을 안 본다(로그 전체가 대상).
 
    ▸ 줄 자리는 스크립트가 계산한다 — 손으로 박지 말 것
      예전엔 표마다 줄 번호가 박혀 있어(표2 는 19줄…) 표1 에 두 줄만
@@ -286,6 +292,11 @@ function sbParse_(rows, period) {
 
   var out = [];
   var total = 0;
+  /* 이벤트 이름별 이력 — 조회 기간과 상관없이 로그 전체를 본다.
+     "이 자리 측정이 왜 0이지? 안 붙은 건가, 나중에 붙은 건가?" 를
+     짐작으로 답하다 헛수고한 적이 있어(2026-09-02), 로그가 직접
+     답하게 한다. 정규식을 안 쓰므로 5만 줄을 훑어도 부담이 없다. */
+  var catalog = {};
 
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
@@ -297,8 +308,19 @@ function sbParse_(rows, period) {
     if (!stamp) continue;                            /* 시간을 못 읽는 줄 */
     total++;
 
+    var inPeriod = (stamp.dateKey >= period.startKey && stamp.dateKey <= period.endKey);
+
+    /* 기기별로 갈린 이름(_mobile / _desktop)은 한 줄로 묶어 본다 */
+    var base = name.replace(/_(mobile|desktop|tablet)$/, '');
+    var cat = catalog[base];
+    if (!cat) { cat = catalog[base] = { first: stamp.dateKey, last: stamp.dateKey, all: 0, now: 0 }; }
+    if (stamp.dateKey < cat.first) cat.first = stamp.dateKey;
+    if (stamp.dateKey > cat.last) cat.last = stamp.dateKey;
+    cat.all++;
+    if (inPeriod) cat.now++;
+
     /* 기간 밖이면 params 를 뜯지 않는다 — 5만 줄은 비싸다 */
-    if (stamp.dateKey < period.startKey || stamp.dateKey > period.endKey) continue;
+    if (!inPeriod) continue;
 
     var p = sbPickAll_(r[5]);
     var sid = p.sid || '';
@@ -334,7 +356,7 @@ function sbParse_(rows, period) {
     });
   }
 
-  return { rows: out, total: total };
+  return { rows: out, total: total, catalog: catalog };
 }
 
 /* params 한 칸을 한 번만 훑어 "키":"값" 을 전부 사전으로 담는다.
@@ -414,7 +436,7 @@ function sbLogTimeZone_() {
 }
 
 /* ================================================================
-   ④ 표 23개 그리기
+   ④ 표 24개 그리기
    ================================================================
    표1~14 는 옛 요약 탭에서 그대로 옮겨온 것이고, 표15~23 은
    2026-09-01 에 더한 것이다(로그에는 쌓이는데 볼 표가 없던 것들).
@@ -943,8 +965,50 @@ function sbBuildGrid_(period, log, data) {
     if (aboutRows[ar][2]) g.set(cur, 'C', aboutRows[ar][2]);
     cur++;
   }
+  cur++;
+
+  /* ── 24. 측정이 언제부터 쌓였나 ─────────────────────────── */
+  /* 어느 자리의 숫자가 0일 때, 측정이 안 붙은 건지 · 나중에 붙어서 그
+     기간엔 없던 건지 · 붙었는데 아무도 안 누른 건지를 가려 준다.
+     2026-09-02 에 이걸 몰라 코드 이력을 뒤지며 짐작으로 답하다 시간을
+     버렸다. 로그가 직접 답하게 둔다.
+     이 표만 조회 기간을 안 본다 — 로그 전체가 대상이다. */
+  var cata = sbCatalogRows_(data.catalog);
+
+  g.set(cur, 'A', '24. 측정이 언제부터 쌓였나 — 이벤트 이름별  (이 표만 조회 기간과 무관하게 로그 전체를 봅니다)'); cur++;
+  g.set(cur, 'A', '여기 목록에 없는 이름 = 한 번도 기록된 적 없음(측정이 안 붙었다는 뜻). ' +
+                  "'첫 기록' 이 최근이면 그 전 기간에 0인 것은 정상입니다."); cur++;
+  g.set(cur, 'A', '이벤트 이름'); g.set(cur, 'B', '첫 기록'); g.set(cur, 'C', '마지막 기록');
+  g.set(cur, 'D', '전체 건수'); g.set(cur, 'E', '이 기간'); g.set(cur, 'F', '비고'); cur++;
+  for (var ci = 0; ci < cata.length; ci++) {
+    g.set(cur, 'A', cata[ci].name);
+    g.set(cur, 'B', cata[ci].first);
+    g.set(cur, 'C', cata[ci].last);
+    g.set(cur, 'D', cata[ci].all);
+    g.set(cur, 'E', cata[ci].now);
+    if (!cata[ci].now) g.set(cur, 'F', '이 기간엔 기록 없음');
+    cur++;
+  }
 
   return g.rows;
+}
+
+/* 이벤트 이력을 표로 낼 수 있게 줄 세우기.
+   첫 기록이 늦은 것(= 최근에 붙은 측정)을 위로 올린다 — "이거 언제
+   붙었지?" 를 확인하러 오는 표라서, 새로 붙은 것이 먼저 보여야 한다. */
+function sbCatalogRows_(catalog) {
+  var out = [];
+  for (var k in catalog) {
+    if (!catalog.hasOwnProperty(k)) continue;
+    var c = catalog[k];
+    out.push({ name: k, first: c.first, last: c.last, all: c.all, now: c.now });
+  }
+  out.sort(function (a, b) {
+    if (a.first !== b.first) return a.first < b.first ? 1 : -1;
+    if (b.all !== a.all) return b.all - a.all;
+    return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0);
+  });
+  return out;
 }
 
 /* 묶어 센 결과를 두 칸(이름·값)에 세로로 적는다.
@@ -1344,7 +1408,7 @@ function sbWriteSheet_(rows) {
                first === '시각' || first === '요일' || first === '행동' ||
                first === '과' || first === '유입처' || first === '질문 (열람 많은 순)' ||
                first === '출처' || first === '지점 · 자리' || first === '자리' ||
-               first === '항목') {
+               first === '항목' || first === '이벤트 이름') {
       sh.getRange(k + 1, 1, 1, width).setFontWeight('bold').setBackground('#f1f3f4');
     }
   }
