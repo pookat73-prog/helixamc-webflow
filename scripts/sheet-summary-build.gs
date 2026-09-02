@@ -778,7 +778,7 @@ function sbBuildGrid_(period, log, data) {
     ['끝까지 읽음', 'done100', '', ''],
     ['번호 누름', 'name', '_phone_intent', ''],
     ['전화 연결', 'name', '_phone_call', ''],
-    ['주소 복사', 'name', '_address_copy', '8/28 부터'],
+    ['주소 복사', 'name', '_address_copy', '9/1 부터'],
     ['길찾기', 'prefix', '_directions_', ''],
     ['분과 탭', 'prefix', '_dept_tab_', ''],
     ['서브헤더 이동', 'prefix', '_subheader_nav_', ''],
@@ -1304,6 +1304,12 @@ function sbWriteSheet_(rows) {
   var sh = ss.getSheetByName(SB_OUT_SHEET_NAME);
   if (!sh) sh = ss.insertSheet(SB_OUT_SHEET_NAME);
   sh.clear();
+  /* ⚠️ 숫자 서식은 clear() 로 안 걷히는 경우가 있다 — 2026-09-02 실측.
+     표가 길어져 줄이 밀리자, 지난번에 백분율이 있던 자리(옛 B24 등)에
+     서식만 그대로 남아 '페이지 열린 횟수 4768' 이 '476800.0%' 로,
+     '도달수 231' 이 '23100.0%' 로 보였다. 값은 맞고 옷만 남은 것.
+     그래서 서식을 한 번 더 명시적으로 걷어낸다. */
+  try { sh.clearFormats(); } catch (e) {}
 
   var width = 1;
   for (var i = 0; i < rows.length; i++) width = Math.max(width, rows[i].length);
@@ -1320,6 +1326,11 @@ function sbWriteSheet_(rows) {
   /* 숫자처럼 생긴 글자(전화번호 등)를 시트가 멋대로 바꾸지 않게
      값 그대로 넣는다 — setValues 는 원래 값을 유지한다. */
   sh.getRange(1, 1, grid.length, width).setValues(grid);
+
+  /* 위 clearFormats 가 막혔을 때를 대비해 한 번 더 — 쓴 자리 전체를
+     '자동' 서식으로 눕히고 나서, 아래에서 백분율 칸만 다시 지정한다.
+     (순서가 중요하다. 이걸 백분율 지정 뒤에 하면 백분율이 지워진다.) */
+  try { sh.getRange(1, 1, grid.length, width).setNumberFormat('General'); } catch (e) {}
 
   sh.getRange(1, 1).setFontSize(14).setFontWeight('bold');
   sh.getRange(5, 2, 1, 7).setBackground('#fff2cc');   /* 고치는 칸만 색으로 */
