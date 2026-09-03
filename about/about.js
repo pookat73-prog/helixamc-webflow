@@ -2653,7 +2653,11 @@
   function send(base, extra) {
     try {
       var d = device();
-      var p = { item_type: base, device: d };
+      var p = {
+        item_type: base,
+        page: /discover/.test((location.pathname || '').toLowerCase()) ? 'discover' : 'about',
+        device: d
+      };
       if (extra) { for (var k in extra) { if (extra.hasOwnProperty(k)) p[k] = extra[k]; } }
       var name = base + '_' + d;
       if (typeof window.gtag === 'function') {

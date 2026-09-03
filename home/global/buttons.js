@@ -146,6 +146,7 @@
           if (typeof window.gtag === 'function') {
             window.gtag('event', eventName, {
               item_type: 'specialty_cta_click',
+              page: 'home',
               device: device,
               label: label,
               value: href,
@@ -155,6 +156,7 @@
             window.dataLayer.push({
               event: eventName,
               item_type: 'specialty_cta_click',
+              page: 'home',
               device: device,
               label: label,
               value: href

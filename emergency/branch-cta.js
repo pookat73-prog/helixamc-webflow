@@ -66,6 +66,7 @@
       var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var params = {
         item_type: 'emergency_cta',
+        page: 'emergency',
         branch: branch || 'unknown',
         device: device,
         value: value || ''
