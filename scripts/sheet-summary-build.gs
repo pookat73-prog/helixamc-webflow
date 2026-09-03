@@ -882,14 +882,19 @@ function sbWriteSheet_(rows) {
 
   /* GA4와 이름이 비슷하지만 계산 기준이 다른 지표는 셀 메모에 정의를
      남긴다. 표를 다시 만들어도 정의가 함께 복원된다. */
+  var metricNoteCells = ['A7', 'A11', 'A21', 'A22', 'A23', 'A24',
+                         'A28', 'A29', 'A30', 'A31', 'A32'];
+  for (var nc = 0; nc < metricNoteCells.length; nc++) {
+    sh.getRange(metricNoteCells[nc]).clearNote();
+  }
   var metricNotes = {
     A7: '시트 원본 로그에 저장된 행 수입니다. GA4의 전체 이벤트 수와 직접 비교하지 않습니다. GA4 자동 이벤트(session_start, user_engagement, 자동 scroll, first_visit 등)는 이 시트에 저장되지 않습니다.',
     A11: '페이지별 방문수는 해당 페이지의 커스텀 *_page_view 이벤트를 기준으로 셉니다. GA4 표준 page_view와 합산하지 않습니다. 끝까지는 *_scroll_depth의 100% 도달 기록입니다.',
-    A23: '선택 기간의 원본 로그에서 고유 sid 수를 센 값입니다. GA4 사용자 수와 정의가 달라 직접 비교하지 않습니다.',
-    A24: '표준 page_view가 아니라 원본 로그의 커스텀 *_page_view 기록 수입니다. 새로고침도 각각 포함됩니다.',
-    A30: '선택 기간의 고유 sid 수입니다. 위의 순 방문 횟수와 같은 기준입니다.',
-    A31: '전화·상담전화 관련 행동을 한 번이라도 기록한 고유 sid 수입니다.',
-    A32: '전화까지 간 고유 sid ÷ 전체 고유 sid입니다. 주요 이벤트 합계가 아닙니다.'
+    A21: '선택 기간의 원본 로그에서 고유 sid 수를 센 값입니다. GA4 사용자 수와 정의가 달라 직접 비교하지 않습니다.',
+    A22: '표준 page_view가 아니라 원본 로그의 커스텀 *_page_view 기록 수입니다. 새로고침도 각각 포함됩니다.',
+    A28: '선택 기간의 고유 sid 수입니다. 위의 순 방문 횟수와 같은 기준입니다.',
+    A29: '전화·상담전화 관련 행동을 한 번이라도 기록한 고유 sid 수입니다.',
+    A30: '전화까지 간 고유 sid ÷ 전체 고유 sid입니다. 주요 이벤트 합계가 아닙니다.'
   };
   for (var noteCell in metricNotes) {
     if (Object.prototype.hasOwnProperty.call(metricNotes, noteCell)) {
