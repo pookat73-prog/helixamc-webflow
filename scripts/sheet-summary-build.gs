@@ -821,6 +821,10 @@ function sbToast_(msg) {
    ================================================================ */
 function sbWriteSheet_(rows) {
   var ss = SpreadsheetApp.getActive();
+  /* 요약 파일 자체의 날짜 경계도 원본 로그와 같은 한국 시간으로 맞춘다. */
+  if (ss.getSpreadsheetTimeZone() !== 'Asia/Seoul') {
+    ss.setSpreadsheetTimeZone('Asia/Seoul');
+  }
   var sh = ss.getSheetByName(SB_OUT_SHEET_NAME);
   if (!sh) sh = ss.insertSheet(SB_OUT_SHEET_NAME);
   sh.clear();
@@ -840,6 +844,10 @@ function sbWriteSheet_(rows) {
   /* 숫자처럼 생긴 글자(전화번호 등)를 시트가 멋대로 바꾸지 않게
      값 그대로 넣는다 — setValues 는 원래 값을 유지한다. */
   sh.getRange(1, 1, grid.length, width).setValues(grid);
+
+  /* 이전 실행의 백분율 서식이 개수·초 단위 칸에 남아
+     4,768이 476800.0%처럼 보이지 않도록 먼저 전부 일반 숫자로 되돌린다. */
+  sh.getRange(1, 1, grid.length, width).setNumberFormat('General');
 
   sh.getRange(1, 1).setFontSize(14).setFontWeight('bold');
   sh.getRange(5, 2, 1, 7).setBackground('#fff2cc');   /* 고치는 칸만 색으로 */
@@ -871,6 +879,23 @@ function sbWriteSheet_(rows) {
     }
   }
   if (pctCells.length) sh.getRangeList(pctCells).setNumberFormat('0.0%');
+
+  /* GA4와 이름이 비슷하지만 계산 기준이 다른 지표는 셀 메모에 정의를
+     남긴다. 표를 다시 만들어도 정의가 함께 복원된다. */
+  var metricNotes = {
+    A7: '시트 원본 로그에 저장된 행 수입니다. GA4의 전체 이벤트 수와 직접 비교하지 않습니다. GA4 자동 이벤트(session_start, user_engagement, 자동 scroll, first_visit 등)는 이 시트에 저장되지 않습니다.',
+    A11: '페이지별 방문수는 해당 페이지의 커스텀 *_page_view 이벤트를 기준으로 셉니다. GA4 표준 page_view와 합산하지 않습니다. 끝까지는 *_scroll_depth의 100% 도달 기록입니다.',
+    A23: '선택 기간의 원본 로그에서 고유 sid 수를 센 값입니다. GA4 사용자 수와 정의가 달라 직접 비교하지 않습니다.',
+    A24: '표준 page_view가 아니라 원본 로그의 커스텀 *_page_view 기록 수입니다. 새로고침도 각각 포함됩니다.',
+    A30: '선택 기간의 고유 sid 수입니다. 위의 순 방문 횟수와 같은 기준입니다.',
+    A31: '전화·상담전화 관련 행동을 한 번이라도 기록한 고유 sid 수입니다.',
+    A32: '전화까지 간 고유 sid ÷ 전체 고유 sid입니다. 주요 이벤트 합계가 아닙니다.'
+  };
+  for (var noteCell in metricNotes) {
+    if (Object.prototype.hasOwnProperty.call(metricNotes, noteCell)) {
+      sh.getRange(noteCell).setNote(metricNotes[noteCell]);
+    }
+  }
 
   var widths = [320, 110, 110, 320, 110, 230, 200, 110, 40, 200, 110];
   for (var c = 0; c < widths.length && c < width; c++) sh.setColumnWidth(c + 1, widths[c]);
