@@ -15,6 +15,9 @@
 (function () {
   'use strict';
 
+  if (window.__helixComingSoonToastInit) return;
+  window.__helixComingSoonToastInit = true;
+
   var ATTR        = 'data-coming-soon';
   var EXEMPT_ATTR = 'data-coming-soon-exempt';
   var TEXT = '준비중입니다';
@@ -292,6 +295,9 @@
    ================================================================ */
 (function () {
   'use strict';
+
+  if (window.__helixComingSoonMarkerInit) return;
+  window.__helixComingSoonMarkerInit = true;
 
   var COMING_SELECTORS = [
     /* .bt-box-2 (특화진료 CTA) — /specialty-care 연결 완료, 준비중 해제 (FORCE_RELEASE_SELECTORS) */
