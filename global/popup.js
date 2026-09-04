@@ -14,7 +14,7 @@
   'use strict';
 
   /* ▶ 팝업 ON/OFF 스위치 — 끄려면 false 로 변경 (홈페이지 리뉴얼 안내 재개) */
-  var ENABLED = true;
+  var ENABLED = false;
   if (!ENABLED) return;
 
   var CONFIG = {
