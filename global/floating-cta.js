@@ -247,6 +247,55 @@
   var privacyEl    = document.getElementById('hxFcta_privacy');
   var chipEls      = [].slice.call(document.querySelectorAll('.hx-fcta-chip'));
 
+  /* ── 모바일 응급 지점 카드와 겹침 방지 ──
+     /symptoms 의 지점 카드는 화면 하단에 고정되고 펼침·접힘 높이가 달라진다.
+     고정 숫자를 맞추지 않고 실제 top 좌표를 읽어 상담 버튼과 선택 패널을
+     카드 위로 함께 올린다. 카드가 없거나 가로 화면이면 원래 위치로 복귀. */
+  var bottomSyncRaf = 0;
+
+  function syncFloatingBottom() {
+    bottomSyncRaf = 0;
+    var root = document.documentElement;
+    var obstacle = document.querySelector('.helix-branch-cta.is-mounted');
+    var portraitMobile = window.innerWidth <= 991 && window.innerWidth < window.innerHeight;
+
+    if (!obstacle || !portraitMobile) {
+      root.style.removeProperty('--hx-fcta-bottom');
+      return;
+    }
+
+    var rect = obstacle.getBoundingClientRect();
+    if (!rect.width || !rect.height || rect.top >= window.innerHeight) {
+      root.style.removeProperty('--hx-fcta-bottom');
+      return;
+    }
+
+    var base = window.innerWidth <= 599 ? 20 : 24;
+    var gap = Math.max(8, window.innerWidth * 0.015);
+    var next = Math.ceil(window.innerHeight - rect.top + gap);
+    root.style.setProperty('--hx-fcta-bottom', Math.max(base, next) + 'px');
+  }
+
+  function scheduleFloatingBottom() {
+    if (bottomSyncRaf) return;
+    bottomSyncRaf = requestAnimationFrame(syncFloatingBottom);
+  }
+
+  scheduleFloatingBottom();
+  window.addEventListener('resize', scheduleFloatingBottom);
+  setTimeout(scheduleFloatingBottom, 600);
+  setTimeout(scheduleFloatingBottom, 1500);
+
+  try {
+    var bottomObserver = new MutationObserver(scheduleFloatingBottom);
+    bottomObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    });
+  } catch (e) {}
+
   /* ── 태그(칩) 토글 ──
      증상 텍스트칸에는 손대지 않는다. 켜고 끄기만 하고, 값은 제출할 때
      그룹별로 모아 보낸다.
