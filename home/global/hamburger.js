@@ -79,7 +79,7 @@
     }).join('');
 
     return (
-      '<div class="hx-menu-overlay" role="dialog" aria-modal="true" aria-hidden="true">' +
+      '<div id="hx-menu-overlay" class="hx-menu-overlay" role="dialog" aria-modal="true" aria-hidden="true">' +
         '<div class="hx-menu-body">' +
           '<div class="hx-menu-branches">' + branchesHTML + '</div>' +
           '<div class="hx-menu-divider"></div>' +
@@ -189,6 +189,7 @@
     var overlay  = document.querySelector('.hx-menu-overlay');
     var isOpen   = false;
     var activeEl = null; /* 클릭된 링크 기억 */
+    var lastTrigger = null;
 
     /* 그룹 내부 링크는 그룹 div 단위로 stagger */
     var staggerItems = overlay.querySelectorAll(
@@ -203,8 +204,19 @@
       activeEl = el;
     }
 
-    function openMenu() {
+    function setBurgerExpanded(expanded) {
+      var burgers = document.querySelectorAll('.menu-bar_mobile, .image-18');
+      for (var i = 0; i < burgers.length; i++) {
+        if (burgers[i].__hxBurgerBound) {
+          burgers[i].setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        }
+      }
+    }
+
+    function openMenu(trigger) {
       isOpen = true;
+      lastTrigger = trigger || document.activeElement;
+      setBurgerExpanded(true);
       ga('menu_open', {});
       positionOverlay(overlay);
       overlay.classList.add('is-open');
@@ -231,6 +243,7 @@
 
     function closeMenu(reason) {
       isOpen = false;
+      setBurgerExpanded(false);
       ga('menu_close', { method: reason || 'unknown' });
       document.body.classList.remove('hx-menu-open');
       closeBtn.classList.remove('is-visible');
@@ -243,6 +256,9 @@
           overlay.setAttribute('aria-hidden', 'true');
           backdrop.classList.remove('is-open');
           gsap.set(staggerItems, { y: 20, opacity: 0 });
+          if (reason !== 'nav_link' && lastTrigger && typeof lastTrigger.focus === 'function') {
+            lastTrigger.focus({ preventScroll: true });
+          }
         }
       });
     }
@@ -259,6 +275,11 @@
       if (!btn || btn.__hxBurgerBound) return;
       btn.__hxBurgerBound = true;
       btn.style.cursor = 'pointer';
+      btn.setAttribute('role', 'button');
+      btn.setAttribute('tabindex', '0');
+      btn.setAttribute('aria-label', '메뉴 열기');
+      btn.setAttribute('aria-controls', 'hx-menu-overlay');
+      btn.setAttribute('aria-expanded', 'false');
 
       /* 버거 아이콘은 Webflow 헤더 컴포넌트에 data-coming-soon="1" 이 baked-in
          돼 있어, 그대로 두면 coming-soon.js 가 클릭을 가로채 "준비중" 토스트만
@@ -274,7 +295,13 @@
 
       btn.addEventListener('click', function () {
         if (MENU_COMING_SOON) return;  /* 토스트는 coming-soon.js 가 처리 */
-        if (isOpen) closeMenu('toggle'); else openMenu();
+        if (isOpen) closeMenu('toggle'); else openMenu(btn);
+      });
+
+      btn.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        btn.click();
       });
     }
 
