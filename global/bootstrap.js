@@ -23,6 +23,8 @@
     'global/viewport-fix.js',
     /* 뷰포트 판정 — 다른 모듈이 window.HelixVP 를 쓰므로 그 다음 */
     'global/viewport.js',
+    /* 제목 구조·의미 있는 이미지 대체 텍스트 접근성 보완 */
+    'global/accessibility.js',
     'global/global.css',
     'global/floating-cta.css',
     'global/floating-cta.js',
