@@ -28,6 +28,7 @@
     'global/viewport-fix.js',
     /* 뷰포트 판정 (window.HelixVP) — 교정된 폭을 봐야 하므로 그 다음 */
     'global/viewport.js',
+    'global/accessibility.js',
 
     /* ── 측정 (다른 페이지와 동일 구성) ──────────────────────────
        이 페이지는 그동안 측정 파일이 하나도 실리지 않아 방문·스크롤·
