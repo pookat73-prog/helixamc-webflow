@@ -188,6 +188,9 @@ scripts/              의료진·SEO 빌드와 측정 시트용 스크립트
 
 ### GitHub Actions
 
+- `node scripts/check-site-quality.mjs`: 전체 JavaScript 문법과 제목 구조·메뉴 ARIA·이미지 대체 텍스트 보정 규칙 확인
+- `main` 또는 `staging` 대상 PR과 두 브랜치의 push에서는 `.github/workflows/site-quality.yml`이 위 검사를 자동 실행
+- 자동 품질 검사가 실패하면 출력에 표시된 파일이나 누락 규칙을 수정한 뒤 다시 실행
 - 변경 경로가 자동 배포 대상인지 확인
 - 워크플로우의 성공 여부와 최종 커밋 번호 확인
 - 자동 생성 파일이 추가 커밋을 만들었는지 확인
