@@ -118,6 +118,7 @@ jobs:
             "global/bootstrap.js"
             "global/viewport-fix.js"
             "global/viewport.js"
+            "global/accessibility.js"
             "seocho/bootstrap.js"
             "emergency/bootstrap.js"
             "emergency/emergency.css"
@@ -243,6 +244,7 @@ jobs:
           FILES=(
             "global/viewport-fix.js"
             "global/viewport.js"
+            "global/accessibility.js"
             "global/measure-gate.js"
             "global/ga4-base.js"
             "global/session.js"
