@@ -11,7 +11,7 @@
    '상담 문의하기' 라벨은 일러스트 하단 흰 카드 빈칸 위에 겹쳐 표시. */
 .hx-fcta-btn {
   position: fixed;
-  bottom: 24px;
+  bottom: var(--hx-fcta-bottom, 24px);
   right: 3vw;
   z-index: 9000;
   display: block;              /* 이미지가 크기 정의, 라벨은 absolute 오버레이 */
@@ -99,7 +99,9 @@
 /* ── 선택 패널 ── */
 .hx-fcta-panel {
   position: fixed;
-  bottom: 164px;      /* 버튼(일러스트 128px, bottom:24px = top 152px) 위로 띄움 */
+  bottom: calc(var(--hx-fcta-bottom, 24px) + 140px);
+  /* 버튼(128px) 위 12px. 응급 지점 카드가 있으면 JS가 같은 변수만
+     올려 버튼과 패널이 한 덩어리로 이동한다. */
   right: 3vw;
   z-index: 9000;
   background: #f4f7fb;              /* 캐릭터 카드와 동일한 화이트 */
@@ -668,22 +670,25 @@
   /* 일러스트 높이 = 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
   .hx-fcta-btn__img { height: 13.5vw; }
   .hx-fcta-btn__label { font-size: 15px; }   /* 버튼 크기 유지, 라벨만 확대 */
-  .hx-fcta-panel { bottom: calc(13.5vw + 36px); }
+  .hx-fcta-panel { bottom: calc(var(--hx-fcta-bottom, 24px) + 13.5vw + 12px); }
 }
 
 @media (max-width: 599px) {
   .hx-fcta-btn {
-    bottom: 20px;
+    bottom: var(--hx-fcta-bottom, 20px);
     right: 3vw;
   }
-  .hx-fcta-panel { right: 3vw; }
+  .hx-fcta-panel {
+    right: 3vw;
+    bottom: calc(var(--hx-fcta-bottom, 20px) + 13.5vw + 16px);
+  }
 }
 
 @media (max-width: 479px) {
   /* 일러스트 높이 = 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
   .hx-fcta-btn__img { height: 6.3rem; }
   .hx-fcta-btn__label { font-size: 14px; }   /* 버튼 크기 유지, 라벨만 확대 */
-  .hx-fcta-panel { bottom: calc(6.3rem + 32px); }
+  .hx-fcta-panel { bottom: calc(var(--hx-fcta-bottom, 20px) + 6.3rem + 12px); }
 }
 
 /* ── 화면이 짧은 기기(아이폰 SE 급, 세로 720px 이하) ──
