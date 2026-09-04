@@ -1,6 +1,32 @@
 (function () {
   'use strict';
 
+  /* 접근성 모듈 캐시 안전망.
+     Webflow 에 직접 연결된 page bootstrap(@main)은 브라우저에 최대 7일
+     남을 수 있어, 새 FILES 항목이 기존 방문자에게 늦게 보일 수 있다.
+     모든 페이지가 이미 불러오는 이 모듈의 동일 커밋 주소를 기준으로
+     accessibility.js 를 한 번 더 연결한다. 접근성 모듈 자체의 전역 가드로
+     최신 bootstrap 과 함께 로드돼도 중복 실행되지 않는다. */
+  (function loadAccessibilityFallback() {
+    if (window.__helixAccessibilityInit) return;
+
+    var current = document.currentScript;
+    var src = current && current.src;
+    if (!src || src.indexOf('/home/global/hamburger.js') === -1) return;
+
+    var accessibilitySrc = src.replace(
+      /\/home\/global\/hamburger\.js(?=([?#]|$))/,
+      '/global/accessibility.js'
+    );
+    if (accessibilitySrc === src) return;
+    if (document.querySelector('script[src="' + accessibilitySrc + '"]')) return;
+
+    var script = document.createElement('script');
+    script.src = accessibilitySrc;
+    script.async = false;
+    document.head.appendChild(script);
+  })();
+
   /* ── 링크 설정 (URL 변경 시 여기만 수정) ── */
   /* event 가 지정된 항목은 공용 menu_nav_click 대신 그 전용 이벤트를 쏨.
      스빅(SVICC)은 홈 배너 버튼(svicc_click_*)·소개 페이지 버튼
