@@ -1361,27 +1361,66 @@
 
   /* ── About Mini Title — 정적 메인 블루 그라데이션 ─────────────
      "일년 365일, 하루 24시간", "특화 · 응급 케어"만 적용.
+     분리된 h2 들이 문구별로 같은 좌표계를 써서 그라데이션이 이어진다.
      기존 shine sweep 은 사용하지 않아 진입/종료 시 렌더링 전환이 없다.
      ─────────────────────────────────────────────────────────── */
   function initAboutMiniTitleGradient() {
-    var WANTED = ['일년365일', ',', '하루24시간', '특화', '·', '응급케어'];
+    var GROUPS = [
+      ['일년365일', ',', '하루24시간'],
+      ['특화', '·', '응급케어']
+    ];
+    var WANTED = GROUPS[0].concat(GROUPS[1]);
     var all = document.querySelectorAll('.about_mini_title');
     var picked = [];
+    var resizeRAF = 0;
 
     Array.prototype.forEach.call(all, function (el) {
       var t = (el.textContent || '').replace(/\s+/g, '');
-      if (WANTED.indexOf(t) !== -1) picked.push(el);
+      if (WANTED.indexOf(t) === -1) return;
+      el.dataset.helixGradientToken = t;
+      picked.push(el);
     });
 
     picked.forEach(function (el) {
       el.style.backgroundImage = 'linear-gradient(90deg, #0075d6 0%, #69bbff 100%)';
       el.style.backgroundRepeat = 'no-repeat';
-      el.style.backgroundSize = '100% 100%';
       el.style.setProperty('-webkit-background-clip', 'text');
       el.style.setProperty('background-clip', 'text');
       el.style.setProperty('-webkit-text-fill-color', 'transparent');
       el.style.color = 'transparent';
     });
+
+    function syncGradientCoordinates() {
+      GROUPS.forEach(function (tokens) {
+        var visible = picked.filter(function (el) {
+          return tokens.indexOf(el.dataset.helixGradientToken) !== -1 &&
+            !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+        });
+        if (!visible.length) return;
+
+        var rects = visible.map(function (el) { return el.getBoundingClientRect(); });
+        var left = Math.min.apply(null, rects.map(function (rect) { return rect.left; }));
+        var right = Math.max.apply(null, rects.map(function (rect) { return rect.right; }));
+        var width = Math.max(1, right - left);
+
+        visible.forEach(function (el, i) {
+          el.style.backgroundSize = width + 'px 100%';
+          el.style.backgroundPosition = (left - rects[i].left) + 'px 0';
+        });
+      });
+    }
+
+    function scheduleGradientSync() {
+      cancelAnimationFrame(resizeRAF);
+      resizeRAF = requestAnimationFrame(syncGradientCoordinates);
+    }
+
+    syncGradientCoordinates();
+    window.addEventListener('resize', scheduleGradientSync);
+    window.addEventListener('load', scheduleGradientSync, { once: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleGradientSync).catch(function () {});
+    }
 
     log('about_mini_title gradient targets=' + picked.length + ' (of ' + all.length + ')');
   }
