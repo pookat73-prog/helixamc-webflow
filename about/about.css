@@ -977,3 +977,16 @@ header.header {
 .textbox-bo-w-sh[data-coming-soon] {
   cursor: pointer;
 }
+
+/* Responsive typography review 2026-09-07 — published About page only.
+   Keep shared Webflow variables, <=991px rules and locked motion unchanged. */
+@media (min-width: 992px) {
+  html[data-wf-page="69d1c60d1e37375fe0c16bc5"] .nomal-parag {
+    font-size: max(0.8125rem, 0.8vw) !important;
+    line-height: max(1.3rem, 1.3vw) !important;
+  }
+  html[data-wf-page="69d1c60d1e37375fe0c16bc5"] .nomal-parag_mid-align {
+    font-size: max(0.8125rem, 0.8vw) !important;
+    line-height: max(1.4rem, 1.4vw) !important;
+  }
+}
