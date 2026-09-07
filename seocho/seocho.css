@@ -1005,3 +1005,21 @@ section.section > .div-block-220 {
     margin-left: 0;
   }
 }
+
+/* Responsive typography review 2026-09-07 — Seocho only.
+   This stylesheet is also loaded by Ilsan; do not broaden the page scope. */
+@media (min-width: 992px) {
+  html[data-wf-page="69d4224c0ef3c80daa5212e4"] .seocho_cert_info {
+    font-size: max(var(--sc-min-fine, 11px), 0.66vw) !important;
+    line-height: max(calc(var(--sc-min-fine, 11px) * 1.6), 1vw) !important;
+  }
+  html[data-wf-page="69d4224c0ef3c80daa5212e4"] .seocho_reserve_inline_cta {
+    font-size: max(var(--sc-min-cta, 14px), 0.85vw) !important;
+    line-height: max(1.25em, 1.5vw) !important;
+    padding-top: max(8px, 0.6vw) !important;
+    padding-bottom: max(8px, 0.6vw) !important;
+    padding-left: max(16px, 1.5vw) !important;
+    padding-right: max(16px, 1.5vw) !important;
+    margin-top: max(10px, 0.9vw) !important;
+  }
+}
