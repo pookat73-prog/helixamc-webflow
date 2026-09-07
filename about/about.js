@@ -1359,71 +1359,31 @@
     }, duration + 60);
   }
 
-  /* ── About Mini Title shine — 4개 시간차 여린 블루 sweep ────────
-     "일년 365일", "하루 24시간", "특화", "응급 케어"
-     카드덱에 겹쳐 있어도 IO 는 모두 같이 진입 → 0.35s stagger.
+  /* ── About Mini Title — 정적 메인 블루 그라데이션 ─────────────
+     "일년 365일, 하루 24시간", "특화 · 응급 케어"만 적용.
+     기존 shine sweep 은 사용하지 않아 진입/종료 시 렌더링 전환이 없다.
      ─────────────────────────────────────────────────────────── */
-  function initAboutMiniTitleShine() {
-    var WANTED = ['일년365일', '하루24시간', '특화', '응급케어'];
+  function initAboutMiniTitleGradient() {
+    var WANTED = ['일년365일', ',', '하루24시간', '특화', '·', '응급케어'];
     var all = document.querySelectorAll('.about_mini_title');
     var picked = [];
+
     Array.prototype.forEach.call(all, function (el) {
       var t = (el.textContent || '').replace(/\s+/g, '');
-      WANTED.forEach(function (w) {
-        if (t.indexOf(w) !== -1 && picked.indexOf(el) === -1) picked.push(el);
-      });
+      if (WANTED.indexOf(t) !== -1) picked.push(el);
     });
-    log('about_mini_title shine targets=' + picked.length + ' (of ' + all.length + ')');
-    if (!picked.length) return;
 
-    /* 페이지 로드 시점에 4개를 모두 bg-clip:text 모드로 prime 해 둔다.
-       sweep 시점에 모드를 전환하지 않으므로 렌더링 변화가 없어 "툭" 없음. */
-    picked.forEach(helixShinePrime);
-
-    var DURATION = 1500;
-    var GAP = 200;
-    var START_DELAY = 150;
-    function shine(el) {
-      helixShineSweep(el, { peakColor: '0,117,214', peakAlpha: 0.6, bandWidth: 28, duration: DURATION });
-    }
-
-    /* 카드덱/transform 으로 el 자체가 intersect 안 되는 경우가 많아
-       안정적 부모 컨테이너를 트리거로 사용. 같은 컨테이너 안의
-       mini title 들은 한 그룹으로 묶어 stagger 발사. */
-    function findTrigger(el) {
-      return el.closest('section, .about_section, [class*="section"], main') || el.parentElement || el;
-    }
-
-    var groups = []; // [{trigger, els: []}]
     picked.forEach(function (el) {
-      var trig = findTrigger(el);
-      var g = null;
-      for (var i = 0; i < groups.length; i++) if (groups[i].trigger === trig) { g = groups[i]; break; }
-      if (!g) { g = { trigger: trig, els: [] }; groups.push(g); }
-      g.els.push(el);
+      el.style.backgroundImage = 'linear-gradient(90deg, #0075d6 0%, #69bbff 100%)';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.backgroundSize = '100% 100%';
+      el.style.setProperty('-webkit-background-clip', 'text');
+      el.style.setProperty('background-clip', 'text');
+      el.style.setProperty('-webkit-text-fill-color', 'transparent');
+      el.style.color = 'transparent';
     });
-    log('about_mini_title shine groups=' + groups.length);
 
-    function fireGroup(g) {
-      g.els.forEach(function (el, i) { setTimeout(function () { shine(el); }, START_DELAY + i * (DURATION + GAP)); });
-    }
-
-    if (!('IntersectionObserver' in window)) {
-      groups.forEach(fireGroup);
-      return;
-    }
-
-    groups.forEach(function (g) {
-      var fired = false;
-      var io = new IntersectionObserver(function (es) {
-        if (!fired && es[0].isIntersecting) {
-          fired = true;
-          fireGroup(g);
-          io.disconnect();
-        }
-      }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
-      io.observe(g.trigger);
-    });
+    log('about_mini_title gradient targets=' + picked.length + ' (of ' + all.length + ')');
   }
 
   /* ── 하이브리드 부제 reveal — .div-block-175 (흰 박스) 3개 동시 페이드인 ─
@@ -2039,7 +1999,7 @@
     initAboutButtonGlow();
     initSection22Reveal();
     initAboutHistoryStandardFontFade();
-    initAboutMiniTitleShine();
+    initAboutMiniTitleGradient();
     initHybridQuestionReveal();
     initClearframeAlphenixReveal();
     initHistoryTimeline();
