@@ -13,12 +13,14 @@
   z-index: 9000;
   display: flex;
   align-items: flex-end;
-  gap: 10px;
+  gap: 0;
+  isolation: isolate;
 }
 
 /* 상담 신청 버튼(일러스트) */
 .hx-fcta-btn {
   position: relative;
+  z-index: 2;
   padding: 0;
   border: none;
   background: transparent;
@@ -87,20 +89,34 @@
    크기를 키움. 자간도 음수 제거해 밀림 방지. */
 /* 전화 아이콘 버튼 */
 .hx-fcta-call-btn {
+  position: absolute;
+  right: calc(100% - clamp(8px, 0.6944vw, 10px));
+  bottom: 8px;
+  z-index: 1;
   border-radius: 999px;
   border: none;
-  margin-bottom: 8px;
-  padding: 0 clamp(8px, 1.11vw, 14px);
+  margin-bottom: 0;
+  padding: 0 clamp(7px, 0.8333vw, 12px);
   min-height: clamp(38px, 3.06vw, 52px);
   min-width: clamp(38px, 3.06vw, 52px);
+  width: max-content;
+  max-width: clamp(38px, 3.06vw, 52px);
+  box-sizing: border-box;
+  overflow: hidden;
   background: #fff;
   color: #0d1117;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: clamp(3px, 0.56vw, 7px);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+  filter:
+    drop-shadow(0 0 9px rgba(0, 117, 214, 0.47))
+    drop-shadow(0 0 22px rgba(0, 117, 214, 0.25));
+  transition: max-width 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.2s ease;
+  will-change: max-width;
   -webkit-tap-highlight-color: transparent;
   outline: none;
   text-decoration: none;
@@ -149,13 +165,38 @@
 
 .hx-fcta-call-btn__text {
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 12px;
+  font-size: 17px;
   font-weight: 500;
+  line-height: 1;
   color: #0d1117;
   white-space: nowrap;
+  flex: 0 0 auto;
   pointer-events: none;
   visibility: visible;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity 0.18s ease 0.08s,
+              transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hx-fcta-call-btn:hover {
+    max-width: 180px;
+  }
+
+  .hx-fcta-call-btn:hover .hx-fcta-call-btn__text {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hx-fcta-call-btn:focus-visible {
+  max-width: 180px;
+}
+
+.hx-fcta-call-btn:focus-visible .hx-fcta-call-btn__text {
   opacity: 1;
+  transform: translateX(0);
 }
 
 .hx-fcta-btn__label {
@@ -653,12 +694,14 @@
   /* 일러스트 높이 = 위로가기 모바일(9vw)의 1.5배 = 13.5vw */
   .hx-fcta-btn__img { height: 13.5vw; }
   .hx-fcta-btn__label { font-size: 15px; }   /* 버튼 크기 유지, 라벨만 확대 */
+  .hx-fcta-call-btn__text { font-size: 15px; }
 }
 
 @media (max-width: 479px) {
   /* 일러스트 높이 = 위로가기 모바일(4.2rem)의 1.5배 = 6.3rem */
   .hx-fcta-btn__img { height: 6.3rem; }
   .hx-fcta-btn__label { font-size: 14px; }   /* 버튼 크기 유지, 라벨만 확대 */
+  .hx-fcta-call-btn__text { font-size: 14px; }
 }
 
 /* ── 화면이 짧은 기기(아이폰 SE 급, 세로 720px 이하) ──
