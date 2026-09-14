@@ -37,7 +37,7 @@
   /* 진료과별 상세페이지 URL. null 이면 클릭해도 이동 안 함(안전). */
   var LINKS = {
     im: null,  // 내과
-    sg: null,  // 외과
+    sg: '/oegwa',  // 외과
     di: null,  // 영상의학과
     oc: null,  // 안과
     dt: null   // 치과
