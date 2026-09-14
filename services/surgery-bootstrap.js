@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC — 외과(/oegwa) 공통 기능 BOOTSTRAP LOADER  v1.0
+   HELIX AMC — 외과(/surgery) 공통 기능 BOOTSTRAP LOADER  v1.1
 
    외과 페이지의 Webflow 네이티브 본문은 그대로 두고, 다른 공개 페이지와
    동일한 전역 화면·내비게이션 기능만 연결한다.
@@ -29,6 +29,7 @@
     'global/viewport.js',
     'global/accessibility.js',
     'global/global.css',
+    'services/surgery-card-stack.css',
     'global/floating-cta.css',
     'global/floating-cta.js',
     'global/popup.css',
