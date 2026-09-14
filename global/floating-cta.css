@@ -87,11 +87,11 @@
 /* 흰 카드 빈칸 '가운데'에 겹치는 라벨 — 메인 블랙 / 공식 폰트.
    굵기 700 은 작은 크기에서 글자 속(카운터)이 떡져서 600 으로 낮추고
    크기를 키움. 자간도 음수 제거해 밀림 방지. */
-/* 상담 신청 탭 — 전화 상담 버튼의 바닥선과 곡률 계열을 맞춘다. */
+/* 상담 신청 탭 — 전화 상담 버튼의 흰 본체 바닥선과 곡률 계열을 맞춘다. */
 .hx-fcta-call-btn {
   position: absolute;
   right: calc(100% - clamp(8px, 0.6944vw, 10px));
-  bottom: 0;
+  bottom: clamp(2px, 0.16vw, 3px);
   z-index: 1;
   border-radius: clamp(8px, 0.8333vw, 12px) 0 0 clamp(8px, 0.8333vw, 12px);
   border: none;
