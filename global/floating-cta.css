@@ -89,7 +89,7 @@
   border: none;
   margin-bottom: 0;
   padding: 0 clamp(7px, 0.8333vw, 12px);
-  min-height: clamp(38px, 3.06vw, 52px);
+  min-height: clamp(38px, 3.78vw, 54px);
   min-width: clamp(38px, 3.06vw, 52px);
   width: max-content;
   max-width: clamp(76px, 6.25vw, 90px);
@@ -101,7 +101,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: clamp(2px, 0.35vw, 5px);
+  gap: clamp(0px, 0.1vw, 2px);
   box-shadow: none;
   transition: max-width 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: max-width;
@@ -124,7 +124,7 @@
   bottom: clamp(5px, 0.4167vw, 6px);
   width: 1px;
   border-radius: 999px;
-  box-shadow: -3px 0 5px 1px rgba(13, 17, 23, 0.28);
+  box-shadow: -3px 0 7px 1px rgba(13, 17, 23, 0.28);
   pointer-events: none;
 }
 .hx-fcta-call-btn:focus-visible {
@@ -146,12 +146,13 @@
 }
 
 .hx-fcta-call-btn__icon {
-  width: clamp(16px, 1.39vw, 23px);
-  height: clamp(16px, 1.39vw, 23px);
+  width: clamp(17px, calc(1.2vw + 2px), 21px);
+  height: clamp(17px, calc(1.2vw + 2px), 21px);
   display: inline-flex;
   flex: 0 0 auto;
   visibility: visible;
   opacity: 1;
+  transform: translate(1px, 1px);
 }
 
 .hx-fcta-call-btn__icon svg {
