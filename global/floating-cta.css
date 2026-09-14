@@ -227,6 +227,8 @@
 .hx-fcta-phone-btn__icon {
   width: 1em;
   height: 1em;
+  transform: scale(1.18);
+  transform-origin: top right;
   display: inline-flex;
   flex: 0 0 auto;
 }
