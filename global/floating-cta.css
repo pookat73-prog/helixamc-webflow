@@ -87,20 +87,20 @@
 /* 흰 카드 빈칸 '가운데'에 겹치는 라벨 — 메인 블랙 / 공식 폰트.
    굵기 700 은 작은 크기에서 글자 속(카운터)이 떡져서 600 으로 낮추고
    크기를 키움. 자간도 음수 제거해 밀림 방지. */
-/* 상담 신청 슬라이드 버튼 */
+/* 상담 신청 탭 — 전화 상담 버튼의 바닥선과 곡률 계열을 맞춘다. */
 .hx-fcta-call-btn {
   position: absolute;
   right: calc(100% - clamp(8px, 0.6944vw, 10px));
-  bottom: 8px;
+  bottom: 0;
   z-index: 1;
-  border-radius: 999px 0 0 999px;
+  border-radius: clamp(8px, 0.8333vw, 12px) 0 0 clamp(8px, 0.8333vw, 12px);
   border: none;
   margin-bottom: 0;
   padding: 0 clamp(7px, 0.8333vw, 12px);
   min-height: clamp(38px, 3.06vw, 52px);
   min-width: clamp(38px, 3.06vw, 52px);
   width: max-content;
-  max-width: clamp(38px, 3.06vw, 52px);
+  max-width: clamp(76px, 6.25vw, 90px);
   box-sizing: border-box;
   overflow: hidden;
   background: #fff;
@@ -111,9 +111,6 @@
   justify-content: flex-start;
   gap: clamp(3px, 0.56vw, 7px);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
-  filter:
-    drop-shadow(0 0 9px rgba(0, 117, 214, 0.47))
-    drop-shadow(0 0 22px rgba(0, 117, 214, 0.25));
   transition: max-width 0.32s cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 0.2s ease;
   will-change: max-width;
