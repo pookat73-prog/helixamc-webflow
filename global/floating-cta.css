@@ -53,8 +53,6 @@
   display: block;
   object-fit: contain;
   pointer-events: none;
-  /* 신청 탭과 겹치는 경계만 은은하게 분리해 모버튼이 앞에 있는 깊이감을 준다. */
-  filter: drop-shadow(-1px 2px 2px rgba(13, 17, 23, 0.16));
 }
 
 /* 위 filter 값이 피크(0%/100%), 아래 50% 가 밸리. 밸리는 피크의 약 55%
@@ -97,16 +95,16 @@
   max-width: clamp(76px, 6.25vw, 90px);
   box-sizing: border-box;
   overflow: hidden;
-  background: #fff;
+  background: #f4f7fb;
   color: #0d1117;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
   gap: clamp(3px, 0.56vw, 7px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
-  transition: max-width 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.2s ease;
+  /* 개별 외곽 그림자 없이, 모버튼과 겹치는 오른쪽 경계 안쪽에만 깊이를 준다. */
+  box-shadow: inset -9px 0 8px -9px rgba(13, 17, 23, 0.32);
+  transition: max-width 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: max-width;
   -webkit-tap-highlight-color: transparent;
   outline: none;
@@ -115,7 +113,7 @@
 
 .hx-fcta-call-btn:hover {
   transform: none;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+  box-shadow: inset -9px 0 8px -9px rgba(13, 17, 23, 0.32);
 }
 .hx-fcta-call-btn:focus-visible {
   outline: 2px solid #0075d6;
@@ -130,7 +128,7 @@
 .hx-fcta-call-btn:focus,
 .hx-fcta-call-btn:focus-visible {
   color: #0d1117;
-  background: #fff;
+  background: #f4f7fb;
   opacity: 1;
   text-decoration: none;
 }
