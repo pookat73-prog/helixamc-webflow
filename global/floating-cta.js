@@ -17,7 +17,8 @@
 
   function run() {
 
-  var PHONE     = 'tel:0221359119';
+  var PHONE      = 'tel:0221359119';
+  var PHONE_TEXT = '전화 걸기';
   var PHONE_LABEL = '02-2135-9119';
   var SITE_ID   = '69d090ea69d828e27d16ea29';
 
@@ -216,6 +217,8 @@
   /* ── 요소 참조 ── */
   var toggle   = document.getElementById('hxFctaToggle');
   var callBtn  = document.getElementById('hxFctaCallBtn');
+  var callText = callBtn ? callBtn.querySelector('.hx-fcta-call-btn__text') : null;
+  var callIcon = callBtn ? callBtn.querySelector('.hx-fcta-call-btn__icon') : null;
   var modal    = document.getElementById('hxFctaModal');
   var backdrop = document.getElementById('hxFctaModalBackdrop');
   var closeBtn = document.getElementById('hxFctaModalClose');
@@ -425,6 +428,36 @@
   });
 
   /* ── 모달 열기·닫기 ── */
+  function resetCallLabel() {
+    if (!callBtn) return;
+    if (callText) {
+      callText.textContent = PHONE_TEXT;
+    }
+    if (callIcon) {
+      callIcon.style.display = '';
+    }
+    callBtn.classList.remove('copy-success');
+    callBtn.style.opacity = '';
+  }
+
+  if (callBtn) {
+    callBtn.addEventListener('click', function () {
+      resetCallLabel();
+    }, true);
+
+    if (window.MutationObserver && callText) {
+      (new MutationObserver(function () {
+        if (callText && callText.textContent !== PHONE_TEXT) {
+          resetCallLabel();
+        }
+      })).observe(callText, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+    }
+  }
+
   function openModal() {
     /* 직전에 완료 화면이 떠 있었으면(이미 한 번 제출 완료) 폼을 초기 상태로 되돌림 */
     if (done.classList.contains('is-visible')) {
@@ -524,8 +557,13 @@
   }
 
   /* ── 전화 클릭 ── */
-  callBtn.addEventListener('click', function () {
+  callBtn.addEventListener('click', function (e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
+    resetCallLabel();
     ga('cta_call', { cta_src: 'floating_cta' });
+    window.location.href = PHONE;
   });
 
   /* ── 이번 상담 폼을 어디서 열었나 ──
