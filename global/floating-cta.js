@@ -18,7 +18,7 @@
   function run() {
 
   var PHONE      = 'tel:0221359119';
-  var PHONE_TEXT = '전화 상담하기';
+  var PHONE_TEXT = '상담하기';
   var PHONE_LABEL = '02-2135-9119';
   var SITE_ID   = '69d090ea69d828e27d16ea29';
 
