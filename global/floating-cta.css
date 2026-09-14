@@ -173,10 +173,8 @@
   flex: 0 0 auto;
   pointer-events: none;
   visibility: visible;
-  opacity: 0;
-  transform: translateX(6px);
-  transition: opacity 0.18s ease 0.08s,
-              transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 1;
+  transform: translateX(0);
 }
 
 @media (hover: hover) and (pointer: fine) {
