@@ -1,0 +1,55 @@
+/* ================================================================
+   HELIX AMC — 외과 안전 시스템 카드 스택
+
+   Webflow Designer에서는 카드 내용을 항상 펼쳐 둔다.
+   이 외부 CSS가 로드되는 공개 페이지의 넓은 화면에서만 카드 가장자리와
+   비어 있는 하단 여백을 살짝 겹치고, hover는 강조만 담당한다.
+   ================================================================ */
+
+@media (min-width: 1200px) {
+  .hx-sg-safety-cards {
+    gap: 0 !important;
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  .hx-sg-safety-card {
+    --hx-sg-stack-x: 0px;
+    position: relative;
+    z-index: 1;
+    transform: translate3d(var(--hx-sg-stack-x), 0, 0);
+    transition: transform 360ms cubic-bezier(.22, .61, .36, 1);
+    will-change: transform;
+  }
+
+  .hx-sg-safety-card + .hx-sg-safety-card {
+    margin-top: clamp(-36px, -2vw, -20px);
+  }
+
+  .hx-sg-safety-card:nth-child(2) {
+    --hx-sg-stack-x: clamp(10px, .9vw, 16px);
+    z-index: 2;
+  }
+
+  .hx-sg-safety-card:nth-child(3) {
+    --hx-sg-stack-x: clamp(20px, 1.8vw, 32px);
+    z-index: 3;
+  }
+
+  .hx-sg-safety-card:nth-child(4) {
+    --hx-sg-stack-x: clamp(30px, 2.7vw, 48px);
+    z-index: 4;
+  }
+
+  .hx-sg-safety-card:hover,
+  .hx-sg-safety-card:focus-within {
+    z-index: 20;
+    transform: translate3d(calc(var(--hx-sg-stack-x) + 10px), -8px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-safety-card {
+    transition: none !important;
+  }
+}
