@@ -11,8 +11,24 @@
     return el.classList.contains('bt-box-4');
   }
 
+  /* SVICC 버튼 안쪽 링크의 실제 곡률을 글로우 래퍼에 그대로 복사.
+     Webflow에서 버튼 곡률이 바뀌어도 box-shadow 귀퉁이가 어긋나지 않게 한다. */
+  function syncPurpleRadius(el) {
+    if (!isPurple(el)) return;
+    var link = el.tagName === 'A' ? el : el.querySelector('a');
+    if (!link || link === el) return;
+
+    var radius = window.getComputedStyle(link);
+    el.style.borderTopLeftRadius = radius.borderTopLeftRadius;
+    el.style.borderTopRightRadius = radius.borderTopRightRadius;
+    el.style.borderBottomRightRadius = radius.borderBottomRightRadius;
+    el.style.borderBottomLeftRadius = radius.borderBottomLeftRadius;
+  }
+
   function startGlow(el) {
     if (!window.gsap) return;
+
+    syncPurpleRadius(el);
 
     /* 모바일(≤767px) 은 vw 단위가 너무 작아져 px 분기 —
        buttons.css 의 glowShimmer{Blue,Purple}Mobile 0%/100% 와 동일 값이라
@@ -58,8 +74,13 @@
 
     targets.forEach(function (el) {
       if (el.hasAttribute('data-s1-ghost')) return;
+      syncPurpleRadius(el);
       observer.observe(el);
     });
+
+    window.addEventListener('resize', function () {
+      targets.forEach(syncPurpleRadius);
+    }, { passive: true });
   }
 
   /* SVICC CTA 클릭 추적: .bt-box-4 (또는 그 안의 a 태그) 클릭 시 GA4 이벤트 */
