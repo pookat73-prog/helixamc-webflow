@@ -87,34 +87,54 @@
    크기를 키움. 자간도 음수 제거해 밀림 방지. */
 /* 전화 아이콘 버튼 */
 .hx-fcta-call-btn {
-  width: clamp(38px, 3.06vw, 52px);
-  height: clamp(38px, 3.06vw, 52px);
-  border-radius: 50%;
+  border-radius: 999px;
   border: none;
   margin-bottom: 8px;
-  padding: 0;
+  padding: 0 clamp(8px, 1.11vw, 14px);
+  min-height: clamp(38px, 3.06vw, 52px);
+  min-width: clamp(38px, 3.06vw, 52px);
   background: #fff;
   color: #0d1117;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: clamp(3px, 0.56vw, 7px);
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
   -webkit-tap-highlight-color: transparent;
   outline: none;
   text-decoration: none;
 }
 
-.hx-fcta-call-btn:hover { transform: scale(1.04); }
+.hx-fcta-call-btn:hover {
+  transform: none;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
+}
 .hx-fcta-call-btn:focus-visible {
   outline: 2px solid #0075d6;
   outline-offset: 3px;
+}
+
+.hx-fcta-call-btn,
+.hx-fcta-call-btn:link,
+.hx-fcta-call-btn:visited,
+.hx-fcta-call-btn:hover,
+.hx-fcta-call-btn:active,
+.hx-fcta-call-btn:focus,
+.hx-fcta-call-btn:focus-visible {
+  color: #0d1117;
+  background: #fff;
+  opacity: 1;
+  text-decoration: none;
 }
 
 .hx-fcta-call-btn__icon {
   width: clamp(16px, 1.39vw, 23px);
   height: clamp(16px, 1.39vw, 23px);
   display: inline-flex;
+  flex: 0 0 auto;
+  visibility: visible;
+  opacity: 1;
 }
 
 .hx-fcta-call-btn__icon svg {
@@ -125,6 +145,17 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.hx-fcta-call-btn__text {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #0d1117;
+  white-space: nowrap;
+  pointer-events: none;
+  visibility: visible;
+  opacity: 1;
 }
 
 .hx-fcta-btn__label {
