@@ -5,7 +5,7 @@
 
 /* ── 플로팅 액션 그룹 ──
    위로가기(.helix-top-btn, right:3vw)와 같은 기준선에 맞춰 오른쪽 하단에 붙는다.
-   상담 신청 버튼은 기존 동작을 유지하고, 전화 아이콘은 외곽으로 분리한다. */
+   전화 상담 버튼을 앞에 두고, 상담 신청 버튼은 뒤에서 슬라이드된다. */
 .hx-fcta-shell {
   position: fixed;
   bottom: var(--hx-fcta-bottom, 24px);
@@ -87,13 +87,13 @@
 /* 흰 카드 빈칸 '가운데'에 겹치는 라벨 — 메인 블랙 / 공식 폰트.
    굵기 700 은 작은 크기에서 글자 속(카운터)이 떡져서 600 으로 낮추고
    크기를 키움. 자간도 음수 제거해 밀림 방지. */
-/* 전화 아이콘 버튼 */
+/* 상담 신청 슬라이드 버튼 */
 .hx-fcta-call-btn {
   position: absolute;
   right: calc(100% - clamp(8px, 0.6944vw, 10px));
   bottom: 8px;
   z-index: 1;
-  border-radius: 999px;
+  border-radius: 999px 0 0 999px;
   border: none;
   margin-bottom: 0;
   padding: 0 clamp(7px, 0.8333vw, 12px);
@@ -212,6 +212,39 @@
   letter-spacing: 0;
   white-space: nowrap;
   pointer-events: none;
+}
+
+.hx-fcta-phone-btn {
+  display: block;
+  text-decoration: none;
+}
+
+.hx-fcta-phone-btn__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.hx-fcta-phone-btn__icon {
+  width: clamp(11px, 0.9028vw, 13px);
+  height: clamp(11px, 0.9028vw, 13px);
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.hx-fcta-phone-btn__icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hx-fcta-phone-btn__text {
+  white-space: nowrap;
 }
 
 /* ── 모달 래퍼 ── */

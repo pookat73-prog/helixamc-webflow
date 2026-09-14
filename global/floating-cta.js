@@ -18,7 +18,7 @@
   function run() {
 
   var PHONE      = 'tel:0221359119';
-  var PHONE_TEXT = '전화 걸기';
+  var PHONE_TEXT = '전화 상담하기';
   var PHONE_LABEL = '02-2135-9119';
   var SITE_ID   = '69d090ea69d828e27d16ea29';
 
@@ -72,20 +72,25 @@
   /* ── HTML 주입 ── */
   var html = [
     '<div class="hx-fcta-shell" role="group" aria-label="상담 액션">',
-      /* 전화 버튼 */
-      '<a class="hx-fcta-call-btn" id="hxFctaCallBtn" href="' + PHONE + '"',
-        ' aria-label="서초 본원 바로 전화 걸기 ' + PHONE_LABEL + '">',
-        '<span class="hx-fcta-call-btn__icon" aria-hidden="true">',
-          '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+      /* 전화 상담 버튼 */
+      '<a class="hx-fcta-btn hx-fcta-phone-btn" id="hxFctaCallBtn" href="' + PHONE + '"',
+        ' aria-label="서초 본원 전화 상담하기 ' + PHONE_LABEL + '">',
+        '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
+        '<span class="hx-fcta-btn__label hx-fcta-phone-btn__label">',
+          '<span class="hx-fcta-phone-btn__icon" aria-hidden="true">',
+            '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+          '</span>',
+          '<span class="hx-fcta-phone-btn__text">' + PHONE_TEXT + '</span>',
         '</span>',
-        '<span class="hx-fcta-call-btn__text">' + PHONE_TEXT + '</span>',
       '</a>',
 
       /* 상담 신청 버튼 */
-      '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
+      '<button class="hx-fcta-call-btn hx-fcta-form-btn" id="hxFctaToggle" type="button"',
         ' aria-label="상담 신청하기" aria-expanded="false" aria-controls="hxFctaModal">',
-      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
-      '<span class="hx-fcta-btn__label">상담 신청하기</span>',
+        '<span class="hx-fcta-call-btn__icon" aria-hidden="true">',
+          '<svg viewBox="0 0 24 24"><path d="M13 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M17.5 3.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/><path d="M15.5 5.5l3 3"/></svg>',
+        '</span>',
+        '<span class="hx-fcta-call-btn__text">상담 신청하기</span>',
       '</button>',
     '</div>',
 
@@ -218,8 +223,8 @@
   /* ── 요소 참조 ── */
   var toggle   = document.getElementById('hxFctaToggle');
   var callBtn  = document.getElementById('hxFctaCallBtn');
-  var callText = callBtn ? callBtn.querySelector('.hx-fcta-call-btn__text') : null;
-  var callIcon = callBtn ? callBtn.querySelector('.hx-fcta-call-btn__icon') : null;
+  var callText = callBtn ? callBtn.querySelector('.hx-fcta-phone-btn__text') : null;
+  var callIcon = callBtn ? callBtn.querySelector('.hx-fcta-phone-btn__icon') : null;
   var modal    = document.getElementById('hxFctaModal');
   var backdrop = document.getElementById('hxFctaModalBackdrop');
   var closeBtn = document.getElementById('hxFctaModalClose');
