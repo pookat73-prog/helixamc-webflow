@@ -27,6 +27,55 @@
   transition: none !important;
 }
 
+/* SVICC CTA: 기존 퍼플 글로우 안에 Discover HELIX와 같은 방향성 꺾쇠 추가.
+   글자와 겹치지 않도록 현재 텍스트 박스의 오른쪽에 아이콘 자리만 확보한다. */
+.bt-box-4 > a.link-block {
+  position: relative;
+}
+
+.bt-box-4 > a.link-block > .div-block-18 {
+  box-sizing: content-box;
+  padding-right: clamp(0.7rem, 0.85vw, 1rem);
+}
+
+.bt-box-4 > a.link-block::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: clamp(0.38rem, 0.5vw, 0.62rem);
+  width: 0.42rem;
+  height: 0.42rem;
+  border-top: 2px solid #5528aa;
+  border-right: 2px solid #5528aa;
+  opacity: 0.42;
+  transform: translate(0, -50%) rotate(45deg);
+  animation: helixSviccChevron 2.6s ease-in-out infinite;
+  will-change: transform, opacity, filter;
+  pointer-events: none;
+}
+
+@keyframes helixSviccChevron {
+  0%, 100% {
+    opacity: 0.42;
+    transform: translate(0, -50%) rotate(45deg);
+    filter: drop-shadow(0 0 0 rgba(85, 40, 170, 0));
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(3px, -50%) rotate(45deg);
+    filter: drop-shadow(0 0 4px rgba(85, 40, 170, 0.55));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bt-box-4 > a.link-block::after {
+    animation: none;
+    opacity: 0.76;
+    transform: translate(0, -50%) rotate(45deg);
+    filter: none;
+  }
+}
+
 @keyframes glowShimmerBlue {
   0%, 100% { box-shadow: 0 0 0.85vw 0.3vw rgba(0, 117, 214, 1); }
   50%       { box-shadow: 0 0 0.85vw 0.3vw rgba(0, 117, 214, 0.55); }
