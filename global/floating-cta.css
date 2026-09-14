@@ -101,9 +101,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: clamp(3px, 0.56vw, 7px);
-  /* 개별 외곽 그림자 없이, 모버튼과 겹치는 오른쪽 경계 안쪽에만 깊이를 준다. */
-  box-shadow: inset -9px 0 8px -9px rgba(13, 17, 23, 0.32);
+  gap: clamp(2px, 0.35vw, 5px);
+  box-shadow: none;
   transition: max-width 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: max-width;
   -webkit-tap-highlight-color: transparent;
@@ -113,7 +112,20 @@
 
 .hx-fcta-call-btn:hover {
   transform: none;
-  box-shadow: inset -9px 0 8px -9px rgba(13, 17, 23, 0.32);
+}
+
+/* 겹침 폭만큼 안쪽으로 들어온 실제 접합선에 중성 그림자를 드리운다.
+   개별 버튼 외곽에는 번지지 않고 모버튼이 앞에 있는 깊이만 남긴다. */
+.hx-fcta-call-btn::after {
+  content: '';
+  position: absolute;
+  top: clamp(5px, 0.4167vw, 6px);
+  right: clamp(8px, 0.6944vw, 10px);
+  bottom: clamp(5px, 0.4167vw, 6px);
+  width: 1px;
+  border-radius: 999px;
+  box-shadow: -3px 0 5px 1px rgba(13, 17, 23, 0.28);
+  pointer-events: none;
 }
 .hx-fcta-call-btn:focus-visible {
   outline: 2px solid #0075d6;
