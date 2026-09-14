@@ -70,33 +70,22 @@
 
   /* ── HTML 주입 ── */
   var html = [
-    /* 오버레이 */
-    '<div class="hx-fcta-overlay" id="hxFctaOverlay" aria-hidden="true"></div>',
-
-    /* 선택 패널 */
-    '<div class="hx-fcta-panel" id="hxFctaPanel" role="menu" aria-label="상담 선택">',
-      '<a class="hx-fcta-panel__item" id="hxFctaCallBtn" href="' + PHONE + '"',
-        ' role="menuitem" aria-label="서초 본원 바로 전화 걸기 ' + PHONE_LABEL + '">',
-        '<span class="hx-fcta-panel__chip" aria-hidden="true">',
+    '<div class="hx-fcta-shell" role="group" aria-label="상담 액션">',
+      /* 전화 버튼 */
+      '<a class="hx-fcta-call-btn" id="hxFctaCallBtn" href="' + PHONE + '"',
+        ' aria-label="서초 본원 바로 전화 걸기 ' + PHONE_LABEL + '">',
+        '<span class="hx-fcta-call-btn__icon" aria-hidden="true">',
           '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
         '</span>',
-        '<span>바로 전화 걸기</span>',
       '</a>',
-      '<button class="hx-fcta-panel__item" id="hxFctaFormBtn" type="button"',
-        ' role="menuitem" aria-label="상담 신청 폼 열기">',
-        '<span class="hx-fcta-panel__chip" aria-hidden="true">',
-          '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>',
-        '</span>',
-        '<span>상담 신청 남기기</span>',
+
+      /* 상담 신청 버튼 */
+      '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
+        ' aria-label="상담 신청하기" aria-expanded="false" aria-controls="hxFctaModal">',
+      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
+      '<span class="hx-fcta-btn__label">상담 신청하기</span>',
       '</button>',
     '</div>',
-
-    /* 토글 버튼 */
-    '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
-      ' aria-label="상담 문의하기" aria-expanded="false" aria-controls="hxFctaPanel">',
-      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
-      '<span class="hx-fcta-btn__label">상담 문의하기</span>',
-    '</button>',
 
     /* 상담 신청 모달 */
     '<div class="hx-fcta-modal" id="hxFctaModal" role="dialog"',
@@ -226,10 +215,7 @@
 
   /* ── 요소 참조 ── */
   var toggle   = document.getElementById('hxFctaToggle');
-  var panel    = document.getElementById('hxFctaPanel');
-  var overlay  = document.getElementById('hxFctaOverlay');
   var callBtn  = document.getElementById('hxFctaCallBtn');
-  var formBtn  = document.getElementById('hxFctaFormBtn');
   var modal    = document.getElementById('hxFctaModal');
   var backdrop = document.getElementById('hxFctaModalBackdrop');
   var closeBtn = document.getElementById('hxFctaModalClose');
@@ -427,34 +413,15 @@
     privacyMore.textContent = open ? '접기' : '자세히 보기';
   });
 
-  /* ── 패널 열기·닫기 ── */
-  var panelOpen = false;
-
-  function openPanel() {
-    panelOpen = true;
-    panel.classList.add('is-open');
-    overlay.classList.add('is-open');
-    toggle.setAttribute('aria-expanded', 'true');
-    toggle.setAttribute('aria-label', '상담 메뉴 닫기');
-    /* "상담 문의하기" 버튼 눌러 상담 메뉴를 연 순간 = 상담 의향.
-       (닫기 클릭은 집계 안 함.) ga 헬퍼가 page 를 자동 부착. */
+  /* ── 상담 버튼(폼) 열기 ── */
+  function openModalFromFab() {
+    formSrc = 'floating_cta';
+    openModal();
     ga('cta_open', { cta_src: 'floating_cta' });
   }
 
-  function closePanel() {
-    panelOpen = false;
-    panel.classList.remove('is-open');
-    overlay.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', '상담 메뉴 열기');
-  }
-
   toggle.addEventListener('click', function () {
-    panelOpen ? closePanel() : openPanel();
-  });
-
-  overlay.addEventListener('click', function () {
-    closePanel();
+    openModalFromFab();
   });
 
   /* ── 모달 열기·닫기 ── */
@@ -477,6 +444,7 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    toggle.setAttribute('aria-expanded', 'true');
     closeBtn.focus();
   }
 
@@ -484,6 +452,7 @@
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    toggle.setAttribute('aria-expanded', 'false');
     toggle.focus();
   }
 
@@ -494,7 +463,6 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (modal.classList.contains('is-open')) closeModal();
-      else if (panelOpen) closePanel();
     }
   });
 
@@ -558,7 +526,6 @@
   /* ── 전화 클릭 ── */
   callBtn.addEventListener('click', function () {
     ga('cta_call', { cta_src: 'floating_cta' });
-    closePanel();
   });
 
   /* ── 이번 상담 폼을 어디서 열었나 ──
@@ -567,21 +534,6 @@
      시작한 신청인지 알아야 두 경로의 전환율을 비교할 수 있으므로, 열 때
      출처를 여기 적어 두고 제출 이벤트에 같이 싣는다. */
   var formSrc = 'floating_cta';
-
-  /* ── 폼 열기 ── */
-  formBtn.addEventListener('click', function (e) {
-    /* 사람이 실제로 누른 클릭만 받는다. 서초 페이지의 Webflow footer 커스텀
-       코드처럼 "본문 버튼을 누르면 이 플로팅 버튼을 대신 눌러 주는" 옛 방식이
-       아직 남아 있는 페이지가 있는데, 그건 스크립트가 만든 가짜 클릭이라
-       isTrusted 가 false 다. 그대로 두면 아래 인라인 처리와 겹쳐 상담 폼
-       열림이 두 번 집계되고 출처도 floating_cta 로 덮여 버린다. 여기서
-       걸러내면 옛 커스텀 코드를 지우지 않아도 집계가 어긋나지 않는다. */
-    if (e && e.isTrusted === false) return;
-    formSrc = 'floating_cta';
-    closePanel();
-    openModal();
-    ga('cta_form_open', { cta_src: 'floating_cta' });
-  });
 
   /* ── 본문에 심은 인라인 상담 버튼 ──
      data-cta-target="hxFctaFormBtn" 을 가진 요소를 누르면 플로팅 버튼과
@@ -603,7 +555,6 @@
     if (targetId === 'hxFctaFormBtn') {
       e.preventDefault();
       formSrc = src;
-      closePanel();
       openModal();
       ga('cta_form_open', { cta_src: src, cta_id: el.id || '' });
       return;
