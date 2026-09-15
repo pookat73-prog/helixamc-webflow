@@ -80,6 +80,10 @@
    굵기 700 은 작은 크기에서 글자 속(카운터)이 떡져서 600 으로 낮추고
    크기를 키움. 자간도 음수 제거해 밀림 방지. */
 /* 상담 신청 탭 — 전화 상담 버튼의 흰 본체 바닥선과 곡률 계열을 맞춘다. */
+.hx-fcta-form-btn[hidden] {
+  display: none !important;
+}
+
 .hx-fcta-call-btn {
   position: absolute;
   right: calc(100% - clamp(8px, 0.6944vw, 10px));
@@ -229,8 +233,8 @@
 .hx-fcta-phone-btn__icon {
   width: 1em;
   height: 1em;
-  transform: scale(1.2);
-  transform-origin: right center;
+  transform: scale(1.1);
+  transform-origin: 100% 0;
   display: inline-flex;
   flex: 0 0 auto;
 }
