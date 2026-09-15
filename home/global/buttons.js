@@ -117,7 +117,8 @@
   /* 히어로 메인 CTA 클릭 추적: .discover-helix_button (없으면 래퍼 .bt-box-1)
      클릭 시 GA4 이벤트. 글로우 로직(LOCKED)과 무관 — 클릭 측정만 별도로 붙임. */
   function initHeroCtaClickTracking() {
-    var nodes = document.querySelectorAll('.discover-helix_button');
+    /* 기본 버튼 컴포넌트를 본문에도 재사용하므로 Hero 래퍼 안만 집계. */
+    var nodes = document.querySelectorAll('.bt-box-1 .discover-helix_button');
     if (!nodes.length) nodes = document.querySelectorAll('.bt-box-1');
     nodes.forEach(function (el) {
       if (el.dataset.helixHeroTrack) return;
