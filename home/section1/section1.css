@@ -28,7 +28,7 @@
 
 /* 3. Discover HELIX button: restore a restrained directional chevron
       inside the empty icon slot without touching the locked button glow */
-.discover-helix_button > .w-layout-vflex:last-child:empty {
+.discover-helix_button > .w-layout-vflex:last-child:empty:not(.flex-block-63):not([data-hx-slot]) {
   flex: 0 0 auto;
   justify-content: center;
   align-items: center;
@@ -39,7 +39,7 @@
   will-change: transform, opacity, filter;
 }
 
-.discover-helix_button > .w-layout-vflex:last-child:empty::before {
+.discover-helix_button > .w-layout-vflex:last-child:empty:not(.flex-block-63):not([data-hx-slot])::before {
   content: "";
   width: 0.42rem;
   height: 0.42rem;
@@ -62,7 +62,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .discover-helix_button > .w-layout-vflex:last-child:empty {
+  .discover-helix_button > .w-layout-vflex:last-child:empty:not(.flex-block-63):not([data-hx-slot]) {
     animation: none;
     opacity: 0.76;
     transform: none;
