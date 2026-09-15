@@ -29,13 +29,13 @@
 
 /* SVICC CTA: 기존 퍼플 글로우 안에 Discover HELIX와 같은 방향성 꺾쇠 추가.
    꺾쇠는 Webflow에서 지정한 흰색 텍스트 블록(.div-block-18) 안에 고정한다. */
-.bt-box-4 > a.link-block > .div-block-18 {
+.bt-box-4 > a.link-block > .div-block-18:not(:has(> .div-block-337, > [data-hx-slot="arrow"])) {
   position: relative;
   box-sizing: content-box;
   padding-right: clamp(1.25rem, 1.3vw, 1.5rem);
 }
 
-.bt-box-4 > a.link-block > .div-block-18::after {
+.bt-box-4 > a.link-block > .div-block-18:not(:has(> .div-block-337, > [data-hx-slot="arrow"]))::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -65,7 +65,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bt-box-4 > a.link-block > .div-block-18::after {
+  .bt-box-4 > a.link-block > .div-block-18:not(:has(> .div-block-337, > [data-hx-slot="arrow"]))::after {
     animation: none;
     opacity: 0.76;
     transform: translate(0, -50%) rotate(45deg);

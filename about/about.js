@@ -1597,7 +1597,7 @@
      2) 1.5s 홀드 → 인라인 제거 + .is-looping 부착 → CSS keyframe 핸드오프
      ─────────────────────────────────────────────────────────── */
   function initAboutButtonGlow() {
-    var BLUE_SEL   = '.cta_seocho_button, .cta-style';
+    var BLUE_SEL   = '.cta_seocho_button, .cta-style, .cta_seocho_button-call-link, .discover-helix_button';
     var PURPLE_SEL = '.link-block';
     var targets = document.querySelectorAll(BLUE_SEL + ', ' + PURPLE_SEL);
     if (!targets.length) { log('about button glow: no targets'); return; }

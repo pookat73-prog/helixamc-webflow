@@ -241,3 +241,50 @@ select,
   user-select: text;
   -webkit-touch-callout: default;
 }
+
+/* Button component icon slots.
+   Webflow owns each slot's width, height, padding and gap. Only the artwork
+   moves. Explicit role attributes support future components; the scoped
+   class selectors support the current published components before Publish.
+   The branch component now has one arrow slot; links stay in Webflow. */
+:is([data-hx-slot="arrow"],
+    .discover-helix_button > .flex-block-63,
+    .link-block > .div-block-18 > .div-block-337,
+    .cta_seocho_button-call-link > .div-block-338 > .flex-block-38) {
+  position: relative;
+  flex-shrink: 0;
+}
+
+:is([data-hx-slot="arrow"],
+    .discover-helix_button > .flex-block-63,
+    .link-block > .div-block-18 > .div-block-337,
+    .cta_seocho_button-call-link > .div-block-338 > .flex-block-38)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--hx-arrow-color, #0075d6);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m9 5 7 7-7 7' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m9 5 7 7-7 7' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  animation: hxSlotArrow 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.link-block > .div-block-18 > .div-block-337 {
+  --hx-arrow-color: #5528aa; /* Existing SVICC button artwork/glow color. */
+}
+
+@keyframes hxSlotArrow {
+  0%, 100% { opacity: 0.42; transform: translateX(0); }
+  50% { opacity: 0.9; transform: translateX(2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is([data-hx-slot="arrow"],
+      .discover-helix_button > .flex-block-63,
+      .link-block > .div-block-18 > .div-block-337,
+      .cta_seocho_button-call-link > .div-block-338 > .flex-block-38)::before {
+    animation: none;
+    opacity: 0.76;
+    transform: none;
+  }
+}
