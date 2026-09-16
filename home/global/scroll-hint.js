@@ -59,7 +59,8 @@
     el = document.createElement('div');
     el.className = 'hx-scroll-hint';
     el.setAttribute('aria-hidden', 'true');   /* 장식 요소 — 스크린리더는 건너뜀 */
-    el.innerHTML = '<span class="hx-scroll-hint__chevron"></span>';
+    el.innerHTML = '<span class="hx-scroll-hint__label">아래로 내려 더 알아보기</span>' +
+                   '<span class="hx-scroll-hint__chevron"></span>';
     document.body.appendChild(el);
     log('built');
     return el;
