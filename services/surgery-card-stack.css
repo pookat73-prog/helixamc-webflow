@@ -9,7 +9,7 @@
 @media (min-width: 1200px) {
   .hx-sg-safety-cards {
     --hx-sg-card-overlap: clamp(20px, 2vw, 36px);
-    --hx-sg-card-content-gap: 32px;
+    --hx-sg-card-content-gap: 44px;
     gap: 0 !important;
     isolation: isolate;
     overflow: visible;
@@ -23,11 +23,26 @@
     height: auto !important;
     min-height: 0 !important;
     padding-bottom: calc(var(--hx-sg-card-overlap) + var(--hx-sg-card-content-gap)) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(
+      180deg,
+      rgba(244, 247, 251, 1) 0,
+      rgba(244, 247, 251, 1) calc(100% - 92px),
+      rgba(244, 247, 251, .99) calc(100% - 76px),
+      rgba(244, 247, 251, .95) calc(100% - 58px),
+      rgba(244, 247, 251, .86) calc(100% - 39px),
+      rgba(244, 247, 251, .70) calc(100% - 20px),
+      rgba(244, 247, 251, .48) 100%
+    ) !important;
     transform: none;
-    box-shadow: 0 0 24px 3px rgba(0, 117, 214, .58),
-                0 18px 42px rgba(13, 17, 23, .34);
+    box-shadow: 0 0 24px 3px rgba(0, 117, 214, .38);
     transition: none;
     will-change: auto;
+  }
+
+  .hx-sg-safety-card:last-child {
+    background-color: #f4f7fb !important;
+    background-image: none !important;
   }
 
   .hx-sg-safety-card + .hx-sg-safety-card {
@@ -50,7 +65,6 @@
   .hx-sg-safety-card:focus-within {
     z-index: var(--hx-sg-card-z);
     transform: none;
-    box-shadow: 0 0 24px 3px rgba(0, 117, 214, .58),
-                0 18px 42px rgba(13, 17, 23, .34);
+    box-shadow: 0 0 24px 3px rgba(0, 117, 214, .38);
   }
 }
