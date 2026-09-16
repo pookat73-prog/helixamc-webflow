@@ -65,6 +65,7 @@
   border-top: 1px solid rgba(154,171,187,.18);
   border-bottom: 1px solid rgba(154,171,187,.18);
   overflow: hidden;
+  clip-path: inset(var(--hx-qb-header-clip, 0px) 0 0);
   font-family: inherit;
 }
 #hx-branch-quickbar .hx-qb__inner {

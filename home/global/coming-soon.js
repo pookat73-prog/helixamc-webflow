@@ -712,6 +712,7 @@
     { name: '서초 본원', url: '/seocho', tel: '0221359119', number: '02-2135-9119', role: '중증·응급 및 전문 진료' },
     { name: '일산 분원', url: '/ilsan', tel: '0319787575', number: '031-978-7575', role: '지역 기반 종합 진료' }
   ];
+  var heroReady = false;
 
   function desktopBranch(branch) {
     return '<article class="hx-qb__cell">' +
@@ -731,7 +732,13 @@
   }
 
   function mountQuickbar() {
+    if (!heroReady) return;
     if (document.getElementById('hx-branch-quickbar')) return;
+    var stylesheet = document.querySelector('link[href*="home/global/coming-soon.css"]');
+    if (stylesheet && !stylesheet.sheet) {
+      stylesheet.addEventListener('load', mountQuickbar, { once: true });
+      return;
+    }
     var hero = document.querySelector('.blackframe_image-hero');
     var specialty = document.querySelector('.home_background_2');
     if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
@@ -750,11 +757,41 @@
       BRANCHES.map(mobileBranch).join('') + '</div><span aria-hidden="true"></span>' +
       '<a class="hx-qb__svicc-box" href="https://www.svicc.co.kr/" aria-label="SVICC 센터 안내"><span class="hx-qb__mobile-name">SVICC</span><span class="hx-qb__mobile-guide">센터 안내 <b aria-hidden="true">→</b></span></a></div></div>';
     hero.insertAdjacentElement('afterend', bar);
+
+    /* The line is behind this surface, while the existing fixed header must
+       stay visible above it. Clip only this bar where it meets that header. */
+    var headers = document.querySelectorAll('.header, .header_mobile');
+    var clipFrame = 0;
+    function updateHeaderClip() {
+      clipFrame = 0;
+      var headerBottom = 0;
+      Array.prototype.forEach.call(headers, function (header) {
+        var rect = header.getBoundingClientRect();
+        if (rect.width && rect.height && rect.top <= 0) {
+          headerBottom = Math.max(headerBottom, rect.bottom);
+        }
+      });
+      var barRect = bar.getBoundingClientRect();
+      var clip = Math.min(barRect.height, Math.max(0, headerBottom - barRect.top));
+      bar.style.setProperty('--hx-qb-header-clip', clip + 'px');
+    }
+    function scheduleHeaderClip() {
+      if (!clipFrame) clipFrame = requestAnimationFrame(updateHeaderClip);
+    }
+    updateHeaderClip();
+    window.addEventListener('scroll', scheduleHeaderClip, { passive: true });
+    window.addEventListener('resize', scheduleHeaderClip);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mountQuickbar, { once: true });
-  } else {
+  /* Wait for the Hero's existing font measurement / detach sequence. Adding
+     headings while that sequence runs can change document.fonts.ready timing. */
+  function afterHero() {
+    heroReady = true;
     mountQuickbar();
   }
+  window.addEventListener('helix-s1-done', afterHero, { once: true });
+  if (document.querySelector('.bt-box-1.is-looping') && !document.querySelector('[data-s1-ghost]')) {
+    afterHero();
+  }
+  setTimeout(afterHero, 6500);
 })();
