@@ -97,6 +97,52 @@
   margin-inline: -.18em;
 }
 
+/* 외과 인트로 강조어: 기본 블루 위로 밝은 푸른빛이 한 번 훑고 지나간다. */
+.hx-sg-hero-body .hx-sg-accent {
+  color: #0075d6;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hx-sg-hero-body .hx-sg-accent {
+    background-image: linear-gradient(
+      105deg,
+      #0075d6 0%,
+      #0075d6 31%,
+      #1d8ee8 40%,
+      #69bbff 50%,
+      #1d8ee8 60%,
+      #0075d6 69%,
+      #0075d6 100%
+    );
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: hx-sg-accent-sweep 4.4s cubic-bezier(.4, 0, .2, 1) infinite;
+  }
+}
+
+@keyframes hx-sg-accent-sweep {
+  0%,
+  18% {
+    background-position: 100% 0;
+  }
+
+  65%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-hero-body .hx-sg-accent {
+    animation: none;
+    background-position: 50% 0;
+  }
+}
+
 /* 외과 전문성 문구: 지정 줄바꿈과 좁은 화면의 자연 줄바꿈을 함께 유지한다. */
 .hx-sg-responsive-frame2 > div {
   width: 100%;
