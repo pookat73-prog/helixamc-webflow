@@ -708,10 +708,32 @@
   window.addEventListener('load', start);
 })();
 
-/* Home branch quick access. No section, SVG or scroll-animation mutation. */
+/* Home branch quick access. Preserve the existing SVG / animation algorithms. */
 (function () {
   'use strict';
   if (!/^\/(index\.html)?$/i.test(location.pathname)) return;
+
+  /* Loaded before section1 / divider / sections-animations by home/bootstrap.
+     Keep Webflow's visual classes and restore only their animation hooks. */
+  function prepareHomeViewport() {
+    var hero = document.querySelector('.blackframe_image-hero');
+    var specialty = document.querySelector('.home_background_2');
+    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
+    hero.setAttribute('data-hx-home-viewport', '');
+    [
+      '.home_background_2 h2.home_title',
+      '.home_background_3 h2.home_title',
+      '.home_background_3-mobile h2.home_title'
+    ].forEach(function (selector) {
+      var heading = document.querySelector(selector);
+      if (heading) heading.classList.add('section2-heading');
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', prepareHomeViewport, { once: true });
+  } else {
+    prepareHomeViewport();
+  }
 
   var PHONE_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2Z"></path></svg>';
   var BRANCHES = [
