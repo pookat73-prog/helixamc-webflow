@@ -100,6 +100,9 @@
 /* 외과 인트로 강조어: 기본 블루 위로 밝은 푸른빛이 한 번 훑고 지나간다. */
 .hx-sg-hero-body .hx-sg-accent {
   color: #0075d6;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
