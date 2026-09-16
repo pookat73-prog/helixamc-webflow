@@ -701,3 +701,60 @@
   }
   window.addEventListener('load', start);
 })();
+
+/* Home branch quick access. No section, SVG or scroll-animation mutation. */
+(function () {
+  'use strict';
+  if (!/^\/(index\.html)?$/i.test(location.pathname)) return;
+
+  var PHONE_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2Z"></path></svg>';
+  var BRANCHES = [
+    { name: '서초 본원', url: '/seocho', tel: '0221359119', number: '02-2135-9119', role: '중증·응급 및 전문 진료' },
+    { name: '일산 분원', url: '/ilsan', tel: '0319787575', number: '031-978-7575', role: '지역 기반 종합 진료' }
+  ];
+
+  function desktopBranch(branch) {
+    return '<article class="hx-qb__cell">' +
+      '<h3 class="hx-qb__name">' + branch.name + '</h3>' +
+      '<p class="hx-qb__role">' + branch.role + '</p>' +
+      '<a class="hx-qb__cta hx-qb__cta--phone" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' ' + branch.number + ' 전화 연결">' + PHONE_ICON + '<span>' + branch.number + '</span></a></article>';
+  }
+
+  function mobileBranch(branch) {
+    return '<div class="hx-qb__clinic-row">' +
+      '<a class="hx-qb__branch-main" href="' + branch.url + '" aria-label="' + branch.name + ' 지점 안내">' +
+      '<span class="hx-qb__mobile-name">' + branch.name + '</span>' +
+      '<span class="hx-qb__mobile-guide">지점 안내 <b aria-hidden="true">→</b></span></a>' +
+      '<span aria-hidden="true"></span>' +
+      '<a class="hx-qb__mobile-call-touch" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' 전화 연결">' +
+      '<span class="hx-qb__mobile-call-pill">' + PHONE_ICON + '전화</span></a></div>';
+  }
+
+  function mountQuickbar() {
+    if (document.getElementById('hx-branch-quickbar')) return;
+    var hero = document.querySelector('.blackframe_image-hero');
+    var specialty = document.querySelector('.home_background_2');
+    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
+
+    var bar = document.createElement('section');
+    bar.id = 'hx-branch-quickbar';
+    bar.setAttribute('aria-label', '진료지점 빠른 선택');
+    bar.innerHTML = '<div class="hx-qb__inner">' +
+      '<div class="hx-qb__cell hx-qb__intro"><p class="hx-qb__eyebrow">QUICK ACCESS</p>' +
+      '<h2 class="hx-qb__intro-title">진료지점 선택</h2>' +
+      '<div class="hx-qb__intro-copy"><span>서초와 일산 중 가까운 지점을 선택하세요.</span><span>SVICC 센터 안내도 함께 확인할 수 있습니다.</span></div></div>' +
+      BRANCHES.map(desktopBranch).join('') +
+      '<article class="hx-qb__cell"><h3 class="hx-qb__name">SVICC</h3><p class="hx-qb__role">영상진단·종양 치료</p>' +
+      '<a class="hx-qb__cta hx-qb__cta--guide" href="https://www.svicc.co.kr/" aria-label="SVICC 센터 안내">센터 안내 <span aria-hidden="true">→</span></a></article></div>' +
+      '<div class="hx-qb__mobile" aria-label="모바일 빠른 지점 안내"><div class="hx-qb__mobile-layout"><div class="hx-qb__clinic-group">' +
+      BRANCHES.map(mobileBranch).join('') + '</div><span aria-hidden="true"></span>' +
+      '<a class="hx-qb__svicc-box" href="https://www.svicc.co.kr/" aria-label="SVICC 센터 안내"><span class="hx-qb__mobile-name">SVICC</span><span class="hx-qb__mobile-guide">센터 안내 <b aria-hidden="true">→</b></span></a></div></div>';
+    hero.insertAdjacentElement('afterend', bar);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mountQuickbar, { once: true });
+  } else {
+    mountQuickbar();
+  }
+})();

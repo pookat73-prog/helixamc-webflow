@@ -48,3 +48,179 @@
 }
 
 /* 차단된 버튼 자체에 시각적 hint는 추가하지 않음 — 디자인에 영향 X */
+
+/* HOME BRANCH QUICK ACCESS — approved desktop / mobile v12.
+   Equal height and negative margin preserve the next section's origin.
+   This surface masks the existing line without changing its geometry. */
+#hx-branch-quickbar,
+#hx-branch-quickbar * { box-sizing: border-box; }
+#hx-branch-quickbar {
+  position: relative;
+  z-index: 1000;
+  width: 100%;
+  height: 144px;
+  margin-top: -144px;
+  color: #F4F7FB;
+  background: #0D1117;
+  border-top: 1px solid rgba(154,171,187,.18);
+  border-bottom: 1px solid rgba(154,171,187,.18);
+  overflow: hidden;
+  font-family: inherit;
+}
+#hx-branch-quickbar .hx-qb__inner {
+  width: 63.1667vw;
+  height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.08fr 1fr 1fr 1fr;
+}
+#hx-branch-quickbar .hx-qb__cell {
+  height: 100%;
+  min-width: 0;
+  padding: 25px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border-left: 1px solid rgba(154,171,187,.18);
+}
+#hx-branch-quickbar .hx-qb__intro { border-left: 0; }
+#hx-branch-quickbar p,
+#hx-branch-quickbar h2,
+#hx-branch-quickbar h3 { margin-top: 0; }
+#hx-branch-quickbar .hx-qb__eyebrow {
+  margin-bottom: 8px;
+  color: #6B7D99;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .17em;
+}
+#hx-branch-quickbar .hx-qb__intro-title {
+  margin-bottom: 8px;
+  color: #F4F7FB;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.03em;
+}
+#hx-branch-quickbar .hx-qb__intro-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #6B7D99;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+#hx-branch-quickbar .hx-qb__name {
+  margin-bottom: 7px;
+  color: #F4F7FB;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+#hx-branch-quickbar .hx-qb__role {
+  margin-bottom: 14px;
+  color: #9AABBB;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -.01em;
+}
+#hx-branch-quickbar .hx-qb__cta {
+  min-height: 30px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(0,117,214,.78);
+  border-radius: 999px;
+  color: #F4F7FB;
+  background: rgba(0,117,214,.11);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+#hx-branch-quickbar .hx-qb__cta svg { width: 12px; height: 12px; fill: #0075D6; color: #0075D6; flex: none; }
+#hx-branch-quickbar .hx-qb__cta--guide { border-color: rgba(154,171,187,.48); background: transparent; }
+#hx-branch-quickbar .hx-qb__cta--guide span { color: #9AABBB; font-size: 13px; }
+#hx-branch-quickbar a:focus-visible { outline: 2px solid #0075D6; outline-offset: 2px; }
+#hx-branch-quickbar .hx-qb__mobile { display: none; }
+@media (min-width: 992px) and (max-width: 1279px) {
+  #hx-branch-quickbar .hx-qb__inner { width: calc(100% - 48px); }
+  #hx-branch-quickbar .hx-qb__cell { padding: 20px 20px 18px; }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  #hx-branch-quickbar .hx-qb__inner { width: calc(100% - 168px); margin-left: 16px; margin-right: 152px; }
+  #hx-branch-quickbar .hx-qb__cell { padding: 18px 12px 16px; }
+  #hx-branch-quickbar .hx-qb__eyebrow { margin-bottom: 6px; }
+  #hx-branch-quickbar .hx-qb__intro-title { font-size: 16px; margin-bottom: 7px; }
+  #hx-branch-quickbar .hx-qb__intro-copy { font-size: 8px; white-space: normal; }
+  #hx-branch-quickbar .hx-qb__name { font-size: 15px; }
+  #hx-branch-quickbar .hx-qb__role { margin-bottom: 12px; font-size: 8px; }
+}
+@media (max-width: 767px) {
+  #hx-branch-quickbar .hx-qb__inner { display: none; }
+  #hx-branch-quickbar .hx-qb__mobile {
+    display: block;
+    width: 100%;
+    height: 142px;
+    margin: 0;
+    padding: 0 32px;
+    color: #F4F7FB;
+    background: #0D1117;
+    font-family: inherit;
+  }
+  #hx-branch-quickbar .hx-qb__mobile-layout {
+    width: min(178px,calc(100vw - 173px));
+    height: 142px;
+    display: grid;
+    grid-template-rows: 76px 3px 44px 19px;
+  }
+  #hx-branch-quickbar .hx-qb__clinic-group { grid-row: 1; min-width: 0; height: 76px; display: grid; grid-template-rows: 38px 38px; }
+  #hx-branch-quickbar .hx-qb__clinic-row { min-width: 0; display: grid; grid-template-columns: minmax(0,1fr) 8px 46px; align-items: stretch; border: 0; }
+  #hx-branch-quickbar .hx-qb__clinic-row + .hx-qb__clinic-row { border-top: 1px solid rgba(154,171,187,.24); }
+  #hx-branch-quickbar .hx-qb__branch-main {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  #hx-branch-quickbar .hx-qb__mobile-name { display: block; color: #F4F7FB; font-size: 10.5px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+  #hx-branch-quickbar .hx-qb__mobile-guide { display: flex; align-items: center; gap: 3px; margin-left: 4px; color: #9AABBB; font-size: 8.5px; font-weight: 500; line-height: 1; white-space: nowrap; }
+  #hx-branch-quickbar .hx-qb__mobile-guide b { color: #0075D6; font-size: 9px; font-weight: 400; line-height: 1; }
+  #hx-branch-quickbar .hx-qb__mobile-call-touch {
+    grid-column: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 100%;
+    min-height: 43px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    text-decoration: none;
+    color: #F4F7FB;
+  }
+  #hx-branch-quickbar .hx-qb__mobile-call-pill { display: flex; align-items: center; justify-content: center; width: 42px; height: 26px; gap: 3px; border: 1px solid rgba(0,117,214,.78); border-radius: 999px; background: rgba(0,117,214,.08); color: #F4F7FB; font-size: 9px; font-weight: 600; line-height: 1; white-space: nowrap; }
+  #hx-branch-quickbar .hx-qb__mobile-call-pill svg { display: block; width: 10px; height: 10px; flex: 0 0 10px; color: #0075D6; }
+  #hx-branch-quickbar .hx-qb__svicc-box { grid-row: 3; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 44px; padding: 0 10px; border: 1px solid rgba(154,171,187,.34); border-radius: 2px; background: rgba(244,247,251,.025); box-shadow: none; text-decoration: none; color: #F4F7FB; white-space: nowrap; }
+  #hx-branch-quickbar .hx-qb__svicc-box .hx-qb__mobile-name { font-size: 11px; }
+  #hx-branch-quickbar .hx-qb__svicc-box .hx-qb__mobile-guide { margin-left: 10px; font-size: 9px; }
+}
