@@ -68,3 +68,129 @@
     box-shadow: 0 0 24px 3px rgba(0, 117, 214, .38);
   }
 }
+
+/* 외과 인트로 필기체: 글자 밑면에서 시작해 빠르게 선명해진다. */
+.hx-sg-hero-script-safe {
+  -webkit-mask-image: linear-gradient(
+    14deg,
+    rgba(0, 0, 0, .08) 0%,
+    rgba(0, 0, 0, .08) 6%,
+    rgba(0, 0, 0, .28) 16%,
+    rgba(0, 0, 0, .52) 26%,
+    rgba(0, 0, 0, .76) 36%,
+    #000 46%
+  );
+  mask-image: linear-gradient(
+    14deg,
+    rgba(0, 0, 0, .08) 0%,
+    rgba(0, 0, 0, .08) 6%,
+    rgba(0, 0, 0, .28) 16%,
+    rgba(0, 0, 0, .52) 26%,
+    rgba(0, 0, 0, .76) 36%,
+    #000 46%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  padding-block: .3em;
+  padding-inline: .18em;
+  margin-block: -.3em;
+  margin-inline: -.18em;
+}
+
+/* 외과 전문성 문구: 지정 줄바꿈과 좁은 화면의 자연 줄바꿈을 함께 유지한다. */
+.hx-sg-responsive-frame2 > div {
+  width: 100%;
+}
+
+.hx-sg-expertise-copy .hx-sg-readable-statement-white {
+  white-space: pre-line;
+}
+
+/* 작은 원은 맞닿는 중앙 외곽선만 지우고, 주변 곡선으로 부드럽게 연결한다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small {
+  --hx-sg-ring-outline-shape: ellipse 32% 48% at 100% 50%;
+  position: relative;
+  border-color: transparent;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  border: 1px solid #0075d6;
+  border-radius: inherit;
+  -webkit-mask-image: radial-gradient(
+    var(--hx-sg-ring-outline-shape),
+    transparent 15%,
+    rgba(0, 0, 0, .15) 35%,
+    rgba(0, 0, 0, .48) 60%,
+    rgba(0, 0, 0, .82) 82%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    var(--hx-sg-ring-outline-shape),
+    transparent 15%,
+    rgba(0, 0, 0, .15) 35%,
+    rgba(0, 0, 0, .48) 60%,
+    rgba(0, 0, 0, .82) 82%,
+    #000 100%
+  );
+}
+
+/* 큰 원의 표면만 흐리게 연결한다. 글자와 기존 원의 크기·겹침은 유지한다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-large {
+  --hx-sg-ring-blend-direction: 90deg;
+  position: relative;
+  isolation: isolate;
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-large::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid #0075d6;
+  border-radius: inherit;
+  background-color: #0d1117;
+  box-shadow: 5px 0 26px 0 #0075d6;
+  -webkit-mask-image: linear-gradient(
+    var(--hx-sg-ring-blend-direction),
+    transparent 32px,
+    rgba(0, 0, 0, .08) calc(32px + 2%),
+    rgba(0, 0, 0, .36) calc(32px + 4%),
+    rgba(0, 0, 0, .76) calc(32px + 7%),
+    #000 calc(32px + 10%)
+  );
+  mask-image: linear-gradient(
+    var(--hx-sg-ring-blend-direction),
+    transparent 32px,
+    rgba(0, 0, 0, .08) calc(32px + 2%),
+    rgba(0, 0, 0, .36) calc(32px + 4%),
+    rgba(0, 0, 0, .76) calc(32px + 7%),
+    #000 calc(32px + 10%)
+  );
+  /* 마스크를 바깥으로 넓혀 기존 빛이 가장자리에서 잘리지 않게 한다. */
+  -webkit-mask-size: calc(100% + 64px) calc(100% + 64px);
+  mask-size: calc(100% + 64px) calc(100% + 64px);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-clip: no-clip;
+  mask-clip: no-clip;
+}
+
+@media (max-width: 991px) {
+  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-small {
+    --hx-sg-ring-outline-shape: ellipse 48% 32% at 50% 100%;
+  }
+
+  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-large {
+    --hx-sg-ring-blend-direction: 180deg;
+  }
+}
