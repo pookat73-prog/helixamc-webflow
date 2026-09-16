@@ -234,3 +234,191 @@
     setTimeout(initEmergencyCtaClickTracking, 100);
   });
 })();
+
+/* Care preparation guide v6 — Webflow-native home entry, staging integration. */
+(function () {
+  'use strict';
+
+  function initCarePreparationGuide() {
+    const section = document.getElementById('care-preparation');
+    const openButton = section && section.querySelector('.hx-prep__open');
+    if (!openButton || document.getElementById('hx-prep-guide')) return;
+
+    // The entry section stays native to Webflow; only the approved guide is added.
+    document.body.insertAdjacentHTML('beforeend', `<dialog class="hx-guide" id="hx-prep-guide" aria-labelledby="hx-guide-title" aria-describedby="hx-guide-intro">
+    <div class="hx-guide__mobile-bar"><span>진료 준비 안내</span><button class="hx-guide__close hx-guide__mobile-close" aria-label="진료 준비 안내 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <header class="hx-guide__header">
+      <div class="hx-guide__heading">
+        <div><p class="hx-guide__eyebrow">HELIX · 진료 준비 가이드</p><h2 id="hx-guide-title">진료를 이어가기 전,<br class="hx-mobile-only"> 이렇게 준비해 주세요.</h2><p id="hx-guide-intro">다니시던 병원의 진료를 바탕으로, 필요한 검사와 진료를 함께 준비합니다.</p></div>
+        <button class="hx-guide__close" aria-label="진료 준비 안내 닫기" autofocus><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="hx-guide__branch-bar">
+        <div class="hx-guide__branch-heading"><p class="hx-guide__branch-label" id="hx-branch-label">방문하실 지점을 선택해 주세요.</p><p class="hx-guide__branch-help">선택한 지점의 연락처와 주차 정보를 안내합니다.</p></div>
+        <div class="hx-guide__branch-choice" role="group" aria-labelledby="hx-branch-label"><button type="button" data-branch="seocho" aria-pressed="true">서초 본원</button><button type="button" data-branch="ilsan" aria-pressed="false">일산 분원</button></div>
+        <span class="hx-sr-only" id="hx-branch-status" role="status"></span>
+      </div>
+    </header>
+    <div class="hx-guide__scroll">
+      <ol class="hx-guide__steps">
+        <li class="hx-guide__step">
+          <span class="hx-guide__number" aria-hidden="true">01</span>
+          <div class="hx-guide__step-body">
+            <h3>다니시던 병원에 진료자료를 요청해 주세요.</h3>
+            <p class="hx-guide__request-method">기존 병원에 전화하거나 방문해 아래 자료의 발급을 요청해 주세요.</p>
+            <ul class="hx-guide__materials"><li>기존 진료기록</li><li>검사결과</li><li>영상자료</li><li>현재 복용약·처방내역</li></ul>
+            <p class="hx-guide__original">영상자료는 처음부터 ‘원본 파일’로 요청해 주세요.</p>
+            <p class="hx-guide__hint">준비가 어려운 자료는 헬릭스에 전화로 먼저 말씀해 주세요.</p>
+          </div>
+        </li>
+        <li class="hx-guide__step" id="hx-prep-send" tabindex="-1">
+          <span class="hx-guide__number" aria-hidden="true">02</span>
+          <div class="hx-guide__step-body">
+            <h3>방문 전, 전화 문의 후 이메일로 자료를 보내 주세요.</h3>
+            <div class="hx-guide__call-line"><h4 class="hx-guide__contact-title">먼저, 전화로 방문 목적을 알려 주세요.</h4><p>다른 병원에서 진료 중인 점과 현재 상태, 헬릭스에서 받고자 하는 검사·진료를 말씀해 주세요.</p><a class="hx-guide__phone" data-branch-phone href="tel:0221359119"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4l2 5-3 2c1.5 3 3 4.5 6 6l2-3 5 2v4c0 1-1 2-2 2C10 20 4 14 3 5c0-1 1-2 2-2Z"/></svg><span class="hx-guide__phone-caption">전화 문의</span><span data-phone-number>02-2135-9119</span></a></div>
+            <div class="hx-guide__send-line">
+            <h4 class="hx-guide__contact-title">다음, 이메일로 진료자료를 보내 주세요.</h4>
+            <p>전화 안내에 따라 준비한 진료기록과 검사자료를 보내 주세요.</p>
+            <div class="hx-guide__email" id="hx-seocho-mail">
+              <div class="hx-guide__email-address"><span>자료 보내실 곳 · 서초 본원</span><button type="button" id="hx-copy-email" class="hx-guide__email-copy" aria-label="서초 본원 이메일 주소 복사: schelix@naver.com" title="이메일 주소를 누르면 복사됩니다"><span class="hx-guide__email-value">schelix@naver.com</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h12v13H8zM16 8V3H3v13h5"/></svg></button></div>
+              <span class="hx-guide__copy-status" id="hx-copy-status" role="status"></span>
+            </div>
+            <div class="hx-guide__email hx-guide__email--unconfirmed" id="hx-ilsan-mail" hidden><div><span>일산 분원 자료 전달</span><p>자료를 받을 이메일 주소를 전화로 확인해 주세요.</p></div><a class="hx-guide__text-link" href="tel:0319787575">수신 주소 문의 ↗</a></div>
+            </div>
+          </div>
+        </li>
+        <li class="hx-guide__step">
+          <span class="hx-guide__number" aria-hidden="true">03</span>
+          <div class="hx-guide__step-body">
+            <h3>방문 위치와 주차를 확인해 주세요.</h3>
+            <div class="hx-guide__location"><div><button type="button" class="hx-guide__address-copy" id="hx-copy-address" title="주소를 누르면 복사됩니다" aria-label="서초 본원 주소 복사: 서울특별시 서초구 신반포로 162, 르본시티 2층"><span id="hx-branch-address">서울특별시 서초구 신반포로 162, 르본시티 2층</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h12v13H8zM16 8V3H3v13h5"/></svg></button><p class="hx-guide__address-status" id="hx-address-copy-status" role="status"></p><p class="hx-guide__parking"><span id="hx-branch-parking">르본시티 옆 지상주차장</span><strong id="hx-branch-parking-benefit">2시간 30분 무료</strong></p><p class="hx-guide__hint" id="hx-branch-parking-note" hidden></p></div><a id="hx-branch-detail" class="hx-guide__text-link" href="/seocho#map" aria-label="서초 본원 주차 안내 자세히 보기">자세히 보기</a></div>
+          </div>
+        </li>
+      </ol>
+      <section class="hx-guide__after" aria-labelledby="hx-after-title">
+        <h3 id="hx-after-title">내원 후에는</h3>
+        <div><p class="hx-guide__after-flow"><span>기존 검사자료 검토</span><span aria-hidden="true">→</span><span>필요한 추가 검사 안내</span><span aria-hidden="true">→</span><span>이후 진료계획 설명</span></p><p class="hx-guide__after-note">필요한 진료 이후에는 다니시던 병원에서 관리를 이어갈 수 있도록 안내합니다.</p></div>
+      </section>
+    </div>
+    <footer class="hx-guide__footer"><p>필요한 안내로 바로 연결해 드립니다.</p><div class="hx-guide__actions"><a class="hx-guide__action hx-guide__action--primary" data-branch-phone href="tel:0221359119"><span data-footer-branch>서초</span> 전화 문의</a><button class="hx-guide__action" data-guide-action="send">자료 전달 방법</button><a class="hx-guide__action hx-guide__action--text" id="hx-branch-page" href="/seocho" aria-label="서초 본원 상세 페이지"><span class="hx-guide__action-label">지점 안내</span><span aria-hidden="true">→</span></a></div></footer>
+  </dialog>`);
+    const dialog = document.getElementById('hx-prep-guide');
+    openButton.setAttribute('aria-haspopup', 'dialog');
+    openButton.setAttribute('aria-controls', 'hx-prep-guide');
+    const scrollArea = dialog.querySelector('.hx-guide__scroll');
+    const guideHeader = dialog.querySelector('.hx-guide__header');
+    const mobileGuide = window.matchMedia('(max-width:767px), (max-width:1024px) and (max-height:600px)');
+    function placeGuideHeader() {
+      if (mobileGuide.matches) scrollArea.prepend(guideHeader);
+      else dialog.insertBefore(guideHeader, scrollArea);
+    }
+    placeGuideHeader();
+    mobileGuide.addEventListener('change', placeGuideHeader);
+    let savedScroll = 0;
+    let oldOverflow = '';
+    function openGuide(event) {
+      if (event) event.preventDefault();
+      if (dialog.open) return;
+      resetCopy();
+      savedScroll = window.scrollY;
+      oldOverflow = document.documentElement.style.overflowY;
+      document.documentElement.style.overflowY = 'hidden';
+      dialog.showModal();
+      scrollArea.scrollTop = 0;
+      const closeButton = [...dialog.querySelectorAll('.hx-guide__close')].find(el => el.getClientRects().length);
+      closeButton?.focus({preventScroll:true});
+    }
+    function closeGuide() { dialog.close(); }
+    openButton.addEventListener('click', openGuide);
+    dialog.querySelectorAll('.hx-guide__close').forEach(button => button.addEventListener('click', closeGuide));
+    dialog.addEventListener('close', () => {
+      document.documentElement.style.overflowY = oldOverflow;
+      window.scrollTo(0, savedScroll);
+      openButton.focus({preventScroll:true});
+    });
+    dialog.addEventListener('click', event => {
+      if (event.target !== dialog) return;
+      const r = dialog.getBoundingClientRect();
+      if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) closeGuide();
+    });
+    dialog.addEventListener('keydown', event => {
+      if (event.key !== 'Tab') return;
+      const items = [...dialog.querySelectorAll('button,a[href],[tabindex="0"]')].filter(el => !el.disabled && el.getClientRects().length);
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
+    dialog.querySelectorAll('[data-guide-action]').forEach(button => button.addEventListener('click', () => {
+      const target = document.getElementById('hx-prep-send');
+      target.scrollIntoView({behavior:'instant',block:'start'});
+      target.focus({preventScroll:true});
+    }));
+    const copyButton = document.getElementById('hx-copy-email');
+    const copyStatus = document.getElementById('hx-copy-status');
+    const addressCopyButton = document.getElementById('hx-copy-address');
+    const addressCopyStatus = document.getElementById('hx-address-copy-status');
+    const addressText = document.getElementById('hx-branch-address');
+    function resetCopy() {
+      copyButton.classList.remove('is-copied');
+      copyStatus.textContent = '';
+      addressCopyButton.classList.remove('is-copied');
+      addressCopyStatus.textContent = '';
+    }
+    copyButton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText('schelix@naver.com');
+        copyButton.classList.add('is-copied');
+        copyStatus.textContent = '이메일 주소를 복사했습니다.';
+      } catch {
+        copyStatus.textContent = '주소를 직접 선택해 복사해 주세요.';
+      }
+    });
+    addressCopyButton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(addressText.textContent.trim());
+        addressCopyButton.classList.add('is-copied');
+        addressCopyStatus.textContent = '주소를 복사했습니다.';
+      } catch {
+        addressCopyStatus.textContent = '주소를 직접 선택해 복사해 주세요.';
+      }
+    });
+    // Only verified public contact values are included. No unconfirmed Kakao link.
+    const branches = {
+      seocho: {name:'서초 본원',short:'서초',phone:'02-2135-9119',tel:'0221359119',address:'서울특별시 서초구 신반포로 162, 르본시티 2층',parking:'르본시티 옆 지상주차장',parkingBenefit:'2시간 30분 무료',parkingNote:'',url:'/seocho#map'},
+      ilsan: {name:'일산 분원',short:'일산',phone:'031-978-7575',tel:'0319787575',address:'경기도 고양시 덕양구 중앙로 439',parking:'건물 지하주차장',parkingBenefit:'무료 이용',parkingNote:'만차 시 건너편 서정마을 1·2공영주차장 이용 · 내원 시간 기준 주차비 전액 지원',url:'/ilsan#map'}
+    };
+    dialog.querySelectorAll('[data-branch]').forEach(button => button.addEventListener('click', () => {
+      const key = button.dataset.branch;
+      const branch = branches[key];
+      dialog.querySelectorAll('[data-branch]').forEach(el => el.setAttribute('aria-pressed',String(el === button)));
+      dialog.querySelectorAll('[data-branch-phone]').forEach(el => {
+        el.href = 'tel:' + branch.tel;
+        el.setAttribute('aria-label',branch.name + ' 전화 문의 ' + branch.phone);
+      });
+      dialog.querySelector('[data-phone-number]').textContent = branch.phone;
+      dialog.querySelector('[data-footer-branch]').textContent = branch.short;
+      document.getElementById('hx-seocho-mail').hidden = key !== 'seocho';
+      document.getElementById('hx-ilsan-mail').hidden = key !== 'ilsan';
+      document.getElementById('hx-branch-address').textContent = branch.address;
+      addressCopyButton.setAttribute('aria-label',branch.name + ' 주소 복사: ' + branch.address);
+      document.getElementById('hx-branch-parking').textContent = branch.parking;
+      document.getElementById('hx-branch-parking-benefit').textContent = branch.parkingBenefit;
+      document.getElementById('hx-branch-parking-note').textContent = branch.parkingNote;
+      document.getElementById('hx-branch-parking-note').hidden = !branch.parkingNote;
+      const detail = document.getElementById('hx-branch-detail');
+      detail.href = branch.url;
+      detail.setAttribute('aria-label',branch.name + ' 주차 안내 자세히 보기');
+      const branchPage = document.getElementById('hx-branch-page');
+      branchPage.href = branch.url.split('#')[0];
+      branchPage.setAttribute('aria-label',branch.name + ' 상세 페이지');
+      document.getElementById('hx-branch-status').textContent = branch.name + '의 연락처와 위치 안내로 변경했습니다.';
+      resetCopy();
+    }));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarePreparationGuide, { once: true });
+  } else {
+    initCarePreparationGuide();
+  }
+})();
