@@ -210,7 +210,7 @@
     justify-content: center;
     width: 46px;
     height: 100%;
-    min-height: 43px;
+    min-height: 0;
     padding: 0;
     border: 0;
     background: transparent;
