@@ -771,13 +771,13 @@
     bar.innerHTML = '<div class="hx-qb__inner">' +
       '<div class="hx-qb__cell hx-qb__intro"><p class="hx-qb__eyebrow">QUICK ACCESS</p>' +
       '<h2 class="hx-qb__intro-title">진료지점 선택</h2>' +
-      '<div class="hx-qb__intro-copy"><span>서초와 일산 중 가까운 지점을 선택하세요.</span><span>SVICC 센터 안내도 함께 확인할 수 있습니다.</span></div></div>' +
+      '<div class="hx-qb__intro-copy"><span>서초와 일산 중 가까운 지점을 선택하세요.</span><span>서울동물영상종양센터 안내도 함께 확인할 수 있습니다.</span></div></div>' +
       BRANCHES.map(desktopBranch).join('') +
-      '<article class="hx-qb__cell"><h3 class="hx-qb__name">SVICC</h3><p class="hx-qb__role">영상진단·종양 치료</p>' +
-      '<a class="hx-qb__cta hx-qb__cta--guide" href="https://www.svicc.co.kr/" aria-label="SVICC 센터 안내">센터 안내 <span aria-hidden="true">→</span></a></article></div>' +
+      '<article class="hx-qb__cell"><h3 class="hx-qb__name hx-qb__name--center">서울동물<wbr>영상종양센터</h3><p class="hx-qb__role">영상진단·종양 치료</p>' +
+      '<a class="hx-qb__cta hx-qb__cta--guide" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내">센터 안내 <span aria-hidden="true">→</span></a></article></div>' +
       '<div class="hx-qb__mobile" aria-label="모바일 빠른 지점 안내"><div class="hx-qb__mobile-layout"><div class="hx-qb__clinic-group">' +
       BRANCHES.map(mobileBranch).join('') + '</div><span aria-hidden="true"></span>' +
-      '<a class="hx-qb__svicc-box" href="https://www.svicc.co.kr/" aria-label="SVICC 센터 안내"><span class="hx-qb__mobile-name">SVICC</span><span class="hx-qb__mobile-guide">센터 안내 <b aria-hidden="true">→</b></span></a></div></div>';
+      '<a class="hx-qb__svicc-box" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내"><span class="hx-qb__mobile-name">서울동물<wbr>영상종양센터</span><span class="hx-qb__mobile-guide">센터 안내 <b aria-hidden="true">→</b></span></a></div></div>';
     hero.insertAdjacentElement('afterend', bar);
 
     /* The line is behind this surface, while the existing fixed header must
