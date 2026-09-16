@@ -87,6 +87,34 @@
   FILES.forEach(function (path) { loadFile(path, REF); });
 })();
 
+/* 외과 전문성 문구: Webflow 원문이 일치할 때만 지정한 두 지점에서 줄을 나눈다. */
+(function () {
+  'use strict';
+
+  function initExpertiseStatement() {
+    var heading = document.querySelector(
+      '.hx-sg-expertise-copy .hx-sg-readable-statement-white'
+    );
+    if (!heading) return;
+
+    var lines = [
+      '수만 건의 임상 데이터와 경험을 바탕으로',
+      '수술 중 발생하는 모든 돌발 상황에',
+      '즉각 대응합니다.'
+    ];
+    var copy = heading.textContent.replace(/\s+/g, ' ').trim();
+    if (copy !== lines.join(' ')) return;
+
+    heading.textContent = lines.join('\n');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initExpertiseStatement, { once: true });
+  } else {
+    initExpertiseStatement();
+  }
+})();
+
 /* 안전 시스템 카드: 번호·본문·구분선은 유지하고, 국문·영문 제목 묶음만 순차 표시한다. */
 (function () {
   'use strict';
