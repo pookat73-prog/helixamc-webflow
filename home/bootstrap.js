@@ -160,6 +160,9 @@
        버튼 바인딩은 exempt 방식이라 순서 무관. */
     'home/global/hamburger.css',
     'home/global/hamburger.js',
+    /* Home viewport and heading hooks must exist before animation measurement. */
+    'home/global/coming-soon.css',
+    'home/global/coming-soon.js',
     'home/section1/section1.css',
     'home/section1/section1.js',
     'home/section-divider/divider.css',
@@ -168,8 +171,6 @@
     'home/global/buttons.js',
     'home/global/sections-animations.css',
     'home/global/sections-animations.js',
-    'home/global/coming-soon.css',
-    'home/global/coming-soon.js',
     'home/global/footer.css',
     'home/global/footer.js',
     /* 카드덱 (.just-box_qqqqqqq) — 카드 없으면 자동 스킵 */

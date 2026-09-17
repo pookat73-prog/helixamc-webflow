@@ -707,3 +707,119 @@
   }
   window.addEventListener('load', start);
 })();
+
+/* Home branch quick access. Preserve the existing SVG / animation algorithms. */
+(function () {
+  'use strict';
+  if (!/^\/(index\.html)?$/i.test(location.pathname)) return;
+
+  /* Loaded before section1 / divider / sections-animations by home/bootstrap.
+     Keep Webflow's visual classes and restore only their animation hooks. */
+  function prepareHomeViewport() {
+    var hero = document.querySelector('.blackframe_image-hero');
+    var specialty = document.querySelector('.home_background_2');
+    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
+    hero.setAttribute('data-hx-home-viewport', '');
+    [
+      '.home_background_2 h2.home_title',
+      '.home_background_3 h2.home_title',
+      '.home_background_3-mobile h2.home_title'
+    ].forEach(function (selector) {
+      var heading = document.querySelector(selector);
+      if (heading) heading.classList.add('section2-heading');
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', prepareHomeViewport, { once: true });
+  } else {
+    prepareHomeViewport();
+  }
+
+  var PHONE_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2Z"></path></svg>';
+  var BRANCHES = [
+    { name: '서초 본원', url: '/seocho', tel: '0221359119', number: '02-2135-9119', role: '중증·응급 및 전문 진료' },
+    { name: '일산 분원', url: '/ilsan', tel: '0319787575', number: '031-978-7575', role: '지역 기반 종합 진료' }
+  ];
+  var heroReady = false;
+
+  function desktopBranch(branch) {
+    return '<article class="hx-qb__cell">' +
+      '<h3 class="hx-qb__name">' + branch.name + '</h3>' +
+      '<p class="hx-qb__role">' + branch.role + '</p>' +
+      '<a class="hx-qb__cta hx-qb__cta--phone" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' ' + branch.number + ' 전화 연결">' + PHONE_ICON + '<span>' + branch.number + '</span></a></article>';
+  }
+
+  function mobileBranch(branch) {
+    return '<div class="hx-qb__clinic-row">' +
+      '<a class="hx-qb__branch-main" href="' + branch.url + '" aria-label="' + branch.name + ' 지점 안내">' +
+      '<span class="hx-qb__mobile-name">' + branch.name + '</span>' +
+      '<span class="hx-qb__mobile-guide">지점 안내 <b aria-hidden="true">→</b></span></a>' +
+      '<span aria-hidden="true"></span>' +
+      '<a class="hx-qb__mobile-call-touch" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' 전화 연결">' +
+      '<span class="hx-qb__mobile-call-pill">' + PHONE_ICON + '전화</span></a></div>';
+  }
+
+  function mountQuickbar() {
+    if (!heroReady) return;
+    if (document.getElementById('hx-branch-quickbar')) return;
+    var stylesheet = document.querySelector('link[href*="home/global/coming-soon.css"]');
+    if (stylesheet && !stylesheet.sheet) {
+      stylesheet.addEventListener('load', mountQuickbar, { once: true });
+      return;
+    }
+    var hero = document.querySelector('.blackframe_image-hero');
+    var specialty = document.querySelector('.home_background_2');
+    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
+
+    var bar = document.createElement('section');
+    bar.id = 'hx-branch-quickbar';
+    bar.setAttribute('aria-label', '진료지점 빠른 선택');
+    bar.innerHTML = '<div class="hx-qb__inner">' +
+      '<div class="hx-qb__cell hx-qb__intro"><p class="hx-qb__eyebrow">QUICK ACCESS</p>' +
+      '<h2 class="hx-qb__intro-title">진료지점 선택</h2>' +
+      '<div class="hx-qb__intro-copy"><span>서초와 일산 중 가까운 지점을 선택하세요.</span><span>서울동물영상종양센터 안내도 함께 확인할 수 있습니다.</span></div></div>' +
+      BRANCHES.map(desktopBranch).join('') +
+      '<article class="hx-qb__cell"><h3 class="hx-qb__name hx-qb__name--center">서울동물<wbr>영상종양센터</h3><p class="hx-qb__role">영상진단·종양 치료</p>' +
+      '<a class="hx-qb__cta hx-qb__cta--guide" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내">센터 안내 <span aria-hidden="true">→</span></a></article></div>' +
+      '<div class="hx-qb__mobile" aria-label="모바일 빠른 지점 안내"><div class="hx-qb__mobile-layout"><div class="hx-qb__clinic-group">' +
+      BRANCHES.map(mobileBranch).join('') + '</div><span aria-hidden="true"></span>' +
+      '<a class="hx-qb__svicc-box" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내"><span class="hx-qb__mobile-name">서울동물<wbr>영상종양센터</span><span class="hx-qb__mobile-guide">센터 안내 <b aria-hidden="true">→</b></span></a></div></div>';
+    hero.insertAdjacentElement('afterend', bar);
+
+    /* The line is behind this surface, while the existing fixed header must
+       stay visible above it. Clip only this bar where it meets that header. */
+    var headers = document.querySelectorAll('.header, .header_mobile');
+    var clipFrame = 0;
+    function updateHeaderClip() {
+      clipFrame = 0;
+      var headerBottom = 0;
+      Array.prototype.forEach.call(headers, function (header) {
+        var rect = header.getBoundingClientRect();
+        if (rect.width && rect.height && rect.top <= 0) {
+          headerBottom = Math.max(headerBottom, rect.bottom);
+        }
+      });
+      var barRect = bar.getBoundingClientRect();
+      var clip = Math.min(barRect.height, Math.max(0, headerBottom - barRect.top));
+      bar.style.setProperty('--hx-qb-header-clip', clip + 'px');
+    }
+    function scheduleHeaderClip() {
+      if (!clipFrame) clipFrame = requestAnimationFrame(updateHeaderClip);
+    }
+    updateHeaderClip();
+    window.addEventListener('scroll', scheduleHeaderClip, { passive: true });
+    window.addEventListener('resize', scheduleHeaderClip);
+  }
+
+  /* Wait for the Hero's existing font measurement / detach sequence. Adding
+     headings while that sequence runs can change document.fonts.ready timing. */
+  function afterHero() {
+    heroReady = true;
+    mountQuickbar();
+  }
+  window.addEventListener('helix-s1-done', afterHero, { once: true });
+  if (document.querySelector('.bt-box-1.is-looping') && !document.querySelector('[data-s1-ghost]')) {
+    afterHero();
+  }
+  setTimeout(afterHero, 6500);
+})();
