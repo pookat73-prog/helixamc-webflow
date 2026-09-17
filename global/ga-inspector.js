@@ -115,6 +115,9 @@
     /* 푸터 (홈 등) */
     { sel: '.footer-email-clickable', label: '푸터 · 이메일 복사', event: 'copy_email_*' },
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
+    /* 홈 Hero 지점 바 — 늦게 주입되는 별도 측정 영역 */
+    { sel: '#hx-branch-quickbar [data-qb-action="phone_call"]', label: 'Hero 지점 바 · 전화', event: 'home_quickbar_phone_call_*' },
+    { sel: '#hx-branch-quickbar [data-qb-action="detail"]', label: 'Hero 지점 바 · 안내', event: 'home_quickbar_detail_*' },
     /* 홈 지점 카드 */
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
     /* home_phone_call 은 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
