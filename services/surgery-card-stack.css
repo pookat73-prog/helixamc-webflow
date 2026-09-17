@@ -69,6 +69,11 @@
   }
 }
 
+/* 외과 아웃트로 병원명: Webflow 네이티브의 일반 굵기를 유지한다. */
+.hx-sg-dept-brand-light {
+  font-weight: 400;
+}
+
 /* 외과 인트로 필기체: 글자 밑면에서 시작해 빠르게 선명해진다. */
 .hx-sg-hero-script-safe {
   -webkit-mask-image: linear-gradient(
