@@ -306,6 +306,47 @@
     openButton.setAttribute('aria-controls', 'hx-prep-guide');
     const scrollArea = dialog.querySelector('.hx-guide__scroll');
     const guideHeader = dialog.querySelector('.hx-guide__header');
+    // Use the shared gtag pipeline: session context and the raw-sheet mirror apply once.
+    function guideContext(action, position, extra) {
+      const selected = dialog.querySelector('[data-branch][aria-pressed="true"]');
+      return Object.assign({
+        page: 'home',
+        section_key: 'care_preparation',
+        item_type: action,
+        branch: selected && selected.dataset.branch === 'ilsan' ? '일산' : '서초',
+        device: window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'),
+        guide_position: position,
+        guide_result: 'clicked',
+        transport_type: 'beacon'
+      }, extra || {});
+    }
+    function trackGuide(action, params) {
+      if (/\.webflow\.io$/i.test(location.hostname) || window.__helixNoMeasure) return;
+      try {
+        if (params.conv === 1) {
+          window.__helixActed = 1;
+          window.__helixActedType = params.conv_type;
+        }
+        if (typeof window.gtag === 'function') window.gtag('event', 'care_guide_' + action, params);
+      } catch (error) { /* Measurement must not interrupt the guide. */ }
+    }
+    // Capture before the shared tel handler stops bubbling. Its existing phone
+    // event remains the conversion; this event records only the guide click position.
+    dialog.querySelectorAll('a[href^="tel:"]').forEach(link => link.addEventListener('click', () => {
+      const position = link.closest('.hx-guide__footer') ? 'footer_phone' :
+        (link.closest('#hx-ilsan-mail') ? 'step_02_recipient' : 'step_02_phone');
+      trackGuide('phone_click', guideContext('phone_click', position, {
+        value: link.getAttribute('href'), conv: 0
+      }));
+    }, true));
+    [document.getElementById('hx-branch-detail'), document.getElementById('hx-branch-page')].forEach(link => {
+      link.addEventListener('click', () => {
+        const action = link.id === 'hx-branch-detail' ? 'parking_click' : 'branch_click';
+        trackGuide(action, guideContext(action, action === 'parking_click' ? 'step_03_parking' : 'footer_branch', {
+          value: link.getAttribute('href')
+        }));
+      });
+    });
     const mobileGuide = window.matchMedia('(max-width:767px), (max-width:1024px) and (max-height:600px)');
     function placeGuideHeader() {
       if (mobileGuide.matches) scrollArea.prepend(guideHeader);
@@ -326,11 +367,18 @@
       scrollArea.scrollTop = 0;
       const closeButton = [...dialog.querySelectorAll('.hx-guide__close')].find(el => el.getClientRects().length);
       closeButton?.focus({preventScroll:true});
+      trackGuide('open', guideContext('open', 'home_section', {value: '진료 준비 안내 보기', guide_result: 'opened'}));
     }
-    function closeGuide() { dialog.close(); }
+    let closePosition = 'dialog';
+    function closeGuide(position) { closePosition = position; dialog.close(); }
     openButton.addEventListener('click', openGuide);
-    dialog.querySelectorAll('.hx-guide__close').forEach(button => button.addEventListener('click', closeGuide));
+    dialog.querySelectorAll('.hx-guide__close').forEach(button => button.addEventListener('click', () => {
+      closeGuide(button.classList.contains('hx-guide__mobile-close') ? 'mobile_close' : 'header_close');
+    }));
+    dialog.addEventListener('cancel', () => { closePosition = 'escape'; });
     dialog.addEventListener('close', () => {
+      trackGuide('close', guideContext('close', closePosition, {value: closePosition, guide_result: 'closed'}));
+      closePosition = 'dialog';
       document.documentElement.style.overflowY = oldOverflow;
       window.scrollTo(0, savedScroll);
       openButton.focus({preventScroll:true});
@@ -338,7 +386,7 @@
     dialog.addEventListener('click', event => {
       if (event.target !== dialog) return;
       const r = dialog.getBoundingClientRect();
-      if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) closeGuide();
+      if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) closeGuide('backdrop');
     });
     dialog.addEventListener('keydown', event => {
       if (event.key !== 'Tab') return;
@@ -352,6 +400,7 @@
       const target = document.getElementById('hx-prep-send');
       target.scrollIntoView({behavior:'instant',block:'start'});
       target.focus({preventScroll:true});
+      trackGuide('send_click', guideContext('send_click', 'footer_send', {value: '#hx-prep-send'}));
     }));
     const copyButton = document.getElementById('hx-copy-email');
     const copyStatus = document.getElementById('hx-copy-status');
@@ -365,22 +414,36 @@
       addressCopyStatus.textContent = '';
     }
     copyButton.addEventListener('click', async () => {
+      const params = guideContext('email_copy', 'step_02_email', {value: 'schelix@naver.com'});
       try {
         await navigator.clipboard.writeText('schelix@naver.com');
         copyButton.classList.add('is-copied');
         copyStatus.textContent = '이메일 주소를 복사했습니다.';
+        params.guide_result = 'success';
+        params.conv = 1;
+        params.conv_type = 'copy';
       } catch {
         copyStatus.textContent = '주소를 직접 선택해 복사해 주세요.';
+        params.guide_result = 'failed';
+        params.conv = 0;
       }
+      trackGuide('email_copy', params);
     });
     addressCopyButton.addEventListener('click', async () => {
+      const params = guideContext('address_copy', 'step_03_address', {value: addressText.textContent.trim()});
       try {
-        await navigator.clipboard.writeText(addressText.textContent.trim());
+        await navigator.clipboard.writeText(params.value);
         addressCopyButton.classList.add('is-copied');
         addressCopyStatus.textContent = '주소를 복사했습니다.';
+        params.guide_result = 'success';
+        params.conv = 1;
+        params.conv_type = 'copy';
       } catch {
         addressCopyStatus.textContent = '주소를 직접 선택해 복사해 주세요.';
+        params.guide_result = 'failed';
+        params.conv = 0;
       }
+      trackGuide('address_copy', params);
     });
     // Only verified public contact values are included. No unconfirmed Kakao link.
     const branches = {
@@ -390,6 +453,7 @@
     dialog.querySelectorAll('[data-branch]').forEach(button => button.addEventListener('click', () => {
       const key = button.dataset.branch;
       const branch = branches[key];
+      const wasSelected = button.getAttribute('aria-pressed') === 'true';
       dialog.querySelectorAll('[data-branch]').forEach(el => el.setAttribute('aria-pressed',String(el === button)));
       dialog.querySelectorAll('[data-branch-phone]').forEach(el => {
         el.href = 'tel:' + branch.tel;
@@ -413,6 +477,9 @@
       branchPage.setAttribute('aria-label',branch.name + ' 상세 페이지');
       document.getElementById('hx-branch-status').textContent = branch.name + '의 연락처와 위치 안내로 변경했습니다.';
       resetCopy();
+      trackGuide('branch_select', guideContext('branch_select', 'branch_selector', {
+        value: key, guide_result: wasSelected ? 'unchanged' : 'changed'
+      }));
     }));
   }
 
