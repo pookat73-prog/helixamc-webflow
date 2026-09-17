@@ -5,7 +5,7 @@
    · 아주 살짝 위아래로 움직이고(bob), 은은하게 밝아졌다 어두워짐(shimmer)
    · 스크롤을 시작하면 그 정도에 맞춰 서서히 사라짐
    · 클릭 대상이 아님 (pointer-events:none) — 아래 콘텐츠를 절대 안 막음
-   · 자리: 144px 지점 바 위. Hero와 함께 올라가며 스크롤에 따라 사라짐
+   · 자리: 데스크톱 144px·모바일 184px 지점 바 위. Hero와 함께 올라가며 스크롤에 따라 사라짐
    ================================================================ */
 
 .hx-scroll-hint {
@@ -75,6 +75,11 @@
 
 /* 모바일 — 꺽쇠만 살짝 작게, 지점 바와의 간격은 유지 */
 @media (max-width: 767px) {
+  .hx-scroll-hint {
+    top: calc(100vh - 184px - 32px);
+    top: calc(100dvh - 184px - 32px);
+  }
+
   /* 두께는 정수로 — 브라우저가 소수 border-width 를 내림해 2.5px 가 2px 이 됨 */
   .hx-scroll-hint__chevron { width: 12px; height: 12px; border-width: 3px; }
 }
