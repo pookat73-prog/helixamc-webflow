@@ -1,0 +1,217 @@
+/* ================================================================
+   HELIX AMC — 외과 안전 시스템 카드 스택
+
+   Webflow Designer에서는 카드 내용을 항상 펼쳐 둔다.
+   이 외부 CSS가 로드되는 공개 페이지의 넓은 화면에서만 카드 높이를
+   내용에 맞추고, 마지막 문장과 다음 카드 사이 간격을 일정하게 유지한다.
+   ================================================================ */
+
+@media (min-width: 1200px) {
+  .hx-sg-safety-cards {
+    --hx-sg-card-overlap: clamp(20px, 2vw, 36px);
+    --hx-sg-card-content-gap: 44px;
+    gap: 0 !important;
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  .hx-sg-safety-card {
+    --hx-sg-card-z: 1;
+    position: relative;
+    z-index: var(--hx-sg-card-z);
+    box-sizing: border-box;
+    height: auto !important;
+    min-height: 0 !important;
+    padding-bottom: calc(var(--hx-sg-card-overlap) + var(--hx-sg-card-content-gap)) !important;
+    background-color: transparent !important;
+    background-image: linear-gradient(
+      180deg,
+      rgba(244, 247, 251, 1) 0,
+      rgba(244, 247, 251, 1) calc(100% - 92px),
+      rgba(244, 247, 251, .99) calc(100% - 76px),
+      rgba(244, 247, 251, .95) calc(100% - 58px),
+      rgba(244, 247, 251, .86) calc(100% - 39px),
+      rgba(244, 247, 251, .70) calc(100% - 20px),
+      rgba(244, 247, 251, .48) 100%
+    ) !important;
+    transform: none;
+    box-shadow: 0 0 24px 3px rgba(0, 117, 214, .38);
+    transition: none;
+    will-change: auto;
+  }
+
+  .hx-sg-safety-card:last-child {
+    background-color: #f4f7fb !important;
+    background-image: none !important;
+  }
+
+  .hx-sg-safety-card + .hx-sg-safety-card {
+    margin-top: calc(-1 * var(--hx-sg-card-overlap));
+  }
+
+  .hx-sg-safety-card:nth-child(2) {
+    --hx-sg-card-z: 2;
+  }
+
+  .hx-sg-safety-card:nth-child(3) {
+    --hx-sg-card-z: 3;
+  }
+
+  .hx-sg-safety-card:nth-child(4) {
+    --hx-sg-card-z: 4;
+  }
+
+  .hx-sg-safety-card:hover,
+  .hx-sg-safety-card:focus-within {
+    z-index: var(--hx-sg-card-z);
+    transform: none;
+    box-shadow: 0 0 24px 3px rgba(0, 117, 214, .38);
+  }
+}
+
+/* 외과 인트로 강조어: 기본 블루 위로 밝은 푸른빛이 한 번 훑고 지나간다. */
+.hx-sg-hero-body .hx-sg-accent {
+  color: #0075d6;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hx-sg-hero-body .hx-sg-accent {
+    background-image: linear-gradient(
+      105deg,
+      #0075d6 0%,
+      #0075d6 31%,
+      #1d8ee8 40%,
+      #69bbff 50%,
+      #1d8ee8 60%,
+      #0075d6 69%,
+      #0075d6 100%
+    );
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: hx-sg-accent-sweep 4.4s cubic-bezier(.4, 0, .2, 1) infinite;
+  }
+}
+
+@keyframes hx-sg-accent-sweep {
+  0%,
+  18% {
+    background-position: 100% 0;
+  }
+
+  65%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-hero-body .hx-sg-accent {
+    animation: none;
+    background-position: 50% 0;
+  }
+}
+
+/* 외과 전문성 문구: 지정 줄바꿈과 좁은 화면의 자연 줄바꿈을 함께 유지한다. */
+.hx-sg-responsive-frame2 > div {
+  width: 100%;
+}
+
+.hx-sg-expertise-copy .hx-sg-readable-statement-white {
+  white-space: pre-line;
+}
+
+/* 작은 원은 맞닿는 중앙 외곽선만 지우고, 주변 곡선으로 부드럽게 연결한다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small {
+  --hx-sg-ring-outline-shape: ellipse 32% 48% at 100% 50%;
+  position: relative;
+  border-color: transparent;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  border: 1px solid #0075d6;
+  border-radius: inherit;
+  -webkit-mask-image: radial-gradient(
+    var(--hx-sg-ring-outline-shape),
+    transparent 15%,
+    rgba(0, 0, 0, .15) 35%,
+    rgba(0, 0, 0, .48) 60%,
+    rgba(0, 0, 0, .82) 82%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    var(--hx-sg-ring-outline-shape),
+    transparent 15%,
+    rgba(0, 0, 0, .15) 35%,
+    rgba(0, 0, 0, .48) 60%,
+    rgba(0, 0, 0, .82) 82%,
+    #000 100%
+  );
+}
+
+/* 큰 원의 표면만 흐리게 연결한다. 글자와 기존 원의 크기·겹침은 유지한다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-large {
+  --hx-sg-ring-blend-direction: 90deg;
+  position: relative;
+  isolation: isolate;
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-large::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid #0075d6;
+  border-radius: inherit;
+  background-color: #0d1117;
+  box-shadow: 5px 0 26px 0 #0075d6;
+  -webkit-mask-image: linear-gradient(
+    var(--hx-sg-ring-blend-direction),
+    transparent 32px,
+    rgba(0, 0, 0, .08) calc(32px + 2%),
+    rgba(0, 0, 0, .36) calc(32px + 4%),
+    rgba(0, 0, 0, .76) calc(32px + 7%),
+    #000 calc(32px + 10%)
+  );
+  mask-image: linear-gradient(
+    var(--hx-sg-ring-blend-direction),
+    transparent 32px,
+    rgba(0, 0, 0, .08) calc(32px + 2%),
+    rgba(0, 0, 0, .36) calc(32px + 4%),
+    rgba(0, 0, 0, .76) calc(32px + 7%),
+    #000 calc(32px + 10%)
+  );
+  /* 마스크를 바깥으로 넓혀 기존 빛이 가장자리에서 잘리지 않게 한다. */
+  -webkit-mask-size: calc(100% + 64px) calc(100% + 64px);
+  mask-size: calc(100% + 64px) calc(100% + 64px);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-clip: no-clip;
+  mask-clip: no-clip;
+}
+
+@media (max-width: 991px) {
+  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-small {
+    --hx-sg-ring-outline-shape: ellipse 48% 32% at 50% 100%;
+  }
+
+  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-large {
+    --hx-sg-ring-blend-direction: 180deg;
+  }
+}
