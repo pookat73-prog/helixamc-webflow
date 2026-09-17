@@ -2,12 +2,11 @@
    HELIX AMC — 외과(/surgery) 공통 기능 BOOTSTRAP LOADER  v1.2
 
    외과 페이지의 Webflow 네이티브 본문은 그대로 두고, 다른 공개 페이지와
-   동일한 전역 화면·내비게이션 기능만 연결한다.
+   동일한 전역 화면·내비게이션과 기존 공통 측정을 연결한다.
 
-   측정 모듈은 포함하지 않는다. 측정 변경은 staging이 아니라 main에서
-   별도로 검증·반영하는 프로젝트 규칙을 따른다. 다만 화면 기능 모듈이
-   자체적으로 gtag를 호출할 수 있으므로 webflow.io에서는 이를 no-op으로
-   바꿔 스테이징 테스트 이벤트가 정식 속성에 섞이지 않게 한다.
+   전화 상담은 기존 cta_call / floating_cta 집계에 편입한다. 공통 측정은
+   화면 기능보다 먼저 연결하고, 운영자 제외와 스테이징 도메인 게이트는
+   다른 페이지와 동일하게 유지한다. 별도의 외과 전용 이벤트는 추가하지 않는다.
    ================================================================ */
 
 (function () {
@@ -27,6 +26,12 @@
   var FILES = [
     'global/viewport-fix.js',
     'global/viewport.js',
+    /* 기존 전화 이벤트가 GA4·시트에 동일하게 기록되도록 먼저 준비한다. */
+    'global/measure-gate.js',
+    'global/ga4-base.js',
+    'global/session.js',
+    'global/ga-inspector.js',
+    'global/sheet-log.js',
     'global/accessibility.js',
     'global/global.css',
     'services/surgery-card-stack.css',
