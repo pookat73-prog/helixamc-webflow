@@ -118,7 +118,7 @@
 
      아직 비공개인 페이지는 아래 목록에 없으므로 그대로 토스트가 뜬다.
      페이지를 열 때마다 여기 한 줄 추가. */
-  var LIVE_PATHS = ['/symptoms', '/specialty-care', '/ilsan'];
+  var LIVE_PATHS = ['/symptoms', '/specialty-care', '/seocho', '/ilsan'];
 
   function isLivePathLink(node) {
     if (!node || !node.closest) return false;
