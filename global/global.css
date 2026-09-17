@@ -153,6 +153,39 @@ html {
   text-size-adjust: 100%;
 }
 
+/* ================================================================
+   진료과 인트로 필기체 영어 라벨 — LOCKED v1
+   모든 진료과 페이지에서 이 확정 클래스를 공통으로 사용한다.
+   글자 밑면은 거의 보이지 않게 시작하고 14deg 사선으로 부드럽게 선명해진다.
+   padding + 음수 margin 은 큰 필기체가 잘리지 않게 마스크 영역만 넓힌다.
+   ================================================================ */
+.subject-eng-keyword {
+  -webkit-mask-image: linear-gradient(
+    14deg,
+    rgba(0, 0, 0, .08) 0%,
+    rgba(0, 0, 0, .08) 6%,
+    rgba(0, 0, 0, .28) 16%,
+    rgba(0, 0, 0, .52) 26%,
+    rgba(0, 0, 0, .76) 36%,
+    #000 46%
+  );
+  mask-image: linear-gradient(
+    14deg,
+    rgba(0, 0, 0, .08) 0%,
+    rgba(0, 0, 0, .08) 6%,
+    rgba(0, 0, 0, .28) 16%,
+    rgba(0, 0, 0, .52) 26%,
+    rgba(0, 0, 0, .76) 36%,
+    #000 46%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  padding-block: .3em;
+  padding-inline: .18em;
+  margin-block: -.3em;
+  margin-inline: -.18em;
+}
+
 /* ── 헤더 메뉴 ── */
 
 /* 호버 → 메인 블루 */
