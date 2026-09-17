@@ -69,6 +69,11 @@
   }
 }
 
+/* 외과 아웃트로 병원명: Webflow 네이티브의 일반 굵기를 유지한다. */
+.hx-sg-dept-brand-light {
+  font-weight: 400;
+}
+
 /* 외과 인트로 강조어: 기본 블루 위로 밝은 푸른빛이 한 번 훑고 지나간다. */
 .hx-sg-hero-body .hx-sg-accent {
   color: #0075d6;
