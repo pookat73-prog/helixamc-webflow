@@ -40,6 +40,35 @@
     will-change: auto;
   }
 
+  .hx-sg-principle-card {
+    position: relative;
+  }
+
+  .hx-sg-principle-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      linear-gradient(
+        90deg,
+        #0075d6 0,
+        rgba(0, 117, 214, .68) 32%,
+        rgba(0, 117, 214, .28) 68%,
+        rgba(0, 117, 214, .10) 88%,
+        rgba(0, 117, 214, 0) 100%
+      ) top left / 90% 3px no-repeat,
+      linear-gradient(
+        180deg,
+        #0075d6 0,
+        rgba(0, 117, 214, .68) 32%,
+        rgba(0, 117, 214, .18) 67%,
+        rgba(0, 117, 214, 0) 100%
+      ) top left / 3px 78% no-repeat;
+  }
+
   .hx-sg-safety-card:last-child {
     background-color: #f4f7fb !important;
     background-image: none !important;
