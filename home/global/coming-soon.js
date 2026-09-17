@@ -737,8 +737,8 @@
 
   var PHONE_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24"><path fill="currentColor" d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2Z"></path></svg>';
   var BRANCHES = [
-    { name: '서초 본원', url: '/seocho', tel: '0221359119', number: '02-2135-9119', role: '중증·응급 및 전문 진료' },
-    { name: '일산 분원', url: '/ilsan', tel: '0319787575', number: '031-978-7575', role: '지역 기반 종합 진료' }
+    { key: 'seocho', name: '서초 본원', url: '/seocho', tel: '0221359119', number: '02-2135-9119', role: '중증·응급 및 전문 진료' },
+    { key: 'ilsan', name: '일산 분원', url: '/ilsan', tel: '0319787575', number: '031-978-7575', role: '지역 기반 종합 진료' }
   ];
   var heroReady = false;
 
@@ -746,17 +746,129 @@
     return '<article class="hx-qb__cell">' +
       '<h3 class="hx-qb__name">' + branch.name + '</h3>' +
       '<p class="hx-qb__role">' + branch.role + '</p>' +
-      '<a class="hx-qb__cta hx-qb__cta--phone" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' ' + branch.number + ' 전화 연결">' + PHONE_ICON + '<span>' + branch.number + '</span></a></article>';
+      '<a class="hx-qb__cta hx-qb__cta--phone" data-qb-branch="' + branch.key + '" data-qb-action="phone_call" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' ' + branch.number + ' 전화 연결">' + PHONE_ICON + '<span>' + branch.number + '</span></a></article>';
   }
 
   function mobileBranch(branch) {
     return '<div class="hx-qb__clinic-row">' +
-      '<a class="hx-qb__branch-main" href="' + branch.url + '" aria-label="' + branch.name + ' 지점 안내">' +
+      '<a class="hx-qb__branch-main" data-qb-branch="' + branch.key + '" data-qb-action="detail" href="' + branch.url + '" aria-label="' + branch.name + ' 지점 안내">' +
       '<span class="hx-qb__mobile-name">' + branch.name + '</span>' +
       '<span class="hx-qb__mobile-guide">지점 안내 <b aria-hidden="true">→</b></span></a>' +
       '<span aria-hidden="true"></span>' +
-      '<a class="hx-qb__mobile-call-touch" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' 전화 연결">' +
+      '<a class="hx-qb__mobile-call-touch" data-qb-branch="' + branch.key + '" data-qb-action="phone_call" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' 전화 연결">' +
       '<span class="hx-qb__mobile-call-pill">' + PHONE_ICON + '전화</span></a></div>';
+  }
+
+  /* Quickbar measurement only. The existing gtag wrapper decorates the same
+     event for GA4 and the raw sheet; never send a second sheet request here. */
+  function measureQuickbar(bar) {
+    if (bar.__hxQbMeasured) return;
+    bar.__hxQbMeasured = true;
+    var enabled = !/\.webflow\.io$/i.test(location.hostname) && !window.__helixNoMeasure;
+    if (!enabled) return;
+    var qa = /[?&]qb-qa=(desktop|mobile)(?:&|$)/.exec(location.search);
+    var labels = { seocho: '서초 본원', ilsan: '일산 분원', svicc: '서울동물영상종양센터' };
+
+    function layout() {
+      var compact = bar.querySelector('.hx-qb__mobile');
+      return compact && compact.getClientRects().length ? 'compact' : 'wide';
+    }
+    function send(name, extra, context) {
+      if (!enabled || window.__helixNoMeasure || typeof window.gtag !== 'function') return false;
+      var params = {
+        page: 'home', section_key: 'quickbar',
+        device: window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'),
+        layout: context || layout(), transport_type: 'beacon'
+      };
+      Object.keys(extra || {}).forEach(function (key) { params[key] = extra[key]; });
+      /* Bounded QA label, never arbitrary URL/user text. Existing exclusions
+         still apply. DebugView can identify these intentional test events. */
+      if (qa) { params.qa_test = qa[1]; params.debug_mode = true; }
+      try { window.gtag('event', name, params); return true; } catch (e) { return false; }
+    }
+
+    Array.prototype.forEach.call(bar.querySelectorAll('a[data-qb-action]'), function (link) {
+      var action = link.getAttribute('data-qb-action');
+      var branch = link.getAttribute('data-qb-branch');
+      link.addEventListener('click', function (event) {
+        /* A legacy one-time tel scan may run before OR after this late mount.
+           Own only quickbar tel targets in capture phase: preserve native tel
+           default, but do not let the lower-card copy handler emit a second
+           event / replace the phone icon. No protected animation file changes. */
+        if (action === 'phone_call') event.stopImmediatePropagation();
+        var target = event.target && event.target.nodeType === 1 ? event.target : link;
+        send('home_quickbar_' + action + '_' + branch, {
+          branch: labels[branch], item_type: action,
+          click_area: target.closest('svg') ? 'icon' : (target === link ? 'surface' : 'label'),
+          link_url: link.getAttribute('href')
+        });
+      }, true);
+    });
+    /* At least half the bar must be visible for 1 continuous second. Dwell
+       counts only visible, foreground, non-idle time. Header clipping is read,
+       never changed. Resize splits dwell by the actually rendered layout. */
+    var IDLE_MS = 60000;
+    var lastActivity = Date.now();
+    var lastTick = lastActivity;
+    var active = false;
+    var visibleSince = 0;
+    var viewed = false;
+    var pendingMs = 0;
+    var context = layout();
+    var device = window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+    var paused = false;
+
+    function visible() {
+      if (paused || document.hidden || !bar.isConnected || window.__helixNoMeasure) return false;
+      var rect = bar.getBoundingClientRect();
+      var style = getComputedStyle(bar);
+      if (!rect.width || !rect.height || style.display === 'none' || style.visibility === 'hidden' || +style.opacity === 0) return false;
+      var clip = parseFloat(style.getPropertyValue('--hx-qb-header-clip')) || 0;
+      var width = Math.max(0, Math.min(rect.right, window.innerWidth) - Math.max(0, rect.left));
+      var height = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(0, rect.top + clip));
+      return width * height >= rect.width * rect.height * 0.5;
+    }
+    function flush() {
+      if (pendingMs < 1) return;
+      var seconds = Math.round(pendingMs) / 1000;
+      if (send('home_quickbar_dwell', { value: seconds, dwell_sec: seconds, device: device }, context)) pendingMs = 0;
+    }
+    function tick(flushNow) {
+      var now = Date.now();
+      var until = Math.min(now, lastActivity + IDLE_MS);
+      if (active) {
+        pendingMs += Math.max(0, until - lastTick);
+        if (!viewed && until - visibleSince >= 1000) {
+          viewed = send('home_quickbar_view', { device: device }, context);
+        }
+      }
+      var nextLayout = layout();
+      var nextDevice = window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+      var next = visible() && now < lastActivity + IDLE_MS;
+      if ((active && !next) || nextLayout !== context || nextDevice !== device || flushNow === true) flush();
+      if (next && !active) visibleSince = now;
+      active = next;
+      context = nextLayout;
+      device = nextDevice;
+      lastTick = now;
+    }
+    function activity() { tick(); lastActivity = Date.now(); tick(); }
+    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (name) {
+      window.addEventListener(name, activity, { passive: true });
+    });
+    window.addEventListener('pointermove', function () {
+      if (Date.now() - lastTick >= 250) activity();
+      else lastActivity = Date.now();
+    }, { passive: true });
+    window.addEventListener('resize', activity, { passive: true });
+    document.addEventListener('visibilitychange', function () {
+      tick(true);
+      if (!document.hidden) { lastActivity = Date.now(); tick(); }
+    });
+    window.addEventListener('pagehide', function () { paused = true; tick(true); });
+    window.addEventListener('pageshow', function () { paused = false; activity(); });
+    tick();
+    setInterval(tick, 1000);
   }
 
   function mountQuickbar() {
@@ -780,10 +892,10 @@
       '<div class="hx-qb__intro-copy"><span>서초와 일산 중 가까운 지점을 선택하세요.</span><span>서울동물영상종양센터 안내도 함께 확인할 수 있습니다.</span></div></div>' +
       BRANCHES.map(desktopBranch).join('') +
       '<article class="hx-qb__cell"><h3 class="hx-qb__name hx-qb__name--center">서울동물<wbr>영상종양센터</h3><p class="hx-qb__role">영상진단·종양 치료</p>' +
-      '<a class="hx-qb__cta hx-qb__cta--guide" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내">센터 안내 <span aria-hidden="true">→</span></a></article></div>' +
+      '<a class="hx-qb__cta hx-qb__cta--guide" data-qb-branch="svicc" data-qb-action="detail" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내">센터 안내 <span aria-hidden="true">→</span></a></article></div>' +
       '<div class="hx-qb__mobile" aria-label="모바일 빠른 지점 안내"><div class="hx-qb__mobile-layout"><div class="hx-qb__clinic-group">' +
       BRANCHES.map(mobileBranch).join('') + '</div><span aria-hidden="true"></span>' +
-      '<a class="hx-qb__svicc-box" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내"><span class="hx-qb__mobile-name">서울동물<wbr>영상종양센터</span><span class="hx-qb__mobile-guide">센터 안내 <b aria-hidden="true">→</b></span></a></div></div>';
+      '<a class="hx-qb__svicc-box" data-qb-branch="svicc" data-qb-action="detail" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내"><span class="hx-qb__mobile-name">서울동물<wbr>영상종양센터</span><span class="hx-qb__mobile-guide">센터 안내 <b aria-hidden="true">→</b></span></a></div></div>';
     hero.insertAdjacentElement('afterend', bar);
 
     /* The line is behind this surface, while the existing fixed header must
@@ -807,6 +919,7 @@
       if (!clipFrame) clipFrame = requestAnimationFrame(updateHeaderClip);
     }
     updateHeaderClip();
+    measureQuickbar(bar);
     window.addEventListener('scroll', scheduleHeaderClip, { passive: true });
     window.addEventListener('resize', scheduleHeaderClip);
   }
