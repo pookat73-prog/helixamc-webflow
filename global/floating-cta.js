@@ -17,7 +17,8 @@
 
   function run() {
 
-  var PHONE     = 'tel:0221359119';
+  var PHONE      = 'tel:0221359119';
+  var PHONE_TEXT = '전화 상담';
   var PHONE_LABEL = '02-2135-9119';
   var SITE_ID   = '69d090ea69d828e27d16ea29';
 
@@ -70,33 +71,28 @@
 
   /* ── HTML 주입 ── */
   var html = [
-    /* 오버레이 */
-    '<div class="hx-fcta-overlay" id="hxFctaOverlay" aria-hidden="true"></div>',
-
-    /* 선택 패널 */
-    '<div class="hx-fcta-panel" id="hxFctaPanel" role="menu" aria-label="상담 선택">',
-      '<a class="hx-fcta-panel__item" id="hxFctaCallBtn" href="' + PHONE + '"',
-        ' role="menuitem" aria-label="서초 본원 바로 전화 걸기 ' + PHONE_LABEL + '">',
-        '<span class="hx-fcta-panel__chip" aria-hidden="true">',
-          '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    '<div class="hx-fcta-shell" role="group" aria-label="전화 상담">',
+      /* 전화 상담 버튼 */
+      '<a class="hx-fcta-btn hx-fcta-phone-btn" id="hxFctaCallBtn" href="' + PHONE + '"',
+        ' aria-label="서초 본원 전화 상담하기 ' + PHONE_LABEL + '">',
+        '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
+        '<span class="hx-fcta-btn__label hx-fcta-phone-btn__label">',
+          '<span class="hx-fcta-phone-btn__icon" aria-hidden="true">',
+            '<svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" stroke=\"none\" d=\"M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z\"/><path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.1\" stroke-linecap=\"round\" d=\"M15.5 7a2.5 2.5 0 0 1 2.5 2.5\"/><path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.1\" stroke-linecap=\"round\" d=\"M15.5 3.5a6 6 0 0 1 6 6\"/></svg>',
+          '</span>',
+          '<span class="hx-fcta-phone-btn__text">' + PHONE_TEXT + '</span>',
         '</span>',
-        '<span>바로 전화 걸기</span>',
       '</a>',
-      '<button class="hx-fcta-panel__item" id="hxFctaFormBtn" type="button"',
-        ' role="menuitem" aria-label="상담 신청 폼 열기">',
-        '<span class="hx-fcta-panel__chip" aria-hidden="true">',
-          '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>',
+
+      /* 상담 신청 기능 유지용 트리거 — 플로팅에서는 숨기고 Webflow 인라인 버튼으로 연결 */
+      '<button class="hx-fcta-call-btn hx-fcta-form-btn" id="hxFctaToggle" type="button" hidden',
+        ' aria-label="상담 신청하기" aria-expanded="false" aria-controls="hxFctaModal">',
+        '<span class="hx-fcta-call-btn__icon" aria-hidden="true">',
+          '<svg viewBox="0 0 24 24"><path d="M13 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M17.5 3.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/><path d="M15.5 5.5l3 3"/></svg>',
         '</span>',
-        '<span>상담 신청 남기기</span>',
+        '<span class="hx-fcta-call-btn__text">신청</span>',
       '</button>',
     '</div>',
-
-    /* 토글 버튼 */
-    '<button class="hx-fcta-btn" id="hxFctaToggle" type="button"',
-      ' aria-label="상담 문의하기" aria-expanded="false" aria-controls="hxFctaPanel">',
-      '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
-      '<span class="hx-fcta-btn__label">상담 문의하기</span>',
-    '</button>',
 
     /* 상담 신청 모달 */
     '<div class="hx-fcta-modal" id="hxFctaModal" role="dialog"',
@@ -226,10 +222,9 @@
 
   /* ── 요소 참조 ── */
   var toggle   = document.getElementById('hxFctaToggle');
-  var panel    = document.getElementById('hxFctaPanel');
-  var overlay  = document.getElementById('hxFctaOverlay');
   var callBtn  = document.getElementById('hxFctaCallBtn');
-  var formBtn  = document.getElementById('hxFctaFormBtn');
+  var callText = callBtn ? callBtn.querySelector('.hx-fcta-phone-btn__text') : null;
+  var callIcon = callBtn ? callBtn.querySelector('.hx-fcta-phone-btn__icon') : null;
   var modal    = document.getElementById('hxFctaModal');
   var backdrop = document.getElementById('hxFctaModalBackdrop');
   var closeBtn = document.getElementById('hxFctaModalClose');
@@ -237,6 +232,7 @@
   var submitBtn= document.getElementById('hxFctaSubmit');
   var done     = document.getElementById('hxFctaDone');
   var doneClose= document.getElementById('hxFctaDoneClose');
+  var modalReturnFocus = toggle;
 
   var ownerInput   = document.getElementById('hxFcta_owner');
   var phoneInput   = document.getElementById('hxFcta_phone');
@@ -427,37 +423,48 @@
     privacyMore.textContent = open ? '접기' : '자세히 보기';
   });
 
-  /* ── 패널 열기·닫기 ── */
-  var panelOpen = false;
-
-  function openPanel() {
-    panelOpen = true;
-    panel.classList.add('is-open');
-    overlay.classList.add('is-open');
-    toggle.setAttribute('aria-expanded', 'true');
-    toggle.setAttribute('aria-label', '상담 메뉴 닫기');
-    /* "상담 문의하기" 버튼 눌러 상담 메뉴를 연 순간 = 상담 의향.
-       (닫기 클릭은 집계 안 함.) ga 헬퍼가 page 를 자동 부착. */
+  /* ── 상담 버튼(폼) 열기 ── */
+  function openModalFromFab() {
+    formSrc = 'floating_cta';
+    openModal();
     ga('cta_open', { cta_src: 'floating_cta' });
   }
 
-  function closePanel() {
-    panelOpen = false;
-    panel.classList.remove('is-open');
-    overlay.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', '상담 메뉴 열기');
-  }
-
   toggle.addEventListener('click', function () {
-    panelOpen ? closePanel() : openPanel();
-  });
-
-  overlay.addEventListener('click', function () {
-    closePanel();
+    openModalFromFab();
   });
 
   /* ── 모달 열기·닫기 ── */
+  function resetCallLabel() {
+    if (!callBtn) return;
+    if (callText) {
+      callText.textContent = PHONE_TEXT;
+    }
+    if (callIcon) {
+      callIcon.style.display = '';
+    }
+    callBtn.classList.remove('copy-success');
+    callBtn.style.opacity = '';
+  }
+
+  if (callBtn) {
+    callBtn.addEventListener('click', function () {
+      resetCallLabel();
+    }, true);
+
+    if (window.MutationObserver && callText) {
+      (new MutationObserver(function () {
+        if (callText && callText.textContent !== PHONE_TEXT) {
+          resetCallLabel();
+        }
+      })).observe(callText, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+    }
+  }
+
   function openModal() {
     /* 직전에 완료 화면이 떠 있었으면(이미 한 번 제출 완료) 폼을 초기 상태로 되돌림 */
     if (done.classList.contains('is-visible')) {
@@ -477,6 +484,7 @@
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    toggle.setAttribute('aria-expanded', 'true');
     closeBtn.focus();
   }
 
@@ -484,7 +492,10 @@
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    toggle.focus();
+    toggle.setAttribute('aria-expanded', 'false');
+    if (modalReturnFocus && typeof modalReturnFocus.focus === 'function') {
+      modalReturnFocus.focus();
+    }
   }
 
   backdrop.addEventListener('click', closeModal);
@@ -494,7 +505,6 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (modal.classList.contains('is-open')) closeModal();
-      else if (panelOpen) closePanel();
     }
   });
 
@@ -556,9 +566,13 @@
   }
 
   /* ── 전화 클릭 ── */
-  callBtn.addEventListener('click', function () {
+  callBtn.addEventListener('click', function (e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (e && e.stopPropagation) e.stopPropagation();
+    resetCallLabel();
     ga('cta_call', { cta_src: 'floating_cta' });
-    closePanel();
+    window.location.href = PHONE;
   });
 
   /* ── 이번 상담 폼을 어디서 열었나 ──
@@ -567,21 +581,6 @@
      시작한 신청인지 알아야 두 경로의 전환율을 비교할 수 있으므로, 열 때
      출처를 여기 적어 두고 제출 이벤트에 같이 싣는다. */
   var formSrc = 'floating_cta';
-
-  /* ── 폼 열기 ── */
-  formBtn.addEventListener('click', function (e) {
-    /* 사람이 실제로 누른 클릭만 받는다. 서초 페이지의 Webflow footer 커스텀
-       코드처럼 "본문 버튼을 누르면 이 플로팅 버튼을 대신 눌러 주는" 옛 방식이
-       아직 남아 있는 페이지가 있는데, 그건 스크립트가 만든 가짜 클릭이라
-       isTrusted 가 false 다. 그대로 두면 아래 인라인 처리와 겹쳐 상담 폼
-       열림이 두 번 집계되고 출처도 floating_cta 로 덮여 버린다. 여기서
-       걸러내면 옛 커스텀 코드를 지우지 않아도 집계가 어긋나지 않는다. */
-    if (e && e.isTrusted === false) return;
-    formSrc = 'floating_cta';
-    closePanel();
-    openModal();
-    ga('cta_form_open', { cta_src: 'floating_cta' });
-  });
 
   /* ── 본문에 심은 인라인 상담 버튼 ──
      data-cta-target="hxFctaFormBtn" 을 가진 요소를 누르면 플로팅 버튼과
@@ -603,7 +602,7 @@
     if (targetId === 'hxFctaFormBtn') {
       e.preventDefault();
       formSrc = src;
-      closePanel();
+      modalReturnFocus = el;
       openModal();
       ga('cta_form_open', { cta_src: src, cta_id: el.id || '' });
       return;
