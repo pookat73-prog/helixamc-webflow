@@ -26,6 +26,50 @@
   transition: none !important;
 }
 
+/* 3. Discover HELIX button: restore a restrained directional chevron
+      inside the empty icon slot without touching the locked button glow */
+.discover-helix_button > .w-layout-vflex:last-child:empty:not(.flex-block-63):not([data-hx-slot]) {
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+  width: clamp(0.55rem, 0.65vw, 0.75rem);
+  height: clamp(0.55rem, 0.65vw, 0.75rem);
+  opacity: 0.42;
+  animation: helixDiscoverChevron 2.6s ease-in-out infinite;
+  will-change: transform, opacity, filter;
+}
+
+.discover-helix_button > .w-layout-vflex:last-child:empty:not(.flex-block-63):not([data-hx-slot])::before {
+  content: "";
+  width: 0.42rem;
+  height: 0.42rem;
+  border-top: 2px solid #0075d6;
+  border-right: 2px solid #0075d6;
+  transform: rotate(45deg);
+}
+
+@keyframes helixDiscoverChevron {
+  0%, 100% {
+    opacity: 0.42;
+    transform: translateX(0);
+    filter: drop-shadow(0 0 0 rgba(0, 117, 214, 0));
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(3px);
+    filter: drop-shadow(0 0 4px rgba(0, 117, 214, 0.55));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discover-helix_button > .w-layout-vflex:last-child:empty:not(.flex-block-63):not([data-hx-slot]) {
+    animation: none;
+    opacity: 0.76;
+    transform: none;
+    filter: none;
+  }
+}
+
 /* ============================================================
    MOBILE (≤767px): Hero 슬로건 폰트/패딩 보정
    - vw 기반 폰트는 360px 폭에서 커서 줄바꿈/오버플로우 위험
