@@ -45,6 +45,7 @@
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -82,7 +83,7 @@
   var TARGETS = [
     /* 전 페이지 공통 — 플로팅 상담 CTA */
     { sel: '#hxFctaToggle',         label: '플로팅 · 상담 문의하기', event: 'cta_open' },
-    { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
+    { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 상담',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
     /* 전 페이지 공통 — 본문에 심은 인라인 상담 버튼 (예: 서초 '예약 안내'의
