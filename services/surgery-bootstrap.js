@@ -155,13 +155,30 @@
       statement.style.removeProperty('font-size');
 
       var naturalSize = parseFloat(window.getComputedStyle(statement).fontSize);
-      var availableWidth = statement.clientWidth;
-      var requiredWidth = statement.scrollWidth;
+      var rect = statement.getBoundingClientRect();
+      var viewportWidth = window.visualViewport
+        ? window.visualViewport.width
+        : (window.innerWidth || document.documentElement.clientWidth);
+      var visibleWidth = Math.max(
+        0,
+        Math.min(rect.right, viewportWidth) - Math.max(rect.left, 0)
+      );
+      var availableWidth = Math.min(statement.clientWidth, visibleWidth);
+      var requiredWidth = Array.prototype.reduce.call(
+        statement.childNodes,
+        function (widest, node) {
+          if (node.nodeType !== Node.TEXT_NODE) return widest;
+          var range = document.createRange();
+          range.selectNodeContents(node);
+          return Math.max(widest, range.getBoundingClientRect().width);
+        },
+        0
+      );
       if (!naturalSize || !availableWidth || !requiredWidth) return;
 
       if (requiredWidth <= availableWidth) return;
 
-      var fittedSize = naturalSize * ((availableWidth - 1) / requiredWidth);
+      var fittedSize = naturalSize * ((availableWidth - 2) / requiredWidth);
       statement.style.fontSize = fittedSize.toFixed(3) + 'px';
     }
 
@@ -172,6 +189,9 @@
 
     scheduleFit();
     window.addEventListener('resize', scheduleFit, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleFit, { passive: true });
+    }
 
     if ('ResizeObserver' in window && statement.parentElement) {
       var observedWidth = 0;
