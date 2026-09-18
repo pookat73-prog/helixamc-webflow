@@ -578,6 +578,10 @@
       var maxPad = (allowedBottom - fullBottom + rows * reserve - maxGrow - MIN_PAD) / (rows - 1);
       pad = Math.max(MIN_PAD, Math.min(reserve, Math.floor(maxPad)));
     }
+    /* 720px 높이에서는 늦게 도착한 글꼴 측정이 reserve 전체를 다시 쓰면
+       네 줄 열의 빈 여백이 과도하게 커진다. 최대 펼침 공간은 아래 floor가
+       별도로 확보하므로, 항목별 숨은 여백은 이 높이에서 75px를 넘기지 않는다. */
+    if (window.innerHeight <= 720) pad = Math.min(pad, 75);
     document.documentElement.style.setProperty('--hx-spec-pad', pad + 'px');
 
     /* 가장 크게 펼쳐지는 항목(현재는 비강경 검사)이 표를 내리는 만큼을
