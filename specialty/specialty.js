@@ -524,6 +524,10 @@
     var reserve = Math.max(WF_PAD, Math.ceil(maxGrow) + MIN_PAD);
     var grid = document.querySelector(GRID);
     if (!isDesktop() || !grid) {
+      if (grid) {
+        grid.style.minHeight = '';
+        grid.__hxSpecFloorKey = '';
+      }
       document.documentElement.style.setProperty('--hx-spec-pad', reserve + 'px');
       return;
     }
@@ -570,6 +574,20 @@
       pad = Math.max(MIN_PAD, Math.min(reserve, Math.floor(maxPad)));
     }
     document.documentElement.style.setProperty('--hx-spec-pad', pad + 'px');
+
+    /* 가장 크게 펼쳐지는 항목(현재는 비강경 검사)이 표를 내리는 만큼을
+       평상시 표 높이에 미리 확보한다. 그러면 어느 항목을 올려도 표 하단선은
+       같은 자리에 머문다. resize 관찰자가 이 min-height 변경을 다시 감지해도
+       같은 화면 조건에서는 재계산하지 않아 관찰 루프가 생기지 않는다. */
+    var floorKey = window.innerWidth + ':' + window.innerHeight + ':' + pad + ':' + Math.round(maxGrow * 100);
+    if (grid.__hxSpecFloorKey !== floorKey) {
+      grid.__hxSpecFloorKey = floorKey;
+      grid.style.minHeight = '';
+      var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
+      if (maxResidual > 0.5) {
+        grid.style.minHeight = Math.ceil(grid.getBoundingClientRect().height + maxResidual) + 'px';
+      }
+    }
   }
 
   /* '아무것도 펼쳐지지 않은 평상시' 좌표를 일괄로 재서 기억해 둔다.
