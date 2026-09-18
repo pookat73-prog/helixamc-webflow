@@ -695,7 +695,7 @@
 }
 
 @media (min-width: 992px) and (min-height: 821px) and (max-height: 980px) {
-  .whiteframe-for-full-frame-nerrowtop { padding-top: clamp(48px, 7.7vh, 75px); }
+  .whiteframe-for-full-frame-nerrowtop { padding-top: clamp(43px, calc(7.7vh - 5px), 70px); }
 }
 
 /* 720px 높이에서도 제목 아래 원래 간격을 남기는 대신, 그만큼 표 높이만
