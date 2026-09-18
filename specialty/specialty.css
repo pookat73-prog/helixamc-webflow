@@ -694,4 +694,5 @@
 @media (min-width: 992px) and (max-height: 720px) {
   .whiteframe-for-full-frame-nerrowtop { padding-top: 0; }
   .spec-header-wrap { margin-bottom: 0; }
+  .hst-item-wrap { padding-top: 13px; }
 }
