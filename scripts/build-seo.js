@@ -488,7 +488,7 @@ function buildEmergency(conditions) {
       mainContentOfPage: { '@type': 'WebPageElement', cssSelector: 'main' },
       isPartOf: { '@id': `${HOSPITAL.origin}/#website` },
       audience: { '@type': 'MedicalAudience', audienceType: 'Patient' },
-      lastReviewed: new Date().toISOString().slice(0, 10),
+      /* 실제 의료 검수일이 확인되기 전에는 lastReviewed를 생략한다. */
       mainEntity: conditions.map(c => ({ '@id': `${url}#condition-${c.slug}` })),
     },
     {
@@ -534,7 +534,7 @@ function buildEmergency(conditions) {
 /* 진료과목(/services) — 페이지에 노출되는 5개 진료과 카드 (제목 + 설명).
    dept 상세 페이지가 발행된 경우에만 url 연결(미발행은 생략). */
 const SERVICES_DEPTS = [
-  { nameKo: '내과',     nameEn: 'Internal Medicine',  desc: '다양한 전신 질환을 아우르는 환자 맞춤형 진료',           slug: 'naegwa',            published: true  },
+  { nameKo: '내과',     nameEn: 'Internal Medicine',  desc: '다양한 전신 질환을 아우르는 환자 맞춤형 진료',           slug: 'naegwa',            published: false },
   { nameKo: '외과',     nameEn: 'Surgery',            desc: '표준화된 프로토콜로 안정성을 높인 고난도 수술',           slug: 'oegwa',             published: false },
   { nameKo: '영상의학과', nameEn: 'Diagnostic Imaging',  desc: '안전한 마취와 첨단 장비로 완성하는 정밀 진단',            slug: 'yeongsangyihaggwa', published: false },
   { nameKo: '안과',     nameEn: 'Ophthalmology',      desc: '미세 검진과 빠른 판단을 통한 전신 질환 가능성 판별',        slug: 'angwa',             published: false },
@@ -556,7 +556,7 @@ function buildServices() {
       about: { '@id': `${HOSPITAL.origin}/#org` },
       isPartOf: { '@id': `${HOSPITAL.origin}/#website` },
       mainEntity: { '@id': listId },
-      lastReviewed: new Date().toISOString().slice(0, 10),
+      /* 실제 콘텐츠 검수일이 확인되기 전에는 lastReviewed를 생략한다. */
     },
     {
       '@type': 'ItemList',
