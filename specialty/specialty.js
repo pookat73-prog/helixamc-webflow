@@ -510,6 +510,7 @@
     /* 이전 측정에서 고정한 표 높이는 이번 자연 높이 계산에 섞지 않는다.
        남겨 두면 ResizeObserver 재측정 때 여백이 누적돼 표·푸터가 아래로
        밀린다. 아래에서 새 최대 높이를 다시 고정한다. */
+    grid.style.height = '';
     grid.style.minHeight = '';
 
     /* ── 첫 화면 맞춤 (v6.3) ────────────────────────────────────
@@ -563,21 +564,20 @@
        평상시 표 높이에 미리 확보한다. 그러면 어느 항목을 올려도 표 하단선은
        같은 자리에 머문다. 이 값은 resize·글꼴 변경 때마다 실제 높이를 다시
        재므로, 초기 글꼴 로딩 중의 임시 높이를 기준으로 남기지 않는다. */
-    /* 숨긴 설명의 실제 글꼴 높이는 초기 측정 뒤에도 소폭 커질 수 있다.
-       가장 크게 펼쳐지는 비강경 검사보다 10px 여유를 더 잡아, 이후에도
-       표 하단선이 다시 내려가지 않게 한다. */
+    /* 가장 길게 펼쳐지는 항목이 차지할 실제 높이만큼 표 하단을 미리 확보한다. */
     var actualResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
-    var maxResidual = actualResidual + 10;
-    if (maxResidual > 0.5) {
+    if (actualResidual > 0.5) {
       /* 아래 여백을 바꾼 직후에는 아직 표의 최종 높이가 반영되기 전이다.
-         다음 화면 갱신 뒤 실제 표 높이를 기준으로 최대 펼침분을 미리 더해,
+         표가 자리 잡은 뒤 실제 표 높이를 기준으로 최대 펼침분을 미리 더해,
          어떤 항목을 올려도 표 하단선이 움직이지 않게 한다. */
-      requestAnimationFrame(function () {
+      setTimeout(function () {
         if (items.some(function (it) { return !!it.wrap.style.paddingBottom; })) return;
         var liveGrid = document.querySelector(GRID);
         if (!liveGrid) return;
-        liveGrid.style.minHeight = Math.ceil(liveGrid.getBoundingClientRect().height + actualResidual) + 'px';
-      });
+        var floorHeight = Math.ceil(liveGrid.getBoundingClientRect().height + actualResidual);
+        liveGrid.style.height = floorHeight + 'px';
+        liveGrid.style.minHeight = floorHeight + 'px';
+      }, 220);
     }
   }
 
