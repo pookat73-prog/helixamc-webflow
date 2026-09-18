@@ -484,6 +484,7 @@
   }
 
   var items = [];
+  var floorTimer;
 
   /* 우리 css 가 실제로 적용됐는지 — 접힘 규칙(max-height:0)이 살아 있으면 적용된 것.
      로더가 css 를 <link> 로 붙이는 건 비동기라, 로드 직후엔 아직일 수 있다.
@@ -583,7 +584,12 @@
     /* 지정된 섹션·헤딩 여백은 건드리지 않는다. 표가 자리 잡은 뒤에만 남은
        화면 높이를 표의 최대 높이로 삼아, 어떤 항목을 올려도 표 하단선과
        푸터 시작점이 움직이지 않게 한다. */
-    setTimeout(function () {
+    /* 아래 여백은 .48초 전환을 거친다. 중간 프레임에서 floor를 고정하면
+       아직 줄어드는 표 높이를 기준으로 삼아, 긴 설명을 올릴 때만 표가 다시
+       내려간다. 전환이 끝난 뒤 마지막 상태를 한 번만 재야 모든 호버가 같은
+       표 바닥을 공유한다. */
+    clearTimeout(floorTimer);
+    floorTimer = setTimeout(function () {
       if (items.some(function (it) { return !!it.wrap.style.paddingBottom; })) return;
       var liveGrid = document.querySelector(GRID);
       if (!liveGrid) return;
@@ -596,7 +602,7 @@
       liveGrid.style.height = floorHeight + 'px';
       liveGrid.style.minHeight = floorHeight + 'px';
       requestAnimationFrame(revealGrid);
-    }, 220);
+    }, 540);
   }
 
   /* '아무것도 펼쳐지지 않은 평상시' 좌표를 일괄로 재서 기억해 둔다.
