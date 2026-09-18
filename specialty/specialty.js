@@ -581,7 +581,7 @@
        같은 화면 조건에서는 재계산하지 않아 관찰 루프가 생기지 않는다. */
     var floorKey = window.innerWidth + ':' + window.innerHeight + ':' + pad + ':' + Math.round(maxGrow * 100);
     var currentFloor = parseFloat(grid.style.minHeight) || 0;
-    var floorOutgrown = currentFloor > 0 && grid.getBoundingClientRect().height > currentFloor + 0.5;
+    var floorOutgrown = currentFloor > 0 && grid.clientHeight > currentFloor + 0.5;
     if (grid.__hxSpecFloorKey !== floorKey || floorOutgrown) {
       grid.__hxSpecFloorKey = floorKey;
       grid.style.minHeight = '';
