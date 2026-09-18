@@ -583,11 +583,27 @@
     var currentFloor = parseFloat(grid.style.minHeight) || 0;
     var floorOutgrown = currentFloor > 0 && grid.clientHeight > currentFloor + 0.5;
     if (grid.__hxSpecFloorKey !== floorKey || floorOutgrown) {
-      grid.__hxSpecFloorKey = floorKey;
       grid.style.minHeight = '';
       var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
-      if (maxResidual > 0.5) {
-        grid.style.minHeight = Math.ceil(grid.getBoundingClientRect().height + maxResidual) + 'px';
+      var baseHeight = grid.clientHeight;
+      var borderHeight = grid.offsetHeight - grid.clientHeight;
+      var maxFloor = Math.floor(allowedBottom - grid.getBoundingClientRect().top - borderHeight);
+      var desiredFloor = Math.ceil(baseHeight + maxResidual);
+
+      /* 고정할 최대 높이까지 푸터 여백을 침범하면, 마지막 수단으로 각 항목의
+         숨은 여백을 더 줄인다. 네 줄 열에서는 여백 1px 감소가 최대 표 높이를
+         3px 줄이므로, 필요한 만큼만 역산한다. */
+      if (desiredFloor > maxFloor && pad > MIN_PAD && rows > 1) {
+        pad = Math.max(MIN_PAD, pad - Math.ceil((desiredFloor - maxFloor) / (rows - 1)));
+        document.documentElement.style.setProperty('--hx-spec-pad', pad + 'px');
+        baseHeight = grid.clientHeight;
+        maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
+        desiredFloor = Math.ceil(baseHeight + maxResidual);
+      }
+
+      grid.__hxSpecFloorKey = window.innerWidth + ':' + window.innerHeight + ':' + pad + ':' + Math.round(maxGrow * 100);
+      if (maxResidual > 0.5 && desiredFloor > baseHeight) {
+        grid.style.minHeight = desiredFloor + 'px';
       }
     }
   }
