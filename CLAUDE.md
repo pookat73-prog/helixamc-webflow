@@ -274,6 +274,23 @@ console.log('화면폭', innerWidth+'×'+innerHeight,
 
 ---
 
+## 🔤 진료과 상세 아웃트로 병원명·분과명 굵기 (LOCKED v1)
+
+**증상**: Webflow Designer 에서는 굵기를 지정하지 않았는데 발행 사이트 아웃트로에서 병원명이나 분과명이 굵어 보임.
+
+**원인**: Designer 캔버스는 외부 공통 CSS 를 불러오지 않지만, 발행 사이트는 `global/global.css` 의 본문 기본 `font-weight: 500` 을 상속함. 자식 하나만 400으로 보정하면 병원명과 분과명의 굵기가 다시 달라짐.
+
+**확정 규칙**:
+
+- 병원명과 분과명을 감싸는 아웃트로 표식 wrapper 에 `font-weight: 400` 을 둔다. 외과의 현재 selector 는 `.hx-sg-dept-mark-light`.
+- 병원명·분과명 자식은 별도 굵기가 명시되지 않은 한 wrapper 의 400을 그대로 상속한다.
+- 병원명만 `.hx-sg-dept-brand-light { font-weight: 400; }` 로 보정하는 방식은 금지한다. 옆 분과명이 전역 500을 상속해 굵기 차이가 재발한다.
+- `!important` 는 사용하지 않는다. 향후 Webflow 에서 특정 자식의 굵기를 의도적으로 지정하면 그 명시값이 우선해야 한다.
+- 새 진료과 상세페이지를 만들 때도 같은 wrapper 기본 400 규칙을 적용한다.
+- Designer 화면만 보고 완료하지 않는다. 발행 대상에서 병원명과 분과명의 계산된 `font-weight` 가 모두 400인지 확인한다.
+
+---
+
 ## 🔎 SEO 구조화데이터 — **자동 로더 방식** (LOCKED v1, 사용자 확정)
 
 **방침**: 페이지별 JSON-LD(구조화데이터)는 Webflow head 에 **정적으로 붙여넣지 않고**, 각 페이지 head 에 심어둔 **작은 자동 로더**가 런타임에 `seo-snippets/<page>.html` 을 fetch 해서 `<script type="application/ld+json">` 만 뽑아 head 에 주입한다. → 슬러그·내용이 바뀌어도 **Webflow 에 다시 붙여넣을 필요 없음** (코드만 고치면 됨).
