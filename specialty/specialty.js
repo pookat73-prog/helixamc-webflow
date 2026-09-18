@@ -575,19 +575,22 @@
        재므로, 초기 글꼴 로딩 중의 임시 높이를 기준으로 남기지 않는다. */
     /* 가장 길게 펼쳐지는 항목이 차지할 실제 높이만큼 표 하단을 미리 확보한다. */
     var actualResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
-    if (actualResidual > 0.5) {
-      /* 아래 여백을 바꾼 직후에는 아직 표의 최종 높이가 반영되기 전이다.
-         표가 자리 잡은 뒤 실제 표 높이를 기준으로 최대 펼침분을 미리 더해,
-         어떤 항목을 올려도 표 하단선이 움직이지 않게 한다. */
-      setTimeout(function () {
-        if (items.some(function (it) { return !!it.wrap.style.paddingBottom; })) return;
-        var liveGrid = document.querySelector(GRID);
-        if (!liveGrid) return;
-        var floorHeight = Math.ceil(liveGrid.getBoundingClientRect().height + actualResidual);
-        liveGrid.style.height = floorHeight + 'px';
-        liveGrid.style.minHeight = floorHeight + 'px';
-      }, 220);
-    }
+    /* 지정된 섹션·헤딩 여백은 건드리지 않는다. 표가 자리 잡은 뒤에만 남은
+       화면 높이를 표의 최대 높이로 삼아, 어떤 항목을 올려도 표 하단선과
+       푸터 시작점이 움직이지 않게 한다. */
+    setTimeout(function () {
+      if (items.some(function (it) { return !!it.wrap.style.paddingBottom; })) return;
+      var liveGrid = document.querySelector(GRID);
+      if (!liveGrid) return;
+      var gridTop = liveGrid.getBoundingClientRect().top;
+      var maxGridHeight = Math.max(0, Math.floor(allowedBottom - gridTop));
+      var floorHeight = Math.min(
+        Math.ceil(liveGrid.getBoundingClientRect().height + actualResidual),
+        maxGridHeight
+      );
+      liveGrid.style.height = floorHeight + 'px';
+      liveGrid.style.minHeight = floorHeight + 'px';
+    }, 220);
   }
 
   /* '아무것도 펼쳐지지 않은 평상시' 좌표를 일괄로 재서 기억해 둔다.
