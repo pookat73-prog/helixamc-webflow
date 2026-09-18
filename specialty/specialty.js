@@ -566,9 +566,18 @@
     /* 숨긴 설명의 실제 글꼴 높이는 초기 측정 뒤에도 소폭 커질 수 있다.
        가장 크게 펼쳐지는 비강경 검사보다 10px 여유를 더 잡아, 이후에도
        표 하단선이 다시 내려가지 않게 한다. */
-    var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD))) + 10;
+    var actualResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
+    var maxResidual = actualResidual + 10;
     if (maxResidual > 0.5) {
-      grid.style.minHeight = Math.ceil(grid.getBoundingClientRect().height + maxResidual) + 'px';
+      /* 아래 여백을 바꾼 직후에는 아직 표의 최종 높이가 반영되기 전이다.
+         다음 화면 갱신 뒤 실제 표 높이를 기준으로 최대 펼침분을 미리 더해,
+         어떤 항목을 올려도 표 하단선이 움직이지 않게 한다. */
+      requestAnimationFrame(function () {
+        if (items.some(function (it) { return !!it.wrap.style.paddingBottom; })) return;
+        var liveGrid = document.querySelector(GRID);
+        if (!liveGrid) return;
+        liveGrid.style.minHeight = Math.ceil(liveGrid.getBoundingClientRect().height + actualResidual) + 'px';
+      });
     }
   }
 
