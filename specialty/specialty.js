@@ -292,28 +292,9 @@
     var residual   = grow - item.absorb;
 
     var gl = grayLine(wrap);
-    var targetY;
-    if (gl) {
-      /* 아래에 회색 구분선이 있으면 그 선이 곧 착지점 */
-      targetY = Math.round(gl.getBoundingClientRect().top - wrapRect.top + residual);
-    } else {
-      /* ── 열의 마지막 항목 — 아래에 회색 구분선이 없다 ──
-         두 후보 중 더 아래를 택한다.
-
-           내용 바닥 : 펼쳤을 때 글이 끝나는 자리
-           열 바닥   : 표 아래 테두리(.hst_grid border-bottom)가 지나는 자리
-
-         칸이 길어 여유가 있으면 '열 바닥' 이 더 아래다 → 바닥에 깔린 선
-         위치에 맞춰 켜진다(사용자 요청). 여유가 없는 칸은 펼치면서 열이
-         같이 늘어나므로 '내용 바닥' 이 곧 새 열 바닥이 된다.
-
-         이렇게 두면 어느 칸이 긴지 세어 둘 필요가 없다 — 칸마다 알아서
-         맞는 쪽을 고른다. 나중에 항목이 늘거나 글이 길어져도 그대로 맞음. */
-      var col = wrap.closest ? wrap.closest(COL) : null;
-      var contentBottom = wrapRect.height + residual;
-      var colBottom = col ? (col.getBoundingClientRect().bottom - wrapRect.top) : contentBottom;
-      targetY = Math.round(Math.max(colBottom, contentBottom));
-    }
+    var grid = document.querySelector(GRID);
+    var gridBottom = grid ? grid.getBoundingClientRect().bottom : wrapRect.bottom;
+    var targetY = Math.round(gridBottom - wrapRect.top);
     item.gl = gl;
 
     if (endX - startX < RADIUS * 2 || targetY - y0 < RADIUS * 2) return false;
@@ -330,18 +311,12 @@
     item.path.setAttribute('d', item.d);
     item.len = item.path.getTotalLength();
 
-    /* 켤 대상: 회색 구분선이 있으면 그것, 없으면 대체 선.
-       대체 선은 회색 선과 같은 모양이 되도록 항목 전체 폭으로 깐다. */
-    if (gl) {
-      item.lit = gl;
-      item.edge.style.display = 'none';
-    } else {
-      item.lit = item.edge;
-      item.edge.style.display = '';
-      item.edge.style.left  = '0px';
-      item.edge.style.width = Math.round(wrapRect.width) + 'px';
-      item.edge.style.top   = targetY + 'px';
-    }
+    /* 어떤 항목에서도 표 최하단선만 켠다. */
+    item.lit = item.edge;
+    item.edge.style.display = '';
+    item.edge.style.left  = '0px';
+    item.edge.style.width = Math.round(wrapRect.width) + 'px';
+    item.edge.style.top   = targetY + 'px';
     return true;
   }
 
