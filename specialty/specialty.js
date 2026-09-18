@@ -584,7 +584,10 @@
        평상시 표 높이에 미리 확보한다. 그러면 어느 항목을 올려도 표 하단선은
        같은 자리에 머문다. 이 값은 resize·글꼴 변경 때마다 실제 높이를 다시
        재므로, 초기 글꼴 로딩 중의 임시 높이를 기준으로 남기지 않는다. */
-    var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
+    /* 숨긴 설명의 실제 글꼴 높이는 초기 측정 뒤에도 소폭 커질 수 있다.
+       가장 크게 펼쳐지는 비강경 검사보다 10px 여유를 더 잡아, 이후에도
+       표 하단선이 다시 내려가지 않게 한다. */
+    var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD))) + 10;
     if (maxResidual > 0.5) {
       grid.style.minHeight = Math.ceil(grid.getBoundingClientRect().height + maxResidual) + 'px';
     }
