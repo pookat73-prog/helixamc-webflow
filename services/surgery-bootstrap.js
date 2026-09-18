@@ -120,6 +120,106 @@
   }
 })();
 
+/* 통증 관리 문구: 지정한 세 줄만 유지하고, 좁은 폭에서는 글자 크기만 맞춘다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_PAIN_THREE_LINES__) return;
+  window.__HELIX_SURGERY_PAIN_THREE_LINES__ = true;
+
+  var LINES = [
+    '환자가 일상과 치료 과정 속의 고통을',
+    '스스로 감내하기보다, 회복에만 전념할 수 있도록',
+    '정교한 통증 제어에 집중합니다.'
+  ];
+
+  function initPainThreeLines() {
+    var statement = document.querySelector(
+      '.hx-sg-responsive-frame7 .hx-sg-readable-statement'
+    );
+    if (!statement) return;
+
+    var copy = (statement.innerText || statement.textContent).replace(/\s+/g, ' ').trim();
+    if (copy !== LINES.join(' ')) return;
+
+    var fragment = document.createDocumentFragment();
+    LINES.forEach(function (line, index) {
+      if (index) fragment.appendChild(document.createElement('br'));
+      fragment.appendChild(document.createTextNode(line));
+    });
+    statement.replaceChildren(fragment);
+    statement.dataset.hxThreeLineFit = 'true';
+    statement.style.whiteSpace = 'nowrap';
+    statement.style.wordBreak = 'normal';
+    statement.style.overflowWrap = 'normal';
+
+    var frame = null;
+
+    function fit() {
+      frame = null;
+      statement.style.removeProperty('font-size');
+
+      var naturalSize = parseFloat(window.getComputedStyle(statement).fontSize);
+      var rect = statement.getBoundingClientRect();
+      var viewportWidth = window.visualViewport
+        ? window.visualViewport.width
+        : (window.innerWidth || document.documentElement.clientWidth);
+      var visibleWidth = Math.max(
+        0,
+        Math.min(rect.right, viewportWidth) - Math.max(rect.left, 0)
+      );
+      var availableWidth = Math.min(statement.clientWidth, visibleWidth);
+      var requiredWidth = Array.prototype.reduce.call(
+        statement.childNodes,
+        function (widest, node) {
+          if (node.nodeType !== Node.TEXT_NODE) return widest;
+          var range = document.createRange();
+          range.selectNodeContents(node);
+          return Math.max(widest, range.getBoundingClientRect().width);
+        },
+        0
+      );
+      if (!naturalSize || !availableWidth || !requiredWidth) return;
+
+      if (requiredWidth <= availableWidth) return;
+
+      var fittedSize = naturalSize * ((availableWidth - 2) / requiredWidth);
+      statement.style.fontSize = fittedSize.toFixed(3) + 'px';
+    }
+
+    function scheduleFit() {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(fit);
+    }
+
+    scheduleFit();
+    window.addEventListener('resize', scheduleFit, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleFit, { passive: true });
+    }
+
+    if ('ResizeObserver' in window && statement.parentElement) {
+      var observedWidth = 0;
+      new ResizeObserver(function (entries) {
+        var width = entries[0] ? entries[0].contentRect.width : 0;
+        if (!width || Math.abs(width - observedWidth) < 0.5) return;
+        observedWidth = width;
+        scheduleFit();
+      }).observe(statement.parentElement);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleFit);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPainThreeLines, { once: true });
+  } else {
+    initPainThreeLines();
+  }
+})();
+
 /* 안전 시스템 카드: 번호·본문·구분선은 유지하고, 국문·영문 제목 묶음만 순차 표시한다. */
 (function () {
   'use strict';
