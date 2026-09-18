@@ -28,6 +28,12 @@ a.link-block-11,
   display: none !important;
 }
 
+/* 첫 화면에는 진료과목 영역만 표시.
+   푸터는 한 화면 아래에서 시작해 스크롤 후에만 보이도록 한다. */
+.blackframe_single {
+  min-height: var(--screen-h, 100svh);
+}
+
 /* 세로폰(≤767px) 영상의학과 사진 숨김 블록은 제거됨.
    사용자가 캔버스에 사진을 다시 넣었고 라이브에도 보이길 원함(위 헤더 참고).
    ⚠️ 여기에 .dept-card_di / .dept_image_di 세로폰 숨김 규칙을 다시 추가하지 말 것. */
