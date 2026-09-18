@@ -688,3 +688,9 @@
     margin-bottom: clamp(22px, 3vh, 32px);
   }
 }
+
+/* 720px 높이에서는 표의 최대 펼침 높이까지 고정해도 푸터 시작점이
+   첫 화면에 남도록, 제목과 표 사이 간격만 추가로 압축한다. */
+@media (min-width: 992px) and (max-height: 720px) {
+  .spec-header-wrap { margin-bottom: 6px; }
+}
