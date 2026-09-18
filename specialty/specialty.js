@@ -521,7 +521,54 @@
       if (g > maxGrow) maxGrow = g;
     });
     if (busy || !maxGrow) return;
-    var pad = Math.max(WF_PAD, Math.ceil(maxGrow) + MIN_PAD);
+    var reserve = Math.max(WF_PAD, Math.ceil(maxGrow) + MIN_PAD);
+    var grid = document.querySelector(GRID);
+    if (!isDesktop() || !grid) {
+      document.documentElement.style.setProperty('--hx-spec-pad', reserve + 'px');
+      return;
+    }
+
+    /* ── 첫 화면 맞춤 (v6.3) ────────────────────────────────────
+       설명을 숨긴 평상시 표가 화면 아래로 밀릴 때만, 항목마다 비워 둔
+       설명 공간을 같은 값으로 줄인다. 표의 글자·가로폭·그룹 구조는
+       건드리지 않는다.
+
+       호버 때는 줄인 공간만큼 설명을 먼저 흡수하고, 부족한 부분만 표가
+       늘어난다. 아래 식에는 그 '가장 큰 부족분'까지 미리 포함하므로,
+       어느 항목을 올려도 표 하단 여백과 푸터 시작점이 화면 안에 남는다.
+
+       현재 적용된 아래 여백에서 역산해 원래 reserve 상태의 표 바닥을
+       구한다. 이 방식이면 resize/ResizeObserver 재측정 때 reserve 값으로
+       잠깐 되돌렸다 다시 줄이는 깜빡임·무한 관찰을 만들지 않는다. */
+    var rows = 0;
+    var cols = document.querySelectorAll(COL);
+    for (var c = 0; c < cols.length; c++) {
+      var count = cols[c].querySelectorAll(WRAP).length;
+      if (count > rows) rows = count;
+    }
+    if (rows < 2) {
+      document.documentElement.style.setProperty('--hx-spec-pad', reserve + 'px');
+      return;
+    }
+
+    var currentPad = parseFloat(getComputedStyle(items[0].wrap).paddingBottom) || WF_PAD;
+    var fullBottom = grid.getBoundingClientRect().bottom + (reserve - currentPad) * rows;
+    /* 표 아래의 숨통은 WhiteFrame 자체의 아래 패딩이다. 표 바닥만 화면
+       안에 넣고 이 값을 따로 남겨 두면 섹션 끝(= 푸터 시작점)이 화면 밖으로
+       밀린다. 실제 패딩만큼 미리 비워 두어, 표·여백·푸터 꼭대기가 한 화면
+       안에서 끝나게 한다. 섹션을 못 찾는 예외에서만 기존 최소 숨통을 쓴다. */
+    var section = grid.closest ? grid.closest('.whiteframe-for-full-frame-nerrowtop, .whiteframe-for-full-frame') : null;
+    var bottomGap = Math.max(24, Math.min(48, Math.round(window.innerHeight * 0.04)));
+    var sectionPad = section ? (parseFloat(getComputedStyle(section).paddingBottom) || 0) : 0;
+    var allowedBottom = window.innerHeight - Math.max(bottomGap, sectionPad);
+    var pad = reserve;
+
+    if (fullBottom > allowedBottom) {
+      /* rows 개의 항목을 줄이면 표는 rows 배만큼 올라가지만, 호버한 한
+         항목은 남은 설명 높이만큼 다시 내려간다. */
+      var maxPad = (allowedBottom - fullBottom + rows * reserve - maxGrow - MIN_PAD) / (rows - 1);
+      pad = Math.max(MIN_PAD, Math.min(reserve, Math.floor(maxPad)));
+    }
     document.documentElement.style.setProperty('--hx-spec-pad', pad + 'px');
   }
 
