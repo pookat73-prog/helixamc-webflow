@@ -179,6 +179,11 @@
     return window.innerWidth >= DESKTOP_MIN;
   }
 
+  function revealGrid() {
+    document.documentElement.classList.add('hx-spec-ready');
+    clearTimeout(window.__hxSpecialtyRevealTimer);
+  }
+
   function reducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
@@ -292,28 +297,9 @@
     var residual   = grow - item.absorb;
 
     var gl = grayLine(wrap);
-    var targetY;
-    if (gl) {
-      /* 아래에 회색 구분선이 있으면 그 선이 곧 착지점 */
-      targetY = Math.round(gl.getBoundingClientRect().top - wrapRect.top + residual);
-    } else {
-      /* ── 열의 마지막 항목 — 아래에 회색 구분선이 없다 ──
-         두 후보 중 더 아래를 택한다.
-
-           내용 바닥 : 펼쳤을 때 글이 끝나는 자리
-           열 바닥   : 표 아래 테두리(.hst_grid border-bottom)가 지나는 자리
-
-         칸이 길어 여유가 있으면 '열 바닥' 이 더 아래다 → 바닥에 깔린 선
-         위치에 맞춰 켜진다(사용자 요청). 여유가 없는 칸은 펼치면서 열이
-         같이 늘어나므로 '내용 바닥' 이 곧 새 열 바닥이 된다.
-
-         이렇게 두면 어느 칸이 긴지 세어 둘 필요가 없다 — 칸마다 알아서
-         맞는 쪽을 고른다. 나중에 항목이 늘거나 글이 길어져도 그대로 맞음. */
-      var col = wrap.closest ? wrap.closest(COL) : null;
-      var contentBottom = wrapRect.height + residual;
-      var colBottom = col ? (col.getBoundingClientRect().bottom - wrapRect.top) : contentBottom;
-      targetY = Math.round(Math.max(colBottom, contentBottom));
-    }
+    var grid = document.querySelector(GRID);
+    var gridBottom = grid ? grid.getBoundingClientRect().bottom : wrapRect.bottom;
+    var targetY = Math.round(gridBottom - wrapRect.top);
     item.gl = gl;
 
     if (endX - startX < RADIUS * 2 || targetY - y0 < RADIUS * 2) return false;
@@ -330,18 +316,12 @@
     item.path.setAttribute('d', item.d);
     item.len = item.path.getTotalLength();
 
-    /* 켤 대상: 회색 구분선이 있으면 그것, 없으면 대체 선.
-       대체 선은 회색 선과 같은 모양이 되도록 항목 전체 폭으로 깐다. */
-    if (gl) {
-      item.lit = gl;
-      item.edge.style.display = 'none';
-    } else {
-      item.lit = item.edge;
-      item.edge.style.display = '';
-      item.edge.style.left  = '0px';
-      item.edge.style.width = Math.round(wrapRect.width) + 'px';
-      item.edge.style.top   = targetY + 'px';
-    }
+    /* 어떤 항목에서도 표 최하단선만 켠다. */
+    item.lit = item.edge;
+    item.edge.style.display = '';
+    item.edge.style.left  = '0px';
+    item.edge.style.width = Math.round(wrapRect.width) + 'px';
+    item.edge.style.top   = targetY + 'px';
     return true;
   }
 
@@ -375,6 +355,12 @@
   function darkenEdge(item) {
     if (!item.lit) return;
     item.lit.classList.remove('hx-lit', 'hx-flash');
+  }
+
+  function alignEdge(item) {
+    var grid = document.querySelector(GRID);
+    if (!grid || !item.edge) return;
+    item.edge.style.top = Math.round(grid.getBoundingClientRect().bottom - item.wrap.getBoundingClientRect().top) + 'px';
   }
 
   /* 코멧 한 번 보내기(펼칠 때만). 머리가 앞서고 꼬리가 TAIL_LAG 만큼 늦게
@@ -437,7 +423,10 @@
     runWorm(item);
 
     /* 머리가 바닥에 닿는 시점(꼬리가 따라붙기 전)에 가로선 점등 */
-    item.flashTimer = setTimeout(function () { lightEdge(item); }, DURATION);
+    item.flashTimer = setTimeout(function () {
+      alignEdge(item);
+      lightEdge(item);
+    }, DURATION);
   }
 
   function leave(item) {
@@ -521,8 +510,93 @@
       if (g > maxGrow) maxGrow = g;
     });
     if (busy || !maxGrow) return;
-    var pad = Math.max(WF_PAD, Math.ceil(maxGrow) + MIN_PAD);
+    var reserve = Math.max(WF_PAD, Math.ceil(maxGrow) + MIN_PAD);
+    var grid = document.querySelector(GRID);
+    if (!isDesktop() || !grid) {
+      if (grid) {
+        grid.style.minHeight = '';
+        grid.__hxSpecFloorKey = '';
+      }
+      document.documentElement.style.setProperty('--hx-spec-pad', reserve + 'px');
+      return;
+    }
+
+    /* 이전 측정에서 고정한 표 높이는 이번 자연 높이 계산에 섞지 않는다.
+       남겨 두면 ResizeObserver 재측정 때 여백이 누적돼 표·푸터가 아래로
+       밀린다. 아래에서 새 최대 높이를 다시 고정한다. */
+    grid.style.height = '';
+    grid.style.minHeight = '';
+
+    /* ── 첫 화면 맞춤 (v6.3) ────────────────────────────────────
+       설명을 숨긴 평상시 표가 화면 아래로 밀릴 때만, 항목마다 비워 둔
+       설명 공간을 같은 값으로 줄인다. 표의 글자·가로폭·그룹 구조는
+       건드리지 않는다.
+
+       호버 때는 줄인 공간만큼 설명을 먼저 흡수하고, 부족한 부분만 표가
+       늘어난다. 아래 식에는 그 '가장 큰 부족분'까지 미리 포함하므로,
+       어느 항목을 올려도 표 하단 여백과 푸터 시작점이 화면 안에 남는다.
+
+       현재 적용된 아래 여백에서 역산해 원래 reserve 상태의 표 바닥을
+       구한다. 이 방식이면 resize/ResizeObserver 재측정 때 reserve 값으로
+       잠깐 되돌렸다 다시 줄이는 깜빡임·무한 관찰을 만들지 않는다. */
+    var rows = 0;
+    var cols = document.querySelectorAll(COL);
+    for (var c = 0; c < cols.length; c++) {
+      var count = cols[c].querySelectorAll(WRAP).length;
+      if (count > rows) rows = count;
+    }
+    if (rows < 2) {
+      document.documentElement.style.setProperty('--hx-spec-pad', reserve + 'px');
+      return;
+    }
+
+    var currentPad = parseFloat(getComputedStyle(items[0].wrap).paddingBottom) || WF_PAD;
+    var fullBottom = grid.getBoundingClientRect().bottom + (reserve - currentPad) * rows;
+    /* 표 아래의 숨통은 WhiteFrame 자체의 아래 패딩이다. 표 바닥만 화면
+       안에 넣고 이 값을 따로 남겨 두면 섹션 끝(= 푸터 시작점)이 화면 밖으로
+       밀린다. 실제 패딩만큼 미리 비워 두어, 표·여백·푸터 꼭대기가 한 화면
+       안에서 끝나게 한다. 섹션을 못 찾는 예외에서만 기존 최소 숨통을 쓴다. */
+    var section = grid.closest ? grid.closest('.whiteframe-for-full-frame-nerrowtop, .whiteframe-for-full-frame') : null;
+    var bottomGap = Math.max(24, Math.min(48, Math.round(window.innerHeight * 0.04)));
+    var sectionPad = section ? (parseFloat(getComputedStyle(section).paddingBottom) || 0) : 0;
+    var allowedBottom = window.innerHeight - Math.max(bottomGap, sectionPad);
+    var pad = reserve;
+
+    if (fullBottom > allowedBottom) {
+      /* rows 개의 항목을 줄이면 표는 rows 배만큼 올라가지만, 호버한 한
+         항목은 남은 설명 높이만큼 다시 내려간다. */
+      var maxPad = (allowedBottom - fullBottom + rows * reserve - maxGrow - MIN_PAD) / (rows - 1);
+      pad = Math.max(MIN_PAD, Math.min(reserve, Math.floor(maxPad)));
+    }
+    /* 720px 높이에서는 늦게 도착한 글꼴 측정이 reserve 전체를 다시 쓰면
+       네 줄 열의 빈 여백이 과도하게 커진다. 최대 펼침 공간은 아래 floor가
+       별도로 확보하므로, 항목별 숨은 여백은 이 높이에서 75px를 넘기지 않는다. */
+    if (window.innerHeight <= 720) pad = Math.min(pad, 75);
     document.documentElement.style.setProperty('--hx-spec-pad', pad + 'px');
+
+    /* 가장 크게 펼쳐지는 항목(현재는 비강경 검사)이 표를 내리는 만큼을
+       평상시 표 높이에 미리 확보한다. 그러면 어느 항목을 올려도 표 하단선은
+       같은 자리에 머문다. 이 값은 resize·글꼴 변경 때마다 실제 높이를 다시
+       재므로, 초기 글꼴 로딩 중의 임시 높이를 기준으로 남기지 않는다. */
+    /* 가장 길게 펼쳐지는 항목이 차지할 실제 높이만큼 표 하단을 미리 확보한다. */
+    var actualResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
+    /* 지정된 섹션·헤딩 여백은 건드리지 않는다. 표가 자리 잡은 뒤에만 남은
+       화면 높이를 표의 최대 높이로 삼아, 어떤 항목을 올려도 표 하단선과
+       푸터 시작점이 움직이지 않게 한다. */
+    setTimeout(function () {
+      if (items.some(function (it) { return !!it.wrap.style.paddingBottom; })) return;
+      var liveGrid = document.querySelector(GRID);
+      if (!liveGrid) return;
+      var gridTop = liveGrid.getBoundingClientRect().top;
+      var maxGridHeight = Math.max(0, Math.floor(allowedBottom - gridTop));
+      var floorHeight = Math.min(
+        Math.ceil(liveGrid.getBoundingClientRect().height + actualResidual),
+        maxGridHeight
+      );
+      liveGrid.style.height = floorHeight + 'px';
+      liveGrid.style.minHeight = floorHeight + 'px';
+      requestAnimationFrame(revealGrid);
+    }, 220);
   }
 
   /* '아무것도 펼쳐지지 않은 평상시' 좌표를 일괄로 재서 기억해 둔다.
@@ -545,11 +619,12 @@
 
   function init() {
     initCta();          /* 토스트는 폭과 무관하게 항상 */
-    if (!isDesktop()) return;   /* 아래는 코멧(선) 전용 */
+    if (!isDesktop()) { revealGrid(); return; }   /* 아래는 코멧(선) 전용 */
 
     var wraps = document.querySelectorAll(WRAP);
     if (!wraps.length) {
       console.warn('[specialty] ' + WRAP + ' 요소를 못 찾음 — Webflow 에서 클래스 이름이 바뀌었는지 확인');
+      revealGrid();
       return;
     }
 
@@ -587,10 +662,7 @@
         clearTimeout(ht);
         ht = setTimeout(measureAll, 120);
       });
-      var grid = document.querySelector(GRID);
-      if (grid) ro.observe(grid);                     /* 가장 긴 열이 바뀌는 것 */
       items.forEach(function (it) {
-        ro.observe(it.wrap);                          /* 한글명·영문명 높이 */
         var kids = it.reveal.children;
         for (var k = 0; k < kids.length; k++) ro.observe(kids[k]);  /* 설명·CTA 높이 */
       });

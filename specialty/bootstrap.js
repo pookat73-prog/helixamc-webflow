@@ -23,6 +23,23 @@
   var REPO   = 'helixamc-webflow';
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
+  /* 표 높이는 specialty.js 가 실제 화면 높이를 재서 한 번 확정한다.
+     그 전의 임시 표가 먼저 보였다가 바뀌지 않도록, 데스크톱에서는 표만
+     잠깐 숨기고 최종 높이가 들어온 뒤 한 번에 보인다. 파일 로드 실패 때
+     표가 계속 숨지 않도록 3초 뒤에는 안전하게 풀어 둔다. */
+  var PREPAINT_ID = 'hx-specialty-prepaint';
+  if (!document.getElementById(PREPAINT_ID)) {
+    var prepaint = document.createElement('style');
+    prepaint.id = PREPAINT_ID;
+    prepaint.textContent = '@media (min-width:992px){html:not(.hx-spec-ready) .hst_grid{visibility:hidden}}';
+    document.head.appendChild(prepaint);
+  }
+  document.documentElement.classList.remove('hx-spec-ready');
+  clearTimeout(window.__hxSpecialtyRevealTimer);
+  window.__hxSpecialtyRevealTimer = setTimeout(function () {
+    document.documentElement.classList.add('hx-spec-ready');
+  }, 3000);
+
   var FILES = [
     /* 기기 오분류 교정 — 화면 폭을 바꾸므로 무엇보다 먼저 */
     'global/viewport-fix.js',
