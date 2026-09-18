@@ -532,6 +532,11 @@
       return;
     }
 
+    /* 이전 측정에서 고정한 표 높이는 이번 자연 높이 계산에 섞지 않는다.
+       남겨 두면 ResizeObserver 재측정 때 여백이 누적돼 표·푸터가 아래로
+       밀린다. 아래에서 새 최대 높이를 다시 고정한다. */
+    grid.style.minHeight = '';
+
     /* ── 첫 화면 맞춤 (v6.3) ────────────────────────────────────
        설명을 숨긴 평상시 표가 화면 아래로 밀릴 때만, 항목마다 비워 둔
        설명 공간을 같은 값으로 줄인다. 표의 글자·가로폭·그룹 구조는
@@ -579,7 +584,6 @@
        평상시 표 높이에 미리 확보한다. 그러면 어느 항목을 올려도 표 하단선은
        같은 자리에 머문다. 이 값은 resize·글꼴 변경 때마다 실제 높이를 다시
        재므로, 초기 글꼴 로딩 중의 임시 높이를 기준으로 남기지 않는다. */
-    grid.style.minHeight = '';
     var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
     if (maxResidual > 0.5) {
       grid.style.minHeight = Math.ceil(grid.getBoundingClientRect().height + maxResidual) + 'px';
