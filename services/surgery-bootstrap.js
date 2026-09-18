@@ -210,7 +210,7 @@
   var ROOT_CLASS = 'hx-sg-principle-shadow-motion';
   var VISIBLE_CLASS = 'hx-sg-principle-shadow-visible';
   var ANIMATING_CLASS = 'hx-sg-principle-shadow-animating';
-  var SHADOW_DURATION = 1600;
+  var SHADOW_DURATION = 800;
 
   if (!('IntersectionObserver' in window)) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
