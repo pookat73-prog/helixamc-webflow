@@ -653,7 +653,6 @@
         ht = setTimeout(measureAll, 120);
       });
       items.forEach(function (it) {
-        ro.observe(it.wrap);                          /* 한글명·영문명 높이 */
         var kids = it.reveal.children;
         for (var k = 0; k < kids.length; k++) ro.observe(kids[k]);  /* 설명·CTA 높이 */
       });
