@@ -179,6 +179,11 @@
     return window.innerWidth >= DESKTOP_MIN;
   }
 
+  function revealGrid() {
+    document.documentElement.classList.add('hx-spec-ready');
+    clearTimeout(window.__hxSpecialtyRevealTimer);
+  }
+
   function reducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
@@ -590,6 +595,7 @@
       );
       liveGrid.style.height = floorHeight + 'px';
       liveGrid.style.minHeight = floorHeight + 'px';
+      requestAnimationFrame(revealGrid);
     }, 220);
   }
 
@@ -613,11 +619,12 @@
 
   function init() {
     initCta();          /* 토스트는 폭과 무관하게 항상 */
-    if (!isDesktop()) return;   /* 아래는 코멧(선) 전용 */
+    if (!isDesktop()) { revealGrid(); return; }   /* 아래는 코멧(선) 전용 */
 
     var wraps = document.querySelectorAll(WRAP);
     if (!wraps.length) {
       console.warn('[specialty] ' + WRAP + ' 요소를 못 찾음 — Webflow 에서 클래스 이름이 바뀌었는지 확인');
+      revealGrid();
       return;
     }
 
