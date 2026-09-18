@@ -701,4 +701,8 @@
   .whiteframe-for-full-frame-nerrowtop { padding-top: 0; }
   .spec-header-wrap { margin-bottom: 0; }
   .hst-item-wrap { padding-top: 13px; }
+  .hst_grid {
+    height: calc(100vh - 72px) !important;
+    min-height: calc(100vh - 72px) !important;
+  }
 }
