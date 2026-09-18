@@ -577,34 +577,12 @@
 
     /* 가장 크게 펼쳐지는 항목(현재는 비강경 검사)이 표를 내리는 만큼을
        평상시 표 높이에 미리 확보한다. 그러면 어느 항목을 올려도 표 하단선은
-       같은 자리에 머문다. resize 관찰자가 이 min-height 변경을 다시 감지해도
-       같은 화면 조건에서는 재계산하지 않아 관찰 루프가 생기지 않는다. */
-    var floorKey = window.innerWidth + ':' + window.innerHeight + ':' + pad + ':' + Math.round(maxGrow * 100);
-    var currentFloor = parseFloat(grid.style.minHeight) || 0;
-    var floorOutgrown = currentFloor > 0 && grid.clientHeight > currentFloor + 0.5;
-    if (grid.__hxSpecFloorKey !== floorKey || floorOutgrown) {
-      grid.style.minHeight = '';
-      var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
-      var baseHeight = grid.clientHeight;
-      var borderHeight = grid.offsetHeight - grid.clientHeight;
-      var maxFloor = Math.floor(allowedBottom - grid.getBoundingClientRect().top - borderHeight);
-      var desiredFloor = Math.ceil(baseHeight + maxResidual);
-
-      /* 고정할 최대 높이까지 푸터 여백을 침범하면, 마지막 수단으로 각 항목의
-         숨은 여백을 더 줄인다. 네 줄 열에서는 여백 1px 감소가 최대 표 높이를
-         3px 줄이므로, 필요한 만큼만 역산한다. */
-      if (desiredFloor > maxFloor && pad > MIN_PAD && rows > 1) {
-        pad = Math.max(MIN_PAD, pad - Math.ceil((desiredFloor - maxFloor) / (rows - 1)));
-        document.documentElement.style.setProperty('--hx-spec-pad', pad + 'px');
-        baseHeight = grid.clientHeight;
-        maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
-        desiredFloor = Math.ceil(baseHeight + maxResidual);
-      }
-
-      grid.__hxSpecFloorKey = window.innerWidth + ':' + window.innerHeight + ':' + pad + ':' + Math.round(maxGrow * 100);
-      if (maxResidual > 0.5 && desiredFloor > baseHeight) {
-        grid.style.minHeight = desiredFloor + 'px';
-      }
+       같은 자리에 머문다. 이 값은 resize·글꼴 변경 때마다 실제 높이를 다시
+       재므로, 초기 글꼴 로딩 중의 임시 높이를 기준으로 남기지 않는다. */
+    grid.style.minHeight = '';
+    var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
+    if (maxResidual > 0.5) {
+      grid.style.minHeight = Math.ceil(grid.getBoundingClientRect().height + maxResidual) + 'px';
     }
   }
 
@@ -670,8 +648,6 @@
         clearTimeout(ht);
         ht = setTimeout(measureAll, 120);
       });
-      var grid = document.querySelector(GRID);
-      if (grid) ro.observe(grid);                     /* 가장 긴 열이 바뀌는 것 */
       items.forEach(function (it) {
         ro.observe(it.wrap);                          /* 한글명·영문명 높이 */
         var kids = it.reveal.children;
