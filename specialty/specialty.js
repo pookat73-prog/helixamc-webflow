@@ -580,7 +580,9 @@
        같은 자리에 머문다. resize 관찰자가 이 min-height 변경을 다시 감지해도
        같은 화면 조건에서는 재계산하지 않아 관찰 루프가 생기지 않는다. */
     var floorKey = window.innerWidth + ':' + window.innerHeight + ':' + pad + ':' + Math.round(maxGrow * 100);
-    if (grid.__hxSpecFloorKey !== floorKey) {
+    var currentFloor = parseFloat(grid.style.minHeight) || 0;
+    var floorOutgrown = currentFloor > 0 && grid.getBoundingClientRect().height > currentFloor + 0.5;
+    if (grid.__hxSpecFloorKey !== floorKey || floorOutgrown) {
       grid.__hxSpecFloorKey = floorKey;
       grid.style.minHeight = '';
       var maxResidual = Math.max(0, maxGrow - Math.max(0, Math.min(maxGrow, pad - MIN_PAD)));
