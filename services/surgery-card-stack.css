@@ -284,14 +284,14 @@
     box-shadow:
       0 2px 6px -6px rgba(154, 170, 187, 0),
       0 -2px 6px -6px rgba(0, 117, 214, 0) !important;
-    transition: box-shadow 1600ms cubic-bezier(.9, 0, .14, 1.42);
+    transition: box-shadow 800ms cubic-bezier(0.89, 0, 0.15, 0.97);
   }
 
   html.hx-sg-principle-shadow-motion
   .hx-sg-principle-card.hx-sg-principle-shadow-visible {
     box-shadow:
-      9px 9px 20px -6px rgba(154, 170, 187, 1),
-      -9px -9px 20px -6px rgba(0, 117, 214, .38) !important;
+      11px 11px 28px -5px rgba(154, 170, 187, 1),
+      -11px -11px 28px -5px rgba(0, 117, 214, .46) !important;
   }
 
   html.hx-sg-principle-shadow-motion
