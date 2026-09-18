@@ -134,7 +134,7 @@
     );
     if (!statement) return;
 
-    var copy = statement.textContent.replace(/\s+/g, ' ').trim();
+    var copy = (statement.innerText || statement.textContent).replace(/\s+/g, ' ').trim();
     if (copy !== LINES.join(' ')) return;
 
     var fragment = document.createDocumentFragment();
