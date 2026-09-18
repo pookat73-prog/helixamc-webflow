@@ -352,6 +352,12 @@
     item.lit.classList.remove('hx-lit', 'hx-flash');
   }
 
+  function alignEdge(item) {
+    var grid = document.querySelector(GRID);
+    if (!grid || !item.edge) return;
+    item.edge.style.top = Math.round(grid.getBoundingClientRect().bottom - item.wrap.getBoundingClientRect().top) + 'px';
+  }
+
   /* 코멧 한 번 보내기(펼칠 때만). 머리가 앞서고 꼬리가 TAIL_LAG 만큼 늦게
      따라오며 지워져, 끝나면 경로가 저절로 사라진다.
 
@@ -412,7 +418,10 @@
     runWorm(item);
 
     /* 머리가 바닥에 닿는 시점(꼬리가 따라붙기 전)에 가로선 점등 */
-    item.flashTimer = setTimeout(function () { lightEdge(item); }, DURATION);
+    item.flashTimer = setTimeout(function () {
+      alignEdge(item);
+      lightEdge(item);
+    }, DURATION);
   }
 
   function leave(item) {
