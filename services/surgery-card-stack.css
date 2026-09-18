@@ -98,8 +98,8 @@
   }
 }
 
-/* 외과 아웃트로 병원명: Webflow 네이티브의 일반 굵기를 유지한다. */
-.hx-sg-dept-brand-light {
+/* 진료과 상세 아웃트로: 별도 지정이 없으면 병원명과 분과명 모두 일반 굵기를 유지한다. */
+.hx-sg-dept-mark-light {
   font-weight: 400;
 }
 
