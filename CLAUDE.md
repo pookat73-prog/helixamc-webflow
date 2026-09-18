@@ -621,6 +621,29 @@ getComputedStyle(document.body).overflowY  // 'visible' 이어야 함. 'auto' �
 Webflow로 만든 Helix 동물병원(helix-amc) 사이트의 커스텀 CSS/JS를
 GitHub에서 관리하고 jsDelivr CDN으로 자동 배포하는 구조.
 
+## ⚠️ 진료과 인트로 필기체 영어 라벨 — 건드리지 말 것 (LOCKED v1)
+
+### 확정 대상
+
+- 모든 진료과 상세 페이지 인트로의 필기체 영어 라벨
+- Webflow 클래스 표기: `Subject Eng Keyword`
+- 실제 CSS 선택자: `.subject-eng-keyword`
+- 공통 규칙 위치: `global/global.css`
+
+### 확정 사양
+
+- 마스크 방향: `14deg`
+- 투명도 흐름: `.08`(0~6%) → `.28`(16%) → `.52`(26%) → `.76`(36%) → 완전 불투명(46%)
+- 큰 필기체 잘림 방지: `padding-block: .3em`, `padding-inline: .18em`
+- 레이아웃 위치 보존: padding과 같은 크기의 음수 margin 사용
+
+### 변경하면 안 되는 것
+
+- 진료과별로 다른 그라데이션 값을 만들지 않는다.
+- 페이지 전용 CSS에 같은 규칙을 중복 작성하지 않는다.
+- 클래스명을 바꾸거나 제거하면 공통 규칙이 끊기므로, 모든 진료과 영어 라벨에 `Subject Eng Keyword`를 유지한다.
+- 마스크만 남기고 padding/음수 margin을 제거하지 않는다. 글자 상하단이 잘리는 회귀가 생긴다.
+
 ## 핵심 아키텍처 — **Bootstrap 패턴**
 
 Webflow Page Settings의 `<head>`에 **딱 두 줄**만 붙여져 있음:
