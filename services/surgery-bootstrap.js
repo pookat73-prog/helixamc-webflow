@@ -482,7 +482,7 @@
   }
 })();
 
-/* 안전 시스템 카드: 번호·본문·구분선은 유지하고, 국문·영문 제목 묶음만 순차 표시한다. */
+/* 안전 시스템·예후 관리 카드: 각 섹션의 국문·영문 제목 묶음만 순차 표시한다. */
 (function () {
   'use strict';
 
@@ -494,16 +494,16 @@
   var TITLE_FADE_EASING = 'cubic-bezier(.32, 0, .18, 1)';
   var TITLE_PULL_EASING = 'cubic-bezier(.6, 0, .12, 1)';
 
-  function initSafetyCardTitles() {
+  function initSafetyCardTitles(cardSelector, titleSelector) {
     var cards = Array.prototype.slice.call(
-      document.querySelectorAll('.hx-sg-safety-card')
+      document.querySelectorAll(cardSelector)
     );
 
     if (!cards.length || !('IntersectionObserver' in window)) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var titles = cards.map(function (card) {
-      return card.querySelector('.div-block-322');
+      return card.querySelector(titleSelector);
     }).filter(function (title) {
       return title;
     });
@@ -511,9 +511,15 @@
     if (!titles.length) return;
 
     titles.forEach(function (title) {
+      if (cardSelector === '.hx-sg-aftercare-card') {
+        title.style.transition = 'none';
+      }
       title.style.opacity = '0';
       title.style.transform = 'translateX(-12px) scaleX(.925) scaleY(.985)';
       title.style.transformOrigin = 'left center';
+      if (cardSelector === '.hx-sg-aftercare-card') {
+        title.getBoundingClientRect();
+      }
       title.style.transition =
         'opacity ' + TITLE_DURATION + 'ms ' + TITLE_FADE_EASING + ', ' +
         'transform ' + TITLE_DURATION + 'ms ' + TITLE_PULL_EASING;
@@ -560,14 +566,19 @@
     observer.observe(cards[0]);
   }
 
+  function initCardTitleGroups() {
+    initSafetyCardTitles('.hx-sg-safety-card', '.div-block-322');
+    initSafetyCardTitles('.hx-sg-aftercare-card', '.div-block-332, .div-block-333');
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSafetyCardTitles, { once: true });
+    document.addEventListener('DOMContentLoaded', initCardTitleGroups, { once: true });
   } else {
-    initSafetyCardTitles();
+    initCardTitleGroups();
   }
 })();
 
-/* 수술 철학 카드: 각 카드가 화면의 70% 지점에 닿으면 Webflow 그림자를 한 번 드러낸다. */
+/* 수술 철학·예후 관리 카드: 각 카드가 화면의 70% 지점에 닿으면 후광과 그림자를 한 번 드러낸다. */
 (function () {
   'use strict';
 
@@ -586,7 +597,7 @@
 
   function initPrincipleCardShadows() {
     var cards = Array.prototype.slice.call(
-      document.querySelectorAll('.hx-sg-principle-card')
+      document.querySelectorAll('.hx-sg-principle-card, .hx-sg-aftercare-card')
     );
 
     if (!cards.length) {
