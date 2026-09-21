@@ -203,6 +203,17 @@
   pointer-events: none;
 }
 
+/* 겹치는 중앙은 사라지고, 그 주변의 선은 자연스럽게 되살아나게 한다. */
+.hx-sg-ring-draw-inner-right .hx-sg-ring-draw {
+  -webkit-mask-image: radial-gradient(ellipse 24% 40% at 100% 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  mask-image: radial-gradient(ellipse 24% 40% at 100% 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+}
+
+.hx-sg-ring-draw-inner-left .hx-sg-ring-draw {
+  -webkit-mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+}
+
 .hx-sg-ring-draw-path {
   vector-effect: non-scaling-stroke;
   transition: stroke-dashoffset 940ms cubic-bezier(0.89, 0, 0.15, 0.97);
