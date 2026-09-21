@@ -40,11 +40,13 @@
     will-change: auto;
   }
 
-  .hx-sg-principle-card {
+  .hx-sg-principle-card,
+  .hx-sg-aftercare-card {
     position: relative;
   }
 
-  .hx-sg-principle-card::before {
+  .hx-sg-principle-card::before,
+  .hx-sg-aftercare-card::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -278,9 +280,15 @@
   }
 }
 
-/* 수술 철학 카드: 그림자와 반대 방향의 메인 블루 후광을 화면 진입 시에만 드러낸다. */
+/* 예후 관리 카드의 오른쪽 아래 모서리를 수술 철학 카드와 맞춘다. */
+.hx-sg-aftercare-card {
+  border-bottom-right-radius: 36px;
+}
+
+/* 수술 철학·예후 관리 카드: 그림자와 반대 방향의 메인 블루 후광을 화면 진입 시에만 드러낸다. */
 @media (prefers-reduced-motion: no-preference) {
-  html.hx-sg-principle-shadow-motion .hx-sg-principle-card {
+  html.hx-sg-principle-shadow-motion .hx-sg-principle-card,
+  html.hx-sg-principle-shadow-motion .hx-sg-aftercare-card {
     box-shadow:
       0 2px 6px -6px rgba(154, 170, 187, 0),
       0 -2px 6px -6px rgba(0, 117, 214, 0) !important;
@@ -288,14 +296,18 @@
   }
 
   html.hx-sg-principle-shadow-motion
-  .hx-sg-principle-card.hx-sg-principle-shadow-visible {
+  .hx-sg-principle-card.hx-sg-principle-shadow-visible,
+  html.hx-sg-principle-shadow-motion
+  .hx-sg-aftercare-card.hx-sg-principle-shadow-visible {
     box-shadow:
       11px 11px 28px -5px rgba(154, 170, 187, 1),
       -11px -11px 28px -5px rgba(0, 117, 214, .46) !important;
   }
 
   html.hx-sg-principle-shadow-motion
-  .hx-sg-principle-card.hx-sg-principle-shadow-animating {
+  .hx-sg-principle-card.hx-sg-principle-shadow-animating,
+  html.hx-sg-principle-shadow-motion
+  .hx-sg-aftercare-card.hx-sg-principle-shadow-animating {
     will-change: box-shadow;
   }
 }
