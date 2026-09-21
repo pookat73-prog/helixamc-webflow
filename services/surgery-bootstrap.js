@@ -98,13 +98,28 @@
   var HOST_CLASS = 'hx-sg-ring-draw-host';
   var VISIBLE_CLASS = 'hx-sg-ring-draw-visible';
   var SVG_NS = 'http://www.w3.org/2000/svg';
-  var HALF_RING_LENGTH = Math.PI * 50;
+  var FALLBACK_HALF_RING_LENGTH = Math.PI * 50;
 
   function isVisible(element) {
     var rect = element.getBoundingClientRect();
     var style = window.getComputedStyle(element);
     return rect.width > 0 && rect.height > 0 &&
       style.display !== 'none' && style.visibility !== 'hidden';
+  }
+
+  /* non-scaling-stroke에서는 dash 길이도 화면상의 픽셀 기준이 된다. */
+  function getRenderedHalfRingLength(svg) {
+    var rect = svg.getBoundingClientRect();
+    var radiusX = rect.width / 2;
+    var radiusY = rect.height / 2;
+
+    if (!radiusX || !radiusY) return FALLBACK_HALF_RING_LENGTH;
+
+    /* 타원 반 둘레의 Ramanujan 근사값. 원과 모바일 비율 모두에 대응한다. */
+    return Math.PI * (
+      3 * (radiusX + radiusY) -
+      Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY))
+    ) / 2;
   }
 
   function createOutline(ring, startFromRight) {
@@ -126,6 +141,8 @@
     svg.setAttribute('focusable', 'false');
     ring.appendChild(svg);
 
+    var halfRingLength = getRenderedHalfRingLength(svg);
+
     /* 맞닿는 중앙점에서 위·아래 호가 동시에 퍼져 각 원을 완성한다. */
     arcPaths.forEach(function (arcPath) {
       var path = document.createElementNS(SVG_NS, 'path');
@@ -136,9 +153,9 @@
       path.setAttribute('stroke-width', '1');
       path.setAttribute('stroke-linecap', 'round');
       svg.appendChild(path);
-      /* 반원 경로의 고정 길이로 한 번에 이어지는 실선을 만든다. */
-      path.setAttribute('stroke-dasharray', HALF_RING_LENGTH + ' ' + HALF_RING_LENGTH);
-      path.setAttribute('stroke-dashoffset', HALF_RING_LENGTH);
+      /* 실제 화면 길이만큼 한 번에 이어지는 실선을 만든다. */
+      path.setAttribute('stroke-dasharray', halfRingLength + ' ' + halfRingLength);
+      path.setAttribute('stroke-dashoffset', halfRingLength);
     });
     ring.classList.add(HOST_CLASS);
   }
@@ -160,10 +177,24 @@
     createOutline(rightRing, false);
     document.documentElement.classList.add('hx-sg-ring-draw-motion');
 
+    function lockSolidStroke(ring) {
+      window.setTimeout(function () {
+        Array.prototype.forEach.call(
+          ring.querySelectorAll('.hx-sg-ring-draw-path'),
+          function (path) {
+            path.setAttribute('stroke-dasharray', 'none');
+            path.setAttribute('stroke-dashoffset', '0');
+          }
+        );
+      }, 980);
+    }
+
     function reveal() {
       leftRing.classList.add(VISIBLE_CLASS);
+      lockSolidStroke(leftRing);
       window.setTimeout(function () {
         rightRing.classList.add(VISIBLE_CLASS);
+        lockSolidStroke(rightRing);
       }, 160);
     }
 
