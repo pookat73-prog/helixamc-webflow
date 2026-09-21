@@ -98,6 +98,7 @@
   var HOST_CLASS = 'hx-sg-ring-draw-host';
   var VISIBLE_CLASS = 'hx-sg-ring-draw-visible';
   var SVG_NS = 'http://www.w3.org/2000/svg';
+  var HALF_RING_LENGTH = Math.PI * 50;
 
   function isVisible(element) {
     var rect = element.getBoundingClientRect();
@@ -135,10 +136,9 @@
       path.setAttribute('stroke-width', '1');
       path.setAttribute('stroke-linecap', 'round');
       svg.appendChild(path);
-      /* pathLength 정규화가 브라우저에서 100px 점선으로 해석되는 것을 피한다. */
-      var length = path.getTotalLength();
-      path.setAttribute('stroke-dasharray', length + ' ' + length);
-      path.setAttribute('stroke-dashoffset', length);
+      /* 반원 경로의 고정 길이로 한 번에 이어지는 실선을 만든다. */
+      path.setAttribute('stroke-dasharray', HALF_RING_LENGTH + ' ' + HALF_RING_LENGTH);
+      path.setAttribute('stroke-dashoffset', HALF_RING_LENGTH);
     });
     ring.classList.add(HOST_CLASS);
   }
