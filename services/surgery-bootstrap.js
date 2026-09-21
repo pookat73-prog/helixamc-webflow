@@ -93,13 +93,16 @@
 
   if (window.__HELIX_SURGERY_PAIN_MOTION__) return;
 
-  var oval = document.querySelector('.hx-sg-pain-oval');
-  if (!oval) return;
+  function initPainMotion() {
+    if (window.__HELIX_SURGERY_PAIN_MOTION__) return;
 
-  var section = oval.closest('section');
-  if (!section) return;
+    var oval = document.querySelector('.hx-sg-pain-oval');
+    if (!oval) return;
 
-  window.__HELIX_SURGERY_PAIN_MOTION__ = true;
+    var section = oval.closest('section');
+    if (!section) return;
+
+    window.__HELIX_SURGERY_PAIN_MOTION__ = true;
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   var duration = 9500;
@@ -335,6 +338,14 @@
     document.fonts.ready.then(observe);
   } else {
     observe();
+  }
+
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPainMotion, { once: true });
+  } else {
+    initPainMotion();
   }
 })();
 
