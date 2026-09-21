@@ -106,9 +106,17 @@
       style.display !== 'none' && style.visibility !== 'hidden';
   }
 
-  function createOutline(ring, startFromLeft) {
+  function createOutline(ring, startFromRight) {
     var svg = document.createElementNS(SVG_NS, 'svg');
-    var path = document.createElementNS(SVG_NS, 'path');
+    var arcPaths = startFromRight
+      ? [
+        'M 100 50 A 50 50 0 0 0 0 50',
+        'M 100 50 A 50 50 0 0 1 0 50'
+      ]
+      : [
+        'M 0 50 A 50 50 0 0 1 100 50',
+        'M 0 50 A 50 50 0 0 0 100 50'
+      ];
 
     svg.classList.add('hx-sg-ring-draw');
     svg.setAttribute('viewBox', '0 0 100 100');
@@ -116,23 +124,20 @@
     svg.setAttribute('aria-hidden', 'true');
     svg.setAttribute('focusable', 'false');
 
-    /* 시작점만 반대로 둬서 왼쪽 원은 좌측, 오른쪽 원은 우측에서 출발한다. */
-    path.setAttribute(
-      'd',
-      startFromLeft
-        ? 'M 0 50 A 50 50 0 1 1 100 50 A 50 50 0 1 1 0 50'
-        : 'M 100 50 A 50 50 0 1 0 0 50 A 50 50 0 1 0 100 50'
-    );
-    path.classList.add('hx-sg-ring-draw-path');
-    path.setAttribute('pathLength', '100');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', '#0075d6');
-    path.setAttribute('stroke-width', '1');
-    path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('stroke-dasharray', '100');
-    path.setAttribute('stroke-dashoffset', '100');
-
-    svg.appendChild(path);
+    /* 맞닿는 중앙점에서 위·아래 호가 동시에 퍼져 각 원을 완성한다. */
+    arcPaths.forEach(function (arcPath) {
+      var path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('d', arcPath);
+      path.classList.add('hx-sg-ring-draw-path');
+      path.setAttribute('pathLength', '100');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', '#0075d6');
+      path.setAttribute('stroke-width', '1');
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-dasharray', '100');
+      path.setAttribute('stroke-dashoffset', '100');
+      svg.appendChild(path);
+    });
     ring.appendChild(svg);
     ring.classList.add(HOST_CLASS);
   }
