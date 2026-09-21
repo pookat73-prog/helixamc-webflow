@@ -87,6 +87,257 @@
   FILES.forEach(function (path) { loadFile(path, REF); });
 })();
 
+/* 통증 관리: 원은 환자의 안정된 기준점으로 고정하고, 바깥 격자만 정렬되어 안정으로 수렴한다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_PAIN_MOTION__) return;
+
+  var oval = document.querySelector('.hx-sg-pain-oval');
+  if (!oval) return;
+
+  var section = oval.closest('section');
+  if (!section) return;
+
+  window.__HELIX_SURGERY_PAIN_MOTION__ = true;
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var duration = 9500;
+  var ns = 'http://www.w3.org/2000/svg';
+  var frame = 0;
+  var start = 0;
+  var elapsed = 0;
+  var finishedAt = 0;
+  var started = false;
+
+  section.setAttribute('data-hx-sg-pain-motion', '');
+
+  var art = document.createElementNS(ns, 'svg');
+  art.classList.add('hx-sg-pain-art');
+  art.setAttribute('viewBox', '0 0 600 600');
+  art.setAttribute('aria-hidden', 'true');
+  art.setAttribute('focusable', 'false');
+  art.innerHTML = [
+    '<defs>',
+    '<linearGradient id="hx-sg-pain-core" gradientUnits="userSpaceOnUse" x1="-150" y1="300" x2="750" y2="300">',
+    '<stop id="hx-sg-pain-core-start" offset="0" stop-color="#d60019"/>',
+    '<stop id="hx-sg-pain-core-end" offset="1" stop-color="#d60019"/>',
+    '</linearGradient>',
+    '<linearGradient id="hx-sg-pain-line" gradientUnits="userSpaceOnUse" x1="-600" y1="300" x2="1200" y2="300">',
+    '<stop id="hx-sg-pain-line-blue-left" offset="0" stop-color="#0075d6"/>',
+    '<stop id="hx-sg-pain-line-red-left" offset="0" stop-color="#d60019"/>',
+    '<stop id="hx-sg-pain-line-red-right" offset="1" stop-color="#d60019"/>',
+    '<stop id="hx-sg-pain-line-blue-right" offset="1" stop-color="#0075d6"/>',
+    '</linearGradient>',
+    '<radialGradient id="hx-sg-pain-clear"><stop offset=".87" stop-color="black"/><stop offset="1" stop-color="white"/></radialGradient>',
+    '<radialGradient id="hx-sg-pain-fade"><stop offset=".55" stop-color="white"/><stop offset="1" stop-color="black"/></radialGradient>',
+    '<mask id="hx-sg-pain-mask" x="-600" y="-300" width="1800" height="1200" maskUnits="userSpaceOnUse">',
+    '<ellipse cx="300" cy="300" rx="860" ry="520" fill="url(#hx-sg-pain-fade)"/>',
+    '<circle cx="300" cy="300" r="380" fill="url(#hx-sg-pain-clear)"/>',
+    '</mask>',
+    '<radialGradient id="hx-sg-pain-atmosphere"><stop offset=".55" stop-color="white" stop-opacity="0"/><stop id="hx-sg-pain-field-color" offset=".83" stop-color="#d60019" stop-opacity=".10"/><stop offset="1" stop-color="white" stop-opacity="0"/></radialGradient>',
+    '</defs>',
+    '<ellipse id="hx-sg-pain-field" cx="300" cy="300" rx="375" ry="375" fill="url(#hx-sg-pain-atmosphere)" opacity="0"/>',
+    '<g id="hx-sg-pain-sheet" fill="none" stroke="url(#hx-sg-pain-line)" stroke-linecap="round" stroke-linejoin="round" mask="url(#hx-sg-pain-mask)" opacity="0"></g>',
+    '<path id="hx-sg-pain-wave" fill="none" stroke="url(#hx-sg-pain-line)" stroke-width="1.65" stroke-linecap="round" mask="url(#hx-sg-pain-mask)" opacity="0"/> '
+  ].join('');
+  oval.prepend(art);
+
+  var sheet = art.querySelector('#hx-sg-pain-sheet');
+  var centerWave = art.querySelector('#hx-sg-pain-wave');
+  var field = art.querySelector('#hx-sg-pain-field');
+  var fieldColor = art.querySelector('#hx-sg-pain-field-color');
+  var coreStart = art.querySelector('#hx-sg-pain-core-start');
+  var coreEnd = art.querySelector('#hx-sg-pain-core-end');
+  var lineBlueLeft = art.querySelector('#hx-sg-pain-line-blue-left');
+  var lineRedLeft = art.querySelector('#hx-sg-pain-line-red-left');
+  var lineRedRight = art.querySelector('#hx-sg-pain-line-red-right');
+  var lineBlueRight = art.querySelector('#hx-sg-pain-line-blue-right');
+  var horizontal = [];
+  var vertical = [];
+
+  function makePath(opacity, width) {
+    var path = document.createElementNS(ns, 'path');
+    path.setAttribute('opacity', opacity);
+    path.setAttribute('stroke-width', width);
+    sheet.appendChild(path);
+    return path;
+  }
+
+  for (var h = 0; h < 11; h += 1) horizontal.push(makePath('.19', '.85'));
+  for (var v = 0; v < 19; v += 1) vertical.push(makePath('.12', '.75'));
+
+  function clamp(value) {
+    return Math.min(1, Math.max(0, value));
+  }
+
+  function smooth(value) {
+    value = clamp(value);
+    return value < .5
+      ? 8 * value * value * value * value
+      : 1 - Math.pow(-2 * value + 2, 4) / 2;
+  }
+
+  function span(time, from, to) {
+    return smooth((time - from) / (to - from));
+  }
+
+  function torsionNode(u, v, centre, direction, active, clock) {
+    var dx = u - centre;
+    var envelope = Math.exp(-(dx * dx / (2 * 275 * 275) + v * v / (2 * 350 * 350)));
+    var diamond = Math.max(0, 1 - Math.abs(dx) / 430 - Math.abs(v) / 500);
+    var irregular = 1
+      + .10 * Math.sin(clock * 1.65 + centre * .011)
+      + .055 * Math.sin(clock * .82 + dx * .016 - v * .010);
+    var angle = direction * active * envelope * (.55 + .20 * diamond) * irregular;
+    var stretchX = 1 + active * envelope * (.37 + .10 * Math.sin(clock * 1.18 + centre * .012));
+    var squeezeY = 1 - active * envelope * (.23 + .06 * Math.cos(clock * 1.42 - dx * .012));
+    var x = dx * stretchX;
+    var y = v * squeezeY;
+    var targetX = centre + x * Math.cos(angle) - y * Math.sin(angle);
+    var targetY = x * Math.sin(angle) + y * Math.cos(angle);
+    return [u + (targetX - u) * envelope, v + (targetY - v) * envelope];
+  }
+
+  function point(u, v, motion) {
+    var active = motion.twist * (1 - motion.collapse);
+    var node = torsionNode(u, v, -470, 1, active, motion.clock);
+    node = torsionNode(node[0], node[1], 470, -1, active, motion.clock);
+    var xNode = node[0];
+    var yNode = node[1];
+    var band = yNode * (1 - motion.collapse) * (1 - active * .075);
+    var amplitude = (29 * (1 - motion.collapse) + 56 * motion.collapse) * motion.rise * (1 - motion.calm);
+    var irregularWave = .10 * Math.sin(xNode / 58 + motion.clock * 1.16 + yNode / 175);
+    var wave = amplitude * (Math.sin(xNode / 105 - motion.clock * 1.9) + irregularWave);
+    var ripple = motion.rise * (1 - motion.collapse) * (14 + 10 * active)
+      * Math.sin(yNode / 165 + xNode / 230 - motion.clock * .55)
+      + active * 9 * Math.sin(xNode / 74 + yNode / 108 + motion.clock * .92);
+    var x = xNode * (1 + active * .05 * Math.cos(xNode / 210 + motion.clock * .84));
+    var y = band * .86 + ripple + wave;
+    var rotation = -.10 * (1 - motion.collapse);
+    return [
+      300 + x * Math.cos(rotation) - y * Math.sin(rotation),
+      300 + x * Math.sin(rotation) + y * Math.cos(rotation)
+    ];
+  }
+
+  function gridPath(index, isHorizontal, motion) {
+    var d = '';
+    for (var i = 0; i <= 64; i += 1) {
+      var u = isHorizontal ? -900 + i / 64 * 1800 : (index - 9) * 90;
+      var v = isHorizontal ? (index - 5) * 85 : -520 + i / 64 * 1040;
+      var p = point(u, v, motion);
+      d += (i ? 'L' : 'M') + p[0].toFixed(2) + ',' + p[1].toFixed(2) + ' ';
+    }
+    return d;
+  }
+
+  function render(time, now) {
+    elapsed = Math.min(duration, Math.max(0, time));
+    var on = span(elapsed, 650, 1550);
+    var rise = span(elapsed, 1450, 3000);
+    var twist = span(elapsed, 3400, 5500);
+    var collapse = span(elapsed, 5250, 6700);
+    var calm = span(elapsed, 6500, 7650);
+    var meshVisible = rise * (1 - span(elapsed, 6200, 6700));
+    var waveVisible = span(elapsed, 6000, 6700);
+    var change = span(elapsed, 7350, 8600);
+    var clock = elapsed / 1000;
+    var motion = { rise: rise, twist: twist, collapse: collapse, calm: calm, clock: clock };
+    var coreColor = change < .78 ? '#d60019' : '#0075d6';
+    var edge = change >= 1 ? .5 : change * .5;
+
+    coreStart.setAttribute('stop-color', coreColor);
+    coreEnd.setAttribute('stop-color', coreColor);
+    lineBlueLeft.setAttribute('stop-color', '#0075d6');
+    lineRedLeft.setAttribute('stop-color', change >= 1 ? '#0075d6' : '#d60019');
+    lineRedRight.setAttribute('stop-color', change >= 1 ? '#0075d6' : '#d60019');
+    lineBlueRight.setAttribute('stop-color', '#0075d6');
+    lineRedLeft.setAttribute('offset', edge);
+    lineRedRight.setAttribute('offset', 1 - edge);
+    field.setAttribute('opacity', on * .7);
+    fieldColor.setAttribute('stop-color', change < .5 ? '#d60019' : '#0075d6');
+    fieldColor.setAttribute('stop-opacity', '.07');
+    sheet.setAttribute('opacity', meshVisible);
+
+    if (meshVisible > .001) {
+      horizontal.forEach(function (path, index) {
+        path.setAttribute('d', gridPath(index, true, motion));
+      });
+      vertical.forEach(function (path, index) {
+        path.setAttribute('d', gridPath(index, false, motion));
+      });
+    }
+
+    centerWave.setAttribute('d', gridPath(5, true, motion));
+    centerWave.setAttribute('opacity', waveVisible * .75);
+
+    var pulseReady = span(elapsed, 8600, 9100);
+    var pulsePhase = finishedAt ? ((now - finishedAt) % 2400) / 2400 : 0;
+    var pulseStrength = pulseReady * Math.pow(Math.sin(Math.PI * pulsePhase), 1.8);
+    var rgb = coreColor === '#0075d6' ? '0,117,214' : '214,0,25';
+    var borderOpacity = on * (.76 + .24 * change);
+    var glowAlpha = on * (.12 + .08 * (1 - change) + pulseStrength * .09);
+    var pulseReach = 18 + pulseStrength * 24;
+
+    oval.style.setProperty('border-color', 'rgba(' + rgb + ',' + borderOpacity.toFixed(3) + ')', 'important');
+    oval.style.setProperty('box-shadow', '0 0 ' + pulseReach.toFixed(1) + 'px rgba(' + rgb + ',' + glowAlpha.toFixed(3) + ')', 'important');
+    art.dataset.phase = elapsed < 650 ? 'empty' : elapsed < 3400 ? 'wave' : elapsed < 5500 ? 'torsion' : elapsed < 7650 ? 'converge' : 'stable';
+  }
+
+  function tick(now) {
+    var sequenceTime = now - start;
+    if (sequenceTime >= duration) {
+      if (!finishedAt) finishedAt = now;
+      render(duration, now);
+    } else {
+      render(sequenceTime, now);
+    }
+    frame = window.requestAnimationFrame(tick);
+  }
+
+  function play() {
+    if (started) return;
+    started = true;
+    if (reduced.matches) {
+      render(duration, window.performance.now());
+      return;
+    }
+    start = window.performance.now();
+    frame = window.requestAnimationFrame(tick);
+  }
+
+  function observe() {
+    render(0, window.performance.now());
+    if (!('IntersectionObserver' in window)) {
+      play();
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      observer.disconnect();
+      play();
+    }, {
+      root: null,
+      rootMargin: '0px 0px -25% 0px',
+      threshold: 0
+    });
+    observer.observe(oval);
+  }
+
+  reduced.addEventListener('change', function () {
+    if (!reduced.matches) return;
+    window.cancelAnimationFrame(frame);
+    render(duration, window.performance.now());
+  });
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(observe);
+  } else {
+    observe();
+  }
+})();
+
 /* 외과 전문성 문구: Webflow 원문이 일치할 때만 지정한 두 지점에서 줄을 나눈다. */
 (function () {
   'use strict';

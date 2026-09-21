@@ -299,3 +299,32 @@
     will-change: box-shadow;
   }
 }
+
+/* 통증 관리: 환자 원은 고정하고, 원 바깥의 격자만 긴장→정렬→안정 순으로 움직인다. */
+[data-hx-sg-pain-motion] {
+  overflow: clip;
+}
+
+[data-hx-sg-pain-motion] .hx-sg-pain-oval {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  background: #f4f7fb !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-hx-sg-pain-motion] .hx-sg-pain-oval > :not(.hx-sg-pain-art) {
+  position: relative;
+  z-index: 1;
+}
+
+.hx-sg-pain-art {
+  position: absolute !important;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
+  pointer-events: none;
+}
