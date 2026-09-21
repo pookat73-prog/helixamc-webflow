@@ -103,6 +103,34 @@
   font-weight: 400;
 }
 
+/* 외과 인트로 필기체: 글자 밑면에서 시작해 빠르게 선명해진다. */
+.hx-sg-hero-script-safe {
+  -webkit-mask-image: linear-gradient(
+    14deg,
+    rgba(0, 0, 0, .08) 0%,
+    rgba(0, 0, 0, .08) 6%,
+    rgba(0, 0, 0, .28) 16%,
+    rgba(0, 0, 0, .52) 26%,
+    rgba(0, 0, 0, .76) 36%,
+    #000 46%
+  );
+  mask-image: linear-gradient(
+    14deg,
+    rgba(0, 0, 0, .08) 0%,
+    rgba(0, 0, 0, .08) 6%,
+    rgba(0, 0, 0, .28) 16%,
+    rgba(0, 0, 0, .52) 26%,
+    rgba(0, 0, 0, .76) 36%,
+    #000 46%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  padding-block: .3em;
+  padding-inline: .18em;
+  margin-block: -.3em;
+  margin-inline: -.18em;
+}
+
 /* 외과 인트로 강조어: 기본 블루 위로 밝은 푸른빛이 한 번 훑고 지나간다. */
 .hx-sg-hero-body .hx-sg-accent {
   color: #0075d6;
@@ -247,5 +275,27 @@
 
   .hx-sg-rings > .hx-sg-ring.hx-sg-ring-large {
     --hx-sg-ring-blend-direction: 180deg;
+  }
+}
+
+/* 수술 철학 카드: 그림자와 반대 방향의 메인 블루 후광을 화면 진입 시에만 드러낸다. */
+@media (prefers-reduced-motion: no-preference) {
+  html.hx-sg-principle-shadow-motion .hx-sg-principle-card {
+    box-shadow:
+      0 2px 6px -6px rgba(154, 170, 187, 0),
+      0 -2px 6px -6px rgba(0, 117, 214, 0) !important;
+    transition: box-shadow 800ms cubic-bezier(0.89, 0, 0.15, 0.97);
+  }
+
+  html.hx-sg-principle-shadow-motion
+  .hx-sg-principle-card.hx-sg-principle-shadow-visible {
+    box-shadow:
+      11px 11px 28px -5px rgba(154, 170, 187, 1),
+      -11px -11px 28px -5px rgba(0, 117, 214, .46) !important;
+  }
+
+  html.hx-sg-principle-shadow-motion
+  .hx-sg-principle-card.hx-sg-principle-shadow-animating {
+    will-change: box-shadow;
   }
 }
