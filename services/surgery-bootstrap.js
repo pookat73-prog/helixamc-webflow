@@ -173,8 +173,8 @@
     var leftRing = rings[0];
     var rightRing = rings[1];
 
-    createOutline(leftRing, true);
-    createOutline(rightRing, false);
+    createOutline(leftRing, false);
+    createOutline(rightRing, true);
     document.documentElement.classList.add('hx-sg-ring-draw-motion');
 
     function lockSolidStroke(ring) {
