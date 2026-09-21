@@ -298,16 +298,16 @@
   position: relative;
   z-index: 1;
   background: #FFFFFF;
-  border-radius: clamp(4px, 1.3889vw, 20px) clamp(4px, 1.3889vw, 20px) 0 0;
+  border-radius: 20px 20px 0 0;
   width: 100%;
-  max-width: clamp(104px, 36.1111vw, 520px);
+  max-width: 520px;
   /* dvh 를 뒤에 둬야 이긴다 — 주소창이 접혔다 펴지는 모바일에서
      실제로 보이는 높이를 기준으로 잡기 위함. (순서가 반대면 vh 가
      이겨서, 주소창이 펴진 상태에선 아래가 잘린다.) */
   max-height: 94vh;
   max-height: 94dvh;
   overflow-y: auto;
-  padding: clamp(4px, 1.5278vw, 22px) clamp(4px, 1.5278vw, 22px) clamp(4px, 1.5278vw, 22px);
+  padding: 22px 22px 22px;
   transform: translateY(40px);
   transition: transform 0.22s ease;
 }
@@ -320,10 +320,10 @@
 @media (min-width: 600px) {
   .hx-fcta-modal {
     align-items: center;
-    padding: clamp(5px, 1.6667vw, 24px);
+    padding: 24px;
   }
   .hx-fcta-modal__box {
-    border-radius: clamp(4px, 1.3889vw, 20px);
+    border-radius: 20px;
     max-height: 85vh;
   }
   .hx-fcta-modal__header { top: 24px; right: 24px; }
@@ -334,15 +334,15 @@
    문단(eyebrow)이 이 버튼과 같은 높이에서 시작해 위쪽 여백이 남지 않는다. */
 .hx-fcta-modal__header {
   position: absolute;
-  top: clamp(4px, 1.5278vw, 22px);
-  right: clamp(4px, 1.5278vw, 22px);
+  top: 22px;
+  right: 22px;
   z-index: 2;
   margin: 0;
 }
 
 .hx-fcta-modal__close {
-  width: clamp(6px, 2.2222vw, 32px);
-  height: clamp(6px, 2.2222vw, 32px);
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 1px solid var(--hx-line);
   background: #fff;
@@ -364,7 +364,7 @@
 .hx-fcta-form {
   display: flex;
   flex-direction: column;
-  gap: clamp(4px, 0.6944vw, 10px);
+  gap: 10px;
 }
 
 /* 제목 — eyebrow / 헤드 / 서브 / 마스코트.
@@ -412,14 +412,14 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: clamp(4px, 0.6944vw, 10px);
+  gap: 10px;
 }
 
 .hx-fcta-form__intro { min-width: 0; flex: 1; }
 
 .hx-fcta-form__mascot {
   display: block;
-  width: clamp(16px, 5.4167vw, 78px);
+  width: 78px;
   height: auto;
   flex-shrink: 0;
   pointer-events: none;
@@ -429,14 +429,14 @@
 .hx-fcta-form__rule {
   border: none;
   border-top: 1px solid var(--hx-line);
-  margin: clamp(4px, 0.8333vw, 12px) 0 0;
+  margin: 12px 0 0;
   width: 100%;
 }
 
 /* 성함 · 연락처 한 줄 배치 */
 .hx-fcta-form__row {
   display: flex;
-  gap: clamp(4px, 0.6944vw, 10px);
+  gap: 10px;
 }
 .hx-fcta-form__row .hx-fcta-form__group { flex: 1; min-width: 0; }
 
@@ -478,8 +478,8 @@
   color: var(--hx-ink);
   background: var(--hx-surface);
   border: 1px solid var(--hx-line);
-  border-radius: clamp(4px, 0.7639vw, 11px);
-  padding: clamp(4px, 0.7639vw, 11px) clamp(4px, 0.9722vw, 14px);
+  border-radius: 11px;
+  padding: 11px 14px;
   outline: none;
   transition: border-color 0.15s ease, background 0.15s ease;
   width: 100%;
@@ -509,9 +509,9 @@
 /* ── 증상칸 — 서술칸과 태그를 한 박스에 담는다 ── */
 .hx-fcta-symptom {
   border: 1px solid var(--hx-line);
-  border-radius: clamp(4px, 0.7639vw, 11px);
+  border-radius: 11px;
   background: var(--hx-surface);
-  padding: clamp(4px, 0.7639vw, 11px) clamp(4px, 0.9028vw, 13px) clamp(4px, 0.8333vw, 12px);
+  padding: 11px 13px 12px;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
@@ -530,7 +530,7 @@
   line-height: 1.5;
   color: var(--hx-ink);
   resize: none;
-  height: clamp(9px, 3.0556vw, 44px);
+  height: 44px;
   outline: none;
   box-sizing: border-box;
 }
@@ -552,8 +552,8 @@
   color: var(--hx-sub);
   background: #fff;
   border: 1px solid var(--hx-line);
-  border-radius: clamp(200px, 69.375vw, 999px);
-  padding: 6px clamp(4px, 0.6944vw, 10px);
+  border-radius: 999px;
+  padding: 6px 10px;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
@@ -581,14 +581,14 @@
 .hx-fcta-etc .hx-fcta-form__input {
   background: #fff;
   font-size: 16px;
-  padding: clamp(4px, 0.6944vw, 10px) clamp(4px, 0.9722vw, 14px);
+  padding: 10px 14px;
 }
 
 /* ── 개인정보 동의 — 요약 한 줄, 전문은 접어 둠 ── */
 .hx-fcta-consent {
   background: var(--hx-surface);
-  border-radius: clamp(4px, 0.7639vw, 11px);
-  padding: 9px clamp(4px, 0.8333vw, 12px);
+  border-radius: 11px;
+  padding: 9px 12px;
   margin-top: 0;
 }
 
@@ -600,8 +600,8 @@
 
 .hx-fcta-consent__row input[type="checkbox"] {
   margin-top: 3px;
-  width: clamp(4px, 1.0417vw, 15px);
-  height: clamp(4px, 1.0417vw, 15px);
+  width: 15px;
+  height: 15px;
   accent-color: var(--hx-primary);
   flex-shrink: 0;
   cursor: pointer;
@@ -633,8 +633,8 @@
 .hx-fcta-consent__more:focus-visible { outline: 2px solid var(--hx-primary); outline-offset: 2px; }
 
 .hx-fcta-consent__detail {
-  margin-top: clamp(4px, 0.6944vw, 10px);
-  padding-top: clamp(4px, 0.6944vw, 10px);
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid var(--hx-line);
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 11.5px;
@@ -652,11 +652,11 @@
 /* ── 제출 버튼 ── */
 .hx-fcta-form__submit {
   margin-top: 0;
-  padding: clamp(4px, 1.0417vw, 15px);
+  padding: 15px;
   background: var(--hx-primary);
   color: #fff;
   border: none;
-  border-radius: clamp(4px, 0.8333vw, 12px);
+  border-radius: 12px;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 15.5px;
   font-weight: 600;
@@ -673,7 +673,7 @@
 .hx-fcta-form__done {
   display: none;
   text-align: center;
-  padding: clamp(9px, 3.0556vw, 44px) clamp(5px, 1.6667vw, 24px) clamp(6px, 2.2222vw, 32px);
+  padding: 44px 24px 32px;
 }
 
 .hx-fcta-form__done.is-visible {
@@ -688,10 +688,10 @@
 
 .hx-fcta-form__done-illust {
   display: block;
-  width: clamp(30px, 10.4167vw, 150px);
+  width: 150px;
   max-width: 55%;
   height: auto;
-  margin: 0 auto clamp(4px, 1.25vw, 18px);
+  margin: 0 auto 18px;
 }
 
 .hx-fcta-form__done-title {
@@ -700,7 +700,7 @@
   font-weight: 700;
   color: var(--hx-ink);
   letter-spacing: -0.01em;
-  margin: 0 0 clamp(4px, 0.6944vw, 10px);
+  margin: 0 0 10px;
 }
 
 .hx-fcta-form__done-desc {
@@ -708,7 +708,7 @@
   font-size: 14px;
   line-height: 1.65;
   color: var(--hx-ink-sub);
-  margin: 0 0 clamp(5px, 1.8056vw, 26px);
+  margin: 0 0 26px;
 }
 
 .hx-fcta-form__done-close {
@@ -718,8 +718,8 @@
   color: #fff;
   background: var(--hx-primary);
   border: none;
-  border-radius: clamp(4px, 0.6944vw, 10px);
-  padding: clamp(4px, 0.9028vw, 13px) clamp(9px, 3.0556vw, 44px);
+  border-radius: 10px;
+  padding: 13px 44px;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
 }
