@@ -175,6 +175,9 @@
 
     createOutline(leftRing, false);
     createOutline(rightRing, true);
+    /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
+    leftRing.classList.add('hx-sg-ring-draw-inner-right');
+    rightRing.classList.add('hx-sg-ring-draw-inner-left');
     document.documentElement.classList.add('hx-sg-ring-draw-motion');
 
     function lockSolidStroke(ring) {
