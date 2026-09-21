@@ -123,22 +123,23 @@
     svg.setAttribute('preserveAspectRatio', 'none');
     svg.setAttribute('aria-hidden', 'true');
     svg.setAttribute('focusable', 'false');
+    ring.appendChild(svg);
 
     /* 맞닿는 중앙점에서 위·아래 호가 동시에 퍼져 각 원을 완성한다. */
     arcPaths.forEach(function (arcPath) {
       var path = document.createElementNS(SVG_NS, 'path');
       path.setAttribute('d', arcPath);
       path.classList.add('hx-sg-ring-draw-path');
-      path.setAttribute('pathLength', '100');
       path.setAttribute('fill', 'none');
       path.setAttribute('stroke', '#0075d6');
       path.setAttribute('stroke-width', '1');
       path.setAttribute('stroke-linecap', 'round');
-      path.setAttribute('stroke-dasharray', '100');
-      path.setAttribute('stroke-dashoffset', '100');
       svg.appendChild(path);
+      /* pathLength 정규화가 브라우저에서 100px 점선으로 해석되는 것을 피한다. */
+      var length = path.getTotalLength();
+      path.setAttribute('stroke-dasharray', length + ' ' + length);
+      path.setAttribute('stroke-dashoffset', length);
     });
-    ring.appendChild(svg);
     ring.classList.add(HOST_CLASS);
   }
 
