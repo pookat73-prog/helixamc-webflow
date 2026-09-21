@@ -152,10 +152,10 @@
       path.setAttribute('stroke', '#0075d6');
       path.setAttribute('stroke-width', '1');
       path.setAttribute('stroke-linecap', 'round');
-      svg.appendChild(path);
-      /* 실제 화면 길이만큼 한 번에 이어지는 실선을 만든다. */
+      /* 숨긴 상태를 먼저 만들고 화면에 붙여 첫 프레임 노출을 막는다. */
       path.setAttribute('stroke-dasharray', halfRingLength + ' ' + halfRingLength);
       path.setAttribute('stroke-dashoffset', halfRingLength);
+      svg.appendChild(path);
     });
     ring.classList.add(HOST_CLASS);
   }
