@@ -87,6 +87,110 @@
   FILES.forEach(function (path) { loadFile(path, REF); });
 })();
 
+/* 외과 인트로: 두 원은 화면 안으로 충분히 들어온 뒤, 좌·우 바깥선이 차례로 그려진다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_INTRO_RING_DRAW__) return;
+  window.__HELIX_SURGERY_INTRO_RING_DRAW__ = true;
+
+  var RING_SELECTOR = '.hx-sg-rings > .hx-sg-ring';
+  var HOST_CLASS = 'hx-sg-ring-draw-host';
+  var VISIBLE_CLASS = 'hx-sg-ring-draw-visible';
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+
+  function isVisible(element) {
+    var rect = element.getBoundingClientRect();
+    var style = window.getComputedStyle(element);
+    return rect.width > 0 && rect.height > 0 &&
+      style.display !== 'none' && style.visibility !== 'hidden';
+  }
+
+  function createOutline(ring, startFromLeft) {
+    var svg = document.createElementNS(SVG_NS, 'svg');
+    var path = document.createElementNS(SVG_NS, 'path');
+
+    svg.classList.add('hx-sg-ring-draw');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+
+    /* 시작점만 반대로 둬서 왼쪽 원은 좌측, 오른쪽 원은 우측에서 출발한다. */
+    path.setAttribute(
+      'd',
+      startFromLeft
+        ? 'M 0 50 A 50 50 0 1 1 100 50 A 50 50 0 1 1 0 50'
+        : 'M 100 50 A 50 50 0 1 0 0 50 A 50 50 0 1 0 100 50'
+    );
+    path.classList.add('hx-sg-ring-draw-path');
+    path.setAttribute('pathLength', '100');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', '#0075d6');
+    path.setAttribute('stroke-width', '1');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-dasharray', '100');
+    path.setAttribute('stroke-dashoffset', '100');
+
+    svg.appendChild(path);
+    ring.appendChild(svg);
+    ring.classList.add(HOST_CLASS);
+  }
+
+  function initIntroRingDraw() {
+    var rings = Array.prototype.slice.call(document.querySelectorAll(RING_SELECTOR))
+      .filter(isVisible);
+    if (rings.length < 2) return;
+
+    /* 레이아웃의 DOM 순서가 바뀌어도 화면상 왼쪽·오른쪽 기준을 유지한다. */
+    rings.sort(function (a, b) {
+      return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+    });
+
+    var leftRing = rings[0];
+    var rightRing = rings[1];
+
+    createOutline(leftRing, true);
+    createOutline(rightRing, false);
+    document.documentElement.classList.add('hx-sg-ring-draw-motion');
+
+    function reveal() {
+      leftRing.classList.add(VISIBLE_CLASS);
+      window.setTimeout(function () {
+        rightRing.classList.add(VISIBLE_CLASS);
+      }, 160);
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      reveal();
+      return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      reveal();
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      observer.disconnect();
+      reveal();
+    }, {
+      root: null,
+      rootMargin: '0px 0px -32% 0px',
+      threshold: .2
+    });
+
+    observer.observe(leftRing.closest('.hx-sg-rings'));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initIntroRingDraw, { once: true });
+  } else {
+    initIntroRingDraw();
+  }
+})();
+
 /* 통증 관리: 원은 환자의 안정된 기준점으로 고정하고, 바깥 격자만 정렬되어 안정으로 수렴한다. */
 (function () {
   'use strict';

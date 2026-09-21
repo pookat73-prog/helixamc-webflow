@@ -182,6 +182,42 @@
   }
 }
 
+/* 외과 인트로 원: 기존 보더·후광 대신 스크롤 진입 시에만 그려지는 외곽선을 사용한다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-host {
+  position: relative;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-host::before {
+  display: none !important;
+}
+
+.hx-sg-ring-draw {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.hx-sg-ring-draw-path {
+  vector-effect: non-scaling-stroke;
+  transition: stroke-dashoffset 940ms cubic-bezier(0.89, 0, 0.15, 0.97);
+}
+
+.hx-sg-ring-draw-visible .hx-sg-ring-draw-path {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-ring-draw-path {
+    transition: none;
+  }
+}
+
 /* 외과 전문성 문구: 지정 줄바꿈과 좁은 화면의 자연 줄바꿈을 함께 유지한다. */
 .hx-sg-responsive-frame2 > div {
   width: 100%;
