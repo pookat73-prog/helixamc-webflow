@@ -98,6 +98,16 @@
     try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
 
     var headings = document.querySelectorAll('.section2-heading');
+    /* Webflow 컴포넌트 재작성 후 전용 클래스가 없어져도
+       현재 섹션의 .home_title을 기준으로 버튼 페이드/글로우 시퀀스 유지. */
+    if (!headings.length) {
+      headings = document.querySelectorAll(
+        '.home_background_2 .home_title, ' +
+        '.home_background_3 .home_title, ' +
+        '.home_background_3-mobile .home_title'
+      );
+      log('headings fallback to .home_title:', headings.length);
+    }
     log('headings found:', headings.length);
 
     /* ──────────────────────────────────────────────────────────

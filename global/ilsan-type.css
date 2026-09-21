@@ -10,7 +10,9 @@
      - 992px 아래로 내려가는 순간 Webflow 태블릿 값(vw)으로 넘어가며 뚝 떨어짐
        (991px 에서 9.9px, 768px 에서 7.7px — 읽기 거의 불가)
 
-   ■ 어떻게 고치나 — clamp(하한, 원래 vw, 상한)
+   ■ v1 당시 방식 — clamp(하한, 원래 vw, 상한)
+   ※ 아래 v1 설명은 이력이다. 2026-09-07 데스크탑 하한과 480~767 주소를
+      조정했으며, 현재 값은 1·3번 규칙이 기준이다.
    굳기 전의 vw 기울기를 되살리고, 바닥과 천장만 씌운다.
      하한 = 지금 1440 에서의 크기  → 992~1440 구간은 지금과 100% 동일
      기울기 = 굳기 전의 vw          → 1440 위로 다시 커짐 (1920 에서 15.4px)
@@ -38,21 +40,22 @@
    ================================================================ */
 
 /* ================================================================
-   1. 데스크탑 (992px 이상) — 굳은 px 를 원래 vw 로 되돌린다
-   하한이 곧 현재 1440 값이라 992~1440 구간은 지금과 달라지지 않는다.
+   1. 데스크탑 (992px 이상) — vw 기울기와 상한 유지.
+   2026-09-07 검증안: 991px 직전 글자 크기를 하한으로 연결한다.
+   1440px에서도 본문·주차·주소는 커지므로 staging에서 줄바꿈을 검증한다.
    ================================================================ */
 @media (min-width: 992px) {
 
-  /* 본문 문단 — 11.52px 고정 → 1440 그대로, 1920 에서 15.4px */
+  /* 본문 — 991px의 약 14.37px에서 데스크탑 14.4px로 연결 */
   html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .nomal-parag_black-left-align {
-    font-size:   clamp(11.52px, 0.8vw, 17px) !important;
-    line-height: clamp(20.16px, 1.4vw, 29.8px) !important;
+    font-size:   clamp(14.4px, 0.8vw, 17px) !important;
+    line-height: clamp(24.48px, 1.4vw, 29.8px) !important;
   }
 
   /* 주차 안내 (지도 옆 4줄, 데스크탑·모바일 두 벌) */
   html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .text-block-355 {
-    font-size:   clamp(11.52px, 0.8vw, 17px) !important;
-    line-height: clamp(18.72px, 1.3vw, 27.6px) !important;
+    font-size:   clamp(13.4px, 0.8vw, 17px) !important;
+    line-height: clamp(21.44px, 1.3vw, 27.6px) !important;
     /* 위아래 여백을 같은 값으로 통일 — 원래 태블릿부터 위 0.9vw / 아래 1vw 로
        짝이 안 맞아 글자가 상자 안에서 위로 붙어 보였다. */
     padding-top:    clamp(10.08px, 0.7vw, 14.9px) !important;
@@ -63,8 +66,8 @@
 
   /* 주소 */
   html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .adress {
-    font-size:   clamp(12.96px, 0.9vw, 19px) !important;
-    line-height: clamp(14.4px, 1.0vw, 21px) !important;
+    font-size:   clamp(14.4px, 0.9vw, 19px) !important;
+    line-height: clamp(18px, 1.0vw, 21px) !important;
   }
 }
 
@@ -117,7 +120,7 @@
   }
 
   html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) .adress {
-    font-size:   clamp(11px, 1.5vw, 11.5px) !important;
+    font-size:   max(var(--sc-min-body, 13px), 1.5vw) !important;
     line-height: 1.25 !important;
   }
 }

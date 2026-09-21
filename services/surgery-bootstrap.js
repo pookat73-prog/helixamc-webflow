@@ -304,3 +304,64 @@
     initSafetyCardTitles();
   }
 })();
+
+/* 수술 철학 카드: 각 카드가 화면의 70% 지점에 닿으면 Webflow 그림자를 한 번 드러낸다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_PRINCIPLE_CARD_SHADOWS__) return;
+  window.__HELIX_SURGERY_PRINCIPLE_CARD_SHADOWS__ = true;
+
+  var ROOT_CLASS = 'hx-sg-principle-shadow-motion';
+  var VISIBLE_CLASS = 'hx-sg-principle-shadow-visible';
+  var ANIMATING_CLASS = 'hx-sg-principle-shadow-animating';
+  var SHADOW_DURATION = 800;
+
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  document.documentElement.classList.add(ROOT_CLASS);
+
+  function initPrincipleCardShadows() {
+    var cards = Array.prototype.slice.call(
+      document.querySelectorAll('.hx-sg-principle-card')
+    );
+
+    if (!cards.length) {
+      document.documentElement.classList.remove(ROOT_CLASS);
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+
+        var card = entry.target;
+        observer.unobserve(card);
+        card.classList.add(ANIMATING_CLASS);
+
+        window.requestAnimationFrame(function () {
+          card.classList.add(VISIBLE_CLASS);
+        });
+
+        window.setTimeout(function () {
+          card.classList.remove(ANIMATING_CLASS);
+        }, SHADOW_DURATION + 80);
+      });
+    }, {
+      root: null,
+      rootMargin: '0px 0px -30% 0px',
+      threshold: 0
+    });
+
+    cards.forEach(function (card) {
+      observer.observe(card);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPrincipleCardShadows, { once: true });
+  } else {
+    initPrincipleCardShadows();
+  }
+})();

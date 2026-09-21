@@ -258,3 +258,18 @@ a[href^="tel:"]:hover .home_branch-card_call-number {
     line-height: max(21px, 1.2rem) !important;
   }
 }
+
+/* Responsive typography review 2026-09-07 — home only.
+   Preserve the separate mobile sections and existing <=767px rules. */
+@media (min-width: 768px) and (max-width: 991px) {
+  html[data-wf-page="69d0bdd30d54f23591313a96"] .main-colum_bonmoon {
+    font-size: 0.8125rem !important;
+    line-height: 1.3125rem !important;
+  }
+}
+@media (min-width: 992px) {
+  html[data-wf-page="69d0bdd30d54f23591313a96"] .main-colum_bonmoon {
+    font-size: max(0.8125rem, 0.8vw) !important;
+    line-height: max(1.3125rem, 1.6vw) !important;
+  }
+}
