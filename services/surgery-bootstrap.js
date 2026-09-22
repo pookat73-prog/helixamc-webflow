@@ -818,9 +818,10 @@
   }
 
   /* 예후 관리 카드 2개(예후 가이드, 정보 공유): 나란히 있어 동시에 화면에 들어오지만,
-     후광+그림자·제목 인터렉션은 카드 순서대로 하나가 끝나야 다음 카드가 시작한다.
+     후광+그림자·제목 인터렉션은 카드 순서대로 엇박을 타며 이어진다.
      각 카드는 자기 후광이 뜨기 시작한 지 얼마 안 됐을 때(TITLE_START_DELAY) 제목이
-     시작하고, 그 제목이 다 끝나야 다음 카드의 후광이 시작된다.
+     시작하고, 다음 카드는 앞 카드의 제목이 끝나길 기다리지 않고 앞 카드가 시작한 지
+     얼마 안 됐을 때(CARD_STAGGER) 바로 이어서 시작한다.
      후광 클래스(ANIMATING_CLASS/VISIBLE_CLASS)·SHADOW_DURATION 값은 아래
      수술 철학·예후 관리 카드 공용 관찰자와 동일 — 이 카드들만 그 관찰자 대상에서 빼고
      여기서 순서대로 직접 토글한다. */
@@ -829,6 +830,7 @@
     var ANIMATING_CLASS = 'hx-sg-principle-shadow-animating';
     var SHADOW_DURATION = 800;
     var TITLE_START_DELAY = 180;
+    var CARD_STAGGER = 150;
     var titleSelector = '.div-block-332, .div-block-333';
 
     var cards = Array.prototype.slice.call(
@@ -877,10 +879,11 @@
 
       window.setTimeout(function () {
         revealTitle(titles[index]);
-        window.setTimeout(function () {
-          playCard(index + 1);
-        }, TITLE_DURATION + 100);
       }, TITLE_START_DELAY);
+
+      window.setTimeout(function () {
+        playCard(index + 1);
+      }, CARD_STAGGER);
     }
 
     var started = false;
