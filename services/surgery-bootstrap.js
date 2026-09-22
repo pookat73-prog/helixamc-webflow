@@ -2,11 +2,12 @@
    HELIX AMC — 외과(/surgery) 공통 기능 BOOTSTRAP LOADER  v1.2
 
    외과 페이지의 Webflow 네이티브 본문은 그대로 두고, 다른 공개 페이지와
-   동일한 전역 화면·내비게이션과 기존 공통 측정을 연결한다.
+   동일한 전역 화면·내비게이션 기능만 연결한다.
 
-   전화 상담은 기존 cta_call / floating_cta 집계에 편입한다. 공통 측정은
-   화면 기능보다 먼저 연결하고, 운영자 제외와 스테이징 도메인 게이트는
-   다른 페이지와 동일하게 유지한다. 별도의 외과 전용 이벤트는 추가하지 않는다.
+   측정 모듈은 포함하지 않는다. 측정 변경은 staging이 아니라 main에서
+   별도로 검증·반영하는 프로젝트 규칙을 따른다. 다만 화면 기능 모듈이
+   자체적으로 gtag를 호출할 수 있으므로 webflow.io에서는 이를 no-op으로
+   바꿔 스테이징 테스트 이벤트가 정식 속성에 섞이지 않게 한다.
    ================================================================ */
 
 (function () {
@@ -26,12 +27,6 @@
   var FILES = [
     'global/viewport-fix.js',
     'global/viewport.js',
-    /* 기존 전화 이벤트가 GA4·시트에 동일하게 기록되도록 먼저 준비한다. */
-    'global/measure-gate.js',
-    'global/ga4-base.js',
-    'global/session.js',
-    'global/ga-inspector.js',
-    'global/sheet-log.js',
     'global/accessibility.js',
     'global/global.css',
     'services/surgery-card-stack.css',
@@ -90,6 +85,148 @@
   window.HELIX_REF = REF;
   console.log('[surgery-bootstrap] ref', REF);
   FILES.forEach(function (path) { loadFile(path, REF); });
+})();
+
+/* 외과 인트로: 두 원의 선은 고정하고, 충분히 진입한 뒤 오른쪽 원 후광만 드러낸다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_INTRO_RING_DRAW__) return;
+  window.__HELIX_SURGERY_INTRO_RING_DRAW__ = true;
+
+  var RING_SELECTOR = '.hx-sg-rings > .hx-sg-ring';
+  var HOST_CLASS = 'hx-sg-ring-draw-host';
+  var READY_CLASS = 'hx-sg-ring-draw-ready';
+  var GLOW_CLASS = 'hx-sg-ring-draw-right-glow';
+  var GLOW_VISIBLE_CLASS = 'hx-sg-ring-draw-glow-visible';
+  var OVERLAP_SHIELD_CLASS = 'hx-sg-ring-overlap-shield';
+  var OVERLAP_SHIELD_PADDING = 34;
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function isVisible(element) {
+    var rect = element.getBoundingClientRect();
+    var style = window.getComputedStyle(element);
+    return rect.width > 0 && rect.height > 0 &&
+      style.display !== 'none' && style.visibility !== 'hidden';
+  }
+
+  function createOutline(ring, startFromRight) {
+    var svg = document.createElementNS(SVG_NS, 'svg');
+    var arcPaths = startFromRight
+      ? [
+        'M 100 50 A 50 50 0 0 0 0 50',
+        'M 100 50 A 50 50 0 0 1 0 50'
+      ]
+      : [
+        'M 0 50 A 50 50 0 0 1 100 50',
+        'M 0 50 A 50 50 0 0 0 100 50'
+      ];
+
+    svg.classList.add('hx-sg-ring-draw');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    ring.appendChild(svg);
+
+    /* 겹침 경계는 마스크로 비우고, 선 자체는 처음부터 완성된 상태로 둔다. */
+    arcPaths.forEach(function (arcPath) {
+      var path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('d', arcPath);
+      path.classList.add('hx-sg-ring-draw-path');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', '#0075d6');
+      path.setAttribute('stroke-width', '1');
+      path.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(path);
+    });
+    ring.classList.add(HOST_CLASS);
+    ring.classList.add(READY_CLASS);
+  }
+
+  function createOverlapShield(leftRing, rightRing) {
+    var shield = document.createElement('span');
+
+    shield.className = OVERLAP_SHIELD_CLASS;
+    shield.setAttribute('aria-hidden', 'true');
+    rightRing.appendChild(shield);
+
+    function positionShield() {
+      var leftBounds = leftRing.getBoundingClientRect();
+      var rightBounds = rightRing.getBoundingClientRect();
+
+      shield.style.left = (leftBounds.left - rightBounds.left - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.top = (leftBounds.top - rightBounds.top - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.width = (leftBounds.width + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+      shield.style.height = (leftBounds.height + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+    }
+
+    positionShield();
+
+    if ('ResizeObserver' in window) {
+      var resizeObserver = new ResizeObserver(positionShield);
+      resizeObserver.observe(leftRing);
+      resizeObserver.observe(rightRing);
+    } else {
+      window.addEventListener('resize', positionShield, { passive: true });
+    }
+  }
+
+  function initIntroRingDraw() {
+    var rings = Array.prototype.slice.call(document.querySelectorAll(RING_SELECTOR))
+      .filter(isVisible);
+    if (rings.length < 2) return;
+
+    /* 레이아웃의 DOM 순서가 바뀌어도 화면상 왼쪽·오른쪽 기준을 유지한다. */
+    rings.sort(function (a, b) {
+      return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+    });
+
+    var leftRing = rings[0];
+    var rightRing = rings[1];
+
+    /* dash 전개 방향과 맞춰, 화면 바깥쪽 점에서 위·아래 호가 드러나게 한다. */
+    createOutline(leftRing, true);
+    createOutline(rightRing, false);
+    /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
+    leftRing.classList.add('hx-sg-ring-draw-inner-right');
+    rightRing.classList.add('hx-sg-ring-draw-inner-left');
+    rightRing.classList.add(GLOW_CLASS);
+    createOverlapShield(leftRing, rightRing);
+
+    function revealGlow() {
+      rightRing.classList.add(GLOW_VISIBLE_CLASS);
+    }
+
+    if (reduceMotion) {
+      revealGlow();
+      return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      revealGlow();
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      observer.disconnect();
+      revealGlow();
+    }, {
+      root: null,
+      rootMargin: '0px 0px -32% 0px',
+      threshold: .2
+    });
+
+    observer.observe(leftRing.closest('.hx-sg-rings'));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initIntroRingDraw, { once: true });
+  } else {
+    initIntroRingDraw();
+  }
 })();
 
 /* 통증 관리: 원은 환자의 안정된 기준점으로 고정하고, 바깥 격자만 정렬되어 안정으로 수렴한다. */
@@ -756,5 +893,138 @@
     document.addEventListener('DOMContentLoaded', initPrincipleCardShadows, { once: true });
   } else {
     initPrincipleCardShadows();
+  }
+})();
+
+/* 핵심 장비 카드: 실제 이미지가 준비될 때까지 각 카드 위에 "이미지 수정중" 임시 도장을 얹는다.
+   이미지 확정되면 이 블록과 surgery-card-stack.css 의 .hx-sg-equip-wip-label 을 함께 지울 것. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_EQUIP_WIP__) return;
+  window.__HELIX_SURGERY_EQUIP_WIP__ = true;
+
+  var LABEL_TEXT = '이미지 수정중';
+  var HEADING_PATTERN = /장비/;
+
+  /* 장비 카드는 데스크톱·모바일용 섹션이 나뉘어 있어(예: hx-sg-equipment-mobile-visible),
+     제목이 속한 섹션 하나만으로는 일부 카드를 놓친다. 클래스 이름에 "equipment" 가 들어간
+     요소는 모두 같은 그룹으로 보고 합친다. */
+  function findEquipmentSections() {
+    var sections = [];
+
+    function add(node) {
+      if (!node || sections.indexOf(node) !== -1) return;
+      sections.push(node);
+    }
+
+    var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    for (var i = 0; i < headings.length; i++) {
+      if (HEADING_PATTERN.test(headings[i].textContent || '')) {
+        add(headings[i].closest('section') || headings[i].closest('div'));
+        break;
+      }
+    }
+
+    var byClass = document.querySelectorAll('[class*="equipment"]');
+    for (var j = 0; j < byClass.length; j++) {
+      add(byClass[j]);
+    }
+
+    return sections;
+  }
+
+  function isIconImage(img) {
+    return !!img.closest('svg') || /icon/i.test(img.className || '');
+  }
+
+  function stampLabel(img) {
+    if (img.dataset.helixWipStamped) return;
+    img.dataset.helixWipStamped = '1';
+
+    var wrapper = img.parentElement;
+    if (!wrapper) return;
+
+    if (window.getComputedStyle(wrapper).position === 'static') {
+      wrapper.style.position = 'relative';
+    }
+
+    var label = document.createElement('div');
+    label.className = 'hx-sg-equip-wip-label';
+    label.setAttribute('aria-hidden', 'true');
+    label.textContent = LABEL_TEXT;
+    wrapper.appendChild(label);
+  }
+
+  function init() {
+    var sections = findEquipmentSections();
+    if (!sections.length) return;
+
+    var images = [];
+    sections.forEach(function (section) {
+      Array.prototype.slice.call(section.querySelectorAll('img')).forEach(function (img) {
+        if (images.indexOf(img) === -1) images.push(img);
+      });
+    });
+
+    images.filter(function (img) { return !isIconImage(img); }).forEach(stampLabel);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+
+/* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘을 끼워 넣는다.
+   about 페이지의 크리스탈 시머 연출(.hex-morph-symbol)과 같은 톤을 축소 재사용. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_MINI_SYMBOL__) return;
+  window.__HELIX_SURGERY_MINI_SYMBOL__ = true;
+
+  function symbolUrl() {
+    var ref = window.HELIX_REF || (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
+    return 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + encodeURIComponent('심볼.svg');
+  }
+
+  /* 두 섹션 중 DOM 상 더 뒤에 있는 쪽 바로 앞에 넣어, 순서와 무관하게 항상 "사이"에 놓이게 한다. */
+  function insertBetween(nodeA, nodeB, newNode) {
+    if (!nodeA || !nodeB || nodeA === nodeB) return false;
+    var later = (nodeA.compareDocumentPosition(nodeB) & Node.DOCUMENT_POSITION_FOLLOWING) ? nodeB : nodeA;
+    if (!later.parentElement) return false;
+    later.parentElement.insertBefore(newNode, later);
+    return true;
+  }
+
+  function init() {
+    var aftercare = document.querySelector('.hx-sg-aftercare-card');
+    var outroMark = document.querySelector('.hx-sg-dept-mark-light');
+    if (!aftercare || !outroMark) return;
+
+    var aftercareSection = aftercare.closest('section') || aftercare.parentElement;
+    var outroSection = outroMark.closest('section') || outroMark.parentElement;
+    if (!aftercareSection || !outroSection || aftercareSection === outroSection) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'hx-sg-mini-symbol-wrap';
+    wrap.setAttribute('aria-hidden', 'true');
+
+    var img = document.createElement('img');
+    img.className = 'hx-sg-mini-symbol';
+    img.src = symbolUrl();
+    img.alt = '';
+    img.draggable = false;
+    wrap.appendChild(img);
+
+    insertBetween(aftercareSection, outroSection, wrap);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
   }
 })();

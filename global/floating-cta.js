@@ -515,8 +515,6 @@
   function ctaPage() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
-    /* 외과 상세에서 누른 상담도 기존 cta_call 안에서 페이지만 구분한다. */
-    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -573,7 +571,6 @@
     if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
     if (e && e.stopPropagation) e.stopPropagation();
     resetCallLabel();
-    /* 기존 플로팅 전화 집계를 그대로 사용한다. 클릭은 통화 완료가 아니다. */
     ga('cta_call', { cta_src: 'floating_cta' });
     window.location.href = PHONE;
   });
