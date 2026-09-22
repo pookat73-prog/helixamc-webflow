@@ -191,8 +191,9 @@
     var leftRing = rings[0];
     var rightRing = rings[1];
 
-    createOutline(leftRing, false);
-    createOutline(rightRing, true);
+    /* dash 전개 방향과 맞춰, 화면 바깥쪽 점에서 위·아래 호가 드러나게 한다. */
+    createOutline(leftRing, true);
+    createOutline(rightRing, false);
     /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
     leftRing.classList.add('hx-sg-ring-draw-inner-right');
     rightRing.classList.add('hx-sg-ring-draw-inner-left');
