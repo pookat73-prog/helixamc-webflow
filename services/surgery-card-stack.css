@@ -247,18 +247,9 @@
 
 .hx-sg-ring-draw-path {
   vector-effect: non-scaling-stroke;
-  transition: stroke-dashoffset 940ms cubic-bezier(0.89, 0, 0.15, 0.97);
-}
-
-.hx-sg-ring-draw-visible .hx-sg-ring-draw-path {
-  stroke-dashoffset: var(--hx-sg-ring-dash-end, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hx-sg-ring-draw-path {
-    transition: none;
-  }
-
   .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::before {
     transition: none;
   }

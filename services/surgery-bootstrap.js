@@ -87,7 +87,7 @@
   FILES.forEach(function (path) { loadFile(path, REF); });
 })();
 
-/* 외과 인트로: 두 원은 화면 안으로 충분히 들어온 뒤, 좌·우 바깥선이 차례로 그려진다. */
+/* 외과 인트로: 두 원의 선은 고정하고, 충분히 진입한 뒤 오른쪽 원 후광만 드러낸다. */
 (function () {
   'use strict';
 
@@ -97,13 +97,9 @@
   var RING_SELECTOR = '.hx-sg-rings > .hx-sg-ring';
   var HOST_CLASS = 'hx-sg-ring-draw-host';
   var READY_CLASS = 'hx-sg-ring-draw-ready';
-  var VISIBLE_CLASS = 'hx-sg-ring-draw-visible';
   var GLOW_CLASS = 'hx-sg-ring-draw-right-glow';
   var GLOW_VISIBLE_CLASS = 'hx-sg-ring-draw-glow-visible';
   var SVG_NS = 'http://www.w3.org/2000/svg';
-  var FALLBACK_HALF_RING_LENGTH = Math.PI * 50;
-  var OUTLINE_DURATION = 940;
-  var GLOW_DURATION = 300;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function isVisible(element) {
@@ -111,21 +107,6 @@
     var style = window.getComputedStyle(element);
     return rect.width > 0 && rect.height > 0 &&
       style.display !== 'none' && style.visibility !== 'hidden';
-  }
-
-  /* non-scaling-stroke에서는 dash 길이도 화면상의 픽셀 기준이 된다. */
-  function getRenderedHalfRingLength(svg) {
-    var rect = svg.getBoundingClientRect();
-    var radiusX = rect.width / 2;
-    var radiusY = rect.height / 2;
-
-    if (!radiusX || !radiusY) return FALLBACK_HALF_RING_LENGTH;
-
-    /* 타원 반 둘레의 Ramanujan 근사값. 원과 모바일 비율 모두에 대응한다. */
-    return Math.PI * (
-      3 * (radiusX + radiusY) -
-      Math.sqrt((3 * radiusX + radiusY) * (radiusX + 3 * radiusY))
-    ) / 2;
   }
 
   function createOutline(ring, startFromRight) {
@@ -147,7 +128,7 @@
     svg.setAttribute('focusable', 'false');
     ring.appendChild(svg);
 
-    /* 화면 바깥쪽 한 점에서 위·아래 호가 동시에 퍼져 각 원을 완성한다. */
+    /* 겹침 경계는 마스크로 비우고, 선 자체는 처음부터 완성된 상태로 둔다. */
     arcPaths.forEach(function (arcPath) {
       var path = document.createElementNS(SVG_NS, 'path');
       path.setAttribute('d', arcPath);
@@ -156,25 +137,9 @@
       path.setAttribute('stroke', '#0075d6');
       path.setAttribute('stroke-width', '1');
       path.setAttribute('stroke-linecap', 'round');
-      path.setAttribute('stroke-dasharray', FALLBACK_HALF_RING_LENGTH + ' ' + FALLBACK_HALF_RING_LENGTH);
-      path.setAttribute('stroke-dashoffset', -FALLBACK_HALF_RING_LENGTH);
       svg.appendChild(path);
     });
     ring.classList.add(HOST_CLASS);
-  }
-
-  function prepareOutline(ring) {
-    var svg = ring.querySelector('.hx-sg-ring-draw');
-    var halfRingLength = getRenderedHalfRingLength(svg);
-
-    Array.prototype.forEach.call(
-      ring.querySelectorAll('.hx-sg-ring-draw-path'),
-      function (path) {
-        path.setAttribute('stroke-dasharray', halfRingLength + ' ' + halfRingLength);
-        path.setAttribute('stroke-dashoffset', -halfRingLength);
-        path.style.setProperty('--hx-sg-ring-dash-end', (-2 * halfRingLength) + 'px');
-      }
-    );
     ring.classList.add(READY_CLASS);
   }
 
@@ -198,56 +163,25 @@
     leftRing.classList.add('hx-sg-ring-draw-inner-right');
     rightRing.classList.add('hx-sg-ring-draw-inner-left');
     rightRing.classList.add(GLOW_CLASS);
-    document.documentElement.classList.add('hx-sg-ring-draw-motion');
 
-    function lockSolidStroke(ring) {
-      window.setTimeout(function () {
-        Array.prototype.forEach.call(
-          ring.querySelectorAll('.hx-sg-ring-draw-path'),
-          function (path) {
-            path.setAttribute('stroke-dasharray', 'none');
-            path.setAttribute('stroke-dashoffset', '0');
-          }
-        );
-      }, OUTLINE_DURATION + 40);
-    }
-
-    function startRing(ring, revealGlow) {
-      prepareOutline(ring);
-      window.requestAnimationFrame(function () {
-        window.requestAnimationFrame(function () {
-          ring.classList.add(VISIBLE_CLASS);
-          if (revealGlow) {
-            window.setTimeout(function () {
-              ring.classList.add(GLOW_VISIBLE_CLASS);
-            }, reduceMotion ? 0 : OUTLINE_DURATION - GLOW_DURATION);
-          }
-          lockSolidStroke(ring);
-        });
-      });
-    }
-
-    function reveal() {
-      startRing(leftRing, false);
-      window.setTimeout(function () {
-        startRing(rightRing, true);
-      }, 160);
+    function revealGlow() {
+      rightRing.classList.add(GLOW_VISIBLE_CLASS);
     }
 
     if (reduceMotion) {
-      reveal();
+      revealGlow();
       return;
     }
 
     if (!('IntersectionObserver' in window)) {
-      reveal();
+      revealGlow();
       return;
     }
 
     var observer = new IntersectionObserver(function (entries) {
       if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
       observer.disconnect();
-      reveal();
+      revealGlow();
     }, {
       root: null,
       rootMargin: '0px 0px -32% 0px',
