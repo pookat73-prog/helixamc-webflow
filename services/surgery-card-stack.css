@@ -219,6 +219,12 @@
   background: radial-gradient(ellipse 50% 50% at 50% 50%, #0d1117 0 82%, rgba(13, 17, 23, .98) 87%, rgba(13, 17, 23, .55) 94%, rgba(13, 17, 23, 0) 100%);
 }
 
+/* 왼쪽 원의 본문은 후광 가림막 위에 남긴다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small > :not(.hx-sg-ring-draw) {
+  position: relative;
+  z-index: 3;
+}
+
 .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible::before {
   opacity: 1;
   animation: hx-sg-ring-glow-ramp 900ms linear both;
