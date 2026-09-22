@@ -564,7 +564,8 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     mask-composite: intersect;
   }
 
-  /* 7 예후 관리: 왼쪽 위 곡선 시작점에 메인 블루가 모였다가 중앙 방향으로 빠르게 옅어지는 외곽선. */
+  /* 7 예후 관리: 왼쪽 위 곡선 시작점에 텍스트위계4(#9aaabb) 가 모였다가 중앙 방향으로
+     빠르게 옅어지는 외곽선 — 그림자와 같은 톤으로 맞춰서 이 섹션엔 파란색이 더 남지 않는다. */
   .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::after {
     content: '';
     position: absolute;
@@ -574,8 +575,8 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     box-sizing: border-box;
     width: 100%;
     height: 240px;
-    border-top: 2px solid #0075d6;
-    border-left: 2px solid #0075d6;
+    border-top: 2px solid #9aaabb;
+    border-left: 2px solid #9aaabb;
     border-top-left-radius: 240px;
     corner-top-left-shape: superellipse(1.4);
     -webkit-mask-image:
