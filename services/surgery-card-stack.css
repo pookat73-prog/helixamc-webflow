@@ -193,30 +193,9 @@
   display: none !important;
 }
 
-/* 오른쪽 원은 완성 직전, 내부의 검은 면을 유지한 채 Webflow 외부 그림자가 남는다. */
+/* 오른쪽 원은 내부의 검은 면을 유지한 채, 마스크가 적용된 선에서만 후광을 만든다. */
 .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow {
   background-color: #0d1117;
-}
-
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::before {
-  content: '';
-  display: block !important;
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  background: transparent;
-  box-shadow: 5px 0 26px 0 #0075d6;
-  /* 원 선과 동일하게 접점은 비우고, 주변 후광만 부드럽게 남긴다. */
-  -webkit-mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
-  mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
-  opacity: 0;
-  transition: opacity 300ms cubic-bezier(0.89, 0, 0.15, 0.97);
-}
-
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible::before {
-  opacity: 1;
 }
 
 .hx-sg-ring-draw {
@@ -249,8 +228,17 @@
   vector-effect: non-scaling-stroke;
 }
 
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow .hx-sg-ring-draw {
+  filter: none;
+  transition: filter 300ms cubic-bezier(0.89, 0, 0.15, 0.97);
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible .hx-sg-ring-draw {
+  filter: drop-shadow(5px 0 26px #0075d6);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::before {
+  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow .hx-sg-ring-draw {
     transition: none;
   }
 }
