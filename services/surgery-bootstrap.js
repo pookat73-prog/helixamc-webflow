@@ -895,3 +895,61 @@
     initPrincipleCardShadows();
   }
 })();
+
+/* 핵심 장비 카드: 실제 이미지가 준비될 때까지 각 카드 위에 "이미지 수정중" 임시 도장을 얹는다.
+   이미지 확정되면 이 블록과 surgery-card-stack.css 의 .hx-sg-equip-wip-label 을 함께 지울 것. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_EQUIP_WIP__) return;
+  window.__HELIX_SURGERY_EQUIP_WIP__ = true;
+
+  var LABEL_TEXT = '이미지 수정중';
+  var HEADING_PATTERN = /장비/;
+
+  function findEquipmentSection() {
+    var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    for (var i = 0; i < headings.length; i++) {
+      if (HEADING_PATTERN.test(headings[i].textContent || '')) {
+        return headings[i].closest('section') || headings[i].closest('div');
+      }
+    }
+    return null;
+  }
+
+  function isIconImage(img) {
+    return !!img.closest('svg') || /icon/i.test(img.className || '');
+  }
+
+  function stampLabel(img) {
+    if (img.dataset.helixWipStamped) return;
+    img.dataset.helixWipStamped = '1';
+
+    var wrapper = img.parentElement;
+    if (!wrapper) return;
+
+    if (window.getComputedStyle(wrapper).position === 'static') {
+      wrapper.style.position = 'relative';
+    }
+
+    var label = document.createElement('div');
+    label.className = 'hx-sg-equip-wip-label';
+    label.setAttribute('aria-hidden', 'true');
+    label.textContent = LABEL_TEXT;
+    wrapper.appendChild(label);
+  }
+
+  function init() {
+    var section = findEquipmentSection();
+    if (!section) return;
+
+    var images = Array.prototype.slice.call(section.querySelectorAll('img'));
+    images.filter(function (img) { return !isIconImage(img); }).forEach(stampLabel);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
