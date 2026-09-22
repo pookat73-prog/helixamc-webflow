@@ -976,3 +976,55 @@
     init();
   }
 })();
+
+/* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘을 끼워 넣는다.
+   about 페이지의 크리스탈 시머 연출(.hex-morph-symbol)과 같은 톤을 축소 재사용. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_MINI_SYMBOL__) return;
+  window.__HELIX_SURGERY_MINI_SYMBOL__ = true;
+
+  function symbolUrl() {
+    var ref = window.HELIX_REF || (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
+    return 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + encodeURIComponent('심볼.svg');
+  }
+
+  /* 두 섹션 중 DOM 상 더 뒤에 있는 쪽 바로 앞에 넣어, 순서와 무관하게 항상 "사이"에 놓이게 한다. */
+  function insertBetween(nodeA, nodeB, newNode) {
+    if (!nodeA || !nodeB || nodeA === nodeB) return false;
+    var later = (nodeA.compareDocumentPosition(nodeB) & Node.DOCUMENT_POSITION_FOLLOWING) ? nodeB : nodeA;
+    if (!later.parentElement) return false;
+    later.parentElement.insertBefore(newNode, later);
+    return true;
+  }
+
+  function init() {
+    var aftercare = document.querySelector('.hx-sg-aftercare-card');
+    var outroMark = document.querySelector('.hx-sg-dept-mark-light');
+    if (!aftercare || !outroMark) return;
+
+    var aftercareSection = aftercare.closest('section') || aftercare.parentElement;
+    var outroSection = outroMark.closest('section') || outroMark.parentElement;
+    if (!aftercareSection || !outroSection || aftercareSection === outroSection) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'hx-sg-mini-symbol-wrap';
+    wrap.setAttribute('aria-hidden', 'true');
+
+    var img = document.createElement('img');
+    img.className = 'hx-sg-mini-symbol';
+    img.src = symbolUrl();
+    img.alt = '';
+    img.draggable = false;
+    wrap.appendChild(img);
+
+    insertBetween(aftercareSection, outroSection, wrap);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
