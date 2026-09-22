@@ -430,7 +430,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 
 .hx-sg-mini-symbol {
   display: block;
-  height: 22px;
+  height: 26px;
   width: auto;
   filter:
     drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
