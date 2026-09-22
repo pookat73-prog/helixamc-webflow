@@ -751,7 +751,7 @@
   var TITLE_FADE_EASING = 'cubic-bezier(.32, 0, .18, 1)';
   var TITLE_PULL_EASING = 'cubic-bezier(.6, 0, .12, 1)';
 
-  function initSafetyCardTitles(cardSelector, titleSelector, rootMargin) {
+  function initSafetyCardTitles(cardSelector, titleSelector) {
     var cards = Array.prototype.slice.call(
       document.querySelectorAll(cardSelector)
     );
@@ -768,15 +768,9 @@
     if (!titles.length) return;
 
     titles.forEach(function (title) {
-      if (cardSelector === '.hx-sg-aftercare-card') {
-        title.style.transition = 'none';
-      }
       title.style.opacity = '0';
       title.style.transform = 'translateX(-12px) scaleX(.925) scaleY(.985)';
       title.style.transformOrigin = 'left center';
-      if (cardSelector === '.hx-sg-aftercare-card') {
-        title.getBoundingClientRect();
-      }
       title.style.transition =
         'opacity ' + TITLE_DURATION + 'ms ' + TITLE_FADE_EASING + ', ' +
         'transform ' + TITLE_DURATION + 'ms ' + TITLE_PULL_EASING;
@@ -816,7 +810,89 @@
       play();
     }, {
       root: null,
-      rootMargin: rootMargin || '0px 0px -48% 0px',
+      rootMargin: '0px 0px -48% 0px',
+      threshold: 0
+    });
+
+    observer.observe(cards[0]);
+  }
+
+  /* 예후 관리 카드 2개(예후 가이드, 정보 공유): 나란히 있어 동시에 화면에 들어오지만,
+     후광+그림자·제목 인터렉션은 카드 순서대로 하나가 끝나야 다음 카드가 시작한다.
+     각 카드는 자기 후광이 뜨기 시작한 지 얼마 안 됐을 때(TITLE_START_DELAY) 제목이
+     시작하고, 그 제목이 다 끝나야 다음 카드의 후광이 시작된다.
+     후광 클래스(ANIMATING_CLASS/VISIBLE_CLASS)·SHADOW_DURATION 값은 아래
+     수술 철학·예후 관리 카드 공용 관찰자와 동일 — 이 카드들만 그 관찰자 대상에서 빼고
+     여기서 순서대로 직접 토글한다. */
+  function initAftercareSequence() {
+    var VISIBLE_CLASS = 'hx-sg-principle-shadow-visible';
+    var ANIMATING_CLASS = 'hx-sg-principle-shadow-animating';
+    var SHADOW_DURATION = 800;
+    var TITLE_START_DELAY = 180;
+    var titleSelector = '.div-block-332, .div-block-333';
+
+    var cards = Array.prototype.slice.call(
+      document.querySelectorAll('.hx-sg-aftercare-card')
+    );
+
+    if (!cards.length || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var titles = cards.map(function (card) {
+      return card.querySelector(titleSelector);
+    });
+
+    titles.forEach(function (title) {
+      if (!title) return;
+      title.style.transition = 'none';
+      title.style.opacity = '0';
+      title.style.transform = 'translateX(-12px) scaleX(.925) scaleY(.985)';
+      title.style.transformOrigin = 'left center';
+      title.getBoundingClientRect();
+      title.style.transition =
+        'opacity ' + TITLE_DURATION + 'ms ' + TITLE_FADE_EASING + ', ' +
+        'transform ' + TITLE_DURATION + 'ms ' + TITLE_PULL_EASING;
+      title.style.willChange = 'opacity, transform';
+    });
+
+    function revealTitle(title) {
+      if (!title) return;
+      title.style.opacity = '1';
+      title.style.transform = 'translateX(0) scaleX(1) scaleY(1)';
+      title.style.willChange = 'auto';
+    }
+
+    function playCard(index) {
+      if (index >= cards.length) return;
+
+      var card = cards[index];
+
+      card.classList.add(ANIMATING_CLASS);
+      window.requestAnimationFrame(function () {
+        card.classList.add(VISIBLE_CLASS);
+      });
+      window.setTimeout(function () {
+        card.classList.remove(ANIMATING_CLASS);
+      }, SHADOW_DURATION + 80);
+
+      window.setTimeout(function () {
+        revealTitle(titles[index]);
+        window.setTimeout(function () {
+          playCard(index + 1);
+        }, TITLE_DURATION + 100);
+      }, TITLE_START_DELAY);
+    }
+
+    var started = false;
+    var observer = new IntersectionObserver(function (entries) {
+      if (started) return;
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      started = true;
+      observer.disconnect();
+      playCard(0);
+    }, {
+      root: null,
+      rootMargin: '0px 0px -30% 0px',
       threshold: 0
     });
 
@@ -825,13 +901,7 @@
 
   function initCardTitleGroups() {
     initSafetyCardTitles('.hx-sg-safety-card', '.div-block-322');
-    /* 예후 관리 카드는 후광(그림자) 관찰자와 같은 rootMargin(-30%) 을 써서, 그림자가
-       나타나기 시작하는 순간과 같은 스크롤 지점에서 제목 인터렉션도 함께 시작되게 한다. */
-    initSafetyCardTitles(
-      '.hx-sg-aftercare-card',
-      '.div-block-332, .div-block-333',
-      '0px 0px -30% 0px'
-    );
+    initAftercareSequence();
   }
 
   if (document.readyState === 'loading') {
@@ -841,7 +911,12 @@
   }
 })();
 
-/* 수술 철학·예후 관리 카드: 각 카드가 화면의 70% 지점에 닿으면 후광과 그림자를 한 번 드러낸다. */
+/* 수술 철학 카드: 화면의 70% 지점에 닿으면 후광과 그림자를 한 번 드러낸다.
+   예후 관리 카드(.hx-sg-aftercare-card)는 여기서 제외한다 — 그 카드 2개는 위
+   initAftercareSequence() 가 순서대로(하나가 끝나야 다음 카드가 시작하도록) 직접
+   같은 클래스(VISIBLE_CLASS/ANIMATING_CLASS)를 토글한다. ROOT_CLASS 는 이 관찰자가
+   그대로 등록하므로, 예후 관리 카드의 CSS(html.hx-sg-principle-shadow-motion 기준)도
+   정상 동작한다. */
 (function () {
   'use strict';
 
@@ -860,7 +935,7 @@
 
   function initPrincipleCardShadows() {
     var cards = Array.prototype.slice.call(
-      document.querySelectorAll('.hx-sg-principle-card, .hx-sg-aftercare-card')
+      document.querySelectorAll('.hx-sg-principle-card')
     );
 
     if (!cards.length) {
