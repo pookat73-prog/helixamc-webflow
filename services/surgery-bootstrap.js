@@ -99,6 +99,8 @@
   var READY_CLASS = 'hx-sg-ring-draw-ready';
   var GLOW_CLASS = 'hx-sg-ring-draw-right-glow';
   var GLOW_VISIBLE_CLASS = 'hx-sg-ring-draw-glow-visible';
+  var OVERLAP_SHIELD_CLASS = 'hx-sg-ring-overlap-shield';
+  var OVERLAP_SHIELD_PADDING = 34;
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -143,6 +145,34 @@
     ring.classList.add(READY_CLASS);
   }
 
+  function createOverlapShield(leftRing, rightRing) {
+    var shield = document.createElement('span');
+
+    shield.className = OVERLAP_SHIELD_CLASS;
+    shield.setAttribute('aria-hidden', 'true');
+    rightRing.appendChild(shield);
+
+    function positionShield() {
+      var leftBounds = leftRing.getBoundingClientRect();
+      var rightBounds = rightRing.getBoundingClientRect();
+
+      shield.style.left = (leftBounds.left - rightBounds.left - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.top = (leftBounds.top - rightBounds.top - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.width = (leftBounds.width + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+      shield.style.height = (leftBounds.height + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+    }
+
+    positionShield();
+
+    if ('ResizeObserver' in window) {
+      var resizeObserver = new ResizeObserver(positionShield);
+      resizeObserver.observe(leftRing);
+      resizeObserver.observe(rightRing);
+    } else {
+      window.addEventListener('resize', positionShield, { passive: true });
+    }
+  }
+
   function initIntroRingDraw() {
     var rings = Array.prototype.slice.call(document.querySelectorAll(RING_SELECTOR))
       .filter(isVisible);
@@ -163,6 +193,7 @@
     leftRing.classList.add('hx-sg-ring-draw-inner-right');
     rightRing.classList.add('hx-sg-ring-draw-inner-left');
     rightRing.classList.add(GLOW_CLASS);
+    createOverlapShield(leftRing, rightRing);
 
     function revealGlow() {
       rightRing.classList.add(GLOW_VISIBLE_CLASS);
