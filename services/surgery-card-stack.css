@@ -201,6 +201,11 @@
   height: 100%;
   overflow: visible;
   pointer-events: none;
+  visibility: hidden;
+}
+
+.hx-sg-ring-draw-ready .hx-sg-ring-draw {
+  visibility: visible;
 }
 
 /* 겹치는 중앙은 사라지고, 그 주변의 선은 자연스럽게 되살아나게 한다. */
@@ -220,7 +225,7 @@
 }
 
 .hx-sg-ring-draw-visible .hx-sg-ring-draw-path {
-  stroke-dashoffset: 0;
+  stroke-dashoffset: var(--hx-sg-ring-dash-end, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
