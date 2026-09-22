@@ -374,3 +374,16 @@
   transform-origin: 50% 50%;
   will-change: transform, opacity;
 }
+
+/* 통증 관리 미니 섹션: Webflow의 두 줄바꿈만 사용해 세 줄을 유지한다. */
+.hx-sg-daily-comfort-banner .about_history_title_standard-font {
+  white-space: nowrap;
+}
+
+@media (min-width: 992px) {
+  .hx-sg-daily-comfort-banner .about_history_title_standard-font {
+    width: calc(100% + 24px);
+    font-size: min(1.6vw, 30.72px);
+    line-height: 1.5625;
+  }
+}
