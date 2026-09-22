@@ -418,3 +418,46 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   text-shadow: 0 2px 6px rgba(0, 0, 0, .55);
   transform: rotate(-8deg);
 }
+
+/* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘.
+   about 페이지 크리스탈 시머(.hex-morph-symbol)와 같은 필터 톤을 축소 재사용. */
+.hx-sg-mini-symbol-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 0;
+}
+
+.hx-sg-mini-symbol {
+  display: block;
+  height: 40px;
+  width: auto;
+  filter:
+    drop-shadow(1px 1px 0 rgba(127, 196, 255, .45))
+    drop-shadow(-1px -1px 0 rgba(80, 120, 255, .45))
+    drop-shadow(0 0 16px rgba(0, 117, 214, .55));
+  animation: hxSgMiniSymbolShimmer 4.5s ease-in-out infinite;
+}
+
+@keyframes hxSgMiniSymbolShimmer {
+  0%,
+  100% {
+    filter:
+      drop-shadow(1px 1px 0 rgba(127, 196, 255, .45))
+      drop-shadow(-1px -1px 0 rgba(80, 120, 255, .45))
+      drop-shadow(0 0 16px rgba(0, 117, 214, .55));
+  }
+
+  50% {
+    filter:
+      drop-shadow(-1px 1px 0 rgba(160, 220, 255, .55))
+      drop-shadow(1px -1px 0 rgba(60, 90, 255, .55))
+      drop-shadow(0 0 20px rgba(40, 150, 255, .65));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-mini-symbol {
+    animation: none;
+  }
+}
