@@ -98,8 +98,13 @@
   var HOST_CLASS = 'hx-sg-ring-draw-host';
   var READY_CLASS = 'hx-sg-ring-draw-ready';
   var VISIBLE_CLASS = 'hx-sg-ring-draw-visible';
+  var GLOW_CLASS = 'hx-sg-ring-draw-left-glow';
+  var GLOW_VISIBLE_CLASS = 'hx-sg-ring-draw-glow-visible';
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var FALLBACK_HALF_RING_LENGTH = Math.PI * 50;
+  var OUTLINE_DURATION = 940;
+  var GLOW_DURATION = 300;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function isVisible(element) {
     var rect = element.getBoundingClientRect();
@@ -191,6 +196,7 @@
     /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
     leftRing.classList.add('hx-sg-ring-draw-inner-right');
     rightRing.classList.add('hx-sg-ring-draw-inner-left');
+    leftRing.classList.add(GLOW_CLASS);
     document.documentElement.classList.add('hx-sg-ring-draw-motion');
 
     function lockSolidStroke(ring) {
@@ -202,27 +208,32 @@
             path.setAttribute('stroke-dashoffset', '0');
           }
         );
-      }, 980);
+      }, OUTLINE_DURATION + 40);
     }
 
-    function startRing(ring) {
+    function startRing(ring, revealGlow) {
       prepareOutline(ring);
       window.requestAnimationFrame(function () {
         window.requestAnimationFrame(function () {
           ring.classList.add(VISIBLE_CLASS);
+          if (revealGlow) {
+            window.setTimeout(function () {
+              ring.classList.add(GLOW_VISIBLE_CLASS);
+            }, reduceMotion ? 0 : OUTLINE_DURATION - GLOW_DURATION);
+          }
           lockSolidStroke(ring);
         });
       });
     }
 
     function reveal() {
-      startRing(leftRing);
+      startRing(leftRing, true);
       window.setTimeout(function () {
-        startRing(rightRing);
+        startRing(rightRing, false);
       }, 160);
     }
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (reduceMotion) {
       reveal();
       return;
     }
