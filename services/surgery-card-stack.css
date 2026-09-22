@@ -209,23 +209,31 @@
   background: transparent;
   box-shadow: 5px 0 26px 0 #0075d6;
   opacity: 0;
-  transition: opacity 650ms cubic-bezier(0.7, 0, 1, 1);
 }
 
 .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::after {
   content: '';
   position: absolute;
   z-index: 1;
-  top: 14%;
-  left: -52px;
-  width: 148px;
-  height: 72%;
+  top: 10%;
+  left: -64px;
+  width: 176px;
+  height: 80%;
   pointer-events: none;
-  background: radial-gradient(ellipse 68% 60% at 42% 50%, #0d1117 0 30%, rgba(13, 17, 23, .94) 56%, rgba(13, 17, 23, 0) 100%);
+  background: radial-gradient(ellipse 70% 64% at 40% 50%, #0d1117 0 30%, rgba(13, 17, 23, .96) 55%, rgba(13, 17, 23, .52) 74%, rgba(13, 17, 23, 0) 100%);
 }
 
 .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible::before {
   opacity: 1;
+  animation: hx-sg-ring-glow-ramp 900ms linear both;
+}
+
+@keyframes hx-sg-ring-glow-ramp {
+  0% { opacity: 0; }
+  52% { opacity: .025; }
+  72% { opacity: .10; }
+  86% { opacity: .36; }
+  100% { opacity: 1; }
 }
 
 .hx-sg-ring-draw {
@@ -259,8 +267,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::before {
-    transition: none;
+  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible::before {
+    animation: none;
   }
 }
 
