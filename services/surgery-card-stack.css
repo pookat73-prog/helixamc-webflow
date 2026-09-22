@@ -542,15 +542,17 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
      모서리에서 멀어질수록 옅어지도록 마스크를 얹고, 그 마스크 영역을 왼쪽·위로만 넓혀서
      (calc(100% + 30px), position -30px) 그림자가 박스 밖으로 번지는 부분도 같이 페이드되게
      했다 — 오른쪽·아래는 넓히지 않았으니 여전히 섹션 경계를 넘지 않는다.
+     가로 방향은 왼쪽 25% 지점까지는 그대로 선명하게 유지하고, 그 이후부터 48% 지점까지
+     풀어(옅어지게) 준다 — 외곽선 가로 그라데이션의 마무리 지점(48%)과 맞췄다.
      이 ::before 의 배경색(#f4f7fb)은 그 뒤에 있는 실제 섹션 배경과 같은 색이라, 마스크로
      가려져도 색 경계가 생기지 않는다. */
   .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::before {
     box-shadow: -6px -6px 20px -2px rgba(154, 170, 187, .5);
     -webkit-mask-image:
-      linear-gradient(90deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px),
+      linear-gradient(90deg, #000 0px, #000 calc(25% + 30px), transparent calc(48% + 30px)),
       linear-gradient(180deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px);
     mask-image:
-      linear-gradient(90deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px),
+      linear-gradient(90deg, #000 0px, #000 calc(25% + 30px), transparent calc(48% + 30px)),
       linear-gradient(180deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px);
     -webkit-mask-size: calc(100% + 30px) calc(100% + 30px);
     mask-size: calc(100% + 30px) calc(100% + 30px);
