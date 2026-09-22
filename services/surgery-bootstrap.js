@@ -98,7 +98,7 @@
   var HOST_CLASS = 'hx-sg-ring-draw-host';
   var READY_CLASS = 'hx-sg-ring-draw-ready';
   var VISIBLE_CLASS = 'hx-sg-ring-draw-visible';
-  var GLOW_CLASS = 'hx-sg-ring-draw-left-glow';
+  var GLOW_CLASS = 'hx-sg-ring-draw-right-glow';
   var GLOW_VISIBLE_CLASS = 'hx-sg-ring-draw-glow-visible';
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var FALLBACK_HALF_RING_LENGTH = Math.PI * 50;
@@ -196,7 +196,7 @@
     /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
     leftRing.classList.add('hx-sg-ring-draw-inner-right');
     rightRing.classList.add('hx-sg-ring-draw-inner-left');
-    leftRing.classList.add(GLOW_CLASS);
+    rightRing.classList.add(GLOW_CLASS);
     document.documentElement.classList.add('hx-sg-ring-draw-motion');
 
     function lockSolidStroke(ring) {
@@ -227,9 +227,9 @@
     }
 
     function reveal() {
-      startRing(leftRing, true);
+      startRing(leftRing, false);
       window.setTimeout(function () {
-        startRing(rightRing, false);
+        startRing(rightRing, true);
       }, 160);
     }
 
