@@ -45,6 +45,7 @@
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -82,7 +83,7 @@
   var TARGETS = [
     /* 전 페이지 공통 — 플로팅 상담 CTA */
     { sel: '#hxFctaToggle',         label: '플로팅 · 상담 문의하기', event: 'cta_open' },
-    { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 걸기',  event: 'cta_call' },
+    { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 상담',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
     /* 전 페이지 공통 — 본문에 심은 인라인 상담 버튼 (예: 서초 '예약 안내'의
@@ -115,7 +116,20 @@
     /* 푸터 (홈 등) */
     { sel: '.footer-email-clickable', label: '푸터 · 이메일 복사', event: 'copy_email_*' },
     { sel: '.footer-sns-icon',        label: '푸터 · SNS 클릭',    event: 'sns_click_*' },
+    /* 홈 Hero 지점 바 — 늦게 주입되는 별도 측정 영역 */
+    { sel: '#hx-branch-quickbar [data-qb-action="phone_call"]', label: 'Hero 지점 바 · 전화', event: 'home_quickbar_phone_call_*' },
+    { sel: '#hx-branch-quickbar [data-qb-action="detail"]', label: 'Hero 지점 바 · 안내', event: 'home_quickbar_detail_*' },
     /* 홈 지점 카드 */
+    /* 진료 준비 가이드 — 동적으로 생기는 모달도 기존 재스캔에 포함. */
+    { sel: '#care-preparation .hx-prep__open', label: '진료 준비 · 안내 열기', event: 'care_guide_open' },
+    { sel: '#hx-prep-guide .hx-guide__close', label: '진료 준비 · 닫기', event: 'care_guide_close' },
+    { sel: '#hx-prep-guide [data-branch]', label: '진료 준비 · 지점 선택', event: 'care_guide_branch_select' },
+    { sel: '#hx-prep-guide a[href^="tel:"]', label: '진료 준비 · 전화 위치', event: 'care_guide_phone_click' },
+    { sel: '#hx-copy-email', label: '진료 준비 · 이메일 복사', event: 'care_guide_email_copy' },
+    { sel: '#hx-copy-address', label: '진료 준비 · 주소 복사', event: 'care_guide_address_copy' },
+    { sel: '#hx-branch-detail', label: '진료 준비 · 주차 안내', event: 'care_guide_parking_click' },
+    { sel: '#hx-prep-guide [data-guide-action="send"]', label: '진료 준비 · 자료 전달', event: 'care_guide_send_click' },
+    { sel: '#hx-branch-page', label: '진료 준비 · 지점 안내', event: 'care_guide_branch_click' },
     { sel: '.copy-text-button',     label: '지점 · 주소 복사',    event: 'copy_address_*' },
     /* home_phone_call 은 홈 지점카드 안 전화 링크 전용 핸들러(sections-animations.js).
        .home_branch-card 로 한정하지 않으면 응급 모달 분원 전화(tel: 링크) 등

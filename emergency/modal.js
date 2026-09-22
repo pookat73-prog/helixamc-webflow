@@ -41,6 +41,7 @@
     try {
       var device = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
       var p = params || {};
+      p.page = 'emergency';
       p.device = device;
       var name = eventName + '_' + device;
       if (typeof window.gtag === 'function') {

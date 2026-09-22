@@ -947,7 +947,8 @@
     /* GA4 — 인증 상세 모달 열림 측정 (어떤 인증 카드가 열렸는지 slug 로 구분) */
     try {
       var __dev = window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
-      var __p = { item_type: 'cert_modal', cert: slug, device: __dev };
+      var __page = /discover/.test((location.pathname || '').toLowerCase()) ? 'discover' : 'about';
+      var __p = { item_type: 'cert_modal', page: __page, cert: slug, device: __dev };
       if (typeof window.gtag === 'function') {
         __p.transport_type = 'beacon';
         window.gtag('event', 'cert_modal_open_' + __dev, __p);

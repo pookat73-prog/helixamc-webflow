@@ -362,11 +362,18 @@
         e.stopPropagation();
 
         var card = link.closest('.home_branch-card');
+        var careGuide = link.closest('#hx-prep-guide');
 
         /* 화면에 보이는 번호 텍스트 우선, 없으면 href 의 tel: 뒤 */
         var numNode = link.querySelector('.home_branch-card_call-number') || link;
         var phone = (numNode.innerText || '').trim() ||
                     (link.getAttribute('href') || '').replace(/^tel:/i, '').trim();
+        // Guide labels include instructions, so copy/classify the actual phone number.
+        if (careGuide) {
+          phone = (link.getAttribute('href') || '').replace(/^tel:/i, '').trim();
+          if (phone === '0221359119') phone = '02-2135-9119';
+          else if (phone === '0319787575') phone = '031-978-7575';
+        }
         if (!phone) return;
 
         var isDesktop  = window.innerWidth >= 992;
@@ -397,6 +404,12 @@
               value: phone,
               will_dial: !isDesktop
             };
+            if (careGuide) {
+              payload.page = 'home';
+              payload.section_key = 'care_preparation';
+              payload.guide_position = link.closest('.hx-guide__footer') ? 'footer_phone' :
+                (link.closest('#hx-ilsan-mail') ? 'step_02_recipient' : 'step_02_phone');
+            }
             if (typeof window.gtag === 'function') {
               window.gtag('event', telEventName, payload);
             } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
@@ -408,6 +421,8 @@
 
         /* 시각 피드백: 번호 텍스트를 잠깐 "복사완료" 로 교체 */
         function flashLink() {
+          // Replacing innerText destroys the guide's branch/number spans and breaks switching.
+          if (careGuide) return;
           var orig = numNode.innerText;
           numNode.innerText = '복사완료';
           link.classList.add('copy-success');
