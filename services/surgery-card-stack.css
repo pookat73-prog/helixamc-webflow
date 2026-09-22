@@ -211,16 +211,12 @@
   opacity: 0;
 }
 
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::after {
-  content: '';
+.hx-sg-ring-overlap-shield {
   position: absolute;
   z-index: 1;
-  top: -2%;
-  left: -100px;
-  width: 250px;
-  height: 104%;
   pointer-events: none;
-  background: radial-gradient(ellipse 62% 23% at 42% 50%, #0d1117 0 54%, rgba(13, 17, 23, .98) 68%, rgba(13, 17, 23, .64) 82%, rgba(13, 17, 23, 0) 100%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, #0d1117 0 82%, rgba(13, 17, 23, .98) 87%, rgba(13, 17, 23, .55) 94%, rgba(13, 17, 23, 0) 100%);
 }
 
 .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible::before {
