@@ -96,6 +96,7 @@
 
   var RING_SELECTOR = '.hx-sg-rings > .hx-sg-ring';
   var HOST_CLASS = 'hx-sg-ring-draw-host';
+  var READY_CLASS = 'hx-sg-ring-draw-ready';
   var VISIBLE_CLASS = 'hx-sg-ring-draw-visible';
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var FALLBACK_HALF_RING_LENGTH = Math.PI * 50;
@@ -141,9 +142,7 @@
     svg.setAttribute('focusable', 'false');
     ring.appendChild(svg);
 
-    var halfRingLength = getRenderedHalfRingLength(svg);
-
-    /* 맞닿는 중앙점에서 위·아래 호가 동시에 퍼져 각 원을 완성한다. */
+    /* 화면 바깥쪽 한 점에서 위·아래 호가 동시에 퍼져 각 원을 완성한다. */
     arcPaths.forEach(function (arcPath) {
       var path = document.createElementNS(SVG_NS, 'path');
       path.setAttribute('d', arcPath);
@@ -152,12 +151,26 @@
       path.setAttribute('stroke', '#0075d6');
       path.setAttribute('stroke-width', '1');
       path.setAttribute('stroke-linecap', 'round');
-      /* 숨긴 상태를 먼저 만들고 화면에 붙여 첫 프레임 노출을 막는다. */
-      path.setAttribute('stroke-dasharray', halfRingLength + ' ' + halfRingLength);
-      path.setAttribute('stroke-dashoffset', halfRingLength);
+      path.setAttribute('stroke-dasharray', FALLBACK_HALF_RING_LENGTH + ' ' + FALLBACK_HALF_RING_LENGTH);
+      path.setAttribute('stroke-dashoffset', -FALLBACK_HALF_RING_LENGTH);
       svg.appendChild(path);
     });
     ring.classList.add(HOST_CLASS);
+  }
+
+  function prepareOutline(ring) {
+    var svg = ring.querySelector('.hx-sg-ring-draw');
+    var halfRingLength = getRenderedHalfRingLength(svg);
+
+    Array.prototype.forEach.call(
+      ring.querySelectorAll('.hx-sg-ring-draw-path'),
+      function (path) {
+        path.setAttribute('stroke-dasharray', halfRingLength + ' ' + halfRingLength);
+        path.setAttribute('stroke-dashoffset', -halfRingLength);
+        path.style.setProperty('--hx-sg-ring-dash-end', (-2 * halfRingLength) + 'px');
+      }
+    );
+    ring.classList.add(READY_CLASS);
   }
 
   function initIntroRingDraw() {
@@ -192,12 +205,20 @@
       }, 980);
     }
 
+    function startRing(ring) {
+      prepareOutline(ring);
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          ring.classList.add(VISIBLE_CLASS);
+          lockSolidStroke(ring);
+        });
+      });
+    }
+
     function reveal() {
-      leftRing.classList.add(VISIBLE_CLASS);
-      lockSolidStroke(leftRing);
+      startRing(leftRing);
       window.setTimeout(function () {
-        rightRing.classList.add(VISIBLE_CLASS);
-        lockSolidStroke(rightRing);
+        startRing(rightRing);
       }, 160);
     }
 
