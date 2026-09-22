@@ -105,7 +105,7 @@
     window.__HELIX_SURGERY_PAIN_MOTION__ = true;
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var duration = 9500;
+  var duration = 6400;
   var ns = 'http://www.w3.org/2000/svg';
   var frame = 0;
   var start = 0;
@@ -127,10 +127,12 @@
     '<stop id="hx-sg-pain-core-end" offset="1" stop-color="#d60019"/>',
     '</linearGradient>',
     '<linearGradient id="hx-sg-pain-line" gradientUnits="userSpaceOnUse" x1="-600" y1="300" x2="1200" y2="300">',
-    '<stop id="hx-sg-pain-line-blue-left" offset="0" stop-color="#0075d6"/>',
+    '<stop id="hx-sg-pain-line-blue-left" offset="0" stop-color="#d60019"/>',
+    '<stop id="hx-sg-pain-line-front-red-left" offset=".5" stop-color="#d60019"/>',
     '<stop id="hx-sg-pain-line-red-left" offset="0" stop-color="#d60019"/>',
     '<stop id="hx-sg-pain-line-red-right" offset="1" stop-color="#d60019"/>',
-    '<stop id="hx-sg-pain-line-blue-right" offset="1" stop-color="#0075d6"/>',
+    '<stop id="hx-sg-pain-line-front-red-right" offset=".5" stop-color="#d60019"/>',
+    '<stop id="hx-sg-pain-line-blue-right" offset="1" stop-color="#d60019"/>',
     '</linearGradient>',
     '<radialGradient id="hx-sg-pain-clear"><stop offset=".87" stop-color="black"/><stop offset="1" stop-color="white"/></radialGradient>',
     '<radialGradient id="hx-sg-pain-fade"><stop offset=".55" stop-color="white"/><stop offset="1" stop-color="black"/></radialGradient>',
@@ -146,6 +148,13 @@
   ].join('');
   oval.prepend(art);
 
+  var rippleLayer = document.createElement('span');
+  rippleLayer.className = 'hx-sg-pain-ripples';
+  rippleLayer.setAttribute('aria-hidden', 'true');
+  rippleLayer.innerHTML = '<span class="hx-sg-pain-ripple"></span><span class="hx-sg-pain-ripple"></span>';
+  art.after(rippleLayer);
+  var ripples = Array.prototype.slice.call(rippleLayer.children);
+
   var sheet = art.querySelector('#hx-sg-pain-sheet');
   var centerWave = art.querySelector('#hx-sg-pain-wave');
   var field = art.querySelector('#hx-sg-pain-field');
@@ -153,8 +162,10 @@
   var coreStart = art.querySelector('#hx-sg-pain-core-start');
   var coreEnd = art.querySelector('#hx-sg-pain-core-end');
   var lineBlueLeft = art.querySelector('#hx-sg-pain-line-blue-left');
+  var lineFrontRedLeft = art.querySelector('#hx-sg-pain-line-front-red-left');
   var lineRedLeft = art.querySelector('#hx-sg-pain-line-red-left');
   var lineRedRight = art.querySelector('#hx-sg-pain-line-red-right');
+  var lineFrontRedRight = art.querySelector('#hx-sg-pain-line-front-red-right');
   var lineBlueRight = art.querySelector('#hx-sg-pain-line-blue-right');
   var horizontal = [];
   var vertical = [];
@@ -185,6 +196,17 @@
     return smooth((time - from) / (to - from));
   }
 
+  function accelerate(value) {
+    return Math.pow(clamp(value), 4.2);
+  }
+
+  function backOut(value) {
+    value = clamp(value);
+    var c1 = 1.70158;
+    var c3 = c1 + 1;
+    return 1 + c3 * Math.pow(value - 1, 3) + c1 * Math.pow(value - 1, 2);
+  }
+
   function torsionNode(u, v, centre, direction, active, clock) {
     var dx = u - centre;
     var envelope = Math.exp(-(dx * dx / (2 * 275 * 275) + v * v / (2 * 350 * 350)));
@@ -202,25 +224,44 @@
     return [u + (targetX - u) * envelope, v + (targetY - v) * envelope];
   }
 
-  function point(u, v, motion) {
-    var active = motion.twist * (1 - motion.collapse);
+  function meshClockAt(clock) {
+    return clock < 1.85 ? clock * 3.4 : 1.85 * 3.4 + (clock - 1.85) * 2.2;
+  }
+
+  function meshSurface(u, clock) {
+    return 1.35 * Math.sin(u / 150 - meshClockAt(clock));
+  }
+
+  function rawMeshPoint(u, v, motion) {
+    var active = motion.twist;
     var node = torsionNode(u, v, -470, 1, active, motion.clock);
     node = torsionNode(node[0], node[1], 470, -1, active, motion.clock);
     var xNode = node[0];
     var yNode = node[1];
-    var band = yNode * (1 - motion.collapse) * (1 - active * .075);
-    var amplitude = (29 * (1 - motion.collapse) + 56 * motion.collapse) * motion.rise * (1 - motion.calm);
+    var band = yNode * (1 - active * .075);
+    var swell = 1 + .88 * Math.sin(Math.PI * clamp((motion.clock - .08) / 1.25));
+    var amplitude = 52 * motion.rise * swell;
     var irregularWave = .10 * Math.sin(xNode / 58 + motion.clock * 1.16 + yNode / 175);
-    var wave = amplitude * (Math.sin(xNode / 105 - motion.clock * 1.9) + irregularWave);
-    var ripple = motion.rise * (1 - motion.collapse) * (14 + 10 * active)
-      * Math.sin(yNode / 165 + xNode / 230 - motion.clock * .55)
+    var wave = amplitude * (meshSurface(xNode, motion.clock) + irregularWave);
+    var ripple = motion.rise * (22 + 10 * active)
+      * Math.sin(yNode / 165 + xNode / 230 - motion.clock * 1.25)
       + active * 9 * Math.sin(xNode / 74 + yNode / 108 + motion.clock * .92);
     var x = xNode * (1 + active * .05 * Math.cos(xNode / 210 + motion.clock * .84));
     var y = band * .86 + ripple + wave;
-    var rotation = -.10 * (1 - motion.collapse);
+    var rotation = -.10;
     return [
       300 + x * Math.cos(rotation) - y * Math.sin(rotation),
       300 + x * Math.sin(rotation) + y * Math.cos(rotation)
+    ];
+  }
+
+  function point(u, v, motion) {
+    var raw = rawMeshPoint(u, v, motion);
+    if (!motion.collapse || v === 0) return raw;
+    var spine = rawMeshPoint(u, 0, motion);
+    return [
+      raw[0] + (spine[0] - raw[0]) * motion.collapse,
+      raw[1] + (spine[1] - raw[1]) * motion.collapse
     ];
   }
 
@@ -235,57 +276,136 @@
     return d;
   }
 
+  function impulsePath(progress, strength, motion) {
+    var d = '';
+    var front = 380 + 700 * progress;
+    var width = 20 + 26 * progress;
+    var amplitude = (108 - 72 * progress) * strength;
+    var feather = 14 + 14 * progress;
+    for (var i = 0; i <= 128; i += 1) {
+      var u = -900 + i / 128 * 1800;
+      var distance = Math.abs(u) - front;
+      var trough = Math.exp(-(distance * distance) / (2 * width * width));
+      var edge = clamp((distance + feather) / (2 * feather));
+      var ahead = progress >= 1 ? 0 : edge * edge * (3 - 2 * edge);
+      var spine = rawMeshPoint(u, 0, motion);
+      var x = 300 + u + (spine[0] - (300 + u)) * ahead;
+      var y = 300 + (spine[1] - 300) * ahead + amplitude * trough;
+      d += (i ? 'L' : 'M') + x.toFixed(2) + ',' + y.toFixed(2) + ' ';
+    }
+    return d;
+  }
+
+  function anticipationPath(strength, motion, lockedMotion, lockStrength) {
+    var d = '';
+    for (var i = 0; i <= 128; i += 1) {
+      var u = -900 + i / 128 * 1800;
+      var distance = Math.abs(u) - 360;
+      var nearCore = Math.exp(-(distance * distance) / (2 * 105 * 105));
+      var movingSpine = rawMeshPoint(u, 0, motion);
+      var lockedSpine = rawMeshPoint(u, 0, lockedMotion);
+      var localLock = nearCore * lockStrength;
+      var x = movingSpine[0] + (lockedSpine[0] - movingSpine[0]) * localLock;
+      var baseY = movingSpine[1] + (lockedSpine[1] - movingSpine[1]) * localLock;
+      var y = baseY - 30 * strength * nearCore;
+      d += (i ? 'L' : 'M') + x.toFixed(2) + ',' + y.toFixed(2) + ' ';
+    }
+    return d;
+  }
+
   function render(time, now) {
     elapsed = Math.min(duration, Math.max(0, time));
-    var on = span(elapsed, 650, 1550);
-    var rise = span(elapsed, 1450, 3000);
-    var twist = span(elapsed, 3400, 5500);
-    var collapse = span(elapsed, 5250, 6700);
-    var calm = span(elapsed, 6500, 7650);
-    var meshVisible = rise * (1 - span(elapsed, 6200, 6700));
-    var waveVisible = span(elapsed, 6000, 6700);
-    var change = span(elapsed, 7350, 8600);
+    var on = span(elapsed, 0, 100);
+    var rise = span(elapsed, 80, 900);
+    var twist = .60 * span(elapsed, 180, 700);
+    var collapse = accelerate((elapsed - 600) / 1250);
+    var calm = accelerate((elapsed - 1450) / 500);
+    var handoff = span(elapsed, 1650, 1950);
+    var meshLineFade = Math.pow(1 - handoff, 2);
+    var waveVisible = handoff;
+    var impactStarted = elapsed >= 4250;
+    var change = clamp((elapsed - 4250) / 1000);
+    var impulseStrength = span(elapsed, 4250, 4300) * (1 - span(elapsed, 5200, 5250));
+    var anticipation = impactStarted ? 0 : span(elapsed, 3400, 3800);
     var clock = elapsed / 1000;
     var motion = { rise: rise, twist: twist, collapse: collapse, calm: calm, clock: clock };
-    var coreColor = change < .78 ? '#d60019' : '#0075d6';
-    var edge = change >= 1 ? .5 : change * .5;
+    var lockedMotion = { rise: rise, twist: twist, collapse: collapse, calm: calm, clock: Math.min(clock, 3.8) };
+    var anticipationLock = span(elapsed, 3800, 3880);
+    var idlePulseClock = -1;
+    if (finishedAt && elapsed >= duration) {
+      var idleAge = now - finishedAt;
+      idlePulseClock = idleAge >= 12000 ? (idleAge - 12000) % 14000 : -1;
+    }
+    var idlePulseActive = idlePulseClock >= 0 && idlePulseClock < 1050;
+    var idleImpulseStrength = idlePulseActive ? span(idlePulseClock, 0, 60) * (1 - span(idlePulseClock, 850, 1050)) : 0;
+    var activeImpulseStrength = idlePulseActive ? idleImpulseStrength : impulseStrength;
+    var coreColor = impactStarted ? '#0075d6' : '#d60019';
+    var lineDone = change >= 1;
+    var blueEdge = Math.min(.5, (380 + 700 * change) / 1800);
+    var leftFront = .5 - blueEdge;
+    var rightFront = .5 + blueEdge;
 
     coreStart.setAttribute('stop-color', coreColor);
     coreEnd.setAttribute('stop-color', coreColor);
-    lineBlueLeft.setAttribute('stop-color', '#0075d6');
-    lineRedLeft.setAttribute('stop-color', change >= 1 ? '#0075d6' : '#d60019');
-    lineRedRight.setAttribute('stop-color', change >= 1 ? '#0075d6' : '#d60019');
-    lineBlueRight.setAttribute('stop-color', '#0075d6');
-    lineRedLeft.setAttribute('offset', edge);
-    lineRedRight.setAttribute('offset', 1 - edge);
+    lineBlueLeft.setAttribute('stop-color', lineDone ? '#0075d6' : '#d60019');
+    lineFrontRedLeft.setAttribute('stop-color', lineDone ? '#0075d6' : '#d60019');
+    lineRedLeft.setAttribute('stop-color', impactStarted ? '#0075d6' : '#d60019');
+    lineRedRight.setAttribute('stop-color', impactStarted ? '#0075d6' : '#d60019');
+    lineFrontRedRight.setAttribute('stop-color', lineDone ? '#0075d6' : '#d60019');
+    lineBlueRight.setAttribute('stop-color', lineDone ? '#0075d6' : '#d60019');
+    lineBlueLeft.setAttribute('offset', 0);
+    lineFrontRedLeft.setAttribute('offset', leftFront);
+    lineRedLeft.setAttribute('offset', leftFront);
+    lineRedRight.setAttribute('offset', rightFront);
+    lineFrontRedRight.setAttribute('offset', rightFront);
+    lineBlueRight.setAttribute('offset', 1);
     field.setAttribute('opacity', on * .7);
-    fieldColor.setAttribute('stop-color', change < .5 ? '#d60019' : '#0075d6');
+    fieldColor.setAttribute('stop-color', coreColor);
     fieldColor.setAttribute('stop-opacity', '.07');
-    sheet.setAttribute('opacity', meshVisible);
+    sheet.setAttribute('opacity', on);
 
-    if (meshVisible > .001) {
-      horizontal.forEach(function (path, index) {
-        path.setAttribute('d', gridPath(index, true, motion));
-      });
-      vertical.forEach(function (path, index) {
-        path.setAttribute('d', gridPath(index, false, motion));
-      });
+    horizontal.forEach(function (path) { path.setAttribute('opacity', (.19 * meshLineFade).toFixed(4)); });
+    vertical.forEach(function (path) { path.setAttribute('opacity', (.12 * meshLineFade).toFixed(4)); });
+    if (elapsed <= 1950) {
+      horizontal.forEach(function (path, index) { path.setAttribute('d', gridPath(index, true, motion)); });
+      vertical.forEach(function (path, index) { path.setAttribute('d', gridPath(index, false, motion)); });
     }
 
-    centerWave.setAttribute('d', gridPath(5, true, motion));
+    centerWave.setAttribute('d', impactStarted
+      ? impulsePath(change, impulseStrength, motion)
+      : anticipation > 0
+        ? anticipationPath(anticipation, motion, lockedMotion, anticipationLock)
+        : gridPath(5, true, motion));
     centerWave.setAttribute('opacity', waveVisible * .75);
 
-    var pulseReady = span(elapsed, 8600, 9100);
-    var pulsePhase = finishedAt ? ((now - finishedAt) % 2400) / 2400 : 0;
-    var pulseStrength = pulseReady * Math.pow(Math.sin(Math.PI * pulsePhase), 1.8);
+    var rippleClock = elapsed;
+    var rippleSpecs = [[4250, 760, .15, .27], [4350, 900, .23, .18]];
+    if (finishedAt && elapsed >= duration) {
+      rippleClock = idlePulseClock;
+      rippleSpecs = [[0, 760, .12, .15], [110, 900, .19, .09]];
+    }
+    rippleSpecs.forEach(function (spec, index) {
+      var progress = clamp((rippleClock - spec[0]) / spec[1]);
+      var active = rippleClock >= spec[0] && rippleClock < spec[0] + spec[1];
+      var appear = clamp(progress / .08);
+      ripples[index].style.transform = 'scale(' + (1 + spec[2] * backOut(progress)).toFixed(4) + ')';
+      ripples[index].style.opacity = active
+        ? (spec[3] * appear * Math.pow(1 - progress, 1.35)).toFixed(4)
+        : '0';
+    });
+
     var rgb = coreColor === '#0075d6' ? '0,117,214' : '214,0,25';
     var borderOpacity = on * (.76 + .24 * change);
-    var glowAlpha = on * (.12 + .08 * (1 - change) + pulseStrength * .09);
-    var pulseReach = 18 + pulseStrength * 24;
+    var glowAlpha = on * (.12 + .08 * (1 - change) + activeImpulseStrength * .18);
+    var pulseReach = 18 + activeImpulseStrength * 24;
 
-    oval.style.setProperty('border-color', 'rgba(' + rgb + ',' + borderOpacity.toFixed(3) + ')', 'important');
-    oval.style.setProperty('box-shadow', '0 0 ' + pulseReach.toFixed(1) + 'px rgba(' + rgb + ',' + glowAlpha.toFixed(3) + ')', 'important');
-    art.dataset.phase = elapsed < 650 ? 'empty' : elapsed < 3400 ? 'wave' : elapsed < 5500 ? 'torsion' : elapsed < 7650 ? 'converge' : 'stable';
+    oval.style.setProperty('border-color', 'transparent', 'important');
+    oval.style.setProperty('box-shadow', 'none', 'important');
+    oval.style.setProperty('--hx-core-color', 'rgba(' + rgb + ',' + borderOpacity.toFixed(3) + ')');
+    oval.style.setProperty('--hx-core-shadow', '0 0 ' + pulseReach.toFixed(1) + 'px rgba(' + rgb + ',' + glowAlpha.toFixed(3) + ')');
+    art.dataset.phase = elapsed < 1950 ? 'mesh' : elapsed < 4250 ? 'line' : 'stable';
+    art.dataset.time = Math.round(elapsed);
+    art.dataset.idlePulse = idleImpulseStrength.toFixed(4);
   }
 
   function tick(now) {
