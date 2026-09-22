@@ -536,13 +536,32 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     overflow: clip;
   }
 
-  /* 7 예후 관리: 왼쪽 위로 튀어나오는 그림자는 마스크가 없는 ::before(코너 배경판) 에 건다.
-     ::after 는 border 를 위해 마스크를 쓰는데, 마스크는 이 박스(0~100%) 안에서만 정의되어
-     박스 밖으로 번지는 그림자를 투명 처리해 지워버린다 — 그래서 지난 시도는 안 보였다.
-     offset 을 blur 보다 크게 잡아, 왼쪽·위로는 분명히 튀어나오고 오른쪽·아래로는 원래
-     테두리를 넘어서지 않도록 했다 (계산상 -5px 안쪽에서 끝남) — 섹션 아래 경계는 안전. */
+  /* 7 예후 관리: 왼쪽 위로 은은하게 번지는 그림자. 컬러는 텍스트위계4(#9aaabb) —
+     수술 철학·예후 관리 카드 자체의 등장 그림자(rgba(154,170,187,…))와 같은 계열이라 톤이 맞는다.
+     크기는 offset·spread 를 줄이고 blur 로 부드럽게 조절했다.
+     모서리에서 멀어질수록 옅어지도록 마스크를 얹고, 그 마스크 영역을 왼쪽·위로만 넓혀서
+     (calc(100% + 30px), position -30px) 그림자가 박스 밖으로 번지는 부분도 같이 페이드되게
+     했다 — 오른쪽·아래는 넓히지 않았으니 여전히 섹션 경계를 넘지 않는다.
+     이 ::before 의 배경색(#f4f7fb)은 그 뒤에 있는 실제 섹션 배경과 같은 색이라, 마스크로
+     가려져도 색 경계가 생기지 않는다. */
   .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::before {
-    box-shadow: -18px -18px 16px -3px rgba(0, 117, 214, .34);
+    box-shadow: -6px -6px 20px -2px rgba(154, 170, 187, .5);
+    -webkit-mask-image:
+      linear-gradient(90deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px),
+      linear-gradient(180deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px);
+    mask-image:
+      linear-gradient(90deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px),
+      linear-gradient(180deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px);
+    -webkit-mask-size: calc(100% + 30px) calc(100% + 30px);
+    mask-size: calc(100% + 30px) calc(100% + 30px);
+    -webkit-mask-position: -30px -30px;
+    mask-position: -30px -30px;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-clip: no-clip;
+    mask-clip: no-clip;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
 
   /* 7 예후 관리: 왼쪽 위 곡선 시작점에 메인 블루가 모였다가 중앙 방향으로 빠르게 옅어지는 외곽선. */
