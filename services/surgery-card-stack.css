@@ -208,6 +208,9 @@
   pointer-events: none;
   background: transparent;
   box-shadow: 5px 0 26px 0 #0075d6;
+  /* 원 선과 동일하게 접점은 비우고, 주변 후광만 부드럽게 남긴다. */
+  -webkit-mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
   opacity: 0;
   transition: opacity 300ms cubic-bezier(0.89, 0, 0.15, 0.97);
 }
