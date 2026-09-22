@@ -320,6 +320,20 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   background: #f4f7fb !important;
   border-color: transparent !important;
   box-shadow: none !important;
+  --hx-core-color: rgba(214, 0, 25, .76);
+  --hx-core-shadow: 0 0 18px rgba(214, 0, 25, .20);
+}
+
+[data-hx-sg-pain-motion] .hx-sg-pain-oval::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  box-sizing: border-box;
+  pointer-events: none;
+  border: 1px solid var(--hx-core-color);
+  border-radius: inherit;
+  box-shadow: var(--hx-core-shadow);
 }
 
 [data-hx-sg-pain-motion] .hx-sg-pain-oval > :not(.hx-sg-pain-art) {
@@ -335,4 +349,24 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   height: 100%;
   overflow: visible !important;
   pointer-events: none;
+}
+
+.hx-sg-pain-ripples {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0 !important;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.hx-sg-pain-ripple {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #0075d6;
+  border-radius: inherit;
+  box-shadow: 0 0 12px rgba(0, 117, 214, .12);
+  opacity: 0;
+  transform: scale(1);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
 }
