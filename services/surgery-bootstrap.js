@@ -907,14 +907,31 @@
   var LABEL_TEXT = '이미지 수정중';
   var HEADING_PATTERN = /장비/;
 
-  function findEquipmentSection() {
+  /* 장비 카드는 데스크톱·모바일용 섹션이 나뉘어 있어(예: hx-sg-equipment-mobile-visible),
+     제목이 속한 섹션 하나만으로는 일부 카드를 놓친다. 클래스 이름에 "equipment" 가 들어간
+     요소는 모두 같은 그룹으로 보고 합친다. */
+  function findEquipmentSections() {
+    var sections = [];
+
+    function add(node) {
+      if (!node || sections.indexOf(node) !== -1) return;
+      sections.push(node);
+    }
+
     var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     for (var i = 0; i < headings.length; i++) {
       if (HEADING_PATTERN.test(headings[i].textContent || '')) {
-        return headings[i].closest('section') || headings[i].closest('div');
+        add(headings[i].closest('section') || headings[i].closest('div'));
+        break;
       }
     }
-    return null;
+
+    var byClass = document.querySelectorAll('[class*="equipment"]');
+    for (var j = 0; j < byClass.length; j++) {
+      add(byClass[j]);
+    }
+
+    return sections;
   }
 
   function isIconImage(img) {
@@ -940,10 +957,16 @@
   }
 
   function init() {
-    var section = findEquipmentSection();
-    if (!section) return;
+    var sections = findEquipmentSections();
+    if (!sections.length) return;
 
-    var images = Array.prototype.slice.call(section.querySelectorAll('img'));
+    var images = [];
+    sections.forEach(function (section) {
+      Array.prototype.slice.call(section.querySelectorAll('img')).forEach(function (img) {
+        if (images.indexOf(img) === -1) images.push(img);
+      });
+    });
+
     images.filter(function (img) { return !isIconImage(img); }).forEach(stampLabel);
   }
 
