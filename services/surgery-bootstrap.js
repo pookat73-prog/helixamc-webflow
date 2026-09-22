@@ -751,7 +751,7 @@
   var TITLE_FADE_EASING = 'cubic-bezier(.32, 0, .18, 1)';
   var TITLE_PULL_EASING = 'cubic-bezier(.6, 0, .12, 1)';
 
-  function initSafetyCardTitles(cardSelector, titleSelector) {
+  function initSafetyCardTitles(cardSelector, titleSelector, rootMargin) {
     var cards = Array.prototype.slice.call(
       document.querySelectorAll(cardSelector)
     );
@@ -816,7 +816,7 @@
       play();
     }, {
       root: null,
-      rootMargin: '0px 0px -48% 0px',
+      rootMargin: rootMargin || '0px 0px -48% 0px',
       threshold: 0
     });
 
@@ -825,7 +825,13 @@
 
   function initCardTitleGroups() {
     initSafetyCardTitles('.hx-sg-safety-card', '.div-block-322');
-    initSafetyCardTitles('.hx-sg-aftercare-card', '.div-block-332, .div-block-333');
+    /* 예후 관리 카드는 후광(그림자) 관찰자와 같은 rootMargin(-30%) 을 써서, 그림자가
+       나타나기 시작하는 순간과 같은 스크롤 지점에서 제목 인터렉션도 함께 시작되게 한다. */
+    initSafetyCardTitles(
+      '.hx-sg-aftercare-card',
+      '.div-block-332, .div-block-333',
+      '0px 0px -30% 0px'
+    );
   }
 
   if (document.readyState === 'loading') {
