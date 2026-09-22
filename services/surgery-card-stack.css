@@ -536,13 +536,10 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     overflow: clip;
   }
 
-  /* 7 예후 관리: 곡선이 시작하는 corner 배경에서만 메인 블루 후광이 아주 옅게 번진다.
-     외곽선(::after)과 같은 corner를 공유하므로 마스크 없이도 방향이 저절로 맞는다. */
-  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::before {
-    box-shadow: -8px -8px 26px -8px rgba(0, 117, 214, .3);
-  }
-
-  /* 7 예후 관리: 왼쪽 위 곡선 시작점에 메인 블루가 모였다가 중앙 방향으로 빠르게 옅어지는 외곽선. */
+  /* 7 예후 관리: 왼쪽 위 곡선 시작점에 메인 블루가 모였다가 중앙 방향으로 빠르게 옅어지는 외곽선.
+     후광은 이 박스(높이 240px) 안의 radial-gradient 로만 그려서, 섹션 전체(::before)로
+     번지거나 섹션 아래 경계 밖으로 삐져나오지 않는다. 외곽선과 같은 마스크를 쓰므로
+     방향도 저절로 코너 쪽으로 맞는다. */
   .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::after {
     content: '';
     position: absolute;
@@ -556,6 +553,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     border-left: 2px solid #0075d6;
     border-top-left-radius: 240px;
     corner-top-left-shape: superellipse(1.4);
+    background-image: radial-gradient(160px 160px at 0 0, rgba(0, 117, 214, .32), transparent 70%);
     -webkit-mask-image:
       linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
       linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
