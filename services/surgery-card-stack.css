@@ -425,17 +425,17 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 32px 0;
+  padding: 20px 0;
 }
 
 .hx-sg-mini-symbol {
   display: block;
-  height: 40px;
+  height: 22px;
   width: auto;
   filter:
-    drop-shadow(1px 1px 0 rgba(127, 196, 255, .45))
-    drop-shadow(-1px -1px 0 rgba(80, 120, 255, .45))
-    drop-shadow(0 0 16px rgba(0, 117, 214, .55));
+    drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
+    drop-shadow(-0.5px -0.5px 0 rgba(80, 120, 255, .3))
+    drop-shadow(0 0 6px rgba(0, 117, 214, .3));
   animation: hxSgMiniSymbolShimmer 4.5s ease-in-out infinite;
 }
 
@@ -443,16 +443,16 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   0%,
   100% {
     filter:
-      drop-shadow(1px 1px 0 rgba(127, 196, 255, .45))
-      drop-shadow(-1px -1px 0 rgba(80, 120, 255, .45))
-      drop-shadow(0 0 16px rgba(0, 117, 214, .55));
+      drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
+      drop-shadow(-0.5px -0.5px 0 rgba(80, 120, 255, .3))
+      drop-shadow(0 0 6px rgba(0, 117, 214, .3));
   }
 
   50% {
     filter:
-      drop-shadow(-1px 1px 0 rgba(160, 220, 255, .55))
-      drop-shadow(1px -1px 0 rgba(60, 90, 255, .55))
-      drop-shadow(0 0 20px rgba(40, 150, 255, .65));
+      drop-shadow(-0.5px 0.5px 0 rgba(160, 220, 255, .35))
+      drop-shadow(0.5px -0.5px 0 rgba(60, 90, 255, .35))
+      drop-shadow(0 0 8px rgba(40, 150, 255, .38));
   }
 }
 
