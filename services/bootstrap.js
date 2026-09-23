@@ -116,21 +116,25 @@
     FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
-  /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
-     예전: 페이지를 열 때마다 /commits/<branch> 를 불렀다. 이 응답엔 그 커밋에서
-     바뀐 파일의 diff 가 통째로 실려 있어 한 번에 수 KB~수십 KB 다. 우리가 필요한
-     건 40자짜리 SHA 하나뿐인데 그 값 하나 얻자고 매번 그만큼을 받아왔다.
-     지금: SHA 만 들어 있는 /git/ref/heads/<branch>(수백 바이트) 를 쓰고, 받은
-     SHA 를 이 탭 안에서 60초 동안 재사용한다. 방문자가 여러 페이지를 둘러봐도
-     조회는 사실상 1회. 60초라 배포 직후 새로고침 검증에는 지장이 없다. */
+  /* ── 커밋 SHA 조회: 브라우저 간 캐시로 첫 로드 지연을 줄인다 ── */
   var SHA_KEY = 'helix.sha.' + BRANCH;
-  var SHA_TTL = 60000;
+  var SHA_TTL = 600000;
+  var SHA_FALLBACK_MAX = 43200000;
+  var FRESH = /(?:^|[?&])fresh=1(?:&|$)/.test(location.search);
+
+  function readSha(maxAge) {
+    try {
+      var c = JSON.parse(localStorage.getItem(SHA_KEY) || 'null');
+      if (c && c.sha && (Date.now() - c.t) < maxAge) return c.sha;
+    } catch (e) {}
+    return '';
+  }
 
   function resolveSha(done, fail) {
-    try {
-      var c = JSON.parse(sessionStorage.getItem(SHA_KEY) || 'null');
-      if (c && c.sha && (Date.now() - c.t) < SHA_TTL) { done(c.sha); return; }
-    } catch (e) {}
+    if (!FRESH) {
+      var cached = readSha(SHA_TTL);
+      if (cached) { done(cached); return; }
+    }
     var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO +
               '/git/ref/heads/' + BRANCH + '?t=' + Math.floor(Date.now() / 60000);
     fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
@@ -138,10 +142,14 @@
       .then(function (d) {
         var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 10);
         if (!sha) throw new Error('no sha in response');
-        try { sessionStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
+        try { localStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
         done(sha);
       })
-      .catch(fail);
+      .catch(function () {
+        var stale = readSha(SHA_FALLBACK_MAX);
+        if (stale) done(stale);
+        else if (fail) fail();
+      });
   }
 
   /* 대상 브랜치 최신 커밋 SHA 조회 → immutable URL 로 로드. 실패하면 @branch 폴백. */
