@@ -203,6 +203,7 @@
 
 /* 스크롤 후광은 원 바깥 전용 레이어에 그려 원 내부와 겹침부를 비운다. */
 .hx-sg-rings > .hx-sg-ring-lower-halo {
+  display: none;
   position: absolute !important;
   z-index: 1 !important;
   pointer-events: none !important;
@@ -297,6 +298,10 @@
 @media (max-width: 991px) {
   .hx-sg-rings {
     position: relative !important;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-lower-halo {
+    display: block;
   }
 
   /* 세로 스택에서는 리퍼·재수술 원을 더 크게, 최상단 레이어에 둔다. */
