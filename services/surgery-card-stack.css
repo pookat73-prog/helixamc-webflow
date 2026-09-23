@@ -448,9 +448,19 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   will-change: transform, opacity;
 }
 
-/* 통증 관리 미니 섹션: Webflow의 두 줄바꿈만 사용해 세 줄을 유지한다. */
-.hx-sg-daily-comfort-banner .about_history_title_standard-font {
-  white-space: nowrap;
+/* 통증 관리 미니 섹션: 넓은 화면에서는 Webflow 줄바꿈을 유지한다. */
+@media (min-width: 480px) {
+  .hx-sg-daily-comfort-banner .about_history_title_standard-font {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 479px) {
+  .hx-sg-daily-comfort-banner .about_history_title_standard-font br {
+    display: inline-block;
+    width: .25em;
+    height: 0;
+  }
 }
 
 @media (min-width: 992px) {
