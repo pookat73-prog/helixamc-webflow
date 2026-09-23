@@ -776,7 +776,7 @@
   }
 })();
 
-/* 통증 관리 문구: 지정한 세 줄만 유지하고, 좁은 폭에서는 글자 크기만 맞춘다. */
+/* 통증 관리 문구: 넓은 화면에서는 세 줄을 유지하고, 모바일에서는 자연스럽게 접는다. */
 (function () {
   'use strict';
 
@@ -817,6 +817,12 @@
     function fit() {
       frame = null;
       statement.style.removeProperty('font-size');
+      if (window.matchMedia('(max-width: 479px)').matches) {
+        statement.style.removeProperty('white-space');
+        statement.style.removeProperty('word-break');
+        statement.style.removeProperty('overflow-wrap');
+        return;
+      }
       statement.style.whiteSpace = 'nowrap';
 
       var naturalSize = parseFloat(window.getComputedStyle(statement).fontSize);
