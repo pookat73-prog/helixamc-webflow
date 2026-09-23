@@ -348,7 +348,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   box-shadow: var(--hx-core-shadow);
 }
 
-[data-hx-sg-pain-motion] .hx-sg-pain-oval > :not(.hx-sg-pain-art) {
+[data-hx-sg-pain-motion] .hx-sg-pain-oval > :not(.hx-sg-pain-art):not(.hx-sg-pain-field-art) {
   position: relative;
   z-index: 1;
 }
@@ -660,19 +660,53 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 }
 
 
-/* 모바일: 기존 상단 여백 안에서 모션만 원 머리맡으로 올린다. */
+/* 모바일: 블러는 원 뒤에 맞추고, 모션 선은 원 안까지 보여준다. */
 @media (max-width: 767px) {
+  [data-hx-sg-pain-motion] .hx-sg-pain-oval {
+    background: transparent !important;
+  }
+
+  [data-hx-sg-pain-motion] .hx-sg-pain-oval::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: #f4f7fb;
+    pointer-events: none;
+  }
+
+  [data-hx-sg-pain-motion] .hx-sg-pain-oval::before {
+    z-index: 1;
+  }
+
+  [data-hx-sg-pain-motion] .hx-sg-pain-field-art {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
   [data-hx-sg-pain-motion] .hx-sg-pain-art {
     inset: auto auto auto 50%;
     top: -230px;
-    z-index: 2;
+    z-index: 3;
     width: min(86vw, 320px);
     height: auto;
     transform: translateX(-50%);
   }
 
-  [data-hx-sg-pain-motion] .hx-sg-pain-art #hx-sg-pain-field {
-    transform: translateY(510px);
+  [data-hx-sg-pain-motion] .hx-sg-pain-oval > :not(.hx-sg-pain-art):not(.hx-sg-pain-field-art) {
+    z-index: 2;
+  }
+
+  [data-hx-sg-pain-motion] .hx-sg-pain-art #hx-sg-pain-sheet,
+  [data-hx-sg-pain-motion] .hx-sg-pain-art #hx-sg-pain-wave {
+    -webkit-mask: none !important;
+    mask: none !important;
   }
 }
 
