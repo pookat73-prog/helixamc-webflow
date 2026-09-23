@@ -326,9 +326,11 @@
   var centerWave = art.querySelector('#hx-sg-pain-wave');
   var field = art.querySelector('#hx-sg-pain-field');
   var fieldColor = art.querySelector('#hx-sg-pain-field-color');
-  var fieldRadius = { x: field.getAttribute('rx'), y: field.getAttribute('ry') };
+  var mask = art.querySelector('#hx-sg-pain-mask');
+  var maskEllipse = mask.querySelector('ellipse');
+  var maskCircle = mask.querySelector('circle');
   var mobilePainLayers = window.matchMedia('(max-width: 767px)');
-  var fieldArt = null;
+  var motionZone = null;
   var coreStart = art.querySelector('#hx-sg-pain-core-start');
   var coreEnd = art.querySelector('#hx-sg-pain-core-end');
   var lineBlueLeft = art.querySelector('#hx-sg-pain-line-blue-left');
@@ -342,29 +344,38 @@
 
   function syncMobilePainLayers() {
     if (mobilePainLayers.matches) {
-      if (!fieldArt) {
-        fieldArt = document.createElementNS(ns, 'svg');
-        fieldArt.classList.add('hx-sg-pain-field-art');
-        fieldArt.setAttribute('viewBox', '0 0 600 600');
-        fieldArt.setAttribute('aria-hidden', 'true');
-        fieldArt.setAttribute('focusable', 'false');
-        var fieldDefs = document.createElementNS(ns, 'defs');
-        fieldArt.appendChild(fieldDefs);
-        fieldDefs.appendChild(fieldColor.parentNode);
+      if (!motionZone) {
+        motionZone = document.createElement('div');
+        motionZone.className = 'hx-sg-pain-motion-zone';
+        motionZone.setAttribute('aria-hidden', 'true');
+        var symbol = document.createElement('img');
+        var ref = window.HELIX_REF || (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
+        symbol.className = 'hx-sg-pain-symbol';
+        symbol.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + encodeURIComponent('심볼.svg');
+        symbol.alt = '';
+        symbol.draggable = false;
+        motionZone.appendChild(symbol);
       }
-      field.setAttribute('rx', '360');
-      field.setAttribute('ry', '360');
-      fieldArt.appendChild(field);
-      if (!fieldArt.parentNode) oval.insertBefore(fieldArt, art);
+      if (!motionZone.parentNode) section.insertBefore(motionZone, oval);
+      motionZone.prepend(art, rippleLayer);
+      art.setAttribute('viewBox', '0 185 600 527');
+      art.setAttribute('preserveAspectRatio', 'none');
+      maskEllipse.setAttribute('rx', '900');
+      maskEllipse.setAttribute('ry', '900');
+      maskEllipse.setAttribute('fill', 'white');
+      maskCircle.setAttribute('r', '31');
       return;
     }
 
-    if (!fieldArt || !fieldArt.parentNode) return;
-    art.querySelector('defs').appendChild(fieldColor.parentNode);
-    field.setAttribute('rx', fieldRadius.x);
-    field.setAttribute('ry', fieldRadius.y);
-    art.insertBefore(field, sheet);
-    fieldArt.remove();
+    oval.prepend(art);
+    art.after(rippleLayer);
+    art.setAttribute('viewBox', '0 0 600 600');
+    art.removeAttribute('preserveAspectRatio');
+    maskEllipse.setAttribute('rx', '860');
+    maskEllipse.setAttribute('ry', '520');
+    maskEllipse.setAttribute('fill', 'url(#hx-sg-pain-fade)');
+    maskCircle.setAttribute('r', '380');
+    if (motionZone) motionZone.remove();
   }
 
   syncMobilePainLayers();
@@ -433,7 +444,8 @@
   }
 
   function meshSurface(u, clock) {
-    return 1.35 * Math.sin(u / 150 - meshClockAt(clock));
+    return (mobilePainLayers.matches ? 1.42 : 1.35)
+      * Math.sin(u / (mobilePainLayers.matches ? 122 : 150) - meshClockAt(clock));
   }
 
   function rawMeshPoint(u, v, motion) {
@@ -444,10 +456,11 @@
     var yNode = node[1];
     var band = yNode * (1 - active * .075);
     var swell = 1 + .88 * Math.sin(Math.PI * clamp((motion.clock - .08) / 1.25));
-    var amplitude = 52 * motion.rise * swell;
-    var irregularWave = .10 * Math.sin(xNode / 58 + motion.clock * 1.16 + yNode / 175);
+    var amplitude = (mobilePainLayers.matches ? 64 : 52) * motion.rise * swell;
+    var irregularWave = (mobilePainLayers.matches ? .12 : .10)
+      * Math.sin(xNode / (mobilePainLayers.matches ? 50 : 58) + motion.clock * 1.16 + yNode / 175);
     var wave = amplitude * (meshSurface(xNode, motion.clock) + irregularWave);
-    var ripple = motion.rise * (22 + 10 * active)
+    var ripple = motion.rise * ((mobilePainLayers.matches ? 28 : 22) + 10 * active)
       * Math.sin(yNode / 165 + xNode / 230 - motion.clock * 1.25)
       + active * 9 * Math.sin(xNode / 74 + yNode / 108 + motion.clock * .92);
     var x = xNode * (1 + active * .05 * Math.cos(xNode / 210 + motion.clock * .84));
@@ -459,13 +472,26 @@
     ];
   }
 
+  function anchoredSpine(u, motion) {
+    var spine = rawMeshPoint(u, 0, motion);
+    if (!mobilePainLayers.matches) return spine;
+    var local = motion.anchor * Math.exp(-(u * u) / (2 * 190 * 190));
+    return [
+      spine[0] + (300 - motion.center[0]) * local,
+      spine[1] + (300 - motion.center[1]) * local
+    ];
+  }
+
   function point(u, v, motion) {
     var raw = rawMeshPoint(u, v, motion);
-    if (!motion.collapse || v === 0) return raw;
-    var spine = rawMeshPoint(u, 0, motion);
+    if (!mobilePainLayers.matches && (!motion.collapse || v === 0)) return raw;
+    var spine = v === 0 ? raw : rawMeshPoint(u, 0, motion);
+    var local = mobilePainLayers.matches
+      ? motion.anchor * Math.exp(-(u * u) / (2 * 190 * 190))
+      : 0;
     return [
-      raw[0] + (spine[0] - raw[0]) * motion.collapse,
-      raw[1] + (spine[1] - raw[1]) * motion.collapse
+      raw[0] + (spine[0] - raw[0]) * motion.collapse + (mobilePainLayers.matches ? (300 - motion.center[0]) * local : 0),
+      raw[1] + (spine[1] - raw[1]) * motion.collapse + (mobilePainLayers.matches ? (300 - motion.center[1]) * local : 0)
     ];
   }
 
@@ -482,7 +508,7 @@
 
   function impulsePath(progress, strength, motion) {
     var d = '';
-    var front = 380 + 700 * progress;
+    var front = mobilePainLayers.matches ? 900 * progress : 380 + 700 * progress;
     var width = 20 + 26 * progress;
     var amplitude = (108 - 72 * progress) * strength;
     var feather = 14 + 14 * progress;
@@ -492,7 +518,7 @@
       var trough = Math.exp(-(distance * distance) / (2 * width * width));
       var edge = clamp((distance + feather) / (2 * feather));
       var ahead = progress >= 1 ? 0 : edge * edge * (3 - 2 * edge);
-      var spine = rawMeshPoint(u, 0, motion);
+      var spine = anchoredSpine(u, motion);
       var x = 300 + u + (spine[0] - (300 + u)) * ahead;
       var y = 300 + (spine[1] - 300) * ahead + amplitude * trough;
       d += (i ? 'L' : 'M') + x.toFixed(2) + ',' + y.toFixed(2) + ' ';
@@ -504,14 +530,18 @@
     var d = '';
     for (var i = 0; i <= 128; i += 1) {
       var u = -900 + i / 128 * 1800;
-      var distance = Math.abs(u) - 360;
-      var nearCore = Math.exp(-(distance * distance) / (2 * 105 * 105));
-      var movingSpine = rawMeshPoint(u, 0, motion);
-      var lockedSpine = rawMeshPoint(u, 0, lockedMotion);
+      var distance = mobilePainLayers.matches ? u : Math.abs(u) - 360;
+      var radius = mobilePainLayers.matches ? 125 : 105;
+      var nearCore = Math.exp(-(distance * distance) / (2 * radius * radius));
+      var movingSpine = anchoredSpine(u, motion);
+      var lockedSpine = anchoredSpine(u, lockedMotion);
       var localLock = nearCore * lockStrength;
       var x = movingSpine[0] + (lockedSpine[0] - movingSpine[0]) * localLock;
       var baseY = movingSpine[1] + (lockedSpine[1] - movingSpine[1]) * localLock;
-      var y = baseY - 30 * strength * nearCore;
+      var lift = mobilePainLayers.matches
+        ? 90 * (1 - Math.exp(-(u * u) / (2 * 42 * 42)))
+        : 30;
+      var y = baseY - lift * strength * nearCore;
       d += (i ? 'L' : 'M') + x.toFixed(2) + ',' + y.toFixed(2) + ' ';
     }
     return d;
@@ -532,8 +562,14 @@
     var impulseStrength = span(elapsed, 4250, 4300) * (1 - span(elapsed, 5200, 5250));
     var anticipation = impactStarted ? 0 : span(elapsed, 3400, 3800);
     var clock = elapsed / 1000;
-    var motion = { rise: rise, twist: twist, collapse: collapse, calm: calm, clock: clock };
-    var lockedMotion = { rise: rise, twist: twist, collapse: collapse, calm: calm, clock: Math.min(clock, 3.8) };
+    var mobile = mobilePainLayers.matches;
+    var anchor = mobile ? span(elapsed, 650, 1650) : 0;
+    var motion = { rise: rise, twist: twist, collapse: collapse, calm: calm, anchor: anchor, clock: clock };
+    var lockedMotion = { rise: rise, twist: twist, collapse: collapse, calm: calm, anchor: anchor, clock: Math.min(clock, 3.8) };
+    if (mobile) {
+      motion.center = rawMeshPoint(0, 0, motion);
+      lockedMotion.center = rawMeshPoint(0, 0, lockedMotion);
+    }
     var anticipationLock = span(elapsed, 3800, 3880);
     var idlePulseClock = -1;
     if (finishedAt && elapsed >= duration) {
@@ -545,7 +581,7 @@
     var activeImpulseStrength = idlePulseActive ? idleImpulseStrength : impulseStrength;
     var coreColor = impactStarted ? '#0075d6' : '#d60019';
     var lineDone = change >= 1;
-    var blueEdge = Math.min(.5, (380 + 700 * change) / 1800);
+    var blueEdge = mobile ? .5 * change : Math.min(.5, (380 + 700 * change) / 1800);
     var leftFront = .5 - blueEdge;
     var rightFront = .5 + blueEdge;
 
@@ -583,10 +619,14 @@
     centerWave.setAttribute('opacity', waveVisible * .75);
 
     var rippleClock = elapsed;
-    var rippleSpecs = [[4250, 760, .15, .27], [4350, 900, .23, .18]];
+    var rippleSpecs = mobile
+      ? [[4250, 760, 2.4, .27], [4350, 900, 3.2, .18]]
+      : [[4250, 760, .15, .27], [4350, 900, .23, .18]];
     if (finishedAt && elapsed >= duration) {
       rippleClock = idlePulseClock;
-      rippleSpecs = [[0, 760, .12, .15], [110, 900, .19, .09]];
+      rippleSpecs = mobile
+        ? [[0, 760, 2.4, .15], [110, 900, 3.2, .09]]
+        : [[0, 760, .12, .15], [110, 900, .19, .09]];
     }
     rippleSpecs.forEach(function (spec, index) {
       var progress = clamp((rippleClock - spec[0]) / spec[1]);
@@ -649,7 +689,7 @@
       rootMargin: '0px 0px -25% 0px',
       threshold: 0
     });
-    observer.observe(oval);
+    observer.observe(mobilePainLayers.matches ? motionZone : oval);
   }
 
   reduced.addEventListener('change', function () {
