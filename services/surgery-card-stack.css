@@ -264,6 +264,19 @@
   mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
 }
 
+/* 모바일 세로 스택: 위·아래 원의 만나는 면에서 안쪽 외곽선이 겹치지 않게 한다. */
+@media (max-width: 991px) {
+  .hx-sg-ring-draw-inner-bottom .hx-sg-ring-draw {
+    -webkit-mask-image: radial-gradient(ellipse 40% 24% at 50% 100%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+    mask-image: radial-gradient(ellipse 40% 24% at 50% 100%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  }
+
+  .hx-sg-ring-draw-inner-top .hx-sg-ring-draw {
+    -webkit-mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+    mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  }
+}
+
 .hx-sg-ring-draw-path {
   vector-effect: non-scaling-stroke;
 }
