@@ -34,27 +34,6 @@
   var REPO   = 'helixamc-webflow';
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
-  /* 첫 화면 외부 코드가 준비되기 전 Webflow 기본 Hero가 먼저 보이는 것을
-     막는다. 본체 bootstrap.js의 가드보다 먼저 실행되며, section1.js가
-     같은 ID의 style을 제거한 뒤 기존 페이드인을 이어 간다. */
-  (function injectEarlyHeroGuard() {
-    if (document.getElementById('helix-home-prepaint')) return;
-    var style = document.createElement('style');
-    style.id = 'helix-home-prepaint';
-    style.textContent =
-      'html,body{background:#0d1117!important}' +
-      '.div-block-202{clip-path:inset(100%)!important;-webkit-clip-path:inset(100%)!important}';
-    (document.head || document.documentElement).appendChild(style);
-    /* 외부 자산을 받을 수 없는 경우에도 첫 화면이 계속 가려지지 않게 한다. */
-    setTimeout(function () {
-      var guard = document.getElementById('helix-home-prepaint');
-      if (guard && guard.parentNode) {
-        guard.parentNode.removeChild(guard);
-        console.warn('[helix-bootstrap] hero prepaint guard timed out');
-      }
-    }, 3000);
-  })();
-
   function load(src) {
     var s = document.createElement('script');
     s.src   = src;
