@@ -896,7 +896,6 @@
 
   function mountQuickbar() {
     if (!heroReady) return;
-    if (document.getElementById('hx-branch-quickbar')) return;
     var stylesheet = document.querySelector('link[href*="home/global/coming-soon.css"]');
     if (stylesheet && !stylesheet.sheet) {
       stylesheet.addEventListener('load', mountQuickbar, { once: true });
@@ -904,6 +903,7 @@
     }
     var hero = document.querySelector('.blackframe_image-hero');
     var specialty = document.querySelector('.home_background_2');
+    if (document.getElementById('hx-branch-quickbar')) return;
     if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
 
     var bar = document.createElement('section');
