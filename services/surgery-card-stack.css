@@ -221,10 +221,10 @@
   inset: -42px;
   border-radius: 50%;
   background: radial-gradient(circle closest-side at center,
-    transparent calc(100% - 42px),
-    rgba(0, 117, 214, .06) calc(100% - 32px),
-    rgba(0, 117, 214, .48) calc(100% - 18px),
-    rgba(0, 117, 214, .16) calc(100% - 8px),
+    transparent calc(100% - 86px),
+    rgba(0, 117, 214, .06) calc(100% - 65px),
+    rgba(0, 117, 214, .48) calc(100% - 42px),
+    rgba(0, 117, 214, .16) calc(100% - 23px),
     transparent 100%);
 }
 
@@ -300,6 +300,11 @@
     position: relative !important;
   }
 
+  /* 가로 배치용 가림막이 세로 배치의 위쪽 원을 덮지 않게 한다. */
+  .hx-sg-ring-overlap-shield {
+    display: none !important;
+  }
+
   .hx-sg-rings > .hx-sg-ring-lower-halo {
     display: block;
   }
@@ -309,12 +314,16 @@
     z-index: 2 !important;
     width: min(340px, calc(100vw - 60px)) !important;
     height: min(340px, calc(100vw - 60px)) !important;
+    -webkit-mask-image: radial-gradient(ellipse 40% 15% at 50% 100%, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
+    mask-image: radial-gradient(ellipse 40% 15% at 50% 100%, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
   }
 
   .hx-sg-rings > .hx-sg-ring-large {
     z-index: 3 !important;
     width: min(510px, calc(100vw + 120px)) !important;
     height: min(510px, calc(100vw + 120px)) !important;
+    -webkit-mask-image: radial-gradient(ellipse 40% 15% at 50% 0, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
+    mask-image: radial-gradient(ellipse 40% 15% at 50% 0, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
   }
 
   .hx-sg-rings > .hx-sg-ring-small .hx-sg-ring-note-label {
