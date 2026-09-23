@@ -6,7 +6,7 @@
 
    전화 상담은 기존 cta_call / floating_cta 집계에 편입한다. 공통 측정은
    화면 기능보다 먼저 연결하고, 운영자 제외와 스테이징 도메인 게이트는
-   다른 페이지와 동일하게 유지한다. 별도의 외과 전용 이벤트는 추가하지 않는다.
+   다른 페이지와 동일하게 유지한다. 본문 하단 지점 선택만 외과 전용으로 잰다.
    ================================================================ */
 
 (function () {
@@ -32,6 +32,9 @@
     'global/session.js',
     'global/ga-inspector.js',
     'global/sheet-log.js',
+    'global/scroll-depth.js',
+    'global/page-time.js',
+    'global/section-reach.js',
     'global/accessibility.js',
     'global/global.css',
     'services/surgery-card-stack.css',
@@ -1165,6 +1168,54 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+
+/* 외과 본문 하단의 지점 선택. 플로팅 상담 CTA는 기존 공통 모듈이 잰다. */
+(function () {
+  'use strict';
+
+  if (window.__helixSurgeryBranchMeasureInit) return;
+  window.__helixSurgeryBranchMeasureInit = true;
+  if (/\.webflow\.io$/i.test(location.hostname)) return;
+
+  function device() {
+    return window.HelixVP ? HelixVP.device() :
+      (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+  }
+
+  function init() {
+    document.addEventListener('click', function (event) {
+      if (window.__helixNoMeasure) return;
+      var link = event.target && event.target.closest &&
+        event.target.closest('.hx-sg-page a.cta_seocho_button-call-link, .hx-sg-page a.link-block');
+      if (!link) return;
+
+      var href = link.getAttribute('href') || '';
+      var branch = /^\/seocho(?:[/?#]|$)/i.test(href) ? 'seocho' :
+        /^\/ilsan(?:[/?#]|$)/i.test(href) ? 'ilsan' :
+        /svicc\.co\.kr(?:[/?#]|$)/i.test(href) ? 'svicc' : '';
+      if (!branch) return;
+
+      var params = {
+        item_type: 'branch_click',
+        page: 'surgery',
+        device: device(),
+        cta_src: 'surgery_outro',
+        branch_key: branch,
+        value: branch,
+        transport_type: 'beacon'
+      };
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'surgery_branch_click_' + params.device, params);
+      }
+    }, true);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }

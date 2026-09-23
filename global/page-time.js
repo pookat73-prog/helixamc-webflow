@@ -53,6 +53,7 @@
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';
     /* 특화진료 페이지 — 이 분기가 없으면 방문·스크롤·체류가 전부 home 으로
