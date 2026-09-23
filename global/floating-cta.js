@@ -550,9 +550,36 @@
         "floating_cta / (not set)" 이 165세션(5.9%) 이나 잡혀 실제 채널
         비중이 왜곡됐다. 그래서 지금은 cta_src 라는 이름을 쓴다.
         (자세한 설명은 global/session.js 머리말) */
+  /* 전화 추적과 동일한 세션 UTM 을 상담 측정에서도 사용 */
+  function getAttributionUtm() {
+    if (typeof window.__helixReadFloatingCtaUtm === 'function') {
+      return window.__helixReadFloatingCtaUtm();
+    }
+    var result = { utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '' };
+    var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+    try {
+      keys.forEach(function (key) {
+        result[key] = sessionStorage.getItem('helix_' + key) || '';
+      });
+    } catch (e) {}
+    if (!result.utm_source) {
+      try {
+        var query = new URLSearchParams(location.search);
+        keys.forEach(function (key) { result[key] = query.get(key) || ''; });
+      } catch (e) {}
+    }
+    return result;
+  }
+
   function ga(eventName, params) {
     if (typeof window.gtag === 'function') {
       var p = params || {};
+      var attribution = getAttributionUtm();
+      /* GA4 유입 채널 값을 덮어쓰지 않도록 CTA 전용 파라미터명을 사용 */
+      p.cta_utm_source = attribution.utm_source;
+      p.cta_utm_medium = attribution.utm_medium;
+      p.cta_utm_campaign = attribution.utm_campaign;
+      p.cta_utm_content = attribution.utm_content;
       p.page = CTA_PAGE;
       /* 기기 구분 — 다른 측정 이벤트는 전부 device 를 싣는데 상담 CTA 만
          빠져 있어, "휴대폰에서 연 상담과 PC 에서 연 상담" 을 가를 수가
@@ -674,7 +701,7 @@
         inquiryText = (symptom ? symptom + '\n' : '') + '(' + extras.join(' / ') + ')';
       }
 
-      var qp = new URLSearchParams(location.search);
+      var attributionUtm = getAttributionUtm();
 
       var lead = {
         /* 기존 칸 — 대시보드가 지금 읽고 있는 것 */
@@ -686,10 +713,10 @@
         inquiry:      inquiryText,
         submittedAt:  new Date().toISOString(),
         userAgent:    navigator.userAgent,
-        utm_source:   qp.get('utm_source')   || '',
-        utm_medium:   qp.get('utm_medium')   || '',
-        utm_campaign: qp.get('utm_campaign') || '',
-        utm_content:  qp.get('utm_content')  || '',
+        utm_source:   attributionUtm.utm_source,
+        utm_medium:   attributionUtm.utm_medium,
+        utm_campaign: attributionUtm.utm_campaign,
+        utm_content:  attributionUtm.utm_content,
         media:        '홈페이지',
         /* 어느 페이지에서 넣은 신청인가 — 일산 페이지 상담도 접수는 서초
            칸으로 일원화해 받기로 했다(사용자 확정). 그래서 지점 구분은
@@ -861,6 +888,8 @@
 
   /* 페이지 진입 즉시 UTM 저장 */
   saveUtmFromUrl();
+  /* 상담 열기/제출 측정에서도 전화와 동일한 UTM 을 읽도록 공유 */
+  window.__helixReadFloatingCtaUtm = readUtm;
 
   /* 전화 버튼 클릭 감지 (이벤트 위임 + capture phase)
      - hxFctaCallBtn이 DOM에 늦게 추가되어도 감지 가능
