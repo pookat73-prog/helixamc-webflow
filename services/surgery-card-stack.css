@@ -1,31 +1,79 @@
 /* ================================================================
    HELIX AMC — 외과 안전 시스템 카드
-
-   Webflow Designer에서는 카드 내용을 항상 펼쳐 둔다.
-   이 외부 CSS가 로드되는 공개 페이지의 넓은 화면에서는 카드 높이를
-   내용에 맞추고, 카드 사이 간격과 그림자를 일정하게 유지한다.
+   카드의 바탕·모서리·여백은 Webflow 기본 스타일에서 관리한다.
+   이 파일은 공개 페이지의 겹침과 카드 하단 페이드만 담당한다.
    ================================================================ */
 
-@media (min-width: 1200px) {
-  .hx-sg-safety-cards {
-    gap: 20px !important;
-    overflow: visible;
-  }
+.hx-sg-safety-cards {
+  gap: 0 !important;
+  isolation: isolate;
+  overflow: visible;
+}
 
+.hx-sg-safety-card {
+  --hx-sg-safety-layer: 1;
+  --hx-sg-safety-fade: 84px;
+  position: relative;
+  z-index: var(--hx-sg-safety-layer);
+  box-sizing: border-box;
+  height: auto !important;
+  min-height: 0 !important;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0,
+    #000 calc(100% - var(--hx-sg-safety-fade)),
+    rgba(0, 0, 0, .95) calc(100% - 58px),
+    rgba(0, 0, 0, .78) calc(100% - 34px),
+    rgba(0, 0, 0, .48) 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0,
+    #000 calc(100% - var(--hx-sg-safety-fade)),
+    rgba(0, 0, 0, .95) calc(100% - 58px),
+    rgba(0, 0, 0, .78) calc(100% - 34px),
+    rgba(0, 0, 0, .48) 100%
+  );
+  transform: none;
+  transition: none;
+  will-change: auto;
+}
+
+.hx-sg-safety-card + .hx-sg-safety-card {
+  margin-top: -30px;
+}
+
+.hx-sg-safety-card:nth-child(2) { --hx-sg-safety-layer: 2; }
+.hx-sg-safety-card:nth-child(3) { --hx-sg-safety-layer: 3; }
+.hx-sg-safety-card:nth-child(4) { --hx-sg-safety-layer: 4; }
+
+.hx-sg-safety-card:last-child {
+  -webkit-mask-image: none;
+  mask-image: none;
+  padding-bottom: 30px !important;
+}
+
+.hx-sg-safety-card:hover,
+.hx-sg-safety-card:focus-within {
+  z-index: var(--hx-sg-safety-layer);
+  transform: none;
+}
+
+@media (max-width: 767px) {
   .hx-sg-safety-card {
-    position: relative;
-    box-sizing: border-box;
-    height: auto !important;
-    min-height: 0 !important;
-    padding-bottom: 30px !important;
-    background-color: #f4f7fb !important;
-    background-image: none !important;
-    transform: none;
-    box-shadow: 0 2px 10px rgba(17, 32, 44, .05);
-    transition: none;
-    will-change: auto;
+    --hx-sg-safety-fade: 70px;
   }
 
+  .hx-sg-safety-card + .hx-sg-safety-card {
+    margin-top: -24px;
+  }
+
+  .hx-sg-safety-card:last-child {
+    padding-bottom: 28px !important;
+  }
+}
+
+@media (min-width: 1200px) {
   .hx-sg-principle-card,
   .hx-sg-aftercare-card {
     position: relative;
@@ -57,15 +105,6 @@
       ) top left / 3px 78% no-repeat;
   }
 
-  .hx-sg-safety-card + .hx-sg-safety-card {
-    margin-top: 0;
-  }
-
-  .hx-sg-safety-card:hover,
-  .hx-sg-safety-card:focus-within {
-    transform: none;
-    box-shadow: 0 2px 10px rgba(17, 32, 44, .05);
-  }
 }
 
 /* 진료과 상세 아웃트로: 별도 지정이 없으면 병원명과 분과명 모두 일반 굵기를 유지한다. */
