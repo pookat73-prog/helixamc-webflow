@@ -925,25 +925,23 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   object-fit: cover;
 }
 
-
 /* 모바일 수술 철학: 카드 껍질과 사진 레이어를 걷어내고 내용만 여백으로 구분한다. */
 @media (max-width: 767px) {
-  .hx-sg-principles .hx-sg-principles-visual,
-  .hx-sg-principles .div-block-348.hx-sg-principle-photo-single {
+  #hx-sg-principles .div-block-348 {
     display: none !important;
     background-image: none !important;
   }
 
-  .hx-sg-principles .hx-sg-principles-cards {
+  #hx-sg-principles .hx-sg-principles-cards {
     row-gap: 48px !important;
   }
 
-  .hx-sg-principles .hx-sg-principle-card + .hx-sg-principle-card {
+  #hx-sg-principles .hx-sg-principle-card + .hx-sg-principle-card {
     margin-top: 0 !important;
   }
 
-  .hx-sg-principles .hx-sg-principle-card,
-  .hx-sg-principles .hx-sg-principle-card.hx-sg-principle-shadow-visible {
+  #hx-sg-principles .hx-sg-principle-card,
+  #hx-sg-principles .hx-sg-principle-card.hx-sg-principle-shadow-visible {
     padding: 0 8px !important;
     background: transparent !important;
     border: 0 !important;
@@ -952,8 +950,8 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     box-shadow: none !important;
   }
 
-  .hx-sg-principles .hx-sg-principle-card::before,
-  .hx-sg-principles .div-block-328 {
+  #hx-sg-principles .hx-sg-principle-card::before,
+  #hx-sg-principles .div-block-328 {
     display: none !important;
     content: none !important;
   }
