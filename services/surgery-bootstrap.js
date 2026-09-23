@@ -183,25 +183,81 @@
       .filter(isVisible);
     if (rings.length < 2) return;
 
-    /* 레이아웃의 DOM 순서가 바뀌어도 화면상 왼쪽·오른쪽 기준을 유지한다. */
+    /* 데스크톱은 좌우, 모바일 세로 스택은 위아래 순으로 고른다. */
     rings.sort(function (a, b) {
-      return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+      var rectA = a.getBoundingClientRect();
+      var rectB = b.getBoundingClientRect();
+      var horizontal = Math.abs(rectB.left - rectA.left) >=
+        Math.abs(rectB.top - rectA.top);
+      return horizontal ? rectA.left - rectB.left : rectA.top - rectB.top;
     });
 
-    var leftRing = rings[0];
-    var rightRing = rings[1];
+    var firstRing = rings[0];
+    var secondRing = rings[1];
 
     /* dash 전개 방향과 맞춰, 화면 바깥쪽 점에서 위·아래 호가 드러나게 한다. */
-    createOutline(leftRing, true);
-    createOutline(rightRing, false);
-    /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
-    leftRing.classList.add('hx-sg-ring-draw-inner-right');
-    rightRing.classList.add('hx-sg-ring-draw-inner-left');
-    rightRing.classList.add(GLOW_CLASS);
-    createOverlapShield(leftRing, rightRing);
+    createOutline(firstRing, true);
+    createOutline(secondRing, false);
+    var directionClasses = [
+      'hx-sg-ring-draw-inner-right',
+      'hx-sg-ring-draw-inner-left',
+      'hx-sg-ring-draw-inner-bottom',
+      'hx-sg-ring-draw-inner-top'
+    ];
+
+    function updateOverlapDirection() {
+      var firstBounds = firstRing.getBoundingClientRect();
+      var secondBounds = secondRing.getBoundingClientRect();
+      var horizontal = Math.abs(secondBounds.left - firstBounds.left) >=
+        Math.abs(secondBounds.top - firstBounds.top);
+      directionClasses.forEach(function (className) {
+        firstRing.classList.remove(className);
+        secondRing.classList.remove(className);
+      });
+      firstRing.classList.add(horizontal ? directionClasses[0] : directionClasses[2]);
+      secondRing.classList.add(horizontal ? directionClasses[1] : directionClasses[3]);
+    }
+
+    updateOverlapDirection();
+    window.addEventListener('resize', updateOverlapDirection, { passive: true });
+    secondRing.classList.add(GLOW_CLASS);
+    createOverlapShield(firstRing, secondRing);
+
+    var mobileStack = window.matchMedia('(max-width: 991px)');
+    var halo = null;
+
+    function positionLowerHalo() {
+      if (!halo || !mobileStack.matches) return;
+      var parentBounds = firstRing.closest('.hx-sg-rings').getBoundingClientRect();
+      var lowerBounds = secondRing.getBoundingClientRect();
+      halo.style.left = (lowerBounds.left - parentBounds.left) + 'px';
+      halo.style.top = (lowerBounds.top - parentBounds.top) + 'px';
+      halo.style.width = lowerBounds.width + 'px';
+      halo.style.height = lowerBounds.height + 'px';
+    }
+
+    function ensureLowerHalo() {
+      if (!mobileStack.matches) return;
+      if (!halo) {
+        halo = document.createElement('span');
+        halo.className = 'hx-sg-ring-lower-halo';
+        halo.setAttribute('aria-hidden', 'true');
+        secondRing.parentElement.insertBefore(halo, secondRing);
+      }
+      positionLowerHalo();
+    }
+
+    ensureLowerHalo();
+    window.addEventListener('resize', positionLowerHalo, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(positionLowerHalo).observe(secondRing);
 
     function revealGlow() {
-      rightRing.classList.add(GLOW_VISIBLE_CLASS);
+      if (mobileStack.matches) {
+        ensureLowerHalo();
+        halo.classList.add('is-active');
+      } else {
+        secondRing.classList.add(GLOW_VISIBLE_CLASS);
+      }
     }
 
     if (reduceMotion) {
@@ -220,11 +276,11 @@
       revealGlow();
     }, {
       root: null,
-      rootMargin: '0px 0px -32% 0px',
+      rootMargin: '0px 0px -22% 0px',
       threshold: .2
     });
 
-    observer.observe(leftRing.closest('.hx-sg-rings'));
+    observer.observe(firstRing.closest('.hx-sg-rings'));
   }
 
   if (document.readyState === 'loading') {
