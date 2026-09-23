@@ -76,6 +76,45 @@
   .blackframe_image-hero[data-hx-home-viewport] .home_slogan { font-size: clamp(24px, 6vh, 33.6px); line-height: 1.3; }
 }
 
+/* HOME HERO MILESTONES — supporting evidence inside the existing text block. */
+#hx-hero-milestones,
+#hx-hero-milestones * { box-sizing: border-box; }
+#hx-hero-milestones {
+  width: clamp(190px, 18vw, 300px);
+  margin: 18px 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+  list-style: none;
+  color: rgba(244,247,251,.68);
+}
+#hx-hero-milestones li {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  column-gap: 9px;
+  align-items: baseline;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+}
+#hx-hero-milestones time {
+  color: rgba(154,171,187,.82);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+#hx-hero-milestones span { min-width: 0; }
+@media (max-width: 767px) {
+  #hx-hero-milestones {
+    width: min(260px, 70vw);
+    margin: 14px 0 18px;
+    gap: 6px;
+  }
+  #hx-hero-milestones li { grid-template-columns: 36px minmax(0, 1fr); column-gap: 8px; font-size: 10px; }
+  #hx-hero-milestones time { font-size: 9px; }
+}
+
 /* HOME BRANCH QUICK ACCESS — approved desktop / mobile v12.
    Equal height and negative margin add no extra document height.
    The surface masks the existing line only inside the bar. */
