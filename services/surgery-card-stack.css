@@ -574,6 +574,103 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 }
 
 
+/* 모바일 통증 관리: 모션은 미니 심볼을 중심으로 원 밖에서만 움직인다. */
+@media (max-width: 767px) {
+  [data-hx-sg-pain-motion] {
+    gap: 0;
+  }
+
+  .hx-sg-pain-motion-zone {
+    position: relative;
+    z-index: 0;
+    width: 100vw;
+    height: 96px;
+    flex: none;
+    overflow: visible;
+    clip-path: inset(-18px 0 -124px 0);
+  }
+
+  .hx-sg-pain-motion-zone > .hx-sg-pain-art {
+    position: absolute !important;
+    inset: 0 auto auto 0;
+    z-index: 0;
+    width: 100%;
+    height: 220px;
+    overflow: hidden !important;
+  }
+
+  .hx-sg-pain-motion-zone > .hx-sg-pain-ripples {
+    display: block;
+    position: absolute !important;
+    inset: 48px auto auto 50%;
+    z-index: 1 !important;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+
+  .hx-sg-pain-motion-zone .hx-sg-pain-ripple {
+    border-radius: 50%;
+  }
+
+  .hx-sg-pain-motion-zone #hx-sg-pain-field {
+    display: none;
+  }
+
+  .hx-sg-pain-symbol {
+    position: absolute;
+    top: 48px;
+    left: 50%;
+    z-index: 2;
+    width: 12px;
+    height: 19.4px;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  [data-hx-sg-pain-motion] .hx-sg-pain-oval {
+    left: auto;
+    transform: none;
+    z-index: 1;
+    width: 335px;
+    height: 335px;
+    flex: none;
+    margin: 0 auto;
+    padding: 45px 27px 30px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #f4f7fb !important;
+  }
+
+  [data-hx-sg-pain-motion] .hx-sg-pain-oval::before {
+    border: 1px solid #0075d6;
+    box-shadow: 0 0 23px rgba(0, 117, 214, .10);
+  }
+
+  .hx-sg-pain-oval > .div-block-331 {
+    width: 100%;
+    order: 0;
+    text-align: center;
+  }
+
+  .hx-sg-pain-oval > .hx-sg-pain-rule {
+    width: 100%;
+    order: 1;
+    margin: 12px 0 18px;
+  }
+
+  .hx-sg-pain-oval > .hx-sg-readable-body {
+    width: 100%;
+    order: 2;
+    display: block;
+    font-size: 12px;
+    line-height: 1.85;
+    text-align: center;
+  }
+}
+
 /* Keep the surgery outro image fitted to its fixed-height frame on live pages. */
 .hx-sg-closing-image .image-36 {
   width: 100%;
