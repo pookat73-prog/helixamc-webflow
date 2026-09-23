@@ -770,6 +770,12 @@
     slogan.insertAdjacentElement('afterend', milestones);
   }
 
+  function revealHeroWhenReady() {
+    if (!document.getElementById('hx-hero-milestones') ||
+        !document.getElementById('hx-branch-quickbar')) return;
+    document.documentElement.classList.add('hx-home-ready');
+  }
+
   function mountQuickbar() {
     if (!heroReady) return;
     var stylesheet = document.querySelector('link[href*="home/global/coming-soon.css"]');
@@ -820,6 +826,7 @@
     updateHeaderClip();
     window.addEventListener('scroll', scheduleHeaderClip, { passive: true });
     window.addEventListener('resize', scheduleHeaderClip);
+    revealHeroWhenReady();
   }
 
   /* Wait for the Hero's existing font measurement / detach sequence. Adding
@@ -828,6 +835,7 @@
     heroReady = true;
     mountHeroMilestones();
     mountQuickbar();
+    revealHeroWhenReady();
   }
   window.addEventListener('helix-s1-done', afterHero, { once: true });
   if (document.querySelector('.bt-box-1.is-looping') && !document.querySelector('[data-s1-ghost]')) {
