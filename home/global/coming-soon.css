@@ -81,7 +81,7 @@
 #hx-hero-milestones * { box-sizing: border-box; }
 #hx-hero-milestones {
   width: clamp(190px, 18vw, 300px);
-  margin: 10px 0 14px;
+  margin: 10px 0 -14px;
   padding: 0;
   display: grid;
   gap: 8px;
@@ -113,7 +113,7 @@
 @media (max-width: 767px) {
   #hx-hero-milestones {
     width: min(260px, 70vw);
-    margin: 10px 0 12px;
+    margin: 10px 0 2px;
     gap: 7px;
   }
   #hx-hero-milestones li { grid-template-columns: 38px minmax(0, 1fr); column-gap: 9px; font-size: 11px; line-height: 1.32; }
