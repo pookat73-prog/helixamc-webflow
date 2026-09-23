@@ -760,3 +760,120 @@
   } // end run()
 
 })();
+
+/* ================================================================
+   HELIX AMC - 플로팅 CTA 전화 클릭 추적
+   기존 플로팅 CTA 코드와 독립적으로 동작
+   ================================================================ */
+(function () {
+  'use strict';
+
+  if (window.__helixPhoneTrackingInit) return;
+  window.__helixPhoneTrackingInit = true;
+
+  var PHONE_CLICKS_URL = 'https://helixamc-pm-default-rtdb.firebaseio.com/branches/seocho/phone_clicks.json';
+
+  var UTM_MEDIA_MAP = {
+    meta:   '메타',
+    google: '구글',
+    daangn: '당근',
+    kakao:  '카카오',
+    tiktok: '틱톡',
+    naver:  '네이버'
+  };
+
+  var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+
+  /* ── 페이지 진입 시 UTM sessionStorage 저장 ──
+     URL에 UTM 파라미터가 하나라도 있으면 새 유입으로 간주하고 4종 모두 갱신.
+     사용자가 사이트 내에서 페이지 이동해도 sessionStorage에 유지되어
+     이후 전화 클릭 시점에도 최초 유입 매체를 정확히 기록할 수 있음. */
+  function saveUtmFromUrl() {
+    try {
+      var qp = new URLSearchParams(location.search);
+      var hasUtm = UTM_KEYS.some(function (k) { return qp.get(k); });
+      if (!hasUtm) return;
+      UTM_KEYS.forEach(function (k) {
+        sessionStorage.setItem('helix_' + k, qp.get(k) || '');
+      });
+    } catch (e) {
+      /* sessionStorage 접근 불가 (프라이빗 모드 등) — 조용히 무시 */
+    }
+  }
+
+  function readUtm() {
+    var result = { utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '' };
+    try {
+      UTM_KEYS.forEach(function (k) {
+        result[k] = sessionStorage.getItem('helix_' + k) || '';
+      });
+    } catch (e) {}
+    /* sessionStorage에 없으면 현재 URL에서 재시도 */
+    if (!result.utm_source) {
+      try {
+        var qp = new URLSearchParams(location.search);
+        UTM_KEYS.forEach(function (k) {
+          result[k] = qp.get(k) || '';
+        });
+      } catch (e) {}
+    }
+    return result;
+  }
+
+  function mapMedia(utmSource) {
+    if (!utmSource) return '홈페이지';
+    return UTM_MEDIA_MAP[utmSource.toLowerCase()] || '홈페이지';
+  }
+
+  function trackPhoneClick() {
+    var utm = readUtm();
+    var payload = {
+      clickedAt:    new Date().toISOString(),
+      media:        mapMedia(utm.utm_source),
+      utm_source:   utm.utm_source,
+      utm_medium:   utm.utm_medium,
+      utm_campaign: utm.utm_campaign,
+      utm_content:  utm.utm_content,
+      userAgent:    navigator.userAgent,
+      page:         location.pathname,
+      referrer:     document.referrer || ''
+    };
+
+    try {
+      fetch(PHONE_CLICKS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true  /* tel: 링크 전환 중에도 전송 완료 보장 */
+      }).catch(function (err) {
+        console.error('[phone-tracking] send error:', err);
+      });
+    } catch (err) {
+      console.error('[phone-tracking] build error:', err);
+    }
+  }
+
+  /* 페이지 진입 즉시 UTM 저장 */
+  saveUtmFromUrl();
+
+  /* 전화 버튼 클릭 감지 (이벤트 위임 + capture phase)
+     - hxFctaCallBtn이 DOM에 늦게 추가되어도 감지 가능
+     - capture phase로 기존 리스너보다 먼저 실행되어 tel: 링크 이탈 전에 전송 시작
+     - preventDefault를 하지 않으므로 전화 연결 동작은 그대로 유지 */
+  document.addEventListener('click', function (e) {
+    var target = e.target;
+    if (!target) return;
+    var callBtn = null;
+    if (target.closest) {
+      callBtn = target.closest('#hxFctaCallBtn');
+    } else {
+      var el = target;
+      while (el && el !== document.body) {
+        if (el.id === 'hxFctaCallBtn') { callBtn = el; break; }
+        el = el.parentElement;
+      }
+    }
+    if (callBtn) trackPhoneClick();
+  }, true);
+
+})();
