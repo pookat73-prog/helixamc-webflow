@@ -220,8 +220,43 @@
     secondRing.classList.add(GLOW_CLASS);
     createOverlapShield(firstRing, secondRing);
 
+    var mobileStack = window.matchMedia('(max-width: 991px)');
+    var halo = null;
+
+    function positionLowerHalo() {
+      if (!halo || !mobileStack.matches) return;
+      var parentBounds = firstRing.closest('.hx-sg-rings').getBoundingClientRect();
+      var lowerBounds = secondRing.getBoundingClientRect();
+      halo.style.left = (lowerBounds.left - parentBounds.left) + 'px';
+      halo.style.top = (lowerBounds.top - parentBounds.top) + 'px';
+      halo.style.width = lowerBounds.width + 'px';
+      halo.style.height = lowerBounds.height + 'px';
+    }
+
+    function ensureLowerHalo() {
+      if (!mobileStack.matches) return;
+      if (!halo) {
+        halo = document.createElement('span');
+        halo.className = 'hx-sg-ring-lower-halo';
+        halo.setAttribute('aria-hidden', 'true');
+        secondRing.parentElement.insertBefore(halo, secondRing);
+      }
+      positionLowerHalo();
+    }
+
+    ensureLowerHalo();
+    window.addEventListener('resize', positionLowerHalo, { passive: true });
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(positionLowerHalo).observe(secondRing);
+    }
+
     function revealGlow() {
-      secondRing.classList.add(GLOW_VISIBLE_CLASS);
+      if (mobileStack.matches) {
+        ensureLowerHalo();
+        halo.classList.add('is-active');
+      } else {
+        secondRing.classList.add(GLOW_VISIBLE_CLASS);
+      }
     }
 
     if (reduceMotion) {
@@ -240,7 +275,7 @@
       revealGlow();
     }, {
       root: null,
-      rootMargin: '0px 0px -32% 0px',
+      rootMargin: '0px 0px -22% 0px',
       threshold: .2
     });
 

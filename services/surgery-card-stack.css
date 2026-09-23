@@ -201,6 +201,32 @@
   background-color: #0d1117;
 }
 
+/* 스크롤 후광은 원 바깥 전용 레이어에 그려 원 내부와 겹침부를 비운다. */
+.hx-sg-rings > .hx-sg-ring-lower-halo {
+  position: absolute !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  opacity: 0;
+  transition: opacity 650ms ease;
+}
+
+.hx-sg-rings > .hx-sg-ring-lower-halo.is-active {
+  opacity: 1;
+}
+
+.hx-sg-rings > .hx-sg-ring-lower-halo::before {
+  content: '';
+  position: absolute;
+  inset: -42px;
+  border-radius: 50%;
+  background: radial-gradient(circle closest-side at center,
+    transparent calc(100% - 42px),
+    rgba(0, 117, 214, .06) calc(100% - 32px),
+    rgba(0, 117, 214, .48) calc(100% - 18px),
+    rgba(0, 117, 214, .16) calc(100% - 8px),
+    transparent 100%);
+}
+
 .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::before {
   content: '';
   display: block !important;
@@ -269,6 +295,10 @@
 
 /* 모바일 세로 스택: 위·아래 원의 만나는 면에서 안쪽 외곽선이 겹치지 않게 한다. */
 @media (max-width: 991px) {
+  .hx-sg-rings {
+    position: relative !important;
+  }
+
   /* 세로 스택에서는 리퍼·재수술 원을 더 크게, 최상단 레이어에 둔다. */
   .hx-sg-rings > .hx-sg-ring-small {
     z-index: 2 !important;
@@ -278,8 +308,23 @@
 
   .hx-sg-rings > .hx-sg-ring-large {
     z-index: 3 !important;
-    width: min(440px, calc(100vw + 30px)) !important;
-    height: min(440px, calc(100vw + 30px)) !important;
+    width: min(510px, calc(100vw + 120px)) !important;
+    height: min(510px, calc(100vw + 120px)) !important;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-small .hx-sg-ring-note-label {
+    margin-top: 16px !important;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-large .hx-sg-ring-note-label {
+    margin-top: 24px !important;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-lower-halo::before {
+    -webkit-mask-image: radial-gradient(ellipse 230px 100px at 50% 63px,
+      transparent 0%, transparent 42%, rgba(0, 0, 0, .25) 65%, #000 100%);
+    mask-image: radial-gradient(ellipse 230px 100px at 50% 63px,
+      transparent 0%, transparent 42%, rgba(0, 0, 0, .25) 65%, #000 100%);
   }
 
   .hx-sg-ring-draw-inner-bottom .hx-sg-ring-draw {
@@ -290,6 +335,12 @@
   .hx-sg-ring-draw-inner-top .hx-sg-ring-draw {
     -webkit-mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
     mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-rings > .hx-sg-ring-lower-halo {
+    transition: none;
   }
 }
 
