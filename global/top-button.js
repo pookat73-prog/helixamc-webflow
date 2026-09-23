@@ -1,7 +1,7 @@
 /* ================================================================
    HELIX AMC — GLOBAL TOP BUTTON (code-rendered)
    - body 에 .helix-top-btn 주입 (모든 페이지 공통)
-   - 충분히 스크롤한 뒤 표시, 클릭 시 smooth scroll to top
+   - 항상 표시, 클릭 시 smooth scroll to top
    - 푸터 진입 시 bottom 을 동적으로 올려 푸터 위 1.5vw 까지만 따라옴
    - 디자이너에 남아있는 legacy .link-block-11 인스턴스는 런타임 제거
    ================================================================ */
@@ -39,8 +39,6 @@
     btn.className = 'helix-top-btn';
     btn.href = '#';
     btn.setAttribute('aria-label', '맨 위로');
-    btn.setAttribute('aria-hidden', 'true');
-    btn.tabIndex = -1;
     /* 아이콘만(글자 제거) — '맨 위로' 의미의 바+화살표. 접근성은 앵커의
        aria-label="맨 위로" 로 유지. */
     btn.innerHTML =
@@ -48,7 +46,7 @@
         '<svg class="helix-top-btn__icon" viewBox="0 0 24 24" fill="none"' +
           ' stroke="#ffffff" stroke-width="2" stroke-linecap="round"' +
           ' stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="M12 19V5"/><path d="M6 11l6-6 6 6"/>' +
+          '<path d="M7 5.4H17"/><path d="M12 19V9.2"/><path d="M7.4 13.6L12 9l4.6 4.6"/>' +
         '</svg>';
     btn.addEventListener('click', function (e) {
       e.preventDefault();
@@ -82,7 +80,7 @@
   var FLOATING_SELECTORS = [
     '.helix-renewal-bar.is-open',
     '.helix-branch-cta.is-mounted',
-    '.hx-fcta-shell'            /* 두 CTA 전체 위쪽에 소형 위로가기를 배치 */
+    '.hx-fcta-shell'            /* 세 CTA 전체 위쪽에 소형 위로가기를 배치 */
   ];
 
   function update() {
@@ -97,18 +95,21 @@
     btn.classList.toggle('is-visible', visible);
     btn.setAttribute('aria-hidden', visible ? 'false' : 'true');
     btn.tabIndex = visible ? 0 : -1;
+    if (!visible) {
+      if (btn.style.bottom) btn.style.bottom = '';
+      return;
+    }
 
     /* 1) 푸터 overlap */
     var maxOverlap = 0;
     var footer = findFooter();
     if (footer) {
       var fRect = footer.getBoundingClientRect();
-      if (visible && fRect.top < vh) maxOverlap = Math.max(maxOverlap, vh - fRect.top);
+      if (fRect.top < vh) maxOverlap = Math.max(maxOverlap, vh - fRect.top);
     }
 
     /* 2) 다른 플로팅 요소들 — 본인 제외, 화면 안에 있는 것만 */
     FLOATING_SELECTORS.forEach(function (sel) {
-      if (!visible) return;
       document.querySelectorAll(sel).forEach(function (el) {
         if (el === btn || btn.contains(el)) return;
         var r = el.getBoundingClientRect();
