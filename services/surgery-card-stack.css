@@ -182,102 +182,110 @@
   }
 }
 
+/* 외과 인트로 원: 기존 보더·후광 대신 스크롤 진입 시에만 그려지는 외곽선을 사용한다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-host {
+  position: relative;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-host::before {
+  display: none !important;
+}
+
+/* 오른쪽 원은 내부의 검은 면을 유지한 채 Webflow 외부 그림자를 남긴다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow {
+  background-color: #0d1117;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow::before {
+  content: '';
+  display: block !important;
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: transparent;
+  box-shadow: 5px 0 26px 0 #0075d6;
+  opacity: 0;
+}
+
+.hx-sg-ring-overlap-shield {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, #0d1117 0 82%, rgba(13, 17, 23, .98) 87%, rgba(13, 17, 23, .55) 94%, rgba(13, 17, 23, 0) 100%);
+}
+
+/* 왼쪽 원의 본문은 후광 가림막 위에 남긴다. */
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small > :not(.hx-sg-ring-draw) {
+  position: relative;
+  z-index: 3;
+}
+
+.hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible::before {
+  opacity: 1;
+  animation: hx-sg-ring-glow-ramp 900ms linear both;
+}
+
+@keyframes hx-sg-ring-glow-ramp {
+  0% { opacity: 0; }
+  52% { opacity: .025; }
+  72% { opacity: .10; }
+  86% { opacity: .36; }
+  100% { opacity: 1; }
+}
+
+.hx-sg-ring-draw {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.hx-sg-ring-draw-ready .hx-sg-ring-draw {
+  visibility: visible;
+}
+
+/* 겹치는 중앙은 사라지고, 그 주변의 선은 자연스럽게 되살아나게 한다. */
+.hx-sg-ring-draw-inner-right .hx-sg-ring-draw {
+  -webkit-mask-image: radial-gradient(ellipse 24% 40% at 100% 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  mask-image: radial-gradient(ellipse 24% 40% at 100% 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+}
+
+.hx-sg-ring-draw-inner-left .hx-sg-ring-draw {
+  -webkit-mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+}
+
+.hx-sg-ring-draw-path {
+  vector-effect: non-scaling-stroke;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-right-glow.hx-sg-ring-draw-glow-visible::before {
+    animation: none;
+  }
+}
+
 /* 외과 전문성 문구: 지정 줄바꿈과 좁은 화면의 자연 줄바꿈을 함께 유지한다. */
 .hx-sg-responsive-frame2 > div {
   width: 100%;
 }
 
+/* 줄바꿈 스크립트가 끝나기 전 원문이 잠깐 보이는 것을 막는다. */
+html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-white {
+  visibility: hidden;
+}
+
 .hx-sg-expertise-copy .hx-sg-readable-statement-white {
   white-space: pre-line;
-}
-
-/* 작은 원은 맞닿는 중앙 외곽선만 지우고, 주변 곡선으로 부드럽게 연결한다. */
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small {
-  --hx-sg-ring-outline-shape: ellipse 32% 48% at 100% 50%;
-  position: relative;
-  border-color: transparent;
-}
-
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  pointer-events: none;
-  border: 1px solid #0075d6;
-  border-radius: inherit;
-  -webkit-mask-image: radial-gradient(
-    var(--hx-sg-ring-outline-shape),
-    transparent 15%,
-    rgba(0, 0, 0, .15) 35%,
-    rgba(0, 0, 0, .48) 60%,
-    rgba(0, 0, 0, .82) 82%,
-    #000 100%
-  );
-  mask-image: radial-gradient(
-    var(--hx-sg-ring-outline-shape),
-    transparent 15%,
-    rgba(0, 0, 0, .15) 35%,
-    rgba(0, 0, 0, .48) 60%,
-    rgba(0, 0, 0, .82) 82%,
-    #000 100%
-  );
-}
-
-/* 큰 원의 표면만 흐리게 연결한다. 글자와 기존 원의 크기·겹침은 유지한다. */
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-large {
-  --hx-sg-ring-blend-direction: 90deg;
-  position: relative;
-  isolation: isolate;
-  background-color: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-large::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  z-index: -1;
-  pointer-events: none;
-  border: 1px solid #0075d6;
-  border-radius: inherit;
-  background-color: #0d1117;
-  box-shadow: 5px 0 26px 0 #0075d6;
-  -webkit-mask-image: linear-gradient(
-    var(--hx-sg-ring-blend-direction),
-    transparent 32px,
-    rgba(0, 0, 0, .08) calc(32px + 2%),
-    rgba(0, 0, 0, .36) calc(32px + 4%),
-    rgba(0, 0, 0, .76) calc(32px + 7%),
-    #000 calc(32px + 10%)
-  );
-  mask-image: linear-gradient(
-    var(--hx-sg-ring-blend-direction),
-    transparent 32px,
-    rgba(0, 0, 0, .08) calc(32px + 2%),
-    rgba(0, 0, 0, .36) calc(32px + 4%),
-    rgba(0, 0, 0, .76) calc(32px + 7%),
-    #000 calc(32px + 10%)
-  );
-  /* 마스크를 바깥으로 넓혀 기존 빛이 가장자리에서 잘리지 않게 한다. */
-  -webkit-mask-size: calc(100% + 64px) calc(100% + 64px);
-  mask-size: calc(100% + 64px) calc(100% + 64px);
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-clip: no-clip;
-  mask-clip: no-clip;
-}
-
-@media (max-width: 991px) {
-  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-small {
-    --hx-sg-ring-outline-shape: ellipse 48% 32% at 50% 100%;
-  }
-
-  .hx-sg-rings > .hx-sg-ring.hx-sg-ring-large {
-    --hx-sg-ring-blend-direction: 180deg;
-  }
 }
 
 /* 예후 관리 카드의 오른쪽 아래 모서리를 수술 철학 카드와 맞춘다. */
@@ -385,5 +393,179 @@
     width: calc(100% + 24px);
     font-size: min(1.6vw, 30.72px);
     line-height: 1.5625;
+  }
+}
+
+/* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘.
+   about 페이지 크리스탈 시머(.hex-morph-symbol)와 같은 필터 톤을 축소 재사용. */
+.hx-sg-mini-symbol-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.hx-sg-mini-symbol {
+  display: block;
+  height: 26px;
+  width: auto;
+  filter:
+    drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
+    drop-shadow(-0.5px -0.5px 0 rgba(80, 120, 255, .3))
+    drop-shadow(0 0 6px rgba(0, 117, 214, .3));
+  animation: hxSgMiniSymbolShimmer 4.5s ease-in-out infinite;
+}
+
+@keyframes hxSgMiniSymbolShimmer {
+  0%,
+  100% {
+    filter:
+      drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
+      drop-shadow(-0.5px -0.5px 0 rgba(80, 120, 255, .3))
+      drop-shadow(0 0 6px rgba(0, 117, 214, .3));
+  }
+
+  50% {
+    filter:
+      drop-shadow(-0.5px 0.5px 0 rgba(160, 220, 255, .35))
+      drop-shadow(0.5px -0.5px 0 rgba(60, 90, 255, .35))
+      drop-shadow(0 0 8px rgba(40, 150, 255, .38));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-sg-mini-symbol {
+    animation: none;
+  }
+}
+
+/* 인트로 사진을 두 번째 섹션의 둥근 모서리 뒤까지 이어 보이게 한다. */
+@media (min-width: 992px) {
+  .hx-sg-page > .hx-sg-responsive-frame1,
+  .hx-sg-page > .hx-sg-responsive-frame1 .div-block-343 {
+    overflow: visible;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame1 .image-34 {
+    -webkit-box-reflect: below 0;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame2 {
+    position: relative;
+    border-top-right-radius: 240px;
+    corner-top-right-shape: superellipse(1.4);
+    z-index: 1;
+  }
+}
+
+/* 이 구간에서는 이미지 상자 아래의 빈 높이를 없애 반사가 사진 끝에서 시작되게 한다. */
+@media (min-width: 992px) and (max-width: 1439px) {
+  .hx-sg-page > .hx-sg-responsive-frame1 .image-34 {
+    height: auto;
+  }
+}
+
+/* 인트로 뒤 1~8번: 오른쪽, 왼쪽, 오른쪽, 왼쪽, 없음, 오른쪽, 왼쪽, 없음.
+   superellipse(1.4)는 원형(1)과 스쿼클(2) 사이의 40% 강도다. */
+@media (min-width: 992px) {
+  /* 2 장비와 4 수술 철학은 어두운 바탕 위에 밝은 곡면을 얹는다. */
+  .hx-sg-page > .hx-sg-responsive-frame3,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7),
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10) {
+    position: relative;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7) {
+    background-color: #0d1117;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10) {
+    background-color: #f4f7fb;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3::before,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7)::before,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: #f4f7fb;
+    border-top-left-radius: 240px;
+    corner-top-left-shape: superellipse(1.4);
+    pointer-events: none;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7)
+  .hx-sg-principle-photo-single {
+    z-index: 0;
+    border-top-left-radius: 240px;
+    corner-top-left-shape: superellipse(1.4);
+    overflow: clip;
+  }
+
+  /* 3 안전 시스템과 6 사진 구간. 5 통증 관리와 8 마무리에는 곡선을 두지 않는다. */
+  .hx-sg-page > .hx-sg-responsive-frame6,
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    border-top-right-radius: 240px;
+    corner-top-right-shape: superellipse(1.4);
+    overflow: clip;
+  }
+
+  /* 7 예후 관리: 왼쪽 위로 은은하게 번지는 그림자. 컬러는 텍스트위계4(#9aaabb) —
+     수술 철학·예후 관리 카드 자체의 등장 그림자(rgba(154,170,187,…))와 같은 계열이라 톤이 맞는다.
+     크기는 offset·spread 를 줄이고 blur 로 부드럽게 조절했다.
+     모서리에서 멀어질수록 옅어지도록 마스크를 얹고, 그 마스크 영역을 왼쪽·위로만 넓혀서
+     (calc(100% + 30px), position -30px) 그림자가 박스 밖으로 번지는 부분도 같이 페이드되게
+     했다 — 오른쪽·아래는 넓히지 않았으니 여전히 섹션 경계를 넘지 않는다.
+     가로 방향은 왼쪽 25% 지점까지는 그대로 선명하게 유지하고, 그 이후부터 48% 지점까지
+     풀어(옅어지게) 준다 — 외곽선 가로 그라데이션의 마무리 지점(48%)과 맞췄다.
+     이 ::before 의 배경색(#f4f7fb)은 그 뒤에 있는 실제 섹션 배경과 같은 색이라, 마스크로
+     가려져도 색 경계가 생기지 않는다. */
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::before {
+    box-shadow: -6px -6px 20px -2px rgba(154, 170, 187, .5);
+    -webkit-mask-image:
+      linear-gradient(90deg, #000 0px, #000 calc(25% + 30px), transparent calc(48% + 30px)),
+      linear-gradient(180deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px);
+    mask-image:
+      linear-gradient(90deg, #000 0px, #000 calc(25% + 30px), transparent calc(48% + 30px)),
+      linear-gradient(180deg, #000 0px, #000 70px, rgba(0, 0, 0, .45) 180px, transparent 290px);
+    -webkit-mask-size: calc(100% + 30px) calc(100% + 30px);
+    mask-size: calc(100% + 30px) calc(100% + 30px);
+    -webkit-mask-position: -30px -30px;
+    mask-position: -30px -30px;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-clip: no-clip;
+    mask-clip: no-clip;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+
+  /* 7 예후 관리: 왼쪽 위 곡선 시작점에 메인 블루가 모였다가 중앙 방향으로 빠르게 옅어지는 외곽선.
+     외곽선은 파란색 그라데이션이 맞다 — 회색(텍스트위계4)은 그 아래 그림자(::before)만. */
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    width: 100%;
+    height: 240px;
+    border-top: 2px solid #0075d6;
+    border-left: 2px solid #0075d6;
+    border-top-left-radius: 240px;
+    corner-top-left-shape: superellipse(1.4);
+    -webkit-mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    pointer-events: none;
   }
 }

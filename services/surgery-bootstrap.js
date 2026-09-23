@@ -92,6 +92,148 @@
   FILES.forEach(function (path) { loadFile(path, REF); });
 })();
 
+/* 외과 인트로: 두 원의 선은 고정하고, 충분히 진입한 뒤 오른쪽 원 후광만 드러낸다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_INTRO_RING_DRAW__) return;
+  window.__HELIX_SURGERY_INTRO_RING_DRAW__ = true;
+
+  var RING_SELECTOR = '.hx-sg-rings > .hx-sg-ring';
+  var HOST_CLASS = 'hx-sg-ring-draw-host';
+  var READY_CLASS = 'hx-sg-ring-draw-ready';
+  var GLOW_CLASS = 'hx-sg-ring-draw-right-glow';
+  var GLOW_VISIBLE_CLASS = 'hx-sg-ring-draw-glow-visible';
+  var OVERLAP_SHIELD_CLASS = 'hx-sg-ring-overlap-shield';
+  var OVERLAP_SHIELD_PADDING = 34;
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function isVisible(element) {
+    var rect = element.getBoundingClientRect();
+    var style = window.getComputedStyle(element);
+    return rect.width > 0 && rect.height > 0 &&
+      style.display !== 'none' && style.visibility !== 'hidden';
+  }
+
+  function createOutline(ring, startFromRight) {
+    var svg = document.createElementNS(SVG_NS, 'svg');
+    var arcPaths = startFromRight
+      ? [
+        'M 100 50 A 50 50 0 0 0 0 50',
+        'M 100 50 A 50 50 0 0 1 0 50'
+      ]
+      : [
+        'M 0 50 A 50 50 0 0 1 100 50',
+        'M 0 50 A 50 50 0 0 0 100 50'
+      ];
+
+    svg.classList.add('hx-sg-ring-draw');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    ring.appendChild(svg);
+
+    /* 겹침 경계는 마스크로 비우고, 선 자체는 처음부터 완성된 상태로 둔다. */
+    arcPaths.forEach(function (arcPath) {
+      var path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('d', arcPath);
+      path.classList.add('hx-sg-ring-draw-path');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', '#0075d6');
+      path.setAttribute('stroke-width', '1');
+      path.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(path);
+    });
+    ring.classList.add(HOST_CLASS);
+    ring.classList.add(READY_CLASS);
+  }
+
+  function createOverlapShield(leftRing, rightRing) {
+    var shield = document.createElement('span');
+
+    shield.className = OVERLAP_SHIELD_CLASS;
+    shield.setAttribute('aria-hidden', 'true');
+    rightRing.appendChild(shield);
+
+    function positionShield() {
+      var leftBounds = leftRing.getBoundingClientRect();
+      var rightBounds = rightRing.getBoundingClientRect();
+
+      shield.style.left = (leftBounds.left - rightBounds.left - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.top = (leftBounds.top - rightBounds.top - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.width = (leftBounds.width + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+      shield.style.height = (leftBounds.height + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+    }
+
+    positionShield();
+
+    if ('ResizeObserver' in window) {
+      var resizeObserver = new ResizeObserver(positionShield);
+      resizeObserver.observe(leftRing);
+      resizeObserver.observe(rightRing);
+    } else {
+      window.addEventListener('resize', positionShield, { passive: true });
+    }
+  }
+
+  function initIntroRingDraw() {
+    var rings = Array.prototype.slice.call(document.querySelectorAll(RING_SELECTOR))
+      .filter(isVisible);
+    if (rings.length < 2) return;
+
+    /* 레이아웃의 DOM 순서가 바뀌어도 화면상 왼쪽·오른쪽 기준을 유지한다. */
+    rings.sort(function (a, b) {
+      return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+    });
+
+    var leftRing = rings[0];
+    var rightRing = rings[1];
+
+    /* dash 전개 방향과 맞춰, 화면 바깥쪽 점에서 위·아래 호가 드러나게 한다. */
+    createOutline(leftRing, true);
+    createOutline(rightRing, false);
+    /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
+    leftRing.classList.add('hx-sg-ring-draw-inner-right');
+    rightRing.classList.add('hx-sg-ring-draw-inner-left');
+    rightRing.classList.add(GLOW_CLASS);
+    createOverlapShield(leftRing, rightRing);
+
+    function revealGlow() {
+      rightRing.classList.add(GLOW_VISIBLE_CLASS);
+    }
+
+    if (reduceMotion) {
+      revealGlow();
+      return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      revealGlow();
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      observer.disconnect();
+      revealGlow();
+    }, {
+      root: null,
+      rootMargin: '0px 0px -32% 0px',
+      threshold: .2
+    });
+
+    observer.observe(leftRing.closest('.hx-sg-rings'));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initIntroRingDraw, { once: true });
+  } else {
+    initIntroRingDraw();
+  }
+})();
+
 /* 통증 관리: 원은 환자의 안정된 기준점으로 고정하고, 바깥 격자만 정렬되어 안정으로 수렴한다. */
 (function () {
   'use strict';
@@ -631,15 +773,9 @@
     if (!titles.length) return;
 
     titles.forEach(function (title) {
-      if (cardSelector === '.hx-sg-aftercare-card') {
-        title.style.transition = 'none';
-      }
       title.style.opacity = '0';
       title.style.transform = 'translateX(-12px) scaleX(.925) scaleY(.985)';
       title.style.transformOrigin = 'left center';
-      if (cardSelector === '.hx-sg-aftercare-card') {
-        title.getBoundingClientRect();
-      }
       title.style.transition =
         'opacity ' + TITLE_DURATION + 'ms ' + TITLE_FADE_EASING + ', ' +
         'transform ' + TITLE_DURATION + 'ms ' + TITLE_PULL_EASING;
@@ -686,9 +822,94 @@
     observer.observe(cards[0]);
   }
 
+  /* 예후 관리 카드 2개(예후 가이드, 정보 공유): 나란히 있어 동시에 화면에 들어오지만,
+     후광+그림자·제목 인터렉션은 카드 순서대로 엇박을 타며 이어진다.
+     각 카드는 자기 후광이 뜨기 시작한 지 얼마 안 됐을 때(TITLE_START_DELAY) 제목이
+     시작하고, 다음 카드는 앞 카드의 제목이 끝나길 기다리지 않고 앞 카드가 시작한 지
+     얼마 안 됐을 때(CARD_STAGGER) 바로 이어서 시작한다.
+     후광 클래스(ANIMATING_CLASS/VISIBLE_CLASS)·SHADOW_DURATION 값은 아래
+     수술 철학·예후 관리 카드 공용 관찰자와 동일 — 이 카드들만 그 관찰자 대상에서 빼고
+     여기서 순서대로 직접 토글한다. */
+  function initAftercareSequence() {
+    var VISIBLE_CLASS = 'hx-sg-principle-shadow-visible';
+    var ANIMATING_CLASS = 'hx-sg-principle-shadow-animating';
+    var SHADOW_DURATION = 800;
+    var TITLE_START_DELAY = 180;
+    var CARD_STAGGER = 150;
+    var titleSelector = '.div-block-332, .div-block-333';
+
+    var cards = Array.prototype.slice.call(
+      document.querySelectorAll('.hx-sg-aftercare-card')
+    );
+
+    if (!cards.length || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var titles = cards.map(function (card) {
+      return card.querySelector(titleSelector);
+    });
+
+    titles.forEach(function (title) {
+      if (!title) return;
+      title.style.transition = 'none';
+      title.style.opacity = '0';
+      title.style.transform = 'translateX(-12px) scaleX(.925) scaleY(.985)';
+      title.style.transformOrigin = 'left center';
+      title.getBoundingClientRect();
+      title.style.transition =
+        'opacity ' + TITLE_DURATION + 'ms ' + TITLE_FADE_EASING + ', ' +
+        'transform ' + TITLE_DURATION + 'ms ' + TITLE_PULL_EASING;
+      title.style.willChange = 'opacity, transform';
+    });
+
+    function revealTitle(title) {
+      if (!title) return;
+      title.style.opacity = '1';
+      title.style.transform = 'translateX(0) scaleX(1) scaleY(1)';
+      title.style.willChange = 'auto';
+    }
+
+    function playCard(index) {
+      if (index >= cards.length) return;
+
+      var card = cards[index];
+
+      card.classList.add(ANIMATING_CLASS);
+      window.requestAnimationFrame(function () {
+        card.classList.add(VISIBLE_CLASS);
+      });
+      window.setTimeout(function () {
+        card.classList.remove(ANIMATING_CLASS);
+      }, SHADOW_DURATION + 80);
+
+      window.setTimeout(function () {
+        revealTitle(titles[index]);
+      }, TITLE_START_DELAY);
+
+      window.setTimeout(function () {
+        playCard(index + 1);
+      }, CARD_STAGGER);
+    }
+
+    var started = false;
+    var observer = new IntersectionObserver(function (entries) {
+      if (started) return;
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      started = true;
+      observer.disconnect();
+      playCard(0);
+    }, {
+      root: null,
+      rootMargin: '0px 0px -30% 0px',
+      threshold: 0
+    });
+
+    observer.observe(cards[0]);
+  }
+
   function initCardTitleGroups() {
     initSafetyCardTitles('.hx-sg-safety-card', '.div-block-322');
-    initSafetyCardTitles('.hx-sg-aftercare-card', '.div-block-332, .div-block-333');
+    initAftercareSequence();
   }
 
   if (document.readyState === 'loading') {
@@ -698,7 +919,12 @@
   }
 })();
 
-/* 수술 철학·예후 관리 카드: 각 카드가 화면의 70% 지점에 닿으면 후광과 그림자를 한 번 드러낸다. */
+/* 수술 철학 카드: 화면의 70% 지점에 닿으면 후광과 그림자를 한 번 드러낸다.
+   예후 관리 카드(.hx-sg-aftercare-card)는 여기서 제외한다 — 그 카드 2개는 위
+   initAftercareSequence() 가 순서대로(하나가 끝나야 다음 카드가 시작하도록) 직접
+   같은 클래스(VISIBLE_CLASS/ANIMATING_CLASS)를 토글한다. ROOT_CLASS 는 이 관찰자가
+   그대로 등록하므로, 예후 관리 카드의 CSS(html.hx-sg-principle-shadow-motion 기준)도
+   정상 동작한다. */
 (function () {
   'use strict';
 
@@ -717,7 +943,7 @@
 
   function initPrincipleCardShadows() {
     var cards = Array.prototype.slice.call(
-      document.querySelectorAll('.hx-sg-principle-card, .hx-sg-aftercare-card')
+      document.querySelectorAll('.hx-sg-principle-card')
     );
 
     if (!cards.length) {
@@ -756,5 +982,57 @@
     document.addEventListener('DOMContentLoaded', initPrincipleCardShadows, { once: true });
   } else {
     initPrincipleCardShadows();
+  }
+})();
+
+/* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘을 끼워 넣는다.
+   about 페이지의 크리스탈 시머 연출(.hex-morph-symbol)과 같은 톤을 축소 재사용. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_MINI_SYMBOL__) return;
+  window.__HELIX_SURGERY_MINI_SYMBOL__ = true;
+
+  function symbolUrl() {
+    var ref = window.HELIX_REF || (/\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main');
+    return 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + encodeURIComponent('심볼.svg');
+  }
+
+  /* 두 섹션 중 DOM 상 더 뒤에 있는 쪽 바로 앞에 넣어, 순서와 무관하게 항상 "사이"에 놓이게 한다. */
+  function insertBetween(nodeA, nodeB, newNode) {
+    if (!nodeA || !nodeB || nodeA === nodeB) return false;
+    var later = (nodeA.compareDocumentPosition(nodeB) & Node.DOCUMENT_POSITION_FOLLOWING) ? nodeB : nodeA;
+    if (!later.parentElement) return false;
+    later.parentElement.insertBefore(newNode, later);
+    return true;
+  }
+
+  function init() {
+    var aftercare = document.querySelector('.hx-sg-aftercare-card');
+    var outroMark = document.querySelector('.hx-sg-dept-mark-light');
+    if (!aftercare || !outroMark) return;
+
+    var aftercareSection = aftercare.closest('section') || aftercare.parentElement;
+    var outroSection = outroMark.closest('section') || outroMark.parentElement;
+    if (!aftercareSection || !outroSection || aftercareSection === outroSection) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'hx-sg-mini-symbol-wrap';
+    wrap.setAttribute('aria-hidden', 'true');
+
+    var img = document.createElement('img');
+    img.className = 'hx-sg-mini-symbol';
+    img.src = symbolUrl();
+    img.alt = '';
+    img.draggable = false;
+    wrap.appendChild(img);
+
+    insertBetween(aftercareSection, outroSection, wrap);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
   }
 })();
