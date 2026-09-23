@@ -30,6 +30,10 @@
     'global/viewport-fix.js',
     /* 뷰포트 판정 (window.HelixVP) — 교정된 폭을 봐야 하므로 그 다음 */
     'global/viewport.js',
+    /* 진료과목 카드의 테두리와 화살표를 측정·공통 스크립트보다 먼저 준비한다.
+       Webflow 카드가 이미 DOM에 있어 초기 화면에서 장식이 늦게 덧그려지는 시간을 줄인다. */
+    'services/dept-border.js',
+    'services/dept-nav.js',
     'global/accessibility.js',
     /* 운영자 제외 스위치 — ?helix-noga=1 로 켠 브라우저는 측정 안 함.
        gtag 가 만들어지기 전에 가로채야 해서 ga4-base 보다 앞에 둔다. */
@@ -66,10 +70,6 @@
        (남아있을 수 있는 Webflow legacy 버튼 .link-block-11 은 services.css 에서 숨김) */
     /* 진료과목 전용 — 페이지 오버라이드(영상의학과 카드 모바일 사진 제거 등) */
     'services/services.css',
-    /* 진료과목 전용 — 카드 U자 테두리(기존 deptUshapeBorder) */
-    'services/dept-border.js',
-    /* 진료과목 전용 — 화살표 상세이동 버튼 + 카드 강조 호버(기존 deptDetailNav) */
-    'services/dept-nav.js',
     /* 진료과목 전용 — SEO 구조화데이터(MedicalWebPage + 진료과 ItemList) 주입.
        Webflow 커스텀코드 쓰기 406 우회 (services/seo-loader.js 참고) */
     'services/seo-loader.js'
