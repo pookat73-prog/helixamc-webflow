@@ -71,13 +71,13 @@
 
   /* ── HTML 주입 ── */
   var html = [
-    '<div class="hx-fcta-shell" role="group" aria-label="전화 상담">',
+    '<div class="hx-fcta-shell" role="group" aria-label="상담 방법">',
       /* 전화 상담 버튼 */
-      '<a class="hx-fcta-btn hx-fcta-phone-btn" id="hxFctaCallBtn" href="' + PHONE + '"',
+      '<a class="hx-fcta-call-btn hx-fcta-phone-btn" id="hxFctaCallBtn" href="' + PHONE + '"
         ' aria-label="서초 본원 전화 상담하기 ' + PHONE_LABEL + '">',
-        '<img class="hx-fcta-btn__img" src="' + CONSULT_IMG + '" alt="" aria-hidden="true">',
-        '<span class="hx-fcta-btn__label hx-fcta-phone-btn__label">',
-          '<span class="hx-fcta-phone-btn__icon" aria-hidden="true">',
+        '<span class="hx-fcta-phone-btn__label">',
+        '<span class="hx-fcta-phone-btn__label">',
+          '<span class="hx-fcta-call-btn__icon" aria-hidden="true">',
             '<svg viewBox=\"0 0 24 24\"><path fill=\"currentColor\" stroke=\"none\" d=\"M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z\"/><path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.1\" stroke-linecap=\"round\" d=\"M15.5 7a2.5 2.5 0 0 1 2.5 2.5\"/><path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.1\" stroke-linecap=\"round\" d=\"M15.5 3.5a6 6 0 0 1 6 6\"/></svg>',
           '</span>',
           '<span class="hx-fcta-phone-btn__text">' + PHONE_TEXT + '</span>',
@@ -85,12 +85,12 @@
       '</a>',
 
       /* 상담 신청 기능 유지용 트리거 — 플로팅에서는 숨기고 Webflow 인라인 버튼으로 연결 */
-      '<button class="hx-fcta-call-btn hx-fcta-form-btn" id="hxFctaToggle" type="button" hidden',
+      '<button class="hx-fcta-call-btn hx-fcta-form-btn" id="hxFctaToggle" type="button"',
         ' aria-label="상담 신청하기" aria-expanded="false" aria-controls="hxFctaModal">',
         '<span class="hx-fcta-call-btn__icon" aria-hidden="true">',
           '<svg viewBox="0 0 24 24"><path d="M13 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M17.5 3.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/><path d="M15.5 5.5l3 3"/></svg>',
         '</span>',
-        '<span class="hx-fcta-call-btn__text">신청</span>',
+        '<span class="hx-fcta-call-btn__text">상담 신청</span>',
       '</button>',
     '</div>',
 

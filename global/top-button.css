@@ -41,3 +41,31 @@
   .helix-top-btn__box { width: 2.9rem; }
   .helix-top-btn__icon { width: 1.3rem; height: 1.3rem; }
 }
+
+.helix-top-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, visibility 0.18s ease, transform 0.18s ease;
+}
+.helix-top-btn.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.helix-top-btn__box {
+  width: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(13, 17, 23, 0.78);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+.helix-top-btn__icon { width: 14px; height: 14px; }
+@media (max-width: 991px) {
+  .helix-top-btn { right: 12px; }
+  .helix-top-btn__box { width: 30px; }
+}
+@media (max-width: 479px) {
+  .helix-top-btn { right: 10px; }
+}
