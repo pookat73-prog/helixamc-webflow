@@ -410,27 +410,16 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     corner-top-right-shape: superellipse(1.4);
   }
 
-  /* 두 번째 섹션의 곡선 바깥은 바로 위 섹션이 이어 보이도록 한다. */
+  /* 모바일 첫 이미지는 이미 섹션 아래까지 이어지므로, 곡선 폭만큼 겹쳐 실제 이미지를 드러낸다. */
   .hx-sg-page > .hx-sg-responsive-frame1 {
-    position: relative;
     overflow: visible;
-    z-index: 0;
-  }
-
-  .hx-sg-page > .hx-sg-responsive-frame1::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: var(--hx-sg-section-curve);
-    height: var(--hx-sg-section-curve);
-    background-color: #0d1117;
-    pointer-events: none;
   }
 
   .hx-sg-page > .hx-sg-responsive-frame2 {
     position: relative;
     z-index: 1;
+    margin-top: calc(-1 * var(--hx-sg-section-curve));
+    padding-top: calc(20vw + var(--hx-sg-section-curve));
   }
 
   .hx-sg-page > .hx-sg-responsive-frame3,
@@ -556,22 +545,6 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     z-index: 1;
   }
 
-  .hx-sg-page > .hx-sg-responsive-frame1 {
-    position: relative;
-    overflow: visible;
-    z-index: 0;
-  }
-
-  .hx-sg-page > .hx-sg-responsive-frame1::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 240px;
-    height: 240px;
-    background-color: #0d1117;
-    pointer-events: none;
-  }
 }
 
 /* 이 구간에서는 이미지 상자 아래의 빈 높이를 없애 반사가 사진 끝에서 시작되게 한다. */
