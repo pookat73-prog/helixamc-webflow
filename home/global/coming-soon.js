@@ -871,6 +871,29 @@
     setInterval(tick, 1000);
   }
 
+  function mountHeroMilestones() {
+    if (document.getElementById('hx-hero-milestones')) return;
+    var slogan = document.querySelector('.home_slogan');
+    var button = document.querySelector('.bt-box-1');
+    if (!slogan || !button || slogan.parentElement !== button.parentElement) return;
+
+    var milestones = document.createElement('ul');
+    milestones.id = 'hx-hero-milestones';
+    milestones.setAttribute('aria-label', '의료 인프라 도입 연혁');
+    milestones.innerHTML =
+      '<li><time datetime="2012">2012</time><span>1.5T MRI · 16ch MDCT</span></li>' +
+      '<li><time datetime="2018">2018</time><span>160-slice CT</span></li>' +
+      '<li><time datetime="2026">2026</time><span>Hybrid OR</span></li>' +
+      '';
+    slogan.insertAdjacentElement('afterend', milestones);
+  }
+
+  function revealHeroWhenReady() {
+    if (!document.getElementById('hx-hero-milestones') ||
+        !document.getElementById('hx-branch-quickbar')) return;
+    document.documentElement.classList.add('hx-home-ready');
+  }
+
   function mountQuickbar() {
     if (!heroReady) return;
     if (document.getElementById('hx-branch-quickbar')) return;
@@ -922,13 +945,16 @@
     measureQuickbar(bar);
     window.addEventListener('scroll', scheduleHeaderClip, { passive: true });
     window.addEventListener('resize', scheduleHeaderClip);
+    revealHeroWhenReady();
   }
 
   /* Wait for the Hero's existing font measurement / detach sequence. Adding
      headings while that sequence runs can change document.fonts.ready timing. */
   function afterHero() {
     heroReady = true;
+    mountHeroMilestones();
     mountQuickbar();
+    revealHeroWhenReady();
   }
   window.addEventListener('helix-s1-done', afterHero, { once: true });
   if (document.querySelector('.bt-box-1.is-looping') && !document.querySelector('[data-s1-ghost]')) {
