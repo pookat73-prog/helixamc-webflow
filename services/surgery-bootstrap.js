@@ -145,29 +145,29 @@
     ring.classList.add(READY_CLASS);
   }
 
-  function createOverlapShield(leftRing, rightRing) {
+  function createOverlapShield(firstRing, secondRing) {
     var shield = document.createElement('span');
 
     shield.className = OVERLAP_SHIELD_CLASS;
     shield.setAttribute('aria-hidden', 'true');
-    rightRing.appendChild(shield);
+    secondRing.appendChild(shield);
 
     function positionShield() {
-      var leftBounds = leftRing.getBoundingClientRect();
-      var rightBounds = rightRing.getBoundingClientRect();
+      var firstBounds = firstRing.getBoundingClientRect();
+      var secondBounds = secondRing.getBoundingClientRect();
 
-      shield.style.left = (leftBounds.left - rightBounds.left - OVERLAP_SHIELD_PADDING) + 'px';
-      shield.style.top = (leftBounds.top - rightBounds.top - OVERLAP_SHIELD_PADDING) + 'px';
-      shield.style.width = (leftBounds.width + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
-      shield.style.height = (leftBounds.height + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+      shield.style.left = (firstBounds.left - secondBounds.left - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.top = (firstBounds.top - secondBounds.top - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.width = (firstBounds.width + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+      shield.style.height = (firstBounds.height + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
     }
 
     positionShield();
 
     if ('ResizeObserver' in window) {
       var resizeObserver = new ResizeObserver(positionShield);
-      resizeObserver.observe(leftRing);
-      resizeObserver.observe(rightRing);
+      resizeObserver.observe(firstRing);
+      resizeObserver.observe(secondRing);
     } else {
       window.addEventListener('resize', positionShield, { passive: true });
     }
@@ -178,25 +178,50 @@
       .filter(isVisible);
     if (rings.length < 2) return;
 
-    /* 레이아웃의 DOM 순서가 바뀌어도 화면상 왼쪽·오른쪽 기준을 유지한다. */
+    /* 데스크톱은 좌우, 모바일 세로 스택은 위아래 순으로 기준을 고른다. */
     rings.sort(function (a, b) {
-      return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+      var rectA = a.getBoundingClientRect();
+      var rectB = b.getBoundingClientRect();
+      var horizontal = Math.abs(rectB.left - rectA.left) >=
+        Math.abs(rectB.top - rectA.top);
+      return horizontal ? rectA.left - rectB.left : rectA.top - rectB.top;
     });
 
-    var leftRing = rings[0];
-    var rightRing = rings[1];
+    var firstRing = rings[0];
+    var secondRing = rings[1];
 
     /* dash 전개 방향과 맞춰, 화면 바깥쪽 점에서 위·아래 호가 드러나게 한다. */
-    createOutline(leftRing, true);
-    createOutline(rightRing, false);
-    /* 두 원이 만나는 안쪽 끝만 부드럽게 사라지도록 화면 방향을 표시한다. */
-    leftRing.classList.add('hx-sg-ring-draw-inner-right');
-    rightRing.classList.add('hx-sg-ring-draw-inner-left');
-    rightRing.classList.add(GLOW_CLASS);
-    createOverlapShield(leftRing, rightRing);
+    createOutline(firstRing, true);
+    createOutline(secondRing, false);
+    var directionClasses = [
+      'hx-sg-ring-draw-inner-right',
+      'hx-sg-ring-draw-inner-left',
+      'hx-sg-ring-draw-inner-bottom',
+      'hx-sg-ring-draw-inner-top'
+    ];
+
+    function updateOverlapDirection() {
+      var firstBounds = firstRing.getBoundingClientRect();
+      var secondBounds = secondRing.getBoundingClientRect();
+      var horizontal = Math.abs(secondBounds.left - firstBounds.left) >=
+        Math.abs(secondBounds.top - firstBounds.top);
+
+      directionClasses.forEach(function (className) {
+        firstRing.classList.remove(className);
+        secondRing.classList.remove(className);
+      });
+      firstRing.classList.add(horizontal ? directionClasses[0] : directionClasses[2]);
+      secondRing.classList.add(horizontal ? directionClasses[1] : directionClasses[3]);
+    }
+
+    /* 겹치는 경계의 방향에 맞춰 안쪽 선을 숨긴다. */
+    updateOverlapDirection();
+    window.addEventListener('resize', updateOverlapDirection, { passive: true });
+    secondRing.classList.add(GLOW_CLASS);
+    createOverlapShield(firstRing, secondRing);
 
     function revealGlow() {
-      rightRing.classList.add(GLOW_VISIBLE_CLASS);
+      secondRing.classList.add(GLOW_VISIBLE_CLASS);
     }
 
     if (reduceMotion) {
@@ -219,7 +244,7 @@
       threshold: .2
     });
 
-    observer.observe(leftRing.closest('.hx-sg-rings'));
+    observer.observe(firstRing.closest('.hx-sg-rings'));
   }
 
   if (document.readyState === 'loading') {
