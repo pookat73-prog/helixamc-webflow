@@ -14,6 +14,9 @@
   /* 화살표는 인라인 SVG(대칭·뷰박스 정중앙)로 렌더 — 외부 애셋 내부가
      비대칭이라 라벨과 어긋나 보이던 문제 제거 + CDN 의존 제거 */
   var GAP_VW = 1.5;
+  var SHOW_MIN_PX = 360;
+  var SHOW_MAX_PX = 600;
+  var SHOW_PAGE_RATIO = 0.16;
 
   var btn = null;
   var baseBottomPx = 0;
@@ -77,7 +80,7 @@
   var FLOATING_SELECTORS = [
     '.helix-renewal-bar.is-open',
     '.helix-branch-cta.is-mounted',
-    '.hx-fcta-btn'              /* 플로팅 상담 버튼 — 항상 떠 있음. 위로가기를 그 위로 */
+    '.hx-fcta-shell'            /* 세 CTA 전체 위쪽에 소형 위로가기를 배치 */
   ];
 
   function update() {
@@ -86,6 +89,16 @@
     var vh = window.innerHeight;
     var vw = window.innerWidth;
     var gapPx = (GAP_VW / 100) * vw;
+    var doc = document.documentElement;
+    var showAfter = Math.min(SHOW_MAX_PX, Math.max(SHOW_MIN_PX, doc.scrollHeight * SHOW_PAGE_RATIO));
+    var visible = window.scrollY >= showAfter;
+    btn.classList.toggle('is-visible', visible);
+    btn.setAttribute('aria-hidden', visible ? 'false' : 'true');
+    btn.tabIndex = visible ? 0 : -1;
+    if (!visible) {
+      if (btn.style.bottom) btn.style.bottom = '';
+      return;
+    }
 
     /* 1) 푸터 overlap */
     var maxOverlap = 0;
