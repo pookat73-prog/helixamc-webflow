@@ -788,3 +788,10 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   height: 100%;
   object-fit: cover;
 }
+
+/* 479px 이하 수술 철학 카드 오른쪽 아래 모서리에 Webflow와 같은 40% 스쿼클을 적용한다. */
+@media (max-width: 479px) {
+  .hx-sg-principle-card {
+    corner-bottom-right-shape: superellipse(1.4);
+  }
+}
