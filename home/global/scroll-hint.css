@@ -11,13 +11,13 @@
 .hx-scroll-hint {
   position: absolute;
   left: 50%;
-  top: calc(100vh - 144px - 32px);
-  top: calc(100dvh - 144px - 32px);
+  top: calc(100vh - 144px - 20px);
+  top: calc(100dvh - 144px - 20px);
   transform: translate(-50%, -100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   width: max-content;
   z-index: 900;                 /* 위로가기(1000)·플로팅 CTA(9000) 아래 */
   pointer-events: none;         /* 화면을 가로막지 않음 */
@@ -76,8 +76,8 @@
 /* 모바일 — 꺽쇠만 살짝 작게, 지점 바와의 간격은 유지 */
 @media (max-width: 767px) {
   .hx-scroll-hint {
-    top: calc(100vh - 184px - 32px);
-    top: calc(100dvh - 184px - 32px);
+    top: calc(100vh - 184px - 20px);
+    top: calc(100dvh - 184px - 20px);
   }
 
   /* 두께는 정수로 — 브라우저가 소수 border-width 를 내림해 2.5px 가 2px 이 됨 */
