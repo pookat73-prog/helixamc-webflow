@@ -326,6 +326,9 @@
   var centerWave = art.querySelector('#hx-sg-pain-wave');
   var field = art.querySelector('#hx-sg-pain-field');
   var fieldColor = art.querySelector('#hx-sg-pain-field-color');
+  var fieldRadius = { x: field.getAttribute('rx'), y: field.getAttribute('ry') };
+  var mobilePainLayers = window.matchMedia('(max-width: 767px)');
+  var fieldArt = null;
   var coreStart = art.querySelector('#hx-sg-pain-core-start');
   var coreEnd = art.querySelector('#hx-sg-pain-core-end');
   var lineBlueLeft = art.querySelector('#hx-sg-pain-line-blue-left');
@@ -336,6 +339,40 @@
   var lineBlueRight = art.querySelector('#hx-sg-pain-line-blue-right');
   var horizontal = [];
   var vertical = [];
+
+  function syncMobilePainLayers() {
+    if (mobilePainLayers.matches) {
+      if (!fieldArt) {
+        fieldArt = document.createElementNS(ns, 'svg');
+        fieldArt.classList.add('hx-sg-pain-field-art');
+        fieldArt.setAttribute('viewBox', '0 0 600 600');
+        fieldArt.setAttribute('aria-hidden', 'true');
+        fieldArt.setAttribute('focusable', 'false');
+        var fieldDefs = document.createElementNS(ns, 'defs');
+        fieldArt.appendChild(fieldDefs);
+        fieldDefs.appendChild(fieldColor.parentNode);
+      }
+      field.setAttribute('rx', '360');
+      field.setAttribute('ry', '360');
+      fieldArt.appendChild(field);
+      if (!fieldArt.parentNode) oval.insertBefore(fieldArt, art);
+      return;
+    }
+
+    if (!fieldArt || !fieldArt.parentNode) return;
+    art.querySelector('defs').appendChild(fieldColor.parentNode);
+    field.setAttribute('rx', fieldRadius.x);
+    field.setAttribute('ry', fieldRadius.y);
+    art.insertBefore(field, sheet);
+    fieldArt.remove();
+  }
+
+  syncMobilePainLayers();
+  if (mobilePainLayers.addEventListener) {
+    mobilePainLayers.addEventListener('change', syncMobilePainLayers);
+  } else {
+    mobilePainLayers.addListener(syncMobilePainLayers);
+  }
 
   function makePath(opacity, width) {
     var path = document.createElementNS(ns, 'path');
