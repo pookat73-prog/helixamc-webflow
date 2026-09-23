@@ -658,3 +658,20 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     pointer-events: none;
   }
 }
+
+
+/* 모바일: 원 위에 모션을 띄우고 서브헤딩과 겹치지 않게 간격을 확보한다. */
+@media (max-width: 767px) {
+  [data-hx-sg-pain-motion] .hx-sg-pain-oval {
+    margin-top: 370px !important;
+  }
+
+  [data-hx-sg-pain-motion] .hx-sg-pain-art {
+    inset: auto auto auto 50%;
+    top: -360px;
+    z-index: 2;
+    width: min(92vw, 360px);
+    height: auto;
+    transform: translateX(-50%);
+  }
+}
