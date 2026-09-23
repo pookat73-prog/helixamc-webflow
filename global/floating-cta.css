@@ -757,6 +757,7 @@
   .hx-fcta-modal__header { top: 16px; right: 20px; }
 }
 
+
 /* 세로 CTA 묶음: 전화 상담은 아래쪽 메인 행동, 상담 신청은 위쪽 보조 행동. */
 .hx-fcta-shell {
   right: 3vw;
