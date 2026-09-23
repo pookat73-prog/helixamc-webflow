@@ -725,7 +725,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     z-index: 0;
     order: 2;
     width: 100%;
-    height: 180px;
+    height: 96px;
     transform: none;
     overflow: hidden !important;
   }
