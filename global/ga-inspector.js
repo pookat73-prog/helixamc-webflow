@@ -173,6 +173,14 @@
       } }
   ];
 
+  if (PAGE === 'surgery') {
+    TARGETS.push({
+      sel: '.hx-sg-page a.cta_seocho_button-call-link, .hx-sg-page a.link-block',
+      label: '외과 · 하단 지점 선택',
+      event: 'surgery_branch_click_*'
+    });
+  }
+
   /* about(=/discover-helix) 페이지 전용 — .cta-style / .link-block 등은 다른
      페이지에도 존재하므로 이 페이지에서만 표시(오표시 방지). 의료진 지점 버튼은
      텍스트 매칭이라 정적 셀렉터로 안 잡지만, 클릭 시 실시간 로그에 뜸. */
