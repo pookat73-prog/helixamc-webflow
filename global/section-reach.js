@@ -48,6 +48,7 @@
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -124,6 +125,19 @@
       { key: 'g2',    label: '인터벤션',              sel: '.hst_col', nth: 1, self: true },
       { key: 'g3',    label: '고난도 수술',           sel: '.hst_col', nth: 2, self: true },
       { key: 'g4',    label: '특수 전문 치료',        sel: '.hst_col', nth: 3, self: true }
+    ],
+    surgery: [
+      { key: 'hero',       label: '첫화면',               sel: '.hx-sg-page section.hx-sg-responsive-frame1' },
+      { key: 'expertise',  label: '진료 분야와 재수술',    sel: '.hx-sg-page section.hx-sg-responsive-frame2' },
+      { key: 'equipment1', label: '핵심 장비 1',          sel: '.hx-sg-page section.hx-sg-responsive-frame3' },
+      { key: 'equipment2', label: '핵심 장비 2',          sel: '.hx-sg-page section.hx-sg-responsive-frame4' },
+      { key: 'equipment3', label: '핵심 장비 3',          sel: '.hx-sg-page section.hx-sg-responsive-frame5' },
+      { key: 'safety',     label: '안전 시스템',          sel: '#hx-sg-safety' },
+      { key: 'principle',  label: '수술 철학과 진료 기준', sel: '#hx-sg-principles' },
+      { key: 'pain',       label: '통증 관리',            sel: '.hx-sg-pain-oval' },
+      { key: 'daily',      label: '일상 회복 메시지',     sel: '.hx-sg-page section.hx-sg-daily-comfort-banner' },
+      { key: 'aftercare',  label: '예후 관리',            sel: '#hx-sg-aftercare' },
+      { key: 'outro',      label: '지점 선택',            sel: '.hx-sg-page a.cta_seocho_button-call-link' }
     ],
     seocho: [
       { key: 'hero',  label: '첫화면',   sel: 'section[class*="intro_backgra"]' },
