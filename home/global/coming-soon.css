@@ -86,6 +86,7 @@
   display: grid;
   gap: 8px;
   list-style: none;
+  font-family: 'ds-endendend', sans-serif;
   color: rgba(244,247,251,.82);
 }
 #hx-hero-milestones li {
