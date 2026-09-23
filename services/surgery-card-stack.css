@@ -321,7 +321,9 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 @media (prefers-reduced-motion: no-preference) {
   html.hx-sg-principle-shadow-motion .hx-sg-principle-card,
   html.hx-sg-principle-shadow-motion .hx-sg-aftercare-card {
-    box-shadow: 0 2px 10px rgba(17, 32, 44, 0) !important;
+    box-shadow:
+      11px 11px 28px -5px rgba(154, 170, 187, 0),
+      -11px -11px 28px -5px rgba(0, 117, 214, 0) !important;
     transition: box-shadow 800ms cubic-bezier(0.89, 0, 0.15, 0.97);
   }
 
@@ -329,7 +331,9 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   .hx-sg-principle-card.hx-sg-principle-shadow-visible,
   html.hx-sg-principle-shadow-motion
   .hx-sg-aftercare-card.hx-sg-principle-shadow-visible {
-    box-shadow: 0 2px 10px rgba(17, 32, 44, .05) !important;
+    box-shadow:
+      11px 11px 28px -5px rgba(154, 170, 187, 1),
+      -11px -11px 28px -5px rgba(0, 117, 214, .46) !important;
   }
 
   html.hx-sg-principle-shadow-motion
@@ -375,14 +379,18 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     padding-left: 20px;
   }
 
-  html.hx-sg-principle-shadow-motion .hx-sg-principle-card,
   html.hx-sg-principle-shadow-motion .hx-sg-aftercare-card,
-  html.hx-sg-principle-shadow-motion .hx-sg-principle-card.hx-sg-principle-shadow-visible,
   html.hx-sg-principle-shadow-motion .hx-sg-aftercare-card.hx-sg-principle-shadow-visible {
     box-shadow: none !important;
     transition: none;
   }
 
+}
+
+@media (max-width: 479px) {
+  .hx-sg-principle-card {
+    corner-bottom-right-shape: superellipse(1.4);
+  }
 }
 
 /* 통증 관리: 환자 원은 고정하고, 원 바깥의 격자만 긴장→정렬→안정 순으로 움직인다. */
