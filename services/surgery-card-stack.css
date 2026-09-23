@@ -782,7 +782,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   }
 
   [data-hx-sg-pain-motion] .hx-sg-pain-oval {
-    left: auto;
+    left: calc(50% - 167.5px);
     transform: none;
     z-index: 1;
     width: 335px;
