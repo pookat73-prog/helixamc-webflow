@@ -396,6 +396,105 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   }
 }
 
+/* 데스크톱 곡면 전환을 태블릿·모바일에서도 같은 방향으로 유지한다.
+   240px 데스크톱 반경은 화면 폭에 맞춰 줄이고, 원래 곡선이 있던 섹션에만 적용한다. */
+@media (max-width: 991px) {
+  .hx-sg-page {
+    --hx-sg-section-curve: clamp(56px, 12vw, 120px);
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame2,
+  .hx-sg-page > .hx-sg-responsive-frame6,
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    border-top-right-radius: var(--hx-sg-section-curve);
+    corner-top-right-shape: superellipse(1.4);
+  }
+
+  /* 두 번째 섹션의 곡선 바깥은 바로 위 섹션이 이어 보이도록 한다. */
+  .hx-sg-page > .hx-sg-responsive-frame1 {
+    position: relative;
+    overflow: visible;
+    z-index: 0;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame1::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: var(--hx-sg-section-curve);
+    height: var(--hx-sg-section-curve);
+    background-color: #0d1117;
+    pointer-events: none;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame2 {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7),
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10) {
+    position: relative;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7) {
+    background-color: #0d1117;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3::before,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7)::before,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: #f4f7fb;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    pointer-events: none;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7)
+  .hx-sg-principle-photo-single {
+    z-index: 0;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    overflow: clip;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame6,
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    overflow: clip;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--hx-sg-section-curve);
+    border-top: 2px solid #0075d6;
+    border-left: 2px solid #0075d6;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    -webkit-mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    pointer-events: none;
+  }
+}
+
 /* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘.
    about 페이지 크리스탈 시머(.hex-morph-symbol)와 같은 필터 톤을 축소 재사용. */
 .hx-sg-mini-symbol-wrap {
@@ -455,6 +554,23 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     border-top-right-radius: 240px;
     corner-top-right-shape: superellipse(1.4);
     z-index: 1;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame1 {
+    position: relative;
+    overflow: visible;
+    z-index: 0;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame1::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 240px;
+    height: 240px;
+    background-color: #0d1117;
+    pointer-events: none;
   }
 }
 

@@ -651,10 +651,13 @@
     '스스로 감내하기보다, 회복에만 전념할 수 있도록',
     '정교한 통증 제어에 집중합니다.'
   ];
+  var MIN_THREE_LINE_FONT_SIZE = 13;
 
   function initPainThreeLines() {
     var statement = document.querySelector(
       '.hx-sg-responsive-frame7 .hx-sg-readable-statement'
+    ) || document.querySelector(
+      '.hx-sg-daily-comfort-banner .about_history_title_standard-font'
     );
     if (!statement) return;
 
@@ -677,6 +680,7 @@
     function fit() {
       frame = null;
       statement.style.removeProperty('font-size');
+      statement.style.whiteSpace = 'nowrap';
 
       var naturalSize = parseFloat(window.getComputedStyle(statement).fontSize);
       var rect = statement.getBoundingClientRect();
@@ -700,9 +704,24 @@
       );
       if (!naturalSize || !availableWidth || !requiredWidth) return;
 
+      if (naturalSize < MIN_THREE_LINE_FONT_SIZE) {
+        statement.style.fontSize = MIN_THREE_LINE_FONT_SIZE + 'px';
+        statement.style.whiteSpace = 'normal';
+        return;
+      }
+
       if (requiredWidth <= availableWidth) return;
 
       var fittedSize = naturalSize * ((availableWidth - 2) / requiredWidth);
+
+      /* 320px 안팎에서는 세 줄을 고수하는 대신 본문이 지나치게 작아지지
+         않도록, 기존 줄 구분은 유지한 채 긴 가운데 문장만 자연스럽게 접는다. */
+      if (fittedSize < MIN_THREE_LINE_FONT_SIZE) {
+        statement.style.fontSize = MIN_THREE_LINE_FONT_SIZE + 'px';
+        statement.style.whiteSpace = 'normal';
+        return;
+      }
+
       statement.style.fontSize = fittedSize.toFixed(3) + 'px';
     }
 
