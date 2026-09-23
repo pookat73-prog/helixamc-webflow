@@ -266,14 +266,17 @@
 
 /* 모바일 세로 스택: 위·아래 원의 만나는 면에서 안쪽 외곽선이 겹치지 않게 한다. */
 @media (max-width: 991px) {
-  /* 세로 스택에서는 위쪽 첫 원이 겹침 가림막보다 앞에 남고,
-     리퍼·재수술 원은 뒤에서 파란 후광을 유지한다. */
+  /* 세로 스택에서는 리퍼·재수술 원을 더 크게, 최상단 레이어에 둔다. */
   .hx-sg-rings > .hx-sg-ring-small {
     z-index: 2 !important;
+    width: min(340px, calc(100vw - 60px)) !important;
+    height: min(340px, calc(100vw - 60px)) !important;
   }
 
   .hx-sg-rings > .hx-sg-ring-large {
-    z-index: 1 !important;
+    z-index: 3 !important;
+    width: min(440px, calc(100vw - 24px)) !important;
+    height: min(440px, calc(100vw - 24px)) !important;
   }
 
   .hx-sg-ring-draw-inner-bottom .hx-sg-ring-draw {
