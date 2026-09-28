@@ -542,6 +542,33 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 }
 
 @media (max-width: 479px) {
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    height: auto !important;
+    min-height: clamp(420px, 125vw, 560px);
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+  }
+
+  .hx-sg-daily-comfort-banner .hx-sg-transition-inner {
+    box-sizing: border-box;
+    width: 100%;
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  .hx-sg-daily-comfort-banner .about_history_title_standard-font {
+    box-sizing: border-box;
+    width: min(100%, 24em);
+    margin-right: auto;
+    margin-left: auto;
+    font-size: clamp(18px, 5vw, 21px);
+    line-height: 1.7;
+    text-align: center;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+
   .hx-sg-daily-comfort-banner .about_history_title_standard-font br {
     display: inline-block;
     width: .25em;
