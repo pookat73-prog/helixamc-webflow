@@ -163,7 +163,7 @@
   var iframeSections = [];    /* 그 틀 안의 상세 섹션들 */
   var isMobileFrame = false;  /* 지금 틀이 휴대폰 폭 기준인지 */
 
-  var MOBILE_MAX = 767;
+  var MOBILE_MAX = 991;
   function isMobileView() { return window.innerWidth <= MOBILE_MAX; }
 
   /* ----------------------------------------------------------------
@@ -1248,6 +1248,58 @@
       e.stopPropagation();
       open(url.pathname);
     }, true);
+  }
+
+  /* 검색이나 직접 링크로 들어온 인증 상세 페이지도 모달의 휴대폰 배치를 쓴다. */
+  function fitStandalonePage() {
+    var sections = Array.prototype.slice.call(document.querySelectorAll('section.cert-modal-frame'));
+    if (!sections.length) return;
+    var saved = [];
+    var fitted = false;
+    var resizeTimer = null;
+
+    function restore() {
+      if (!fitted) return;
+      saved.forEach(function (item) {
+        if (item.style === null) item.el.removeAttribute('style');
+        else item.el.setAttribute('style', item.style);
+      });
+      sections.forEach(function (sec) { sec.removeAttribute('data-helix-mobile-fit'); });
+      saved = [];
+      fitted = false;
+    }
+
+    function update() {
+      restore();
+      if (!isMobileView()) return;
+      sections.forEach(function (sec) {
+        if (/display\s*:\s*none/i.test(sec.getAttribute('style') || '')) return;
+        [sec].concat(Array.prototype.slice.call(sec.querySelectorAll('*'))).forEach(function (el) {
+          saved.push({ el: el, style: el.getAttribute('style') });
+        });
+        if (getComputedStyle(sec).display === 'none') {
+          sec.style.setProperty('display', 'flex', 'important');
+        }
+        reviveOrphanHidden(sec);
+        fitMobileSection(sec, window);
+      });
+      fitted = true;
+    }
+
+    update();
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(update).catch(function () {});
+    }
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(update, 180);
+    });
+  }
+
+  if (isDetailPath(location.pathname)) {
+    if (document.readyState !== 'loading') fitStandalonePage();
+    else document.addEventListener('DOMContentLoaded', fitStandalonePage);
+    return;
   }
 
   if (document.readyState !== 'loading') attach();

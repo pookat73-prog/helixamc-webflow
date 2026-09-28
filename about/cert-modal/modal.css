@@ -290,7 +290,7 @@ html.helix-cert-modal-open body {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .helix-cert-modal__card {
     width: 100vw;
     height: 100vh;
@@ -369,6 +369,8 @@ html.helix-cert-modal-open body {
 .helix-cert-badges { display: none; }
 
 @media (max-width: 767px) {
+  #cert { display: block !important; }
+
   /* 데스크톱용 3열 카드 — 모바일에선 세로로 길게 늘어져 한눈에 안 들어옴.
      (≤479px 에서는 Webflow 쪽에서 이미 display:none 이었음) */
   #cert .about_grid-3-_mid-align { display: none !important; }
@@ -445,4 +447,50 @@ html.helix-cert-modal-open body {
     text-align: center;
     text-wrap: balance;
   }
+}
+
+/* 독립 인증 상세 URL — 모달과 같은 본문을 태블릿까지 한 열로 읽게 한다. */
+@media (max-width: 991px) {
+  html.helix-cert-detail body {
+    background: #f4f7fb;
+    word-break: keep-all;
+  }
+  html.helix-cert-detail section.cert-modal-frame {
+    width: 100% !important;
+    max-width: 720px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    padding: 32px 24px 48px !important;
+    box-sizing: border-box;
+  }
+  html.helix-cert-detail section.cert-modal-frame > * {
+    justify-content: flex-start !important;
+  }
+  html.helix-cert-detail section.cert-modal-frame img {
+    max-width: 100%;
+    object-fit: contain;
+  }
+  html.helix-cert-detail .about_cert_title_a,
+  html.helix-cert-detail .about_cert_title_kr_a {
+    font-size: clamp(18px, 3vw, 22px) !important;
+    line-height: 1.3 !important;
+  }
+  html.helix-cert-detail .nomal-parag {
+    font-size: clamp(15px, 2vw, 16px) !important;
+    line-height: 1.6 !important;
+  }
+  html.helix-cert-detail .writing-english-copy-l {
+    font-size: clamp(28px, 8vw, 40px) !important;
+    line-height: 1.15 !important;
+  }
+  html.helix-cert-detail .text-block-25 {
+    font-size: clamp(16px, 4.4vw, 22px) !important;
+    line-height: 1.25 !important;
+  }
+  html.helix-cert-detail .text-block-25-copy-copy {
+    font-size: clamp(13px, 3.1vw, 16px) !important;
+    line-height: 1.35 !important;
+  }
+  html.helix-cert-detail .image-31 { max-width: min(40%, 200px) !important; }
 }
