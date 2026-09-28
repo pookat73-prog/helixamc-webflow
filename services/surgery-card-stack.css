@@ -495,10 +495,62 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 }
 
 @media (max-width: 479px) {
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    height: auto !important;
+    min-height: clamp(420px, 125vw, 560px);
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+    background-image:
+      radial-gradient(
+        circle farthest-corner at 96% 64%,
+        rgba(244, 247, 251, 0) 0%,
+        rgba(244, 247, 251, .04) 25%,
+        rgba(244, 247, 251, .11) 40%,
+        rgba(244, 247, 251, .24) 55%,
+        rgba(244, 247, 251, .44) 70%,
+        rgba(244, 247, 251, .72) 86%,
+        rgba(244, 247, 251, .94) 100%
+      ),
+      url("https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6ab0b4545dba02b8a03a3fa8_pain-care-daily-comfort-natural-v2-web.jpg") !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+  }
+
+  .hx-sg-daily-comfort-banner .hx-sg-transition-inner {
+    box-sizing: border-box;
+    width: 100%;
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .hx-sg-daily-comfort-banner .about_history_title_standard-font {
+    box-sizing: border-box;
+    width: min(100%, 24em);
+    margin-right: auto;
+    margin-left: auto;
+    font-size: clamp(16px, 4.5vw, 18px);
+    line-height: 1.7;
+    text-align: left;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+
   .hx-sg-daily-comfort-banner .about_history_title_standard-font br {
     display: inline-block;
     width: .25em;
     height: 0;
+  }
+
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    padding-bottom: var(--hx-sg-section-curve);
+  }
+
+  .hx-sg-page > .hx-sg-daily-comfort-banner + .hx-sg-responsive-frame7 {
+    z-index: 1;
+    margin-top: calc(-1 * var(--hx-sg-section-curve));
+    padding-top: var(--hx-sg-section-curve);
+    background-color: transparent !important;
   }
 }
 

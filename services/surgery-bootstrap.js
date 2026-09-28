@@ -792,10 +792,18 @@
     '스스로 감내하기보다, 회복에만 전념할 수 있도록',
     '정교한 통증 제어에 집중합니다.'
   ];
+  var MOBILE_LINES = [
+    '환자가 일상과 치료 과정',
+    '속의 고통을 스스로 감내하기보다,',
+    '회복에만 전념할 수 있도록\u00a0정교한',
+    '통증 제어에 집중합니다.'
+  ];
 
   function initPainThreeLines() {
     var statement = document.querySelector(
       '.hx-sg-responsive-frame7 .hx-sg-readable-statement'
+    ) || document.querySelector(
+      '.hx-sg-daily-comfort-banner .about_history_title_standard-font'
     );
     if (!statement) return;
 
@@ -814,10 +822,32 @@
     statement.style.overflowWrap = 'normal';
 
     var frame = null;
+    var mobileLayout = null;
+
+    function setLineBreaks(isMobile) {
+      if (mobileLayout === isMobile) return;
+
+      var responsiveFragment = document.createDocumentFragment();
+      (isMobile ? MOBILE_LINES : LINES).forEach(function (line, index) {
+        if (index) responsiveFragment.appendChild(document.createElement('br'));
+        responsiveFragment.appendChild(document.createTextNode(line));
+      });
+      statement.replaceChildren(responsiveFragment);
+      mobileLayout = isMobile;
+    }
 
     function fit() {
       frame = null;
       statement.style.removeProperty('font-size');
+      var isMobile = window.matchMedia('(max-width: 479px)').matches;
+      setLineBreaks(isMobile);
+      if (isMobile) {
+        statement.style.removeProperty('white-space');
+        statement.style.removeProperty('word-break');
+        statement.style.removeProperty('overflow-wrap');
+        return;
+      }
+      statement.style.whiteSpace = 'nowrap';
 
       var naturalSize = parseFloat(window.getComputedStyle(statement).fontSize);
       var rect = statement.getBoundingClientRect();
