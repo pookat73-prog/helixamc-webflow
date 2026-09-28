@@ -813,11 +813,31 @@
     statement.style.overflowWrap = 'normal';
 
     var frame = null;
+    var mobileLayout = null;
+
+    function setLineBreaks(isMobile) {
+      if (mobileLayout === isMobile) return;
+
+      var responsiveFragment = document.createDocumentFragment();
+      LINES.forEach(function (line, index) {
+        if (index === 1) {
+          responsiveFragment.appendChild(document.createElement('br'));
+        } else if (index === 2) {
+          responsiveFragment.appendChild(document.createTextNode(isMobile ? '\u00a0' : ''));
+          if (!isMobile) responsiveFragment.appendChild(document.createElement('br'));
+        }
+        responsiveFragment.appendChild(document.createTextNode(line));
+      });
+      statement.replaceChildren(responsiveFragment);
+      mobileLayout = isMobile;
+    }
 
     function fit() {
       frame = null;
       statement.style.removeProperty('font-size');
-      if (window.matchMedia('(max-width: 479px)').matches) {
+      var isMobile = window.matchMedia('(max-width: 479px)').matches;
+      setLineBreaks(isMobile);
+      if (isMobile) {
         statement.style.removeProperty('white-space');
         statement.style.removeProperty('word-break');
         statement.style.removeProperty('overflow-wrap');
