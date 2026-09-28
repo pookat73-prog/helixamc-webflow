@@ -737,6 +737,105 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 }
 
 
+/* 데스크톱 곡면 전환을 태블릿·모바일에서도 같은 방향으로 유지한다.
+   240px 데스크톱 반경은 화면 폭에 맞춰 줄이고, 원래 곡선이 있던 섹션에만 적용한다. */
+@media (max-width: 991px) {
+  .hx-sg-page {
+    --hx-sg-section-curve: clamp(56px, 12vw, 120px);
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame2,
+  .hx-sg-page > .hx-sg-responsive-frame6,
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    border-top-right-radius: var(--hx-sg-section-curve);
+    corner-top-right-shape: superellipse(1.4);
+  }
+
+  /* 모바일 첫 이미지는 이미 섹션 아래까지 이어지므로, 곡선 폭만큼 겹쳐 실제 이미지를 드러낸다. */
+  .hx-sg-page > .hx-sg-responsive-frame1 {
+    overflow: visible;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame2 {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--hx-sg-section-curve));
+    padding-top: calc(20vw + var(--hx-sg-section-curve));
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7),
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10) {
+    position: relative;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7) {
+    background-color: #0d1117;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame3::before,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7)::before,
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: #f4f7fb;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    pointer-events: none;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(7)
+  .hx-sg-principle-photo-single {
+    z-index: 0;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    overflow: clip;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame6,
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    overflow: clip;
+  }
+
+  .hx-sg-page > .hx-sg-responsive-frame7:nth-child(10)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--hx-sg-section-curve);
+    border-top: 2px solid #0075d6;
+    border-left: 2px solid #0075d6;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    -webkit-mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    pointer-events: none;
+  }
+}
+@media (max-width: 479px) {
+  .hx-sg-page > .hx-sg-daily-comfort-banner {
+    padding-bottom: var(--hx-sg-section-curve);
+  }
+
+  .hx-sg-page > .hx-sg-daily-comfort-banner + .hx-sg-responsive-frame7 {
+    z-index: 1;
+    margin-top: calc(-1 * var(--hx-sg-section-curve));
+    padding-top: var(--hx-sg-section-curve);
+    background-color: transparent !important;
+  }
+}
 /* 모바일 통증 관리: 모션은 미니 심볼을 중심으로 원 밖에서만 움직인다. */
 @media (max-width: 767px) {
   [data-hx-sg-pain-motion] {
