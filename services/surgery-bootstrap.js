@@ -798,11 +798,12 @@
     '회복에만 전념할 수 있도록\u00a0정교한',
     '통증 제어에 집중합니다.'
   ];
-  var MIN_THREE_LINE_FONT_SIZE = 13;
 
   function initPainThreeLines() {
     var statement = document.querySelector(
       '.hx-sg-responsive-frame7 .hx-sg-readable-statement'
+    ) || document.querySelector(
+      '.hx-sg-daily-comfort-banner .about_history_title_standard-font'
     );
     if (!statement) return;
 
