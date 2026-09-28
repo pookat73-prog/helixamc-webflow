@@ -547,6 +547,17 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     min-height: clamp(420px, 125vw, 560px);
     padding-right: 16px !important;
     padding-left: 16px !important;
+    background-image:
+      linear-gradient(
+        135deg,
+        rgba(244, 247, 251, .94) 25%,
+        rgba(244, 247, 251, .86) 35%,
+        rgba(244, 247, 251, .60) 48%,
+        rgba(244, 247, 251, .28) 60%,
+        rgba(244, 247, 251, .08) 72%,
+        rgba(244, 247, 251, 0) 84%
+      ),
+      url("https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6ab0b4545dba02b8a03a3fa8_pain-care-daily-comfort-natural-v2-web.jpg") !important;
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
