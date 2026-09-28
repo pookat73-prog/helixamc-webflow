@@ -788,6 +788,12 @@
     '스스로 감내하기보다, 회복에만 전념할 수 있도록',
     '정교한 통증 제어에 집중합니다.'
   ];
+  var MOBILE_LINES = [
+    '환자가 일상과 치료 과정 속의 고통을',
+    '스스로 감내하기보다,',
+    '회복에만 전념할 수 있도록',
+    '정교한 통증 제어에 집중합니다.'
+  ];
   var MIN_THREE_LINE_FONT_SIZE = 13;
 
   function initPainThreeLines() {
@@ -819,13 +825,8 @@
       if (mobileLayout === isMobile) return;
 
       var responsiveFragment = document.createDocumentFragment();
-      LINES.forEach(function (line, index) {
-        if (index === 1) {
-          responsiveFragment.appendChild(document.createElement('br'));
-        } else if (index === 2) {
-          responsiveFragment.appendChild(document.createTextNode(isMobile ? '\u00a0' : ''));
-          if (!isMobile) responsiveFragment.appendChild(document.createElement('br'));
-        }
+      (isMobile ? MOBILE_LINES : LINES).forEach(function (line, index) {
+        if (index) responsiveFragment.appendChild(document.createElement('br'));
         responsiveFragment.appendChild(document.createTextNode(line));
       });
       statement.replaceChildren(responsiveFragment);
