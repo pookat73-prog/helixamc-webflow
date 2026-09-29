@@ -631,6 +631,34 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   }
 }
 
+/* 좁은 화면에서 필기체를 한 줄로 유지하고 과목명과의 겹침을 살린다. */
+@media (max-width: 519px) {
+  body > .sj_intro_frame .sj_intro_eng-keyword {
+    font-size: min(50px, 9.4vw);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 479px) {
+  body > .sj_intro_frame .sj_intro_eng-keyword {
+    margin: calc(10px - .3em) -.18em calc(8px - .3em) calc(10px - .18em);
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  body > .sj_intro_frame .sj_intro_eng-keyword {
+    margin: calc(10px - .3em) -.18em calc(48px - .3em) calc(14px - .18em);
+  }
+}
+
+/* 세로로 긴 이미지 상자에서도 인물을 원래 비율로 꽉 차게 보여준다. */
+@media (min-width: 480px) and (max-width: 991px) {
+  body > .sj_intro_frame .image-34 {
+    object-fit: cover;
+    object-position: 48% 0;
+  }
+}
+
 /* 인트로 뒤 1~8번: 오른쪽, 왼쪽, 오른쪽, 왼쪽, 없음, 오른쪽, 왼쪽, 없음.
    superellipse(1.4)는 원형(1)과 스쿼클(2) 사이의 40% 강도다. */
 @media (min-width: 992px) {
