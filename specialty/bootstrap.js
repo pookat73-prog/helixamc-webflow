@@ -67,6 +67,8 @@
        페이지엔 ga4-base 가 없어 전부 허공으로 날아가고 있었다. */
     'global/floating-cta.css',
     'global/floating-cta.js',
+    'global/floating-cta-mobile-fix.css',
+    'global/floating-cta-mobile-fix.js',
 
     /* 스크롤 깊이(25/50/75/100%) + 페이지 뷰 */
     'global/scroll-depth.js',

@@ -1,0 +1,49 @@
+/* ================================================================
+   HELIX AMC — 모바일 플로팅 CTA 본문 겹침 보정
+   대상 경로는 floating-cta-mobile-fix.js 가 html 클래스으로 한정한다.
+   ================================================================ */
+
+@media (max-width: 767px) {
+  html.hx-fcta-overlap-fix .hx-fcta-shell {
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(10px, env(safe-area-inset-bottom));
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    max-width: calc(100vw - 20px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  }
+
+  html.hx-fcta-overlap-fix .hx-fcta-call-btn {
+    min-height: 44px;
+    padding: 0 10px;
+  }
+
+  html.hx-fcta-overlap-fix .hx-fcta-call-btn__text {
+    font-size: 13px;
+  }
+
+  html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  html.hx-fcta-overlap-fix .hx-fcta-shell.is-context-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(10px);
+  }
+
+  html.hx-fcta-page-specialty body,
+  html.hx-fcta-page-faq body {
+    box-sizing: border-box;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.hx-fcta-overlap-fix .hx-fcta-shell {
+    transition: none;
+  }
+}

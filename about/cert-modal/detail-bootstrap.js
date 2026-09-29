@@ -11,6 +11,8 @@
   var base = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@';
   var css = 'about/cert-modal/modal.css';
   var js = 'about/cert-modal/modal.js';
+  var directCss = 'about/cert-detail-direct.css';
+  var directJs = 'about/cert-detail-direct.js';
   var key = 'helix.cert-detail.sha.' + branch;
   var fresh = /[?&]fresh=1\b/.test(location.search);
 
@@ -24,9 +26,20 @@
     link.rel = 'stylesheet';
     link.href = url(ref, css);
     link.onload = function () {
+      var directLink = document.createElement('link');
+      directLink.rel = 'stylesheet';
+      directLink.href = url(ref, directCss);
+      document.head.appendChild(directLink);
+
       var script = document.createElement('script');
       script.src = url(ref, js);
       script.async = false;
+      script.onload = function () {
+        var directScript = document.createElement('script');
+        directScript.src = url(ref, directJs);
+        directScript.async = false;
+        document.head.appendChild(directScript);
+      };
       script.onerror = function () {
         if (ref !== branch) load(branch);
       };
