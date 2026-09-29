@@ -37,3 +37,11 @@ a.link-block-11,
 /* 세로폰(≤767px) 영상의학과 사진 숨김 블록은 제거됨.
    사용자가 캔버스에 사진을 다시 넣었고 라이브에도 보이길 원함(위 헤더 참고).
    ⚠️ 여기에 .dept-card_di / .dept_image_di 세로폰 숨김 규칙을 다시 추가하지 말 것. */
+
+@media (max-width: 767px) {
+  .dept-card-sub {
+    color: #D5DFEB;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}
