@@ -17,10 +17,15 @@
 
   var root = document.documentElement;
   root.classList.add('hx-fcta-overlap-fix', 'hx-fcta-page-' + page);
+  var bootAttempts = 0;
 
   function boot() {
     var shell = document.querySelector('.hx-fcta-shell');
-    if (!shell || !window.IntersectionObserver) return;
+    if (!shell) {
+      if (bootAttempts++ < 40) window.setTimeout(boot, 100);
+      return;
+    }
+    if (!window.IntersectionObserver) return;
 
     /* 홈 빠른 지점 선택에는 전화 연결이 이미 있으므로, 그 영역이 보이는 동안
        플로팅 CTA를 숨겨 같은 행동이 겹쳐 보이지 않게 한다. FAQ의 하단 전화
