@@ -2354,7 +2354,10 @@
         var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
         var subH = subHeaderH();
         var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
-        if (href === '#cert' && window.innerWidth <= 767) y -= 96;
+        if (href === '#cert' && window.innerWidth <= 767) {
+          e.stopImmediatePropagation();
+          y = t.getBoundingClientRect().top + window.pageYOffset - (subH + 54);
+        }
         window.scrollTo({ top: y, behavior: 'smooth' });
         if (history.replaceState) history.replaceState(null, '', href);
       });
