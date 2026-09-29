@@ -35,7 +35,10 @@
     if (!selector) return;
 
     var context = document.querySelector(selector);
-    if (!context) return;
+    if (!context) {
+      if (bootAttempts++ < 40) window.setTimeout(boot, 100);
+      return;
+    }
 
     var observer = new IntersectionObserver(function (entries) {
       var visible = entries.some(function (entry) {
