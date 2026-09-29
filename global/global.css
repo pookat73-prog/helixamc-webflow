@@ -159,7 +159,8 @@ html {
    글자 밑면은 거의 보이지 않게 시작하고 14deg 사선으로 부드럽게 선명해진다.
    padding + 음수 margin 은 큰 필기체가 잘리지 않게 마스크 영역만 넓힌다.
    ================================================================ */
-.subject-eng-keyword {
+.subject-eng-keyword,
+body > .sj_intro_frame .sj_intro_eng-keyword {
   -webkit-mask-image: linear-gradient(
     14deg,
     rgba(0, 0, 0, .08) 0%,
