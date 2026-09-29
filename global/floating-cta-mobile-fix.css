@@ -38,7 +38,7 @@
   html.hx-fcta-page-specialty body,
   html.hx-fcta-page-faq body {
     box-sizing: border-box;
-    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
   }
 }
 
