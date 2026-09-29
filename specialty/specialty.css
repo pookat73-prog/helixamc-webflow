@@ -250,6 +250,11 @@
 @media (max-width: 991px) {
   .spec-item-reveal { max-height: none; opacity: 1; margin-top: 5px; }
   .spec-item-cta    { transform: none; }
+  .spec-item-summary {
+    color: #3D4F6B !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
   .hx-spec-svg,
   .hx-spec-edge     { display: none; }
   .hst_sb_line      { transition: none; }

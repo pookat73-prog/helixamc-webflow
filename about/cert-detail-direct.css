@@ -1,0 +1,152 @@
+/* ================================================================
+   HELIX AMC — 인증 상세 페이지 직접 접속 화면
+   /aaha-cert · /emergency-cert · /cat-cert 전용
+   ================================================================ */
+
+html,
+body.hx-cert-direct {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body.hx-cert-direct {
+  margin: 0;
+  background: #F4F7FB;
+  color: #0D1117;
+}
+
+.hx-cert-direct-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 60px;
+  padding: 0 clamp(20px, 4vw, 64px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-sizing: border-box;
+  background: rgba(13, 17, 23, 0.96);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(10px);
+}
+
+.hx-cert-direct-header__home,
+.hx-cert-direct-header__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #F4F7FB;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hx-cert-direct-header__logo {
+  display: block;
+  width: clamp(148px, 16vw, 220px);
+  height: auto;
+}
+
+.hx-cert-direct-header__back {
+  gap: 8px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.hx-cert-direct-header__back::before {
+  content: '←';
+  color: #0075D6;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.hx-cert-direct-header a:focus-visible {
+  outline: 2px solid #0075D6;
+  outline-offset: 3px;
+}
+
+body.hx-cert-direct > .cert-modal-frame {
+  width: 100% !important;
+  max-width: 960px !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 767px) {
+  .hx-cert-direct-header {
+    min-height: 56px;
+    padding-right: 16px;
+    padding-left: 16px;
+    gap: 12px;
+  }
+
+  .hx-cert-direct-header__logo {
+    width: 154px;
+  }
+
+  .hx-cert-direct-header__back {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame {
+    height: auto !important;
+    min-height: calc(100svh - 56px) !important;
+    max-width: 100% !important;
+    padding-right: 24px !important;
+    padding-left: 24px !important;
+    overflow-x: clip !important;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame,
+  body.hx-cert-direct > .cert-modal-frame * {
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame img,
+  body.hx-cert-direct > .cert-modal-frame svg {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame .div-block-230,
+  body.hx-cert-direct > .cert-modal-frame .aaha-box {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame .aaha-box {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame .aaha-box > * {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame .div-block-81 {
+    justify-content: center !important;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame .cert_shedow {
+    width: min(68vw, 240px) !important;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 374px) {
+  .hx-cert-direct-header__logo {
+    width: 132px;
+  }
+
+  .hx-cert-direct-header__back {
+    font-size: 12px;
+  }
+}
