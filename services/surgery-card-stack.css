@@ -742,7 +742,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 
 /* 인트로 사진을 두 번째 섹션의 둥근 모서리 뒤까지 이어 보이게 한다. */
 @media (min-width: 992px) {
-  body > .sj_intro_frame,
+  body > .black-frame_mini.sj_intro_frame,
   body > .sj_intro_frame .div-block-343 {
     overflow: visible;
   }
