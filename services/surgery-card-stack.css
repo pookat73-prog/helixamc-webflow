@@ -697,18 +697,30 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   }
 }
 
+/* 예후 관리: 섹션 제목은 왼쪽, 두 카드의 제목 묶음은 가운데로 맞춘다. */
+#hx-sg-aftercare .hx-sg-section-heading h2,
+#hx-sg-aftercare .hx-sg-section-heading .hx-sg-readable-section-caption {
+  text-align: left;
+}
+
+#hx-sg-aftercare .hx-sg-aftercare-card h3,
+#hx-sg-aftercare .hx-sg-aftercare-card .hx-sg-readable-caption {
+  text-align: center;
+}
+
 /* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘.
    about 페이지 크리스탈 시머(.hex-morph-symbol)와 같은 필터 톤을 축소 재사용. */
 .hx-sg-mini-symbol-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
+  padding: 48px 0;
+  background-color: #f4f7fb;
 }
 
 .hx-sg-mini-symbol {
   display: block;
-  height: 26px;
+  height: 22px;
   width: auto;
   filter:
     drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
