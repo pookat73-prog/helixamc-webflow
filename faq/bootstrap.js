@@ -76,6 +76,8 @@
     /* 플로팅 상담 CTA — 전 페이지 오른쪽 하단 고정 */
     'global/floating-cta.css',
     'global/floating-cta.js',
+    'global/floating-cta-mobile-fix.css',
+    'global/floating-cta-mobile-fix.js',
     /* 전역 GA4 분석 (페이지 뷰 + 스크롤 깊이) */
     'global/scroll-depth.js',
     /* 페이지 체류시간 — 이 페이지에 실제로 몇 초 있었나 */
