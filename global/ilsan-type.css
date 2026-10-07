@@ -137,6 +137,15 @@
   }
 }
 
+/* Mobile hero helper over photography: keep the night-care note readable. */
+@media (max-width: 767px) {
+  html:has(.intro-ilsan-_backgra, .ilsan-photo-stack) p.card_circle-1-_memo {
+    color: #F4F7FB !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+}
+
 /* ================================================================
    HELIX AMC — 일산 분원 v2 : 480~991px 빈 구간 채우기 (2026-09-01)
 
