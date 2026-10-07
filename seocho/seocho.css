@@ -1023,3 +1023,11 @@ section.section > .div-block-220 {
     margin-top: max(10px, 0.9vw) !important;
   }
 }
+
+/* 모바일 서초 인트로 — AAHA 인증 마크 표시 */
+@media (max-width: 767px) {
+  .intro_backgra_m .div-block-89 > div:has(> img[alt="AAHA 공식 인증 체크 배지"]),
+  .intro_backgra_m2 .div-block-89 > div:has(> img[alt="AAHA 공식 인증 체크 배지"]) {
+    display: flex !important;
+  }
+}
