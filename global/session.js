@@ -189,7 +189,7 @@
      10여 건뿐이라 "의료진을 본 쪽이 1.7배" 같은 비교가 한두 건에 뒤집히는
      상태였다(측정 보고서 05-하나: 전환의 정의가 너무 좁다).
 
-     여기서 이벤트 이름만 보고 conv=1 + conv_type 을 자동으로 붙인다.
+     여기서 이벤트 이름과 필요한 분류값(action)을 보고 conv=1 + conv_type 을 자동으로 붙인다.
      각 측정 모듈은 손댈 필요가 없고, 새 전환 행동이 생기면 아래 표에 한 줄만
      더하면 전 사이트에 적용된다.
 
@@ -204,12 +204,18 @@
     { type: 'lead',    re: /^cta_form_submit$/ },
     { type: 'phone',   re: /(_phone_call($|_)|^tel_copy_|^cta_call$|^emergency_call_|^emergency_modal_call_)/ },
     { type: 'consult', re: /^cta_(open|form_open)$/ },
-    { type: 'map',     re: /(^seocho_directions_|^emergency_map_click_)/ },
-    { type: 'copy',    re: /^copy_(address|email)_/ }
+    { type: 'map',     re: /(^((seocho|ilsan)_directions_)|^emergency_map_click_|^emergency_card_map_click_)/ },
+    { type: 'copy',    re: /(^copy_(address|email)_|^(seocho|ilsan)_address_copy$)/ }
   ];
 
-  function convType(name) {
+  function convType(name, params) {
     if (!name) return '';
+    /* 구버전 emergency_card_cta 이벤트는 action 값으로 의도를 나눈다. */
+    if (name === 'emergency_card_cta') {
+      if (params && params.action === 'call') return 'phone';
+      if (params && params.action === 'map') return 'map';
+      return '';
+    }
     for (var i = 0; i < CONV_RULES.length; i++) {
       if (CONV_RULES[i].re.test(name)) return CONV_RULES[i].type;
     }
@@ -223,7 +229,7 @@
 
     /* 전환 표시 — 이미 모듈이 직접 넣었으면 존중 */
     if (params.conv === undefined) {
-      var ct = convType(eventName);
+      var ct = convType(eventName, params);
       if (ct) {
         params.conv = 1;
         params.conv_type = ct;
