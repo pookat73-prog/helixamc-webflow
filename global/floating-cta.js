@@ -224,6 +224,7 @@
   var form     = document.getElementById('hxFctaForm');
   var submitBtn= document.getElementById('hxFctaSubmit');
   var isSubmitting = false;
+  var isSubmitting = false;
   var done     = document.getElementById('hxFctaDone');
   var doneClose= document.getElementById('hxFctaDoneClose');
   var modalReturnFocus = toggle;
@@ -366,6 +367,7 @@
     setError(ownerInput, 'hxFcta_owner_err', '');
     setError(phoneInput, 'hxFcta_phone_err', '');
     setError(null,       'hxFcta_privacy_err', '');
+    setError(null,       'hxFcta_submit_err', '');
     setError(null,       'hxFcta_submit_err', '');
   }
 
