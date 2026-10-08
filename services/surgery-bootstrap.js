@@ -93,6 +93,24 @@
   window.HELIX_REF = REF;
   console.log('[surgery-bootstrap] ref', REF);
   FILES.forEach(function (path) { loadFile(path, REF); });
+
+  /* 외과 구조화 데이터도 화면 파일과 동일한 커밋 SHA에서 불러온다. */
+  fetch(cdn(REF, 'seo-snippets/surgery.html'))
+    .then(function (response) { return response.ok ? response.text() : ''; })
+    .then(function (html) {
+      if (!html) return;
+      var source = document.createElement('div');
+      source.innerHTML = html;
+      var nodes = source.querySelectorAll('script[type="application/ld+json"]');
+      for (var i = 0; i < nodes.length; i += 1) {
+        var schema = document.createElement('script');
+        schema.type = 'application/ld+json';
+        schema.setAttribute('data-helix-schema', 'surgery');
+        schema.textContent = nodes[i].textContent;
+        document.head.appendChild(schema);
+      }
+    }).catch(function () {});
+
 })();
 
 /* 외과 인트로: 두 원의 선은 고정하고, 충분히 진입한 뒤 오른쪽 원 후광만 드러낸다. */

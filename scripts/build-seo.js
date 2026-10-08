@@ -597,6 +597,60 @@ function buildServices() {
   return wrapJsonLd(jsonld) + '\n' + fallback;
 }
 
+function buildSurgery() {
+  const url = HOSPITAL.origin + '/surgery';
+  const serviceId = url + '#service';
+  const breadcrumbId = url + '#breadcrumb';
+  const graph = [
+    {
+      '@type': 'MedicalWebPage',
+      '@id': url + '#page',
+      url,
+      name: '외과 | ' + HOSPITAL.nameKo,
+      inLanguage: 'ko',
+      description: '종양·신경계·두경부 수술, 의뢰 및 재수술, 마취 모니터링, 통증 관리와 예후 관리 등 헬릭스동물메디컬센터의 반려동물 외과 진료를 안내합니다.',
+      about: { '@id': HOSPITAL.origin + '/#org' },
+      isPartOf: { '@id': HOSPITAL.origin + '/#website' },
+      mainEntity: { '@id': serviceId },
+      breadcrumb: { '@id': breadcrumbId },
+    },
+    {
+      '@type': 'Service',
+      '@id': serviceId,
+      name: HOSPITAL.nameKo + ' 외과',
+      serviceType: '반려동물 외과 진료',
+      url,
+      description: '환자의 현재 상태와 예후, 삶의 질을 고려해 수술 여부와 치료 방향을 결정합니다. 종양·신경계·두경부 수술, 의뢰 및 재수술과 수술 전 협진, 마취 모니터링, 통증 관리, 수술 후 예후 관리를 안내합니다.',
+      provider: { '@id': HOSPITAL.origin + '/#org' },
+      mainEntityOfPage: { '@id': url + '#page' },
+    },
+    {
+      ...breadcrumb([
+        { name: '홈', url: HOSPITAL.origin },
+        { name: '진료과목', url: HOSPITAL.origin + '/services' },
+        { name: '외과', url },
+      ]),
+      '@id': breadcrumbId,
+    },
+    {
+      '@type': 'MedicalOrganization',
+      '@id': HOSPITAL.origin + '/#org',
+      name: HOSPITAL.nameKo,
+      url: HOSPITAL.origin,
+      logo: HOSPITAL.logo,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': HOSPITAL.origin + '/#website',
+      url: HOSPITAL.origin,
+      name: HOSPITAL.nameKo,
+      inLanguage: 'ko',
+      publisher: { '@id': HOSPITAL.origin + '/#org' },
+    },
+  ];
+  return wrapJsonLd({ '@context': 'https://schema.org', '@graph': graph });
+}
+
 function buildFaq(faq) {
   const url = HOSPITAL.origin + '/faq';
 
@@ -669,6 +723,7 @@ function main() {
     'symptoms.html':          buildEmergency(conditions),
     'faq.html':               buildFaq(faq),
     'services.html':          buildServices(),
+    'surgery.html':           buildSurgery(),
   };
 
   for (const [file, content] of Object.entries(pages)) {
