@@ -21,9 +21,9 @@
   var PHONE_TEXT = '전화 상담';
   var PHONE_LABEL = '02-2135-9119';
 
-  /* ── 마케팅 데시보드(Firebase 실시간 DB) 상담 leads 적재 ──
-     실장님 데시보드(Helixamc_pm)가 읽는 leads 경로에 직접 한 부 더 쌓는다.
-     REST 방식 POST 라 Firebase SDK 로드 불필요. */
+  /* ── 실제 상담 저장소: 마케팅 대시보드(Firebase 실시간 DB) ──
+     대시보드(Helixamc_pm)가 읽는 leads 경로에 JSON POST로 저장한다.
+     REST 방식이라 Firebase SDK 로드 불필요. */
   var LEADS_URL = 'https://helixamc-pm-default-rtdb.firebaseio.com/branches/seocho/leads.json';
 
   /* ── 증상칸 태그(칩) 정의 ──
