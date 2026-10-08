@@ -54,6 +54,7 @@ function fixture(fetchImpl) {
   ].forEach(id => { ids[id] = element(id); });
 
   const form = ids.hxFctaForm;
+  form.style.display = '';
   form.handler = null;
   form.addEventListener = (name, handler) => {
     if (name === 'submit') form.handler = handler;
