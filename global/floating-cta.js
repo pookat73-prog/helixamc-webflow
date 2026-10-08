@@ -96,9 +96,6 @@
             ' aria-label="모달 닫기">✕</button>',
         '</div>',
 
-        /* 저장 실패 시 입력을 유지하고 안내 */
-        '<p class="hx-fcta-form__error" id="hxFcta_submit_err" role="alert"></p>',
-
         /* 완료 메시지 */
         '<div class="hx-fcta-form__done" id="hxFctaDone" aria-live="polite">',
           '<img class="hx-fcta-form__done-illust" src="' + DONE_IMG + '"',
@@ -206,6 +203,7 @@
           '<button class="hx-fcta-form__submit" id="hxFctaSubmit" type="submit">',
             '상담 신청하기',
           '</button>',
+          '<p class="hx-fcta-form__error" id="hxFcta_submit_err" role="alert"></p>',
         '</form>',
       '</div>',
     '</div>'
