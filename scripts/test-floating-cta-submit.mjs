@@ -112,7 +112,8 @@ function fixture(fetchImpl) {
     gaEvents: [],
     ga(name, data) { context.gaEvents.push({ name, data }); },
     location: { search: '', pathname: '/' },
-    navigator: { userAgent: 'submit-handler-test' }
+    navigator: { userAgent: 'submit-handler-test' },
+    URLSearchParams: class { get() { return null; } }
   };
 
   vm.runInNewContext([
