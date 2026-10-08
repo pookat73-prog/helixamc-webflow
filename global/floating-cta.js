@@ -20,7 +20,6 @@
   var PHONE      = 'tel:0221359119';
   var PHONE_TEXT = '전화 상담';
   var PHONE_LABEL = '02-2135-9119';
-  var SITE_ID   = '69d090ea69d828e27d16ea29';
 
   /* ── 마케팅 데시보드(Firebase 실시간 DB) 상담 leads 적재 ──
      실장님 데시보드(Helixamc_pm)가 읽는 leads 경로에 직접 한 부 더 쌓는다.
@@ -96,6 +95,9 @@
           '<button class="hx-fcta-modal__close" id="hxFctaModalClose" type="button"',
             ' aria-label="모달 닫기">✕</button>',
         '</div>',
+
+        /* 저장 실패 시 입력을 유지하고 안내 */
+        '<p class="hx-fcta-form__error" id="hxFcta_submit_err" role="alert"></p>',
 
         /* 완료 메시지 */
         '<div class="hx-fcta-form__done" id="hxFctaDone" aria-live="polite">',
@@ -609,10 +611,24 @@
   });
 
   /* ── 폼 제출 ── */
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
+  async function persistLead(fetcher, url, lead) {
+    var response = await fetcher(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lead)
+    });
+    if (!response.ok) throw new Error('status ' + response.status);
 
-    /* ── 필수 항목 검사 ── 칸 아래 빨간 안내문으로 표시 */
+    var saved = await response.json();
+    if (!saved || typeof saved.name !== 'string' || !saved.name) {
+      throw new Error('Firebase response did not confirm a saved key');
+    }
+    return saved.name;
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (isSubmitting) return;
     clearErrors();
 
     var ownerVal = ownerInput.value.trim();
@@ -621,132 +637,76 @@
 
     if (!ownerVal) {
       setError(ownerInput, 'hxFcta_owner_err', '성함을 입력해 주세요.');
-      bad = bad || ownerInput;
+      bad = ownerInput;
     }
-    if (!digits) {
-      setError(phoneInput, 'hxFcta_phone_err', '연락처를 입력해 주세요.');
-      bad = bad || phoneInput;
-    } else if (digits.length < 10) {
-      setError(phoneInput, 'hxFcta_phone_err', '연락처를 다시 확인해 주세요.');
-      bad = bad || phoneInput;
+    if (digits.length < 10) {
+      setError(phoneInput, 'hxFcta_phone_err', '연락처를 확인해 주세요.');
+      if (!bad) bad = phoneInput;
     }
     if (!privacyEl.checked) {
       setError(null, 'hxFcta_privacy_err', '개인정보 수집·이용에 동의해 주세요.');
-      bad = bad || privacyEl;
+      if (!bad) bad = privacyEl;
     }
     if (bad) { bad.focus(); return; }
 
+    var petName  = petInput.value.trim();
+    var symptom  = symptomInput.value.trim();
+    var species  = chipValues('species')[0] || '';
+    var ageGroup = chipValues('age')[0] || '';
+    var condList = chipValues('condition');
+    var condEtc  = etcInput.value.trim();
+    var condOut  = condList.map(function (v) {
+      return (v === '기타') ? (condEtc || '기타') : v;
+    });
+    var extras = [];
+    if (petName)        extras.push('반려동물: ' + petName);
+    if (condOut.length) extras.push('기저질환: ' + condOut.join(', '));
+    var inquiryText = symptom;
+    if (extras.length) {
+      inquiryText = (symptom ? symptom + '\n' : '') + '(' + extras.join(' / ') + ')';
+    }
+
+    var qp = new URLSearchParams(location.search);
+    var lead = {
+      name:         ownerVal,
+      phone:        digits,
+      petType:      species || '미선택',
+      petBreed:     '',
+      petAge:       ageGroup,
+      inquiry:      inquiryText,
+      submittedAt:  new Date().toISOString(),
+      userAgent:    navigator.userAgent,
+      utm_source:   qp.get('utm_source')   || '',
+      utm_medium:   qp.get('utm_medium')   || '',
+      utm_campaign: qp.get('utm_campaign') || '',
+      utm_content:  qp.get('utm_content')  || '',
+      media:        '홈페이지',
+      /* 일산 페이지 신청도 서초 지점으로 통합하는 기존 정책을 유지 */
+      fromPage:     CTA_PAGE,
+      petName:      petName,
+      species:      species,
+      ageGroup:     ageGroup,
+      conditions:   condOut,
+      conditionEtc: condEtc,
+      symptom:      symptom
+    };
+
+    isSubmitting = true;
     submitBtn.disabled = true;
     submitBtn.textContent = '전송 중…';
 
-    /* 태그(칩) 에서 고른 값 — 그룹별로 갈라서 꺼낸다 */
-    var petName   = petInput.value.trim();
-    var symptom   = symptomInput.value.trim();
-    var species   = chipValues('species')[0] || '';
-    var ageGroup  = chipValues('age')[0] || '';
-    var condList  = chipValues('condition');
-    var condEtc   = etcInput.value.trim();
-    /* '기타' 는 라벨이 아니라 사용자가 적은 질환명으로 바꿔 담는다 */
-    var condOut   = condList.map(function (v) {
-      return (v === '기타') ? (condEtc || '기타') : v;
-    });
-
-    /* ── 마케팅 대시보드(Firebase leads)로도 한 부 적재 ──
-       대시보드는 실장님 쪽 소유라 우리가 못 고친다. 그래서
-         · 기존 칸(petType/petAge/inquiry) 은 지금 형식 그대로 유지 →
-           대시보드를 손대지 않아도 정보가 하나도 안 사라짐
-         · 새 칸(species/ageGroup/conditions/petName/symptom) 을 나란히 추가 →
-           대시보드가 준비되면 이 갈래를 그대로 써서 걸러보기·정렬 가능
-       ⚠️ 기존 칸을 지우지 말 것. 지우면 대시보드가 고쳐지기 전까지 빈칸이 됨. */
     try {
-      var extras = [];
-      if (petName)        extras.push('반려동물: ' + petName);
-      if (condOut.length) extras.push('기저질환: ' + condOut.join(', '));
-
-      var inquiryText = symptom;
-      if (extras.length) {
-        inquiryText = (symptom ? symptom + '\n' : '') + '(' + extras.join(' / ') + ')';
-      }
-
-      var qp = new URLSearchParams(location.search);
-
-      var lead = {
-        /* 기존 칸 — 대시보드가 지금 읽고 있는 것 */
-        name:         ownerVal,
-        phone:        digits,
-        petType:      species || '미선택',
-        petBreed:     '',
-        petAge:       ageGroup,
-        inquiry:      inquiryText,
-        submittedAt:  new Date().toISOString(),
-        userAgent:    navigator.userAgent,
-        utm_source:   qp.get('utm_source')   || '',
-        utm_medium:   qp.get('utm_medium')   || '',
-        utm_campaign: qp.get('utm_campaign') || '',
-        utm_content:  qp.get('utm_content')  || '',
-        media:        '홈페이지',
-        /* 어느 페이지에서 넣은 신청인가 — 일산 페이지 상담도 접수는 서초
-           칸으로 일원화해 받기로 했다(사용자 확정). 그래서 지점 구분은
-           저장 경로가 아니라 이 값으로 한다. */
-        fromPage:     CTA_PAGE,
-
-        /* 새 칸 — 대시보드 개편 시 이쪽을 쓰면 됨 */
-        petName:      petName,
-        species:      species,
-        ageGroup:     ageGroup,
-        conditions:   condOut,
-        conditionEtc: condEtc,
-        symptom:      symptom
-      };
-
-      fetch(LEADS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(lead)
-      }).catch(function (err) {
-        console.error('[floating-cta] dashboard lead error:', err);
-      });
+      await persistLead(fetch, LEADS_URL, lead);
+      onSubmitSuccess();
     } catch (err) {
-      console.error('[floating-cta] dashboard lead build error:', err);
+      console.error('[floating-cta] dashboard lead submit error:', err);
+      setError(null, 'hxFcta_submit_err',
+        '저장 여부를 확인하지 못했습니다. 입력 내용은 유지했습니다. 중복 접수를 피하려면 먼저 담당자에게 접수 여부를 확인해 주세요.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = '상담 신청하기';
+    } finally {
+      isSubmitting = false;
     }
-
-    /* Webflow 폼 엔드포인트로 제출 */
-    var payload = {
-      name:           'floating-cta-form',
-      /* 2026-08 측정 개선: 전체 URL(location.href)을 그대로 넣으면 쿼리스트링에
-         실려온 토큰 같은 문자열이 그대로 폼 제출 기록에 남는다. 페이지 식별에는
-         경로만 있으면 충분하므로 쿼리·해시는 버린다. */
-      source:         location.origin + location.pathname,
-      'email-subject': '[상담신청] ' + ownerVal,
-      '보호자성함':   ownerVal,
-      '연락처':       digits,
-      '반려동물이름': petName,
-      '종':           species,
-      '연령대':       ageGroup,
-      '기저질환':     condOut.join(', '),
-      '증상':         symptom,
-      '개인정보동의': '동의'
-      /* TODO(차후): 사진 첨부 — '사진': <업로드된 파일 URL>. 입력 UI 는
-         .hx-fcta-form__group 패턴으로 추가, 업로드 후 URL 을 여기 포함. */
-    };
-
-    fetch('https://webflow.com/api/v1/form/' + SITE_ID, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(function (r) {
-      if (!r.ok) throw new Error('status ' + r.status);
-      return r.json();
-    })
-    .then(function () {
-      onSubmitSuccess();
-    })
-    .catch(function (err) {
-      console.error('[floating-cta] form submit error:', err);
-      /* 제출 실패 시에도 GA 이벤트는 발송 (전송 시도는 됐으므로) */
-      onSubmitSuccess();
-    });
   });
 
   function onSubmitSuccess() {
