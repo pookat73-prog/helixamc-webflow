@@ -368,7 +368,6 @@
     setError(phoneInput, 'hxFcta_phone_err', '');
     setError(null,       'hxFcta_privacy_err', '');
     setError(null,       'hxFcta_submit_err', '');
-    setError(null,       'hxFcta_submit_err', '');
   }
 
   ownerInput.addEventListener('input', function () {
