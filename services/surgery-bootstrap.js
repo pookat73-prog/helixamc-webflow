@@ -409,7 +409,11 @@
         symbol.draggable = false;
         motionZone.appendChild(symbol);
       }
-      if (!motionZone.parentNode) section.insertBefore(motionZone, oval);
+      if (!motionZone.parentNode) {
+        var anchor = oval;
+        while (anchor.parentNode !== section) anchor = anchor.parentNode;
+        section.insertBefore(motionZone, anchor);
+      }
       motionZone.prepend(art, rippleLayer);
       art.setAttribute('viewBox', '0 185 600 527');
       art.setAttribute('preserveAspectRatio', 'none');
