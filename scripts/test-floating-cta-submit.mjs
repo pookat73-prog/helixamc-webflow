@@ -103,8 +103,6 @@ function fixture(fetchImpl) {
     modalReturnFocus: ids.hxFctaToggle,
     phoneDigits: () => ids.hxFcta_phone.value.replace(/\D/g, ''),
     chipValues: () => [],
-    clearErrors: undefined,
-    setError: undefined,
     fetch: fetchImpl,
     LEADS_URL: 'https://mock.invalid/branches/seocho/leads.json',
     CTA_PAGE: 'home',
