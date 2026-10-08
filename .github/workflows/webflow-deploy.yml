@@ -221,6 +221,7 @@ jobs:
             "seo-snippets/symptoms.html"
             "seo-snippets/faq.html"
             "seo-snippets/services.html"
+            "seo-snippets/surgery.html"
           )
           FAILED=0
           for f in "${FILES[@]}"; do
@@ -330,6 +331,7 @@ jobs:
             "seo-snippets/symptoms.html"
             "seo-snippets/faq.html"
             "seo-snippets/services.html"
+            "seo-snippets/surgery.html"
           )
           # 참고: seocho/doctors/data/<group>/<slug>.json (의료진 28명) 은 클릭
           # 시점에 lazy fetch — 페이지 로드 차단 안 함. 첫 클릭 시 jsDelivr lazy
