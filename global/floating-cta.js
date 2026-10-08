@@ -224,7 +224,6 @@
   var form     = document.getElementById('hxFctaForm');
   var submitBtn= document.getElementById('hxFctaSubmit');
   var isSubmitting = false;
-  var isSubmitting = false;
   var done     = document.getElementById('hxFctaDone');
   var doneClose= document.getElementById('hxFctaDoneClose');
   var modalReturnFocus = toggle;
