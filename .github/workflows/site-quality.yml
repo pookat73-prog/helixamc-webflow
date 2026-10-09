@@ -30,3 +30,6 @@ jobs:
 
       - name: Run site quality checks
         run: node scripts/check-site-quality.mjs
+
+      - name: Test floating CTA Firebase submission
+        run: node scripts/test-floating-cta-submit.mjs
