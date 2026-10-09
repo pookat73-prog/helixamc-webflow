@@ -29,14 +29,14 @@
 
    상세페이지 연결
    - 상세페이지를 만들면 아래 LINKS 값만 채우면 됨 (Webflow 손댈 필요 없음).
-     예) im: '/naegwa'
+     예) im: '/internal-medicine'
    ================================================================ */
 (function () {
   'use strict';
 
   /* 진료과별 상세페이지 URL. null 이면 클릭해도 이동 안 함(안전). */
   var LINKS = {
-    im: null,  // 내과
+    im: '/internal-medicine',  // 내과
     sg: '/surgery',  // 외과
     di: null,  // 영상의학과
     oc: null,  // 안과
