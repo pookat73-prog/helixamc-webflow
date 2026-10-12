@@ -904,3 +904,30 @@
   .hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 5px; }
   .hx-fcta-shell .hx-fcta-form-btn { min-height: 34px; }
 }
+
+
+/* HELIX CTA polish: remove decorative overlap effects and align both actions. */
+.hx-fcta-shell .hx-fcta-call-btn__icon { display: none !important; }
+.hx-fcta-shell .hx-fcta-call-btn::after { content: none !important; }
+.hx-fcta-shell .hx-fcta-call-btn { justify-content: center; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: center; gap: 5px; }
+.hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+.hx-fcta-shell .hx-fcta-form-btn {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.hx-fcta-shell .hx-fcta-form-btn { min-height: 44px; }
+
+@media (max-width: 767px) {
+  .hx-fcta-shell { gap: 8px; }
+  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
+}
+@media (max-width: 360px) {
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 11px; }
+}
