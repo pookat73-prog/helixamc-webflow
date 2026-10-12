@@ -59,3 +59,9 @@
   html.hx-fcta-overlap-fix .hx-fcta-shell { width: 108px; }
   html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon { display: none; }
 }
+
+
+/* Keep the phone mark visible at the narrowest width in the compact card. */
+@media (max-width: 360px) {
+  html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon { display: inline-flex !important; }
+}
