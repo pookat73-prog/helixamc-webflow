@@ -708,50 +708,6 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   text-align: center;
 }
 
-/* 아웃트로·예후관리 사이 구분점: 헬릭스 심볼(한붓그리기 H) 미니 아이콘.
-   about 페이지 크리스탈 시머(.hex-morph-symbol)와 같은 필터 톤을 축소 재사용. */
-.hx-sg-mini-symbol-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 48px 0;
-  background-color: #f4f7fb;
-}
-
-.hx-sg-mini-symbol {
-  display: block;
-  height: 22px;
-  width: auto;
-  filter:
-    drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
-    drop-shadow(-0.5px -0.5px 0 rgba(80, 120, 255, .3))
-    drop-shadow(0 0 6px rgba(0, 117, 214, .3));
-  animation: hxSgMiniSymbolShimmer 4.5s ease-in-out infinite;
-}
-
-@keyframes hxSgMiniSymbolShimmer {
-  0%,
-  100% {
-    filter:
-      drop-shadow(0.5px 0.5px 0 rgba(127, 196, 255, .3))
-      drop-shadow(-0.5px -0.5px 0 rgba(80, 120, 255, .3))
-      drop-shadow(0 0 6px rgba(0, 117, 214, .3));
-  }
-
-  50% {
-    filter:
-      drop-shadow(-0.5px 0.5px 0 rgba(160, 220, 255, .35))
-      drop-shadow(0.5px -0.5px 0 rgba(60, 90, 255, .35))
-      drop-shadow(0 0 8px rgba(40, 150, 255, .38));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hx-sg-mini-symbol {
-    animation: none;
-  }
-}
-
 /* 인트로 사진을 두 번째 섹션의 둥근 모서리 뒤까지 이어 보이게 한다. */
 @media (min-width: 992px) {
   body > .black-frame_mini.sj_intro_frame,
