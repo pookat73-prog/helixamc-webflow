@@ -882,7 +882,7 @@
   .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 9px; }
 }
 @media (max-width: 360px) {
-  .hx-fcta-shell { width: 118px; padding: 6px; }
+  .hx-fcta-shell { width: 108px; padding: 6px; }
   .hx-fcta-shell .hx-fcta-call-btn { padding: 0 6px; gap: 5px; }
   .hx-fcta-shell .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 10px; }
