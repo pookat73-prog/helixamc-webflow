@@ -1022,3 +1022,7 @@
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 11px; }
   .hx-fcta-shell .hx-fcta-call-btn__icon { width: 14px; height: 14px; }
 }
+
+
+/* Keep the consultation row clean; the text label already names the action. */
+.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
