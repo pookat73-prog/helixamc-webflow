@@ -812,6 +812,7 @@
   background: #0075D6;
   border-color: #0075D6;
 }
+.hx-fcta-shell .hx-fcta-call-btn__text { color: currentColor; }
 .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text {
   font-size: 13px;
   font-weight: 700;
