@@ -757,78 +757,323 @@
   .hx-fcta-modal__header { top: 16px; right: 20px; }
 }
 
-
-/* 세로 CTA 묶음: 전화 상담은 아래쪽 메인 행동, 상담 신청은 위쪽 보조 행동. */
+/* HELIX x BluePearl: keep the phone CTA clear on both dark and light sections. */
 .hx-fcta-shell {
   right: 3vw;
+  width: 210px;
+  padding: 10px;
   display: flex;
-  flex-direction: column-reverse;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: stretch;
   gap: 7px;
+  box-sizing: border-box;
+  background: #F4F7FB;
+  border: 1px solid #8FA1B4;
+  border-top: 3px solid #0075D6;
+  border-radius: 3px;
+  box-shadow: 0 10px 28px rgba(13, 17, 23, 0.3);
   filter: none;
   animation: none;
 }
-.hx-fcta-call-btn {
+.hx-fcta-shell::before {
+  content: 'HELIX  /  CONTACT';
+  display: block;
+  padding: 2px 2px 6px;
+  border-bottom: 1px solid #C8D2DE;
+  color: #5A6B7D;
+  font: 700 9px/1.2 'Noto Sans KR', sans-serif;
+  letter-spacing: 0.13em;
+}
+.hx-fcta-shell .hx-fcta-call-btn {
   position: relative;
   right: auto;
   bottom: auto;
-  z-index: 2;
-  width: max-content;
+  width: 100%;
   max-width: none;
   min-width: 0;
-  min-height: 44px;
-  box-sizing: border-box;
-  overflow: visible;
-  padding: 0 12px;
-  border: 1px solid #d7e0e9;
-  border-radius: 999px;
+  min-height: 48px;
+  padding: 0 11px;
+  border: 1px solid #8FA1B4;
+  border-radius: 2px;
   margin: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  justify-content: flex-start;
+  gap: 9px;
+  box-shadow: none;
+  font-family: 'Noto Sans KR', sans-serif;
 }
-.hx-fcta-call-btn::after { display: none; }
-.hx-fcta-call-btn__icon { width: 18px; height: 18px; transform: none; }
-.hx-fcta-call-btn__icon svg { stroke: currentColor; }
-.hx-fcta-call-btn__text {
-  font-size: 14px;
-  color: currentColor;
-  transform: none;
-}
-.hx-fcta-phone-btn,
-.hx-fcta-phone-btn:link,
-.hx-fcta-phone-btn:visited,
-.hx-fcta-phone-btn:hover,
-.hx-fcta-phone-btn:active,
-.hx-fcta-phone-btn:focus,
-.hx-fcta-phone-btn:focus-visible {
+.hx-fcta-shell .hx-fcta-phone-btn,
+.hx-fcta-shell .hx-fcta-phone-btn:link,
+.hx-fcta-shell .hx-fcta-phone-btn:visited,
+.hx-fcta-shell .hx-fcta-phone-btn:hover,
+.hx-fcta-shell .hx-fcta-phone-btn:active,
+.hx-fcta-shell .hx-fcta-phone-btn:focus,
+.hx-fcta-shell .hx-fcta-phone-btn:focus-visible {
   display: inline-flex;
   color: #fff;
-  border-color: #0075d6;
-  background: #0075d6;
-  text-decoration: none;
+  background: #0075D6;
+  border-color: #0075D6;
 }
-.hx-fcta-phone-btn__label {
-  position: static;
-  transform: none;
-  color: inherit;
-  font: inherit;
+.hx-fcta-shell .hx-fcta-call-btn__text { color: currentColor; }
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
-.hx-fcta-call-btn:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18); }
+.hx-fcta-shell .hx-fcta-phone-btn__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.hx-fcta-shell .hx-fcta-phone-btn__subtext {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.hx-fcta-shell .hx-fcta-phone-btn__icon svg { stroke: currentColor; }
+.hx-fcta-shell .hx-fcta-form-btn {
+  color: #11202C;
+  background: #fff;
+  border-color: #8FA1B4;
+  font-size: 13px;
+  font-weight: 600;
+}
+.hx-fcta-shell .hx-fcta-call-btn:focus-visible {
+  outline: 2px solid #11202C;
+  outline-offset: 2px;
+}
 @media (max-width: 991px) {
   .hx-fcta-shell {
     right: max(12px, env(safe-area-inset-right));
     bottom: max(16px, env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 767px) {
+  .hx-fcta-shell {
+    width: 128px;
+    padding: 7px;
+    gap: 5px;
+  }
+  .hx-fcta-shell::before {
+    padding: 1px 2px 5px;
+    font-size: 8px;
+  }
+  .hx-fcta-shell .hx-fcta-call-btn {
+    min-height: 39px;
+    padding: 0 8px;
     gap: 6px;
   }
-  .hx-fcta-call-btn { min-height: 44px; padding: 0 12px; }
+  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 44px; }
+  .hx-fcta-shell .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
+  .hx-fcta-shell .hx-fcta-call-btn__icon {
+    width: 15px;
+    height: 15px;
+  }
+  .hx-fcta-shell .hx-fcta-phone-btn__icon {
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 9px; }
 }
-@media (max-width: 479px) {
-  .hx-fcta-shell { right: max(10px, env(safe-area-inset-right)); }
-  .hx-fcta-call-btn { padding: 0 10px; gap: 6px; }
-  .hx-fcta-call-btn__text { font-size: 13px; }
-  .hx-fcta-call-btn__icon { width: 16px; height: 16px; }
+@media (max-width: 360px) {
+  .hx-fcta-shell { width: 108px; padding: 6px; }
+  .hx-fcta-shell .hx-fcta-call-btn { padding: 0 6px; gap: 5px; }
+  .hx-fcta-shell .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 10px; }
+  .hx-fcta-shell .hx-fcta-call-btn__icon {
+    width: 14px;
+    height: 14px;
+  }
+  .hx-fcta-shell .hx-fcta-phone-btn__icon {
+    width: 14px;
+    height: 14px;
+  }
+  .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 8px; }
+}
+
+
+/* Clarify the phone-first hierarchy on compact screens. */
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
+  .hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 5px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 34px; }
+}
+
+
+/* HELIX CTA polish: remove decorative overlap effects and align both actions. */
+.hx-fcta-shell .hx-fcta-call-btn__icon { display: none !important; }
+.hx-fcta-shell .hx-fcta-call-btn::after { content: none !important; }
+.hx-fcta-shell .hx-fcta-call-btn { justify-content: center; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: center; gap: 5px; }
+.hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+.hx-fcta-shell .hx-fcta-form-btn {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.hx-fcta-shell .hx-fcta-form-btn { min-height: 44px; }
+
+@media (max-width: 767px) {
+  .hx-fcta-shell { gap: 8px; }
+  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
+}
+@media (max-width: 360px) {
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 11px; }
+}
+
+
+/* HELIX x BluePearl CTA card: scale against the home quick-access tile. */
+.hx-fcta-shell {
+  width: clamp(164px, 13vw, 248px);
+  padding: 8px;
+  gap: 6px;
+  background: #F4F7FB;
+  border: 1px solid #C8D2DE;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(13, 17, 23, .22);
+}
+.hx-fcta-shell::before { content: none !important; }
+.hx-fcta-shell .hx-fcta-phone-btn {
+  min-height: 52px;
+  padding: 0 12px;
+  border: 1px solid #0075D6;
+  border-radius: 10px;
+  justify-content: flex-start;
+  gap: 9px;
+}
+.hx-fcta-shell .hx-fcta-call-btn__icon { display: inline-flex !important; }
+.hx-fcta-shell .hx-fcta-call-btn__icon svg { stroke: currentColor; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: flex-start; gap: 4px; }
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+.hx-fcta-shell .hx-fcta-form-btn {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 10px; }
+.hx-fcta-shell .hx-fcta-form-btn {
+  position: relative;
+  width: 100%;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  box-shadow: none;
+  justify-content: flex-start;
+  gap: 10px;
+  text-align: left;
+}
+.hx-fcta-shell .hx-fcta-form-btn::after {
+  content: '↗' !important;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  bottom: auto;
+  width: auto;
+  border: 0;
+  box-shadow: none;
+  color: #52677D;
+  font: 500 13px/1 'Noto Sans KR', sans-serif;
+  transform: translateY(-50%);
+}
+@media (min-width: 992px) and (max-width: 1279px) {
+  .hx-fcta-shell { width: 18vw; }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .hx-fcta-shell { width: clamp(118px, 16vw, 148px); }
+}
+@media (max-width: 767px) {
+  .hx-fcta-shell {
+    width: clamp(112px, 36vw, 160px);
+    padding: 7px;
+    gap: 5px;
+    border-radius: 13px;
+  }
+  .hx-fcta-shell .hx-fcta-phone-btn {
+    min-height: 50px;
+    padding: 0 8px;
+    gap: 7px;
+    border-radius: 9px;
+  }
+  .hx-fcta-shell .hx-fcta-call-btn__icon,
+  .hx-fcta-shell .hx-fcta-phone-btn__icon { width: 15px; height: 15px; }
+  .hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 4px; }
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
+  .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 9px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; padding: 0 7px; gap: 7px; }
+  .hx-fcta-shell .hx-fcta-form-btn::after { right: 7px; font-size: 12px; }
+}
+@media (max-width: 360px) {
+  .hx-fcta-shell .hx-fcta-phone-btn { padding: 0 7px; gap: 6px; }
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn { font-size: 11px; }
+  .hx-fcta-shell .hx-fcta-call-btn__icon { width: 14px; height: 14px; }
+}
+
+
+/* Keep the consultation row clean; the text label already names the action. */
+.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
+
+
+/* Keep both actions aligned in width; show hierarchy through height only. */
+.hx-fcta-shell .hx-fcta-phone-btn,
+.hx-fcta-shell .hx-fcta-form-btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+.hx-fcta-shell .hx-fcta-phone-btn { min-height: 56px; }
+.hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
+.hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon { display: none !important; }
+.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; }
+}
+
+
+/* Keep the secondary request action visibly flatter than the phone CTA. */
+.hx-fcta-shell .hx-fcta-form-btn { min-height: 32px; }
+
+
+/* Match the two CTA labels; keep the phone helper line subordinate. */
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+.hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__text {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+.hx-fcta-shell .hx-fcta-phone-btn__subtext {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__text { font-size: 12px; }
+  .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 9px; }
+}
+@media (max-width: 360px) {
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__text { font-size: 11px; }
+  .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 8px; }
+}
+
+
+/* On mobile, reserve a shorter row for the secondary request action. */
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 28px; }
 }
