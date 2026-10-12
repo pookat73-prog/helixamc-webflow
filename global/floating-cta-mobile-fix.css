@@ -76,3 +76,10 @@
     padding-bottom: 0;
   }
 }
+
+/* Center the home CTA alongside the full mobile quick access stack. */
+@media (max-width: 767px) {
+  html.hx-fcta-overlap-fix.hx-fcta-page-home .hx-fcta-shell {
+    bottom: calc(58px + env(safe-area-inset-bottom));
+  }
+}
