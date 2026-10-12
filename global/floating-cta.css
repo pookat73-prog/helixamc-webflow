@@ -808,6 +808,7 @@
 .hx-fcta-shell .hx-fcta-phone-btn:active,
 .hx-fcta-shell .hx-fcta-phone-btn:focus,
 .hx-fcta-shell .hx-fcta-phone-btn:focus-visible {
+  display: inline-flex;
   color: #fff;
   background: #0075D6;
   border-color: #0075D6;
