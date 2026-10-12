@@ -44,7 +44,7 @@
 /* Keep the compact overlap state in the approved phone-first vertical layout. */
 @media (max-width: 767px) {
   html.hx-fcta-overlap-fix .hx-fcta-shell {
-    width: 132px;
+    width: 128px;
     flex-direction: column;
     align-items: stretch;
     gap: 5px;
@@ -53,4 +53,8 @@
     width: 100%;
     flex: 0 0 auto;
   }
+}
+
+@media (max-width: 360px) {
+  html.hx-fcta-overlap-fix .hx-fcta-shell { width: 118px; }
 }
