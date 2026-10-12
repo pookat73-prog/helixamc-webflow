@@ -36,7 +36,7 @@
 
   /* 진료과별 상세페이지 URL. null 이면 클릭해도 이동 안 함(안전). */
   var LINKS = {
-    im: '/internal-medicine',  // 내과
+    im: null,  // 내과 — 허브에서는 준비중 안내, 직접 URL은 유지
     sg: '/surgery',  // 외과
     di: null,  // 영상의학과
     oc: null,  // 안과
