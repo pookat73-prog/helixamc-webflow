@@ -1091,10 +1091,3 @@
   }
 }
 
-
-/* Center the home floating CTA against the full mobile Quick Access stack. */
-@media (max-width: 767px) {
-  body:has(#hx-branch-quickbar) .hx-fcta-shell {
-    bottom: calc(max(16px, env(safe-area-inset-bottom)) + 24px);
-  }
-}
