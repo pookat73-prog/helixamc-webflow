@@ -92,3 +92,11 @@
     filter: drop-shadow(0 0 4px rgba(0, 117, 214, 0.5));
   }
 }
+
+/* Keep the full scroll cue above the taller mobile Quick Access bar. */
+@media (max-width: 767px) {
+  .hx-scroll-hint {
+    top: calc(100vh - 214px - 28px);
+    top: calc(100dvh - 214px - 28px);
+  }
+}
