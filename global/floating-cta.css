@@ -1026,3 +1026,19 @@
 
 /* Keep the consultation row clean; the text label already names the action. */
 .hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
+
+
+/* Keep both actions aligned in width; show hierarchy through height only. */
+.hx-fcta-shell .hx-fcta-phone-btn,
+.hx-fcta-shell .hx-fcta-form-btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+.hx-fcta-shell .hx-fcta-phone-btn { min-height: 56px; }
+.hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
+.hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon { display: none !important; }
+.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; }
+}
