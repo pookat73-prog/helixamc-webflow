@@ -757,13 +757,19 @@
   .hx-fcta-modal__header { top: 16px; right: 20px; }
 }
 
-/* 세로 CTA 묶음: 전화 상담은 아래쪽 메인 행동, 상담 신청은 위쪽 보조 행동. */
+/* 통합 상담 카드: 전화 상담을 주 행동으로, 신청은 위쪽 보조 행동으로 둔다. */
 .hx-fcta-shell {
   right: 3vw;
+  width: clamp(164px, 12.82vw, 220px);
+  padding: 5px;
   display: flex;
   flex-direction: column-reverse;
-  align-items: flex-end;
-  gap: 7px;
+  align-items: stretch;
+  gap: 4px;
+  background: #F1F3F6;
+  border: 1px solid rgba(90, 107, 125, 0.2);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(17, 32, 44, 0.18);
   filter: none;
   animation: none;
 }
@@ -772,30 +778,48 @@
   right: auto;
   bottom: auto;
   z-index: 2;
-  width: max-content;
+  width: 100%;
   max-width: none;
   min-width: 0;
-  min-height: 44px;
+  min-height: 56px;
   box-sizing: border-box;
   overflow: visible;
-  padding: 0 12px;
-  border: 1px solid #d7e0e9;
-  border-radius: 999px;
+  padding: 0 14px;
+  border: 1px solid #D5DCE6;
+  border-radius: 11px;
   margin: 0;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
+  justify-content: flex-start;
+  gap: 10px;
+  box-shadow: none;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 .hx-fcta-call-btn::after { display: none; }
-.hx-fcta-call-btn__icon { width: 18px; height: 18px; transform: none; }
+.hx-fcta-call-btn__icon {
+  width: 18px;
+  height: 18px;
+  transform: none;
+  color: currentColor;
+}
 .hx-fcta-call-btn__icon svg { stroke: currentColor; }
 .hx-fcta-call-btn__text {
   font-size: 14px;
   color: currentColor;
   transform: none;
+}
+.hx-fcta-form-btn {
+  min-height: clamp(54px, 3.96vw, 68px);
+  padding: 0 15px;
+  color: #3A4658;
+  background: #fff;
+  border-color: #D5DCE6;
+}
+.hx-fcta-form-btn .hx-fcta-call-btn__icon {
+  color: #5A6B7D;
+}
+.hx-fcta-form-btn .hx-fcta-call-btn__text {
+  font-weight: 600;
 }
 .hx-fcta-phone-btn,
 .hx-fcta-phone-btn:link,
@@ -804,11 +828,26 @@
 .hx-fcta-phone-btn:active,
 .hx-fcta-phone-btn:focus,
 .hx-fcta-phone-btn:focus-visible {
-  display: inline-flex;
+  min-height: clamp(74px, 5.36vw, 92px);
+  padding: 0 14px;
   color: #fff;
-  border-color: #0075d6;
-  background: #0075d6;
+  border-color: #5A6B7D;
+  border-radius: 12px;
+  background: #5A6B7D;
   text-decoration: none;
+}
+.hx-fcta-phone-btn:hover,
+.hx-fcta-phone-btn:focus-visible {
+  box-shadow: 0 5px 14px rgba(17, 32, 44, 0.2);
+}
+.hx-fcta-phone-btn__icon {
+  width: clamp(36px, 2.45vw, 42px);
+  height: clamp(36px, 2.45vw, 42px);
+  padding: 9px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
 }
 .hx-fcta-phone-btn__label {
   position: static;
@@ -816,18 +855,44 @@
   color: inherit;
   font: inherit;
 }
-.hx-fcta-call-btn:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18); }
+.hx-fcta-phone-btn__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+.hx-fcta-phone-btn .hx-fcta-call-btn__text {
+  font-size: clamp(16px, 1.05vw, 18px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.hx-fcta-phone-btn__subtext {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+.hx-fcta-call-btn:hover { box-shadow: 0 4px 12px rgba(17, 32, 44, 0.16); }
+.hx-fcta-call-btn:focus-visible {
+  outline: 2px solid #5A6B7D;
+  outline-offset: 3px;
+}
 @media (max-width: 991px) {
   .hx-fcta-shell {
     right: max(12px, env(safe-area-inset-right));
     bottom: max(16px, env(safe-area-inset-bottom));
-    gap: 6px;
   }
-  .hx-fcta-call-btn { min-height: 44px; padding: 0 12px; }
 }
 @media (max-width: 479px) {
-  .hx-fcta-shell { right: max(10px, env(safe-area-inset-right)); }
-  .hx-fcta-call-btn { padding: 0 10px; gap: 6px; }
-  .hx-fcta-call-btn__text { font-size: 13px; }
-  .hx-fcta-call-btn__icon { width: 16px; height: 16px; }
+  .hx-fcta-shell {
+    right: max(10px, env(safe-area-inset-right));
+    width: min(164px, calc(100vw - 24px));
+    padding: 4px;
+    border-radius: 15px;
+  }
+  .hx-fcta-call-btn { padding: 0 10px; gap: 8px; }
+  .hx-fcta-form-btn { min-height: 52px; }
+  .hx-fcta-phone-btn { min-height: 72px; }
+  .hx-fcta-phone-btn__icon { width: 34px; height: 34px; padding: 8px; }
+  .hx-fcta-phone-btn .hx-fcta-call-btn__text { font-size: 16px; }
 }
