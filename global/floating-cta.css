@@ -1071,3 +1071,9 @@
   .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__text { font-size: 11px; }
   .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 8px; }
 }
+
+
+/* On mobile, reserve a shorter row for the secondary request action. */
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 28px; }
+}
