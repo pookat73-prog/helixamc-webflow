@@ -1077,3 +1077,16 @@
 @media (max-width: 767px) {
   .hx-fcta-shell .hx-fcta-form-btn { min-height: 28px; }
 }
+
+/* Keep the floating CTA compact on wide screens. */
+@media (min-width: 1280px) {
+  .hx-fcta-shell { width: clamp(164px, 10.4vw, 200px); }
+}
+
+/* Reserve a clear strip above the home Quick Access bar on mid-width desktops. */
+@media (min-width: 992px) and (max-width: 1279px) {
+  html.hx-fcta-page-home .hx-fcta-shell {
+    width: clamp(148px, 14vw, 176px);
+    bottom: 160px;
+  }
+}
