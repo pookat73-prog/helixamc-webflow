@@ -818,7 +818,12 @@
   font-weight: 700;
   letter-spacing: -0.02em;
 }
-.hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 2px; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
 .hx-fcta-shell .hx-fcta-phone-btn__subtext {
   color: rgba(255, 255, 255, 0.82);
   font-size: 10px;
