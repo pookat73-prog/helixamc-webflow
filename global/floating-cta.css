@@ -1046,3 +1046,28 @@
 
 /* Keep the secondary request action visibly flatter than the phone CTA. */
 .hx-fcta-shell .hx-fcta-form-btn { min-height: 32px; }
+
+
+/* Match the two CTA labels; keep the phone helper line subordinate. */
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+.hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__text {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+.hx-fcta-shell .hx-fcta-phone-btn__subtext {
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__text { font-size: 12px; }
+  .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 9px; }
+}
+@media (max-width: 360px) {
+  .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
+  .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__text { font-size: 11px; }
+  .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 8px; }
+}
