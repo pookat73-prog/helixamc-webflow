@@ -1042,3 +1042,7 @@
   .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
   .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; }
 }
+
+
+/* Keep the secondary request action visibly flatter than the phone CTA. */
+.hx-fcta-shell .hx-fcta-form-btn { min-height: 32px; }
