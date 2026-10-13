@@ -274,7 +274,7 @@
       }).join(',') + ')';
     }
     var solid = 'linear-gradient(' + base + ',' + base + ')';
-    var sweep = 'radial-gradient(ellipse 8% 15% at 50% 50%,' + tint(0.40) +
+    var sweep = 'radial-gradient(circle var(--hx-im-shine-radius) at 50% 50%,' + tint(0.40) +
       ' 0%,' + tint(0.33) + ' 35%,' + tint(0.12) + ' 68%,' + base + ' 100%)';
     var style = document.createElement('style');
     style.textContent = '.hx-im-insight-shine{background-clip:text;-webkit-background-clip:text;' +
@@ -296,17 +296,24 @@
       opacityObserver.disconnect();
       visibilityObserver.disconnect();
       heading.style.backgroundImage = sweep;
+      var bounds = heading.getBoundingClientRect();
+      var radius = bounds.width * 0.9;
+      var spread = bounds.width * 0.38;
+      var paintWidth = bounds.width * 3;
+      var paintHeight = radius * 2 + spread * 2 + bounds.height;
+      var centerX = bounds.width * 0.5;
+      var centerY = bounds.height * 0.55 - radius;
+      heading.style.setProperty('--hx-im-shine-radius', spread + 'px');
+      heading.style.backgroundSize = paintWidth + 'px ' + paintHeight + 'px';
       var path = [];
-      for (var step = 0; step <= 40; step += 1) {
-        var t = step / 40;
-        var u = 1 - t;
-        // A small downward dip followed by a long rise to the right.
-        var x = -0.3 + 1.6 * t;
-        var y = 0.2 * u * u * u + 5.1 * u * u * t -
-          0.45 * u * t * t - 0.25 * t * t * t;
-        // Convert the light center into offsets in the oversized paint area.
+      for (var step = 0; step <= 48; step += 1) {
+        var t = step / 48;
+        // The light revolves around one fixed center at a constant radius.
+        var angle = (160 - 140 * t) * Math.PI / 180;
+        var x = centerX + radius * Math.cos(angle);
+        var y = centerY + radius * Math.sin(angle);
         path.push({ offset: t, backgroundPosition:
-          ((1.5 - x) / 2 * 100) + '% ' + ((2 - y) / 3 * 100) + '%' });
+          (x - paintWidth / 2) + 'px ' + (y - paintHeight / 2) + 'px' });
       }
       animation = heading.animate(path, { duration: 2400, easing: 'linear' });
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
