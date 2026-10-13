@@ -246,7 +246,7 @@
       animation = heading.animate([
         { backgroundPosition: '100% 0' },
         { backgroundPosition: '0% 0' }
-      ], { duration: 1200, easing: 'cubic-bezier(0.4,0,0.25,1)' });
+      ], { duration: 1400, easing: 'cubic-bezier(0.4,0,0.25,1)' });
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
     }
     var opacityObserver = new MutationObserver(function () {
