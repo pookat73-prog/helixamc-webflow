@@ -179,3 +179,78 @@
     init();
   }
 })();
+/* 내과 통찰: 첫 문단 완성 후 결론 문장에 무광 표면 빛반사 한 번 */
+(function () {
+  'use strict';
+
+  function initInsightShine() {
+    if (document.documentElement.getAttribute('data-wf-page') !== '69d74a8ea2cac3ea9cfed34d') return;
+    var inner = document.querySelector('.whiteframe_open .div-block-353 .hx-im-inner');
+    if (!inner) return;
+    var first = inner.querySelector('h2:first-child');
+    var heading = inner.querySelector('h2:nth-child(2)');
+    if (!first || !heading || heading.textContent.trim() !== '그것이 수의사의 본질적인 역량입니다.') return;
+    if (heading.classList.contains('hx-im-insight-shine')) return;
+    if (!CSS.supports('background-clip', 'text') && !CSS.supports('-webkit-background-clip', 'text')) return;
+
+    var base = getComputedStyle(heading).color;
+    var rgb = base.match(/[\d.]+/g);
+    if (!rgb || rgb.length < 3) return;
+    function tint(amount) {
+      return 'rgb(' + rgb.slice(0, 3).map(function (v) {
+        return Math.round(Number(v) + (255 - Number(v)) * amount);
+      }).join(',') + ')';
+    }
+    var solid = 'linear-gradient(' + base + ',' + base + ')';
+    var sweep = 'linear-gradient(110deg,' + base + ' 22%,' + tint(0.12) +
+      ' 37%,' + tint(0.28) + ' 50%,' + tint(0.12) + ' 63%,' + base + ' 78%)';
+    var style = document.createElement('style');
+    style.textContent = '.hx-im-insight-shine{background-clip:text;-webkit-background-clip:text;' +
+      '-webkit-text-fill-color:transparent;background-size:500% 100%;background-repeat:no-repeat;}';
+    document.head.appendChild(style);
+    heading.style.backgroundImage = solid;
+    heading.style.backgroundPosition = '100% 0';
+    heading.classList.add('hx-im-insight-shine');
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduceMotion.matches || !('IntersectionObserver' in window)) return;
+    var visible = false;
+    var ready = first.style.opacity !== '' && Number(first.style.opacity) >= 0.999;
+    var played = false;
+    var animation = null;
+    function play() {
+      if (played || !ready || !visible || reduceMotion.matches) return;
+      played = true;
+      opacityObserver.disconnect();
+      visibilityObserver.disconnect();
+      heading.style.backgroundImage = sweep;
+      animation = heading.animate([
+        { backgroundPosition: '100% 0' },
+        { backgroundPosition: '0% 0' }
+      ], { duration: 1200, easing: 'cubic-bezier(0.4,0,0.25,1)' });
+      animation.onfinish = function () { heading.style.backgroundImage = solid; };
+    }
+    var opacityObserver = new MutationObserver(function () {
+      ready = Number(getComputedStyle(first).opacity) >= 0.999;
+      play();
+    });
+    opacityObserver.observe(first, { attributes: true, attributeFilter: ['style'] });
+    var visibilityObserver = new IntersectionObserver(function (entries) {
+      visible = entries[0].isIntersecting;
+      play();
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+    visibilityObserver.observe(heading);
+    reduceMotion.addEventListener('change', function (event) {
+      if (!event.matches) return;
+      opacityObserver.disconnect();
+      visibilityObserver.disconnect();
+      if (animation) animation.cancel();
+      heading.style.backgroundImage = solid;
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initInsightShine, { once: true });
+  } else {
+    initInsightShine();
+  }
+})();
