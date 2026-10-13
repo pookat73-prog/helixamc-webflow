@@ -315,6 +315,8 @@ jobs:
             "specialty/bootstrap.js"
             "specialty/specialty.css"
             "specialty/specialty.js"
+            "internal-medicine/bootstrap.js"
+            "internal-medicine/headline-highlight.js"
             "seocho/seocho.css"
             "seocho/seocho.js"
             "seocho/doctors/modal.css"
