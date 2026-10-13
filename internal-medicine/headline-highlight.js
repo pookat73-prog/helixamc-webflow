@@ -38,7 +38,7 @@
       '  width: 2px;',
       '  height: 0.9em;',
       '  border-radius: 1px;',
-      '  background: #607d95;',
+      '  background: rgba(0, 117, 214, 0.86);',
       '  opacity: 0;',
       '  pointer-events: none;',
       '  transform: translate(-100%, -50%);',
@@ -125,7 +125,7 @@
         var word = words[index];
         word.classList.add('is-current');
         window.setTimeout(function () {
-            word.classList.add('is-moving', 'is-filled');
+          word.classList.add('is-moving', 'is-filled');
           window.setTimeout(function () {
             if (index === words.length - 1) {
               window.setTimeout(function () {
