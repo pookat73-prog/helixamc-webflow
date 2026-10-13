@@ -23,10 +23,10 @@
       '  position: relative;',
       '  display: inline-block;',
       '  white-space: nowrap;',
-      '  background-image: linear-gradient(rgba(91, 119, 143, 0.22), rgba(91, 119, 143, 0.22));',
+      '  background-image: linear-gradient(rgba(0, 117, 214, 0.18), rgba(0, 117, 214, 0.18));',
       '  background-repeat: no-repeat;',
       '  background-position: left center;',
-      '  background-size: 0% 100%;',
+      '  background-size: 0% 0.9em;',
       '  transition: background-size 620ms cubic-bezier(0.4, 0, 0.2, 1);',
       '}',
       '#hx-im-intro .hx-im-highlight-word::after {',
@@ -36,9 +36,9 @@
       '  left: 0;',
       '  top: 50%;',
       '  width: 2px;',
-      '  height: 0.82em;',
+      '  height: 0.9em;',
       '  border-radius: 1px;',
-      '  background: #607d95;',
+      '  background: rgba(0, 117, 214, 0.86);',
       '  opacity: 0;',
       '  pointer-events: none;',
       '  transform: translate(-100%, -50%);',
@@ -46,10 +46,8 @@
       '}',
       '#hx-im-intro .hx-im-highlight-word.is-current::after { opacity: 0.9; }',
       '#hx-im-intro .hx-im-highlight-word.is-moving::after { left: 100%; transform: translate(0, -50%); }',
-      '#hx-im-intro .hx-im-highlight-word.is-filled { background-size: 100% 100%; }',
-      '#hx-im-intro .hx-im-highlight-word.is-blinking::after { animation: hx-im-highlight-blink 600ms steps(2, end) infinite; }',
+      '#hx-im-intro .hx-im-highlight-word.is-filled { background-size: 100% 0.9em; }',
       '#hx-im-intro .hx-im-highlight-word.is-dimmed::after { opacity: 0.3; }',
-      '@keyframes hx-im-highlight-blink { 0%, 49% { opacity: 0.9; } 50%, 100% { opacity: 0; } }',
       '@media (prefers-reduced-motion: reduce) {',
       '  #hx-im-intro .hx-im-highlight-word,',
       '  #hx-im-intro .hx-im-highlight-word::after { transition: none; animation: none; }',
@@ -109,7 +107,6 @@
     function showFinalState() {
       words.forEach(function (word) {
         word.classList.add('is-filled');
-        word.classList.remove('is-blinking');
       });
       words[2].classList.add('is-current', 'is-moving', 'is-dimmed');
     }
@@ -126,18 +123,13 @@
       var index = 0;
       function playNext() {
         var word = words[index];
-        word.classList.add('is-current', 'is-blinking');
+        word.classList.add('is-current');
         window.setTimeout(function () {
-          word.classList.remove('is-blinking');
           word.classList.add('is-moving', 'is-filled');
           window.setTimeout(function () {
             if (index === words.length - 1) {
               window.setTimeout(function () {
-                word.classList.add('is-blinking');
-                window.setTimeout(function () {
-                  word.classList.remove('is-blinking');
-                  word.classList.add('is-dimmed');
-                }, 1200);
+                word.classList.add('is-dimmed');
               }, 180);
               return;
             }
@@ -145,7 +137,7 @@
             index += 1;
             window.setTimeout(playNext, 180);
           }, 660);
-        }, index === 0 ? 600 : 300);
+        }, index === 0 ? 280 : 160);
       }
       playNext();
     }
