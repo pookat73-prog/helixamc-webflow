@@ -28,6 +28,7 @@
   var match = src.match(/@([^/]+)\/internal-medicine\/bootstrap\.js/);
   var REF = match && match[1] ? match[1] : BRANCH;
   var FILES = [
+    'global/global.css',
     'home/global/hamburger.css',
     'home/global/hamburger.js',
     'home/global/coming-soon.css',

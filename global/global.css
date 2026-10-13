@@ -322,3 +322,21 @@ select,
     transform: none;
   }
 }
+
+/* Reusable SVICC button: glow follows every instance of the shared arrow slot. */
+.link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  transition: none !important;
+  animation: hxSharedSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
+}
+
+@keyframes hxSharedSviccGlow {
+  0%, 100% { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 1); }
+  50% { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+    animation: none !important;
+    box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.76) !important;
+  }
+}
