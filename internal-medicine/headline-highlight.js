@@ -29,7 +29,7 @@
       ".whiteframe_open > .div-block-352 {",
       "  align-items: center;",
       "  flex-wrap: wrap;",
-      "  gap: 1rem 2rem;",
+      "  gap: 0.75rem;",
       "}",
       ".whiteframe_open > .div-block-352 > .for-big-eng {",
       "  position: static;",
