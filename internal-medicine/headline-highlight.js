@@ -27,7 +27,6 @@
       '  border-radius: 50%;',
       '}',
       ".whiteframe_open > .sg_rings {",
-      "  margin-top: 2rem;",
       "  align-items: center;",
       "  justify-content: center;",
       "}",
