@@ -203,7 +203,7 @@
     }
     var solid = 'linear-gradient(' + base + ',' + base + ')';
     var sweep = 'linear-gradient(110deg,' + base + ' 22%,' + tint(0.12) +
-      ' 37%,' + tint(0.28) + ' 50%,' + tint(0.12) + ' 63%,' + base + ' 78%)';
+      ' 37%,' + tint(0.40) + ' 50%,' + tint(0.12) + ' 63%,' + base + ' 78%)';
     var style = document.createElement('style');
     style.textContent = '.hx-im-insight-shine{background-clip:text;-webkit-background-clip:text;' +
       '-webkit-text-fill-color:transparent;background-size:500% 100%;background-repeat:no-repeat;}';
