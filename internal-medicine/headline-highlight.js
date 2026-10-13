@@ -289,11 +289,11 @@
       }).join(',') + ')';
     }
     var solid = 'linear-gradient(' + base + ',' + base + ')';
-    var sweep = 'radial-gradient(ellipse 24% 120% at 50% 50%,' + tint(0.40) +
+    var sweep = 'radial-gradient(ellipse 8% 15% at 50% 50%,' + tint(0.40) +
       ' 0%,' + tint(0.33) + ' 35%,' + tint(0.12) + ' 68%,' + base + ' 100%)';
     var style = document.createElement('style');
     style.textContent = '.hx-im-insight-shine{background-clip:text;-webkit-background-clip:text;' +
-      '-webkit-text-fill-color:transparent;background-size:400% 100%;background-repeat:no-repeat;}';
+      '-webkit-text-fill-color:transparent;background-size:300% 400%;background-repeat:no-repeat;}';
     document.head.appendChild(style);
     heading.style.backgroundImage = solid;
     heading.style.backgroundPosition = '100% 0';
@@ -311,10 +311,19 @@
       opacityObserver.disconnect();
       visibilityObserver.disconnect();
       heading.style.backgroundImage = sweep;
-      animation = heading.animate([
-        { backgroundPosition: '100% 0' },
-        { backgroundPosition: '0% 0' }
-      ], { duration: 2400, easing: 'linear' });
+      var path = [];
+      for (var step = 0; step <= 40; step += 1) {
+        var t = step / 40;
+        var u = 1 - t;
+        // A small downward dip followed by a long rise to the right.
+        var x = -0.3 + 1.6 * t;
+        var y = 0.2 * u * u * u + 5.1 * u * u * t -
+          0.45 * u * t * t - 0.25 * t * t * t;
+        // Convert the light center into offsets in the oversized paint area.
+        path.push({ offset: t, backgroundPosition:
+          ((1.5 - x) / 2 * 100) + '% ' + ((2 - y) / 3 * 100) + '%' });
+      }
+      animation = heading.animate(path, { duration: 2400, easing: 'linear' });
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
     }
     var opacityObserver = new MutationObserver(function () {
