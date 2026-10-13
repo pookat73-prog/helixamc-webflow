@@ -92,7 +92,7 @@
   }
 
   function init() {
-    var heading = document.querySelector('#hx-im-intro .About_Mini_Title');
+    var heading = document.querySelector('#hx-im-intro h2.about_mini_title.for-white-bg');
     if (!heading) return;
 
     var actual = (heading.textContent || '').replace(/\s+/g, ' ').trim();
