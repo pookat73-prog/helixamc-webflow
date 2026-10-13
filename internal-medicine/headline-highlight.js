@@ -278,8 +278,10 @@
       ' 0%,' + tint(0.33) + ' 35%,' + tint(0.12) + ' 68%,' + base + ' 100%)';
     var style = document.createElement('style');
     style.textContent = '.hx-im-insight-shine{background-clip:text;-webkit-background-clip:text;' +
-      '-webkit-text-fill-color:transparent;background-size:300% 400%;background-repeat:no-repeat;}';
+      '-webkit-text-fill-color:transparent;-webkit-text-stroke:0.022em var(--hx-im-shine-edge);' +
+      'background-size:300% 400%;background-repeat:no-repeat;}';
     document.head.appendChild(style);
+    heading.style.setProperty('--hx-im-shine-edge', base);
     heading.style.backgroundImage = solid;
     heading.style.backgroundPosition = '100% 0';
     heading.classList.add('hx-im-insight-shine');
