@@ -23,7 +23,7 @@
       '.whiteframe_open .sg_rings > .sg_ring.for-white-bg.left,',
       '.whiteframe_open .sg_rings > .sg_ring.for-white-bg.right {',
       '  box-sizing: border-box;',
-      '  border: 1px solid #0075d6;',
+      '  border: 1px solid transparent;',
       '  border-radius: 50%;',
       '}',
       ".whiteframe_open > .sg_rings {",
