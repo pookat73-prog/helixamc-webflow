@@ -281,11 +281,11 @@
       }).join(',') + ')';
     }
     var solid = 'linear-gradient(' + base + ',' + base + ')';
-    var sweep = 'linear-gradient(110deg,' + base + ' 22%,' + tint(0.12) +
-      ' 37%,' + tint(0.40) + ' 50%,' + tint(0.12) + ' 63%,' + base + ' 78%)';
+    var sweep = 'radial-gradient(ellipse 24% 120% at 50% 50%,' + tint(0.40) +
+      ' 0%,' + tint(0.33) + ' 35%,' + tint(0.12) + ' 68%,' + base + ' 100%)';
     var style = document.createElement('style');
     style.textContent = '.hx-im-insight-shine{background-clip:text;-webkit-background-clip:text;' +
-      '-webkit-text-fill-color:transparent;background-size:500% 100%;background-repeat:no-repeat;}';
+      '-webkit-text-fill-color:transparent;background-size:400% 100%;background-repeat:no-repeat;}';
     document.head.appendChild(style);
     heading.style.backgroundImage = solid;
     heading.style.backgroundPosition = '100% 0';
@@ -306,7 +306,7 @@
       animation = heading.animate([
         { backgroundPosition: '100% 0' },
         { backgroundPosition: '0% 0' }
-      ], { duration: 1400, easing: 'cubic-bezier(0.4,0,0.25,1)' });
+      ], { duration: 2400, easing: 'linear' });
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
     }
     var opacityObserver = new MutationObserver(function () {
