@@ -419,9 +419,7 @@
       '.sg_rings[data-hx-ring-motion="drawing"] > .sg_ring { visibility: hidden; }',
       '.whiteframe_open .sg_rings[data-hx-ring-motion="splitting"] .sg_ring.for-white-bg:is(.left,.right)::before { mask-image: none; -webkit-mask-image: none; }',
       '.sg_rings[data-hx-ring-motion="splitting"] .sg_ring::after { opacity: 0; }',
-      '.sg_rings[data-hx-ring-motion="settling"] .sg_ring::before { animation: hxImRingSettle 200ms ease-out; }',
       '.sg_rings[data-hx-ring-motion="settling"] .sg_ring::after { animation: hxImRingHalo 200ms ease-out; }',
-      '@keyframes hxImRingSettle { from { opacity: .35; } to { opacity: 1; } }',
       '@keyframes hxImRingHalo { from { opacity: 0; } to { opacity: 1; } }'
     ].join('\n');
     document.head.appendChild(style);
@@ -448,7 +446,7 @@
       svg.setAttribute('aria-hidden', 'true');
       svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;';
       var circle = document.createElementNS(svg.namespaceURI, 'circle');
-      circle.setAttribute('r', Math.max(0, bounds[0].width / 2 - .5));
+      circle.setAttribute('r', Math.max(0, bounds[0].width / 2 + .5));
       circle.setAttribute('transform', 'translate(' + cx + ' ' + cy + ') rotate(-90) scale(1 -1)');
       circle.setAttribute('fill', 'none');
       circle.setAttribute('stroke', '#0075d6');
@@ -470,12 +468,12 @@
           var dx = cx - (b.left + b.width / 2 - box.left);
           var dy = cy - (b.top + b.height / 2 - box.top);
           active.push(ring.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'translate(0,0)' }],
-            { duration: 700, easing: 'cubic-bezier(.42,0,.58,1)', fill: 'both' }));
+            { duration: 850, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'both' }));
           active.push(ring.querySelector('.sg_ring_content').animate([{ opacity: 0 }, { opacity: 1 }],
-            { delay: 100, duration: 500, easing: 'ease-out', fill: 'both' }));
+            { delay: 350, duration: 400, easing: 'ease-out', fill: 'both' }));
         });
-        later(function () { host.dataset.hxRingMotion = 'settling'; }, 550);
-        later(finish, 760);
+        later(function () { host.dataset.hxRingMotion = 'settling'; }, 700);
+        later(finish, 920);
       }, 900);
     }
     window.addEventListener('hx-im-insight-ring-start', start);
