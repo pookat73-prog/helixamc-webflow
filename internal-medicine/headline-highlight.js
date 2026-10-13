@@ -278,10 +278,39 @@
       ' 0%,' + tint(0.33) + ' 35%,' + tint(0.12) + ' 68%,' + base + ' 100%)';
     var style = document.createElement('style');
     style.textContent = '.hx-im-insight-shine{background-clip:text;-webkit-background-clip:text;' +
-      '-webkit-text-fill-color:transparent;-webkit-text-stroke:0.022em var(--hx-im-shine-edge);' +
-      'background-size:300% 400%;background-repeat:no-repeat;}';
+      '-webkit-text-fill-color:transparent;background-size:300% 400%;background-repeat:no-repeat;}';
     document.head.appendChild(style);
-    heading.style.setProperty('--hx-im-shine-edge', base);
+    // Keep the original glyph silhouette; light uses an eroded inner alpha mask.
+    var svgNS = 'http://www.w3.org/2000/svg';
+    function svgNode(tag, attributes) {
+      var node = document.createElementNS(svgNS, tag);
+      Object.keys(attributes).forEach(function (key) {
+        node.setAttribute(key, attributes[key]);
+      });
+      return node;
+    }
+    var svg = svgNode('svg', { width: '0', height: '0', 'aria-hidden': 'true', focusable: 'false' });
+    svg.style.cssText = 'position:absolute;pointer-events:none;overflow:hidden;';
+    var defs = svgNode('defs', {});
+    var filter = svgNode('filter', { id: 'hx-im-insight-inner-light',
+      x: '0%', y: '0%', width: '100%', height: '100%',
+      primitiveUnits: 'userSpaceOnUse', 'color-interpolation-filters': 'sRGB' });
+    var innerMask = svgNode('feMorphology', { in: 'SourceAlpha', operator: 'erode',
+      radius: parseFloat(getComputedStyle(heading).fontSize) * 0.022, result: 'innerAlpha' });
+    filter.appendChild(innerMask);
+    filter.appendChild(svgNode('feFlood', { 'flood-color': base, result: 'basePaint' }));
+    filter.appendChild(svgNode('feComposite', { in: 'basePaint', in2: 'SourceAlpha',
+      operator: 'in', result: 'originalGlyph' }));
+    filter.appendChild(svgNode('feComposite', { in: 'SourceGraphic', in2: 'innerAlpha',
+      operator: 'in', result: 'innerLight' }));
+    var merge = svgNode('feMerge', {});
+    merge.appendChild(svgNode('feMergeNode', { in: 'originalGlyph' }));
+    merge.appendChild(svgNode('feMergeNode', { in: 'innerLight' }));
+    filter.appendChild(merge);
+    defs.appendChild(filter);
+    svg.appendChild(defs);
+    document.body.appendChild(svg);
+    heading.style.filter = 'url("#hx-im-insight-inner-light")';
     heading.style.backgroundImage = solid;
     heading.style.backgroundPosition = '100% 0';
     heading.classList.add('hx-im-insight-shine');
@@ -298,6 +327,7 @@
       opacityObserver.disconnect();
       visibilityObserver.disconnect();
       heading.style.backgroundImage = sweep;
+      innerMask.setAttribute('radius', parseFloat(getComputedStyle(heading).fontSize) * 0.022);
       var bounds = heading.getBoundingClientRect();
       var radius = bounds.width * 0.9;
       var spread = bounds.width * 0.38;
