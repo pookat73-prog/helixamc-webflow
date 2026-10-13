@@ -27,18 +27,45 @@
 
   var match = src.match(/@([^/]+)\/internal-medicine\/bootstrap\.js/);
   var REF = match && match[1] ? match[1] : BRANCH;
-  var script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + REF +
-    '/internal-medicine/headline-highlight.js' +
-    (/^[0-9a-f]{7,40}$/i.test(REF) ? '' : '?t=' + Math.floor(Date.now() / 60000));
-  script.async = false;
-  script.onerror = function () {
-    if (REF === BRANCH) return;
-    var fallback = document.createElement('script');
-    fallback.src = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + BRANCH +
-      '/internal-medicine/headline-highlight.js?t=' + Math.floor(Date.now() / 60000);
-    fallback.async = false;
-    document.head.appendChild(fallback);
+  var FILES = [
+    'home/global/hamburger.css',
+    'home/global/hamburger.js',
+    'home/global/coming-soon.css',
+    'home/global/coming-soon.js',
+    'home/global/footer.css',
+    'home/global/footer.js',
+    'internal-medicine/headline-highlight.js'
+  ];
+
+  function loadFile(path, ref) {
+    var url = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path;
+    var cacheBust = /^[0-9a-f]{7,40}$/i.test(ref) ? '' : '?t=' + Math.floor(Date.now() / 60000);
+    var element;
+
+    if (/\.css$/i.test(path)) {
+      element = document.createElement('link');
+      element.rel = 'stylesheet';
+      element.href = url + cacheBust;
+    } else {
+      element = document.createElement('script');
+      element.src = url + cacheBust;
+      element.async = false;
+    }
+
+    element.onerror = function () {
+      if (ref !== BRANCH) loadFile(path, BRANCH);
+    };
+    document.head.appendChild(element);
+  }
+
+  var gsap = document.createElement('script');
+  gsap.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
+  gsap.async = false;
+  gsap.onload = function () {
+    FILES.forEach(function (path) { loadFile(path, REF); });
   };
-  document.head.appendChild(script);
+  gsap.onerror = function () {
+    console.warn('[internal-medicine-bootstrap] GSAP load failed; header menu was not initialized');
+  };
+  document.head.appendChild(gsap);
 })();
