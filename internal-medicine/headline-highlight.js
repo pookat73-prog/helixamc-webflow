@@ -371,6 +371,9 @@
           (x - paintWidth / 2) + 'px ' + (y - paintHeight / 2) + 'px' });
       }
       animation = heading.animate(path, { duration: 2400, easing: 'linear' });
+      window.setTimeout(function () {
+        window.dispatchEvent(new Event('hx-im-insight-ring-start'));
+      }, 1200);
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
     }
     var opacityObserver = new MutationObserver(function () {
@@ -396,4 +399,98 @@
   } else {
     initInsightShine();
   }
+})();
+
+/* 내과 통찰: 가운데 원 그리기 후 기존 두 원으로 분리 */
+(function () {
+  'use strict';
+  function initRingSequence() {
+    if (document.documentElement.getAttribute('data-wf-page') !== '69d74a8ea2cac3ea9cfed34d') return;
+    var host = document.querySelector('.whiteframe_open > .sg_rings');
+    if (!host || host.dataset.hxRingMotion) return;
+    var rings = [host.querySelector('.sg_ring.left'), host.querySelector('.sg_ring.right')];
+    if (rings.some(function (ring) { return !ring; })) return;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduced.matches || !rings[0].animate) return;
+    host.dataset.hxRingMotion = 'pending';
+    var style = document.createElement('style');
+    style.textContent = [
+      '.sg_rings[data-hx-ring-motion="pending"] > .sg_ring { visibility: hidden; }',
+      '.sg_rings[data-hx-ring-motion="drawing"] > .sg_ring { visibility: hidden; }',
+      '.whiteframe_open .sg_rings[data-hx-ring-motion="splitting"] .sg_ring.for-white-bg:is(.left,.right)::before { mask-image: none; -webkit-mask-image: none; }',
+      '.sg_rings[data-hx-ring-motion="splitting"] .sg_ring::after { opacity: 0; }',
+      '.sg_rings[data-hx-ring-motion="settling"] .sg_ring::before { animation: hxImRingSettle 200ms ease-out; }',
+      '.sg_rings[data-hx-ring-motion="settling"] .sg_ring::after { animation: hxImRingHalo 200ms ease-out; }',
+      '@keyframes hxImRingSettle { from { opacity: .35; } to { opacity: 1; } }',
+      '@keyframes hxImRingHalo { from { opacity: 0; } to { opacity: 1; } }'
+    ].join('\n');
+    document.head.appendChild(style);
+    var active = [];
+    var svg = null;
+    var timers = [];
+    var played = false;
+    function later(fn, delay) { timers.push(window.setTimeout(fn, delay)); }
+    function finish() {
+      timers.forEach(window.clearTimeout);
+      active.forEach(function (animation) { animation.cancel(); });
+      if (svg) svg.remove();
+      host.dataset.hxRingMotion = 'done';
+      window.removeEventListener('hx-im-insight-ring-start', start);
+    }
+    function start() {
+      if (played || reduced.matches) return;
+      played = true;
+      var box = host.getBoundingClientRect();
+      var bounds = rings.map(function (ring) { return ring.getBoundingClientRect(); });
+      var cx = (bounds[0].left + bounds[0].width / 2 + bounds[1].left + bounds[1].width / 2) / 2 - box.left;
+      var cy = (bounds[0].top + bounds[0].height / 2 + bounds[1].top + bounds[1].height / 2) / 2 - box.top;
+      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;';
+      var circle = document.createElementNS(svg.namespaceURI, 'circle');
+      circle.setAttribute('r', Math.max(0, bounds[0].width / 2 - .5));
+      circle.setAttribute('transform', 'translate(' + cx + ' ' + cy + ') rotate(-90) scale(1 -1)');
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', '#0075d6');
+      circle.setAttribute('stroke-width', '1');
+      circle.setAttribute('pathLength', '1');
+      circle.setAttribute('stroke-dasharray', '1');
+      circle.setAttribute('stroke-dashoffset', '1');
+      svg.appendChild(circle);
+      host.appendChild(svg);
+      host.dataset.hxRingMotion = 'drawing';
+      var draw = circle.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }],
+        { duration: 900, easing: 'cubic-bezier(.42,0,.58,1)', fill: 'forwards' });
+      active.push(draw);
+      later(function () {
+        svg.remove();
+        host.dataset.hxRingMotion = 'splitting';
+        rings.forEach(function (ring, index) {
+          var b = bounds[index];
+          var dx = cx - (b.left + b.width / 2 - box.left);
+          var dy = cy - (b.top + b.height / 2 - box.top);
+          active.push(ring.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'translate(0,0)' }],
+            { duration: 700, easing: 'cubic-bezier(.42,0,.58,1)', fill: 'both' }));
+          active.push(ring.querySelector('.sg_ring_content').animate([{ opacity: 0 }, { opacity: 1 }],
+            { delay: 100, duration: 500, easing: 'ease-out', fill: 'both' }));
+        });
+        later(function () { host.dataset.hxRingMotion = 'settling'; }, 550);
+        later(finish, 760);
+      }, 900);
+    }
+    window.addEventListener('hx-im-insight-ring-start', start);
+    reduced.addEventListener('change', function (event) { if (event.matches) finish(); });
+    window.addEventListener('resize', function () { if (played) finish(); }, { once: true });
+    // If an anchor jump skips the conclusion, still reveal the diagram in view.
+    var observer = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      var heading = document.querySelector('.whiteframe_open .hx-im-insight-shine');
+      if (heading && heading.getBoundingClientRect().bottom < 0) start();
+      if (played) observer.disconnect();
+    }, { threshold: .1 });
+    observer.observe(host);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRingSequence, { once: true });
+  } else { initRingSequence(); }
 })();
