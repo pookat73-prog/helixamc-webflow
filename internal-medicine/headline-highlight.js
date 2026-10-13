@@ -12,6 +12,23 @@
   var EXPECTED = '정밀한 진단과 숙련된 의료진의 통찰, 그리고 보호자님과의 긴밀한 소통';
   var WORD_PATTERN = /진단|통찰|소통/g;
   var STYLE_ID = 'hx-im-headline-highlight-style';
+  var RING_STYLE_ID = 'hx-im-insight-ring-style';
+
+  function addRingStyles() {
+    if (document.getElementById(RING_STYLE_ID)) return;
+
+    var style = document.createElement('style');
+    style.id = RING_STYLE_ID;
+    style.textContent = [
+      '.whiteframe_open .sg_rings > .sg_ring.for-white-bg.left,',
+      '.whiteframe_open .sg_rings > .sg_ring.for-white-bg.right {',
+      '  box-sizing: border-box;',
+      '  border: 1px solid #0075d6;',
+      '  border-radius: 50%;',
+      '}'
+    ].join('\n');
+    document.head.appendChild(style);
+  }
 
   function addStyles() {
     if (document.getElementById(STYLE_ID)) return;
@@ -101,6 +118,8 @@
   }
 
   function init() {
+    addRingStyles();
+
     var heading = document.querySelector('#hx-im-intro h2.about_mini_title.for-white-bg');
     if (!heading) return;
 
