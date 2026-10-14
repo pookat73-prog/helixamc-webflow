@@ -143,10 +143,23 @@ function checkAccessibilityContracts() {
   );
 }
 
+function checkDepartmentOutroWeightContract() {
+  const globalCss = read('global/global.css');
+  const surgeryCss = read('services/surgery-card-stack.css');
+  const selector = '.hx-sg-dept-mark-light';
+
+  check(
+    '공통 CSS의 진료과 아웃트로 기본 굵기 규칙',
+    /\.hx-sg-dept-mark-light\s*\{\s*font-weight:\s*400;\s*\}/.test(globalCss)
+      && !surgeryCss.includes(selector)
+  );
+}
+
 console.log('Helix site quality checks\n');
 checkJavaScriptSyntax();
 checkAccessibilityLoaders();
 checkAccessibilityContracts();
+checkDepartmentOutroWeightContract();
 
 if (failures.length > 0) {
   console.error(`\n${failures.length}개 검사 실패:`);

@@ -145,6 +145,11 @@ body {
      en-w400~en-w800 유틸리티가 그 예 — CLAUDE.md 폰트 절 참고). */
   font-weight: 500;
 }
+
+/* 진료과 상세 아웃트로 표식은 병원명과 분과명 모두 일반 굵기를 기본으로 한다. */
+.hx-sg-dept-mark-light {
+  font-weight: 400;
+}
 /* 윈도우 Chrome 등에서도 transform 적용된 픽셀 정렬 텍스트가 흐려지지 않도록.
    transform/translate3d 가 걸린 컨테이너의 텍스트는 subpixel 위치로 떨어져
    ClearType 가 회색 띠로 보이는 케이스 완화. */
