@@ -370,3 +370,27 @@ select,
     box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.4) !important;
   }
 }
+
+/* Department detail buttons: steady glow and arrows. The shared outro row
+   identifies detail pages; home/about keep their existing button loops. */
+body:has(#hx-im-intro, .hx-sg-cta-row) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: none !important;
+  box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.4) !important;
+}
+
+.hx-sg-cta-row .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: none !important;
+  box-shadow: 0 0 12px -2px rgba(85, 40, 170, 0.85) !important;
+}
+
+body:has(#hx-im-intro, .hx-sg-cta-row) .hx-sg-cta-row .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  box-shadow: none !important;
+}
+
+body:has(.hx-sg-cta-row) :is([data-hx-slot="arrow"],
+    .link-block > .div-block-18 > .div-block-337,
+    .cta_seocho_button-call-link > .div-block-338 > .flex-block-38)::before {
+  animation: none !important;
+  opacity: 0.76;
+  transform: none;
+}
