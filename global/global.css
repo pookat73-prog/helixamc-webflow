@@ -350,14 +350,18 @@ select,
   animation: hxImAreaCardSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
 }
 
+.hx-im-responsive-closing-frame .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  --hx-im-svicc-glow-blur: calc(0.7vw + 3px);
+}
+
 @keyframes hxImAreaCardSviccGlow {
-  0%, 100% { box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.48); }
-  50% { box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.3); }
+  0%, 100% { box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.48); }
+  50% { box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.3); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
     animation: none !important;
-    box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.4) !important;
+    box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.4) !important;
   }
 }
