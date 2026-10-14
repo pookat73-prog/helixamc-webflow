@@ -341,8 +341,12 @@ select,
   }
 }
 
-/* Internal-medicine area cards: keep the shared SVICC glow compact and subtle. */
-#hx-im-areas .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+/* Internal-medicine area cards and outro: keep the shared SVICC glow compact and subtle. */
+.hx-im-responsive-closing-frame .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+  box-shadow: none !important;
+}
+
+:is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
   animation: hxImAreaCardSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
 }
 
@@ -352,7 +356,7 @@ select,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #hx-im-areas .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
     animation: none !important;
     box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.4) !important;
   }
