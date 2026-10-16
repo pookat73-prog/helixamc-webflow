@@ -191,7 +191,32 @@
     }
   }
 
+  function restoreNativeIntroRingClasses() {
+    var groups = document.querySelectorAll('.hx-sg-responsive-frame2 .sg_rings');
+    for (var i = 0; i < groups.length; i += 1) {
+      groups[i].classList.add('hx-sg-rings');
+      var rings = groups[i].querySelectorAll('.sg_ring');
+      for (var j = 0; j < rings.length; j += 1) {
+        rings[j].classList.add('hx-sg-ring');
+        /* 기존 원 크기 클래스를 복원해, 새 별칭의 자동 높이 규칙과 충돌하지 않게 한다. */
+        if (rings[j].classList.contains('sg_ring_small')) {
+          rings[j].classList.remove('sg_ring_small');
+          rings[j].classList.add('hx-sg-ring-small');
+        }
+        if (rings[j].classList.contains('sg_ring_large')) {
+          rings[j].classList.remove('sg_ring_large');
+          rings[j].classList.add('hx-sg-ring-large');
+        }
+      }
+      var labels = groups[i].querySelectorAll('.sg_ring_note_label');
+      for (var k = 0; k < labels.length; k += 1) {
+        labels[k].classList.add('hx-sg-ring-note-label');
+      }
+    }
+  }
+
   function initIntroRingDraw() {
+    restoreNativeIntroRingClasses();
     var rings = Array.prototype.slice.call(document.querySelectorAll(RING_SELECTOR))
       .filter(isVisible);
     if (rings.length < 2) return;
@@ -830,11 +855,11 @@
   window.__HELIX_SURGERY_EQUIPMENT_BENEFITS__ = true;
 
   var BENEFITS = [
-    '조직 손상과 수술 후 회복 부담을',
-    '비교적 빠른 회복과 일상 복귀에',
-    '주변 조직의 손상을 줄이고',
-    '상처와 통증 부담을 줄이고,',
-    '출혈을 효과적으로 관리하고'
+    '조직 손상과 수술 후 회복 부담을 낮추는 데 도움을 줍니다.',
+    '비교적 빠른 회복과 일상 복귀에 도움이 됩니다.',
+    '주변 조직의 손상을 줄이고 신경 기능 회복에 유리한 수술 환경을 만듭니다.',
+    '상처와 통증 부담을 줄이고, 별도 촬영을 위한 이동 없이 수술을 이어가 마취 시간이 길어지는 요인도 줄일 수 있습니다.',
+    '출혈을 효과적으로 관리하고 반복되는 지혈 과정을 줄여 수술 시간을 단축하는 데 도움을 주며, 결과적으로 출혈과 장시간 마취에 따른 환자의 부담을 줄일 수 있습니다.'
   ];
 
   function emphasizeBenefit(paragraph, phrase) {
