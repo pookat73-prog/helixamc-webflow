@@ -316,6 +316,7 @@
   .hx-sg-rings > .hx-sg-ring-large {
     z-index: 3 !important;
     width: min(510px, calc(100vw + 120px)) !important;
+    max-width: none !important;
     height: min(510px, calc(100vw + 120px)) !important;
     -webkit-mask-image: radial-gradient(ellipse 40% 15% at 50% 0, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
     mask-image: radial-gradient(ellipse 40% 15% at 50% 0, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
