@@ -15,6 +15,8 @@
   if (window.__helixSurgeryBootstrapInit) return;
   window.__helixSurgeryBootstrapInit = true;
 
+  document.documentElement.classList.add('hx-sg-mobile-cta-bar');
+
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';

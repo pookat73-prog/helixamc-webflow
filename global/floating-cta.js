@@ -8,6 +8,8 @@
   if (window.__helixFloatingCtaInit) return;
   window.__helixFloatingCtaInit = true;
 
+  document.documentElement.classList.add('hx-fcta-mobile-bar');
+
   function boot() { if (document.body) run(); }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
