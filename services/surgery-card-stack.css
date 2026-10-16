@@ -324,6 +324,7 @@
   .hx-sg-rings > .hx-sg-ring-large {
     z-index: 3 !important;
     width: min(510px, calc(100vw + 120px)) !important;
+    max-width: none !important;
     height: min(510px, calc(100vw + 120px)) !important;
     -webkit-mask-image: radial-gradient(ellipse 40% 15% at 50% 0, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
     mask-image: radial-gradient(ellipse 40% 15% at 50% 0, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
@@ -392,6 +393,13 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   white-space: pre-line;
 }
 
+/* 모바일 전문성 문구와 위로 올라온 다음 카드 제목 사이에 읽을 간격을 둔다. */
+@media (max-width: 767px) {
+  .hx-sg-expertise-copy {
+    padding-bottom: 100px;
+  }
+}
+
 /* 예후 관리 카드의 오른쪽 아래 모서리를 수술 철학 카드와 맞춘다. */
 .hx-sg-aftercare-card {
   border-bottom-right-radius: 36px;
@@ -412,8 +420,8 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   html.hx-sg-principle-shadow-motion
   .hx-sg-aftercare-card.hx-sg-principle-shadow-visible {
     box-shadow:
-      11px 11px 28px -5px rgba(154, 170, 187, 1),
-      -11px -11px 28px -5px rgba(0, 117, 214, .46) !important;
+      5px 6px 16px -8px rgba(154, 170, 187, .52),
+      -5px -4px 14px -8px rgba(0, 117, 214, .18) !important;
   }
 
   html.hx-sg-principle-shadow-motion
@@ -422,6 +430,12 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   .hx-sg-aftercare-card.hx-sg-principle-shadow-animating {
     will-change: box-shadow;
   }
+}
+
+/* 밝은 카드의 작은 영문 부제: 기존 텍스트 색상 계열에서 대비를 높인다. */
+.hx-sg-readable-caption.hx-sg-caption-contrast,
+.hx-sg-readable-caption-center.hx-sg-caption-contrast {
+  color: #3d4f6b;
 }
 
 /* 통증 관리: 환자 원은 고정하고, 원 바깥의 격자만 긴장→정렬→안정 순으로 움직인다. */
@@ -952,7 +966,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     gap:15px !important; padding:28px 24px 30px !important;
     background:#f4f7fb !important; background-image:none !important; border:0 !important;
     border-radius:0 0 36px !important; corner-bottom-right-shape:superellipse(1.4) !important;
-    box-shadow:11px 11px 28px -5px rgba(154,170,187,1), -11px -11px 28px -5px rgba(0,117,214,.46) !important;
+    box-shadow:5px 6px 16px -8px rgba(154,170,187,.52), -5px -4px 14px -8px rgba(0,117,214,.18) !important;
   }
   #hx-sg-principles .hx-sg-principle-card::before,
   #hx-sg-principles .div-block-328 { display:none !important; content:none !important; }

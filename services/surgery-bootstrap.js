@@ -199,7 +199,32 @@
     }
   }
 
+  function restoreNativeIntroRingClasses() {
+    var groups = document.querySelectorAll('.hx-sg-responsive-frame2 .sg_rings');
+    for (var i = 0; i < groups.length; i += 1) {
+      groups[i].classList.add('hx-sg-rings');
+      var rings = groups[i].querySelectorAll('.sg_ring');
+      for (var j = 0; j < rings.length; j += 1) {
+        rings[j].classList.add('hx-sg-ring');
+        /* 기존 원 크기 클래스를 복원해, 새 별칭의 자동 높이 규칙과 충돌하지 않게 한다. */
+        if (rings[j].classList.contains('sg_ring_small')) {
+          rings[j].classList.remove('sg_ring_small');
+          rings[j].classList.add('hx-sg-ring-small');
+        }
+        if (rings[j].classList.contains('sg_ring_large')) {
+          rings[j].classList.remove('sg_ring_large');
+          rings[j].classList.add('hx-sg-ring-large');
+        }
+      }
+      var labels = groups[i].querySelectorAll('.sg_ring_note_label');
+      for (var k = 0; k < labels.length; k += 1) {
+        labels[k].classList.add('hx-sg-ring-note-label');
+      }
+    }
+  }
+
   function initIntroRingDraw() {
+    restoreNativeIntroRingClasses();
     var rings = Array.prototype.slice.call(document.querySelectorAll(RING_SELECTOR))
       .filter(isVisible);
     if (rings.length < 2) return;
@@ -784,21 +809,131 @@
     );
     if (!heading) return;
 
-    var lines = [
+    var desktopLines = [
+      '수만 건의 임상 데이터와 경험을 바탕으로',
+      '수술 중 발생할 수 있는 돌발 상황에',
+      '신속하게 대응합니다.'
+    ];
+    var mobileLines = [
+      '수만 건의 임상 데이터와',
+      '경험을 바탕으로',
+      '수술 중 발생할 수 있는',
+      '돌발 상황에 신속하게 대응합니다.'
+    ];
+    var sourceCopy = [
       '수만 건의 임상 데이터와 경험을 바탕으로',
       '수술 중 발생하는 모든 돌발 상황에',
       '즉각 대응합니다.'
-    ];
+    ].join(' ');
     var copy = heading.textContent.replace(/\s+/g, ' ').trim();
-    if (copy !== lines.join(' ')) return;
+    if (copy !== sourceCopy && copy !== desktopLines.join(' ')) return;
 
-    heading.textContent = lines.join('\n');
+    function renderStatement() {
+      var isMobile = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+      heading.textContent = (isMobile ? mobileLines : desktopLines).join('\n');
+    }
+
+    renderStatement();
+    if (window.matchMedia) {
+      var mobileQuery = window.matchMedia('(max-width: 767px)');
+      if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener('change', renderStatement);
+      } else if (mobileQuery.addListener) {
+        mobileQuery.addListener(renderStatement);
+      }
+    }
   }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initExpertiseStatement, { once: true });
   } else {
     initExpertiseStatement();
+  }
+})();
+
+/* 장비 카드: 원리 설명은 유지하고, 카드별 핵심 이점 구절만 의미 강조한다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_EQUIPMENT_BENEFITS__) return;
+  window.__HELIX_SURGERY_EQUIPMENT_BENEFITS__ = true;
+
+  var BENEFITS = [
+    '조직 손상과 수술 후 회복 부담을 낮추는 데 도움을 줍니다.',
+    '비교적 빠른 회복과 일상 복귀에 도움이 됩니다.',
+    '주변 조직의 손상을 줄이고 신경 기능 회복에 유리한 수술 환경을 만듭니다.',
+    '상처와 통증 부담을 줄이고, 별도 촬영을 위한 이동 없이 수술을 이어가 마취 시간이 길어지는 요인도 줄일 수 있습니다.',
+    '출혈을 효과적으로 관리하고 반복되는 지혈 과정을 줄여 수술 시간을 단축하는 데 도움을 주며, 결과적으로 출혈과 장시간 마취에 따른 환자의 부담을 줄일 수 있습니다.'
+  ];
+
+  function emphasizeBenefit(paragraph, phrase) {
+    if (paragraph.querySelector('strong[data-hx-sg-benefit]')) return;
+
+    var walker = document.createTreeWalker(paragraph, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var text = node.nodeValue || '';
+      var start = text.indexOf(phrase);
+      if (start < 0) continue;
+
+      var strong = document.createElement('strong');
+      strong.setAttribute('data-hx-sg-benefit', '');
+      strong.textContent = phrase;
+
+      var fragment = document.createDocumentFragment();
+      if (start) fragment.appendChild(document.createTextNode(text.slice(0, start)));
+      fragment.appendChild(strong);
+      var end = start + phrase.length;
+      if (end < text.length) fragment.appendChild(document.createTextNode(text.slice(end)));
+      node.parentNode.replaceChild(fragment, node);
+      return;
+    }
+  }
+
+  function initEquipmentBenefits() {
+    var cards = document.querySelectorAll('.hx-sg-equipment-card');
+    for (var i = 0; i < cards.length && i < BENEFITS.length; i += 1) {
+      var paragraph = cards[i].querySelector('p.hx-sg-readable-body');
+      if (paragraph) emphasizeBenefit(paragraph, BENEFITS[i]);
+    }
+  }
+
+  function initEnglishCaptionContrast() {
+    var captions = [
+      'Surgical Navigation System',
+      'Laparoscopy',
+      'Sonopet',
+      'High-end Hemostatic & Ligation Device',
+      'Risk Control through Multidisciplinary Collaboration',
+      'High-Density Staffing System',
+      'Dedicated Anesthesia Monitoring',
+      'Rapid Emergency Protocol',
+      'Evidence-Based Medicine, EBM',
+      'Multimodal Pain Management',
+      'Customized Recovery Guide by Patient',
+      'Transparent & Objective Information Sharing'
+    ];
+    var nodes = document.querySelectorAll(
+      '.hx-sg-readable-caption, .hx-sg-readable-caption-center'
+    );
+
+    for (var i = 0; i < nodes.length; i += 1) {
+      var text = nodes[i].textContent.replace(/\s+/g, ' ').trim();
+      if (captions.indexOf(text) !== -1) {
+        nodes[i].classList.add('hx-sg-caption-contrast');
+      }
+    }
+  }
+
+  function initSurgeryCopy() {
+    initEquipmentBenefits();
+    initEnglishCaptionContrast();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSurgeryCopy, { once: true });
+  } else {
+    initSurgeryCopy();
   }
 })();
 
