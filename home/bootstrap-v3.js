@@ -18,7 +18,7 @@
    - staging / main 분기: hostname 기반 (*.webflow.io → staging)
    - 알아낸 SHA 는 window.__helixCommitSha 로 본체에 넘겨 API 중복 호출 0
    - window.__helixHomeBootstrapRedirected=true 로 본체의 옛 self-redirect 차단
-   - API 실패 시 @<branch> 폴백 (안전망)
+   - API 실패 시 저장된 SHA 또는 게시된 진입점 SHA 로 복구
    - 중복 실행 가드
    ================================================================ */
 (function () {
@@ -33,6 +33,10 @@
   var OWNER  = 'pookat73-prog';
   var REPO   = 'helixamc-webflow';
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
+  /* 첫 방문에도 API 없이 복구할 수 있도록 게시된 진입점의 고정 SHA를 보관한다. */
+  var entrySrc = document.currentScript && document.currentScript.src || '';
+  var entrySha = entrySrc.match(/@([0-9a-f]{40})\/home\/bootstrap-v3\.js(?:[?#]|$)/i);
+  var PUBLISHED_REF = entrySha ? entrySha[1] : BRANCH;
 
   function load(src) {
     var s = document.createElement('script');
@@ -69,7 +73,7 @@
   var SHA_KEY = 'helix.sha.' + BRANCH;
   var RETRY_KEY = SHA_KEY + '.retryAt';
   var SHA_TTL = 600000;             /* 10분 — 보관분 재사용(조회 횟수를 크게 줄임) */
-  var SHA_FALLBACK_MAX = 43200000;  /* 12시간 — 이보다 오래된 보관분은 @BRANCH 가 더 최신 */
+  var SHA_FALLBACK_MAX = 43200000;  /* 12시간 — 오래된 보관분 대신 게시된 진입점 버전으로 복구 */
   var FRESH = /[?&]fresh=1\b/.test(location.search);
 
   /* sessionStorage(탭 하나) → localStorage(브라우저 전체). 탭·방문이 바뀌어도
@@ -91,7 +95,7 @@
 
   /* fresh=1 도 GitHub가 알린 제한 해제 시각은 건너뛰지 않는다. */
   if (retryAt > Date.now()) {
-    var pausedRef = cached && (Date.now() - cached.t) < SHA_FALLBACK_MAX ? cached.sha : BRANCH;
+    var pausedRef = cached && (Date.now() - cached.t) < SHA_FALLBACK_MAX ? cached.sha : PUBLISHED_REF;
     console.log('[helix-bootstrap] v3 → SHA 재조회 대기, @' + pausedRef + ' 재사용');
     loadBody(pausedRef);
     return;
@@ -119,13 +123,11 @@
       loadBody(sha);
     })
     .catch(function (err) {
-      /* ⚠ 여기서 곧장 @BRANCH 로 떨어지면 jsDelivr 엣지 캐시가 최대 12시간 묵은
-         파일을 계속 내줘 "고쳤는데 화면에 안 나온다" 가 반복된다(2026-08-27 사고).
-         조회가 실패해도 마지막으로 알던 커밋 번호(고정 주소 = 캐시가 꼬일 수 없음)가
-         12시간 안쪽이면 그걸 쓴다. 그보다 오래됐을 때만 @BRANCH 로 간다. */
+      /* 최근 저장 SHA를 우선하고, 첫 방문·오래된 저장값은 게시된 고정 SHA로 복구.
+         진입점이 옛 @branch 주소인 경우에만 기존 branch 복구 경로를 유지한다. */
       var usable = cached && cached.sha && (Date.now() - cached.t) < SHA_FALLBACK_MAX;
       console.warn('[helix-bootstrap] v3 SHA resolve failed → ' +
-        (usable ? '마지막 SHA @' + cached.sha.substring(0, 10) : '@' + BRANCH), err);
-      loadBody(usable ? cached.sha : BRANCH);
+        (usable ? '마지막 SHA @' + cached.sha.substring(0, 10) : '게시된 버전 @' + PUBLISHED_REF.substring(0, 10)), err);
+      loadBody(usable ? cached.sha : PUBLISHED_REF);
     });
 })();
