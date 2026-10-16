@@ -405,8 +405,8 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   html.hx-sg-principle-shadow-motion
   .hx-sg-aftercare-card.hx-sg-principle-shadow-visible {
     box-shadow:
-      11px 11px 28px -5px rgba(154, 170, 187, 1),
-      -11px -11px 28px -5px rgba(0, 117, 214, .46) !important;
+      5px 6px 16px -8px rgba(154, 170, 187, .52),
+      -5px -4px 14px -8px rgba(0, 117, 214, .18) !important;
   }
 
   html.hx-sg-principle-shadow-motion
@@ -415,6 +415,12 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   .hx-sg-aftercare-card.hx-sg-principle-shadow-animating {
     will-change: box-shadow;
   }
+}
+
+/* 밝은 카드의 작은 영문 부제: 기존 텍스트 색상 계열에서 대비를 높인다. */
+.hx-sg-readable-caption.hx-sg-caption-contrast,
+.hx-sg-readable-caption-center.hx-sg-caption-contrast {
+  color: #3d4f6b;
 }
 
 /* 장비 컴포넌트의 공용 내부 클래스를 외과 카드 안에서만 조정한다. */
@@ -993,8 +999,8 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     border-radius: 0 0 36px !important;
     corner-bottom-right-shape: superellipse(1.4) !important;
     box-shadow:
-      11px 11px 28px -5px rgba(154, 170, 187, 1),
-      -11px -11px 28px -5px rgba(0, 117, 214, .46) !important;
+      5px 6px 16px -8px rgba(154, 170, 187, .52),
+      -5px -4px 14px -8px rgba(0, 117, 214, .18) !important;
   }
 
   #hx-sg-principles .hx-sg-principle-card::before,
