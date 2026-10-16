@@ -250,6 +250,11 @@
 /* 외과 인트로 원: 기존 보더·후광 대신 스크롤 진입 시에만 그려지는 외곽선을 사용한다. */
 .hx-sg-rings > .hx-sg-ring.hx-sg-ring-draw-host {
   position: relative;
+  box-sizing: border-box;
+  aspect-ratio: 1 / 1;
+  height: auto !important;
+  min-height: 0 !important;
+  flex-shrink: 0;
   border-color: transparent !important;
   box-shadow: none !important;
 }
@@ -311,8 +316,8 @@
   background: radial-gradient(ellipse 50% 50% at 50% 50%, #0d1117 0 82%, rgba(13, 17, 23, .98) 87%, rgba(13, 17, 23, .55) 94%, rgba(13, 17, 23, 0) 100%);
 }
 
-/* 왼쪽 원의 본문은 후광 가림막 위에 남긴다. */
-.hx-sg-rings > .hx-sg-ring.hx-sg-ring-small > :not(.hx-sg-ring-draw) {
+/* 두 원의 본문은 외곽선과 융해 가림막보다 위에 남긴다. */
+.hx-sg-rings > .hx-sg-ring > :not(.hx-sg-ring-draw):not(.hx-sg-ring-overlap-shield) {
   position: relative;
   z-index: 3;
 }
