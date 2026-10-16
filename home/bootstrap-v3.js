@@ -49,6 +49,13 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/home/bootstrap.js' + q;
   }
 
+  /* 조회 실패로 고른 복구 버전도 본체에 전달해 같은 조회를 반복하지 않는다. */
+  function loadBody(ref) {
+    window.__helixHomeBootstrapRef = ref;
+    if (/^[0-9a-f]{7,40}$/i.test(ref)) window.__helixCommitSha = ref;
+    load(bodyUrl(ref));
+  }
+
   console.log('[helix-bootstrap] v3 entry → resolving latest SHA of @' + BRANCH);
 
   /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
@@ -60,6 +67,7 @@
      페이지를 둘러봐도 조회는 사실상 1회. 배포 직후 즉시 확인이 필요하면
      주소에 ?fresh=1 을 붙여 보관분을 건너뛴다. */
   var SHA_KEY = 'helix.sha.' + BRANCH;
+  var RETRY_KEY = SHA_KEY + '.retryAt';
   var SHA_TTL = 600000;             /* 10분 — 보관분 재사용(조회 횟수를 크게 줄임) */
   var SHA_FALLBACK_MAX = 43200000;  /* 12시간 — 이보다 오래된 보관분은 @BRANCH 가 더 최신 */
   var FRESH = /[?&]fresh=1\b/.test(location.search);
@@ -71,25 +79,44 @@
     try { return JSON.parse(localStorage.getItem(SHA_KEY) || 'null'); } catch (e) { return null; }
   }
   var cached = readSha();
+  if (cached && !/^[0-9a-f]{7,40}$/i.test(cached.sha || '')) cached = null;
+  var retryAt = 0;
+  try { retryAt = Number(localStorage.getItem(RETRY_KEY)) || 0; } catch (e) {}
 
   if (!FRESH && cached && cached.sha && (Date.now() - cached.t) < SHA_TTL) {
-    window.__helixCommitSha = cached.sha;
     console.log('[helix-bootstrap] v3 → 보관된 SHA 재사용 @' + cached.sha.substring(0, 10));
-    load(bodyUrl(cached.sha));
+    loadBody(cached.sha);
+    return;
+  }
+
+  /* fresh=1 도 GitHub가 알린 제한 해제 시각은 건너뛰지 않는다. */
+  if (retryAt > Date.now()) {
+    var pausedRef = cached && (Date.now() - cached.t) < SHA_FALLBACK_MAX ? cached.sha : BRANCH;
+    console.log('[helix-bootstrap] v3 → SHA 재조회 대기, @' + pausedRef + ' 재사용');
+    loadBody(pausedRef);
     return;
   }
 
   fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH +
         '?t=' + Math.floor(Date.now() / 60000),
         { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (r) {
+      if (r.ok) return r.json();
+      if (r.status === 403 || r.status === 429) {
+        var resetAt = Number(r.headers.get('X-RateLimit-Reset')) * 1000;
+        var retryAfter = Number(r.headers.get('Retry-After')) * 1000;
+        retryAt = Math.max(Date.now() + 60000, resetAt || 0, Date.now() + (retryAfter || 0));
+        try { localStorage.setItem(RETRY_KEY, String(retryAt)); } catch (e) {}
+      }
+      return Promise.reject(r.status);
+    })
     .then(function (d) {
       var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 40);
-      if (!sha) throw new Error('no sha');
-      window.__helixCommitSha = sha;
+      if (!/^[0-9a-f]{40}$/i.test(sha)) throw new Error('invalid sha');
       try { localStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
+      try { localStorage.removeItem(RETRY_KEY); } catch (e) {}
       console.log('[helix-bootstrap] v3 → loading bootstrap @' + sha.substring(0, 10) + ' (immutable)');
-      load(bodyUrl(sha));
+      loadBody(sha);
     })
     .catch(function (err) {
       /* ⚠ 여기서 곧장 @BRANCH 로 떨어지면 jsDelivr 엣지 캐시가 최대 12시간 묵은
@@ -99,6 +126,6 @@
       var usable = cached && cached.sha && (Date.now() - cached.t) < SHA_FALLBACK_MAX;
       console.warn('[helix-bootstrap] v3 SHA resolve failed → ' +
         (usable ? '마지막 SHA @' + cached.sha.substring(0, 10) : '@' + BRANCH), err);
-      load(bodyUrl(usable ? cached.sha : BRANCH));
+      loadBody(usable ? cached.sha : BRANCH);
     });
 })();
