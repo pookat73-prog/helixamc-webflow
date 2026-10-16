@@ -4,7 +4,7 @@
    ================================================================ */
 
 @media (max-width: 767px) {
-  html.hx-fcta-overlap-fix .hx-fcta-shell {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-shell {
     right: max(10px, env(safe-area-inset-right));
     bottom: max(10px, env(safe-area-inset-bottom));
     flex-direction: row;
@@ -14,63 +14,63 @@
     transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
   }
 
-  html.hx-fcta-overlap-fix .hx-fcta-call-btn {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-call-btn {
     min-height: 44px;
     padding: 0 10px;
   }
 
-  html.hx-fcta-overlap-fix .hx-fcta-call-btn__text {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-call-btn__text {
     font-size: 13px;
   }
 
-  html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-call-btn__icon {
     width: 16px;
     height: 16px;
   }
 
-  html.hx-fcta-page-specialty body,
-  html.hx-fcta-page-faq body {
+  html.hx-fcta-page-specialty:not(.hx-fcta-mobile-bar) body,
+  html.hx-fcta-page-faq:not(.hx-fcta-mobile-bar) body {
     box-sizing: border-box;
     padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.hx-fcta-overlap-fix .hx-fcta-shell {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-shell {
     transition: none;
   }
 }
 
 /* Keep the compact overlap state in the approved phone-first vertical layout. */
 @media (max-width: 767px) {
-  html.hx-fcta-overlap-fix .hx-fcta-shell {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-shell {
     width: 128px;
     flex-direction: column;
     align-items: stretch;
     gap: 5px;
   }
-  html.hx-fcta-overlap-fix .hx-fcta-shell .hx-fcta-call-btn {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-shell .hx-fcta-call-btn {
     width: 100%;
     flex: 0 0 auto;
   }
 }
 
 @media (max-width: 360px) {
-  html.hx-fcta-overlap-fix .hx-fcta-shell { width: 108px; }
-  html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon { display: none; }
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-shell { width: 108px; }
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-call-btn__icon { display: none; }
 }
 
 
 /* Keep the phone mark visible at the narrowest width in the compact card. */
 @media (max-width: 360px) {
-  html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon { display: inline-flex !important; }
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-call-btn__icon { display: inline-flex !important; }
 }
 
 
 /* The overlap fix must preserve the tall phone action and short form row. */
 @media (max-width: 767px) {
-  html.hx-fcta-overlap-fix .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
-  html.hx-fcta-overlap-fix .hx-fcta-shell .hx-fcta-form-btn {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar) .hx-fcta-shell .hx-fcta-form-btn {
     min-height: 28px;
     padding-top: 0;
     padding-bottom: 0;
@@ -79,7 +79,7 @@
 
 /* Center the home CTA alongside the full mobile quick access stack. */
 @media (max-width: 767px) {
-  html.hx-fcta-overlap-fix.hx-fcta-page-home .hx-fcta-shell {
+  html.hx-fcta-overlap-fix:not(.hx-fcta-mobile-bar).hx-fcta-page-home .hx-fcta-shell {
     bottom: calc(58px + env(safe-area-inset-bottom));
   }
 }
