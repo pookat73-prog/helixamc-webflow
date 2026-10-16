@@ -378,11 +378,42 @@
 
   /* 세로 스택에서는 리퍼·재수술 원을 더 크게, 최상단 레이어에 둔다. */
   .hx-sg-rings > .hx-sg-ring-small {
+    --hx-sg-small-diameter: min(390px, calc(100vw - 32px));
     z-index: 2 !important;
-    width: min(340px, calc(100vw - 60px)) !important;
-    height: min(340px, calc(100vw - 60px)) !important;
+    width: var(--hx-sg-small-diameter) !important;
+    padding: clamp(28px, calc(var(--hx-sg-small-diameter) * .25 - 43.5px), 54px) !important;
     -webkit-mask-image: radial-gradient(ellipse 40% 15% at 50% 100%, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
     mask-image: radial-gradient(ellipse 40% 15% at 50% 100%, transparent 0 15%, rgba(0, 0, 0, .4) 60%, #000 100%);
+  }
+
+  /* 지름과 글자·여백을 함께 조절해 화면 구간 경계에서 밀도가 급변하지 않게 한다. */
+  .hx-sg-rings > .hx-sg-ring-small > :not(.hx-sg-ring-draw) {
+    flex-shrink: 0;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-small .sg_ring_title {
+    font-size: clamp(20px, calc(var(--hx-sg-small-diameter) * .064103), 25px);
+    line-height: 1.2;
+    margin-bottom: 5px;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-small .sg_ring_title-eng {
+    font-size: clamp(12px, calc(var(--hx-sg-small-diameter) * .038462), 15px);
+    line-height: 1.333333;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-small .sg_ring_line {
+    margin-block: clamp(14px, calc(var(--hx-sg-small-diameter) * .12 - 18.8px), 28px);
+  }
+
+  .hx-sg-rings > .hx-sg-ring-small .sg_ring_body,
+  .hx-sg-rings > .hx-sg-ring-small .sg_ring_note {
+    font-size: clamp(14px, calc(var(--hx-sg-small-diameter) * .041026), 16px);
+    line-height: 1.6875;
+  }
+
+  .hx-sg-rings > .hx-sg-ring-small .sg_ring_note {
+    margin-bottom: 10px;
   }
 
   .hx-sg-rings > .hx-sg-ring-large {
@@ -395,7 +426,10 @@
   }
 
   .hx-sg-rings > .hx-sg-ring-small .hx-sg-ring-note-label {
-    margin-top: 16px !important;
+    font-size: clamp(11px, calc(var(--hx-sg-small-diameter) * .03077), 12px);
+    line-height: 1.5;
+    margin-top: clamp(10px, calc(var(--hx-sg-small-diameter) * .078432 - 12.588px), 18px) !important;
+    margin-bottom: 5px;
   }
 
   .hx-sg-rings > .hx-sg-ring-large .hx-sg-ring-note-label {
@@ -420,13 +454,8 @@
   }
 }
 
-/* 좁은 화면에서도 원형과 제목의 간격을 유지한다. */
+/* 좁은 화면에서도 리퍼·재수술 원의 기존 크기는 유지한다. */
 @media (max-width: 389px) {
-  .hx-sg-rings > .hx-sg-ring-small {
-    width: 330px !important;
-    height: 330px !important;
-  }
-
   .hx-sg-rings > .hx-sg-ring-large {
     width: 510px !important;
     height: 510px !important;
