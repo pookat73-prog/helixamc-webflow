@@ -40,3 +40,46 @@
     transition: none;
   }
 }
+
+/* Keep the compact overlap state in the approved phone-first vertical layout. */
+@media (max-width: 767px) {
+  html.hx-fcta-overlap-fix .hx-fcta-shell {
+    width: 128px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+  }
+  html.hx-fcta-overlap-fix .hx-fcta-shell .hx-fcta-call-btn {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 360px) {
+  html.hx-fcta-overlap-fix .hx-fcta-shell { width: 108px; }
+  html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon { display: none; }
+}
+
+
+/* Keep the phone mark visible at the narrowest width in the compact card. */
+@media (max-width: 360px) {
+  html.hx-fcta-overlap-fix .hx-fcta-call-btn__icon { display: inline-flex !important; }
+}
+
+
+/* The overlap fix must preserve the tall phone action and short form row. */
+@media (max-width: 767px) {
+  html.hx-fcta-overlap-fix .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
+  html.hx-fcta-overlap-fix .hx-fcta-shell .hx-fcta-form-btn {
+    min-height: 28px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+/* Center the home CTA alongside the full mobile quick access stack. */
+@media (max-width: 767px) {
+  html.hx-fcta-overlap-fix.hx-fcta-page-home .hx-fcta-shell {
+    bottom: calc(58px + env(safe-area-inset-bottom));
+  }
+}

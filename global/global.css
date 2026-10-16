@@ -145,6 +145,11 @@ body {
      en-w400~en-w800 유틸리티가 그 예 — CLAUDE.md 폰트 절 참고). */
   font-weight: 500;
 }
+
+/* 진료과 상세 아웃트로 표식은 병원명과 분과명 모두 일반 굵기를 기본으로 한다. */
+.hx-sg-dept-mark-light {
+  font-weight: 400;
+}
 /* 윈도우 Chrome 등에서도 transform 적용된 픽셀 정렬 텍스트가 흐려지지 않도록.
    transform/translate3d 가 걸린 컨테이너의 텍스트는 subpixel 위치로 떨어져
    ClearType 가 회색 띠로 보이는 케이스 완화. */
@@ -321,4 +326,71 @@ select,
     opacity: 0.76;
     transform: none;
   }
+}
+
+/* Reusable SVICC button: glow follows every instance of the shared arrow slot. */
+.link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  transition: none !important;
+  animation: hxSharedSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
+}
+
+@keyframes hxSharedSviccGlow {
+  0%, 100% { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 1); }
+  50% { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+    animation: none !important;
+    box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.76) !important;
+  }
+}
+
+/* Internal-medicine area cards and outro: keep the shared SVICC glow compact and subtle. */
+.hx-im-responsive-closing-frame .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+  box-shadow: none !important;
+}
+
+:is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: hxImAreaCardSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
+}
+
+.hx-im-responsive-closing-frame .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  --hx-im-svicc-glow-blur: calc(0.7vw + 3px);
+}
+
+@keyframes hxImAreaCardSviccGlow {
+  0%, 100% { box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.48); }
+  50% { box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+    animation: none !important;
+    box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.4) !important;
+  }
+}
+
+/* Department detail buttons: steady glow and arrows. The shared outro row
+   identifies detail pages; home/about keep their existing button loops. */
+body:has(#hx-im-intro, .hx-sg-cta-row) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: none !important;
+  box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.4) !important;
+}
+
+.hx-sg-cta-row .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: none !important;
+  box-shadow: 0 0 12px -2px rgba(85, 40, 170, 0.85) !important;
+}
+
+body:has(#hx-im-intro, .hx-sg-cta-row) .hx-sg-cta-row .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  box-shadow: none !important;
+}
+
+body:has(.hx-sg-cta-row) :is([data-hx-slot="arrow"],
+    .link-block > .div-block-18 > .div-block-337,
+    .cta_seocho_button-call-link > .div-block-338 > .flex-block-38)::before {
+  animation: none !important;
+  opacity: 0.76;
+  transform: none;
 }
