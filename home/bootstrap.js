@@ -314,9 +314,10 @@
 
   /* 진입점(bootstrap-v3.js)이 이미 최신 SHA 를 알아내 넘겨줬으면 재사용
      → GitHub API 중복 호출 제거 (rate limit 보호) */
-  if (window.__helixCommitSha) {
-    var shaFromEntry = window.__helixCommitSha.substring(0, 10);
-    console.log('[helix-bootstrap] reusing SHA from entry:', shaFromEntry);
+  var refFromEntry = window.__helixCommitSha || window.__helixHomeBootstrapRef;
+  if (refFromEntry) {
+    var shaFromEntry = /^[0-9a-f]{7,40}$/i.test(refFromEntry) ? refFromEntry.substring(0, 10) : BRANCH;
+    console.log('[helix-bootstrap] reusing ref from entry:', shaFromEntry);
     injectAll(shaFromEntry);
   } else {
     resolveSha(function (sha) {
