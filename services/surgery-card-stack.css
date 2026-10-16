@@ -390,6 +390,13 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   white-space: pre-line;
 }
 
+/* 모바일 전문성 문구와 위로 올라온 다음 카드 제목 사이에 읽을 간격을 둔다. */
+@media (max-width: 767px) {
+  .hx-sg-expertise-copy {
+    padding-bottom: 100px;
+  }
+}
+
 /* 수술 철학·예후 관리 카드: 진입 시 그림자를 은은하게 드러낸다. */
 @media (prefers-reduced-motion: no-preference) {
   html.hx-sg-principle-shadow-motion .hx-sg-principle-card,
