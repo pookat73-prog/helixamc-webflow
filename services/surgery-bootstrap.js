@@ -780,21 +780,131 @@
     );
     if (!heading) return;
 
-    var lines = [
+    var desktopLines = [
+      '수만 건의 임상 데이터와 경험을 바탕으로',
+      '수술 중 발생할 수 있는 돌발 상황에',
+      '신속하게 대응합니다.'
+    ];
+    var mobileLines = [
+      '수만 건의 임상 데이터와',
+      '경험을 바탕으로',
+      '수술 중 발생할 수 있는',
+      '돌발 상황에 신속하게 대응합니다.'
+    ];
+    var sourceCopy = [
       '수만 건의 임상 데이터와 경험을 바탕으로',
       '수술 중 발생하는 모든 돌발 상황에',
       '즉각 대응합니다.'
-    ];
+    ].join(' ');
     var copy = heading.textContent.replace(/\s+/g, ' ').trim();
-    if (copy !== lines.join(' ')) return;
+    if (copy !== sourceCopy && copy !== desktopLines.join(' ')) return;
 
-    heading.textContent = lines.join('\n');
+    function renderStatement() {
+      var isMobile = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+      heading.textContent = (isMobile ? mobileLines : desktopLines).join('\n');
+    }
+
+    renderStatement();
+    if (window.matchMedia) {
+      var mobileQuery = window.matchMedia('(max-width: 767px)');
+      if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener('change', renderStatement);
+      } else if (mobileQuery.addListener) {
+        mobileQuery.addListener(renderStatement);
+      }
+    }
   }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initExpertiseStatement, { once: true });
   } else {
     initExpertiseStatement();
+  }
+})();
+
+/* 장비 카드: 원리 설명은 유지하고, 카드별 핵심 이점 구절만 의미 강조한다. */
+(function () {
+  'use strict';
+
+  if (window.__HELIX_SURGERY_EQUIPMENT_BENEFITS__) return;
+  window.__HELIX_SURGERY_EQUIPMENT_BENEFITS__ = true;
+
+  var BENEFITS = [
+    '조직 손상과 수술 후 회복 부담을',
+    '비교적 빠른 회복과 일상 복귀에',
+    '주변 조직의 손상을 줄이고',
+    '상처와 통증 부담을 줄이고,',
+    '출혈을 효과적으로 관리하고'
+  ];
+
+  function emphasizeBenefit(paragraph, phrase) {
+    if (paragraph.querySelector('strong[data-hx-sg-benefit]')) return;
+
+    var walker = document.createTreeWalker(paragraph, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var text = node.nodeValue || '';
+      var start = text.indexOf(phrase);
+      if (start < 0) continue;
+
+      var strong = document.createElement('strong');
+      strong.setAttribute('data-hx-sg-benefit', '');
+      strong.textContent = phrase;
+
+      var fragment = document.createDocumentFragment();
+      if (start) fragment.appendChild(document.createTextNode(text.slice(0, start)));
+      fragment.appendChild(strong);
+      var end = start + phrase.length;
+      if (end < text.length) fragment.appendChild(document.createTextNode(text.slice(end)));
+      node.parentNode.replaceChild(fragment, node);
+      return;
+    }
+  }
+
+  function initEquipmentBenefits() {
+    var cards = document.querySelectorAll('.hx-sg-equipment-card');
+    for (var i = 0; i < cards.length && i < BENEFITS.length; i += 1) {
+      var paragraph = cards[i].querySelector('p.hx-sg-readable-body');
+      if (paragraph) emphasizeBenefit(paragraph, BENEFITS[i]);
+    }
+  }
+
+  function initEnglishCaptionContrast() {
+    var captions = [
+      'Surgical Navigation System',
+      'Laparoscopy',
+      'Sonopet',
+      'High-end Hemostatic & Ligation Device',
+      'Risk Control through Multidisciplinary Collaboration',
+      'High-Density Staffing System',
+      'Dedicated Anesthesia Monitoring',
+      'Rapid Emergency Protocol',
+      'Evidence-Based Medicine, EBM',
+      'Multimodal Pain Management',
+      'Customized Recovery Guide by Patient',
+      'Transparent & Objective Information Sharing'
+    ];
+    var nodes = document.querySelectorAll(
+      '.hx-sg-readable-caption, .hx-sg-readable-caption-center'
+    );
+
+    for (var i = 0; i < nodes.length; i += 1) {
+      var text = nodes[i].textContent.replace(/\s+/g, ' ').trim();
+      if (captions.indexOf(text) !== -1) {
+        nodes[i].classList.add('hx-sg-caption-contrast');
+      }
+    }
+  }
+
+  function initSurgeryCopy() {
+    initEquipmentBenefits();
+    initEnglishCaptionContrast();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSurgeryCopy, { once: true });
+  } else {
+    initSurgeryCopy();
   }
 })();
 
