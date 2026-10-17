@@ -183,6 +183,8 @@
     document.querySelectorAll('[class*="dept-card_"]').forEach(function (card) {
       var k = keyFor(card);
       if (!k || !(k in LINKS)) return;
+      /* 외과의 실제 링크는 브라우저 기본 이동·새 탭·키보드 동작을 사용. */
+      if (k === 'sg' && card.tagName === 'A' && card.getAttribute('href')) return;
       card.addEventListener('click', function () {
         var url = LINKS[k];
         if (url) location.href = url;
