@@ -247,6 +247,7 @@
         word.classList.add('is-filled');
       });
       words[2].classList.add('is-current', 'is-moving', 'is-dimmed');
+      document.dispatchEvent(new CustomEvent('helix:highlight-complete'));
     }
 
     function play() {
@@ -266,6 +267,7 @@
           word.classList.add('is-moving', 'is-filled');
           window.setTimeout(function () {
             if (index === words.length - 1) {
+              document.dispatchEvent(new CustomEvent('helix:highlight-complete'));
               window.setTimeout(function () {
                 word.classList.add('is-dimmed');
               }, 180);
