@@ -53,29 +53,10 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/home/bootstrap.js' + q;
   }
 
-  /* 본체를 받는 동안 같은 커밋의 첫 화면 파일도 내려받는다.
-     preload는 파일을 실행하지 않으며, 실제 실행 순서는 bootstrap.js가 유지한다. */
-  function preloadFirstScreen(ref) {
-    if (!/^[0-9a-f]{7,40}$/i.test(ref)) return;
-    var base = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref.substring(0, 10) + '/';
-    [
-      'home/global/coming-soon.js',
-      'home/section1/section1.js'
-    ].forEach(function (path) {
-      var link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'script';
-      link.href = base + path;
-      link.setAttribute('data-hx-home-preload', '');
-      (document.head || document.documentElement).appendChild(link);
-    });
-  }
-
   /* 조회 실패로 고른 복구 버전도 본체에 전달해 같은 조회를 반복하지 않는다. */
   function loadBody(ref) {
     window.__helixHomeBootstrapRef = ref;
     if (/^[0-9a-f]{7,40}$/i.test(ref)) window.__helixCommitSha = ref;
-    preloadFirstScreen(ref);
     load(bodyUrl(ref));
   }
 
