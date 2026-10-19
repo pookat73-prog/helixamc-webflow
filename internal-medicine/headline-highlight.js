@@ -242,11 +242,18 @@
     var observer = null;
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+    function finishHighlight() {
+      if (heading.dataset.hxImHighlightComplete === 'true') return;
+      heading.dataset.hxImHighlightComplete = 'true';
+      heading.dispatchEvent(new Event('hx-im-headline-highlight-complete'));
+    }
+
     function showFinalState() {
       words.forEach(function (word) {
         word.classList.add('is-filled');
       });
       words[2].classList.add('is-current', 'is-moving', 'is-dimmed');
+      finishHighlight();
     }
 
     function play() {
@@ -268,6 +275,8 @@
             if (index === words.length - 1) {
               window.setTimeout(function () {
                 word.classList.add('is-dimmed');
+                // Wait for the final cursor's 350ms opacity transition to settle.
+                window.setTimeout(finishHighlight, 350);
               }, 180);
               return;
             }
@@ -915,13 +924,14 @@
     var narrow = window.matchMedia('(max-width: 767px)');
     var basis = core.entryBasis, elapsed = 0, previous = null, raf = 0, layoutRAF = 0;
     var inView = false, entered = false, ready = false, failed = false, stacked = false, staticShown = false, geometryKey = '';
+    var highlightComplete = heading.dataset.hxImHighlightComplete === 'true';
     var lastCurves = null;
     var diagnostic = { version: 'v40', status: 'loading', asset: symbolURL };
     window.__hxImBrandMotion = diagnostic;
     section.appendChild(art);
 
     function isStatic() { return reduce.matches || narrow.matches || stacked; }
-    function canRun() { return ready && !failed && entered && inView && !document.hidden && !isStatic(); }
+    function canRun() { return ready && !failed && highlightComplete && entered && inView && !document.hidden && !isStatic(); }
     function paint() {
       if (isStatic() && ready && inView) staticShown = true;
       if (!isStatic() && staticShown) elapsed = Math.max(elapsed, core.completeTime);
@@ -959,7 +969,7 @@
       });
       diagnostic.elapsed = elapsed;
       diagnostic.status = failed ? 'error' : !ready ? 'loading' : isStatic() ? 'static' :
-        elapsed >= core.duration ? 'loop' : 'intro';
+        !highlightComplete ? 'waiting' : elapsed >= core.duration ? 'loop' : 'intro';
       diagnostic.running = canRun();
       diagnostic.stacked = stacked;
       art.dataset.hxImBrandPhase = diagnostic.status;
@@ -1021,6 +1031,9 @@
       sync();
     }
     function scheduleLayout() { if (!layoutRAF) layoutRAF = requestAnimationFrame(layout); }
+    heading.addEventListener('hx-im-headline-highlight-complete', function () {
+      highlightComplete = true; sync();
+    }, { once: true });
     image.addEventListener('error', function () {
       failed = true; art.style.display = 'none'; sync();
       console.warn('[hx-im-brand-motion] symbol image failed to load');
