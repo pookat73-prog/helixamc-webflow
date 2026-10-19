@@ -296,7 +296,7 @@
     fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function (d) {
-        var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 10);
+        var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 40);
         if (!sha) throw new Error('no sha in response');
         try { sessionStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
         done(sha);
@@ -316,7 +316,7 @@
      → GitHub API 중복 호출 제거 (rate limit 보호) */
   var refFromEntry = window.__helixCommitSha || window.__helixHomeBootstrapRef;
   if (refFromEntry) {
-    var shaFromEntry = /^[0-9a-f]{7,40}$/i.test(refFromEntry) ? refFromEntry.substring(0, 10) : BRANCH;
+    var shaFromEntry = /^[0-9a-f]{7,40}$/i.test(refFromEntry) ? refFromEntry.substring(0, 40) : BRANCH;
     console.log('[helix-bootstrap] reusing ref from entry:', shaFromEntry);
     injectAll(shaFromEntry);
   } else {
