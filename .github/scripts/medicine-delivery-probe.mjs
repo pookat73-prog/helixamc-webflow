@@ -4,10 +4,10 @@ const require=createRequire('/tmp/helix-ci-audit/package.json');
 const {chromium}=require('playwright');
 const target='https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6a45e8bd91b794ab174bf80a_%EB%82%B4%EA%B3%BC.jpg';
 const candidate='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d6fc8c8d4a55d53f3be1a5f3cc26f148bd195b5b/assets/services/internal-medicine-q95.webp';
-const css=`\n/* Isolated delivery probe: preserve native image geometry and variable gradient. */\n.dept_image_im {background-image:url("${candidate}") !important;}\n@media (max-width:767px){.dept-card-header_im {background-image:radial-gradient(circle farthest-side at 100% -15%,var(--투명) 36%,var(--메인-블랙) 60%),url("${candidate}") !important;}}\n`;
+const css=`\n/* Isolated delivery probe: preserve native image geometry and variable gradient. */\n.dept_image_im {background-image:url("${candidate}") !important;}\n@media (max-width:479px){.dept-card-header_im {background-image:radial-gradient(circle farthest-side at 100% -15%,var(--투명) 36%,var(--메인-블랙) 60%),url("${candidate}") !important;}}\n`;
 fs.mkdirSync('delivery-results',{recursive:true});
 const report={candidate,css,time:new Date().toISOString(),visits:[]};
-const res=await fetch(candidate);report.cdn={status:res.status,type:res.headers.get('content-type'),bytes:(await res.arrayBuffer()).byteLength};if(!res.ok()||report.cdn.bytes!==620524)throw Error('Candidate CDN does not match');
+const res=await fetch(candidate);report.cdn={status:res.status,type:res.headers.get('content-type'),bytes:(await res.arrayBuffer()).byteLength};if(!res.ok||report.cdn.bytes!==620524)throw Error('Candidate CDN does not match');
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 for(const width of [390,1440])for(const variant of ['baseline','css-candidate']){
  const context=await browser.newContext({viewport:{width,height:width===390?844:1000},deviceScaleFactor:1});const page=await context.newPage();
