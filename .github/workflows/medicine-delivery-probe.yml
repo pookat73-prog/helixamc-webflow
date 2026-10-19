@@ -1,0 +1,25 @@
+name: Probe medicine delivery via existing CSS (temporary)
+on:
+  push:
+    branches: [claude/mobile-speed-validation-20261019]
+    paths: [.github/workflows/medicine-delivery-probe.yml, .github/scripts/medicine-delivery-probe.mjs]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --prefix /tmp/helix-ci-audit --no-audit --no-fund playwright@1.64.1
+      - run: /tmp/helix-ci-audit/node_modules/.bin/playwright install --with-deps chromium
+      - run: node .github/scripts/medicine-delivery-probe.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: helix-medicine-delivery-probe
+          path: delivery-results/
+          retention-days: 14
