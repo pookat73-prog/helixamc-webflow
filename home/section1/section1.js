@@ -216,8 +216,10 @@
        (예: bg=null) 안 불려도 ghost 가 영구 잔존하지 않도록 안전망 타이머 추가.
        runCleanups 는 idempotent (한 번만 실행). */
     var cleanupRan = false;
+    var backgroundFadeDone = !bg;
+    var contentFadeDone = false;
     function runCleanups() {
-      if (cleanupRan) return;
+      if (cleanupRan || !backgroundFadeDone || !contentFadeDone) return;
       cleanupRan = true;
       log('runCleanups firing');
       cleanups.forEach(function (c) {
@@ -234,17 +236,37 @@
       }, 50);
     }
 
+    /* 배경은 글꼴 확인을 기다리지 않고 기존 페이드로 먼저 노출한다.
+       슬로건/버튼은 기존 폰트 확인과 레이아웃 안정화 절차를 그대로 따른다.
+       DOM 복원 신호는 배경과 콘텐츠 페이드가 모두 끝난 뒤 보낸다. */
+    fadeIn(bg, 'bg', 1.0, easeBg, 0, null, function () {
+      backgroundFadeDone = true;
+      runCleanups();
+    });
+    setTimeout(function () {
+      backgroundFadeDone = true;
+      runCleanups();
+    }, 1500);
+
     /* 페이드인 시퀀스 — 웹폰트가 도착한 후에 시작해야 폰트 메트릭 변화로
        인한 줄바꿈 점프(예: '심' 자가 다음 줄에서 위로 튀어오르는 현상)가 안 생김.
        타이밍 압축: 시작점/지속시간 모두 단축 → 사용자 진입 후 ~1.6s 안에 종료 */
     function startFades() {
       log('fonts ready, starting fades');
+      var pending = (slogan ? 1 : 0) + (box1 ? 1 : 0);
+      function contentFadeComplete() {
+        pending--;
+        if (pending > 0) return;
+        contentFadeDone = true;
+        runCleanups();
+      }
       /* slogan: t=0.1 ~ 0.9 (0.8s) */
-      fadeIn(slogan, 'slogan', 0.8, easeSlogan, 0.1);
+      fadeIn(slogan, 'slogan', 0.8, easeSlogan, 0.1, null, contentFadeComplete);
       /* button: t=0.5 ~ 1.0 (0.5s, expo.out) */
       fadeIn(box1, 'button', 0.5, 'expo.out', 0.5,
         null,
         function () {
+          contentFadeComplete();
           if (!box1) return;
           /* 버튼 페이드인 완료 후 최고밝기로 1.5초 홀드 → shimmer 핸드오프 */
           setTimeout(function () {
@@ -253,9 +275,11 @@
             box1.classList.add('is-looping');
           }, 1500);
         });
-      /* bg: t=0.6 ~ 1.6 (1.0s) */
-      fadeIn(bg, 'bg', 1.0, easeBg, 0.6, null, runCleanups);
-      /* 안전망: bg onComplete 가 안 불려도 cleanup 보장 (1.6s 끝 + 0.5s 여유) */
+      if (!pending) {
+        contentFadeDone = true;
+        runCleanups();
+      }
+      /* 안전망: 콘텐츠 페이드가 끝나지 않아도 복원 신호를 보장한다. */
       setTimeout(runCleanups, 2100);
     }
 
