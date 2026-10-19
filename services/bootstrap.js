@@ -98,6 +98,9 @@
   }
 
   function loadFile(path, ref) {
+    /* 점검 화면은 ga-inspector.js와 같은 URL 조건에서만 내려받는다. */
+    if (path === 'global/ga-inspector.js' &&
+        !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
