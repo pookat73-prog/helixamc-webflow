@@ -385,6 +385,10 @@
         loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
       } catch (e) {}
     }
+    if (document.fonts && document.fonts.ready) {
+      loadPromises.push(document.fonts.ready.catch(function () {}));
+    }
+
     function afterFontLoaded() {
       waitForWebFontApplied(sloganFamily, sloganWeight, sloganStyle, function () {
         /* 폰트 paint 적용 확인 후 detach — 이제 ghost 가 web 폰트 폭으로 측정됨 */
