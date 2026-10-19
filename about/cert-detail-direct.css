@@ -130,6 +130,24 @@ body.hx-cert-direct > .cert-modal-frame {
     max-width: 100% !important;
   }
 
+  /* 먼저 세로로 배치돼도 표지 글상자가 PC의 vw 폭으로 남지 않게 한다. */
+  body.hx-cert-direct > .cert-modal-frame .aaha-box .div-block-221,
+  body.hx-cert-direct > .cert-modal-frame .aaha-box .qqqqqq {
+    align-items: stretch !important;
+    align-self: stretch !important;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame .aaha-box .div-block-79-copy {
+    width: auto !important;
+    max-width: 100% !important;
+    align-self: stretch !important;
+  }
+
+  body.hx-cert-direct > .cert-modal-frame .aaha-box,
+  body.hx-cert-direct > .cert-modal-frame .aaha-box .div-block-221 * {
+    text-align: center !important;
+  }
+
   body.hx-cert-direct > .cert-modal-frame .div-block-81 {
     justify-content: center !important;
   }
