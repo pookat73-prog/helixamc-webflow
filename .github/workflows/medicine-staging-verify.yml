@@ -1,0 +1,55 @@
+name: Verify staged medicine image and matched Lighthouse (temporary)
+on:
+  push:
+    branches: [claude/mobile-speed-validation-20261019]
+    paths: [.github/workflows/medicine-staging-verify.yml, .github/scripts/medicine-staging-verify.mjs, .github/scripts/medicine-lighthouse-pair.mjs]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --prefix /tmp/helix-ci-audit --no-audit --no-fund playwright@1.64.1 lighthouse@13.5.0 pixelmatch@8.0.0 pngjs@7.0.0
+      - run: /tmp/helix-ci-audit/node_modules/.bin/playwright install --with-deps chromium
+      - name: Verify real staging delivery and screen
+        run: node .github/scripts/medicine-staging-verify.mjs
+      - name: Matched mobile Lighthouse image comparison
+        run: node .github/scripts/medicine-lighthouse-pair.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: helix-medicine-staging-verification
+          path: medicine-staging-results/
+          retention-days: 14
+      - name: Export compact evidence
+        if: always()
+        run: |
+          python -m pip install --quiet pillow==11.3.0
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          import io,zipfile,base64,json
+          root=Path('medicine-staging-results')
+          for width in [390,600,850,1440]:
+              canvas=Image.new('RGB',(1200,900),'#eeeeee');draw=ImageDraw.Draw(canvas)
+              for i,variant in enumerate(['baseline','candidate']):
+                  f=root/f'staging-{width}-{variant}-page.png'
+                  if not f.exists():continue
+                  im=Image.open(f).convert('RGB');im.thumbnail((600,870));canvas.paste(im,(i*600,30));draw.text((i*600+5,5),f'{width}px {variant}',fill='black')
+              canvas.save(root/f'compare-{width}.jpg',quality=92,optimize=True)
+          buf=io.BytesIO()
+          with zipfile.ZipFile(buf,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for f in list(root.glob('*.json'))+list(root.glob('*.jpg')):
+                  if f.name.startswith('lighthouse-') and f.name!='lighthouse-pairs.json':
+                      data=json.loads(f.read_text())
+                      for k in ['screenshot-thumbnails','final-screenshot','full-page-screenshot']:data.get('audits',{}).pop(k,None)
+                      z.writestr(f.name,json.dumps(data))
+                  else:z.write(f,f.name)
+          encoded=base64.b64encode(buf.getvalue()).decode()
+          for i,off in enumerate(range(0,len(encoded),12000)):print('STAGING_EXPORT_CHUNK '+str(i)+' '+encoded[off:off+12000])
+          PY
