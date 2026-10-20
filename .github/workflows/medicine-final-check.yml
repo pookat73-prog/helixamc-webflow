@@ -1,0 +1,45 @@
+name: Complete medicine verification and matched mobile measurement (temporary)
+on:
+  push:
+    branches: [claude/mobile-speed-validation-20261019]
+    paths: [.github/workflows/medicine-final-check.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --prefix /tmp/helix-ci-audit --no-audit --no-fund playwright@1.64.1 lighthouse@13.5.0
+      - run: /tmp/helix-ci-audit/node_modules/.bin/playwright install --with-deps chromium
+      - name: Check actual landscape menu hit target
+        run: node .github/scripts/medicine-landscape-verify.mjs
+      - name: Matched mobile Lighthouse pairs
+        if: always()
+        run: node .github/scripts/medicine-lighthouse-pair.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: helix-medicine-final-check
+          path: medicine-staging-results/
+          retention-days: 14
+      - name: Export measurement evidence
+        if: always()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import io,zipfile,base64,json
+          root=Path('medicine-staging-results');buf=io.BytesIO()
+          with zipfile.ZipFile(buf,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for f in root.glob('*.json'):
+                  data=json.loads(f.read_text())
+                  if f.name.startswith('lighthouse-') and f.name!='lighthouse-pairs.json':
+                      for k in ['screenshot-thumbnails','final-screenshot','full-page-screenshot']:data.get('audits',{}).pop(k,None)
+                  z.writestr(f.name,json.dumps(data))
+          encoded=base64.b64encode(buf.getvalue()).decode()
+          for i,off in enumerate(range(0,len(encoded),12000)):print('FINAL_EXPORT_CHUNK '+str(i)+' '+encoded[off:off+12000])
+          PY
