@@ -10,7 +10,7 @@ const newer='https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6ad6b0b
 for(let run=1;run<=3;run++)for(const variant of (run%2?['baseline','candidate']:['candidate','baseline'])){
  const browser=await puppeteer.launch({executablePath:chromium.executablePath(),headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});let replaced=0;const errors=[];
  try{
-  const page=await browser.newPage();await page.setRequestInterception(true);
+  const page=await browser.newPage();await page.setRequestInterception(true);page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
   const cssBodies=new Map();
   page.on('request',async request=>{try{
    if(request.isNavigationRequest()&&request.url()==='https://helixanimalmedicalcenter.webflow.io/services'){
@@ -21,7 +21,7 @@ for(let run=1;run<=3;run++)for(const variant of (run%2?['baseline','candidate']:
      const digest='sha384-'+createHash('sha384').update(body).digest('base64');html=html.replace(tag,tag.replace(/integrity="[^"]*"/,`integrity="${digest}"`));
     }
     await request.respond({status:response.status,contentType:'text/html',body:html});
-   }else if(cssBodies.has(request.url()))await request.respond({status:200,contentType:'text/css',body:cssBodies.get(request.url())});
+   }else if(cssBodies.has(request.url()))await request.respond({status:200,contentType:'text/css',headers:{'access-control-allow-origin':'*'},body:cssBodies.get(request.url())});
    else await request.continue();
   }catch(e){errors.push(e.message);await request.abort().catch(()=>{});}});
   const flow=await startFlow(page,{name:`Medicine image ${variant} ${run}`,config:{extends:'lighthouse:default',settings:{onlyCategories:['performance']}},flags:{logLevel:'error'}});
