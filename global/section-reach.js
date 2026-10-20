@@ -127,17 +127,24 @@
       { key: 'g4',    label: '특수 전문 치료',        sel: '.hst_col', nth: 3, self: true }
     ],
     surgery: [
-      { key: 'hero',       label: '첫화면',               sel: '.hx-sg-page section.hx-sg-responsive-frame1' },
-      { key: 'expertise',  label: '진료 분야와 재수술',    sel: '.hx-sg-page section.hx-sg-responsive-frame2' },
-      { key: 'equipment1', label: '핵심 장비 1',          sel: '.hx-sg-page section.hx-sg-responsive-frame3' },
-      { key: 'equipment2', label: '핵심 장비 2',          sel: '.hx-sg-page section.hx-sg-responsive-frame4' },
-      { key: 'equipment3', label: '핵심 장비 3',          sel: '.hx-sg-page section.hx-sg-responsive-frame5' },
+      /* 페이지 판정은 이미 /surgery로 제한된다. 없어진 .hx-sg-page에
+         의존하면 본문을 읽거나 지점 버튼을 눌러도 기록이 남지 않는다.
+         장비는 현재 같은 section 안의 카드 5개이므로 카드 자체를 관측한다.
+         옛 section 구조는 폴백으로 유지한다. */
+      { key: 'hero',       label: '첫화면',               sel: '.sj_intro_frame', fallbackSel: 'section.hx-sg-responsive-frame1' },
+      { key: 'expertise',  label: '진료 분야와 재수술',    sel: 'section.hx-sg-responsive-frame2' },
+      { key: 'equipment1', label: '핵심 장비 1',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 0, self: true, fallbackSel: 'section.hx-sg-responsive-frame3' },
+      { key: 'equipment2', label: '핵심 장비 2',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 1, self: true, fallbackSel: 'section.hx-sg-responsive-frame4' },
+      { key: 'equipment3', label: '핵심 장비 3',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 2, self: true, fallbackSel: 'section.hx-sg-responsive-frame5' },
       { key: 'safety',     label: '안전 시스템',          sel: '#hx-sg-safety' },
       { key: 'principle',  label: '수술 철학과 진료 기준', sel: '#hx-sg-principles' },
       { key: 'pain',       label: '통증 관리',            sel: '.hx-sg-pain-oval' },
-      { key: 'daily',      label: '일상 회복 메시지',     sel: '.hx-sg-page section.hx-sg-daily-comfort-banner' },
+      { key: 'daily',      label: '일상 회복 메시지',     sel: 'section.hx-sg-daily-comfort-banner' },
       { key: 'aftercare',  label: '예후 관리',            sel: '#hx-sg-aftercare' },
-      { key: 'outro',      label: '지점 선택',            sel: '.hx-sg-page a.cta_seocho_button-call-link' }
+      { key: 'outro',      label: '지점 선택',            sel: '.hx-sg-cta-row' },
+      /* 기존 section_index는 보존하고 추가 장비는 뒤에 붙인다. */
+      { key: 'equipment4', label: '핵심 장비 4',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 3, self: true },
+      { key: 'equipment5', label: '핵심 장비 5',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 4, self: true }
     ],
     seocho: [
       { key: 'hero',  label: '첫화면',   sel: 'section[class*="intro_backgra"]' },

@@ -430,7 +430,10 @@
   function openModalFromFab() {
     formSrc = 'floating_cta';
     openModal();
+    /* 현재는 버튼 한 번으로 폼이 열린다. 옛 cta_open 집계는 유지하고
+       본문 진입과 같은 실제 폼 열림 이벤트도 남긴다. 둘은 합산하지 않는다. */
     ga('cta_open', { cta_src: 'floating_cta' });
+    ga('cta_form_open', { cta_src: 'floating_cta' });
   }
 
   toggle.addEventListener('click', function () {
@@ -851,6 +854,8 @@
   }
 
   function trackPhoneClick() {
+    /* Firebase 직행 기록도 GA4·시트와 동일하게 점검 방문을 제외한다. */
+    if (window.__helixNoMeasure || /\.webflow\.io$/i.test(location.hostname)) return;
     var utm = readUtm();
     var payload = {
       clickedAt:    new Date().toISOString(),
