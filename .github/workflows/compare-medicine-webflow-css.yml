@@ -1,0 +1,33 @@
+name: Compare published Webflow styles (temporary)
+on:
+  push:
+    branches: [claude/mobile-speed-validation-20261019]
+    paths: [.github/workflows/compare-medicine-webflow-css.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: helix-medicine-staging-verification
+          run-id: 39346321344
+          github-token: ${{ github.token }}
+          path: evidence
+      - run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,difflib,re
+          p=Path('evidence')
+          data=json.loads((p/'summary.json').read_text())
+          old,new=data['old'],data['newer']
+          a=sorted(f.read_text().replace(new,old) for f in p.glob('staging-390-candidate-*.css'))
+          b=sorted(f.read_text() for f in p.glob('production-390-unchanged-*.css'))
+          normalize=lambda s:re.sub(r'\\s+',' ',re.sub(r'/\\*.*?\\*/','',s,flags=re.S)).strip()
+          result={'stagingCssFiles':len(a),'productionCssFiles':len(b),'sameExceptTargetImageAndWhitespace':sorted(map(normalize,a))==sorted(map(normalize,b))}
+          print('CSS_COMPARE '+json.dumps(result))
+          diff=list(difflib.unified_diff(('\\n'.join(b)).splitlines(),('\\n'.join(a)).splitlines(),n=1))
+          for line in diff[:150]:print('CSS_DIFF '+line)
+          PY
