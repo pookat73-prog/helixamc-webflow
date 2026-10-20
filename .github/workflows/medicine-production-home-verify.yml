@@ -1,0 +1,60 @@
+name: Complete production home verification (temporary)
+on:
+  push:
+    branches: [claude/mobile-speed-validation-20261019]
+    paths: [.github/workflows/medicine-production-home-verify.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          name: helix-medicine-staging-verification
+          run-id: 39346696473
+          github-token: ${{ github.token }}
+          path: /tmp/approved-staging
+      - uses: actions/download-artifact@v4
+        with:
+          name: helix-production-verification
+          run-id: 39261898280
+          github-token: ${{ github.token }}
+          path: /tmp/previous-main
+      - run: npm install --prefix /tmp/helix-ci-audit --no-audit --no-fund playwright@1.64.1 pixelmatch@8.0.0 pngjs@7.0.0
+      - run: /tmp/helix-ci-audit/node_modules/.bin/playwright install --with-deps chromium
+      - run: HOME_ONLY=1 node .github/scripts/medicine-production-verify.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: helix-medicine-production-home-verification
+          path: medicine-production-results/
+          retention-days: 14
+      - name: Export compact verification evidence
+        if: always()
+        run: |
+          python -m pip install --quiet pillow==11.3.0
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageDraw
+          import io,zipfile,base64
+          root=Path('medicine-production-results')
+          for group,files in {'screens':['production-services-390-page.png','production-services-1440-page.png','production-home-390-page.png','production-home-1440-page.png'],'interactions':['production-services-390-menu.png','production-services-390-consultation.png','production-services-600-menu.png','production-services-600-consultation.png']}.items():
+              canvas=Image.new('RGB',(1200,1800),'#eeeeee');draw=ImageDraw.Draw(canvas)
+              for i,name in enumerate(files):
+                  f=root/name
+                  if not f.exists():continue
+                  im=Image.open(f).convert('RGB');im.thumbnail((600,870));x,y=i%2*600,i//2*900;canvas.paste(im,(x,y+30));draw.text((x+5,y+5),name,fill='black')
+              canvas.save(root/(group+'.jpg'),quality=90,optimize=True)
+          buf=io.BytesIO()
+          with zipfile.ZipFile(buf,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for f in list(root.glob('*.json'))+list(root.glob('*.jpg')):z.write(f,f.name)
+          data=base64.b64encode(buf.getvalue()).decode()
+          for i,off in enumerate(range(0,len(data),12000)):print('PRODUCTION_IMAGE_EXPORT_CHUNK '+str(i)+' '+data[off:off+12000])
+          PY
