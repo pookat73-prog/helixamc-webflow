@@ -5,7 +5,7 @@ const require=createRequire('/tmp/helix-ci-audit/package.json');const {chromium}
 const out='medicine-production-results';fs.mkdirSync(out,{recursive:true});
 const newer='6ad6b0bad182f0e668c6e9fa',older='6a45e8bd91b794ab174bf80a';
 const summary={time:new Date().toISOString(),visits:[],comparisons:[],failures:[]};const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
-for(const [pageKey,width] of [['services',390],['services',600],['services',850],['services',1440],['home',390],['home',1440]]){
+for(const [pageKey,width] of (process.env.HOME_ONLY?[['home',390],['home',1440]]:[['services',390],['services',600],['services',850],['services',1440],['home',390],['home',1440]])){
  const id=`production-${pageKey}-${width}`;const r={id,pageKey,width,errors:[],warnings:[],failedRequests:[],network:[],checks:{}};summary.visits.push(r);
  const context=await browser.newContext({viewport:{width,height:width===390?844:1000},deviceScaleFactor:1,locale:'ko-KR',timezoneId:'Asia/Seoul'});const page=await context.newPage();page.setDefaultTimeout(25000);
  page.on('pageerror',e=>r.errors.push(e.message));page.on('console',m=>{if(m.type()==='error')r.errors.push(m.text());if(m.type()==='warning')r.warnings.push(m.text());});page.on('requestfailed',q=>r.failedRequests.push({url:q.url(),error:q.failure()?.errorText}));
@@ -14,7 +14,7 @@ for(const [pageKey,width] of [['services',390],['services',600],['services',850]
  try{
   const response=await page.goto('https://www.helix-amc.com'+(pageKey==='services'?'/services':'/'),{waitUntil:'domcontentloaded',timeout:90000});if(!response.ok())throw Error('HTTP '+response.status());await page.locator('#hxFctaToggle').waitFor({state:'visible',timeout:60000});await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(8000);
   r.layout=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,ref:window.HELIX_REF,elements:['.dept_image_im','.dept-card-header_im','.blackframe_image-hero'].map(selector=>{const el=document.querySelector(selector);if(!el)return null;const s=getComputedStyle(el);return{selector,image:s.backgroundImage,position:s.backgroundPosition,size:s.backgroundSize,rect:el.getBoundingClientRect().toJSON()};}).filter(Boolean)}));
-  r.checks.noOverflow=r.layout.documentWidth<=width+1;if(!r.checks.noOverflow)throw Error('Horizontal overflow');if(!r.layout.ref?.startsWith('a6c01054d0'))throw Error('Unexpected main code ref');
+  r.checks.noOverflow=r.layout.documentWidth<=width+1;if(!r.checks.noOverflow)throw Error('Horizontal overflow');r.checks.expectedMainLoaded=r.network.some(q=>q.url.includes('@a6c01054d007ba56467ba462d0297dc72e8aada2/')||q.url.includes('@a6c01054d0/'));if(!r.checks.expectedMainLoaded)throw Error('Unexpected main code ref');
   if(pageKey==='services'){
    r.images=r.network.filter(q=>q.url.includes(newer)||q.url.includes(older));if(r.images.some(q=>q.url.includes(older)))throw Error('Old JPEG requested');
    const visible=r.layout.elements.some(e=>e.rect.width>0&&e.rect.height>0&&e.image.includes(newer));r.checks.optimizedImageVisible=visible;
