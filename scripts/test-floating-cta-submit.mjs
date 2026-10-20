@@ -87,6 +87,7 @@ function fixture(fetchImpl) {
     form,
     submitBtn: ids.hxFctaSubmit,
     done: ids.hxFctaDone,
+    doneClose: element('hxFctaDoneClose'),
     toggle: ids.hxFctaToggle,
     modal,
     closeBtn: ids.hxFctaModalClose,
