@@ -82,7 +82,7 @@
   ================================================================ */
   var TARGETS = [
     /* 전 페이지 공통 — 플로팅 상담 CTA */
-    { sel: '#hxFctaToggle',         label: '플로팅 · 상담 문의하기', event: 'cta_open' },
+    { sel: '#hxFctaToggle',         label: '플로팅 · 상담 문의하기', event: 'cta_open / cta_form_open (동일 진입)' },
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 상담',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
@@ -175,7 +175,7 @@
 
   if (PAGE === 'surgery') {
     TARGETS.push({
-      sel: '.hx-sg-page a.cta_seocho_button-call-link, .hx-sg-page a.link-block',
+      sel: '.hx-sg-cta-row a',
       label: '외과 · 하단 지점 선택',
       event: 'surgery_branch_click_*'
     });

@@ -36,3 +36,6 @@ jobs:
 
       - name: Test dynamic section measurement without sending analytics
         run: node scripts/test-section-reach.mjs
+
+      - name: Test surgery CTA attribution and analytics exclusion without network
+        run: node scripts/test-surgery-cta-measurement.mjs

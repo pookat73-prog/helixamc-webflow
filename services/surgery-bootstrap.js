@@ -1317,6 +1317,7 @@
   if (window.__helixSurgeryBranchMeasureInit) return;
   window.__helixSurgeryBranchMeasureInit = true;
   if (/\.webflow\.io$/i.test(location.hostname)) return;
+  if (!/(^|\/)surgery(\/|$)/i.test(location.pathname)) return;
 
   function device() {
     return window.HelixVP ? HelixVP.device() :
@@ -1327,13 +1328,16 @@
     document.addEventListener('click', function (event) {
       if (window.__helixNoMeasure) return;
       var link = event.target && event.target.closest &&
-        event.target.closest('.hx-sg-page a.cta_seocho_button-call-link, .hx-sg-page a.link-block');
+        event.target.closest('.hx-sg-cta-row a');
       if (!link) return;
 
       var href = link.getAttribute('href') || '';
-      var branch = /^\/seocho(?:[/?#]|$)/i.test(href) ? 'seocho' :
-        /^\/ilsan(?:[/?#]|$)/i.test(href) ? 'ilsan' :
-        /svicc\.co\.kr(?:[/?#]|$)/i.test(href) ? 'svicc' : '';
+      var url;
+      try { url = new URL(href, location.href); } catch (e) { return; }
+      /* 잘못된 #https 링크나 다른 사이트 URL을 실제 지점 이동으로 세지 않는다. */
+      var branch = url.origin === location.origin && /^\/seocho(?:\/|$)/i.test(url.pathname) ? 'seocho' :
+        url.origin === location.origin && /^\/ilsan(?:\/|$)/i.test(url.pathname) ? 'ilsan' :
+        /^https?:$/.test(url.protocol) && /^(www\.)?svicc\.co\.kr$/i.test(url.hostname) ? 'svicc' : '';
       if (!branch) return;
 
       var params = {

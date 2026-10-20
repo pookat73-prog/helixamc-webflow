@@ -79,4 +79,18 @@ test('late hidden elements do not create dwell before they become visible',()=>{
  two.visible=true;two.offsetParent={};f.mutate();f.flushFrames();f.enter(two);f.advance(2000);f.visibility(true);
  assert.equal(f.count('home_sec_sec2'),1);assert.equal(f.dwell('home_dwell_sec2'),2);
 });
+test('current surgery without hx-sg-page tracks the closing CTA and five independent equipment cards',()=>{
+ const f=fixture({pathname:'/surgery'}),section=f.element(),hero=f.element(),expertise=f.element(),daily=f.element(),outro=f.element();
+ const cards=Array.from({length:5},()=>{const card=f.element({parent:section});card.tagName='ARTICLE';return card;});
+ f.selectors.set('.sj_intro_frame',[hero]);f.selectors.set('section.hx-sg-responsive-frame2',[expertise]);
+ f.selectors.set('#hx-sg-equipment .hx-sg-equipment-card',cards);
+ f.selectors.set('section.hx-sg-daily-comfort-banner',[daily]);f.selectors.set('.hx-sg-cta-row',[outro]);
+ f.run();f.enter(hero,expertise,daily,outro,cards[0]);
+ for(const key of ['hero','expertise','daily','outro','equipment1'])assert.equal(f.count('surgery_sec_'+key),1);
+ for(const key of ['equipment2','equipment3','equipment4','equipment5'])assert.equal(f.count('surgery_sec_'+key),0);
+ f.enter(...cards);f.mutate();f.flushFrames();f.enter(...cards,outro);
+ for(let i=1;i<=5;i++)assert.equal(f.count('surgery_sec_equipment'+i),1);
+ assert.equal(f.count('surgery_sec_outro'),1);
+ assert.equal(f.events.find(e=>e.event==='surgery_sec_outro').params.section_index,11);
+});
 console.log(`Section measurement regression checks passed: ${passed}. No network or production events.`);
