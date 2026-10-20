@@ -503,8 +503,29 @@
   if (doneClose) doneClose.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', function (e) {
+    if (!modal.classList.contains('is-open')) return;
     if (e.key === 'Escape') {
-      if (modal.classList.contains('is-open')) closeModal();
+      closeModal();
+      return;
+    }
+    if (e.key !== 'Tab') return;
+
+    /* 상담창이 열린 동안에는 배경 페이지로 키보드 초점이 빠지지 않게 한다.
+       기타 입력칸·개인정보 전문·완료 화면의 현재 표시 상태를 매번 반영. */
+    var controls = [].filter.call(modal.querySelectorAll(
+      'a[href],button,input,select,textarea,[tabindex]'
+    ), function (el) {
+      return !el.disabled && el.tabIndex >= 0 && el.getClientRects().length > 0 &&
+        window.getComputedStyle(el).visibility !== 'hidden';
+    });
+    var current = controls.indexOf(document.activeElement);
+    if (!controls.length) {
+      e.preventDefault();
+      closeBtn.focus();
+    } else if (current === -1 || (e.shiftKey && current === 0) ||
+               (!e.shiftKey && current === controls.length - 1)) {
+      e.preventDefault();
+      controls[e.shiftKey ? controls.length - 1 : 0].focus();
     }
   });
 
@@ -717,6 +738,7 @@
   function onSubmitSuccess() {
     form.style.display = 'none';
     done.classList.add('is-visible');
+    if (modal.classList.contains('is-open') && doneClose) doneClose.focus();
     /* 플로팅에서 열었으면 floating_cta, 본문 인라인 버튼에서 열었으면
        그 버튼의 출처가 그대로 실린다 (위 formSrc 참고). */
     ga('cta_form_submit', { cta_src: formSrc });
@@ -842,3 +864,4 @@
   }, true);
 
 })();
+

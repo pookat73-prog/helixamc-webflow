@@ -33,3 +33,6 @@ jobs:
 
       - name: Test floating CTA Firebase submission
         run: node scripts/test-floating-cta-submit.mjs
+
+      - name: Test floating CTA keyboard focus
+        run: node scripts/test-floating-cta-focus.mjs

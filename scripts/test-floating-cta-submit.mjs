@@ -87,6 +87,7 @@ function fixture(fetchImpl) {
     form,
     submitBtn: ids.hxFctaSubmit,
     done: ids.hxFctaDone,
+    doneClose: element('hxFctaDoneClose'),
     toggle: ids.hxFctaToggle,
     modal,
     closeBtn: ids.hxFctaModalClose,
@@ -226,3 +227,4 @@ await testFailureRetainsFormAndRetryClearsError();
 await testDuplicateClickAndLateSuccess();
 await testLateFailureAfterCloseReopen();
 console.log('All floating CTA submit handler tests passed (4 scenarios).');
+
