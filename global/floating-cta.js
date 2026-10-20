@@ -388,8 +388,10 @@
     return phoneInput.value.replace(/\D/g, '').slice(0, 11);
   }
 
+  var phoneCompletedOnce = false;
   phoneInput.addEventListener('input', function () {
     var d = phoneDigits();
+    if (!d.length) phoneCompletedOnce = false;
     var out = d;
     if (d.length > 3 && d.length <= 7) {
       out = d.slice(0, 3) + '-' + d.slice(3);
@@ -398,14 +400,28 @@
     }
     if (phoneInput.value !== out) phoneInput.value = out;
     setError(phoneInput, 'hxFcta_phone_err', '');
-    if (d.length === 11) petInput.focus();
+    if (d.length === 11 && !phoneCompletedOnce) {
+      phoneCompletedOnce = true;
+      if (document.activeElement === phoneInput) petInput.focus();
+    }
   });
 
   /* ── Enter(모바일 키보드 '다음') 로 다음 칸 이동 ──
      증상칸은 줄바꿈이 필요한 서술형이라 제외. */
   function nextOnEnter(fromEl, toEl) {
+    var composing = false;
+    var justComposed = false;
+    fromEl.addEventListener('compositionstart', function () { composing = true; });
+    fromEl.addEventListener('compositionend', function () {
+      composing = false;
+      justComposed = true;
+      setTimeout(function () { justComposed = false; }, 0);
+    });
     fromEl.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); toEl.focus(); }
+      if (e.key !== 'Enter' || e.isComposing || e.keyCode === 229 ||
+          composing || justComposed) return;
+      e.preventDefault();
+      toEl.focus();
     });
   }
   nextOnEnter(ownerInput, phoneInput);
@@ -469,6 +485,7 @@
     /* 직전에 완료 화면이 떠 있었으면(이미 한 번 제출 완료) 폼을 초기 상태로 되돌림 */
     if (done.classList.contains('is-visible')) {
       form.reset();
+      phoneCompletedOnce = false;
       form.style.display = '';
       done.classList.remove('is-visible');
       submitBtn.disabled = false;
