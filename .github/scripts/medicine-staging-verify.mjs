@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
 const require=createRequire('/tmp/helix-ci-audit/package.json');
 const {chromium}=require('playwright');const {PNG}=require('pngjs');
 const {default:pixelmatch}=await import(pathToFileURL(require.resolve('pixelmatch')));
@@ -15,7 +16,21 @@ async function visit(width,variant,host='helixanimalmedicalcenter.webflow.io'){
  const context=await browser.newContext({viewport:{width,height:width===390?844:1000},deviceScaleFactor:1,locale:'ko-KR',timezoneId:'Asia/Seoul'});const page=await context.newPage();page.setDefaultTimeout(25000);
  page.on('pageerror',e=>record.errors.push(e.message));page.on('console',m=>{if(m.type()==='error')record.errors.push(m.text());if(m.type()==='warning')record.warnings.push(m.text());});page.on('requestfailed',r=>record.failedRequests.push({url:r.url(),error:r.failure()?.errorText}));
  const cdp=await context.newCDPSession(page);await cdp.send('Network.enable');const req=new Map();cdp.on('Network.responseReceived',e=>req.set(e.requestId,{url:e.response.url,status:e.response.status,mimeType:e.response.mimeType}));cdp.on('Network.loadingFinished',e=>{const r=req.get(e.requestId);if(r)record.network.push({...r,encodedDataLength:e.encodedDataLength});});
- await page.route('**/*',async route=>{if(/\.css(?:\?|$)/.test(route.request().url())&&route.request().url().includes('cdn.prod.website-files.com')){const response=await route.fetch();let body=await response.text();if(variant==='baseline'){const count=body.split(newer).length-1;record.restoredRules+=count;body=body.split(newer).join(old);}fs.writeFileSync(`${out}/${id}-${record.cssFiles||0}.css`,body);record.cssFiles=(record.cssFiles||0)+1;await route.fulfill({response,body});}else await route.continue();});
+ const cssBodies=new Map();
+ await page.route('**/*',async route=>{
+  const url=route.request().url();
+  if(route.request().isNavigationRequest()&&url===`https://${host}/services`){
+   const response=await route.fetch();let html=await response.text();
+   for(const tag of [...html.matchAll(/<link\b[^>]*>/g)].map(x=>x[0])){
+    const href=tag.match(/href="([^"]+)"/)?.[1];if(!href||!href.includes('cdn.prod.website-files.com')||!href.includes('.css'))continue;
+    const res=await fetch(href);let body=await res.text();if(variant==='baseline'){record.restoredRules+=body.split(newer).length-1;body=body.split(newer).join(old);}cssBodies.set(href,body);
+    // Test-only restored CSS needs its matching integrity digest. Preserve SRI verification.
+    const digest='sha384-'+createHash('sha384').update(body).digest('base64');html=html.replace(tag,tag.replace(/integrity="[^"]*"/,`integrity="${digest}"`));
+   }
+   await route.fulfill({response,body:html});
+  }else if(cssBodies.has(url)){const body=cssBodies.get(url);fs.writeFileSync(`${out}/${id}-${record.cssFiles||0}.css`,body);record.cssFiles=(record.cssFiles||0)+1;await route.fulfill({status:200,contentType:'text/css',body});}
+  else await route.continue();
+ });
  async function shot(label){await page.screenshot({path:`${out}/${id}-${label}.png`,animations:'disabled'});}
  try{
   const response=await page.goto(`https://${host}/services`,{waitUntil:'domcontentloaded',timeout:90000});if(!response.ok())throw Error('Page HTTP '+response.status());await page.locator('#hxFctaToggle').waitFor({state:'visible',timeout:60000});await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(8000);
@@ -23,7 +38,8 @@ async function visit(width,variant,host='helixanimalmedicalcenter.webflow.io'){
   record.checks.noOverflow=record.layout.docWidth<=width+1;if(!record.checks.noOverflow)throw Error('Horizontal overflow');
   const expected=variant==='baseline'||host.startsWith('www')?old:newer;const unwanted=expected===old?newer:old;
   const images=record.network.filter(r=>r.url===old||r.url===newer);record.images=images;
-  if(!images.some(r=>r.url===expected&&r.status===200))throw Error('Expected image missing');if(images.some(r=>r.url===unwanted))throw Error('Unexpected image downloaded');if(variant==='baseline'&&!record.restoredRules)throw Error('Baseline CSS not restored');
+  const visibleImage=record.layout.elements.some(e=>e.rect.width>0&&e.rect.height>0&&e.backgroundImage.includes(expected));
+  if(visibleImage&&!images.some(r=>r.url===expected&&r.status===200))throw Error('Expected visible image missing');if(images.some(r=>r.url===unwanted))throw Error('Unexpected image downloaded');if(variant==='baseline'&&!record.restoredRules)throw Error('Baseline CSS not restored');record.checks.imageDisplayed=visibleImage;
   if(width===390&&!record.layout.elements[1].backgroundImage.startsWith('radial-gradient('))throw Error('Mobile gradient missing');
   await shot('page');
   const burgers=page.locator('.menu-bar_mobile,.image-18');let burger;for(let i=0;i<await burgers.count();i++){if(await burgers.nth(i).isVisible()&&await burgers.nth(i).evaluate(el=>!!el.__hxBurgerBound)){burger=burgers.nth(i);break;}}if(!burger)throw Error('No bound menu trigger');await burger.click();await page.locator('.hx-menu-overlay[aria-hidden="false"]').waitFor();await page.waitForTimeout(1000);await shot('menu');await page.locator('.hx-menu-close').click();await page.waitForFunction(()=>document.querySelector('.hx-menu-overlay')?.getAttribute('aria-hidden')==='true');record.checks.menu=true;
