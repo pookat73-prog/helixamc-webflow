@@ -5,11 +5,11 @@
   "siteId": "69d090ea69d828e27d16ea29",
   "folderId": "6ad81fdf61eceb7f36fc1347",
   "sourceHash": "54bd100e6b8f4fbd3279922b2dea146774efb601a1d95667684dabb2ccb86d8e",
-  "assetRef": "c62807530a21b52559ceee1d10e09d356f4b667d",
-  "stagingMergeCommit": "5b2343f7d1ace5b464e0f85a71031af8c1b36ccf",
-  "pullRequest": "https://github.com/pookat73-prog/helixamc-webflow/pull/1871",
+  "assetRef": "3fd661d3d046ad8e1315a4b4be10a4ee1d8a553b",
+  "stagingMergeCommit": "f3cf7ec37e3e1d211fbead2501d6ed3e661b7eab",
+  "pullRequest": "https://github.com/pookat73-prog/helixamc-webflow/pull/1876",
   "stagingPublished": true,
-  "productionPublished": false,
+  "productionPublished": null,
   "productionAuthorized": false,
   "searchConsoleSubmitted": false,
   "contentLocation": "page freeform footer: literal generated HTML, no runtime content fetch",
@@ -201,7 +201,7 @@
     "pageId": "69d4224c0ef3c80daa5212e4",
     "elementId": {
       "component": "69d4224c0ef3c80daa5212e4",
-      "element": "de3a5df8-3117-d93c-bc8b-de111c9c0c9e"
+      "element": "6f189ec0-e0d8-e1e3-420e-bc0c0579da6a"
     },
     "links": 26
   },
@@ -225,13 +225,21 @@
   "blockers": [
     "Active executor still returns proxy CONNECT 403 for staging and production domains; published HTTP/browser checks pending"
   ],
-  "stagingPublishedAt": "2026-10-21T02:36:29.343Z",
+  "stagingPublishedAt": "2026-10-21T04:15:26.707Z",
   "stagingUrl": "https://helixanimalmedicalcenter.webflow.io/",
-  "publishTaskId": "350e3b0f-8ac6-4228-8cdd-4b4fab4c2339",
+  "publishTaskId": "0f09697c-5af2-4cef-89ab-de8b6a2c3e11",
   "customDomainsPublished": [],
   "draftReleaseExplicitlyApproved": true,
   "declinedAction": {
     "action": "site-wide analytics head replacement",
     "reason": "Auto-review rejected persistent production-impacting privacy/analytics change; shared head unchanged"
+  },
+  "reviewPolicy": "staging first; no local review prerequisite",
+  "view": "existing modal with History API URL; direct response contains modal HTML",
+  "productionPublishRequestedByThisTask": false,
+  "productionPublicationObservation": {
+    "prior": "2026-10-20T00:49:32.807Z",
+    "latest": "2026-10-21T04:12:43.031Z",
+    "cause": "unverified separate record before this task staging publish; repository workflow has no Webflow publish step"
   }
 }
