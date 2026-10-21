@@ -121,6 +121,7 @@
           '</div>' +
         '</div>' +
         '<div class="helix-doctor-modal_body"></div>' +
+        '<a class="helix-doctor-history-link" data-doctor-page-link hidden>전체 이력 페이지 보기 <span aria-hidden="true">→</span></a>' +
       '</div>';
     document.body.appendChild(modalEl);
 
@@ -161,7 +162,7 @@
     return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'w=' + w;
   }
 
-  function render(data) {
+  function render(data, group) {
     var m = ensureModal();
     var panel = m.querySelector('.helix-doctor-modal_panel');
     var img = m.querySelector('.helix-doctor-modal_photo');
@@ -179,6 +180,17 @@
     m.querySelector('.helix-doctor-modal_title').textContent = data.title || '';
     m.querySelector('.helix-doctor-modal_name').textContent  = data.name  || '';
     m.querySelector('.helix-doctor-modal_intro').textContent = data.intro || '';
+    var historyLink = m.querySelector('[data-doctor-page-link]');
+    var hasPage = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug || '');
+    historyLink.hidden = !hasPage;
+    if (hasPage) {
+      historyLink.href = '/doctors/' + encodeURIComponent(data.slug);
+      historyLink.setAttribute('data-doctor-slug', data.slug);
+      historyLink.setAttribute('data-doctor-name', data.name || '');
+      historyLink.setAttribute('data-doctor-group', group || '');
+    } else {
+      historyLink.removeAttribute('href');
+    }
 
     var body = m.querySelector('.helix-doctor-modal_body');
     body.innerHTML = '';
@@ -202,9 +214,9 @@
     if (panel) panel.scrollTop = 0;
   }
 
-  function open(data) {
+  function open(data, group) {
     var m = ensureModal();
-    render(data);
+    render(data, group);
     lastFocus = document.activeElement;
     document.documentElement.classList.add('helix-doctor-modal-open');
     document.body.classList.add('helix-doctor-modal-open');
@@ -269,8 +281,23 @@
 
   /* ── 클릭 위임: 페이지에 동적으로 카드 추가돼도 자동 대응 ─── */
   document.addEventListener('click', function (e) {
+    var pageLink = e.target && e.target.closest && e.target.closest('[data-doctor-page-link]');
+    if (pageLink && !pageLink.hidden && !window.__helixNoMeasure &&
+        /^(www\.)?helix-amc\.com$/i.test(location.hostname) && typeof window.gtag === 'function') {
+      window.gtag('event', 'doctor_full_history_click', {
+        page: 'seocho', branch: '서초', view_type: 'modal',
+        slug: pageLink.getAttribute('data-doctor-slug'),
+        doctor: pageLink.getAttribute('data-doctor-name'),
+        group: pageLink.getAttribute('data-doctor-group'),
+        transport_type: 'beacon'
+      });
+    }
     var trigger = e.target && e.target.closest && e.target.closest('[data-doctor-open]');
     if (!trigger) return;
+
+    /* 브라우저의 새 탭·새 창·다운로드 동작은 가로채거나 모달 이벤트로 세지 않는다. */
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ||
+        trigger.hasAttribute('download') || trigger.getAttribute('target') === '_blank') return;
 
     var raw = trigger.getAttribute('data-doctor-open') || '';
     if (!raw) return;
@@ -338,7 +365,7 @@
           intro: '상세 정보 준비 중입니다.'
         };
       }
-      open(data);
+      open(data, group);
     });
   });
 

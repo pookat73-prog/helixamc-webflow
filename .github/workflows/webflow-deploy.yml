@@ -16,6 +16,7 @@ on:
       - 'specialty/**'
       - 'internal-medicine/**'
       - 'seo-snippets/**'
+      - 'scripts/build-doctor-pages.mjs'
   workflow_dispatch:
 
 permissions:
@@ -73,6 +74,16 @@ jobs:
           else
             echo "→ seo-snippets 실질 변경 없음"
           fi
+
+      # HTML 산출물만 만든다. Webflow 쓰기/Publish는 사용자 검토와 별도 승인 후 수행.
+      - name: Build static doctor page review bundle (no publishing)
+        run: node scripts/build-doctor-pages.mjs --out "$RUNNER_TEMP/helix-doctor-pages" --asset-ref "$(git rev-parse HEAD)"
+
+      - name: Save static doctor page review bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: doctor-pages-${{ github.ref_name }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/helix-doctor-pages/
 
       - name: Determine target ref
         id: ref

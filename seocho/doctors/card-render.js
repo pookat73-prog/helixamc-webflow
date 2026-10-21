@@ -255,6 +255,8 @@
     if (link) {
       link.setAttribute('data-doctor-open',  slug);
       link.setAttribute('data-doctor-group', group);
+      /* 일반 클릭은 기존 모달, 새 탭/링크 복사는 실제 상세 페이지. */
+      link.setAttribute('href', '/doctors/' + encodeURIComponent(slug));
     }
     /* 컨테이너 자체에도 group 정보 유지 (모달 조상 탐색용 안전망) */
   }
