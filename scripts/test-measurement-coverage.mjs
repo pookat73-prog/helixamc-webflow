@@ -9,7 +9,7 @@ function fixture({path='/seocho',hostname='www.helix-amc.com',search='',embedded
   const on=(surface,type,fn)=>{(listeners[surface][type]??=[]).push(fn);};
   const off=(surface,type,fn)=>{listeners[surface][type]=(listeners[surface][type]||[]).filter(f=>f!==fn);};
   const document={hidden:false,readyState:'loading',cookie:'',referrer:'',currentScript:null,
-    querySelector:()=>null, getElementById:()=>null,
+    querySelector:()=>null, getElementById:()=>null, getElementsByTagName:()=>[{parentNode:{insertBefore(s){scripts.push(s);}}}],
     createElement:()=>({style:{},appendChild(){},setAttribute(){},addEventListener(){}}),
     head:{appendChild(s){scripts.push(s);if(s.onload)queueMicrotask(s.onload);}},
     addEventListener:(t,f)=>on('document',t,f),removeEventListener:(t,f)=>off('document',t,f)};

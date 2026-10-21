@@ -312,17 +312,21 @@
       var group = chip.dataset.group;
       var kind  = chip.dataset.kind || '';
       var turnOn = !chipOn(chip);
+      if (!formTracking.started) {
+        formTracking.started = true;
+        ga('cta_form_start', { cta_src: formSrc, form_id: formTracking.id });
+      }
 
-      /* 태그 선택 집계 — 눌러서 켤 때만 잰다(끌 때는 안 잼).
-         cta_open 이 열 때만 재고 닫을 때는 안 재는 것과 같은 원칙.
-         같은 줄 안에서 자동으로 꺼지는 다른 칩(예: 고양이 누르면
-         강아지가 자동 해제)은 사용자가 직접 누른 게 아니므로 안 잼. */
+      /* Explicit selection/deselection only; chips automatically cleared by
+         another choice do not represent additional user actions. */
       if (turnOn) {
         ga('cta_tag_select', {
           cta_src: 'floating_cta',
           tag_group: group,
           tag_value: chip.dataset.value
         });
+      } else {
+        ga('cta_tag_deselect', { cta_src: formSrc, tag_group: group, tag_value: chip.dataset.value });
       }
 
       if (group === 'species' || group === 'age') {

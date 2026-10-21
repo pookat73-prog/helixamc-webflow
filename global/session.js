@@ -239,7 +239,7 @@
        in the raw log too. These describe public UI/content, never form values. */
     if (!params.content_type) params.content_type = params.item_type || eventName;
     if (!params.content_id) params.content_id = params.slug || params.symptom || params.cert ||
-      params.item || params.dept || params.doctor || params.control_key || params.cta_id || params.cta_src || '';
+      params.item || params.dept || params.doctor || params.tag_value || params.control_key || params.cta_id || params.cta_src || '';
     if (!params.interaction_id && window.__helixInteractionId &&
         !/(_page_view$|_scroll_depth$|_time_on_page$|_sec_|_dwell_)/.test(eventName)) {
       params.interaction_id = window.__helixInteractionId;

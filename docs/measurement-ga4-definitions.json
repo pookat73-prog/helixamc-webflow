@@ -96,6 +96,16 @@
       "parameterName": "control_key",
       "displayName": "클릭 요소 위치",
       "scope": "EVENT"
+    },
+    {
+      "parameterName": "tag_group",
+      "displayName": "상담 선택항목 그룹",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "tag_value",
+      "displayName": "상담 선택항목",
+      "scope": "EVENT"
     }
   ],
   "metrics": [
