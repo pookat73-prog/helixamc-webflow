@@ -459,7 +459,7 @@
       if (!b) return;
       var act = b.getAttribute('data-act');
       if (act === 'tools') {
-        window.open('https://helix-website-control-center.pookat73.workers.dev/website-tools/index.html?view=inspect&page=' + encodeURIComponent(location.pathname), '_blank', 'noopener,noreferrer');
+        window.open('https://helix-website-control-center.pookat73.workers.dev/website-tools/?view=inspect&page=' + encodeURIComponent(location.pathname), '_blank', 'noopener,noreferrer');
       } else if (act === 'badges') {
         showBadges = !showBadges;
         b.classList.toggle('on', showBadges);
