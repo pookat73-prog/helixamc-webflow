@@ -323,6 +323,7 @@
     events.push(entry);
     if (events.length > 200) events.shift();
     renderLog();
+    scheduleToolsSnapshot();
     if (entry.el) flashElement(entry.el);
   }
 
@@ -439,6 +440,7 @@
         '<div class="hx-gai-title">GA 측정 점검' +
           '<small>' + GA_ID + ' · ' + PAGE + ' 페이지</small></div>' +
         '<span class="hx-gai-spacer"></span>' +
+        '<button class="hx-gai-btn" data-act="tools">관리 도구 ↗</button>' +
         '<button class="hx-gai-btn on" data-act="badges">측정 위치</button>' +
         '<button class="hx-gai-btn" data-act="clear">지우기</button>' +
         '<button class="hx-gai-btn" data-act="min">_</button>' +
@@ -456,7 +458,9 @@
       var b = e.target.closest('.hx-gai-btn');
       if (!b) return;
       var act = b.getAttribute('data-act');
-      if (act === 'badges') {
+      if (act === 'tools') {
+        window.open('https://helix-website-control-center.pookat73.workers.dev/website-tools/?view=inspect&page=' + encodeURIComponent(location.pathname), '_blank', 'noopener,noreferrer');
+      } else if (act === 'badges') {
         showBadges = !showBadges;
         b.classList.toggle('on', showBadges);
         overlay.style.display = showBadges ? '' : 'none';
@@ -536,11 +540,52 @@
         corner.className = 'hx-gai-corner';
         box.appendChild(corner);
         overlay.appendChild(box);
-        boxMap.push({ el: el, box: box });
+        boxMap.push({ el: el, box: box, target: t });
       });
     });
     position();
+    scheduleToolsSnapshot();
   }
+
+  /* HELIX_TOOLS_BRIDGE_START
+     Read-only connection to the authenticated website workspace. Only the
+     opening workspace window can request it. Never send parameter values,
+     element text, visitor IDs, form content or collection credentials. */
+  var toolsOrigin = 'https://helix-website-control-center.pookat73.workers.dev';
+  var toolsPeer = null, toolsTimer = null;
+  function sendToolsSnapshot() {
+    if (!toolsPeer || toolsPeer.closed) return;
+    var targets = [];
+    (boxMap || []).slice(0, 1000).forEach(function (item) {
+      var t = item.target;
+      if (!t) return;
+      var found = targets.filter(function (row) { return row.label === t.label && row.event === t.event; })[0];
+      if (found) found.count++;
+      else if (targets.length < 250) targets.push({ label: String(t.label).slice(0, 200), event: String(t.event).slice(0, 200), count: 1 });
+    });
+    try {
+      toolsPeer.postMessage({
+        type: 'HELIX_INSPECT_SNAPSHOT', version: 1,
+        path: location.pathname, measurementBlocked: !!window.__helixNoMeasure,
+        targets: targets,
+        events: events.slice(-50).map(function (entry) {
+          return { name: String(entry.name).slice(0, 100), time: entry.time,
+            keys: Object.keys(entry.params || {}).slice(0, 30).map(function (key) { return key.slice(0, 80); }) };
+        })
+      }, toolsOrigin);
+    } catch (e) { toolsPeer = null; }
+  }
+  function scheduleToolsSnapshot() {
+    if (!toolsPeer || toolsTimer) return;
+    toolsTimer = setTimeout(function () { toolsTimer = null; sendToolsSnapshot(); }, 300);
+  }
+  window.addEventListener('message', function (event) {
+    if (event.origin !== toolsOrigin || !window.opener || event.source !== window.opener) return;
+    if (!event.data || event.data.type !== 'HELIX_INSPECT_REQUEST' || event.data.version !== 1) return;
+    toolsPeer = event.source;
+    sendToolsSnapshot();
+  });
+  /* HELIX_TOOLS_BRIDGE_END */
 
   /* 모달/오버레이 등에 실제로 가려진 요소인지 — 중심점을 히트테스트.
      중심이 뷰포트 밖이면(스크롤로 화면 밖) 판정 skip → 아래쪽 배지는
