@@ -80,6 +80,14 @@
   function send(eventName, params) {
     try {
       var base = { item_type: params.item_type, page: PAGE, device: device() };
+      var profile = PAGE === 'doctor' && document.querySelector('[data-doctor-detail]');
+      if (profile) {
+        base.slug = profile.getAttribute('data-doctor-slug');
+        base.doctor = profile.getAttribute('data-doctor-name');
+        base.group = profile.getAttribute('data-doctor-group');
+        base.branch = '서초';
+        base.view_type = 'page';
+      }
       for (var k in params) { if (params.hasOwnProperty(k)) base[k] = params[k]; }
       if (typeof window.gtag === 'function') {
         base.transport_type = 'beacon';
