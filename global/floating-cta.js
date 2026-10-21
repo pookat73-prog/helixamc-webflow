@@ -232,6 +232,7 @@
   var form     = document.getElementById('hxFctaForm');
   var submitBtn= document.getElementById('hxFctaSubmit');
   var isSubmitting = false;
+  var formTracking = { opened: 0, started: false, fields: {}, id: '' };
   var done     = document.getElementById('hxFctaDone');
   var doneClose= document.getElementById('hxFctaDoneClose');
   var modalReturnFocus = toggle;
@@ -424,6 +425,7 @@
     else privacyDetail.setAttribute('hidden', '');
     privacyMore.setAttribute('aria-expanded', open ? 'true' : 'false');
     privacyMore.textContent = open ? '접기' : '자세히 보기';
+    ga('cta_privacy_toggle', { expanded: open ? 1 : 0, cta_src: formSrc });
   });
 
   /* ── 상담 버튼(폼) 열기 ── */
@@ -432,7 +434,7 @@
     openModal();
     /* 현재는 버튼 한 번으로 폼이 열린다. 옛 cta_open 집계는 유지하고
        본문 진입과 같은 실제 폼 열림 이벤트도 남긴다. 둘은 합산하지 않는다. */
-    ga('cta_open', { cta_src: 'floating_cta' });
+    ga('cta_open', { cta_src: 'floating_cta', conv: 0, legacy_event: 1 });
     ga('cta_form_open', { cta_src: 'floating_cta' });
   }
 
@@ -472,6 +474,9 @@
   }
 
   function openModal() {
+    if (!modal.classList.contains('is-open')) {
+      formTracking = { opened: Date.now(), started: false, fields: {}, id: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8) };
+    }
     /* 직전에 완료 화면이 떠 있었으면(이미 한 번 제출 완료) 폼을 초기 상태로 되돌림 */
     if (done.classList.contains('is-visible')) {
       form.reset();
@@ -494,7 +499,16 @@
     closeBtn.focus();
   }
 
-  function closeModal() {
+  function closeModal(reason) {
+    if (modal.classList.contains('is-open')) {
+      var target = reason && reason.target;
+      var closeReason = typeof reason === 'string' ? reason :
+        (target === backdrop ? 'backdrop' : target === doneClose ? 'done' : 'close_button');
+      ga('cta_form_close', { cta_src: formSrc, form_id: formTracking.id,
+        close_reason: closeReason, form_state: done.classList.contains('is-visible') ? 'submitted' :
+          (isSubmitting ? 'pending' : formTracking.started ? 'started' : 'untouched'),
+        elapsed_sec: Math.round((Date.now() - formTracking.opened) / 1000), conv: 0 });
+    }
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
@@ -511,7 +525,7 @@
   document.addEventListener('keydown', function (e) {
     if (!modal.classList.contains('is-open')) return;
     if (e.key === 'Escape') {
-      closeModal();
+      closeModal('escape');
       return;
     }
     if (e.key !== 'Tab') return;
@@ -540,6 +554,7 @@
      파라미터로 구분 집계. (기존엔 location:'seocho' 하드코딩이라 다른
      페이지에서 눌러도 서초로 찍히던 문제 해결.) */
   function ctaPage() {
+    if (window.HelixMeasure) return window.HelixMeasure.page();
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
     /* 외과 상세에서 누른 상담도 기존 cta_call 안에서 페이지만 구분한다. */
@@ -603,6 +618,7 @@
   }
 
   function ga(eventName, params) {
+    if (window.__helixNoMeasure || /\.webflow\.io$/i.test(location.hostname) || window.self !== window.top) return;
     if (typeof window.gtag === 'function') {
       var p = params || {};
       var attribution = getAttributionUtm();
@@ -620,6 +636,26 @@
       window.gtag('event', eventName, p);
     }
   }
+
+  /* Field state only: never send a name, number, pet name or symptom text. */
+  ['owner', 'phone', 'pet', 'symptom', 'etc', 'privacy'].forEach(function (field) {
+    var control = document.getElementById('hxFcta_' + field);
+    if (!control) return;
+    control.addEventListener('focus', function () {
+      if (!formTracking.started) {
+        formTracking.started = true;
+        ga('cta_form_start', { cta_src: formSrc, form_id: formTracking.id });
+      }
+      if (!formTracking.fields[field]) {
+        formTracking.fields[field] = true;
+        ga('cta_field_start', { field: field, cta_src: formSrc, form_id: formTracking.id });
+      }
+    });
+    control.addEventListener('change', function () {
+      formTracking.started = true;
+      ga('cta_field_change', { field: field, has_value: field === 'privacy' ? (control.checked ? 1 : 0) : (control.value.trim() ? 1 : 0), cta_src: formSrc, form_id: formTracking.id });
+    });
+  });
 
   /* ── 전화 클릭 ── */
   callBtn.addEventListener('click', function (e) {
@@ -691,6 +727,7 @@
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     if (isSubmitting) return;
+    ga('cta_submit_attempt', { cta_src: formSrc, form_id: formTracking.id, conv: 0 });
 
     /* 필수 항목 검사 — 실패 안내도 전송 오류와 함께 초기화 */
     clearErrors();
@@ -714,7 +751,10 @@
       setError(null, 'hxFcta_privacy_err', '개인정보 수집·이용에 동의해 주세요.');
       bad = bad || privacyEl;
     }
-    if (bad) { bad.focus(); return; }
+    if (bad) {
+      ga('cta_form_validation_error', { field: bad.id.replace('hxFcta_', ''), cta_src: formSrc, form_id: formTracking.id, conv: 0 });
+      bad.focus(); return;
+    }
 
     var petName   = petInput.value.trim();
     var symptom   = symptomInput.value.trim();
@@ -761,12 +801,14 @@
     isSubmitting = true;
     submitBtn.disabled = true;
     submitBtn.textContent = '전송 중…';
+    var submitContext = { cta_src: formSrc, form_id: formTracking.id };
 
     try {
-      await persistLead(fetch, LEADS_URL, lead);
-      onSubmitSuccess();
+      var savedKey = await persistLead(fetch, LEADS_URL, lead);
+      onSubmitSuccess(savedKey, submitContext);
     } catch (err) {
       console.error('[floating-cta] dashboard lead submit error:', err);
+      ga('cta_form_error', { error_type: 'save_unconfirmed', cta_src: submitContext.cta_src, form_id: submitContext.form_id, conv: 0 });
       setError(null, 'hxFcta_submit_err',
         '저장 여부를 확인하지 못했습니다. 입력 내용은 유지했습니다. 중복 접수를 피하려면 먼저 담당자에게 접수 여부를 확인해 주세요.');
       submitBtn.disabled = false;
@@ -776,13 +818,14 @@
     }
   });
 
-  function onSubmitSuccess() {
+  function onSubmitSuccess(savedKey, submitContext) {
     form.style.display = 'none';
     done.classList.add('is-visible');
     if (modal.classList.contains('is-open') && doneClose) doneClose.focus();
     /* 플로팅에서 열었으면 floating_cta, 본문 인라인 버튼에서 열었으면
        그 버튼의 출처가 그대로 실린다 (위 formSrc 참고). */
-    ga('cta_form_submit', { cta_src: formSrc });
+    ga('cta_form_submit', { cta_src: submitContext.cta_src, event_id: savedKey, form_id: submitContext.form_id });
+    if (typeof window !== 'undefined' && window.__helixTrackAdsLead) window.__helixTrackAdsLead(savedKey);
   }
 
   } // end run()

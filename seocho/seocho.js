@@ -1903,6 +1903,32 @@ window.HelixBranch = window.HelixBranch || (function () {
       var next = slider.querySelector('.w-slider-arrow-right');
       if (prev) bindArrow(slider, prev, 'prev');
       if (next) bindArrow(slider, next, 'next');
+      [].slice.call(slider.querySelectorAll('.w-slider-dot')).forEach(function (dot) { bindArrow(slider, dot, 'dot'); });
+      if (!slider.__helixGalleryGestures) {
+        slider.__helixGalleryGestures = true;
+        var startX = null, startIndex = '';
+        slider.addEventListener('touchstart', function (event) {
+          startX = event.touches[0] && event.touches[0].clientX;
+          startIndex = slideInfo(slider).index;
+        }, { passive: true });
+        slider.addEventListener('touchend', function (event) {
+          var end = event.changedTouches[0];
+          if (startX === null || !end || Math.abs(end.clientX - startX) < 30) return;
+          startX = null;
+          setTimeout(function () {
+            var info = slideInfo(slider);
+            if (info.index && info.index !== startIndex) track('swipe', info);
+          }, 120);
+        }, { passive: true });
+        slider.addEventListener('keydown', function (event) {
+          if (!/^(ArrowLeft|ArrowRight|Home|End)$/.test(event.key)) return;
+          var before = slideInfo(slider).index;
+          setTimeout(function () {
+            var info = slideInfo(slider);
+            if (info.index && info.index !== before) track('keyboard', info);
+          }, 120);
+        });
+      }
       log('bound', !!prev, !!next);
     });
   }

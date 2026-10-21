@@ -39,3 +39,11 @@ jobs:
 
       - name: Test surgery CTA attribution and analytics exclusion without network
         run: node scripts/test-surgery-cta-measurement.mjs
+
+      - name: Test shared analytics coverage, reading clocks and transport fallbacks
+        run: node scripts/test-measurement-coverage.mjs
+
+      - name: Test quickbar and Ilsan schedule attribution
+        run: |
+          node scripts/test-quickbar-measurement.mjs
+          node scripts/test-ilsan-schedule-measurement.mjs

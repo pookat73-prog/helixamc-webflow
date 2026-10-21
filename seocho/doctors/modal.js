@@ -202,7 +202,12 @@
     if (panel) panel.scrollTop = 0;
   }
 
-  function open(data) {
+  var doctorReader = null;
+  var doctorContext = null;
+  function open(data, context) {
+    if (doctorReader) doctorReader.stop();
+    doctorContext = context;
+    if (window.HelixMeasure) doctorReader = window.HelixMeasure.reader('doctor_detail_read', context);
     var m = ensureModal();
     render(data);
     lastFocus = document.activeElement;
@@ -222,6 +227,8 @@
 
   function close() {
     if (!modalEl || !modalEl.classList.contains('is-open')) return;
+    if (doctorReader) { doctorReader.stop(); doctorReader = null; }
+    if (window.HelixMeasure) window.HelixMeasure.emit('doctor_detail_close', doctorContext);
     modalEl.classList.remove('is-open');
     document.documentElement.classList.remove('helix-doctor-modal-open');
     document.body.classList.remove('helix-doctor-modal-open');
@@ -338,7 +345,7 @@
           intro: '상세 정보 준비 중입니다.'
         };
       }
-      open(data);
+      open(data, { item_type: 'doctor_detail', branch: '서초', group: group, slug: slug, doctor: data.name || slug });
     });
   });
 

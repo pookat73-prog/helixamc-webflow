@@ -1,0 +1,60 @@
+<!-- HELIX shared mobile consultation: immutable CSS on every standalone page. -->
+<style>
+@media (min-width:768px) { html.hx-fcta-mobile-only .hx-fcta-shell { display:none; } }
+</style>
+<script>
+(function () {
+  'use strict';
+  if (window.self !== window.top || window.__helixMobileCtaFallback) return;
+  window.__helixMobileCtaFallback = true;
+  var path = location.pathname.replace(/\/$/, '') || '/';
+  var staging = /\.webflow\.io$/i.test(location.hostname);
+  if (path === '/internal-medicine' && !staging) {
+    location.replace('/services');
+    return;
+  }
+  var standalone = ['/internal-medicine','/aaha-cert','/emergency-cert','/cat-cert','/ad-landing-test'].indexOf(path) !== -1;
+  document.documentElement.classList.add('hx-fcta-mobile-bar');
+  if (standalone) document.documentElement.classList.add('hx-fcta-mobile-only');
+  /* Regular pages load this stylesheet through their own page bootstrap. */
+  if (!standalone) return;
+  var branch = staging ? 'staging' : 'main';
+  var seed = '__MEASUREMENT_COMMIT__';
+  var key = 'helix.mobile-cta.sha.' + branch + '.' + seed.substring(0,10);
+  var cached = null;
+  var loaded = '';
+  try { cached = JSON.parse(localStorage.getItem(key) || 'null'); } catch (_) {}
+  function load(ref) {
+    if (!/^[0-9a-f]{10,40}$/i.test(ref) || loaded === ref) return;
+    loaded = ref;
+    var base = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/global/';
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = base + 'floating-cta.css';
+    document.head.appendChild(link);
+    if (standalone && !window.__helixFloatingCtaInit) {
+      var script = document.createElement('script');
+      script.src = base + 'floating-cta.js';
+      document.head.appendChild(script);
+    }
+  }
+  Promise.resolve(window.__helixMeasurementReady).then(function () {
+    if (!/[?&]fresh=1\b/.test(location.search) && cached && /^[0-9a-f]{40}$/i.test(cached.sha || '') && Date.now() - cached.t < 600000) {
+      load(cached.sha);
+      return;
+    }
+    Promise.race([
+      fetch('https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/' + branch,
+        {headers:{Accept:'application/vnd.github+json'},cache:'no-store'})
+        .then(function (response) { if (!response.ok) throw new Error('CTA ref unavailable'); return response.json(); })
+        .then(function (data) {
+          var sha = data.object && data.object.sha;
+          if (!/^[0-9a-f]{40}$/i.test(sha || '')) throw new Error('Invalid CTA ref');
+          try { localStorage.setItem(key, JSON.stringify({sha:sha,t:Date.now()})); } catch (_) {}
+          return sha;
+        }),
+      new Promise(function (resolve) { setTimeout(function () { resolve(seed); }, 2500); })
+    ]).then(load).catch(function () { load(seed); });
+  });
+})();
+</script>

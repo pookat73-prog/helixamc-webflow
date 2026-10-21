@@ -33,14 +33,17 @@
         no-op gtag stub 만 정의하고 즉시 종료. */
   if (/\.webflow\.io$/i.test(location.hostname)) {
     window.dataLayer = window.dataLayer || [];
-    if (typeof window.gtag !== 'function') { window.gtag = function () {}; }
+    window.gtag = function () {};
     console.log('[helix-ga4] staging(*.webflow.io) 감지 — 측정 비활성화');
     return;
   }
 
   /* 운영자 제외 — global/measure-gate.js 가 켜 둔 표시가 있으면 측정 안 함
      (?helix-noga=1 로 켠 브라우저) */
-  if (window.__helixNoMeasure) return;
+  if (window.__helixNoMeasure || window.self !== window.top) {
+    window.gtag = function () {};
+    return;
+  }
 
   var GA_ID = 'G-PWCB5MVC32';
 
@@ -55,7 +58,31 @@
   /* dataLayer + gtag stub 동기 정의 — 이후 모든 gtag 호출 안전 큐잉 */
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
-  window.gtag = window.gtag || gtag;
+  var forward = window.gtag || gtag;
+  window.gtag = function () {
+    if (window.__helixNoMeasure) return;
+    if (arguments[0] === 'event' && arguments[2] && typeof arguments[2] === 'object') {
+      var params = arguments[2];
+      var controls = ['transport_type', 'event_callback', 'event_timeout', 'debug_mode', 'send_to'];
+      var keys = Object.keys(params).filter(function (key) { return controls.indexOf(key) < 0; });
+      if (keys.length > 25) {
+        /* The raw-sheet wrapper still keeps the complete object. GA4 accepts
+           at most 25 custom event parameters: preserve the action's detail
+           before optional session/UTM copies already available to GA itself. */
+        var priority = ['page', 'device', 'event_id', 'sid', 'content_type', 'content_id', 'item_type', 'branch', 'conv', 'conv_type', 'section_key', 'doctor', 'slug', 'dept', 'symptom', 'cert', 'item', 'group', 'question', 'field', 'error_type', 'cta_src', 'form_id', 'read_sec', 'dwell_sec', 'active_sec', 'total_sec', 'percent_scrolled', 'slide_index', 'direction', 'guide_position', 'guide_result', 'event_id', 'interaction_id', 'entry_src', 'visitor'];
+        var selected = {}, count = 0;
+        priority.concat(keys).forEach(function (key) {
+          if (count < 25 && Object.prototype.hasOwnProperty.call(params, key) && !Object.prototype.hasOwnProperty.call(selected, key)) {
+            selected[key] = params[key]; count++;
+          }
+        });
+        controls.forEach(function (key) { if (params[key] !== undefined) selected[key] = params[key]; });
+        var args = Array.prototype.slice.call(arguments); args[2] = selected;
+        return forward.apply(this, args);
+      }
+    }
+    return forward.apply(this, arguments);
+  };
 
   if (alreadyInjected) {
     console.log('[helix-ga4] Webflow 통합 GA 감지 — 중복 inject skip');
@@ -70,4 +97,88 @@
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
   (document.head || document.documentElement).appendChild(s);
+})();
+
+/* Shared measurement helpers. Never collect entered names, phone numbers,
+   symptom text or clipboard contents. Event labels describe the interface. */
+(function () {
+  'use strict';
+  if (window.HelixMeasure || window.__helixNoMeasure || /\.webflow\.io$/i.test(location.hostname) || window.self !== window.top) return;
+  function page() {
+    var path = (location.pathname || '/').replace(/\/$/, '') || '/';
+    if (/^\/doctors\//.test(path)) return 'doctor';
+    var pages = { '/': 'home', '/discover-helix': 'discover', '/specialty-care': 'specialty', '/symptoms': 'emergency' };
+    return pages[path] || path.replace(/^\//, '').replace(/[^a-z0-9_]/gi, '_');
+  }
+  function emit(name, params) {
+    if (window.__helixNoMeasure || typeof window.gtag !== 'function') return;
+    var p = Object.assign({ page: page(), device: window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'), transport_type: 'beacon' }, params || {});
+    window.gtag('event', name, p);
+  }
+  /* Active visible reading, delta-only on hide/pagehide; resumes after return.
+     Stop explicitly when the modal/question is no longer visible. */
+  function reader(name, params) {
+    var total = 0, sent = 0, since = document.hidden ? null : Date.now(), last = Date.now(), stopped = false;
+    function update() {
+      var now = Date.now();
+      if (since !== null) total += Math.max(0, Math.min(now, last + 60000) - since);
+      since = !stopped && !document.hidden && now < last + 60000 ? now : null;
+    }
+    function flush() {
+      update();
+      var delta = total - sent;
+      if (delta < 2000) return;
+      sent = total;
+      emit(name, Object.assign({}, params, { read_sec: Math.round(delta / 1000), value: Math.round(delta / 1000) }));
+    }
+    function activity() { update(); last = Date.now(); if (!document.hidden && !stopped) since = last; }
+    function visibility() { if (document.hidden) flush(); else activity(); }
+    var acts = ['click', 'keydown', 'pointermove', 'touchstart', 'scroll'];
+    acts.forEach(function (type) { window.addEventListener(type, activity, { passive: true }); });
+    document.addEventListener('visibilitychange', visibility);
+    window.addEventListener('pagehide', flush);
+    var timer = setInterval(update, 5000);
+    return { flush: flush, activity: activity, stop: function () {
+      if (stopped) return;
+      flush(); stopped = true; since = null; clearInterval(timer);
+      acts.forEach(function (type) { window.removeEventListener(type, activity); });
+      document.removeEventListener('visibilitychange', visibility);
+      window.removeEventListener('pagehide', flush);
+    } };
+  }
+  window.HelixMeasure = { page: page, emit: emit, reader: reader };
+})();
+
+/* Advertising pixels share exactly the same exclusion boundary as GA4.
+   Only a confirmed successful lead is forwarded, with no entered form data. */
+(function () {
+  'use strict';
+  if (window.__helixAdsInit || window.__helixNoMeasure || /\.webflow\.io$/i.test(location.hostname) || window.self !== window.top) return;
+  window.__helixAdsInit = true;
+  if (!window.fbq) {
+    var fb = function () { if (fb.callMethod) fb.callMethod.apply(fb, arguments); else fb.queue.push(arguments); };
+    fb.push = fb; fb.loaded = true; fb.version = '2.0'; fb.queue = [];
+    window.fbq = window._fbq = fb;
+    var meta = document.createElement('script'); meta.async = true;
+    meta.src = 'https://connect.facebook.net/en_US/fbevents.js'; document.head.appendChild(meta);
+    fb('init', '2286274068810823'); fb('track', 'PageView');
+  }
+  if (!window.ttq || !window.ttq._i) {
+    var tt = window.ttq = window.ttq || [];
+    window.TiktokAnalyticsObject = 'ttq';
+    ['page', 'track', 'identify', 'instances', 'debug', 'on', 'off', 'once', 'ready', 'alias', 'group', 'enableCookie', 'disableCookie', 'holdConsent', 'revokeConsent', 'grantConsent'].forEach(function (method) {
+      tt[method] = function () { tt.push([method].concat([].slice.call(arguments))); };
+    });
+    tt._i = {}; tt._i.D9EMN6BC77UD5IE52MB0 = []; tt._t = { D9EMN6BC77UD5IE52MB0: Date.now() }; tt._o = { D9EMN6BC77UD5IE52MB0: {} };
+    tt._i.D9EMN6BC77UD5IE52MB0._u = 'https://analytics.tiktok.com/i18n/pixel/events.js';
+    tt.instance = function (id) { return tt._i[id] || []; };
+    var tiktok = document.createElement('script'); tiktok.async = true;
+    tiktok.src = 'https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D9EMN6BC77UD5IE52MB0&lib=ttq'; document.head.appendChild(tiktok);
+    tt.page();
+  }
+  window.__helixTrackAdsLead = function (id) {
+    if (window.__helixNoMeasure) return;
+    try { if (window.fbq) window.fbq('track', 'Lead', {}, { eventID: id }); } catch (e) {}
+    try { if (window.ttq && window.ttq.track) window.ttq.track('SubmitForm', {}, { event_id: id }); } catch (e) {}
+  };
 })();

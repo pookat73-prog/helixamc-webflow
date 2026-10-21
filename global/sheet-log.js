@@ -63,7 +63,7 @@
     ipCheck = Promise.resolve(cached === '1');
     log('ip check (cached) internal:', cached === '1');
   } else {
-    ipCheck = fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
+    ipCheck = Promise.race([fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         var ip = d && d.ip;
@@ -77,8 +77,46 @@
            다음 페이지에서 다시 시도하게 둔다. */
         log('ip check failed, 기록 계속', e);
         return false;
-      });
+      }), new Promise(function (resolve) { setTimeout(function () { resolve(false); }, 1500); })]);
   }
+
+  /* Keep only requests that have not been dispatched while offline. A
+     browser-accepted beacon has no storage acknowledgement, so it is never
+     replayed speculatively. Stable event_id is kept for downstream deduping. */
+  var PENDING_KEY = 'helix_measurement_pending';
+  var pending = [];
+  try {
+    var stored = JSON.parse(sessionStorage.getItem(PENDING_KEY) || '[]');
+    if (Array.isArray(stored)) pending = stored.filter(function (row) { return row && Date.now() - row.at < 600000; }).slice(-50);
+  } catch (e) {}
+  function savePending() {
+    try { sessionStorage.setItem(PENDING_KEY, JSON.stringify(pending)); } catch (e) {}
+  }
+  function dispatch(payload) {
+    if (navigator.onLine === false) {
+      pending.push({ at: Date.now(), payload: payload });
+      pending = pending.slice(-50); savePending(); return;
+    }
+    var body = JSON.stringify(payload), accepted = false;
+    if (navigator.sendBeacon) {
+      try { accepted = navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'text/plain;charset=UTF-8' })); } catch (e) {}
+    }
+    if (!accepted) {
+      fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', keepalive: true, body: body })
+        .catch(function (e) { log('transport failed', payload.event_name, e); });
+    }
+    log('transport attempted', payload.event_name);
+  }
+  function flushPending() {
+    ipCheck.then(function (internal) {
+      if (internal || window.__helixNoMeasure) { pending = []; savePending(); return; }
+      if (navigator.onLine === false) return;
+      var ready = pending; pending = []; savePending();
+      ready.forEach(function (row) { if (Date.now() - row.at < 600000) dispatch(row.payload); });
+    });
+  }
+  if (pending.length) flushPending();
+  if (typeof window.addEventListener === 'function') window.addEventListener('online', flushPending);
 
   function send(eventName, params) {
     params = params || {};
@@ -91,7 +129,7 @@
         event_name: eventName,
         page: params.page || '',
         device: params.device || (window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop')),
-        value: params.value || '',
+        value: params.value === undefined || params.value === null ? '' : params.value,
         params: params
       };
       payload = JSON.parse(JSON.stringify(payload));
@@ -107,15 +145,7 @@
 
     ipCheck.then(function (isInternal) {
       if (isInternal) { log('skip (병원 IP)', eventName); return; }
-      try {
-        var body = JSON.stringify(payload);
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'text/plain;charset=UTF-8' }));
-        } else {
-          fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', keepalive: true, body: body });
-        }
-        log('sent', eventName, payload);
-      } catch (e) { log('send error', e); }
+      try { dispatch(payload); } catch (e) { log('send error', e); }
     });
   }
 

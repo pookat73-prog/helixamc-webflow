@@ -52,6 +52,8 @@
      세 모듈의 page 값이 어긋나면 시트에서 같은 페이지가 둘로 갈린다. */
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
+    if (/^\/(aaha-cert|emergency-cert|cat-cert)\/?$/.test(p)) return p.slice(1).replace(/\/$/, '').replace(/-/g, '_');
+    if (/^\/doctors\//.test(p)) return 'doctor';
     if (/discover/.test(p)) return 'discover';
     if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -76,7 +78,7 @@
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
-    return 'home';
+    return p === '/' ? 'home' : p.replace(/^\/+|\/+$/g, '').replace(/[^a-z0-9_]/gi, '_');
   }
 
   var PAGE = pageKey();

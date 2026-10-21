@@ -15,8 +15,8 @@ function between(startMarker, endMarker) {
 
 const errorFns = between('  function setError(', "  ownerInput.addEventListener('input'");
 const modalFns = between('  function openModal() {', "  backdrop.addEventListener('click', closeModal);");
-const submitFns = between('  async function persistLead(', '  function onSubmitSuccess() {');
-const successFn = between('  function onSubmitSuccess() {', '  } // end run()');
+const submitFns = between('  async function persistLead(', '  function onSubmitSuccess(');
+const successFn = between('  function onSubmitSuccess(', '  } // end run()');
 
 function classList() {
   const values = new Set();
@@ -110,8 +110,8 @@ function fixture(fetchImpl) {
     LEADS_URL: 'https://mock.invalid/branches/seocho/leads.json',
     CTA_PAGE: 'home',
     formSrc: 'floating_cta',
-    gaEvents: [],
-    ga(name, data) { context.gaEvents.push({ name, data }); },
+    gaEvents: [], allGaEvents: [],
+    ga(name, data) { context.allGaEvents.push({ name, data }); if (name === 'cta_form_submit') context.gaEvents.push({ name, data }); },
     location: { search: '', pathname: '/' },
     navigator: { userAgent: 'submit-handler-test' },
     URLSearchParams: class { get() { return null; } }
@@ -119,6 +119,7 @@ function fixture(fetchImpl) {
 
   vm.runInNewContext([
     guardDecl,
+    source.match(/^[ \t]*var formTracking = .*;$/m)[0],
     errorFns,
     modalFns,
     submitFns,
