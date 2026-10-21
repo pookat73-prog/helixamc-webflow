@@ -833,6 +833,9 @@
       var idoc = null;
       try { idoc = f.contentDocument; } catch (_) {}
       if (!idoc || !idoc.body) { openWithSections(slug); return; }
+      ['pointermove', 'touchstart', 'scroll', 'keydown', 'click'].forEach(function (type) {
+        idoc.addEventListener(type, function () { if (certReader) certReader.activity(); }, { passive: true });
+      });
 
       /* 페이지 문맥(바깥 여백·스크롤·다른 요소)을 걷고 상세 섹션만 남긴다 */
       var css =
@@ -939,6 +942,7 @@
   }
 
   function open(slug) {
+    if (certReader) { certReader.stop(); certReader = null; }
     if (!overlay) buildOverlay();
     currentSlug = slug;
     overlay.classList.add('is-open');
@@ -1052,8 +1056,12 @@
     cssHidden.forEach(drop);
   }
 
+  var certReader = null;
   function close() {
     if (!overlay) return;
+    if (!overlay.classList.contains('is-open')) return;
+    if (certReader) { certReader.stop(); certReader = null; }
+    if (window.HelixMeasure) window.HelixMeasure.emit('cert_modal_close', { cert: currentSlug, slide_index: currentIdx + 1 });
     overlay.classList.remove('is-open');
     document.documentElement.classList.remove('helix-cert-modal-open');
   }
@@ -1086,7 +1094,13 @@
     if (currentCount === 0) return;
     if (idx < 0) idx = 0;
     if (idx >= currentCount) idx = currentCount - 1;
+    var previousIndex = currentIdx;
     currentIdx = idx;
+    if (certReader && previousIndex !== idx) { certReader.stop(); certReader = null; }
+    if (window.HelixMeasure && overlay && overlay.classList.contains('is-open')) {
+      if (!instant && previousIndex !== idx) window.HelixMeasure.emit('cert_modal_slide', { cert: currentSlug, slide_index: idx + 1, previous_index: previousIndex + 1, total: currentCount });
+      if (!certReader) certReader = window.HelixMeasure.reader('cert_modal_read', { cert: currentSlug, slide_index: idx + 1 });
+    }
 
     /* 고정 폭 틀(iframe) 모드 — 슬라이드를 옆으로 미는 대신 틀 안에서
        보여줄 섹션만 바꾼다 */

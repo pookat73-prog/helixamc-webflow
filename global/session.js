@@ -53,6 +53,7 @@
   /* 운영자 제외 — global/measure-gate.js 가 켜 둔 표시가 있으면 측정 안 함
      (?helix-noga=1 로 켠 브라우저) */
   if (window.__helixNoMeasure) return;
+  if (window.self !== window.top) return;
 
 
   var DEBUG = /[?&]debug-ga=1/.test(location.search);
@@ -203,7 +204,7 @@
   var CONV_RULES = [
     { type: 'lead',    re: /^cta_form_submit$/ },
     { type: 'phone',   re: /(_phone_call($|_)|^tel_copy_|^cta_call$|^emergency_call_|^emergency_modal_call_)/ },
-    { type: 'consult', re: /^cta_(open|form_open)$/ },
+    { type: 'consult', re: /^cta_form_open$/ },
     { type: 'map',     re: /(^((seocho|ilsan)_directions_)|^emergency_map_click_|^emergency_card_map_click_)/ },
     { type: 'copy',    re: /(^copy_(address|email)_|^(seocho|ilsan)_address_copy$)/ }
   ];
@@ -226,6 +227,25 @@
   function decorate(params, eventName) {
     if (!params || typeof params !== 'object') return params;
     var s = ensure();
+    if (window.HelixMeasure) params.page = window.HelixMeasure.page();
+    else if (!params.page) params.page = PATH === '/' ? 'home' : PATH.replace(/^\/+|\/+$/g, '').replace(/[^a-z0-9_]/gi, '_');
+    if (!params.device) params.device = window.HelixVP ? window.HelixVP.device() :
+      (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+    if (!params.event_id) params.event_id = newId();
+    if (!params.event_ts) params.event_ts = Date.now();
+    params.measurement_version = '2026-10-21';
+    /* Standard content dimensions remain queryable while custom dimension
+       registration is pending in GA Admin. The complete original fields stay
+       in the raw log too. These describe public UI/content, never form values. */
+    if (!params.content_type) params.content_type = params.item_type || eventName;
+    if (!params.content_id) params.content_id = params.slug || params.symptom || params.cert ||
+      params.item || params.dept || params.doctor || params.tag_value || params.control_key || params.cta_id || params.cta_src || '';
+    if (!params.interaction_id && window.__helixInteractionId &&
+        !/(_page_view$|_scroll_depth$|_time_on_page$|_sec_|_dwell_)/.test(eventName)) {
+      params.interaction_id = window.__helixInteractionId;
+    }
+    /* Legacy open is retained for historical charts, never another conversion. */
+    if (eventName === 'cta_open') { params.conv = 0; params.legacy_event = 1; }
 
     /* 전환 표시 — 이미 모듈이 직접 넣었으면 존중 */
     if (params.conv === undefined) {
@@ -289,5 +309,33 @@
   /* 페이지 진입 즉시 방문 확보(첫 이벤트 전에 유입처 고정) +
      이번 페이지의 순서 번호 확정 */
   bumpPage();
+  /* One uniform click record per UI action, separate from semantic events.
+     Count ui_click for click totals; never sum it with the detailed events. */
+  document.addEventListener('click', function (event) {
+    var target = event.target && event.target.closest && event.target.closest(
+      'a,button,summary,video,[role="button"],[role="tab"],[tabindex],input[type="checkbox"],input[type="radio"],select,.em_card,.hst-item-wrap,[data-doctor-open],.helix-faq-indicator,.helix-gfaq-q,[class*="faq-chip"],[class*="dept-card_"],.subheader_click-area,.hx-spec-gtab,.cert-plus,.copy-text-button,.footer-email-clickable,.footer-sns-icon,.w-slider-dot,.image-18,.menu-bar_mobile'
+    );
+    if (!target || target.closest('#helix-noga-badge, [class*="hx-gai-"]')) return;
+    var interaction = newId();
+    window.__helixInteractionId = interaction;
+    var raw = target.getAttribute('href') || '';
+    var url = '';
+    try { var parsed = new URL(raw, location.href); url = parsed.protocol === 'tel:' ? 'tel:' : parsed.origin + parsed.pathname; } catch (e) {}
+    var label = target.getAttribute('aria-label') || target.getAttribute('name') || target.id || '';
+    if (!label && !target.matches('input,select,textarea') && !target.closest('form')) {
+      label = (target.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100);
+    }
+    var controlKey = target.id ? '#' + target.id : target.tagName.toLowerCase();
+    if (!target.id) {
+      var classes = (target.getAttribute('class') || '').trim().split(/\s+/).filter(Boolean).slice(0, 3);
+      controlKey += classes.length ? '.' + classes.join('.') : '';
+      if (target.parentElement) controlKey += ':nth-child(' + (Array.prototype.indexOf.call(target.parentElement.children, target) + 1) + ')';
+    }
+    if (window.HelixMeasure) window.HelixMeasure.emit('ui_click', {
+      item_type: 'ui_click', control_id: target.id || '', control_tag: target.tagName.toLowerCase(),
+      control_key: controlKey.slice(0, 160), link_text: label.slice(0, 100), link_url: raw ? url : '', interaction_id: interaction, conv: 0
+    });
+    setTimeout(function () { if (window.__helixInteractionId === interaction) window.__helixInteractionId = ''; }, 500);
+  }, true);
   log('준비 완료');
 })();

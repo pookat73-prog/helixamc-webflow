@@ -50,6 +50,7 @@
         '</svg>';
     btn.addEventListener('click', function (e) {
       e.preventDefault();
+      if (window.HelixMeasure) window.HelixMeasure.emit('back_to_top', { item_type: 'navigation' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     document.body.appendChild(btn);
