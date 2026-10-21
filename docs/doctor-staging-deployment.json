@@ -1,0 +1,246 @@
+{
+  "updatedAt": "2026-10-21",
+  "status": "production-release-prepared",
+  "cms": false,
+  "siteId": "69d090ea69d828e27d16ea29",
+  "folderId": "6ad81fdf61eceb7f36fc1347",
+  "sourceHash": "54bd100e6b8f4fbd3279922b2dea146774efb601a1d95667684dabb2ccb86d8e",
+  "assetRef": "3fd661d3d046ad8e1315a4b4be10a4ee1d8a553b",
+  "stagingMergeCommit": "f3cf7ec37e3e1d211fbead2501d6ed3e661b7eab",
+  "pullRequest": "https://github.com/pookat73-prog/helixamc-webflow/pull/1876",
+  "stagingPublished": true,
+  "productionPublished": null,
+  "productionAuthorized": true,
+  "searchConsoleSubmitted": false,
+  "contentLocation": "page freeform footer: literal generated HTML, no runtime content fetch",
+  "pages": [
+    {
+      "slug": "gimtaeseong",
+      "id": "6ad8203115c96eed42b1b8b7",
+      "path": "/doctors/gimtaeseong",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "jeonjonghyi",
+      "id": "6ad821aa57a4f9536dcfb9f8",
+      "path": "/doctors/jeonjonghyi",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "joseongu",
+      "id": "6ad821ab459dfda0bb43ad0f",
+      "path": "/doctors/joseongu",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "sonyeongmin",
+      "id": "6ad821ae86ac4dc80f61bb34",
+      "path": "/doctors/sonyeongmin",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "hongyiju",
+      "id": "6ad821aeaa127608030235d1",
+      "path": "/doctors/hongyiju",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "seongcanju",
+      "id": "6ad821afeda09280d6e3315b",
+      "path": "/doctors/seongcanju",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "imjihyeon",
+      "id": "6ad821b028f0db34fb5c982b",
+      "path": "/doctors/imjihyeon",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "jangmunseog",
+      "id": "6ad821b163a61822133c9c8e",
+      "path": "/doctors/jangmunseog",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "coejimin",
+      "id": "6ad821b21cd94616692301e5",
+      "path": "/doctors/coejimin",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gimhyoju",
+      "id": "6ad821b26a8847691397f442",
+      "path": "/doctors/gimhyoju",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "jeongdahong",
+      "id": "6ad821b386ac4dc80f61bd3b",
+      "path": "/doctors/jeongdahong",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "hanjuyeol",
+      "id": "6ad821b4fd72e61e08f8fcdf",
+      "path": "/doctors/hanjuyeol",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "isoyun",
+      "id": "6ad821b4805309db99efdf3b",
+      "path": "/doctors/isoyun",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "jojuhyi",
+      "id": "6ad821b597e3f96867fd384f",
+      "path": "/doctors/jojuhyi",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gangyurim",
+      "id": "6ad821b5dfff94fd56f23555",
+      "path": "/doctors/gangyurim",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gimyunji",
+      "id": "6ad821b61cd9461669230295",
+      "path": "/doctors/gimyunji",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "iyeongeun",
+      "id": "6ad821b6805309db99efdfed",
+      "path": "/doctors/iyeongeun",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gimhyejin",
+      "id": "6ad821b7dfff94fd56f235f5",
+      "path": "/doctors/gimhyejin",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gimyujin",
+      "id": "6ad821b77fcc41083c73983b",
+      "path": "/doctors/gimyujin",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "jeongjeongyun",
+      "id": "6ad821b8d8b689b4c46f20f4",
+      "path": "/doctors/jeongjeongyun",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gimyumin",
+      "id": "6ad821b90949c3636d1599c5",
+      "path": "/doctors/gimyumin",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "baggimseohyeon",
+      "id": "6ad821ba7d95470ad3f993ba",
+      "path": "/doctors/baggimseohyeon",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "igyeongsu",
+      "id": "6ad821ba6a8847691397f5fd",
+      "path": "/doctors/igyeongsu",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gimjaehyeon",
+      "id": "6ad821bb97e3f96867fd3a08",
+      "path": "/doctors/gimjaehyeon",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "hansangjin",
+      "id": "6ad821bc805309db99efe36a",
+      "path": "/doctors/hansangjin",
+      "draft": false,
+      "noindex": true
+    },
+    {
+      "slug": "gimjonggyeong",
+      "id": "6ad821bc5c02e611ab85a969",
+      "path": "/doctors/gimjonggyeong",
+      "draft": false,
+      "noindex": true
+    }
+  ],
+  "directory": {
+    "pageId": "69d4224c0ef3c80daa5212e4",
+    "elementId": {
+      "component": "69d4224c0ef3c80daa5212e4",
+      "element": "6f189ec0-e0d8-e1e3-420e-bc0c0579da6a"
+    },
+    "links": 26
+  },
+  "checks": {
+    "savedBodyExact": 26,
+    "savedHeadNoindex": 26,
+    "savedHeadCanonical": 26,
+    "savedHeadAssetPin": 26,
+    "nativeLinks": 26,
+    "sitemapSettingsIncluded": 26,
+    "pageMetadataPathsAndTitles": 26,
+    "cdnFilesMatch": 3,
+    "sharedAnalyticsHeadUnchanged": true
+  },
+  "unverified": [
+    "published HTTP 200/404 and raw response",
+    "published desktop/mobile rendering and actual scripts",
+    "robots.txt/sitemap.xml/representative-domain redirect",
+    "live analytics delivery"
+  ],
+  "blockers": [
+    "Active executor still returns proxy CONNECT 403 for staging and production domains; published HTTP/browser checks pending"
+  ],
+  "stagingPublishedAt": "2026-10-21T04:15:26.707Z",
+  "stagingUrl": "https://helixanimalmedicalcenter.webflow.io/",
+  "publishTaskId": "0f09697c-5af2-4cef-89ab-de8b6a2c3e11",
+  "customDomainsPublished": [],
+  "draftReleaseExplicitlyApproved": true,
+  "declinedAction": {
+    "action": "site-wide analytics head replacement",
+    "reason": "Auto-review rejected persistent production-impacting privacy/analytics change; shared head unchanged"
+  },
+  "reviewPolicy": "staging first; no local review prerequisite",
+  "view": "existing modal with History API URL; direct response contains modal HTML",
+  "productionPublishRequestedByThisTask": false,
+  "productionPublicationObservation": {
+    "prior": "2026-10-20T00:49:32.807Z",
+    "latest": "2026-10-21T04:12:43.031Z",
+    "cause": "unverified separate record before this task staging publish; repository workflow has no Webflow publish step"
+  },
+  "searchConsoleAuthorized": true
+}
