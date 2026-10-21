@@ -80,6 +80,8 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
         assert.equal(await page.title(),manifest.pages.find(p=>p.path===item.path).title);
         assert.deepEqual(await page.locator('article li').allTextContents(),SECTIONS.flatMap(([key])=>item.doctor[key]||[]));
         assert(await page.locator('[data-doctor-detail]').isVisible());
+        assert(await page.locator('.helix-doctor-modal-direct[role="dialog"]').isVisible());
+        assert.equal(await page.locator('.helix-doctor-modal_close').getAttribute('href'),'/seocho#medical-team');
         assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
       }
       await page.goto(base+'/doctors/isoyun');
@@ -108,16 +110,22 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
         const link=page.locator(`${view} [data-doctor-slug="${item.doctor.slug}"] [data-doctor-open]`);
         assert.equal(await link.getAttribute('href'),item.path);
         const before=events.length;
+        await link.scrollIntoViewIfNeeded();
+        const savedScroll=await page.evaluate(()=>scrollY);
         await link.click();await page.locator('.helix-doctor-modal.is-open').waitFor();
+        await page.waitForURL('**'+item.path);
         assert.equal(await page.locator('#helix-doctor-modal-name').innerText(),item.doctor.name);
         assert.deepEqual(await page.locator('.helix-doctor-modal_body li').allTextContents(),SECTIONS.flatMap(([key])=>item.doctor[key]||[]));
-        assert.equal(await page.locator('[data-doctor-page-link]').getAttribute('href'),item.path);
+        assert.equal(await page.locator('[data-doctor-page-link]').count(),0);
+        assert.equal(await page.locator('.preview-shell').count(),1); // 원래 문서를 유지하고 URL만 변경.
         await page.waitForTimeout(20);
         assert.equal(events.length,before+1);
         assert.equal(events.at(-1)[1],'seocho_doctor_detail_'+(width===390?'mobile':'desktop'));
         await page.keyboard.press('Escape');
+        await page.waitForURL('**/seocho');
         assert.equal(await link.evaluate(el=>document.activeElement===el),true);
         await page.waitForTimeout(340);
+        assert(Math.abs(await page.evaluate(()=>scrollY)-savedScroll)<2);
       }
       assert.equal(await page.locator(`${view} [data-doctor-slug="gimyunji"] [data-doctor-open]`).count(),0);
       // 새 탭 첫 탐색은 Chromium의 가상 외부 도메인 라우팅 제한을 피하고 실제 로컬 서버에서 검증.
@@ -132,16 +140,26 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
       await page.waitForFunction(()=>document.querySelectorAll('[data-doctor-slug]').length===52);
       await page.evaluate(()=>{window.__helixNoMeasure=false;});
       await first.click();await page.locator('.helix-doctor-modal.is-open').waitFor();
-      await page.locator('.helix-doctor-modal_close').click();await page.waitForTimeout(340);
+      await page.locator('.helix-doctor-modal_close').click();await page.waitForURL('**/seocho');await page.waitForTimeout(340);
       await first.click();await page.locator('.helix-doctor-modal.is-open').waitFor();
       await page.waitForFunction(()=>Number(getComputedStyle(document.querySelector('.helix-doctor-modal')).opacity)>0.99);
       await page.screenshot({path:`/tmp/helix-doctor-preview/modal-${width}.png`,fullPage:false});
-      await page.locator('[data-doctor-page-link]').click();await page.waitForURL('**/doctors/isoyun');
-      assert.equal(events.filter(e=>e[1]==='doctor_full_history_click').length,1);
+      await page.waitForURL('**/doctors/isoyun');
+      const beforeHistory=events.length;
+      await page.goBack();await page.waitForURL('**/seocho');
+      assert.equal(await page.locator('.helix-doctor-modal.is-open').count(),0);
+      assert.equal(await page.title(),'서초 의료진 · 로컬 검토본 | 헬릭스');
+      await page.goForward();await page.locator('.helix-doctor-modal.is-open').waitFor();
+      assert.equal(new URL(page.url()).pathname,'/doctors/isoyun');
+      assert.equal(events.length,beforeHistory);
+      assert((await page.title()).includes('이소윤'));
+      assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'),'https://helix-amc.com/doctors/isoyun');
       await page.reload();assert.equal(await page.locator('h1').innerText(),'이소윤');
-      await page.goBack();assert.equal(new URL(page.url()).pathname,'/seocho');
+      assert(await page.locator('.helix-doctor-modal-direct').isVisible());
+      assert.equal(events.filter(e=>e[1]==='doctor_full_history_click').length,0);
+      await page.keyboard.press('Escape');await page.waitForURL('**/seocho#medical-team');
       await page.goto('https://helix-amc.com/doctors/isoyun');
-      await page.locator('footer a').click();await page.waitForURL('**/seocho#medical-team');
+      await page.locator('.helix-doctor-modal_close').click();await page.waitForURL('**/seocho#medical-team');
       assert(await page.locator('[data-doctor-directory]').isVisible());
       await page.goto('https://helix-amc.com/doctors/isoyun');
       const analytics=readFileSync(join(ROOT,'global/scroll-depth.js'),'utf8');
@@ -151,7 +169,7 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
       assert.equal(pv[0][2].slug,'isoyun');assert.equal(pv[0][2].view_type,'page');
       assert.equal(events.filter(e=>e[1]==='home_page_view'||e[1]==='seocho_page_view').length,0);
       assert.deepEqual(errors,[]);await context.close();
-      records.push(`${width}px: 24명 모달 대조·새 탭·닫기/포커스·새로고침/뒤로·이벤트 중복 없음`);
+      records.push(`${width}px: 24명 주소 동반 모달·새 탭·닫기/포커스·뒤로/앞으로·새로고침·직접 접속 모달·이벤트 중복 없음`);
     }
     // staging/operator gates: browser mocks only, no GA4 scripts or requests.
     for(const hostname of ['preview.webflow.io','helix-amc.com']) {

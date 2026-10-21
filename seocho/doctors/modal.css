@@ -257,6 +257,16 @@ body.helix-doctor-modal-open {
   overflow: hidden !important;
 }
 
+/* 고유 주소 직접 접속도 기존 모달과 같은 화면. 본문은 최초 HTML에 포함. */
+.helix-doctor-route { min-height: 100vh; font-family: Arial, "Noto Sans KR", sans-serif; }
+body:has(.helix-doctor-route) { margin: 0; background: #f4f7fb; overflow: hidden; }
+.helix-doctor-modal-direct { opacity: 1; }
+.helix-doctor-modal-direct .helix-doctor-modal_panel { transform: none; }
+.helix-doctor-modal-direct .helix-doctor-modal_close { text-decoration: none; }
+.helix-doctor-modal-direct .helix-doctor-modal_section h2 {
+  font-size: 15px; font-weight: 600; color: #0075d6; letter-spacing: 0.03em; margin: 0 0 10px;
+}
+
 /* 독립 상세 페이지. 본문은 생성 시 HTML에 포함되며 JS 없이도 읽을 수 있다. */
 .helix-doctor-history-link {
   display: inline-flex;

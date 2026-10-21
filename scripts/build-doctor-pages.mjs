@@ -16,7 +16,8 @@ export const SECTIONS = [
 ];
 export const ASSETS = [
   'global/measure-gate.js', 'global/ga4-base.js', 'global/session.js',
-  'global/ga-inspector.js', 'global/sheet-log.js', 'global/scroll-depth.js', 'global/page-time.js'
+  'global/ga-inspector.js', 'global/sheet-log.js', 'global/scroll-depth.js', 'global/page-time.js',
+  'seocho/doctors/modal.js'
 ];
 export function escape(value) {
   return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -52,19 +53,19 @@ export function readDoctors(dataDir = DATA) {
   return {doctors, sourceHash:createHash('sha256').update(JSON.stringify(inputs)).digest('hex')};
 }
 export function directory(doctors) {
-  return `<nav id="medical-team" class="helix-doctor-directory" aria-label="의료진별 전체 이력" data-doctor-directory>\n<h2>의료진별 전체 이력</h2>\n<ul>\n${doctors.map(({doctor:d, path}) => `<li><a href="${path}">${escape(d.name)}${d.title ? ' ' + escape(d.title) : ''}</a></li>`).join('\n')}\n</ul>\n</nav>`;
+  return `<nav id="medical-team" class="helix-doctor-directory" aria-label="의료진 안내" data-doctor-directory>\n<h2>의료진 안내</h2>\n<ul>\n${doctors.map(({doctor:d, path, group}) => `<li><a href="${path}" data-doctor-open="${d.slug}" data-doctor-group="${group}" data-doctor-name="${escape(d.name)}">${escape(d.name)}${d.title ? ' ' + escape(d.title) : ''}</a></li>`).join('\n')}\n</ul>\n</nav>`;
 }
 export function profileBody({doctor:d, group, department}, sourceHash) {
   const photo = d.photo ? `<div class="helix-doctor-modal_photo-wrap"><img class="helix-doctor-modal_photo" src="${escape(d.photo)}" alt="${escape([d.name,d.title].filter(Boolean).join(' '))}" width="120" height="120" decoding="async"></div>` : '';
   const sections = SECTIONS.filter(([key]) => d[key]?.length).map(([key,label]) => `<section class="helix-doctor-modal_section"><h2>${label}</h2><ul>${d[key].map(v => `<li>${escape(v)}</li>`).join('')}</ul></section>`).join('\n');
-  return `<main class="helix-doctor-detail" data-doctor-detail data-doctor-slug="${escape(d.slug)}" data-doctor-name="${escape(d.name)}" data-doctor-group="${group}" data-doctor-source="${sourceHash}">
-<a class="helix-doctor-detail_brand" href="/">헬릭스동물메디컬센터</a>
-<nav class="helix-doctor-detail_breadcrumb" aria-label="현재 위치"><a href="/seocho">서초 본원</a><span aria-hidden="true">/</span><a href="/seocho#medical-team">의료진 안내</a><span aria-hidden="true">/</span><b aria-current="page">${escape(d.name)}</b></nav>
-<article class="helix-doctor-detail_article">
-<header class="helix-doctor-modal_header">${photo}<div class="helix-doctor-modal_meta">${d.title ? `<p class="helix-doctor-modal_title">${escape(d.title)}</p>` : ''}<h1 class="helix-doctor-modal_name">${escape(d.name)}</h1><p class="helix-doctor-detail_department">서초 본원 · ${escape(department)}</p></div></header>
-${sections}
-<footer class="helix-doctor-detail_back"><a class="helix-doctor-history-link" href="/seocho#medical-team">← 서초 의료진 안내로 돌아가기</a></footer>
-</article></main>`;
+  return `<main class="helix-doctor-route" data-doctor-detail data-doctor-slug="${escape(d.slug)}" data-doctor-name="${escape(d.name)}" data-doctor-group="${group}" data-doctor-source="${sourceHash}">
+<div class="helix-doctor-modal helix-doctor-modal-direct is-open" role="dialog" aria-modal="true" aria-labelledby="helix-doctor-route-name">
+<a class="helix-doctor-modal_backdrop" href="/seocho#medical-team" tabindex="-1" aria-hidden="true"></a>
+<article class="helix-doctor-modal_panel" role="document">
+<a class="helix-doctor-modal_close" href="/seocho#medical-team" aria-label="닫기 — 서초 의료진 안내로" data-modal-close="1">×</a>
+<header class="helix-doctor-modal_header">${photo}<div class="helix-doctor-modal_meta">${d.title ? `<p class="helix-doctor-modal_title">${escape(d.title)}</p>` : ''}<h1 class="helix-doctor-modal_name" id="helix-doctor-route-name">${escape(d.name)}</h1><p class="helix-doctor-detail_department">서초 본원 · ${escape(department)}</p></div></header>
+<div class="helix-doctor-modal_body">${sections}</div>
+</article></div></main>`;
 }
 export function build({outDir='/tmp/helix-doctor-preview', origin='https://helix-amc.com', assetRef=null} = {}) {
   if (!/^https:\/\/(www\.)?helix-amc\.com$/.test(origin)) throw new Error('확인 대상 대표 도메인만 허용');
@@ -87,7 +88,7 @@ export function build({outDir='/tmp/helix-doctor-preview', origin='https://helix
   const base = assetRef ? `https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${assetRef}/` : '/';
   const asset = path => base + path;
   const css = `<link rel="stylesheet" href="${asset('seocho/doctors/modal.css')}">`;
-  const scripts = assetRef ? ASSETS.map(path => `<script defer src="${asset(path)}"></script>`).join('\n') : '';
+  const scripts = (assetRef ? ASSETS : ['seocho/doctors/modal.js']).map(path => `<script defer src="${asset(path)}"></script>`).join('\n');
   const manifest = {version:1, mode:assetRef ? 'release-candidate' : 'local-preview', origin, assetRef,
     sourceHash,
     cms:false, published:false, canonicalVerified:false, pages:[]};
