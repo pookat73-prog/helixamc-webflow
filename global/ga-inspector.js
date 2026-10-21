@@ -173,6 +173,25 @@
       } }
   ];
 
+  /* 일산 진료 소식 링크 — seocho.js의 전용 측정 위치와 목적지만 표시.
+     표시 전용이며 이벤트를 추가 전송하거나 운영자 제외를 해제하지 않는다. */
+  if (PAGE === 'ilsan' && /^\/ilsan\/?$/.test(location.pathname)) {
+    TARGETS = TARGETS.concat([
+      { sel: '#intro a[href]', label: '일산 · 의료진 & 진료 일정',
+        event: 'ilsan_schedule_link_click_* (hero)', match: isIlsanScheduleLink },
+      { sel: '#vets a.vets-cta-button[href]', label: '일산 · 인스타그램 바로가기',
+        event: 'ilsan_schedule_link_click_* (doctors)', match: isIlsanScheduleLink }
+    ]);
+  }
+
+  function isIlsanScheduleLink(el) {
+    if (el.closest('footer, [class*="footer" i]')) return false;
+    var url;
+    try { url = new URL(el.href, location.href); } catch (e) { return false; }
+    return url.protocol === 'https:' && url.hostname === 'www.instagram.com' &&
+      !url.port && !url.username && !url.password && url.pathname === '/helixamc_ilsan/';
+  }
+
   if (PAGE === 'surgery') {
     TARGETS.push({
       sel: '.hx-sg-cta-row a',

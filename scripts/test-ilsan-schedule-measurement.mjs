@@ -82,3 +82,29 @@ test('bounded QA marker reaches GA and raw payload, without marking normal traff
   const invalid = fixture({ search: '?ilsan-schedule-qa=mobile-extra' }); invalid.click();
   assert.equal(invalid.events[0].params.qa_test, undefined);
 });
+
+test('inspector registers both Ilsan buttons even with operator exclusion; no new measurement calls', () => {
+  const inspector = readFileSync(new URL('../global/ga-inspector.js', import.meta.url), 'utf8');
+  const marker = inspector.indexOf('  /* ── 클릭 직후');
+  assert.ok(marker > 0);
+  // Read the real registry and its predicates, without starting the overlay UI.
+  const registry = inspector.slice(0, marker) + '\nwindow.testTargets = TARGETS;\n})();';
+  function targets({ pathname = '/ilsan', hostname = 'www.helix-amc.com', search = '?ga-inspect=1' } = {}) {
+    const window = { __helixNoMeasure: true, gtag: () => assert.fail('display registration must not send events') };
+    const location = { pathname, hostname, search, href: `https://${hostname}${pathname}${search}` };
+    vm.runInNewContext(registry, { window, location, URL, console, document: { querySelector: () => null } });
+    return (window.testTargets || []).filter(t => t.event.startsWith('ilsan_schedule_link_click_'));
+  }
+  const registered = targets();
+  assert.deepEqual(Array.from(registered, t => t.sel), ['#intro a[href]', '#vets a.vets-cta-button[href]']);
+  for (const t of registered) {
+    const link = { href: 'https://www.instagram.com/helixamc_ilsan/?utm_source=website', closest: () => null };
+    assert.equal(t.match(link), true);
+    assert.equal(t.match({ ...link, closest: () => ({}) }), false);
+    assert.equal(t.match({ ...link, href: 'https://www.instagram.com/helix_amc/' }), false);
+  }
+  for (const options of [{ pathname: '/seocho' }, { pathname: '/ilsan/other' },
+    { hostname: 'helixanimalmedicalcenter.webflow.io' }, { search: '' }]) {
+    assert.equal(targets(options).length, 0);
+  }
+});
