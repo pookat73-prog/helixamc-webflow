@@ -256,3 +256,63 @@ html.helix-doctor-modal-open,
 body.helix-doctor-modal-open {
   overflow: hidden !important;
 }
+
+/* 고유 주소 직접 접속도 기존 모달과 같은 화면. 본문은 최초 HTML에 포함. */
+.helix-doctor-route { min-height: 100vh; font-family: Arial, "Noto Sans KR", sans-serif; }
+body:has(.helix-doctor-route) { margin: 0; background: #f4f7fb; overflow: hidden; }
+.helix-doctor-modal-direct { opacity: 1; }
+.helix-doctor-modal-direct .helix-doctor-modal_panel { transform: none; }
+.helix-doctor-modal-direct .helix-doctor-modal_close { text-decoration: none; }
+.helix-doctor-modal-direct .helix-doctor-modal_section h2 {
+  font-size: 15px; font-weight: 600; color: #0075d6; letter-spacing: 0.03em; margin: 0 0 10px;
+}
+
+/* 독립 상세 페이지. 본문은 생성 시 HTML에 포함되며 JS 없이도 읽을 수 있다. */
+.helix-doctor-history-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: 24px;
+  padding: 8px 0;
+  color: #0065b8;
+  font-size: 15px;
+  text-underline-offset: 5px;
+}
+.helix-doctor-history-link[hidden] { display: none; }
+.helix-doctor-history-link:focus-visible,
+.helix-doctor-detail a:focus-visible,
+.helix-doctor-directory a:focus-visible { outline: 2px solid #0075d6; outline-offset: 5px; }
+.helix-doctor-detail {
+  box-sizing: border-box;
+  width: min(100% - 40px, 960px);
+  margin: 0 auto;
+  padding: 36px 0 64px;
+  color: #1a2230;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+  overflow-wrap: anywhere;
+}
+.helix-doctor-detail *, .helix-doctor-directory * { box-sizing: border-box; }
+.helix-doctor-detail a { color: #0065b8; text-underline-offset: 5px; }
+.helix-doctor-detail_brand { display: block; font-size: 15px; margin-bottom: 24px; }
+.helix-doctor-detail_breadcrumb { font-size: 14px; line-height: 1.8; margin-bottom: 32px; }
+.helix-doctor-detail_breadcrumb span { margin: 0 10px; color: #697482; }
+.helix-doctor-detail_article { background: #fff; border: 1px solid #dce6ee; border-radius: 14px; padding: 40px; }
+.helix-doctor-detail .helix-doctor-modal_header { gap: 28px; align-items: center; }
+.helix-doctor-detail .helix-doctor-modal_name { font-size: 36px; }
+.helix-doctor-detail_department { color: #566372; font-size: 15px; margin: 14px 0 0; }
+.helix-doctor-detail .helix-doctor-modal_section h2 { font-size: 18px; color: #0075d6; margin: 0 0 12px; }
+.helix-doctor-detail .helix-doctor-modal_section { margin-top: 28px; }
+.helix-doctor-detail .helix-doctor-modal_section li { font-size: 16px; line-height: 1.8; }
+.helix-doctor-detail_back { margin-top: 32px; border-top: 1px solid #dce6ee; padding-top: 20px; }
+.helix-doctor-directory { font-family: inherit; padding: 28px 0; color: #1a2230; }
+.helix-doctor-directory h2 { font-size: 20px; }
+.helix-doctor-directory ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.helix-doctor-directory a { display: inline-block; padding: 10px 0; color: #0065b8; font-size: 15px; }
+@media screen and (max-width: 600px) {
+  .helix-doctor-detail { width: calc(100% - 32px); padding: 24px 0 40px; }
+  .helix-doctor-detail_article { padding: 28px 20px; border-radius: 10px; }
+  .helix-doctor-detail .helix-doctor-modal_header { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .helix-doctor-detail .helix-doctor-modal_name { font-size: 28px; }
+  .helix-doctor-detail_breadcrumb { margin-bottom: 24px; }
+}

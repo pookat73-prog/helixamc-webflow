@@ -45,6 +45,57 @@
   var doctorCache = {};
   var modalEl = null;
   var lastFocus = null;
+  var baseContext = null;
+  var closingHistory = false;
+  var routeVersion = 0;
+  var routeOwner = 'doctor-' + Date.now() + '-' + Math.random();
+  var directModal = document.querySelector('[data-doctor-detail] .helix-doctor-modal-direct');
+
+  function profileTitle(data, group) {
+    var departments = { 'im-1': '내과', 'im-2': '내과', 'sr-1': '외과', 'sr-2': '외과',
+      'di-1': '영상의학과', 'di-2': '영상의학과', 'di-3': '영상의학과', 'is-1': '인터벤션 센터',
+      'op': '안과·치과', 'gp-2': '진료과', 'em-1': '응급의학과' };
+    return data.name + (data.title ? ' ' + data.title : '') + ' · ' + departments[group] +
+      ' | 헬릭스동물메디컬센터 서초 본원';
+  }
+  function setMeta(selector, attribute, value, tag, name, nameValue) {
+    var node = document.querySelector(selector);
+    if (value == null) { if (node && node.hasAttribute('data-doctor-route-meta')) node.remove(); return; }
+    if (!node) {
+      node = document.createElement(tag);
+      node.setAttribute(name, nameValue);
+      node.setAttribute('data-doctor-route-meta', '');
+      document.head.appendChild(node);
+    }
+    node.setAttribute(attribute, value);
+  }
+  function routeMeta(data, group) {
+    document.title = profileTitle(data, group);
+    var path = '/doctors/' + encodeURIComponent(data.slug);
+    var origin = location.origin;
+    try { if (baseContext.canonical) origin = new URL(baseContext.canonical, location.href).origin; } catch (_) {}
+    setMeta('link[rel="canonical"]', 'href', origin + path, 'link', 'rel', 'canonical');
+    setMeta('meta[property="og:url"]', 'content', origin + path, 'meta', 'property', 'og:url');
+  }
+  function restoreMeta() {
+    if (!baseContext) return;
+    document.title = baseContext.title;
+    setMeta('link[rel="canonical"]', 'href', baseContext.canonical, 'link', 'rel', 'canonical');
+    setMeta('meta[property="og:url"]', 'content', baseContext.ogUrl, 'meta', 'property', 'og:url');
+  }
+  function rememberRoute(data, group) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug || '')) return;
+    if (!baseContext) {
+      var canonical = document.querySelector('link[rel="canonical"]');
+      var og = document.querySelector('meta[property="og:url"]');
+      baseContext = { url: location.pathname + location.search + location.hash, title: document.title,
+        canonical: canonical && canonical.getAttribute('href'), ogUrl: og && og.getAttribute('content') };
+    }
+    var state = Object.assign({}, history.state || {});
+    state.helixDoctorModal = { owner: routeOwner, slug: data.slug, group: group };
+    history.pushState(state, '', '/doctors/' + encodeURIComponent(data.slug));
+    routeMeta(data, group);
+  }
 
   function getRef() {
     /* seocho/bootstrap.js 가 fetch 후 window.HELIX_REF 에 10자 SHA 를 셋팅.
@@ -161,7 +212,7 @@
     return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'w=' + w;
   }
 
-  function render(data) {
+  function render(data, group) {
     var m = ensureModal();
     var panel = m.querySelector('.helix-doctor-modal_panel');
     var img = m.querySelector('.helix-doctor-modal_photo');
@@ -204,12 +255,15 @@
 
   var doctorReader = null;
   var doctorContext = null;
-  function open(data, context) {
+  function open(data, group, fromHistory) {
     if (doctorReader) doctorReader.stop();
-    doctorContext = context;
-    if (window.HelixMeasure) doctorReader = window.HelixMeasure.reader('doctor_detail_read', context);
+    doctorContext = { item_type: 'doctor_detail', branch: '서초', group: group,
+      slug: data.slug, doctor: data.name || data.slug, view_type: 'modal', page: 'seocho',
+      page_location: baseContext ? location.origin + baseContext.url : location.href };
+    if (window.HelixMeasure) doctorReader = window.HelixMeasure.reader('doctor_detail_read', doctorContext);
     var m = ensureModal();
-    render(data);
+    render(data, group);
+    if (!fromHistory) rememberRoute(data, group);
     lastFocus = document.activeElement;
     document.documentElement.classList.add('helix-doctor-modal-open');
     document.body.classList.add('helix-doctor-modal-open');
@@ -225,7 +279,15 @@
     });
   }
 
-  function close() {
+  function close(fromHistory) {
+    if (directModal) { location.assign('/seocho#medical-team'); return; }
+    if (closingHistory && !fromHistory) return;
+    if (!fromHistory && history.state && history.state.helixDoctorModal &&
+        history.state.helixDoctorModal.owner === routeOwner) {
+      closingHistory = true;
+      history.back();
+      return;
+    }
     if (!modalEl || !modalEl.classList.contains('is-open')) return;
     if (doctorReader) { doctorReader.stop(); doctorReader = null; }
     if (window.HelixMeasure) window.HelixMeasure.emit('doctor_detail_close', doctorContext);
@@ -244,9 +306,33 @@
     lastFocus = null;
   }
 
+  window.addEventListener('popstate', function (event) {
+    var version = ++routeVersion;
+    closingHistory = false;
+    var route = event.state && event.state.helixDoctorModal;
+    if (baseContext && route && route.owner === routeOwner &&
+        location.pathname === '/doctors/' + route.slug) {
+      fetchDoctor(route.group, route.slug).then(function (data) {
+        if (data && version === routeVersion) { routeMeta(data, route.group); open(data, route.group, true); }
+      });
+    } else if (baseContext) {
+      close(true);
+      restoreMeta();
+    }
+  });
+
+  if (directModal) {
+    document.documentElement.classList.add('helix-doctor-modal-open');
+    document.body.classList.add('helix-doctor-modal-open');
+    var directClose = directModal.querySelector('.helix-doctor-modal_close');
+    if (directClose) {
+      try { directClose.focus({ preventScroll: true }); } catch (_) { directClose.focus(); }
+    }
+  }
+
   /* ── ESC 닫기 ─────────────────────────────────────────────── */
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && modalEl && modalEl.classList.contains('is-open')) {
+    if (e.key === 'Escape' && (directModal || (modalEl && modalEl.classList.contains('is-open')))) {
       e.preventDefault();
       close();
     }
@@ -278,6 +364,10 @@
   document.addEventListener('click', function (e) {
     var trigger = e.target && e.target.closest && e.target.closest('[data-doctor-open]');
     if (!trigger) return;
+
+    /* 브라우저의 새 탭·새 창·다운로드 동작은 가로채거나 모달 이벤트로 세지 않는다. */
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey ||
+        trigger.hasAttribute('download') || trigger.getAttribute('target') === '_blank') return;
 
     var raw = trigger.getAttribute('data-doctor-open') || '';
     if (!raw) return;
@@ -320,10 +410,13 @@
         device: device,
         group: group,
         slug: slug,
+        view_type: 'modal',
+        page: 'seocho',
+        page_location: location.href,
         /* 한글 이름도 같이 — slug 만 보내면 시트에서 'gimtaeseong' 처럼 찍혀
            누구인지 바로 안 보인다. 상세 데이터(fetchDoctor)는 이 시점엔 아직
            안 왔으므로, 이미 화면에 그려져 있는 카드의 이름 텍스트를 읽는다. */
-        doctor: doctorNameNear(trigger)
+        doctor: doctorNameNear(trigger) || trigger.getAttribute('data-doctor-name') || ''
       };
       try {
         if (typeof window.gtag === 'function') {
@@ -335,7 +428,9 @@
       } catch (e) {}
     })();
 
+    var requestVersion = ++routeVersion;
     fetchDoctor(group, slug).then(function (data) {
+      if (requestVersion !== routeVersion) return;
       if (!data) {
         /* 그래도 모달은 열어서 "정보 없음" 표시 — 빈 화면 보고 당황 안 하도록.
            파일 자체가 없거나(404) 네트워크 실패 모두 동일 처리. */
@@ -345,7 +440,7 @@
           intro: '상세 정보 준비 중입니다.'
         };
       }
-      open(data, { item_type: 'doctor_detail', branch: '서초', group: group, slug: slug, doctor: data.name || slug });
+      open(data, group);
     });
   });
 
