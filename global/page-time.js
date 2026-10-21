@@ -52,6 +52,7 @@
      세 모듈의 page 값이 어긋나면 시트에서 같은 페이지가 둘로 갈린다. */
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
+    if (/^\/doctors\/[a-z0-9-]+\/?$/.test(p)) return 'doctor';
     if (/discover/.test(p)) return 'discover';
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';

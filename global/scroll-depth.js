@@ -35,6 +35,7 @@
   /* 페이지 식별 — DOM 마커 우선(슬러그 변경에 강함), 경로는 보조 */
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
+    if (/^\/doctors\/[a-z0-9-]+\/?$/.test(p)) return 'doctor';
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커(.about-heading 등)를 가질 수 있다. DOM 마커보다 경로를
        먼저 가려야 디스커버 트래픽이 about 으로 섞이지 않는다. */
@@ -77,6 +78,14 @@
   function send(eventName, params) {
     try {
       var base = { item_type: params.item_type, page: PAGE, device: device() };
+      var profile = PAGE === 'doctor' && document.querySelector('[data-doctor-detail]');
+      if (profile) {
+        base.slug = profile.getAttribute('data-doctor-slug');
+        base.doctor = profile.getAttribute('data-doctor-name');
+        base.group = profile.getAttribute('data-doctor-group');
+        base.branch = '서초';
+        base.view_type = 'page';
+      }
       for (var k in params) { if (params.hasOwnProperty(k)) base[k] = params[k]; }
       if (typeof window.gtag === 'function') {
         base.transport_type = 'beacon';

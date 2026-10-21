@@ -31,6 +31,9 @@ jobs:
       - name: Run site quality checks
         run: node scripts/check-site-quality.mjs
 
+      - name: Validate static doctor pages and single source data
+        run: node scripts/test-doctor-pages.mjs
+
       - name: Test floating CTA Firebase submission
         run: node scripts/test-floating-cta-submit.mjs
 
