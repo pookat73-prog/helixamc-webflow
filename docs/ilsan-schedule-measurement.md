@@ -49,6 +49,11 @@ GA4 사용자 정의 측정기준 등록 현황도 아직 확인하지 않았다
 
 ## QA
 
+`?ga-inspect=1&fresh=1`로 들어오면 일산 두 위치에 전용 이벤트 표시를 붙인다.
+점검기의 표시 목록은 계측 코드와 별도로 관리한다. 초기 계측 배포에서 빠졌던
+두 항목을 global/ga-inspector.js에 추가했다. 운영자 제외 상태에서도 표시할 수
+있으며 표시 자체는 측정 제외를 해제하거나 이벤트를 보내지 않는다.
+
 기존 프로젝트 관례에 따라 `?ilsan-schedule-qa=desktop` 또는
 `?ilsan-schedule-qa=mobile`이면 해당 전용 이벤트에만
 `qa_test=desktop|mobile`, `debug_mode=true`를 붙인다.
@@ -62,8 +67,9 @@ QA 표시는 자동 제외 기능이 아니다. 운영 분석에서는 `qa_test`
 ## 현재 검증 및 게시 상태
 
 - `node scripts/test-ilsan-schedule-measurement.mjs`: 모의 GA/전송 환경에서
-  4개 검사 통과. 1280/390 폭 판정, 위치·URL, 클릭 1회당 각 전송 경로 1회,
+  5개 검사 통과. 1280/390 폭 판정, 위치·URL, 클릭 1회당 각 전송 경로 1회,
   반복 초기화, 푸터/다른 페이지/다른 목적지 제외, QA 및 차단 확인.
+  점검기의 두 위치 표시 등록, 운영자 제외 상태의 표시, 페이지·목적지 필터도 확인.
 - 이 테스트는 실제 원본 sheet-log 코드를 실행하지만 전송은 모의 처리한다.
 - JavaScript 문법 검사와 `git diff --check` 통과.
 - `node scripts/check-site-quality.mjs`: 초기 EPERM 후 실행 권한을 보완해
