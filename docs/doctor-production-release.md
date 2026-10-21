@@ -10,3 +10,12 @@
 - 현재 연결 도구에는 Search Console 제출 기능이 없고 Windsor 연결도 GA4 계정뿐이다. 인증 정보나 브라우저 제어 연결 없이 제출했다고 보고하지 않는다. 제출·실제 색인 생성·검색 노출/클릭은 각각 별도로 확인한다.
 
 게시 결과는 이 문서와 배포 매핑에 후속 기록한다. 전역 사이트 분석 head, 의료진 데이터, unrelated Webflow 페이지 설정은 변경하지 않는다.
+
+## 게시 결과
+
+- PR #1879 main 병합 완료: `991b80465ba7a53ef1144e4f50fddff46140f700`. 고정 자산 SHA `db3e79c9dc7f45780a4690b6e558966897d3e472`.
+- 26명 저장 head의 noindex/nofollow 제거와 새 고정 자산을 API로 재조회했다. 기존 본문·경로·고유 제목26명과 내부 href26개 및 모달 연결도 일치했다. modal.js/modal.css/card-render.js/scroll-depth.js의 CDN HTTP200과 파일 해시 일치 확인.
+- Webflow 정식 두 도메인만 게시했다. publishTaskId `6d9603da-917d-476c-9e0a-f488e48ba202`. 두 도메인의 게시/컴파일 완료 시각 모두 `2026-10-21T04:35:15.930Z` (한국 13:35). 스테이징 게시 시각은 `2026-10-21T04:15:26.707Z` 그대로 유지됐다.
+- 마지막 실제 접속 재시도도 CONNECT403이다. 사용자는 도메인을 클라우드 설정에 이미 추가했다고 확인했지만, 현재 environment_status의 allowed_hosts=[]이고 effective 목록에도 Helix 도메인이 없다. 설정 누락을 단정하거나 중복 추가를 요구하지 않는다. 현재 런타임에 반영되지 않은 원인은 미확인이다.
+- 사용자는 Google 계정을 브라우저에 열어두었다고 알렸다. Browser 스킬을 확인하고 도구를 재검색했으나 js/list_tabs/브라우저 제어 도구가 제공되지 않는다. Search Console 제출은 실행하지 않았고 색인·검색 노출 완료도 주장하지 않는다.
+- 남은 순서: 설정이 적용된 환경에서 운영 전체26명 실제 응답/원본 HTML/화면/404/robots/sitemap/대표 도메인 확인 → 정식 Search Console 속성에서 sitemap.xml 제출과 URL 검사 → 이후 실제 색인 및 노출·클릭 관측. 도메인 기본값이 www이면 실제 리디렉션 증거에 따라 canonical을 맞춘다.
