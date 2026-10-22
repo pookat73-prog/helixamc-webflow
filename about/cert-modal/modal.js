@@ -204,10 +204,7 @@
     overlay.innerHTML = '<div class="helix-cert-modal__backdrop" data-close></div>' +
       '<div class="helix-cert-modal__card">' +
         '<button type="button" class="helix-cert-modal__close" data-close aria-label="인증 상세 닫기">×</button>' +
-        '<header class="helix-cert-modal__header">' +
-          '<div><p class="helix-cert-modal__tag"></p><h2 id="helix-cert-title"></h2>' +
-          '<p class="helix-cert-modal__english" lang="en"></p></div>' +
-          '<img class="helix-cert-modal__badge" alt=""></header>' +
+        '<header class="helix-cert-modal__header"></header>' +
         '<div class="helix-cert-modal__body" tabindex="0" role="region" aria-label="인증 상세 내용"></div>' +
         '<footer class="helix-cert-modal__controls">' +
           '<button type="button" class="helix-cert-modal__nav" data-prev aria-label="이전 슬라이드">‹</button>' +
@@ -244,12 +241,6 @@
     stopReader();
     currentKey = key;
     var cert = DATA[key];
-    overlay.querySelector('.helix-cert-modal__tag').textContent = cert.tag;
-    overlay.querySelector('#helix-cert-title').textContent = cert.subtitle;
-    overlay.querySelector('.helix-cert-modal__english').textContent = cert.title;
-    var img = overlay.querySelector('.helix-cert-modal__badge');
-    img.src = cert.image;
-    img.alt = cert.imageAlt;
     dots.innerHTML = [cert.title].concat(cert.slides.map(function (s) { return s.label; }))
       .map(function (label, i) {
         return '<button type="button" class="helix-cert-modal__dot" data-slide="' + i +
@@ -321,9 +312,19 @@
     stopReader();
     currentIdx = idx;
     var slide = cert.slides[idx - 1];
+    var header = overlay.querySelector('.helix-cert-modal__header');
+    overlay.classList.toggle('is-cover', idx === 0);
+    header.hidden = idx === 0;
+    var title = '<span class="helix-cert-modal__tag">' + escape(cert.tag) + '</span>' +
+      '<h2 id="helix-cert-title">' + escape(cert.subtitle) + '</h2>' +
+      '<span class="helix-cert-modal__english" lang="en">' + escape(cert.title) + '</span>';
+    var badge = '<img class="helix-cert-modal__badge" src="' + escape(cert.image) +
+      '" alt="' + escape(cert.imageAlt) + '">';
+    header.innerHTML = idx === 0 ? '' : '<div>' + title + '</div>' + badge;
     body.innerHTML = idx === 0
-      ? '<section><h3 class="helix-cert-modal__organization" lang="en">' + escape(cert.organization) +
-        '</h3><p>' + escape(cert.description) + '</p></section>'
+      ? '<section class="helix-cert-modal__cover"><div class="helix-cert-modal__cover-heading">' + title +
+        '</div>' + badge + '<h3 class="helix-cert-modal__organization" lang="en">' + escape(cert.organization) +
+        '</h3><p class="helix-cert-modal__cover-description">' + escape(cert.description) + '</p></section>'
       : '<section><p class="helix-cert-modal__label" lang="en">' + escape(slide.label) + '</p>' +
         slide.blocks.map(function (block) {
           return '<div class="helix-cert-modal__block"><h3>' + escape(block.title) + '</h3><p>' +

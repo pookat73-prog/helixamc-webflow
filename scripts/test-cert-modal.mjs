@@ -64,6 +64,9 @@ try {
       assert.equal(await page.locator('.helix-cert-modal__badge').getAttribute('alt'),data.imageAlt);
       assert.equal(await page.locator('.helix-cert-modal__dot').count(),counts[key]);
       assert.equal(await page.locator('.helix-cert-modal__body p').first().innerText(),data.description);
+      assert(await page.locator('.helix-cert-modal__cover').isVisible());
+      assert(await page.locator('.helix-cert-modal__header').isHidden());
+      assert.equal(await page.locator('#helix-cert-title').count(),1);
       assert(await page.locator('[data-prev]').isDisabled());
       assert(await page.locator('.intro').evaluate(el=>el.inert));
       const events=await page.evaluate(()=>captured.slice(-1));
@@ -73,6 +76,9 @@ try {
       assert.equal(await page.evaluate(()=>captured.length),before+1);
       for (let i=0;i<data.slides.length;i++) {
         await page.locator('[data-next]').click();
+        assert(await page.locator('.helix-cert-modal__header').isVisible());
+        assert.equal(await page.locator('.helix-cert-modal__cover').count(),0);
+        assert.equal(await page.locator('#helix-cert-title').count(),1);
         const slidePanel=await page.locator('.helix-cert-modal__card').boundingBox();
         for (const prop of ['x','y','width','height']) assert(Math.abs(slidePanel[prop]-fixedPanel[prop])<1, `${key}/${i}: 슬라이드별 창 ${prop} 유지`);
         assert.deepEqual(await page.locator('.helix-cert-modal__block h3').allTextContents(),data.slides[i].blocks.map(b=>b.title));
@@ -93,6 +99,8 @@ try {
       assert.equal(await page.locator('.helix-cert-modal__status').innerText(),`${counts[key]} / ${counts[key]}`);
       await page.keyboard.press('ArrowLeft');
       await page.locator('[data-slide="0"]').click();
+      assert(await page.locator('.helix-cert-modal__cover').isVisible());
+      assert(await page.locator('.helix-cert-modal__header').isHidden());
       await page.locator('[data-close]').last().focus();
       await page.keyboard.press('Shift+Tab');
       assert.equal(await page.evaluate(()=>document.activeElement.hasAttribute('data-next')),true);
