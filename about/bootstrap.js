@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.4 — cache bump for cert modal)
+   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.5 — code-only certificate modal)
    Webflow About 페이지 head에 한 번만 붙여두면 됨.
    항상 최신 커밋 기준으로 about.css / about.js 를 로드.
    ================================================================ */
@@ -140,8 +140,8 @@
     'home/global/hamburger.js',
     'about/about.css',
     'about/about.js',
-    /* 인증 카드 "+" 상세보기 모달 — aaha-cert / emergency-cert / cat-cert
-       링크 클릭 가로채서 가운데 카드 모달로 표시, 좌우 화살표로 섹션 순회 */
+    /* 코드 기반 인증 모달 — 상세 Webflow 페이지 요청 없이 원문 표시.
+       공유 주소 /discover-helix?cert=aaha|emergency|cat#cert */
     'about/cert-modal/modal.css',
     'about/cert-modal/modal.js',
     /* 연혁 카드덱 (.just-box_card) — home/global 공유 모듈 */
