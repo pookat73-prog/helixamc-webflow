@@ -43,6 +43,7 @@ try {
     await page.waitForFunction(()=>window.__helixCertModalInit);
     const selector=size.width<=767?'.helix-cert-badges':'.about_grid-3-_mid-align';
     assert.equal(await page.locator('.helix-cert-badge').count(),3);
+    let fixedPanel;
     for (const [key] of cards) {
       const data=source[key];
       const trigger=page.locator(`${selector} a[href*="cert=${key}"]`);
@@ -53,6 +54,9 @@ try {
       const before=await page.evaluate(()=>captured.length);
       await trigger.click();
       await page.locator('.helix-cert-modal.is-open').waitFor();
+      const coverPanel=await page.locator('.helix-cert-modal__card').boundingBox();
+      if (!fixedPanel) fixedPanel=coverPanel;
+      for (const prop of ['x','y','width','height']) assert(Math.abs(coverPanel[prop]-fixedPanel[prop])<1, `${key}: 인증별 창 ${prop} 유지`);
       assert.equal(new URL(page.url()).searchParams.get('cert'),key);
       assert.equal(new URL(page.url()).searchParams.get('utm_source'),'check');
       assert.equal(await page.locator('#helix-cert-title').innerText(),data.subtitle);
@@ -69,6 +73,8 @@ try {
       assert.equal(await page.evaluate(()=>captured.length),before+1);
       for (let i=0;i<data.slides.length;i++) {
         await page.locator('[data-next]').click();
+        const slidePanel=await page.locator('.helix-cert-modal__card').boundingBox();
+        for (const prop of ['x','y','width','height']) assert(Math.abs(slidePanel[prop]-fixedPanel[prop])<1, `${key}/${i}: 슬라이드별 창 ${prop} 유지`);
         assert.deepEqual(await page.locator('.helix-cert-modal__block h3').allTextContents(),data.slides[i].blocks.map(b=>b.title));
         assert.deepEqual(await page.locator('.helix-cert-modal__block p').allTextContents(),data.slides[i].blocks.map(b=>b.text));
         assert.equal(await page.locator('.helix-cert-modal__label').innerText(),data.slides[i].label);
