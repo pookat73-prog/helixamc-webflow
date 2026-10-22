@@ -322,13 +322,12 @@
       '" alt="' + escape(cert.imageAlt) + '">';
     header.innerHTML = idx === 0 ? '' : '<div>' + title + '</div>' + badge;
     body.innerHTML = idx === 0
-      ? '<section class="helix-cert-modal__cover">' + badge +
-        '<div class="helix-cert-modal__cover-copy"><div class="helix-cert-modal__cover-heading">' +
+      ? '<section class="helix-cert-modal__cover"><div class="helix-cert-modal__cover-heading">' +
           '<h2 id="helix-cert-title">' + escape(cert.subtitle) + '</h2>' +
-          '<span class="helix-cert-modal__english" lang="en">' + escape(cert.title) + '</span></div>' +
+          '<span class="helix-cert-modal__english" lang="en">' + escape(cert.title) + '</span></div>' + badge +
         '<div class="helix-cert-modal__cover-info"><span class="helix-cert-modal__tag">' + escape(cert.tag) + '</span>' +
           '<h3 class="helix-cert-modal__organization" lang="en">' + escape(cert.organization) + '</h3>' +
-          '<p class="helix-cert-modal__cover-description">' + escape(cert.description) + '</p></div></div></section>'
+          '<p class="helix-cert-modal__cover-description">' + escape(cert.description) + '</p></div></section>'
       : '<section><p class="helix-cert-modal__label" lang="en">' + escape(slide.label) + '</p>' +
         slide.blocks.map(function (block) {
           return '<div class="helix-cert-modal__block"><h3>' + escape(block.title) + '</h3><p>' +
