@@ -93,15 +93,16 @@ html.helix-cert-modal-open body { overflow: hidden !important; }
 .helix-cert-modal__block + .helix-cert-modal__block { margin-top: 32px; padding-top: 32px; border-top: 1px solid #edf0f4; }
 .helix-cert-modal__logo { display: block; width: 150px; max-width: 45%; height: auto; margin: 28px 0 0 auto; }
 /* 원본 표지의 마크 좌측 / 제목·설명 상자 우측 구성을 유지한다. */
-.helix-cert-modal.is-cover .helix-cert-modal__body { padding-top: 44px; }
-.helix-cert-modal.is-cover .helix-cert-modal__cover { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 28px; align-items: start; max-width: 600px; text-align: left; }
+.helix-cert-modal.is-cover .helix-cert-modal__body { display: flex; flex-direction: column; padding-top: 28px; }
+.helix-cert-modal.is-cover .helix-cert-modal__cover { display: grid; grid-template-columns: 176px minmax(0, 1fr); gap: 28px; align-items: center; flex: 0 0 auto; max-width: 600px; margin-top: auto; text-align: left; }
 .helix-cert-modal__cover-copy { min-width: 0; }
-.helix-cert-modal__cover-heading { margin-bottom: 24px; }
-.helix-cert-modal__cover .helix-cert-modal__badge { width: 140px; max-width: 100%; height: 180px; margin: 6px 0 0; }
+.helix-cert-modal__cover-heading { margin-bottom: 20px; }
+.helix-cert-modal__cover .helix-cert-modal__badge { width: 176px; max-width: 100%; height: 224px; margin: 0; }
 .helix-cert-modal__cover-info { padding: 22px; border: 1px solid #d9e6f3; border-radius: 12px; background: #f7f9fc; }
 .helix-cert-modal__cover-info .helix-cert-modal__tag { margin-bottom: 6px; }
 .helix-cert-modal__cover .helix-cert-modal__organization { margin: 0 0 18px; padding-bottom: 18px; border-bottom: 1px solid #d9e6f3; font-size: 13px; line-height: 1.6; color: #6b7684; }
 .helix-cert-modal__cover-description { text-align: left; }
+.helix-cert-modal.is-cover .helix-cert-modal__logo { flex: 0 0 auto; width: 132px; margin-top: 24px; margin-bottom: auto; }
 .helix-cert-modal__controls {
   height: auto;
   min-height: 0;
@@ -141,7 +142,7 @@ html.helix-cert-modal-open body { overflow: hidden !important; }
   .helix-cert-modal.is-cover .helix-cert-modal__cover { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'heading' 'mark' 'info'; gap: 20px; }
   .helix-cert-modal__cover-copy { display: contents; }
   .helix-cert-modal__cover-heading { grid-area: heading; margin: 0; }
-  .helix-cert-modal__cover .helix-cert-modal__badge { grid-area: mark; width: 128px; height: 144px; margin: 0; }
+  .helix-cert-modal__cover .helix-cert-modal__badge { grid-area: mark; width: 144px; height: 156px; margin: 0; }
   .helix-cert-modal__cover-info { grid-area: info; padding: 16px; }
   .helix-cert-modal__cover .helix-cert-modal__organization { font-size: 13px; }
 }
