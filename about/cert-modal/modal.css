@@ -1,371 +1,156 @@
-/* ================================================================
-   About 인증 카드 "+" 상세보기 모달 (v1.0)
-   - 가운데 카드 + 어두운 배경
-   - 좌우 화살표 / ESC / 키보드 ←→ / 인디케이터 점
-   - 끝에서 멈춤 (인증 페이지 간 순환 X)
-   ================================================================ */
-
+/* HELIX AMC — 코드 기반 인증 상세 모달. 의료진 모달과 같은 패널 구조. */
 .helix-cert-modal {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 99999;
   display: none;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  padding: 4vw;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: #1a2230;
 }
-.helix-cert-modal.is-open {
-  display: flex;
-  opacity: 1;
-}
+.helix-cert-modal.is-open { display: flex; }
 html.helix-cert-modal-open,
-html.helix-cert-modal-open body {
-  overflow: hidden !important;
-}
-
+html.helix-cert-modal-open body { overflow: hidden !important; }
+.helix-cert-modal *, .helix-cert-modal *::before, .helix-cert-modal *::after { box-sizing: border-box; }
 .helix-cert-modal__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.42);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  background: rgba(20, 28, 40, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  cursor: pointer;
 }
-
 .helix-cert-modal__card {
   position: relative;
-  /* 카드 크기 = 상세 페이지가 실제로 디자인된 크기(960×540).
-     .cert-modal-frame 이 px 기준(height 540px / max-width 960px /
-     padding 70·90px)으로 짜여 있어서, 카드를 그보다 크게 늘리면 안쪽
-     px 값은 그대로인데 박스만 커져 여백이 벌어지고 내용이 위아래로
-     흩어짐(.div-block-230 의 space-between 때문). 그래서 960×540 을
-     상한으로 두고, 창이 좁거나 낮을 때만 16:9 비율 그대로 줄어들게 함.
-
-     ⚠️ max-height 로 높이만 깎으면 안 됨 — width 가 이미 확정된 상태에서
-     높이를 자르면 aspect-ratio 가 깨져 카드가 가로로 납작해진다
-     (창 높이가 낮은 노트북에서 "비율이 왜 저러지" 의 원인).
-     그래서 높이 제약도 max-width 쪽으로 환산해서 건다. */
-  width: min(96vw, 960px);
-  max-width: calc(92vh * 960 / 540);
-  aspect-ratio: 960 / 540;
-  background: #0d1117;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
-}
-
-.helix-cert-modal__viewport {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.helix-cert-modal__track {
   display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
-  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
-  will-change: transform;
-}
-
-.helix-cert-modal__slide {
-  flex: 0 0 100%;
-  height: 100%;
-  /* 휴대폰에서 아래쪽에 조작 바 자리를 여백으로 비워두는데(아래 ≤767px),
-     이 값이 없으면 그 여백이 높이에 더해져 카드 밖으로 밀려난다 —
-     자리를 비우기는커녕 내용 끝이 조작 바에 가린다. */
-  box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* 상세 섹션(.cert-modal-frame)은 이미 모달 크기(960×540)에 맞춰 디자인돼 있다.
-   그래서 여기서는 페이지 문맥에서 오던 바깥 여백만 걷어내고, 안쪽 배치는
-   Webflow 가 그리는 그대로 둔다 — 높이를 늘리거나 요소 위치를 옮기지 않는다.
-   (예전에는 섹션을 카드 높이에 맞춰 늘리고 마지막 묶음을 바닥에 붙였는데,
-   그러면 디자이너 화면과 위아래 간격이 달라진다.) */
-.helix-cert-modal__slide > section {
-  margin: 0 !important;
-  max-width: 100% !important;
-}
-
-/* ================================================================
-   고정 폭 틀 (PC·태블릿) — modal.js 의 openWithFixedFrame 참고
-
-   상세 페이지 안쪽 크기가 vw(창 너비 기준)로 짜여 있어, 같은 960×540
-   프레임 안이라도 창 너비에 따라 글자·상자만 커졌다 작아졌다 한다. 그래서
-   페이지를 너비가 고정된 틀(iframe) 안에서 그린다 — 틀 안에서는 vw 가 그
-   틀의 너비 기준이라 누가 어떤 창에서 보든 같은 그림이 나온다.
-
-   틀은 디자인 기준 너비(1440px)로 넓게 두고, 그중 프레임(960×540)이 놓인
-   자리만 카드에 보이게 잘라낸다 — 자르는 일은 이 overflow:hidden 이 맡고,
-   위치·축소는 modal.js 가 transform 으로 맞춘다. */
-.helix-cert-modal__slide.is-fixed-frame {
-  overflow: hidden;
-}
-/* 틀을 감싸는 상자 — 틀은 확대·축소만 되고 자리 차지는 그대로라, 바깥에서
-   보는 실제 높이를 이 상자가 대신 들고 있어야 스크롤 길이가 맞는다.
-   (높이는 modal.js 의 layoutIframe 이 채워 넣음) */
-.helix-cert-modal__framewrap {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-.helix-cert-modal__frame {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  border: 0;
+  max-width: 720px;
+  /* 인증 종류와 슬라이드 길이에 관계없이 같은 높이를 유지한다. */
+  height: 720px;
+  max-height: 86vh;
+  max-height: 86dvh;
+  min-height: 0;
+  padding: 36px 36px 20px;
+  border: 1px solid rgba(0, 117, 214, 0.18);
+  border-radius: 14px;
   background: #fff;
+  box-shadow: 0 24px 80px rgba(20, 40, 80, 0.18);
+  overflow: hidden;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
-
-/* 휴대폰 — 틀 너비가 화면 폭이라 내용이 세로로 길어진다.
-   카드가 위아래로 스크롤하고, 감싸는 상자 높이는 내용에 맞춰 잡힌다. */
-.helix-cert-modal__slide.is-fixed-frame.is-mobile-frame {
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-.is-mobile-frame .helix-cert-modal__framewrap {
-  height: auto;
-}
-/* 손가락 입력을 틀이 먹으면 카드가 안 스크롤되는 기기가 있다 → 틀은
-   그림만 보여주고 손가락은 카드가 받게. 상세 내용은 읽기 전용이라
-   눌러야 할 것이 없다. */
-.is-mobile-frame .helix-cert-modal__frame {
-  pointer-events: none;
-}
-
 .helix-cert-modal__close {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 42px;
-  height: 42px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  font-size: 24px;
-  line-height: 1;
-  cursor: pointer;
-  z-index: 10;
-  transition: background 0.2s ease;
-}
-.helix-cert-modal__close:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.helix-cert-modal__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #000;
-  font-size: 22px;
-  line-height: 1;
-  padding: 0;
-  cursor: pointer;
-  z-index: 10;
-  transition: opacity 0.2s ease, transform 0.15s ease;
-}
-.helix-cert-modal__nav:hover:not(:disabled) {
-  transform: translateY(-50%) scale(1.15);
-}
-.helix-cert-modal__nav:disabled {
-  opacity: 0.22;
-  cursor: not-allowed;
-}
-.helix-cert-modal__nav--prev { left: 14px; }
-.helix-cert-modal__nav--next { right: 14px; }
-
-.helix-cert-modal__dots {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 9px;
-  z-index: 10;
-}
-.helix-cert-modal__dot {
-  width: 10px;
-  height: 10px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-.helix-cert-modal__dot:hover { background: rgba(255, 255, 255, 0.55); }
-.helix-cert-modal__dot.is-active {
-  background: #0075d6;
-  transform: scale(1.35);
-}
-
-.helix-cert-modal__loading {
-  position: absolute;
-  inset: 0;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #9aa4b2;
-  font-size: 15px;
-}
-
-/* 상세 페이지 섹션이 "그 화면폭에서는 숨김" 으로 잡힌 경우 강제 표시.
-   .cert-modal-frame 이 데스크톱에서 display:none 이라 모달이 빈 슬라이드만
-   보여주던 문제. modal.js 가 "전부 숨김" 을 감지했을 때만 이 클래스를 붙이므로
-   일부만 숨긴 정상 케이스(숨긴 섹션 제외)에는 영향 없음. */
-.helix-cert-modal.is-force-visible .helix-cert-modal__slide > section {
-  display: flex !important;
-}
-/* 강제 표시 상태에선 카드 안이 상세 섹션 배경색(메인 화이트 #f4f7fb)으로
-   밝게 채워짐 → 어두운 카드 배경(#0d1117)을 전제로 만든 조작 버튼들이 묻힘.
-   닫기 버튼은 흰 알약 + 그림자로, 인디케이터 점은 어두운 색으로 뒤집는다. */
-.helix-cert-modal.is-force-visible .helix-cert-modal__close {
-  background: rgba(255, 255, 255, 0.92);
-  color: #0d1117;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
-}
-.helix-cert-modal.is-force-visible .helix-cert-modal__close:hover {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
   background: #fff;
+  color: #6b7684;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
 }
-.helix-cert-modal.is-force-visible .helix-cert-modal__dot {
-  background: rgba(13, 17, 23, 0.22);
+.helix-cert-modal__close:hover { background: #edf5fc; color: #1a2230; }
+.helix-cert-modal__header {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 22px;
+  padding: 12px 12px 22px 0;
+  border-bottom: 1px solid rgba(20, 40, 80, 0.08);
 }
-.helix-cert-modal.is-force-visible .helix-cert-modal__dot:hover {
-  background: rgba(13, 17, 23, 0.45);
+.helix-cert-modal__header > div { flex: 1; min-width: 0; }
+.helix-cert-modal__header[hidden] { display: none; }
+.helix-cert-modal__tag { display: block; margin: 0 0 8px; color: #0075d6; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+.helix-cert-modal #helix-cert-title { margin: 0; color: #1a2230; font-size: 24px; line-height: 1.4; font-weight: 700; }
+.helix-cert-modal__english { display: block; margin: 8px 0 0; color: #6b7684; font-size: 13px; line-height: 1.5; }
+.helix-cert-modal__badge { display: block; flex: 0 0 auto; width: 120px; height: 112px; max-width: 28%; object-fit: contain; }
+.helix-cert-modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 32px 12px 28px;
+  scrollbar-gutter: stable both-edges;
 }
-.helix-cert-modal.is-force-visible .helix-cert-modal__dot.is-active {
-  background: #0075d6;
+.helix-cert-modal__body section { display: block; width: 100%; max-width: 500px; height: auto; min-height: 0; margin: 0 auto; padding: 0; background: transparent; }
+.helix-cert-modal__body h3 { margin: 0 0 16px; color: #1a2230; font-size: 17px; font-weight: 700; line-height: 1.55; }
+.helix-cert-modal__body p { margin: 0; color: #465366; font-size: 16px; line-height: 1.9; }
+.helix-cert-modal__body .helix-cert-modal__label { margin: 0 0 20px; color: #0075d6; font-size: 25px; font-weight: 700; line-height: 1.3; }
+.helix-cert-modal__block + .helix-cert-modal__block { margin-top: 32px; padding-top: 32px; border-top: 1px solid #edf0f4; }
+.helix-cert-modal__logo { display: block; width: 150px; max-width: 45%; height: auto; margin: 28px 0 0 auto; }
+/* 표지는 제목 → 마크 → 설명을 한 열의 왼쪽 기준선에 맞춘다. */
+.helix-cert-modal.is-cover .helix-cert-modal__body { display: flex; flex-direction: column; padding-top: 28px; }
+.helix-cert-modal.is-cover .helix-cert-modal__cover { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; flex: 0 0 auto; max-width: 500px; margin-top: auto; text-align: left; }
+.helix-cert-modal__cover-heading { margin: 0; }
+.helix-cert-modal__cover .helix-cert-modal__badge { width: 160px; max-width: 100%; height: 156px; margin: 0; object-position: left center; }
+.helix-cert-modal__cover-info { min-width: 0; }
+.helix-cert-modal__cover-info .helix-cert-modal__tag { margin-bottom: 6px; }
+.helix-cert-modal__cover .helix-cert-modal__organization { margin: 0 0 18px; padding-bottom: 18px; border-bottom: 1px solid #d9e6f3; font-size: 13px; line-height: 1.6; color: #6b7684; }
+.helix-cert-modal__cover-description { text-align: left; }
+.helix-cert-modal.is-cover .helix-cert-modal__logo { flex: 0 0 auto; width: 132px; margin: 24px 0 auto max(0px, calc((100% - 500px) / 2)); }
+.helix-cert-modal__controls {
+  height: auto;
+  min-height: 0;
+  width: 100%;
+  margin: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(20, 40, 80, 0.08);
 }
-
-/* ≤991px — 카드가 디자인 폭(960px)보다 좁아지는 구간(태블릿 + 모바일).
-   상세 섹션이 height:540px 로 고정돼 있어 폭이 줄면 내용이 잘림.
-   높이를 풀어 내용만큼 늘리고 세로 스크롤로 넘긴다.
-   (데스크톱은 카드가 정확히 960×540 이라 기본 규칙 그대로 둠) */
-@media (max-width: 991px) {
-  /* 세로 1단 기준으로 전환.
-     섹션을 flex 세로로 두면 안쪽 묶음(.div-block-230: flex:1 +
-     space-between)이 화면 높이를 채우면서 구분선+로고가 바닥에 붙는다.
-     안 그러면 내용이 위쪽에만 몰리고 아래가 텅 빈 채로 남음. */
-  .helix-cert-modal__slide > section {
-    display: flex !important;
-    flex-direction: column !important;
-    height: auto !important;
-    min-height: 100% !important;
-    max-width: 100% !important;
-  }
-  .helix-cert-modal__slide > section > * {
-    align-self: stretch !important;
-  }
-  /* 데스크톱은 묶음마다 align-self:center 라 폭이 내용만큼만 잡힘.
-     휴대폰에선 그 탓에 글상자가 좁게 뭉치고, %로 잡은 로고가 기준 폭이
-     흔들려 엉뚱하게 커진다. 세로 1단에서는 전부 폭을 채우게 함.
-     (이미지는 예외 — 늘리면 찌그러지므로 가운데 정렬 유지) */
-  .helix-cert-modal__slide > section * {
-    align-self: stretch;
-  }
-  .helix-cert-modal__slide > section img,
-  .helix-cert-modal__slide > section svg {
-    align-self: center;
-  }
-  /* 데스크톱에선 마지막 자식을 margin-top:auto 로 바닥에 붙였지만,
-     여기선 위 flex 구조가 그 역할을 하므로 해제 */
-  .helix-cert-modal__slide > section > :last-child {
-    margin-top: 0 !important;
-  }
-  /* 가로 넘침 차단 — 960px 기준 고정폭 요소가 화면보다 넓어지는 것 방지 */
-  .helix-cert-modal__slide > section img {
-    max-width: 100% !important;
-    height: auto !important;
-  }
+.helix-cert-modal__nav { width: 44px; height: 44px; padding: 0; border: 1px solid #d9e6f3; border-radius: 50%; background: #fff; color: #0075d6; font-size: 28px; line-height: 1; cursor: pointer; }
+.helix-cert-modal__nav:hover:not(:disabled) { background: #edf5fc; }
+.helix-cert-modal__nav:disabled { color: #9aa5b2; opacity: 0.5; cursor: default; }
+.helix-cert-modal__dots { display: flex; align-items: center; justify-content: center; }
+.helix-cert-modal__dot { display: flex; align-items: center; justify-content: center; width: 36px; height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.helix-cert-modal__dot::after { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; background: #c4cdd8; }
+.helix-cert-modal__dot.is-active::after { background: #0075d6; }
+.helix-cert-modal__status { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.helix-cert-modal button:focus-visible,
+.helix-cert-modal__body:focus-visible { outline: 2px solid #0075d6; outline-offset: -2px; }
+@media (max-width: 767px) {
+  .helix-cert-modal { padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); }
+  .helix-cert-modal__card { height: 90vh; height: 90dvh; max-height: 90vh; max-height: 90dvh; padding: 36px 20px 14px; }
+  .helix-cert-modal__header { gap: 12px; padding-right: 0; padding-bottom: 18px; }
+  .helix-cert-modal #helix-cert-title { font-size: 20px; }
+  .helix-cert-modal__tag { font-size: 12px; }
+  .helix-cert-modal__english { font-size: 12px; }
+  .helix-cert-modal__badge { width: 80px; height: 90px; }
+  .helix-cert-modal__body { padding: 24px 4px 24px 0; scrollbar-gutter: stable; }
+  .helix-cert-modal__body p { font-size: 15px; line-height: 1.8; }
+  .helix-cert-modal__body h3 { font-size: 16px; }
+  .helix-cert-modal.is-cover .helix-cert-modal__body { padding-top: 20px; }
+  .helix-cert-modal.is-cover .helix-cert-modal__cover { gap: 20px; }
+  .helix-cert-modal__cover .helix-cert-modal__badge { width: 144px; height: 144px; }
+  .helix-cert-modal__cover .helix-cert-modal__organization { font-size: 13px; }
 }
-
-@media (max-width: 991px) {
-  .helix-cert-modal__card {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    /* 데스크톱 쪽 16:9 상한을 반드시 풀어야 함 — 안 풀면 휴대폰 가로
-       화면에서 카드 폭이 화면보다 좁게 잘림 (92vh×16/9 < 100vw). */
-    max-width: none;
-    aspect-ratio: auto;
-    border-radius: 0;
-    /* 상세 내용이 화면보다 짧을 때 아래쪽이 어두운 카드 바탕으로 남지 않도록
-       상세 페이지와 같은 바탕색으로. 이 화면폭의 조작 버튼들은 이미 밝은
-       바탕 기준(흰 알약 + 어두운 점)으로 맞춰져 있다. */
-    background: #f4f7fb;
-  }
-
-  /* 하단 조작 바(화살표+점) 에 내용이 가리지 않도록 여백 + 노치 보정 */
-  .helix-cert-modal__slide {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: calc(env(safe-area-inset-bottom) + 62px);
-  }
-
-  /* 닫기/화살표는 배경색(밝을 수도, 어두울 수도)과 무관하게 읽히도록 흰 알약 */
-  .helix-cert-modal__close {
-    top: calc(env(safe-area-inset-top) + 10px);
-    right: 10px;
-    width: 40px;
-    height: 40px;
-    font-size: 22px;
-    background: rgba(255, 255, 255, 0.92);
-    color: #0d1117;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
-  }
-  /* 좌우 화살표를 옆면에서 하단 바로 내림 — 본문 위에 겹치지 않고
-     엄지로 닿는 위치. 가운데는 인디케이터 점 자리. */
-  .helix-cert-modal__nav {
-    top: auto;
-    bottom: calc(env(safe-area-inset-bottom) + 10px);
-    transform: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    font-size: 17px;
-    background: rgba(255, 255, 255, 0.92);
-    color: #0d1117;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
-  }
-  .helix-cert-modal__nav:hover:not(:disabled) { transform: none; }
-  .helix-cert-modal__nav--prev { left: 5vw; right: auto; }
-  .helix-cert-modal__nav--next { right: 5vw; left: auto; }
-  .helix-cert-modal__dots { bottom: calc(env(safe-area-inset-bottom) + 25px); }
-  .helix-cert-modal__dot { background: rgba(0, 0, 0, 0.22); }
-  .helix-cert-modal__dot.is-active { background: #0075d6; }
+@media (max-height: 500px) {
+  .helix-cert-modal { padding: 8px; }
+  .helix-cert-modal__card { height: calc(100dvh - 16px); max-height: calc(100dvh - 16px); padding-top: 22px; }
+  .helix-cert-modal__header { padding-top: 0; padding-bottom: 10px; }
+  .helix-cert-modal__badge { height: 60px; }
+  .helix-cert-modal__controls { padding-top: 6px; }
 }
 
-/* 모바일 가로(480~767px) 구간만 좌우 여백 보정.
-   .cert-modal-frame 은 ≤479px 에서만 여백 24px 로 줄여놨고, 480~767px
-   에서는 데스크톱 값 90px 을 그대로 물려받아 화면 대비 과하게 넓음.
-   ≤479px 은 디자이너가 지정한 24px 을 그대로 둔다. */
-@media (min-width: 480px) and (max-width: 767px) {
-  .helix-cert-modal__slide > section {
-    padding-left: 6vw !important;
-    padding-right: 6vw !important;
-  }
-}
-
-/* ================================================================
-   모바일 인증 배지 줄 — 인증마크만 크게 한 줄 3칸 (modal.js 가 생성)
-
-   데스크톱은 기존 인증 카드 3열 그대로. 모바일(≤767px)에서만
-   카드를 감추고 이 배지 줄로 대체한다. 배지는 실제 <a href="/aaha-cert">
-   이므로 탭하면 위 상세 모달이 그대로 열림.
-   ================================================================ */
+/* 기존 모바일 인증 배지 줄 유지. 링크는 소개페이지의 인증 선택 주소. */
 .helix-cert-badges { display: none; }
 
 @media (max-width: 767px) {
@@ -447,50 +232,4 @@ html.helix-cert-modal-open body {
     text-align: center;
     text-wrap: balance;
   }
-}
-
-/* 독립 인증 상세 URL — 모달과 같은 본문을 태블릿까지 한 열로 읽게 한다. */
-@media (max-width: 991px) {
-  html.helix-cert-detail body {
-    background: #f4f7fb;
-    word-break: keep-all;
-  }
-  html.helix-cert-detail section.cert-modal-frame {
-    width: 100% !important;
-    max-width: 720px !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 auto !important;
-    padding: 32px 24px 48px !important;
-    box-sizing: border-box;
-  }
-  html.helix-cert-detail section.cert-modal-frame > * {
-    justify-content: flex-start !important;
-  }
-  html.helix-cert-detail section.cert-modal-frame img {
-    max-width: 100%;
-    object-fit: contain;
-  }
-  html.helix-cert-detail .about_cert_title_a,
-  html.helix-cert-detail .about_cert_title_kr_a {
-    font-size: clamp(18px, 3vw, 22px) !important;
-    line-height: 1.3 !important;
-  }
-  html.helix-cert-detail .nomal-parag {
-    font-size: clamp(15px, 2vw, 16px) !important;
-    line-height: 1.6 !important;
-  }
-  html.helix-cert-detail .writing-english-copy-l {
-    font-size: clamp(28px, 8vw, 40px) !important;
-    line-height: 1.15 !important;
-  }
-  html.helix-cert-detail .text-block-25 {
-    font-size: clamp(16px, 4.4vw, 22px) !important;
-    line-height: 1.25 !important;
-  }
-  html.helix-cert-detail .text-block-25-copy-copy {
-    font-size: clamp(13px, 3.1vw, 16px) !important;
-    line-height: 1.35 !important;
-  }
-  html.helix-cert-detail .image-31 { max-width: min(40%, 200px) !important; }
 }
