@@ -26,9 +26,14 @@
       var link=document.createElement('link');link.rel='preload';link.as='style';link.href=base+ref+'/'+path;document.head.appendChild(link);
     });
     var script=document.createElement('script');script.src=base+ref+'/about/bootstrap.js';script.async=false;
-    script.onerror=function(){
-      if(!window.__helixAboutInit){document.getElementById('helix-about-entry-layout').remove();}
+    function restoreLegacyLayout(){
+      var style=document.getElementById('helix-about-entry-layout');if(style)style.remove();
+    }
+    script.onload=function(){
+      // A shared 10-minute cache may still point at the previous loader.
+      if(!document.getElementById('helix-about-initial-layout'))restoreLegacyLayout();
     };
+    script.onerror=function(){if(!window.__helixAboutInit)restoreLegacyLayout();};
     document.head.appendChild(script);
   }
   function fallback(){
