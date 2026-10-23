@@ -4,12 +4,12 @@ import vm from 'node:vm';
 const source=readFileSync(new URL('../about/bootstrap.js',import.meta.url),'utf8');
 const entry=readFileSync(new URL('../about/page-head.html',import.meta.url),'utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
 const flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
-function fixture({cached, fresh=false, initialized=true, entryMode=false, cachedAge=700000}={}) {
+function fixture({cached, fresh=false, initialized=true, entryMode=false, cachedAge=700000, holdCss=false}={}) {
   const added=[],requests=[],properties={},timers=new Map();let timerId=0,now=100000000;
   const image=(hero,rect)=>({loading:'lazy',matches:()=>hero,getBoundingClientRect:()=>rect,setAttribute(k,v){this[k]=v;}});
   const images=[image(true,{width:0,height:0,top:0,bottom:0}),image(false,{width:0,height:0,top:0,bottom:0}),image(false,{width:100,height:100,top:3000,bottom:3100})];
   const store=new Map(cached?[['helix.sha.main',JSON.stringify({sha:cached,t:now-cachedAge})]]:[]);
-  const document={readyState:'complete',head:{appendChild(el){added.push(el);}},documentElement:{style:{setProperty(k,v){properties[k]=v;}}},createElement:tag=>({tag,style:{}}),querySelector:()=>null,querySelectorAll:sel=>sel==='img'?images:[],addEventListener(){}};
+  const document={readyState:'complete',head:{appendChild(el){added.push(el);if(!holdCss&&el.rel==='stylesheet'&&el.onload)el.onload();}},documentElement:{style:{setProperty(k,v){properties[k]=v;}}},createElement:tag=>({tag,style:{}}),querySelector:()=>null,querySelectorAll:sel=>sel==='img'?images:[],addEventListener(){}};
   const context={document,location:{hostname:'helix-amc.com',search:fresh?'?fresh=1':''},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console:{log(){},warn(){}},MutationObserver:class{observe(){}disconnect(){}},AbortController,Date:class extends Date{static now(){return now;}},setTimeout(fn,ms){timers.set(++timerId,{fn,at:now+ms});return timerId;},clearTimeout:id=>timers.delete(id),fetch(url,options){return new Promise((resolve,reject)=>requests.push({url,options,resolve,reject}));}};
   context.window=context;context.innerHeight=900;context.addEventListener=()=>{};
   if(initialized)for(const name of ['__helixGateInit','__helixGA4Init','__helixSessionInit','__helixSheetLogInit'])context[name]=true;
@@ -61,5 +61,12 @@ function fixture({cached, fresh=false, initialized=true, entryMode=false, cached
  const f=fixture({entryMode:true,fresh:true});await f.tick(2500);assert.equal(f.context.__helixAboutEntryRef,'651d23b3ca');assert(f.added.filter(e=>e.src).every(e=>!/@main\//.test(e.src)));
  const before=f.added.length;f.requests[0].resolve({ok:true,json:async()=>({object:{sha:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}})});await flush();assert.equal(f.added.length,before);
  console.log('✓ first-visit entry timeout uses a known immutable release and ignores late responses');
+}
+{
+ const f=fixture({fresh:true,holdCss:true});f.requests[0].resolve({ok:true,json:async()=>({object:{sha:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}})});await flush();
+ assert(!f.added.some(e=>e.src?.includes('/about/about.js')),'do not measure or build UI before critical styles are parsed');
+ for(const path of ['global/global.css','about/about.css','about/cert-modal/modal.css','home/global/card-stack.css'])f.added.find(e=>e.rel==='stylesheet'&&e.href.endsWith(path)).onload();
+ await flush();assert(f.added.some(e=>e.src?.includes('/about/about.js')),'auxiliary styles must not block page initialization');
+ console.log('✓ critical CSS must load before UI initialization; stalled auxiliary CSS does not block it');
 }
 console.log('About bootstrap failure-path checks passed');
