@@ -131,18 +131,20 @@ a.hx-footer-faq-button {
   align-self: center;
   flex: 0 0 auto;
   box-sizing: border-box;
-  min-width: 112px;
-  min-height: 48px;
+  min-width: 0;
+  min-height: 0;
+  width: auto;
+  height: auto;
   max-width: 100%;
-  padding: 12px 24px;
+  padding: 6px 10px;
   border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.035);
   color: #e6edf3;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: 0.04em;
+  line-height: 14px;
+  letter-spacing: 0.02em;
   text-decoration: none;
   white-space: nowrap;
   box-shadow: none;
@@ -152,14 +154,6 @@ a.hx-footer-faq-button:hover {
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(255, 255, 255, 0.5);
   color: #ffffff;
-}
-@media (max-width: 767px) {
-  a.hx-footer-faq-button {
-    min-width: 88px;
-    min-height: 44px;
-    padding: 10px 20px;
-    font-size: 13px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   a.hx-footer-faq-button { transition: none; }
