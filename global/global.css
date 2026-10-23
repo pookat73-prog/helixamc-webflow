@@ -467,6 +467,16 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
   right: 0;
 }
 
+/* 내과 2번 섹션과 러닝 메이트: 곡면 바깥만 남겨 보조 그림자의 직선 경계를 제거한다.
+   본문과 배경 사진은 자르지 않고, 모서리 보조 레이어만 삼각형으로 제한한다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-intro::before {
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im::before {
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
 /* 프로세스 곡면 보조 레이어의 아래쪽 픽셀 경계가 가로선으로 남지 않게 한다. */
 html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
   clip-path: inset(0 0 1px 0);
