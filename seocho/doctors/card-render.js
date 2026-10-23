@@ -240,6 +240,7 @@
         row.querySelector('.jh2_m1');
     if (!textNode) return false;
     if (!text) {
+      textNode.textContent = '';
       row.style.display = 'none';
       return true;
     }
@@ -299,6 +300,7 @@
     card.setAttribute('data-doctor-slug', doctor.slug);
     card.removeAttribute('data-doctor-template');
     card.removeAttribute('hidden');
+    card.removeAttribute('aria-hidden');
     card.style.display = '';
   }
 
