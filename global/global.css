@@ -591,10 +591,14 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
 /* 모바일 원형 카드의 아래 여백이 섹션 밖으로 빠져 흰 띠를 만들지 않게 한다. */
 @media (max-width: 479px) {
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open:has(> .sg_rings.for-internal-medicine) {
-    padding-bottom: 20px;
+    padding-bottom: 40px;
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open > .sg_rings.for-internal-medicine {
     margin-bottom: 0;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
+    box-shadow: 0 -12px 28px -14px rgba(13, 17, 23, 0.24);
   }
 }
