@@ -468,9 +468,14 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
 }
 
 /* 내과 2번 섹션과 러닝 메이트: 곡면 바깥만 남겨 보조 그림자의 직선 경계를 제거한다.
-   본문과 배경 사진은 자르지 않고, 모서리 보조 레이어만 삼각형으로 제한한다. */
+   본문과 배경 사진은 자르지 않고, 모서리 보조 레이어만 삼각형으로 제한한다.
+   2번 섹션은 보조 영역을 1px 안으로 옮겨 상단 직선 경계도 남기지 않는다. */
 html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-intro::before {
-  clip-path: polygon(0 0, 100% 0, 0 100%);
+  top: 1px;
+  left: 1px;
+  width: calc(var(--hx-im-section-curve) - 1px);
+  height: calc(var(--hx-im-section-curve) - 1px);
+  clip-path: polygon(-1px -1px, 100% -1px, -1px 100%);
 }
 
 html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im::before {
