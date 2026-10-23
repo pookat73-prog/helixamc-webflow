@@ -96,10 +96,10 @@
         style.fontSize + ' ' + style.fontFamily;
       context.fillStyle = '#000';
       context.strokeStyle = '#000';
-      context.lineWidth = 3;
+      context.lineWidth = 4;
       context.lineJoin = 'round';
       context.shadowColor = '#000';
-      context.shadowBlur = 8 * scale;
+      context.shadowBlur = 12 * scale;
       var ascent = context.measureText(title.textContent).fontBoundingBoxAscent;
       if (!Number.isFinite(ascent)) ascent = parseFloat(style.fontSize) * .8;
       var walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
