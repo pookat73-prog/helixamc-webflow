@@ -405,6 +405,20 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
   }
 }
 
+/* 러닝 메이트: 화면 비율과 관계없이 배경 사진이 섹션 전체를 채우게 한다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* 모바일 원형 카드의 아래 여백이 섹션 밖으로 빠져 흰 띠를 만들지 않게 한다. */
+@media (max-width: 479px) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open > .sg_rings.for-internal-medicine {
+    margin-bottom: 0;
+  }
+}
+
 /* 모바일 진료 과정: 제목을 문서 흐름에 두어 줄바꿈 높이를 본문에 반영한다. */
 @media (max-width: 767px) {
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-loop {
