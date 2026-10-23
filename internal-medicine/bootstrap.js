@@ -115,6 +115,8 @@
           var glyph = range.getBoundingClientRect();
           var x = glyph.left - box.left;
           var y = glyph.top - box.top + ascent;
+          // Reinforce the soft halo without widening its fully erased core.
+          context.strokeText(letter, x, y);
           context.strokeText(letter, x, y);
           context.fillText(letter, x, y);
         });
