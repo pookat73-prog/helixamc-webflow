@@ -421,3 +421,54 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .a
     -webkit-text-fill-color: transparent;
   }
 }
+
+/* 내과: 인트로를 1번으로 세어 2좌·4우·5좌·6우의 위 모서리만 외과와 맞춘다.
+   모서리 밖은 앞 섹션 색으로 채우고, 본문·사진·프로세스 선은 자르지 않는다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, .white-frame_mini.im, #hx-im-process, #hx-im-areas.whiteframe_open) {
+  --hx-im-section-curve: 240px;
+  --hx-im-curve-backing: #0d1117;
+  position: relative;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im, #hx-im-process) {
+  --hx-im-curve-backing: #f4f7fb;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, #hx-im-process) {
+  border-top-left-radius: var(--hx-im-section-curve);
+  corner-top-left-shape: superellipse(1.4);
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im, #hx-im-areas.whiteframe_open) {
+  border-top-right-radius: var(--hx-im-section-curve);
+  corner-top-right-shape: superellipse(1.4);
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, .white-frame_mini.im, #hx-im-process, #hx-im-areas.whiteframe_open)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: var(--hx-im-section-curve);
+  height: var(--hx-im-section-curve);
+  z-index: 2;
+  border-radius: inherit;
+  corner-shape: superellipse(1.4);
+  background: transparent;
+  box-shadow: 0 0 0 var(--hx-im-section-curve) var(--hx-im-curve-backing);
+  clip-path: inset(0);
+  pointer-events: none;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, #hx-im-process)::before {
+  left: 0;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im, #hx-im-areas.whiteframe_open)::before {
+  right: 0;
+}
+
+@media (max-width: 991px) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, .white-frame_mini.im, #hx-im-process, #hx-im-areas.whiteframe_open) {
+    --hx-im-section-curve: clamp(56px, 12vw, 120px);
+  }
+}
