@@ -9,10 +9,6 @@
   window.__helixMobileCtaFallback = true;
   var path = location.pathname.replace(/\/$/, '') || '/';
   var staging = /\.webflow\.io$/i.test(location.hostname);
-  if (path === '/internal-medicine' && !staging) {
-    location.replace('/services');
-    return;
-  }
   var standalone = ['/internal-medicine','/aaha-cert','/emergency-cert','/cat-cert','/ad-landing-test'].indexOf(path) !== -1;
   document.documentElement.classList.add('hx-fcta-mobile-bar');
   if (standalone) document.documentElement.classList.add('hx-fcta-mobile-only');

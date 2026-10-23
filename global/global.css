@@ -323,6 +323,103 @@ select,
   }
 }
 
+/* Internal-medicine launch: staging visuals scoped to this page; existing main fixes remain. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-sg-dept-mark-light { font-weight: 400; }
+/* Reusable SVICC button: glow follows every instance of the shared arrow slot. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  transition: none !important;
+  animation: hxSharedSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
+}
+
+@keyframes hxSharedSviccGlow {
+  0%, 100% { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 1); }
+  50% { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+    animation: none !important;
+    box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.76) !important;
+  }
+}
+
+/* Internal-medicine area cards and outro: keep the shared SVICC glow compact and subtle. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-responsive-closing-frame .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+  box-shadow: none !important;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: hxImAreaCardSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-responsive-closing-frame .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  --hx-im-svicc-glow-blur: calc(0.7vw + 3px);
+}
+
+@keyframes hxImAreaCardSviccGlow {
+  0%, 100% { box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.48); }
+  50% { box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+    animation: none !important;
+    box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.4) !important;
+  }
+}
+
+/* Department detail buttons: steady glow and arrows. The shared outro row
+   identifies detail pages; home/about keep their existing button loops. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body:has(#hx-im-intro, .hx-sg-cta-row) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: none !important;
+  box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.4) !important;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-sg-cta-row .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+  animation: none !important;
+  box-shadow: 0 0 12px -2px rgba(85, 40, 170, 0.85) !important;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body:has(#hx-im-intro, .hx-sg-cta-row) .hx-sg-cta-row .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  box-shadow: none !important;
+}
+
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body:has(.hx-sg-cta-row) :is([data-hx-slot="arrow"],
+    .link-block > .div-block-18 > .div-block-337,
+    .cta_seocho_button-call-link > .div-block-338 > .flex-block-38)::before {
+  animation: none !important;
+  opacity: 0.76;
+  transform: none;
+}
+
+/* 내과 통찰: 제목은 글자 폭에 그라데이션을 맞추고 영문의 겹친 부분은 비운다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .about_mini_title.for-big-blue {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .about_mini_title.for-big-eng.white-bg {
+  opacity: .75;
+  color: #8b949e;
+  background-image: none;
+  -webkit-text-fill-color: currentColor;
+  -webkit-mask-image: var(--hx-im-insight-mask, none);
+  mask-image: var(--hx-im-insight-mask, none);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .about_mini_title.for-big-blue {
+    background-image: linear-gradient(120deg, #69bbff 0%, #2d8cdb 13%, #0075d6 28%, #0075d6 68%, #005391 88%, #00447f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+
 /* 내과: 인트로를 1번으로 세어 2좌·4우·5좌·6우의 위 모서리만 외과와 맞춘다.
    모서리 밖은 앞 섹션 색으로 채우고, 본문·사진·프로세스 선은 자르지 않는다. */
 html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, .white-frame_mini.im, #hx-im-process, #hx-im-areas.whiteframe_open) {
@@ -515,4 +612,10 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
     max-width: 100%;
     overflow-wrap: anywhere;
   }
+}
+
+/* Internal-medicine mobile spacing from staging. */
+@media (max-width: 479px) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open:has(> .sg_rings.for-internal-medicine) { padding-bottom: 40px; }
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im { box-shadow: 0 -12px 28px -14px rgba(13, 17, 23, 0.24); }
 }
