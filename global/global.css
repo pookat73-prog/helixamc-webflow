@@ -527,9 +527,21 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
     text-align: center;
   }
 
-  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > .div-4 {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > :is(.div-4, .div-5) {
     grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    row-gap: .3rem;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-title {
+    box-shadow: none !important;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-step5-halo::before {
+    display: none !important;
+    animation: none !important;
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-list {
