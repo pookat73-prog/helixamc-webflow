@@ -148,6 +148,11 @@
     document.head.appendChild(element);
   }
 
+  // CTA measurement and its inspection overlay must not depend on GSAP.
+  ['global/viewport.js', 'global/ga-inspector.js'].forEach(function (path) {
+    loadFile(path, REF);
+  });
+
   // Styles and heading legibility must not depend on the animation CDN.
   FILES.filter(function (path) { return /\.css$/i.test(path); })
     .forEach(function (path) { loadFile(path, REF); });
@@ -244,4 +249,56 @@
     console.warn('[internal-medicine-bootstrap] GSAP load failed; header menu was not initialized');
   };
   document.head.appendChild(gsap);
+})();
+
+/* 내과 CTA 측정: 본문 하단 지점 선택과 진료 영역의 영상종양센터 링크. */
+(function () {
+  'use strict';
+
+  if (window.__helixInternalMedicineBranchMeasureInit) return;
+  window.__helixInternalMedicineBranchMeasureInit = true;
+  if (/\.webflow\.io$/i.test(location.hostname)) return;
+  if (!/^\/internal-medicine\/?$/i.test(location.pathname)) return;
+
+  function device() {
+    return window.HelixVP ? HelixVP.device() :
+      (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+  }
+
+  function init() {
+    document.addEventListener('click', function (event) {
+      if (window.__helixNoMeasure) return;
+      var link = event.target && event.target.closest &&
+        event.target.closest('.hx-sg-cta-row a, #hx-im-areas a[href]');
+      if (!link) return;
+
+      var href = link.getAttribute('href') || '';
+      var url;
+      try { url = new URL(href, location.href); } catch (e) { return; }
+      /* 잘못된 #https 링크나 다른 사이트 URL을 실제 지점 이동으로 세지 않는다. */
+      var branch = url.origin === location.origin && /^\/seocho(?:\/|$)/i.test(url.pathname) ? 'seocho' :
+        url.origin === location.origin && /^\/ilsan(?:\/|$)/i.test(url.pathname) ? 'ilsan' :
+        /^https?:$/.test(url.protocol) && /^(www\.)?svicc\.co\.kr$/i.test(url.hostname) ? 'svicc' : '';
+      if (!branch) return;
+
+      var params = {
+        item_type: 'branch_click',
+        page: 'internal_medicine',
+        device: device(),
+        cta_src: link.closest('.hx-sg-cta-row') ? 'internal_medicine_outro' : 'internal_medicine_areas',
+        branch_key: branch,
+        value: branch,
+        transport_type: 'beacon'
+      };
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'internal_medicine_branch_click_' + params.device, params);
+      }
+    }, true);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

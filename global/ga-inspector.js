@@ -46,6 +46,7 @@
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
     if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
+    if (/^\/internal-medicine\/?$/.test(p)) return 'internal_medicine';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -204,6 +205,23 @@
     try { url = new URL(el.href, location.href); } catch (e) { return false; }
     return url.protocol === 'https:' && url.hostname === 'www.instagram.com' &&
       !url.port && !url.username && !url.password && url.pathname === '/helixamc_ilsan/';
+  }
+
+  /* 내과 전용 측정과 같은 목적지 판정. 잘못된 링크에는 배지를 붙이지 않는다. */
+  if (PAGE === 'internal_medicine') {
+    TARGETS = TARGETS.concat([
+      { sel: '.hx-sg-cta-row a', label: '내과 · 하단 지점 CTA',
+        event: 'internal_medicine_branch_click_* (internal_medicine_outro)', match: isInternalMedicineBranchLink },
+      { sel: '#hx-im-areas a[href]', label: '내과 · 진료 영역 센터 CTA',
+        event: 'internal_medicine_branch_click_* (internal_medicine_areas)', match: isInternalMedicineBranchLink }
+    ]);
+  }
+
+  function isInternalMedicineBranchLink(el) {
+    var url;
+    try { url = new URL(el.getAttribute('href') || '', location.href); } catch (e) { return false; }
+    return (url.origin === location.origin && /^\/(seocho|ilsan)(?:\/|$)/i.test(url.pathname)) ||
+      (/^https?:$/.test(url.protocol) && /^(www\.)?svicc\.co\.kr$/i.test(url.hostname));
   }
 
   if (PAGE === 'surgery') {

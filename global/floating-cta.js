@@ -563,6 +563,7 @@
     if (/discover/.test(p)) return 'discover';
     /* 외과 상세에서 누른 상담도 기존 cta_call 안에서 페이지만 구분한다. */
     if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
+    if (/^\/internal-medicine\/?$/.test(p)) return 'internal_medicine';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
