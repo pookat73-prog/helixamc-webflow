@@ -1,5 +1,5 @@
 /* ================================================================
-   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.5 — code-only certificate modal)
+   HELIX AMC - ABOUT PAGE BOOTSTRAP LOADER (v1.6 — stable initial layout)
    Webflow About 페이지 head에 한 번만 붙여두면 됨.
    항상 최신 커밋 기준으로 about.css / about.js 를 로드.
    ================================================================ */
@@ -22,16 +22,42 @@
     return;
   }
 
+  /* 기본 배치와 앵커는 버전 조회 전부터 확보한다. 배지 생성 전에도
+     최종 배지 줄의 공간을 남겨 모바일 #cert 직접 진입을 보존한다. */
+  var initialLayout = document.createElement('style');
+  initialLayout.id = 'helix-about-initial-layout';
+  initialLayout.textContent =
+    '.whiteframe_close-copy,.whiteframe_close_m{background-image:var(--helix-history-background,none)!important}' +
+    '#cert .div-block-158{background-image:var(--helix-veccs-mark,none)!important}' +
+    '#cert .div-block-157{background-image:var(--helix-cat-mark,none)!important}' +
+    '@media(max-width:767px){' +
+    '#cert{display:block!important}' +
+    '#cert:not(.helix-cert-ready) .about_grid-3-_mid-align{' +
+      'display:block!important;visibility:hidden!important;height:47.5vw!important;min-height:0!important}' +
+    '#cert.helix-cert-ready .about_grid-3-_mid-align{display:none!important}}';
+  document.head.appendChild(initialLayout);
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (type) {
+    window.addEventListener(type, function () { window.__helixAboutUserMoved = true; }, { once: true, passive: true });
+  });
+
   /* 첫 화면 이미지 우선 로드 — Webflow 가 모든 <img> 에 loading="lazy" 를
      자동으로 박아서 hero/상단 이미지가 늦게 뜨는 문제. 첫 ~1.5 화면 분량
      안에 들어오는 이미지만 eager + fetchpriority:high 로 승격. */
   (function eagerLoadAboveFold() {
     function upgrade(img) {
       if (!img || img.__helixEager) return;
+      /* 로고/심볼은 레이아웃 계산 전에도 우선 요청. 숨겨진 PC/모바일
+         복제 이미지의 0×0 사각형은 화면 위 이미지로 오인하지 않는다. */
+      if (img.matches('.header_logo,.image-28,.image-23')) {
+        img.loading = 'eager';
+        img.setAttribute('fetchpriority', 'high');
+        img.__helixEager = true;
+        return;
+      }
       var rect;
       try { rect = img.getBoundingClientRect(); } catch (e) { return; }
       var vh = window.innerHeight || 800;
-      if (rect.top < vh * 1.5 && rect.bottom > -100) {
+      if (rect.width > 0 && rect.height > 0 && rect.top < vh * 1.5 && rect.bottom > -100) {
         img.loading = 'eager';
         img.setAttribute('fetchpriority', 'high');
         img.decoding = 'async';
@@ -74,8 +100,8 @@
          자연 위치에 잠깐 그려질 수 있음 → 초기 opacity:0, JS 가 중앙박스만 다시 켬 */
       '.about_hybrid-contents_box{opacity:0}';
     (document.head || document.documentElement).appendChild(s);
-    /* 안전망: 3초 안에 카드덱 init 실패하면 cards visibility 강제 해제
-       (실패해도 카드가 영영 안 보이는 사고 방지) */
+    /* 느린 모듈이 도착하기 전에 원래 카드 배치를 드러내지 않는다.
+       최종 로드 실패 시에는 loadFile에서 즉시 복구, 무응답은 8초 안전망. */
     setTimeout(function () {
       if (!document.querySelector('.helix-deck-host')) {
         var fix = document.createElement('style');
@@ -83,7 +109,13 @@
         document.head.appendChild(fix);
         console.warn('[about-bootstrap] card-stack 미가동 → cards visibility 강제 해제');
       }
-    }, 3000);
+    }, 8000);
+    setTimeout(function () {
+      if (window.__helixAboutInit) return;
+      var recovery = document.createElement('style');
+      recovery.textContent = '.about-heading,.about_contents_sub-title,img.image-23{opacity:1!important}';
+      document.head.appendChild(recovery);
+    }, 8000);
   } catch (e) {}
 
   var OWNER  = 'pookat73-prog';
@@ -172,10 +204,10 @@
     return link;
   }
 
-  function injectJs(url, onload, onerr) {
+  function injectJs(url, onload, onerr, independent) {
     var s = document.createElement('script');
     s.src   = url;
-    s.async = false;
+    s.async = !!independent;
     if (onload) s.onload = onload;
     if (onerr)  s.onerror = onerr;
     document.head.appendChild(s);
@@ -183,11 +215,25 @@
   }
 
   function loadFile(path, ref) {
+    /* HTML head의 선행 측정 모듈이 이미 초기화됐다면 같은 파일을
+       다른 커밋 주소로 다시 받지 않는다. 실패한 선행 태그는 재시도한다. */
+    var initialized = {
+      'global/measure-gate.js': '__helixGateInit',
+      'global/ga4-base.js': '__helixGA4Init',
+      'global/session.js': '__helixSessionInit',
+      'global/sheet-log.js': '__helixSheetLogInit'
+    };
+    if (initialized[path] && window[initialized[path]]) return;
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
       if (ref === BRANCH) {
         console.warn('[about-bootstrap] failed even from @' + BRANCH + ':', path);
+        if (path === 'home/global/card-stack.js') {
+          var recovery = document.createElement('style');
+          recovery.textContent = '.just-box_card{visibility:visible!important}';
+          document.head.appendChild(recovery);
+        }
         return;
       }
       console.warn('[about-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
@@ -198,7 +244,36 @@
   }
 
   function injectAll(ref) {
-    FILES.forEach(function (path) { loadFile(path, ref); });
+    document.documentElement.style.setProperty('--helix-veccs-mark', 'url("' + cdn(ref, 'about/cert-modal/assets/veccs-no-date.png') + '")');
+    document.documentElement.style.setProperty('--helix-cat-mark', 'url("' + cdn(ref, 'about/cert-modal/assets/cfc-gold-no-year-card.png') + '")');
+    /* 큰 연혁 장식은 근처에 도달할 때 한 번만 요청한다.
+       내부 PNG를 무손실 WebP로 압축한 표시용 SVG 사본이다. */
+    function historyBackground() {
+      var targets = document.querySelectorAll('.whiteframe_close-copy,.whiteframe_close_m');
+      function reveal() {
+        document.documentElement.style.setProperty('--helix-history-background', 'url("' + cdn(ref, 'about/assets/history-background.svg') + '")');
+      }
+      if (!targets.length) return;
+      if (!('IntersectionObserver' in window)) { reveal(); return; }
+      var observer = new IntersectionObserver(function (entries) {
+        if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+        reveal();
+        observer.disconnect();
+      }, { rootMargin: '200% 0px' });
+      targets.forEach(function (target) { observer.observe(target); });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', historyBackground, { once: true });
+    else historyBackground();
+    /* CSS 요청부터 시작. 화면 구성은 보조 기능의 다운로드 완료를
+       기다리지 않는다. 각 묶음 안의 의존 순서는 그대로 보존한다. */
+    var first = ['global/viewport-fix.js', 'global/viewport.js',
+      'global/measure-gate.js', 'global/ga4-base.js', 'global/session.js', 'global/sheet-log.js',
+      'home/global/coming-soon.js', 'home/global/hamburger.js',
+      'about/about.js', 'about/cert-modal/modal.js', 'home/global/card-stack.js'];
+    FILES.filter(function (path) { return /\.css$/.test(path); }).forEach(function (path) { loadFile(path, ref); });
+    first.forEach(function (path) { loadFile(path, ref); });
+    FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
+      .forEach(function (path) { loadFile(path, ref); });
   }
 
   /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
@@ -222,15 +297,37 @@
   }
 
   function resolveSha(done, fail) {
+    /* 페이지 진입 코드가 이미 버전을 결정했다면 같은 API를 다시 조회하지 않는다. */
+    var source = document.currentScript && document.currentScript.src || '';
+    var pinned = source.match(/@([0-9a-f]{7,40})\/about\/bootstrap\.js(?:[?#]|$)/i);
+    if (pinned && window.__helixAboutEntryRef === pinned[1]) { done(pinned[1]); return; }
     var cached = readSha();
     if (!FRESH && cached && cached.sha && (Date.now() - cached.t) < SHA_TTL) { done(cached.sha); return; }
     var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO +
               '/git/ref/heads/' + BRANCH + '?t=' + Math.floor(Date.now() / 60000);
-    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
+    var settled = false;
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    function fallback(err) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      if (cached && cached.sha && (Date.now() - cached.t) < SHA_FALLBACK_MAX) done(cached.sha);
+      else fail(err);
+    }
+    var timer = setTimeout(function () {
+      fallback('SHA lookup timeout');
+      if (controller) controller.abort();
+    }, 2500);
+    var options = { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' };
+    if (controller) options.signal = controller.signal;
+    fetch(api, options)
       .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
       .then(function (d) {
+        if (settled) return;
         var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 10);
         if (!sha) throw new Error('no sha in response');
+        settled = true;
+        clearTimeout(timer);
         try { localStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
         done(sha);
       })
@@ -239,8 +336,7 @@
            묵은 파일을 내줘 "고쳤는데 화면에 안 나온다" 가 반복된다(2026-08-27 사고).
            마지막으로 알던 커밋(고정 주소 = 캐시가 꼬일 수 없음)이 12시간 안쪽이면
            그걸 먼저 쓰고, 그보다 오래됐을 때만 @BRANCH 로 넘긴다. */
-        if (cached && cached.sha && (Date.now() - cached.t) < SHA_FALLBACK_MAX) { done(cached.sha); return; }
-        fail(err);
+        fallback(err);
       });
   }
 
@@ -252,7 +348,7 @@
     if (window.gsap && window.gsap.registerPlugin && window.ScrollTrigger) {
       window.gsap.registerPlugin(window.ScrollTrigger);
     }
-  });
+  }, null, true);
 
   resolveSha(function (sha) {
     console.log('[about-bootstrap] loading commit', sha);

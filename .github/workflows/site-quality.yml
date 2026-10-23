@@ -31,6 +31,9 @@ jobs:
       - name: Run site quality checks
         run: node scripts/check-site-quality.mjs
 
+      - name: Test About loading priority and version lookup failures
+        run: node scripts/test-about-bootstrap.mjs
+
       - name: Test floating CTA Firebase submission
         run: node scripts/test-floating-cta-submit.mjs
 
