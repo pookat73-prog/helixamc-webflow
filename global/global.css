@@ -423,7 +423,10 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .a
 }
 
 /* 내과: 인트로를 1번으로 세어 2좌·4우·5좌·6우의 위 모서리만 외과와 맞춘다.
-   모서리 밖은 앞 섹션 색으로 채우고, 본문·사진·프로세스 선은 자르지 않는다. */
+   모서리 밖은 앞 섹션 색으로 채우고, 본문·사진·프로세스 선은 자르지 않는다.
+   보조 사각형은 섹션 배경 뒤에 두어 둥근 배경 자체가 가린다.
+   섹션에 stacking context(z-index·isolation·transform)를 만들면 이 순서가 깨진다.
+   그림자·별도 곡선·1px 자르기 없이 브라우저가 같은 곡면을 한 번만 그린다. */
 html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, .white-frame_mini.im, #hx-im-process, #hx-im-areas.whiteframe_open) {
   --hx-im-section-curve: 240px;
   --hx-im-curve-backing: #0d1117;
@@ -450,12 +453,8 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, .white
   top: 0;
   width: var(--hx-im-section-curve);
   height: var(--hx-im-section-curve);
-  z-index: 2;
-  border-radius: inherit;
-  corner-shape: superellipse(1.4);
-  background: transparent;
-  box-shadow: 0 0 0 var(--hx-im-section-curve) var(--hx-im-curve-backing);
-  clip-path: inset(0);
+  z-index: -1;
+  background: var(--hx-im-curve-backing);
   pointer-events: none;
 }
 
@@ -465,26 +464,6 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, #hx-im
 
 html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im, #hx-im-areas.whiteframe_open)::before {
   right: 0;
-}
-
-/* 내과 2번 섹션과 러닝 메이트: 곡면 바깥만 남겨 보조 그림자의 직선 경계를 제거한다.
-   본문과 배경 사진은 자르지 않고, 모서리 보조 레이어만 삼각형으로 제한한다.
-   2번 섹션은 보조 영역을 1px 안으로 옮겨 상단 직선 경계도 남기지 않는다. */
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-intro::before {
-  top: 1px;
-  left: 1px;
-  width: calc(var(--hx-im-section-curve) - 1px);
-  height: calc(var(--hx-im-section-curve) - 1px);
-  clip-path: polygon(-1px -1px, 100% -1px, -1px 100%);
-}
-
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im::before {
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
-}
-
-/* 프로세스 곡면 보조 레이어의 아래쪽 픽셀 경계가 가로선으로 남지 않게 한다. */
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
-  clip-path: inset(0 0 1px 0);
 }
 
 @media (max-width: 991px) {
