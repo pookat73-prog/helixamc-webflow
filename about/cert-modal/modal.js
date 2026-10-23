@@ -432,6 +432,7 @@
     if (!built) return;
     if (grid && grid.parentNode) grid.parentNode.insertBefore(wrap, grid.nextSibling);
     else section.appendChild(wrap);
+    section.classList.add('helix-cert-ready');
   }
 
   function markExempt() {
@@ -456,6 +457,15 @@
   function attach() {
     markExempt();
     buildMobileBadges();
+    /* 늦게 표시된 인증 앵커를 최종 배치에서 한 번만 보정한다.
+       사용자가 이미 조작했거나 상세 모달로 직접 들어왔으면 이동하지 않는다. */
+    if (location.hash === '#cert' && !routeKey() && !window.__helixAboutUserMoved) {
+      requestAnimationFrame(function () {
+        if (window.__helixAboutUserMoved || location.hash !== '#cert' || routeKey()) return;
+        var section = document.getElementById('cert');
+        if (section) section.scrollIntoView({ block: 'start', behavior: 'instant' });
+      });
+    }
     var mo = new MutationObserver(function () { markExempt(); buildMobileBadges(); });
     mo.observe(document.body, { childList: true, subtree: true });
     setTimeout(function () { mo.disconnect(); }, 5000);
