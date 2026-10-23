@@ -550,3 +550,14 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
   background-position: center !important;
   background-repeat: no-repeat !important;
 }
+
+/* 내과 진료 프로세스: 제목과 첫 문진 카드 사이를 데스크탑의 1.8rem으로 맞춘다. */
+@media (max-width: 767px) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process > .hx-im-inner {
+    row-gap: .8rem;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-flow {
+    margin-top: 1rem;
+  }
+}
