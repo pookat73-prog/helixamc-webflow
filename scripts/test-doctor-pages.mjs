@@ -94,7 +94,13 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
       // 가상 운영 도메인에 로컬 응답을 제공하고 모든 외부 통신을 차단. 실제 이벤트 전송 없음.
       const events=[],errors=[];
       await context.exposeBinding('captureDoctorEvent',(_source,args)=>events.push(args));
-      await context.addInitScript(()=>{window.gtag=(...args)=>window.captureDoctorEvent(args);});
+      await context.addInitScript(()=>{
+        window.gtag=(...args)=>window.captureDoctorEvent(args);
+        // Older Webflow templates may still contain default membership text.
+        document.addEventListener('DOMContentLoaded',()=>{
+          document.querySelectorAll('[data-doctor-template] .text-block-32, [data-doctor-template] .jh2_m1').forEach(el=>{el.textContent='어디어디 정회원';});
+        });
+      });
       await context.route('**/*',async route=>{
         const u=new URL(route.request().url());
         if(u.hostname!=='helix-amc.com' && u.origin!==new URL(base).origin) return route.abort();
@@ -104,6 +110,8 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
       const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://helix-amc.com/seocho');
       await page.waitForFunction(()=>document.querySelectorAll('[data-doctor-slug]').length===52);
+      assert.equal(await page.locator('[data-doctor-slug][aria-hidden="true"]').count(),0);
+      for(const text of await page.locator('[data-doctor-slug]').allTextContents()) assert(!text.includes('어디어디 정회원'));
       await page.evaluate(()=>{window.__helixNoMeasure=false;});
       const view=width===390?'.preview-mobile':'.preview-desktop';
       for(const item of doctors.filter(d=>d.group!=='di-3')) {
