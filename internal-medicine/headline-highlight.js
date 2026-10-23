@@ -1085,3 +1085,185 @@
   else initBrandMotion();
 })();
 
+
+/* 내과 진료 프로세스: 진입 후 1 → 4 → 5 → 1 순차 점등 */
+(function () {
+  var mobile = window.matchMedia('(max-width: 767px)');
+  function init() {
+    if (mobile.matches) {
+      mobile.addEventListener('change', init, { once: true });
+      return;
+    }
+    var section = document.querySelector('#hx-im-process');
+    if (!section || section.dataset.hxImMotion) return;
+    var titles = Array.from(section.querySelectorAll('.sj_step.for-title'));
+    var cards = titles.map(function (element) { return element.parentElement; });
+    if (cards.length < 5) return;
+    section.dataset.hxImMotion = 'ready';
+    section.classList.add('hx-im-motion-ready');
+    cards.forEach(function (element) { element.classList.add('hx-im-process-pair'); });
+    cards[4].classList.add('hx-im-step5-halo');
+    var old = section.querySelector('.hx-im-process-loop');
+    if (old) old.remove();
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'hx-im-process-loop');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = '<defs><filter id="hx-im-dot-glow" x="-500%" y="-500%" width="1100%" height="1100%"><feGaussianBlur stdDeviation="5" result="glow"/><feMerge><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path fill="none" stroke="currentColor" stroke-width="2" opacity=".8"/><g opacity="0"><circle r="3" fill="#009cff" filter="url(#hx-im-dot-glow)"/><circle r="3" fill="#bfeaff"/></g>';
+    section.appendChild(svg);
+    var path = svg.querySelector('path');
+    var light = svg.querySelector('g');
+    var core = light.lastElementChild;
+    var progress = 0;
+    var length = 0;
+    var stop = .5;
+    var frame = 0;
+    var played = false;
+    var disposed = false;
+    var traceFrame = 0;
+    var pauseTimer = 0;
+    var animations = [];
+    function watch(animation) {
+      animations.push(animation);
+      animation.finished.catch(function () {});
+      return animation;
+    }
+    function disableOnMobile(event) {
+      if (!event.matches) return;
+      disposed = true;
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(traceFrame);
+      clearTimeout(pauseTimer);
+      animations.forEach(function (animation) { animation.cancel(); });
+      observer.disconnect();
+      window.removeEventListener('resize', schedule);
+      window.removeEventListener('scroll', check);
+      mobile.removeEventListener('change', disableOnMobile);
+      svg.remove();
+      cards[4].classList.remove('hx-im-step5-halo', 'hx-im-halo-lit');
+      section.classList.remove('hx-im-motion-ready');
+      delete section.dataset.hxImMotion;
+      delete section.dataset.hxImPhase;
+      mobile.addEventListener('change', init, { once: true });
+    }
+    mobile.addEventListener('change', disableOnMobile);
+    var shadow = '0 3px 21px -6px ' + getComputedStyle(section).getPropertyValue('--텍스트위계4').trim();
+
+    function paint() {
+      path.style.strokeDasharray = length + ' ' + length;
+      path.style.strokeDashoffset = length * (1 - progress);
+      var point = path.getPointAtLength(length * progress);
+      light.setAttribute('transform', 'translate(' + point.x + ' ' + point.y + ')');
+    }
+    function draw() {
+      if (disposed) return;
+      var bounds = section.getBoundingClientRect();
+      function rect(element) {
+        var box = element.getBoundingClientRect();
+        return { right: box.right - bounds.left, cx: box.left - bounds.left + box.width / 2, cy: box.top - bounds.top + box.height / 2 };
+      }
+      var start = rect(cards[3]);
+      var middle = rect(cards[4]);
+      var end = rect(cards[0]);
+      var fromX = start.right + 2;
+      var toX = end.right + 10;
+      var controlX = (middle.cx - (fromX + toX) / 8) / .75;
+      svg.setAttribute('viewBox', '0 0 ' + bounds.width + ' ' + bounds.height);
+      if (middle.cy > start.cy) {
+        var outer = Math.min(bounds.width - 12, Math.max(start.right, middle.right, end.right) + 24);
+        path.setAttribute('d', 'M ' + fromX + ' ' + start.cy +
+          ' C ' + outer + ' ' + start.cy + ' ' + (middle.cx - 60) + ' ' + middle.cy + ' ' + middle.cx + ' ' + middle.cy +
+          ' C ' + (middle.cx + 60) + ' ' + middle.cy + ' ' + outer + ' ' + end.cy + ' ' + toX + ' ' + end.cy);
+      } else {
+        path.setAttribute('d', 'M ' + fromX + ' ' + start.cy + ' C ' + controlX + ' ' + start.cy + ' ' + controlX + ' ' + end.cy + ' ' + toX + ' ' + end.cy);
+      }
+      length = path.getTotalLength();
+      var nearest = Infinity;
+      for (var i = 1; i < 100; i++) {
+        var point = path.getPointAtLength(length * i / 100);
+        var distance = Math.hypot(point.x - middle.cx, point.y - middle.cy);
+        if (distance < nearest) { nearest = distance; stop = i / 100; }
+      }
+      paint();
+    }
+    function schedule() {
+      if (disposed) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(draw);
+    }
+    function fadeTitle(index, delay) {
+      return watch(titles[index].animate([{ boxShadow: '0 3px 21px -6px transparent' }, { boxShadow: shadow }], {
+        duration: 1100, delay: delay || 0, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'forwards'
+      }));
+    }
+    function trace(from, to, duration) {
+      section.dataset.hxImPhase = to < 1 ? 'arc-to-5' : 'arc-to-1';
+      svg.style.visibility = 'visible';
+      light.setAttribute('opacity', '1');
+      return new Promise(function (resolve) {
+        var started;
+        function tick(now) {
+          if (started === undefined) started = now;
+          var fraction = Math.min(1, (now - started) / duration);
+          var eased = fraction * fraction * (3 - 2 * fraction);
+          progress = from + (to - from) * eased;
+          paint();
+          if (fraction < 1) traceFrame = requestAnimationFrame(tick);
+          else resolve();
+        }
+        traceFrame = requestAnimationFrame(tick);
+      });
+    }
+    async function play() {
+      if (played || disposed || mobile.matches) return;
+      played = true;
+      window.removeEventListener('scroll', check);
+      section.dataset.hxImMotion = 'playing';
+      section.dataset.hxImPhase = 'shadows-1-to-4';
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        titles.forEach(function (element) { element.style.boxShadow = shadow; });
+        cards[4].classList.add('hx-im-halo-lit');
+        svg.style.visibility = 'visible';
+        light.setAttribute('opacity', '1');
+        core.setAttribute('fill', '#009cff');
+        progress = 1;
+        paint();
+      } else {
+        var shadows = titles.slice(0, 4).map(function (_, index) { return fadeTitle(index, index * 260).finished; });
+        await Promise.all(shadows);
+        if (disposed) return;
+        await trace(0, stop, 1200);
+        if (disposed) return;
+        section.dataset.hxImPhase = 'step-5-flash';
+        cards[4].classList.add('hx-im-halo-lit');
+        fadeTitle(4, 260);
+        await new Promise(function (resolve) { pauseTimer = setTimeout(resolve, 1400); });
+        if (disposed) return;
+        await trace(stop, 1, 1400);
+        if (disposed) return;
+        section.dataset.hxImPhase = 'endpoint-settle';
+        await Promise.all([
+          watch(core.animate([{ fill: '#bfeaff' }, { fill: '#009cff' }], { duration: 350, fill: 'forwards', easing: 'ease-out' })).finished,
+          watch(light.firstElementChild.animate([{ opacity: 1 }, { opacity: .6 }], { duration: 350, fill: 'forwards', easing: 'ease-out' })).finished
+        ]);
+      }
+      if (disposed) return;
+      section.dataset.hxImMotion = 'complete';
+      section.dataset.hxImPhase = 'complete';
+    }
+    function check() {
+      var bounds = section.getBoundingClientRect();
+      if (bounds.top <= window.innerHeight * .3 && bounds.bottom > 0) play().catch(function (error) { if (!disposed) console.error(error); });
+    }
+    var observer = new ResizeObserver(schedule);
+    observer.observe(section);
+    cards.forEach(function (element) { observer.observe(element); });
+    window.addEventListener('resize', schedule, { passive: true });
+    window.addEventListener('scroll', check, { passive: true });
+    if (document.fonts) document.fonts.ready.then(function () { draw(); check(); });
+    draw();
+    check();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+})();
+
