@@ -536,11 +536,25 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-title {
-    box-shadow: none !important;
+    box-shadow: 0 3px 21px -6px var(--텍스트위계4) !important;
   }
 
-  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-step5-halo::before {
-    display: none !important;
+  /* The final card keeps its halo without running the desktop sequence. */
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-flow > :last-child {
+    position: relative;
+    z-index: 1;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-flow > :last-child::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    pointer-events: none;
+    border-radius: 1.4rem;
+    background: var(--메인-컬러);
+    opacity: .8;
+    filter: blur(6px);
+    z-index: -1;
     animation: none !important;
   }
 
