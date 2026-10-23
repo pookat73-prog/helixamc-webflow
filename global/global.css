@@ -404,3 +404,101 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
     margin-top: 1rem;
   }
 }
+
+/* 모바일 진료 과정: 제목을 문서 흐름에 두어 줄바꿈 높이를 본문에 반영한다. */
+@media (max-width: 767px) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-loop {
+    display: none !important;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    max-height: none;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-title {
+    position: relative;
+    padding: 20px;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-357 {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 3.5rem minmax(0, 1fr) 3.5rem;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    column-gap: 0;
+    row-gap: 8px;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_title.text-span-3 {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    justify-self: start;
+    text-align: left;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > :not(.text-span-3) {
+    grid-column: 2;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > :is(.div-4, .div-5) {
+    grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: .3rem;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-title {
+    box-shadow: 0 3px 21px -6px var(--텍스트위계4) !important;
+  }
+
+  /* The final card keeps its halo without running the desktop sequence. */
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-flow > :last-child {
+    position: relative;
+    z-index: 1;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-flow > :last-child::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    pointer-events: none;
+    border-radius: 1.4rem;
+    background: var(--메인-컬러);
+    opacity: .8;
+    filter: blur(6px);
+    z-index: -1;
+    animation: none !important;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-list {
+    /* Keep the joined cards, but overlap only their empty rounded edges. */
+    margin-top: -20px;
+    padding: 36px 20px 20px;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_list {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
