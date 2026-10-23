@@ -395,11 +395,24 @@ body:has(.hx-sg-cta-row) :is([data-hx-slot="arrow"],
   transform: none;
 }
 
-/* 내과 '심도 있는 통찰': 영문은 옅은 회색 장식으로 두고 겹치는 윗부분을 비운다. */
+/* 내과 통찰: 제목은 글자 폭에 그라데이션을 맞추고 영문의 겹친 부분은 비운다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .about_mini_title.for-big-blue {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
 html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .about_mini_title.for-big-eng.white-bg {
   opacity: .4;
+  -webkit-mask-image: linear-gradient(to bottom, transparent var(--hx-im-insight-overlap, 55%), #000 calc(var(--hx-im-insight-overlap, 55%) + 8px));
+  mask-image: linear-gradient(to bottom, transparent var(--hx-im-insight-overlap, 55%), #000 calc(var(--hx-im-insight-overlap, 55%) + 8px));
 }
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .about_mini_title.for-big-blue {
+    background-image: linear-gradient(120deg, #69bbff 0%, #2d8cdb 13%, #0075d6 28%, #0075d6 68%, #005391 88%, #00447f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .about_mini_title.for-big-eng.white-bg {
     background-image: linear-gradient(180deg, rgba(139,148,158,0) 0%, rgba(139,148,158,0) 20%, rgba(139,148,158,.25) 45%, rgba(139,148,158,.65) 70%, #8b949e 100%);
   }
