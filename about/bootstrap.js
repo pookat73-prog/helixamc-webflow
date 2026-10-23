@@ -195,11 +195,12 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + q;
   }
 
-  function injectCss(url, onerr) {
+  function injectCss(url, onerr, onload) {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
     link.href = url;
     if (onerr) link.onerror = onerr;
+    if (onload) link.onload = onload;
     document.head.appendChild(link);
     return link;
   }
@@ -214,7 +215,7 @@
     return s;
   }
 
-  function loadFile(path, ref) {
+  function loadFile(path, ref, ready) {
     /* HTML head의 선행 측정 모듈이 이미 초기화됐다면 같은 파일을
        다른 커밋 주소로 다시 받지 않는다. 실패한 선행 태그는 재시도한다. */
     var initialized = {
@@ -223,7 +224,7 @@
       'global/session.js': '__helixSessionInit',
       'global/sheet-log.js': '__helixSheetLogInit'
     };
-    if (initialized[path] && window[initialized[path]]) return;
+    if (initialized[path] && window[initialized[path]]) { if (ready) ready(); return; }
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
@@ -234,13 +235,14 @@
           recovery.textContent = '.just-box_card{visibility:visible!important}';
           document.head.appendChild(recovery);
         }
+        if (ready) ready();
         return;
       }
       console.warn('[about-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
-      loadFile(path, BRANCH);
+      loadFile(path, BRANCH, ready);
     };
-    if (ext === 'css') injectCss(url, fallback);
-    else if (ext === 'js') injectJs(url, null, fallback);
+    if (ext === 'css') injectCss(url, fallback, ready);
+    else if (ext === 'js') injectJs(url, ready, fallback);
   }
 
   function injectAll(ref) {
@@ -270,10 +272,25 @@
       'global/measure-gate.js', 'global/ga4-base.js', 'global/session.js', 'global/sheet-log.js',
       'home/global/coming-soon.js', 'home/global/hamburger.js',
       'about/about.js', 'about/cert-modal/modal.js', 'home/global/card-stack.js'];
-    FILES.filter(function (path) { return /\.css$/.test(path); }).forEach(function (path) { loadFile(path, ref); });
-    first.forEach(function (path) { loadFile(path, ref); });
-    FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
-      .forEach(function (path) { loadFile(path, ref); });
+    var critical = ['global/global.css', 'about/about.css', 'about/cert-modal/modal.css', 'home/global/card-stack.css'];
+    var styles = [];
+    FILES.filter(function (path) { return /\.css$/.test(path); }).forEach(function (path) {
+      if (critical.indexOf(path) === -1) { loadFile(path, ref); return; }
+      styles.push(new Promise(function (resolve) { loadFile(path, ref, resolve); }));
+    });
+    /* 필수 CSS 파싱이 끝나야 크기 측정·배지 생성·모달을 시작한다.
+       보조 CSS까지 기다리지는 않으며, JS 다운로드는 preload로 먼저 시작한다. */
+    first.forEach(function (path) {
+      if (/^global\/(measure-gate|ga4-base|session|sheet-log)\.js$/.test(path)) return;
+      var hint = document.createElement('link');
+      hint.rel = 'preload'; hint.as = 'script'; hint.href = cdn(ref, path);
+      document.head.appendChild(hint);
+    });
+    Promise.all(styles).then(function () {
+      first.forEach(function (path) { loadFile(path, ref); });
+      FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
+        .forEach(function (path) { loadFile(path, ref); });
+    });
   }
 
   /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
