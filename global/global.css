@@ -564,3 +564,10 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
     overflow-wrap: anywhere;
   }
 }
+
+/* 러닝 메이트: 화면 비율과 관계없이 배경 사진이 섹션 전체를 채우게 한다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
