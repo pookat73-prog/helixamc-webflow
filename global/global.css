@@ -559,9 +559,9 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-list {
-    /* Keep the joined cards, but overlap only their empty rounded edges. */
-    margin-top: -20px;
-    padding: 36px 20px 20px;
+    /* Extend the list behind the title past both rounded upper corners. */
+    margin-top: -40px;
+    padding: 56px 20px 20px;
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_list {
