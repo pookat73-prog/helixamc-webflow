@@ -426,13 +426,17 @@
     style.textContent = [
       '.sg_rings[data-hx-ring-motion="pending"] > .sg_ring { visibility: hidden; }',
       '.sg_rings[data-hx-ring-motion="drawing"] > .sg_ring { visibility: hidden; }',
-      '.whiteframe_open .sg_rings[data-hx-ring-motion="splitting"] .sg_ring.for-white-bg:is(.left,.right)::before { mask-image: none; -webkit-mask-image: none; }',
+      '.whiteframe_open .sg_rings[data-hx-ring-blending] .sg_ring.for-white-bg:is(.left,.right)::before { animation: hxImRingMaskIn 1100ms 300ms cubic-bezier(.42,0,.58,1) both; }',
+      '.whiteframe_open .sg_rings .hx-im-ring-full-outline { position: absolute; inset: -1px; z-index: 1; box-sizing: content-box; padding: 0; border: 1px solid #0075d6; border-radius: 50%; pointer-events: none; animation: hxImRingMaskOut 1100ms 300ms cubic-bezier(.42,0,.58,1) both; }',
+      '@keyframes hxImRingMaskIn { from { opacity: 0; } to { opacity: 1; } }',
+      '@keyframes hxImRingMaskOut { from { opacity: 1; } to { opacity: 0; } }',
       '.sg_rings[data-hx-ring-motion="splitting"] .sg_ring::after { opacity: 0; }',
       '.sg_rings[data-hx-ring-motion="settling"] .sg_ring::after { animation: hxImRingHalo 200ms ease-out; }',
       '@keyframes hxImRingHalo { from { opacity: 0; } to { opacity: 1; } }'
     ].join('\n');
     document.head.appendChild(style);
     var active = [];
+    var fullOutlines = [];
     var svg = null;
     var timers = [];
     var played = false;
@@ -440,6 +444,8 @@
     function finish() {
       timers.forEach(window.clearTimeout);
       active.forEach(function (animation) { animation.cancel(); });
+      fullOutlines.forEach(function (outline) { outline.remove(); });
+      delete host.dataset.hxRingBlending;
       if (svg) svg.remove();
       host.dataset.hxRingMotion = 'done';
       window.removeEventListener('hx-im-insight-ring-start', start);
@@ -471,8 +477,16 @@
       active.push(draw);
       later(function () {
         svg.remove();
+        // Crossfade a full outline into the final masked outline while the
+        // rings separate; mask-image itself changes discretely in browsers.
+        host.dataset.hxRingBlending = 'true';
         host.dataset.hxRingMotion = 'splitting';
         rings.forEach(function (ring, index) {
+          var outline = document.createElement('span');
+          outline.className = 'hx-im-ring-full-outline';
+          outline.setAttribute('aria-hidden', 'true');
+          ring.appendChild(outline);
+          fullOutlines.push(outline);
           var b = bounds[index];
           var dx = cx - (b.left + b.width / 2 - box.left);
           var dy = cy - (b.top + b.height / 2 - box.top);
@@ -482,7 +496,7 @@
             { delay: 350, duration: 400, easing: 'ease-out', fill: 'both' }));
         });
         later(function () { host.dataset.hxRingMotion = 'settling'; }, 700);
-        later(finish, 920);
+        later(finish, 1450);
       }, 900);
     }
     window.addEventListener('hx-im-insight-ring-start', start);
@@ -1069,3 +1083,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBrandMotion, { once: true });
   else initBrandMotion();
 })();
+
