@@ -22,7 +22,7 @@ const server = createServer((req,res)=>{
   if (path === '/discover-helix') {res.setHeader('content-type','text/html; charset=utf-8');res.end(req.url.includes('deleted-links=1')?fixture.replace(/href="\/(aaha-cert|emergency-cert|cat-cert)"/g,'href="#"'):fixture);}
   else if (['/about/cert-modal/modal.js','/about/cert-modal/modal.css','/home/global/coming-soon.js'].includes(path)) {
     res.setHeader('content-type',path.endsWith('.css')?'text/css':'text/javascript');res.end(read(path.slice(1)));
-  } else if (['/about/cert-modal/assets/veccs-no-date.png','/about/cert-modal/assets/cfc-gold-no-year.png'].includes(path)) {
+  } else if (['/about/cert-modal/assets/veccs-no-date.png','/about/cert-modal/assets/cfc-gold-no-year.png','/about/cert-modal/assets/cfc-gold-no-year-card.png'].includes(path)) {
     res.setHeader('content-type','image/png');res.end(readFileSync(new URL(path.slice(1),root)));
   } else {res.statusCode=404;res.end('Deleted certificate page');}
 });
@@ -65,8 +65,9 @@ try {
       const displayImage=key==='aaha'?data.image:origin+'/about/cert-modal/assets/'+(key==='cat'?'cfc-gold-no-year.png':'veccs-no-date.png');
       assert.equal(await page.locator('.helix-cert-modal__badge').getAttribute('src'),displayImage);
       if(key!=='aaha') {
-        assert((await page.locator(`.about_contents_box_${key==='cat'?'cfc':'veccs'} .div-block-${key==='cat'?'157':'158'}`).evaluate(el=>el.style.backgroundImage)).includes(displayImage));
-        assert((await page.locator(`.helix-cert-badge[href*="cert=${key}"] .helix-cert-badge__mark`).evaluate(el=>el.style.backgroundImage)).includes(displayImage));
+        const cardImage=key==='cat'?origin+'/about/cert-modal/assets/cfc-gold-no-year-card.png':displayImage;
+        assert((await page.locator(`.about_contents_box_${key==='cat'?'cfc':'veccs'} .div-block-${key==='cat'?'157':'158'}`).evaluate(el=>el.style.backgroundImage)).includes(cardImage));
+        assert((await page.locator(`.helix-cert-badge[href*="cert=${key}"] .helix-cert-badge__mark`).evaluate(el=>el.style.backgroundImage)).includes(cardImage));
       }
       assert.equal(await page.locator('.helix-cert-modal__badge').getAttribute('alt'),data.imageAlt);
       assert.equal(await page.locator('.helix-cert-modal__dot').count(),counts[key]);

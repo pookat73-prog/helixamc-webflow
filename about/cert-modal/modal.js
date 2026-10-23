@@ -147,6 +147,7 @@
     location.origin + '/about/cert-modal/modal.js');
   DATA.emergency.image = new URL('veccs-no-date.png', assetBase).href;
   DATA.cat.image = new URL('cfc-gold-no-year.png', assetBase).href;
+  var catCardImage = new URL('cfc-gold-no-year-card.png', assetBase).href;
   var ABOUT_PATH = '/discover-helix';
   var LOGO = 'https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/' +
     '69d700bcc34b330ceea4724c_%EC%A1%B0%ED%95%A9%ED%98%95%20%EB%A1%9C%EA%B3%A02-p-500.webp';
@@ -439,7 +440,7 @@
       var plus = card && card.querySelector('a');
       var key = keyForPath(cert.slug);
       var mark = card && card.querySelector(cert.mark);
-      if (mark && key !== 'aaha') mark.style.backgroundImage = 'url("' + DATA[key].image + '")';
+      if (mark && key !== 'aaha') mark.style.backgroundImage = 'url("' + (key === 'cat' ? catCardImage : DATA[key].image) + '")';
       if (plus) plus.setAttribute('href', certUrl(keyForPath(cert.slug)));
     });
     Array.prototype.forEach.call(document.querySelectorAll('a[href]'), function (a) {
