@@ -59,11 +59,48 @@
     document.head.appendChild(element);
   }
 
+  // Styles and heading legibility must not depend on the animation CDN.
+  FILES.filter(function (path) { return /\.css$/i.test(path); })
+    .forEach(function (path) { loadFile(path, REF); });
+
+  function initInsightOverlap() {
+    var frame = document.querySelector('.whiteframe_open .div-block-352');
+    if (!frame) return;
+    var title = frame.querySelector('.about_mini_title.for-big-blue');
+    var script = frame.querySelector('.about_mini_title.for-big-eng.white-bg');
+    if (!title || !script) return;
+    function update() {
+      var range = document.createRange();
+      range.selectNodeContents(title);
+      var bottom = range.getBoundingClientRect().bottom;
+      var overlap = Math.max(0, bottom - script.getBoundingClientRect().top + 2);
+      script.style.setProperty('--hx-im-insight-overlap', overlap + 'px');
+    }
+    update();
+    if ('ResizeObserver' in window) {
+      var observer = new ResizeObserver(update);
+      observer.observe(frame);
+      observer.observe(title);
+      observer.observe(script);
+    }
+    window.addEventListener('resize', update, { passive: true });
+    if (document.fonts) {
+      document.fonts.ready.then(update);
+      document.fonts.addEventListener('loadingdone', update);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initInsightOverlap, { once: true });
+  } else {
+    initInsightOverlap();
+  }
+
   var gsap = document.createElement('script');
   gsap.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
   gsap.async = false;
   gsap.onload = function () {
-    FILES.forEach(function (path) { loadFile(path, REF); });
+    FILES.filter(function (path) { return !/\.css$/i.test(path); })
+      .forEach(function (path) { loadFile(path, REF); });
   };
   gsap.onerror = function () {
     console.warn('[internal-medicine-bootstrap] GSAP load failed; header menu was not initialized');
