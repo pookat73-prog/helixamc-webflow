@@ -297,6 +297,10 @@
   }
 
   function resolveSha(done, fail) {
+    /* 페이지 진입 코드가 이미 버전을 결정했다면 같은 API를 다시 조회하지 않는다. */
+    var source = document.currentScript && document.currentScript.src || '';
+    var pinned = source.match(/@([0-9a-f]{7,40})\/about\/bootstrap\.js(?:[?#]|$)/i);
+    if (pinned && window.__helixAboutEntryRef === pinned[1]) { done(pinned[1]); return; }
     var cached = readSha();
     if (!FRESH && cached && cached.sha && (Date.now() - cached.t) < SHA_TTL) { done(cached.sha); return; }
     var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO +

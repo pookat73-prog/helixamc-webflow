@@ -1,0 +1,71 @@
+<!-- HELIX SEO: canonical URL for link-sharing crawlers. -->
+<meta property="og:url" content="https://helix-amc.com/discover-helix">
+<!-- The site-wide GSAP include precedes this page entry. -->
+<style id="helix-about-entry-layout">
+.about-heading,.about_contents_sub-title,img.image-23{opacity:0}
+.whiteframe_close-copy,.whiteframe_close_m{background-image:var(--helix-history-background,none)!important}
+#cert .div-block-158{background-image:var(--helix-veccs-mark,none)!important}
+#cert .div-block-157{background-image:var(--helix-cat-mark,none)!important}
+@media(max-width:767px){#cert{display:block!important}#cert:not(.helix-cert-ready) .about_grid-3-_mid-align{display:block!important;visibility:hidden!important;height:47.5vw!important;min-height:0!important}#cert.helix-cert-ready .about_grid-3-_mid-align{display:none!important}}
+</style>
+<script>
+(function(){
+  var branch=/\.webflow\.io$/i.test(location.hostname)?'staging':'main';
+  var base='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@';
+  var key='helix.sha.'+branch, cached=null, settled=false, timer;
+  try{cached=JSON.parse(localStorage.getItem(key)||'null');}catch(e){}
+  var fresh=/[?&]fresh=1\b/.test(location.search);
+  var controller=typeof AbortController!=='undefined'?new AbortController():null;
+  function valid(ref){return typeof ref==='string'&&/^[0-9a-f]{7,40}$/i.test(ref);}
+  function load(ref){
+    if(settled)return;settled=true;clearTimeout(timer);
+    window.__helixAboutBootstrapRedirected=true;
+    window.__helixAboutEntryRef=ref;
+    ['global/global.css','about/about.css','about/cert-modal/modal.css','home/global/card-stack.css'].forEach(function(path){
+      var link=document.createElement('link');link.rel='preload';link.as='style';link.href=base+ref+'/'+path;document.head.appendChild(link);
+    });
+    var script=document.createElement('script');script.src=base+ref+'/about/bootstrap.js';script.async=false;
+    script.onerror=function(){
+      if(!window.__helixAboutInit){document.getElementById('helix-about-entry-layout').remove();}
+    };
+    document.head.appendChild(script);
+  }
+  function fallback(){
+    var ref=cached&&valid(cached.sha)&&Date.now()-cached.t<43200000?cached.sha:
+      (branch==='staging'?'64ef5b2968':'651d23b3ca');
+    load(ref);
+  }
+  setTimeout(function(){
+    if(!window.__helixAboutInit){var style=document.getElementById('helix-about-entry-layout');if(style)style.remove();}
+  },10000);
+  ['wheel','touchstart','pointerdown','keydown'].forEach(function(type){
+    window.addEventListener(type,function(){window.__helixAboutUserMoved=true;},{once:true,passive:true});
+  });
+  if(!fresh&&cached&&valid(cached.sha)&&Date.now()-cached.t<600000){load(cached.sha);return;}
+  timer=setTimeout(function(){fallback();if(controller)controller.abort();},2500);
+  var options={cache:'no-store',headers:{Accept:'application/vnd.github+json'}};
+  if(controller)options.signal=controller.signal;
+  fetch('https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/'+branch+'?t='+Math.floor(Date.now()/60000),options)
+    .then(function(r){return r.ok?r.json():Promise.reject(r.status);})
+    .then(function(d){
+      if(settled)return;
+      var ref=((d.object&&d.object.sha)||'').substring(0,10);if(!valid(ref))throw new Error('Invalid version');
+      try{localStorage.setItem(key,JSON.stringify({sha:ref,t:Date.now()}));}catch(e){}
+      load(ref);
+    }).catch(fallback);
+})();
+</script>
+<!-- Helix SEO 자동 로더 — seo-snippets/discover-helix.html 의 JSON-LD 를 런타임 주입. 슬러그/내용 변경 시 재붙여넣기 불필요 -->
+<script>
+(function(){
+  var b=/\.webflow\.io$/i.test(location.hostname)?"staging":"main";
+  fetch("https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@"+b+"/seo-snippets/discover-helix.html")
+    .then(function(r){return r.ok?r.text():"";})
+    .then(function(h){
+      if(!h)return;
+      var d=document.createElement("div");d.innerHTML=h;
+      var n=d.querySelectorAll("script[type=\"application/ld+json\"]");
+      for(var i=0;i<n.length;i++){var s=document.createElement("script");s.type="application/ld+json";s.textContent=n[i].textContent;document.head.appendChild(s);}
+    }).catch(function(){});
+})();
+</script>

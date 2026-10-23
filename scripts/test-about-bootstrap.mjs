@@ -2,17 +2,18 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 const source=readFileSync(new URL('../about/bootstrap.js',import.meta.url),'utf8');
+const entry=readFileSync(new URL('../about/page-head.html',import.meta.url),'utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
 const flush=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
-function fixture({cached, fresh=false, initialized=true}={}) {
+function fixture({cached, fresh=false, initialized=true, entryMode=false, cachedAge=700000}={}) {
   const added=[],requests=[],properties={},timers=new Map();let timerId=0,now=100000000;
   const image=(hero,rect)=>({loading:'lazy',matches:()=>hero,getBoundingClientRect:()=>rect,setAttribute(k,v){this[k]=v;}});
   const images=[image(true,{width:0,height:0,top:0,bottom:0}),image(false,{width:0,height:0,top:0,bottom:0}),image(false,{width:100,height:100,top:3000,bottom:3100})];
-  const store=new Map(cached?[['helix.sha.main',JSON.stringify({sha:cached,t:now-700000})]]:[]);
+  const store=new Map(cached?[['helix.sha.main',JSON.stringify({sha:cached,t:now-cachedAge})]]:[]);
   const document={readyState:'complete',head:{appendChild(el){added.push(el);}},documentElement:{style:{setProperty(k,v){properties[k]=v;}}},createElement:tag=>({tag,style:{}}),querySelector:()=>null,querySelectorAll:sel=>sel==='img'?images:[],addEventListener(){}};
   const context={document,location:{hostname:'helix-amc.com',search:fresh?'?fresh=1':''},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console:{log(){},warn(){}},MutationObserver:class{observe(){}disconnect(){}},AbortController,Date:class extends Date{static now(){return now;}},setTimeout(fn,ms){timers.set(++timerId,{fn,at:now+ms});return timerId;},clearTimeout:id=>timers.delete(id),fetch(url,options){return new Promise((resolve,reject)=>requests.push({url,options,resolve,reject}));}};
   context.window=context;context.innerHeight=900;context.addEventListener=()=>{};
   if(initialized)for(const name of ['__helixGateInit','__helixGA4Init','__helixSessionInit','__helixSheetLogInit'])context[name]=true;
-  vm.runInNewContext(source,context);
+  vm.runInNewContext(entryMode?entry:source,context);
   return {context,added,requests,images,properties,store,async tick(ms){now+=ms;for(const [id,t]of [...timers])if(t.at<=now){timers.delete(id);t.fn();}await flush();}};
 }
 {
@@ -41,5 +42,24 @@ function fixture({cached, fresh=false, initialized=true}={}) {
  assert(f.properties['--helix-cat-mark'].includes('@bbbbbbbbbb/'));
  assert(f.added.filter(e=>e.src?.includes('/about/about.js')).length===1);
  console.log('✓ fresh version success: immutable asset addresses and timeout cancellation');
+}
+{
+ const f=fixture({entryMode:true,fresh:true});f.requests[0].resolve({ok:true,json:async()=>({object:{sha:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}})});await flush();
+ assert.equal(f.context.__helixAboutEntryRef,'bbbbbbbbbb');assert.equal(f.context.__helixAboutBootstrapRedirected,true);
+ const script=f.added.find(e=>e.src?.includes('/about/bootstrap.js'));assert(script.src.includes('@bbbbbbbbbb/'));
+ f.context.document.currentScript={src:script.src};vm.runInNewContext(source,f.context);await flush();
+ assert.equal(f.requests.length,1,'entry and bootstrap must share one version lookup, even with fresh=1');
+ assert.equal(f.context.HELIX_REF,'bbbbbbbbbb');
+ console.log('✓ immutable page entry shares its version with bootstrap without a second API request');
+}
+{
+ const f=fixture({entryMode:true,cached:'aaaaaaaaaa',cachedAge:1000});assert.equal(f.requests.length,0);assert.equal(f.context.__helixAboutEntryRef,'aaaaaaaaaa');
+ assert(f.added.some(e=>e.as==='style'&&e.href.includes('@aaaaaaaaaa/about/about.css')));
+ console.log('✓ repeat visits use the shared 10-minute cache and preload critical styles');
+}
+{
+ const f=fixture({entryMode:true,fresh:true});await f.tick(2500);assert.equal(f.context.__helixAboutEntryRef,'651d23b3ca');assert(f.added.filter(e=>e.src).every(e=>!/@main\//.test(e.src)));
+ const before=f.added.length;f.requests[0].resolve({ok:true,json:async()=>({object:{sha:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}})});await flush();assert.equal(f.added.length,before);
+ console.log('✓ first-visit entry timeout uses a known immutable release and ignores late responses');
 }
 console.log('About bootstrap failure-path checks passed');
