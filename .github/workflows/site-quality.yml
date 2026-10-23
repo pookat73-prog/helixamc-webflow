@@ -50,3 +50,4 @@ jobs:
         run: |
           node scripts/test-quickbar-measurement.mjs
           node scripts/test-ilsan-schedule-measurement.mjs
+          node scripts/test-home-faq-measurement.mjs

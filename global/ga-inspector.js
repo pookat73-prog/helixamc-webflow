@@ -173,6 +173,20 @@
       } }
   ];
 
+  /* Home FAQ entries: the same two destinations as buttons.js; the tools bridge
+     automatically includes these targets in its next visible-target snapshot. */
+  if (PAGE === 'home' && /^\/(?:index\.html)?$/.test(location.pathname)) {
+    function isHomeFaqLink(el) {
+      var url;
+      try { url = new URL(el.href, location.href); } catch (error) { return false; }
+      return url.origin === location.origin && /^\/faq\/?$/.test(url.pathname);
+    }
+    TARGETS = TARGETS.concat([
+      { sel: 'a#home-faq.hx-prep-faq-link', label: '홈 · 본문 FAQ', event: 'home_faq_click (care_preparation)', match: isHomeFaqLink },
+      { sel: 'a.hx-footer-faq-button', label: '홈 · 푸터 FAQ', event: 'home_faq_click (footer)', match: isHomeFaqLink }
+    ]);
+  }
+
   /* 일산 진료 소식 링크 — seocho.js의 전용 측정 위치와 목적지만 표시.
      표시 전용이며 이벤트를 추가 전송하거나 운영자 제외를 해제하지 않는다. */
   if (PAGE === 'ilsan' && /^\/ilsan\/?$/.test(location.pathname)) {
