@@ -235,6 +235,35 @@
   });
 })();
 
+/* Home FAQ entries — semantic clicks share the existing GA/session/sheet pipeline. */
+(function () {
+  'use strict';
+  if (!/^\/(?:index\.html)?$/.test(location.pathname) || window.__helixHomeFaqTrack) return;
+  if (/\.webflow\.io$/i.test(location.hostname)) return;
+  window.__helixHomeFaqTrack = true;
+
+  // Delegation also covers links rendered after this module loads.
+  document.addEventListener('click', function (event) {
+    var target = event.target;
+    var link = target && target.closest && target.closest('a#home-faq.hx-prep-faq-link, a.hx-footer-faq-button');
+    if (!link || window.__helixNoMeasure || typeof window.gtag !== 'function') return;
+    var url;
+    try { url = new URL(link.href, location.href); } catch (error) { return; }
+    if (url.origin !== location.origin || !/^\/faq\/?$/.test(url.pathname)) return;
+    var position = link.id === 'home-faq' ? 'care_preparation' : 'footer';
+    try {
+      window.gtag('event', 'home_faq_click', {
+        page: 'home',
+        section_key: position,
+        item_type: 'faq_link',
+        device: window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'),
+        link_url: url.pathname,
+        transport_type: 'beacon'
+      });
+    } catch (error) { /* Measurement must not interrupt navigation. */ }
+  }, true);
+})();
+
 /* Care preparation guide v6 — Webflow-native home entry, staging integration. */
 (function () {
   'use strict';
