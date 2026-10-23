@@ -1,6 +1,7 @@
 <!-- HELIX SEO: canonical URL for link-sharing crawlers. -->
 <meta property="og:url" content="https://helix-amc.com/discover-helix">
 <!-- The site-wide GSAP include precedes this page entry. -->
+<!-- Deployment source: render fallback refs to the latest verified release on each branch before publishing. -->
 <style id="helix-about-entry-layout">
 .about-heading,.about_contents_sub-title,img.image-23{opacity:0}
 .whiteframe_close-copy,.whiteframe_close_m{background-image:var(--helix-history-background,none)!important}
@@ -32,7 +33,7 @@
   }
   function fallback(){
     var ref=cached&&valid(cached.sha)&&Date.now()-cached.t<43200000?cached.sha:
-      (branch==='staging'?'64ef5b2968':'651d23b3ca');
+      (branch==='staging'?'0b83ddf66b':'651d23b3ca');
     load(ref);
   }
   setTimeout(function(){
