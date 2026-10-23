@@ -124,7 +124,7 @@
       "  }",
       "  .whiteframe_open > .sg_rings {",
       "    flex-direction: column;",
-      "    gap: 1.5rem;",
+      "    gap: 0;",
       "  }",
       "  .whiteframe_open .sg_rings > .sg_ring.for-white-bg {",
       "    width: min(100%, 22rem);",
@@ -132,6 +132,7 @@
       "  }",
       "  .whiteframe_open .sg_rings > .sg_ring.for-white-bg.right {",
       "    margin-left: 0;",
+      "    margin-top: -1.5rem;",
       "  }",
       "}"
     ].join('\n');
