@@ -287,9 +287,18 @@
       document.head.appendChild(hint);
     });
     Promise.all(styles).then(function () {
-      first.forEach(function (path) { loadFile(path, ref); });
-      FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
-        .forEach(function (path) { loadFile(path, ref); });
+      function auxiliary() {
+        FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
+          .forEach(function (path) { loadFile(path, ref); });
+      }
+      first.forEach(function (path, index) {
+        loadFile(path, ref, index === first.length - 1 ? function () {
+          /* 보조 스크립트를 같은 실행 대기열에 미리 넣으면 늦은 응답이
+             DOM 준비까지 붙잡을 수 있다. 본문 초기화 뒤에만 추가한다. */
+          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auxiliary, { once: true });
+          else auxiliary();
+        } : null);
+      });
     });
   }
 
