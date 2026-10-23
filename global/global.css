@@ -515,13 +515,15 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-357 {
     width: 100%;
     min-width: 0;
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 {
     min-width: 0;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     column-gap: 6px;
     row-gap: 8px;
   }
