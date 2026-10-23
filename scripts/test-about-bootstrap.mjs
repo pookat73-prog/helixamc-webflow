@@ -9,12 +9,13 @@ function fixture({cached, fresh=false, initialized=true, entryMode=false, cached
   const image=(hero,rect)=>({loading:'lazy',matches:()=>hero,getBoundingClientRect:()=>rect,setAttribute(k,v){this[k]=v;}});
   const images=[image(true,{width:0,height:0,top:0,bottom:0}),image(false,{width:0,height:0,top:0,bottom:0}),image(false,{width:100,height:100,top:3000,bottom:3100})];
   const store=new Map(cached?[['helix.sha.main',JSON.stringify({sha:cached,t:now-cachedAge})]]:[]);
-  const document={readyState:'complete',head:{appendChild(el){added.push(el);if(!holdCss&&el.rel==='stylesheet'&&el.onload)el.onload();if(el.tag==='script'&&el.onload)el.onload();}},documentElement:{style:{setProperty(k,v){properties[k]=v;}}},createElement:tag=>({tag,style:{}}),querySelector:()=>null,querySelectorAll:sel=>sel==='img'?images:[],addEventListener(){}};
+  let restoredLegacy=false;
+  const document={getElementById:id=>added.find(el=>el.id===id)||(id==='helix-about-entry-layout'?{remove(){restoredLegacy=true;}}:null),readyState:'complete',head:{appendChild(el){added.push(el);if(!holdCss&&el.rel==='stylesheet'&&el.onload)el.onload();if(el.tag==='script'&&el.onload)el.onload();}},documentElement:{style:{setProperty(k,v){properties[k]=v;}}},createElement:tag=>({tag,style:{}}),querySelector:()=>null,querySelectorAll:sel=>sel==='img'?images:[],addEventListener(){}};
   const context={document,location:{hostname:'helix-amc.com',search:fresh?'?fresh=1':''},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},console:{log(){},warn(){}},MutationObserver:class{observe(){}disconnect(){}},AbortController,Date:class extends Date{static now(){return now;}},setTimeout(fn,ms){timers.set(++timerId,{fn,at:now+ms});return timerId;},clearTimeout:id=>timers.delete(id),fetch(url,options){return new Promise((resolve,reject)=>requests.push({url,options,resolve,reject}));}};
   context.window=context;context.innerHeight=900;context.addEventListener=()=>{};
   if(initialized)for(const name of ['__helixGateInit','__helixGA4Init','__helixSessionInit','__helixSheetLogInit'])context[name]=true;
   vm.runInNewContext(entryMode?entry:source,context);
-  return {context,added,requests,images,properties,store,async tick(ms){now+=ms;for(const [id,t]of [...timers])if(t.at<=now){timers.delete(id);t.fn();}await flush();}};
+  return {context,added,requests,images,properties,store,get restoredLegacy(){return restoredLegacy;},async tick(ms){now+=ms;for(const [id,t]of [...timers])if(t.at<=now){timers.delete(id);t.fn();}await flush();}};
 }
 {
   const f=fixture({cached:'aaaaaaaaaa',fresh:true});
@@ -53,7 +54,7 @@ function fixture({cached, fresh=false, initialized=true, entryMode=false, cached
  console.log('✓ immutable page entry shares its version with bootstrap without a second API request');
 }
 {
- const f=fixture({entryMode:true,cached:'aaaaaaaaaa',cachedAge:1000});assert.equal(f.requests.length,0);assert.equal(f.context.__helixAboutEntryRef,'aaaaaaaaaa');
+ const f=fixture({entryMode:true,cached:'aaaaaaaaaa',cachedAge:1000});assert.equal(f.requests.length,0);assert.equal(f.context.__helixAboutEntryRef,'aaaaaaaaaa');assert(f.restoredLegacy,'old cached bootstrap must restore its compatible layout');
  assert(f.added.some(e=>e.as==='style'&&e.href.includes('@aaaaaaaaaa/about/about.css')));
  console.log('✓ repeat visits use the shared 10-minute cache and preload critical styles');
 }
