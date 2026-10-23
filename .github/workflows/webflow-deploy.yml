@@ -14,6 +14,7 @@ on:
       - 'services/**'
       - 'faq/**'
       - 'specialty/**'
+      - 'internal-medicine/**'
       - 'seo-snippets/**'
   workflow_dispatch:
 
@@ -160,6 +161,8 @@ jobs:
             "faq/protect.js"
             "faq/faq-ga.js"
             "faq/cta-call.js"
+            "internal-medicine/bootstrap.js"
+            "internal-medicine/headline-highlight.js"
             "specialty/bootstrap.js"
             "specialty/specialty.css"
             "specialty/specialty.js"

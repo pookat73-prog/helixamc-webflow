@@ -373,3 +373,8 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
     --hx-im-section-curve: clamp(56px, 12vw, 120px);
   }
 }
+
+/* 프로세스 곡면 보조 레이어의 아래쪽 픽셀 경계가 가로선으로 남지 않게 한다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
+  clip-path: inset(0 0 1px 0);
+}
