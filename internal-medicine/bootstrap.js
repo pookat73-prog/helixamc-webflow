@@ -69,12 +69,58 @@
     var title = frame.querySelector('.about_mini_title.for-big-blue');
     var script = frame.querySelector('.about_mini_title.for-big-eng.white-bg');
     if (!title || !script) return;
+    var lastShape = '';
     function update() {
+      var box = script.getBoundingClientRect();
+      if (!box.width || !box.height) return;
+      var style = getComputedStyle(title);
+      var titleBox = title.getBoundingClientRect();
+      var shape = [box.width, box.height, titleBox.left - box.left,
+        titleBox.top - box.top, titleBox.width, titleBox.height,
+        style.fontFamily, style.fontSize, style.fontWeight,
+        style.letterSpacing, title.textContent].join('|');
+      if (shape === lastShape) return;
+
+      // Cut around the actual blue glyphs, leaving the longer script ends intact.
+      var canvas = document.createElement('canvas');
+      var scale = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.ceil(box.width * scale);
+      canvas.height = Math.ceil(box.height * scale);
+      var context = canvas.getContext('2d');
+      if (!context) return;
+      context.scale(scale, scale);
+      context.fillStyle = '#fff';
+      context.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+      context.globalCompositeOperation = 'destination-out';
+      context.font = style.fontStyle + ' ' + style.fontWeight + ' ' +
+        style.fontSize + ' ' + style.fontFamily;
+      context.fillStyle = '#000';
+      context.strokeStyle = '#000';
+      context.lineWidth = 1.5;
+      context.lineJoin = 'round';
+      context.shadowColor = '#000';
+      context.shadowBlur = 2 * scale;
+      var ascent = context.measureText(title.textContent).fontBoundingBoxAscent;
+      if (!Number.isFinite(ascent)) ascent = parseFloat(style.fontSize) * .8;
+      var walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
       var range = document.createRange();
-      range.selectNodeContents(title);
-      var bottom = range.getBoundingClientRect().bottom;
-      var overlap = Math.max(0, bottom - script.getBoundingClientRect().top + 2);
-      script.style.setProperty('--hx-im-insight-overlap', overlap + 'px');
+      while (walker.nextNode()) {
+        var node = walker.currentNode;
+        var offset = 0;
+        Array.from(node.nodeValue).forEach(function (letter) {
+          range.setStart(node, offset);
+          offset += letter.length;
+          range.setEnd(node, offset);
+          if (!letter.trim()) return;
+          var glyph = range.getBoundingClientRect();
+          var x = glyph.left - box.left;
+          var y = glyph.top - box.top + ascent;
+          context.strokeText(letter, x, y);
+          context.fillText(letter, x, y);
+        });
+      }
+      script.style.setProperty('--hx-im-insight-mask', 'url("' + canvas.toDataURL() + '")');
+      lastShape = shape;
     }
     update();
     if ('ResizeObserver' in window) {
@@ -85,8 +131,9 @@
     }
     window.addEventListener('resize', update, { passive: true });
     if (document.fonts) {
-      document.fonts.ready.then(update);
-      document.fonts.addEventListener('loadingdone', update);
+      function refreshFont() { lastShape = ''; update(); }
+      document.fonts.ready.then(refreshFont);
+      document.fonts.addEventListener('loadingdone', refreshFont);
     }
   }
   if (document.readyState === 'loading') {
