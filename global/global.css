@@ -519,18 +519,38 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > #hx-im-process::before {
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 3.5rem minmax(0, 1fr) 3.5rem;
     min-width: 0;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     text-align: center;
-    column-gap: 6px;
+    column-gap: 0;
     row-gap: 8px;
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_title.text-span-3 {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    justify-self: start;
+    text-align: left;
     flex-shrink: 0;
     white-space: nowrap;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > :not(.text-span-3) {
+    grid-column: 2;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > .div-4 {
+    grid-row: 1 / span 2;
+    align-items: center;
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-list {
