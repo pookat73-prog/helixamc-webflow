@@ -81,7 +81,7 @@
         style.letterSpacing, title.textContent].join('|');
       if (shape === lastShape) return;
 
-      // Cut around the actual blue glyphs, leaving the longer script ends intact.
+      // A fully opaque halo touches each blue glyph, then quickly softens outward.
       var canvas = document.createElement('canvas');
       var scale = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.ceil(box.width * scale);
@@ -96,10 +96,10 @@
         style.fontSize + ' ' + style.fontFamily;
       context.fillStyle = '#000';
       context.strokeStyle = '#000';
-      context.lineWidth = 1.5;
+      context.lineWidth = 3;
       context.lineJoin = 'round';
       context.shadowColor = '#000';
-      context.shadowBlur = 2 * scale;
+      context.shadowBlur = 8 * scale;
       var ascent = context.measureText(title.textContent).fontBoundingBoxAscent;
       if (!Number.isFinite(ascent)) ascent = parseFloat(style.fontSize) * .8;
       var walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
