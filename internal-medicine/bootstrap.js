@@ -64,6 +64,9 @@
       }
     }
     @media (min-width: 768px) and (max-width: 1039px) {
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open > .sg_rings {
+        bottom: 3rem;
+      }
       html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .im_intro-image {
         padding-block: 96px;
       }
