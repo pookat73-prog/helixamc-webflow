@@ -99,3 +99,33 @@
 .footer-sns-icon:active {
   transform: translateY(0);
 }
+
+/* 홈 FAQ 보조 링크: 글자는 고정하고 화살표만 작게 두 번 움직인다. */
+#home-faq.hx-prep-faq-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #0075d6;
+  text-underline-offset: 3px;
+}
+#home-faq.hx-prep-faq-link::after {
+  content: "→";
+  display: inline-block;
+  text-decoration: none;
+  animation: hx-faq-arrow-nudge 3.2s ease-in-out infinite;
+}
+@keyframes hx-faq-arrow-nudge {
+  0%, 12%, 28%, 44%, 100% { transform: translateX(0); }
+  20%, 36% { transform: translateX(4px); }
+}
+#home-faq.hx-prep-faq-link:focus-visible,
+.hx-footer-faq-button:focus-visible {
+  outline: 2px solid #0075d6;
+  outline-offset: 4px;
+}
+.hx-footer-faq-button:hover {
+  background-color: #0063b5;
+}
+@media (prefers-reduced-motion: reduce) {
+  #home-faq.hx-prep-faq-link::after { animation: none; }
+}
