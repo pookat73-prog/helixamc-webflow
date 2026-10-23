@@ -77,10 +77,13 @@
         font-size: 36px;
         right: 0;
       }
-      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-357 {
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process :is(.div-block-357, .div-block-358) {
         flex-wrap: wrap;
         justify-content: flex-start;
         gap: 6px;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_title {
+        flex: 0 0 auto;
       }
       html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_title-en {
         width: 100%;
