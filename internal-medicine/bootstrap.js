@@ -11,6 +11,89 @@
   if (window.__hxImBootstrapInit) return;
   window.__hxImBootstrapInit = true;
 
+  // Keep the 1440px composition through laptop/tablet widths. Phone sections
+  // need their own vertical design and deliberately retain Webflow's layout.
+  // Inline in the existing loader: no new CDN file or FILES registration.
+  var responsiveStyle = document.createElement('style');
+  responsiveStyle.id = 'hx-im-responsive-style';
+  responsiveStyle.textContent = `
+    @media (min-width: 768px) and (max-width: 1439px) {
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] {
+        --hx-im-gutter: clamp(24px, calc(50vw - 458px), 18.2vw);
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :is(
+        .im_intro-image, .whiteframe.im, .whiteframe_open,
+        .white-frame_mini.im, #hx-im-process,
+        .white-frame_connect, .whiteframe_close,
+        .hx-im-responsive-closing-frame
+      ) {
+        padding-inline: var(--hx-im-gutter);
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .im_intro-image > .flex-block-62 {
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] :is(
+        .flex-block-62 > *, .div-block-353 > *, .div-block-355 > *,
+        .hx-im-process-flow > *, .hx-im-area-grid > *
+      ) { min-width: 0; }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] :is(.div-block-353, .div-block-355) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-process-flow {
+        width: 100%;
+        max-width: 841px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(32px, 8.89vw, 128px);
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open > .sg_rings {
+        flex-direction: row;
+        gap: 0;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .sg_ring_body {
+        font-size: clamp(14px, 1.11vw, 16px);
+        line-height: 1.7;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .white-frame_mini.im .sj_outro_quote {
+        font-size: clamp(24px, 1.945vw, 28px);
+        line-height: 1.45;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-intro .about_mini_title {
+        font-size: clamp(24px, 1.9vw, 27.36px);
+        line-height: 1.4;
+      }
+    }
+    @media (min-width: 768px) and (max-width: 1039px) {
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .im_intro-image {
+        padding-block: 96px;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .im_intro-image .st_intro_body {
+        font-size: 18px;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .im_intro-image :is(.div-block-340, .div-block-367) {
+        padding-left: 0;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .im_intro-image .sj_intro_eng-keyword {
+        font-size: 36px;
+        right: 0;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-357 {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 6px;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_title-en {
+        width: 100%;
+        bottom: 0;
+        line-height: 1.4;
+      }
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step.for-list {
+        padding-top: 104px;
+      }
+    }
+  `;
+  document.head.appendChild(responsiveStyle);
+
   var OWNER = 'pookat73-prog';
   var REPO = 'helixamc-webflow';
   var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
