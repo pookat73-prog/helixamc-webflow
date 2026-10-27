@@ -355,6 +355,17 @@
     var ready = first.style.opacity !== '' && Number(first.style.opacity) >= 0.999;
     var played = false;
     var animation = null;
+    var ringStarted = false;
+    function startRingWhenReady() {
+      if (ringStarted || reduceMotion.matches || first.style.opacity === '' ||
+          Number(getComputedStyle(first).opacity) < 0.9) return;
+      ringStarted = true;
+      // Overlap the first circle with the final beat of the paragraph reveal.
+      // Defer so the ring listener is ready even when this module loads late.
+      window.setTimeout(function () {
+        if (!reduceMotion.matches) window.dispatchEvent(new Event('hx-im-insight-ring-start'));
+      }, 0);
+    }
     function play() {
       if (played || !ready || !visible || reduceMotion.matches) return;
       played = true;
@@ -381,16 +392,15 @@
           (x - paintWidth / 2) + 'px ' + (y - paintHeight / 2) + 'px' });
       }
       animation = heading.animate(path, { duration: 2400, easing: 'linear' });
-      window.setTimeout(function () {
-        window.dispatchEvent(new Event('hx-im-insight-ring-start'));
-      }, 600);
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
     }
     var opacityObserver = new MutationObserver(function () {
       ready = Number(getComputedStyle(first).opacity) >= 0.999;
+      startRingWhenReady();
       play();
     });
     opacityObserver.observe(first, { attributes: true, attributeFilter: ['style'] });
+    startRingWhenReady();
     var visibilityObserver = new IntersectionObserver(function (entries) {
       visible = entries[0].isIntersecting;
       play();
