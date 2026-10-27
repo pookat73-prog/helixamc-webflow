@@ -393,6 +393,7 @@
        3) slogan 레이아웃 안정화 폴링 → 4) fade 시작
        slogan 의 실제 font-weight/style 까지 반영해 로드 (weight 별로 face 다름). */
     var loadPromises = [];
+    var targetedFontLoad = false;
     var sloganFamily = familyFromComputed();
     var sloganWeight = '400';
     var sloganStyle  = 'normal';
@@ -407,9 +408,12 @@
       var text = (slogan.textContent || '').trim() || ' ';
       try {
         loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
+        targetedFontLoad = true;
       } catch (e) {}
     }
-    if (document.fonts && document.fonts.ready) {
+    /* 슬로건 폰트를 직접 요청했으면 하단·메뉴 등 다른 폰트까지 기다리지 않는다.
+       실제 폰트 적용 probe와 4프레임 배치 안정화 검사는 아래에서 그대로 수행한다. */
+    if (!targetedFontLoad && document.fonts && document.fonts.ready) {
       loadPromises.push(document.fonts.ready.catch(function () {}));
     }
 

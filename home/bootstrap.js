@@ -234,26 +234,27 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + q;
   }
 
-  function injectCss(url, onerr) {
+  function injectCss(url, onerr, onload) {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
     link.href = url;
+    if (onload) link.onload = onload;
     if (onerr) link.onerror = onerr;
     document.head.appendChild(link);
     return link;
   }
 
-  function injectJs(url, onload, onerr) {
+  function injectJs(url, onload, onerr, independent) {
     var s = document.createElement('script');
     s.src   = url;
-    s.async = false;
+    s.async = !!independent;
     if (onload) s.onload = onload;
     if (onerr)  s.onerror = onerr;
     document.head.appendChild(s);
     return s;
   }
 
-  function loadFile(path, ref) {
+  function loadFile(path, ref, done) {
     /* 점검 화면은 ga-inspector.js와 같은 URL 조건에서만 내려받는다. */
     if (path === 'global/ga-inspector.js' &&
         !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
@@ -262,21 +263,50 @@
     var fallback = function () {
       if (ref === BRANCH) {
         console.warn('[helix-bootstrap] failed even from @' + BRANCH + ':', path);
+        if (done) done();
         return;
       }
       console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
-      loadFile(path, BRANCH);
+      loadFile(path, BRANCH, done);
     };
     if (ext === 'css') {
-      injectCss(url, fallback);
+      injectCss(url, fallback, done);
     } else if (ext === 'js') {
-      injectJs(url, null, fallback);
+      injectJs(url, done, fallback);
     }
   }
 
   function injectAll(ref) {
     console.log('[helix-bootstrap] injecting ' + FILES.length + ' files at ref=' + ref + ':\n  - ' + FILES.join('\n  - '));
-    FILES.forEach(function (path) { loadFile(path, ref); });
+    /* 첫 화면은 보조 기능의 응답을 기다리지 않는다. 뷰포트 → 홈 배치 →
+       히어로 순서는 유지하고, 필수 CSS가 파싱된 뒤에만 크기를 측정한다. */
+    var first = ['global/viewport-fix.js', 'global/viewport.js',
+      'home/global/coming-soon.js', 'home/section1/section1.js'];
+    var critical = ['global/global.css', 'home/global/coming-soon.css',
+      'home/section1/section1.css', 'home/global/buttons.css'];
+    var styles = critical.map(function (path) {
+      return new Promise(function (resolve) { loadFile(path, ref, resolve); });
+    });
+    FILES.filter(function (path) { return /\.css$/.test(path) && critical.indexOf(path) === -1; })
+      .forEach(function (path) { loadFile(path, ref); });
+    first.forEach(function (path) {
+      var hint = document.createElement('link');
+      hint.rel = 'preload'; hint.as = 'script'; hint.href = cdn(ref, path);
+      document.head.appendChild(hint);
+    });
+    Promise.all(styles).then(function () {
+      function auxiliary() {
+        /* 기존 순서대로 측정 게이트 → GA4 → 세션 → 이벤트 모듈을 실행한다. */
+        FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
+          .forEach(function (path) { loadFile(path, ref); });
+      }
+      first.forEach(function (path, index) {
+        loadFile(path, ref, index === first.length - 1 ? function () {
+          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auxiliary, { once: true });
+          else auxiliary();
+        } : null);
+      });
+    });
   }
 
   /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
@@ -313,7 +343,7 @@
     if (window.gsap && window.gsap.registerPlugin) {
       window.gsap.registerPlugin(ScrollTrigger);
     }
-  });
+  }, null, true);
 
   /* 진입점(bootstrap-v3.js)이 이미 최신 SHA 를 알아내 넘겨줬으면 재사용
      → GitHub API 중복 호출 제거 (rate limit 보호) */
