@@ -5,6 +5,7 @@ import {createRequire} from 'node:module';
 import {build,ROOT} from './build-doctor-pages.mjs';
 const require=createRequire(import.meta.url);
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const legacyGA4=process.env.DOCTOR_LEGACY_GA4_FILE?readFileSync(process.env.DOCTOR_LEGACY_GA4_FILE,'utf8'):'';
 const out=mkdtempSync('/tmp/helix-doctor-measurement-');
 const manifest=build({outDir:out,origin:'https://www.helix-amc.com',assetRef:'a'.repeat(40)});
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
@@ -17,7 +18,7 @@ try{
    const u=new URL(route.request().url());
    if(u.hostname==='www.helix-amc.com'){
     const profile=manifest.pages.find(p=>p.path===u.pathname);
-    if(profile)return route.fulfill({contentType:'text/html',body:readFileSync(join(out,u.pathname+'.html'),'utf8')});
+    if(profile)return route.fulfill({contentType:'text/html',body:readFileSync(join(out,u.pathname+'.html'),'utf8').replace('<head>','<head>'+(legacyGA4?'<script>'+legacyGA4+'</script>':''))});
    }
    if(u.hostname==='cdn.jsdelivr.net'){
     const path=u.pathname.split('/').slice(4).join('/');
@@ -25,12 +26,12 @@ try{
    }
    return route.abort(); // Every real GA4, sheet and pixel transport is blocked.
   });
-  await page.goto('https://www.helix-amc.com/doctors/isoyun?qa-secret=DO_NOT_COLLECT');
+  await page.goto('https://www.helix-amc.com/doctors/isoyun?qa-secret=DO_NOT_COLLECT&utm_source=fixture&utm_medium=fixture&utm_campaign=fixture&utm_term=fixture&utm_content=fixture');
   await page.waitForFunction(()=>window.__helixPageTimeInit&&window.__helixScrollDepthInit);
   const events=()=>page.evaluate(()=>window.captured.filter(a=>a[0]==='event').map(a=>({event:a[1],params:a[2]})));
   let pv=(await events()).filter(e=>e.event==='doctor_page_view');assert.equal(pv.length,1);assert.equal(pv[0].params.slug,'isoyun');
   await page.clock.fastForward(10000);
-  await page.evaluate(()=>{window.dispatchEvent(new Event('pagehide'));window.dispatchEvent(new Event('pagehide'));});
+  await page.evaluate(()=>{document.querySelector('.helix-doctor-modal_name').click();window.dispatchEvent(new Event('pagehide'));window.dispatchEvent(new Event('pagehide'));});
   let stays=(await events()).filter(e=>e.event==='doctor_time_on_page');assert.equal(stays.length,1);assert.equal(stays[0].params.active_sec,10);
   for(const key of ['slug','doctor','group','branch','view_type','page_location'])assert.ok(stays[0].params[key],key);
   assert.equal(stays[0].params.page_location,'https://www.helix-amc.com/doctors/isoyun');

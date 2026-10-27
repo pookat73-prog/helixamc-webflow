@@ -43,3 +43,7 @@
 - `scripts/test-doctor-measurement.mjs`: `PLAYWRIGHT_MODULE`과 필요 시 `CHROMIUM_PATH`로 기존 Playwright/Chromium을 선택해 실행
 - `scripts/test-doctor-pages.mjs`, `scripts/test-measurement-coverage.mjs`
 - 컨트롤 센터의 대응 PR은 `doctor-pages-v3` 분석 의미 버전과 구버전 인덱스 재처리를 포함한다.
+
+## 운영 게시 직전 추가 검증
+
+운영 공통 ga4-base.js(`09c8ca9474fde2d66ca8dcddbc8a180c0cd8305e`)를 먼저 실행하는 순서에서도 신규 Playwright 검사를 PC/모바일로 통과했다. UTM과 클릭 직후 체류에서도 view_type·page_location을 포함한 식별값이 전달되며 중복 초기화가 없다. 공통 head를 수정하지 않고 의료진 페이지의 세 변경 JS 자산 주소만 교체한다. Webflow의 단일 페이지 게시(pageId)로 의료진 페이지만 게시하며, 다른 페이지의 미게시 변경은 포함하지 않는다.
