@@ -87,6 +87,7 @@
         base.group = profile.getAttribute('data-doctor-group');
         base.branch = '서초';
         base.view_type = 'page';
+        base.page_location = location.origin + location.pathname;
       }
       for (var k in params) { if (params.hasOwnProperty(k)) base[k] = params[k]; }
       if (typeof window.gtag === 'function') {
@@ -110,6 +111,7 @@
     var thresholds = [25, 50, 75, 100];
     var fired = {};
     var ticking = false;
+    var panel = PAGE === 'doctor' && document.querySelector('[data-doctor-detail] .helix-doctor-modal_panel');
 
     function check() {
       ticking = false;
@@ -121,6 +123,7 @@
         body ? body.scrollHeight : 0, doc.scrollHeight,
         body ? body.offsetHeight : 0, doc.offsetHeight
       );
+      if (panel) { scrollTop = panel.scrollTop; winH = panel.clientHeight; docH = panel.scrollHeight; }
       var scrollable = docH - winH;
 
       /* 화면보다 짧아 스크롤할 게 없는 페이지 — 예전엔 여기서 percent 를 100
@@ -154,6 +157,7 @@
       /* 모두 발사되면 리스너 해제 */
       if (fired[100]) {
         window.removeEventListener('scroll', onScroll);
+        if (panel) panel.removeEventListener('scroll', onScroll);
       }
     }
 
@@ -164,6 +168,7 @@
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    if (panel) panel.addEventListener('scroll', onScroll, { passive: true });
     /* 첫 화면에서 이미 일부 도달했거나 페이지가 짧은 경우 즉시 1회 평가 */
     check();
   }

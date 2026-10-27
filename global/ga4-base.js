@@ -69,7 +69,7 @@
         /* The raw-sheet wrapper still keeps the complete object. GA4 accepts
            at most 25 custom event parameters: preserve the action's detail
            before optional session/UTM copies already available to GA itself. */
-        var priority = ['page', 'device', 'event_id', 'sid', 'content_type', 'content_id', 'item_type', 'branch', 'conv', 'conv_type', 'section_key', 'doctor', 'slug', 'dept', 'symptom', 'cert', 'item', 'group', 'question', 'field', 'error_type', 'cta_src', 'form_id', 'read_sec', 'dwell_sec', 'active_sec', 'total_sec', 'percent_scrolled', 'slide_index', 'direction', 'guide_position', 'guide_result', 'event_id', 'interaction_id', 'entry_src', 'visitor'];
+        var priority = ['page', 'device', 'event_id', 'sid', 'content_type', 'content_id', 'item_type', 'branch', 'conv', 'conv_type', 'section_key', 'doctor', 'slug', 'view_type', 'page_location', 'dept', 'symptom', 'cert', 'item', 'group', 'question', 'field', 'error_type', 'cta_src', 'form_id', 'read_sec', 'dwell_sec', 'active_sec', 'total_sec', 'percent_scrolled', 'slide_index', 'direction', 'guide_position', 'guide_result', 'event_id', 'interaction_id', 'entry_src', 'visitor'];
         var selected = {}, count = 0;
         priority.concat(keys).forEach(function (key) {
           if (count < 25 && Object.prototype.hasOwnProperty.call(params, key) && !Object.prototype.hasOwnProperty.call(selected, key)) {
