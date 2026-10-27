@@ -5,6 +5,7 @@ import {createRequire} from 'node:module';
 import {build,ROOT} from './build-doctor-pages.mjs';
 const require=createRequire(import.meta.url);
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const legacyAssets=process.env.DOCTOR_LEGACY_ASSET_DIR;
 const legacyGA4=process.env.DOCTOR_LEGACY_GA4_FILE?readFileSync(process.env.DOCTOR_LEGACY_GA4_FILE,'utf8'):'';
 const out=mkdtempSync('/tmp/helix-doctor-measurement-');
 const manifest=build({outDir:out,origin:'https://www.helix-amc.com',assetRef:'a'.repeat(40)});
@@ -17,8 +18,9 @@ try{
   await context.route('**/*',route=>{
    const u=new URL(route.request().url());
    if(u.hostname==='www.helix-amc.com'){
+    if(legacyAssets&&/^\/__legacy\/(scroll-depth|page-time)\.js$/.test(u.pathname))return route.fulfill({contentType:'text/javascript',body:readFileSync(join(legacyAssets,u.pathname.split('/').pop()),'utf8')});
     const profile=manifest.pages.find(p=>p.path===u.pathname);
-    if(profile)return route.fulfill({contentType:'text/html',body:readFileSync(join(out,u.pathname+'.html'),'utf8').replace('<head>','<head>'+(legacyGA4?'<script>'+legacyGA4+'</script>':''))});
+    if(profile)return route.fulfill({contentType:'text/html',body:readFileSync(join(out,u.pathname+'.html'),'utf8').replace('<head>','<head>'+(legacyGA4?'<script>'+legacyGA4+'</script>':'')+(legacyAssets?'<script defer src="/__legacy/scroll-depth.js"></script><script defer src="/__legacy/page-time.js"></script>':''))});
    }
    if(u.hostname==='cdn.jsdelivr.net'){
     const path=u.pathname.split('/').slice(4).join('/');
@@ -31,6 +33,7 @@ try{
   const events=()=>page.evaluate(()=>window.captured.filter(a=>a[0]==='event').map(a=>({event:a[1],params:a[2]})));
   let pv=(await events()).filter(e=>e.event==='doctor_page_view');assert.equal(pv.length,1);assert.equal(pv[0].params.slug,'isoyun');
   await page.clock.fastForward(10000);
+  if(legacyAssets)assert.equal(await page.evaluate(()=>window.__helixDoctorPageTimeIdentity),true);
   await page.evaluate(()=>{document.querySelector('.helix-doctor-modal_name').click();window.dispatchEvent(new Event('pagehide'));window.dispatchEvent(new Event('pagehide'));});
   let stays=(await events()).filter(e=>e.event==='doctor_time_on_page');assert.equal(stays.length,1);assert.equal(stays[0].params.active_sec,10);
   for(const key of ['slug','doctor','group','branch','view_type','page_location'])assert.ok(stays[0].params[key],key);
