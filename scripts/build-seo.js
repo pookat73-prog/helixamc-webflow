@@ -332,7 +332,9 @@ function buildAbout() {
 function buildSeocho(doctors) {
   const url = SEOCHO_BRANCH.url;
   const branchNode = {
-    '@type': 'VeterinaryCare',
+    // VeterinaryCare is an Organization, not a Place. LocalBusiness also gives
+    // this physical branch the Place domain required by openingHoursSpecification.
+    '@type': ['VeterinaryCare', 'LocalBusiness'],
     '@id': url + '#branch',
     name: `${HOSPITAL.nameKo} ${SEOCHO_BRANCH.branchNameKo}`,
     alternateName: `${HOSPITAL.nameEn} Seocho Branch`,
