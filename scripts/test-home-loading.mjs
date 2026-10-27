@@ -113,7 +113,7 @@ console.log('✓ critical CSS and retry gate, hero priority, DOM readiness, meas
 // Execute the real hero code with a ready slogan font and an unrelated font that
 // never resolves. Fades must start after the existing probe and four stable frames.
 {
-  const f = fixture(), frames = [], fades = [];
+  const f = fixture(), frames = [], fades = [], signals = [];
   const style = { setProperty() {}, removeProperty() {} };
   const slogan = { style, offsetWidth: 320, textContent: '헬릭스동물메디컬센터' };
   const probes = [];
@@ -129,6 +129,8 @@ console.log('✓ critical CSS and retry gate, hero priority, DOM readiness, meas
     fonts: { load: async () => [], ready: new Promise(() => {}) }
   });
   Object.assign(f.context, {
+    CustomEvent: class { constructor(type) { this.type = type; } },
+    dispatchEvent(event) { signals.push({ type: event.type, fades: fades.length }); },
     gsap: { to(state, opts) { fades.push(opts); } },
     getComputedStyle: () => ({ fontFamily: 'HeroFont, sans-serif', fontWeight: '400', fontStyle: 'normal' }),
     performance: { now: () => 0 }, requestAnimationFrame: fn => frames.push(fn)
@@ -138,9 +140,60 @@ console.log('✓ critical CSS and retry gate, hero priority, DOM readiness, meas
   frames.shift()(); // actual font probe
   for (let i = 0; i < 3; i++) frames.shift()();
   assert.equal(fades.length, 0, 'retain four stable frames');
+  assert.equal(signals.length, 0, 'keep cover until font and layout checks pass');
   frames.shift()();
   assert.equal(fades.length, 1, 'unrelated font must not hold slogan until the 2s fallback');
   assert.equal(fades[0].duration, .8); assert.equal(fades[0].delay, .1);
+  assert.deepEqual(signals, [{ type: 'helix-s1-ready', fades: 0 }], 'open cover before the content fades, not after completion');
+  await f.tick(2000);
+  assert.equal(signals.length, 1, 'fallback timer must not repeat readiness');
   assert(probes.every(p => !p.parentNode), 'font probes must be cleaned up');
 }
 console.log('✓ unrelated fonts cannot block hero; font probe, four stable frames and fade timing retained');
+
+const quickbarSource = read('home/global/coming-soon.js').split('/* Home branch quick access. Preserve the existing SVG / animation algorithms. */')[1];
+assert(quickbarSource);
+for (const pending of [false, true]) {
+  const elements = new Map(), listeners = {}, domListeners = {}, classes = new Set(), timers = [];
+  let bars = 0;
+  const on = (target, name, fn) => (target[name] ||= []).push(fn);
+  const preload = { sheet: null, addEventListener() { throw Error('must not wait on preload'); } };
+  const failed = { sheet: null, addEventListener() {} };
+  const sheetListeners = {};
+  const loaded = { sheet: pending ? null : {}, addEventListener: (type, fn) => on(sheetListeners, type, fn) };
+  const parent = {};
+  const insert = el => { elements.set(el.id, el); if (el.id === 'hx-branch-quickbar') bars++; };
+  const slogan = { parentElement: parent, insertAdjacentElement: (_, el) => insert(el) };
+  const button = { parentElement: parent };
+  const specialty = {};
+  const hero = { nextElementSibling: specialty, setAttribute() {}, insertAdjacentElement: (_, el) => insert(el) };
+  const document = {
+    readyState: 'loading', documentElement: { classList: { add: name => classes.add(name) } },
+    getElementById: id => elements.get(id),
+    querySelector: sel => ({ '.home_slogan': slogan, '.bt-box-1': button, '.blackframe_image-hero': hero,
+      '.home_background_2': specialty, 'link[href*="home/global/coming-soon.css"]': preload })[sel] || null,
+    querySelectorAll: sel => sel === 'link[rel="stylesheet"][href*="home/global/coming-soon.css"]' ? [failed, loaded] : [],
+    createElement: () => ({ setAttribute() {}, style: { setProperty() {} }, getBoundingClientRect: () => ({ top: 600, height: 144 }) }),
+    addEventListener: (type, fn) => on(domListeners, type, fn)
+  };
+  const window = { addEventListener: (type, fn) => on(listeners, type, fn) };
+  vm.runInNewContext(quickbarSource, { document, window, location: { hostname: 'test.webflow.io', pathname: '/' },
+    setTimeout: fn => timers.push(fn), requestAnimationFrame() {} });
+  assert.equal(bars, 0, 'wait for document nodes');
+  document.readyState = 'interactive';
+  for (const fn of domListeners.DOMContentLoaded) fn();
+  assert(elements.has('hx-hero-milestones'), 'milestones must exist before hero measurement');
+  if (pending) {
+    assert.equal(bars, 0, 'do not mount unstyled quickbar');
+    loaded.sheet = {};
+    for (const fn of sheetListeners.load) fn();
+  }
+  assert.equal(bars, 1, 'preload and failed original must not hide the styled quickbar');
+  assert.equal(classes.size, 0, 'mounting alone must not open first-paint cover');
+  for (const fn of listeners['helix-s1-ready']) fn();
+  assert(classes.has('hx-home-ready'), 'open immediately after font/layout readiness');
+  for (const fn of listeners['helix-s1-done']) fn();
+  for (const fn of timers) fn();
+  assert.equal(bars, 1, 'readiness, completion and fallback must never duplicate quickbar');
+}
+console.log('✓ quickbar: preload exclusion, failed CSS retry, CSS wait, early layout, readiness cover and duplicate guards');

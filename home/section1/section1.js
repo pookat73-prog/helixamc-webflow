@@ -300,6 +300,9 @@
     function fire() {
       if (fired) return;
       fired = true;
+      /* The cover may open now: font application and final layout have been
+         checked, and opacity is still controlled by the existing fades. */
+      try { window.dispatchEvent(new CustomEvent('helix-s1-ready')); } catch (e) {}
       startFades();
     }
 
