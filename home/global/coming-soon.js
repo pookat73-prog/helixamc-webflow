@@ -771,16 +771,19 @@
   }
 
   function revealHeroWhenReady() {
-    if (!document.getElementById('hx-hero-milestones') ||
+    if (!heroReady || !document.getElementById('hx-hero-milestones') ||
         !document.getElementById('hx-branch-quickbar')) return;
     document.documentElement.classList.add('hx-home-ready');
   }
 
   function mountQuickbar() {
-    if (!heroReady) return;
-    var stylesheet = document.querySelector('link[href*="home/global/coming-soon.css"]');
-    if (stylesheet && !stylesheet.sheet) {
-      stylesheet.addEventListener('load', mountQuickbar, { once: true });
+    /* A preload has no .sheet, even after its download completes. Also ignore
+       failed stylesheets when a retry has already supplied a parsed sheet. */
+    var stylesheets = document.querySelectorAll('link[rel="stylesheet"][href*="home/global/coming-soon.css"]');
+    if (!Array.prototype.some.call(stylesheets, function (link) { return !!link.sheet; })) {
+      Array.prototype.forEach.call(stylesheets, function (link) {
+        link.addEventListener('load', mountQuickbar, { once: true });
+      });
       return;
     }
     var hero = document.querySelector('.blackframe_image-hero');
@@ -829,14 +832,24 @@
     revealHeroWhenReady();
   }
 
-  /* Wait for the Hero's existing font measurement / detach sequence. Adding
-     headings while that sequence runs can change document.fonts.ready timing. */
-  function afterHero() {
-    heroReady = true;
+  /* Build the final layout before section1 measures or detaches its children.
+     Keep the first-paint cover until its font and layout checks have passed;
+     the existing fade should then be visible, rather than play behind a cover. */
+  function prepareHeroLayout() {
     mountHeroMilestones();
     mountQuickbar();
+  }
+  function afterHero() {
+    heroReady = true;
+    prepareHeroLayout();
     revealHeroWhenReady();
   }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', prepareHeroLayout, { once: true });
+  } else {
+    prepareHeroLayout();
+  }
+  window.addEventListener('helix-s1-ready', afterHero, { once: true });
   window.addEventListener('helix-s1-done', afterHero, { once: true });
   if (document.querySelector('.bt-box-1.is-looping') && !document.querySelector('[data-s1-ghost]')) {
     afterHero();
