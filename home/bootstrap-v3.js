@@ -55,10 +55,24 @@
 
   /* 조회 실패로 고른 복구 버전도 본체에 전달해 같은 조회를 반복하지 않는다. */
   function loadBody(ref) {
+    if (settled) return;
+    settled = true;
+    clearTimeout(resolveTimer);
     window.__helixHomeBootstrapRef = ref;
     if (/^[0-9a-f]{7,40}$/i.test(ref)) window.__helixCommitSha = ref;
+    /* 본체를 받는 동안에도 첫 화면 스타일 다운로드는 먼저 시작한다. */
+    ['global/global.css', 'home/global/coming-soon.css',
+      'home/section1/section1.css', 'home/global/buttons.css'].forEach(function (path) {
+      var hint = document.createElement('link');
+      hint.rel = 'preload'; hint.as = 'style';
+      hint.href = bodyUrl(ref).replace(/home\/bootstrap\.js/, path);
+      (document.head || document.documentElement).appendChild(hint);
+    });
     load(bodyUrl(ref));
   }
+
+  var settled = false;
+  var resolveTimer;
 
   console.log('[helix-bootstrap] v3 entry → resolving latest SHA of @' + BRANCH);
 
@@ -101,9 +115,22 @@
     return;
   }
 
+  function fallback() {
+    var usable = cached && cached.sha && (Date.now() - cached.t) < SHA_FALLBACK_MAX;
+    loadBody(usable ? cached.sha : PUBLISHED_REF);
+  }
+  /* 조회가 멈춰도 첫 화면이 무기한 대기하지 않도록 검증된 SHA로 한 번만 시작.
+     늦은 응답으로 실행 중인 CSS/JS 버전을 섞거나 다음 방문의 캐시를 바꾸지 않는다. */
+  var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  resolveTimer = setTimeout(function () {
+    fallback();
+    if (controller) controller.abort();
+  }, 2000);
+  var options = { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' };
+  if (controller) options.signal = controller.signal;
   fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH +
         '?t=' + Math.floor(Date.now() / 60000),
-        { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
+        options)
     .then(function (r) {
       if (r.ok) return r.json();
       if (r.status === 403 || r.status === 429) {
@@ -115,6 +142,7 @@
       return Promise.reject(r.status);
     })
     .then(function (d) {
+      if (settled) return;
       var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 40);
       if (!/^[0-9a-f]{40}$/i.test(sha)) throw new Error('invalid sha');
       try { localStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
@@ -123,11 +151,12 @@
       loadBody(sha);
     })
     .catch(function (err) {
+      if (settled) return;
       /* 최근 저장 SHA를 우선하고, 첫 방문·오래된 저장값은 게시된 고정 SHA로 복구.
          진입점이 옛 @branch 주소인 경우에만 기존 branch 복구 경로를 유지한다. */
       var usable = cached && cached.sha && (Date.now() - cached.t) < SHA_FALLBACK_MAX;
       console.warn('[helix-bootstrap] v3 SHA resolve failed → ' +
         (usable ? '마지막 SHA @' + cached.sha.substring(0, 10) : '게시된 버전 @' + PUBLISHED_REF.substring(0, 10)), err);
-      loadBody(usable ? cached.sha : PUBLISHED_REF);
+      fallback();
     });
 })();
