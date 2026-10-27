@@ -1317,11 +1317,11 @@
       var scroll = window.scrollY, height = window.innerHeight;
       var drawStart = top + scroll - height * .65;
       // Keep a real drawing interval even when a short viewport compresses the gap.
-      var drawEnd = Math.max(drawStart + height * .25, bottom + scroll - height * .6);
+      var drawEnd = Math.max(drawStart + height * .30, bottom + scroll - height * .6);
       var travel = drawEnd - drawStart;
-      // Hold a slightly longer stroke; the tail still catches it before the title (~97%).
-      var eraseStart = drawStart + travel * .48;
-      var eraseEnd = drawStart + travel * .985;
+      // Keep a longer stroke through more scroll travel; erase it before the title (~97%).
+      var eraseStart = drawStart + travel * .64;
+      var eraseEnd = drawStart + travel * .98;
       geometry = { length: path.getTotalLength(), drawStart: drawStart, drawEnd: drawEnd,
         eraseStart: eraseStart, eraseEnd: eraseEnd };
     }
@@ -1335,7 +1335,7 @@
       var target = window.scrollY;
       // Frame-rate-independent easing: follow scrolling gently, then stop requesting frames.
       var deltaTime = previousTime === null ? 1000 / 60 : Math.min(64, now - previousTime);
-      displayedScroll += (target - displayedScroll) * (1 - Math.exp(-deltaTime / 140));
+      displayedScroll += (target - displayedScroll) * (1 - Math.exp(-deltaTime / 260));
       if (Math.abs(target - displayedScroll) < .1 || document.hidden) displayedScroll = target;
       var g = geometry, scroll = displayedScroll;
       var head = clamp((scroll - g.drawStart) / (g.drawEnd - g.drawStart));
