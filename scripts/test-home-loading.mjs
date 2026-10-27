@@ -9,12 +9,14 @@ const hero = read('home/section1/section1.js');
 const sha = 'a'.repeat(40), published = 'b'.repeat(40), newest = 'c'.repeat(40);
 const flush = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); };
 
-function fixture({ cachedAge, fresh = false, blockedStorage = false, hostname = 'www.helix-amc.com' } = {}) {
+function fixture({ cachedAge, fresh = false, blockedStorage = false, hostname = 'www.helix-amc.com', entryRef = published, cachedEntryRef = entryRef } = {}) {
   const added = [], requests = [], events = {}, timers = new Map(), store = new Map();
   let now = 100000000, timerId = 0;
-  if (cachedAge !== undefined) store.set('helix.sha.main', JSON.stringify({ sha, t: now - cachedAge }));
+  const branch = /\.webflow\.io$/i.test(hostname) ? 'staging' : 'main';
+  const cacheKey = 'helix.home.sha.' + branch + '.' + cachedEntryRef;
+  if (cachedAge !== undefined) store.set(cacheKey, JSON.stringify({ sha, t: now - cachedAge }));
   const document = {
-    currentScript: { src: `https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${published}/home/bootstrap-v3.js` },
+    currentScript: { src: `https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${entryRef}/home/bootstrap-v3.js` },
     readyState: 'loading',
     head: { appendChild(el) { added.push(el); } },
     documentElement: {},
@@ -39,7 +41,7 @@ function fixture({ cachedAge, fresh = false, blockedStorage = false, hostname = 
   };
   context.window = context;
   return {
-    context, added, requests, store, events,
+    context, added, requests, store, events, cacheKey,
     run(source) { vm.runInNewContext(source, context); },
     async tick(ms) { now += ms; for (const [id, t] of [...timers]) if (t.at <= now) { timers.delete(id); t.fn(); } await flush(); }
   };
@@ -55,7 +57,7 @@ for (const opts of [{}, { cachedAge: 700000 }, { cachedAge: 43200001 }, { blocke
   const count = f.added.length;
   f.requests[0].resolve({ ok: true, json: async () => ({ object: { sha: newest } }) }); await flush();
   assert.equal(f.added.length, count, 'late lookup must not inject a second version');
-  assert(!f.store.get('helix.sha.main')?.includes(newest), 'late response must not poison next visit');
+  assert(!f.store.get(f.cacheKey)?.includes(newest), 'late response must not poison next visit');
   assert(f.added.filter(e => e.as === 'style').every(e => e.href.includes('@' + expected + '/')));
 }
 console.log('✓ stalled lookup: first visit, recent/expired cache, blocked storage, abort, one immutable version');
@@ -79,6 +81,27 @@ console.log('✓ stalled lookup: first visit, recent/expired cache, blocked stor
   assert.equal(f.context.__helixCommitSha, published);
 }
 console.log('✓ cached/fresh visits, duplicate entry, staging isolation and rate-limit recovery');
+
+for (const fresh of [false, true]) {
+  const f = fixture({ hostname: 'test.webflow.io', fresh });
+  f.store.set('helix.sha.staging', JSON.stringify({ sha, t: 100000000 }));
+  f.store.set('helix.sha.staging.retryAt', '103600000');
+  f.run(entry);
+  assert.equal(f.requests.length, 0, 'respect existing GitHub rate limit');
+  assert.equal(f.context.__helixCommitSha, published, 'new publication must win over the legacy broken cache, including fresh=1');
+}
+{
+  const f = fixture({ cachedAge: 1000, entryRef: newest, cachedEntryRef: published });
+  f.run(entry); await f.tick(2000);
+  assert.equal(f.context.__helixCommitSha, newest, 'a subsequent publication must also invalidate the previous home cache');
+}
+{
+  const f = fixture({ fresh: true });
+  f.store.set('helix.sha.main', JSON.stringify({ sha, t: 100000000 }));
+  f.run(entry); f.requests[0].reject(Error('offline')); await flush();
+  assert.equal(f.context.__helixCommitSha, published, 'API errors must not resurrect the legacy cache');
+}
+console.log('✓ publication cache isolation: legacy warm visits, fresh=1 under rate limit, later publication and offline recovery');
 
 {
   const f = fixture(); f.context.__helixHomeBootstrapRedirected = true;
