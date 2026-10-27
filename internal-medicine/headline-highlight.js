@@ -1298,6 +1298,7 @@
 
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     var frame = 0, needsMeasure = true, geometry = null;
+    var displayedScroll = null, previousTime = null;
     function clamp(value) { return Math.max(0, Math.min(1, value)); }
     function textBounds(element) {
       var range = document.createRange();
@@ -1320,17 +1321,25 @@
       // Keep a real drawing interval even when a short viewport compresses the gap.
       var drawEnd = Math.max(drawStart + height * .25, bottom + scroll - height * .6);
       var travel = drawEnd - drawStart;
-      // The faster tail catches the head at ~91% of the path, before the title.
-      var eraseStart = drawStart + travel * .42;
-      var eraseEnd = drawStart + travel * .96;
+      // Hold a slightly longer stroke; the tail still catches it before the title (~97%).
+      var eraseStart = drawStart + travel * .48;
+      var eraseEnd = drawStart + travel * .985;
       geometry = { length: path.getTotalLength(), drawStart: drawStart, drawEnd: drawEnd,
         eraseStart: eraseStart, eraseEnd: eraseEnd };
     }
-    function render() {
+    function render(now) {
       frame = 0;
-      if (needsMeasure) { needsMeasure = false; measure(); }
+      if (needsMeasure) {
+        needsMeasure = false; measure();
+        displayedScroll = window.scrollY; previousTime = null;
+      }
       if (!geometry || reduce.matches) { svg.style.visibility = 'hidden'; return; }
-      var g = geometry, scroll = window.scrollY;
+      var target = window.scrollY;
+      // Frame-rate-independent easing: follow scrolling gently, then stop requesting frames.
+      var deltaTime = previousTime === null ? 1000 / 60 : Math.min(64, now - previousTime);
+      displayedScroll += (target - displayedScroll) * (1 - Math.exp(-deltaTime / 140));
+      if (Math.abs(target - displayedScroll) < .1 || document.hidden) displayedScroll = target;
+      var g = geometry, scroll = displayedScroll;
       var head = clamp((scroll - g.drawStart) / (g.drawEnd - g.drawStart));
       var tail = Math.min(head, clamp((scroll - g.eraseStart) / (g.eraseEnd - g.eraseStart)));
       var visible = (head - tail) * g.length;
@@ -1338,6 +1347,8 @@
       path.setAttribute('stroke-dashoffset', String(-tail * g.length));
       svg.style.visibility = visible > .01 ? 'visible' : 'hidden';
       svg.dataset.phase = head === 0 ? 'before' : tail >= head ? 'complete' : tail > 0 ? 'erase' : 'draw';
+      if (displayedScroll !== target) { previousTime = now; schedule(); }
+      else previousTime = null;
     }
     function schedule() { if (!frame) frame = requestAnimationFrame(render); }
     function refresh() { needsMeasure = true; schedule(); }
