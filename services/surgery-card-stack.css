@@ -714,10 +714,9 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   }
 }
 
-/* 좁은 화면에서 필기체를 한 줄로 유지하고 과목명과의 겹침을 살린다. */
+/* 좁은 화면에서 필기체를 한 줄로 유지한다. 글자 크기는 Webflow 설정을 따른다. */
 @media (max-width: 519px) {
   body > .sj_intro_frame .sj_intro_eng-keyword {
-    font-size: min(50px, 9.4vw);
     white-space: nowrap;
   }
 }

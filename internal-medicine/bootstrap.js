@@ -77,7 +77,6 @@
         padding-left: 0;
       }
       html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .im_intro-image .sj_intro_eng-keyword {
-        font-size: 36px;
         right: 0;
       }
       html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process :is(.div-block-357, .div-block-358) {
