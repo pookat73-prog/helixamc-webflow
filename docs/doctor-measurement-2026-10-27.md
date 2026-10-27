@@ -42,4 +42,4 @@
 - `global/page-time.js`, `global/scroll-depth.js`, `global/ga4-base.js`
 - `scripts/test-doctor-measurement.mjs`: `PLAYWRIGHT_MODULE`과 필요 시 `CHROMIUM_PATH`로 기존 Playwright/Chromium을 선택해 실행
 - `scripts/test-doctor-pages.mjs`, `scripts/test-measurement-coverage.mjs`
-- 컨트롤 센터의 대응 PR은 `doctor-pages-v2` 분석 의미 버전과 구버전 인덱스 재처리를 포함한다.
+- 컨트롤 센터의 대응 PR은 `doctor-pages-v3` 분석 의미 버전과 구버전 인덱스 재처리를 포함한다.
