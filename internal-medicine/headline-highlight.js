@@ -383,7 +383,7 @@
       animation = heading.animate(path, { duration: 2400, easing: 'linear' });
       window.setTimeout(function () {
         window.dispatchEvent(new Event('hx-im-insight-ring-start'));
-      }, 1200);
+      }, 600);
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
     }
     var opacityObserver = new MutationObserver(function () {
