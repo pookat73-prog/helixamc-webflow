@@ -18,7 +18,8 @@
   'use strict';
 
   /* 중복 로드 가드 (한 페이지에 두 번 주입돼도 한 번만 동작) */
-  if (window.__helixScrollDepthInit) return;
+  var existing = !!window.__helixScrollDepthInit;
+  if (existing && (!/^\/doctors\//.test(location.pathname) || window.__helixDoctorPanelScrollInit || window.__helixDoctorPanelScrollPending)) return;
   window.__helixScrollDepthInit = true;
 
   /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징(*.webflow.io)에선
@@ -28,6 +29,8 @@
      (?helix-noga=1 로 켠 브라우저) */
   if (window.__helixNoMeasure) return;
 
+
+  if (/^\/doctors\//.test(location.pathname)) window.__helixDoctorPanelScrollPending = true;
 
   var DEBUG = /[?&]debug-ga=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[helix-ga]'].concat([].slice.call(arguments))); }
@@ -112,6 +115,8 @@
     var fired = {};
     var ticking = false;
     var panel = PAGE === 'doctor' && document.querySelector('[data-doctor-detail] .helix-doctor-modal_panel');
+    if (existing && !panel) return;
+    if (panel) window.__helixDoctorPanelScrollInit = true;
 
     function check() {
       ticking = false;
@@ -174,8 +179,9 @@
   }
 
   function init() {
+    window.__helixDoctorPanelScrollPending = false;
     log('page =', PAGE);
-    trackPageView();
+    if (!existing) trackPageView();
     initScrollDepth();
   }
 
