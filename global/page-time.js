@@ -82,6 +82,7 @@
   }
 
   var PAGE = pageKey();
+  var directProfile, directIdentity;
   function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   var MIN_MS  = 1000;    /* 1초 미만은 '스쳐 지나감' — 기록 안 함 */
@@ -164,6 +165,7 @@
       bounce_kind: v.bounce_kind,
       value:      Math.round(activeDelta / 1000)
     };
+    if (directIdentity) Object.assign(params, directIdentity);
     try {
       if (typeof window.gtag === 'function') {
         params.transport_type = 'beacon';
@@ -189,6 +191,16 @@
   }
 
   function init() {
+    directProfile = PAGE === 'doctor' && document.querySelector('[data-doctor-detail]');
+    directIdentity = directProfile ? {
+    slug: directProfile.getAttribute('data-doctor-slug'),
+    doctor: directProfile.getAttribute('data-doctor-name'),
+    group: directProfile.getAttribute('data-doctor-group'),
+    branch: directProfile.getAttribute('data-doctor-branch') || '서초',
+    view_type: 'page',
+    page_location: location.origin + location.pathname
+  } : null;
+
     var ticking = false;
     function onScroll() {
       lastActivity = Date.now();
@@ -199,6 +211,7 @@
     function bump() { lastActivity = Date.now(); }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    if (directProfile) directProfile.addEventListener('scroll', onScroll, { passive: true, capture: true });
     window.addEventListener('resize', onScroll, { passive: true });
     var acts = ['mousemove', 'keydown', 'touchstart', 'click', 'wheel'];
     for (var i = 0; i < acts.length; i++) {
