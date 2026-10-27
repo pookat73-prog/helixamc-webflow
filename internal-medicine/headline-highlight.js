@@ -358,9 +358,9 @@
     var ringStarted = false;
     function startRingWhenReady() {
       if (ringStarted || reduceMotion.matches || first.style.opacity === '' ||
-          Number(getComputedStyle(first).opacity) < 0.9) return;
+          Number(getComputedStyle(first).opacity) < 0.5) return;
       ringStarted = true;
-      // Overlap the first circle with the final beat of the paragraph reveal.
+      // Begin the first circle while the paragraph is still halfway visible.
       // Defer so the ring listener is ready even when this module loads late.
       window.setTimeout(function () {
         if (!reduceMotion.matches) window.dispatchEvent(new Event('hx-im-insight-ring-start'));
