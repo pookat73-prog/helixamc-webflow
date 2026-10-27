@@ -84,8 +84,10 @@
      SHA 를 브라우저에 10분 보관해 재사용한다(아래 SHA_TTL). 방문자가 여러
      페이지를 둘러봐도 조회는 사실상 1회. 배포 직후 즉시 확인이 필요하면
      주소에 ?fresh=1 을 붙여 보관분을 건너뛴다. */
-  var SHA_KEY = 'helix.sha.' + BRANCH;
-  var RETRY_KEY = SHA_KEY + '.retryAt';
+  /* 새 진입점이 게시되면 이전 배포의 보관 SHA로 되돌아가지 않는다.
+     다른 페이지의 공유 캐시와도 분리하되, GitHub 재조회 제한은 함께 지킨다. */
+  var SHA_KEY = 'helix.home.sha.' + BRANCH + '.' + PUBLISHED_REF;
+  var RETRY_KEY = 'helix.sha.' + BRANCH + '.retryAt';
   var SHA_TTL = 600000;             /* 10분 — 보관분 재사용(조회 횟수를 크게 줄임) */
   var SHA_FALLBACK_MAX = 43200000;  /* 12시간 — 오래된 보관분 대신 게시된 진입점 버전으로 복구 */
   var FRESH = /[?&]fresh=1\b/.test(location.search);
