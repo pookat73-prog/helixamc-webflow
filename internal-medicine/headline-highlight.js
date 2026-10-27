@@ -1263,3 +1263,99 @@
   else init();
 })();
 
+
+/* 본문 → 심도 있는 통찰: 홈처럼 스크롤에 맞춰 그리고 꼬리부터 지우는 브랜드 선. */
+(function () {
+  'use strict';
+  if (document.documentElement.getAttribute('data-wf-page') !== '69d74a8ea2cac3ea9cfed34d') return;
+
+  function init() {
+    if (document.getElementById('hx-im-insight-connector')) return;
+    var intro = document.getElementById('hx-im-intro');
+    var body = intro && intro.querySelector('.div-block-351 .nomal-parag');
+    var next = intro && intro.nextElementSibling;
+    var heading = next && next.querySelector('.div-block-352 .about_mini_title.for-big-blue');
+    if (!body || !heading) return;
+
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.id = 'hx-im-insight-connector';
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    // A body-level overlay crosses the section boundary without changing either layout.
+    svg.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;overflow:visible;pointer-events:none;';
+    var navbar = document.querySelector('.navbar, .w-nav, header');
+    var navZ = navbar && parseInt(getComputedStyle(navbar).zIndex, 10);
+    svg.style.zIndex = navZ > 0 ? navZ - 1 : 10;
+    var path = document.createElementNS(ns, 'path');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', '#0075d6');
+    path.setAttribute('stroke-width', '1.3');
+    path.setAttribute('stroke-linecap', 'butt');
+    path.setAttribute('stroke-dasharray', '0 999999');
+    svg.appendChild(path);
+    document.body.appendChild(svg);
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var frame = 0, needsMeasure = true, geometry = null;
+    function clamp(value) { return Math.max(0, Math.min(1, value)); }
+    function textBounds(element) {
+      var range = document.createRange();
+      range.selectNodeContents(element);
+      var box = range.getBoundingClientRect();
+      return box.width && box.height ? box : element.getBoundingClientRect();
+    }
+    function measure() {
+      var start = textBounds(body), end = textBounds(heading);
+      var origin = svg.getBoundingClientRect();
+      var gap = window.innerWidth <= 767 ? 20 : 28;
+      var top = start.bottom + gap, bottom = end.top - gap;
+      if (!start.width || !end.width || bottom <= top) { geometry = null; return; }
+      var x1 = start.left + start.width / 2 - origin.left;
+      var x2 = end.left + end.width / 2 - origin.left;
+      var y1 = top - origin.top, y2 = bottom - origin.top, middle = (y1 + y2) / 2;
+      path.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' C ' + x1 + ' ' + middle + ' ' + x2 + ' ' + middle + ' ' + x2 + ' ' + y2);
+      var scroll = window.scrollY, height = window.innerHeight;
+      var drawStart = top + scroll - height * .65;
+      // Keep a real drawing interval even when a short viewport compresses the gap.
+      var drawEnd = Math.max(drawStart + height * .25, bottom + scroll - height * .6);
+      var travel = drawEnd - drawStart;
+      // The faster tail catches the head at ~91% of the path, before the title.
+      var eraseStart = drawStart + travel * .42;
+      var eraseEnd = drawStart + travel * .96;
+      geometry = { length: path.getTotalLength(), drawStart: drawStart, drawEnd: drawEnd,
+        eraseStart: eraseStart, eraseEnd: eraseEnd };
+    }
+    function render() {
+      frame = 0;
+      if (needsMeasure) { needsMeasure = false; measure(); }
+      if (!geometry || reduce.matches) { svg.style.visibility = 'hidden'; return; }
+      var g = geometry, scroll = window.scrollY;
+      var head = clamp((scroll - g.drawStart) / (g.drawEnd - g.drawStart));
+      var tail = Math.min(head, clamp((scroll - g.eraseStart) / (g.eraseEnd - g.eraseStart)));
+      var visible = (head - tail) * g.length;
+      path.setAttribute('stroke-dasharray', visible + ' ' + (g.length + 1));
+      path.setAttribute('stroke-dashoffset', String(-tail * g.length));
+      svg.style.visibility = visible > .01 ? 'visible' : 'hidden';
+      svg.dataset.phase = head === 0 ? 'before' : tail >= head ? 'complete' : tail > 0 ? 'erase' : 'draw';
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(render); }
+    function refresh() { needsMeasure = true; schedule(); }
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', refresh, { passive: true });
+    window.addEventListener('load', refresh, { once: true });
+    window.addEventListener('pageshow', refresh);
+    reduce.addEventListener('change', refresh);
+    if ('ResizeObserver' in window) {
+      var observer = new ResizeObserver(refresh);
+      [intro, next, document.body].forEach(function (element) { observer.observe(element); });
+    }
+    if (document.fonts) {
+      document.fonts.ready.then(refresh);
+      document.fonts.addEventListener('loadingdone', refresh);
+    }
+    refresh();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+})();
