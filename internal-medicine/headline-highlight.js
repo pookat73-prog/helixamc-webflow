@@ -755,9 +755,9 @@
       // Keep a real drawing interval even when a short viewport compresses the gap.
       var drawEnd = Math.max(drawStart + height * .30, bottom + scroll - height * .6);
       var travel = drawEnd - drawStart;
-      // Keep a longer stroke through more scroll travel; erase it before the title (~97%).
-      var eraseStart = drawStart + travel * .64;
-      var eraseEnd = drawStart + travel * .98;
+      // Stop short of the heading; let the tail start later and erase over a longer interval.
+      var eraseStart = drawStart + travel * .80;
+      var eraseEnd = drawStart + travel * 1.50;
       geometry = { length: path.getTotalLength(), drawStart: drawStart, drawEnd: drawEnd,
         eraseStart: eraseStart, eraseEnd: eraseEnd };
     }
@@ -774,7 +774,7 @@
       displayedScroll += (target - displayedScroll) * (1 - Math.exp(-deltaTime / 260));
       if (Math.abs(target - displayedScroll) < .1 || document.hidden) displayedScroll = target;
       var g = geometry, scroll = displayedScroll;
-      var head = clamp((scroll - g.drawStart) / (g.drawEnd - g.drawStart));
+      var head = Math.min(.94, clamp((scroll - g.drawStart) / (g.drawEnd - g.drawStart)));
       var tail = Math.min(head, clamp((scroll - g.eraseStart) / (g.eraseEnd - g.eraseStart)));
       var visible = (head - tail) * g.length;
       path.setAttribute('stroke-dasharray', visible + ' ' + (g.length + 1));
