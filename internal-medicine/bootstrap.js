@@ -11,6 +11,16 @@
   if (window.__hxImBootstrapInit) return;
   window.__hxImBootstrapInit = true;
 
+  // The published shared footer still marks standalone pages as mobile-only.
+  // Correct only this page after that footer runs, without a full-site publish.
+  if (/^\/internal-medicine\/?$/.test(location.pathname)) {
+    var showDesktopCta = function () {
+      document.documentElement.classList.remove('hx-fcta-mobile-only');
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showDesktopCta, { once: true });
+    else showDesktopCta();
+  }
+
   // Keep the 1440px composition through laptop/tablet widths. Phone sections
   // need their own vertical design and deliberately retain Webflow's layout.
   // Inline in the existing loader: no new CDN file or FILES registration.
