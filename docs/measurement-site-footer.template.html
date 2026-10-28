@@ -11,7 +11,7 @@
   var staging = /\.webflow\.io$/i.test(location.hostname);
   var standalone = ['/internal-medicine','/aaha-cert','/emergency-cert','/cat-cert','/ad-landing-test'].indexOf(path) !== -1;
   document.documentElement.classList.add('hx-fcta-mobile-bar');
-  if (standalone) document.documentElement.classList.add('hx-fcta-mobile-only');
+  if (standalone && path !== '/internal-medicine') document.documentElement.classList.add('hx-fcta-mobile-only');
   /* Regular pages load this stylesheet through their own page bootstrap. */
   if (!standalone) return;
   var branch = staging ? 'staging' : 'main';
