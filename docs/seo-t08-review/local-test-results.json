@@ -1,0 +1,82 @@
+[
+  {
+    "case": "home-success",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "home-network-error",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "home-http-error",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "home-empty",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "home-malformed",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 1,
+    "pass": true
+  },
+  {
+    "case": "seocho-success",
+    "branch_definitions": 1,
+    "doctor_nodes": 26,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "seocho-network-error",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "seocho-http-error",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "seocho-empty",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  },
+  {
+    "case": "seocho-malformed",
+    "branch_definitions": 1,
+    "doctor_nodes": 0,
+    "static_facts_preserved": true,
+    "invalid_jsonld_blocks": 0,
+    "pass": true
+  }
+]
