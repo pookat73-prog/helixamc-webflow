@@ -1,0 +1,31 @@
+<!-- Home page SEO loader. Replace only the existing SEO loader block. -->
+<script>
+(function(){
+  var b=/webflow[.]io$/i.test(location.hostname)?"staging":"main";
+  fetch("https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@"+b+"/seo-snippets/home.html")
+    .then(function(r){return r.ok?r.text():"";})
+    .then(function(h){
+      if(!h)return;
+      var d=document.createElement("div");d.innerHTML=h;
+      var n=d.querySelectorAll('script[type="application/ld+json"]');
+      var parsed=[];
+      for(var i=0;i<n.length;i++){
+        var data=JSON.parse(n[i].textContent);
+        if(!data || typeof data!=="object" || Array.isArray(data))return;
+        if(data["@graph"]!==undefined && (!Array.isArray(data["@graph"]) ||
+          data["@graph"].some(function(node){
+            return !node || typeof node!=="object" || Array.isArray(node);
+          })))return;
+        if(data["@graph"]===undefined && !data["@type"])return;
+        parsed.push(data);
+      }
+      // Parse every block before adding any, so a bad response adds nothing.
+      var fragment=document.createDocumentFragment();
+      for(var j=0;j<parsed.length;j++){
+        var s=document.createElement("script");s.type="application/ld+json";
+        s.textContent=JSON.stringify(parsed[j]);fragment.appendChild(s);
+      }
+      document.head.appendChild(fragment);
+    }).catch(function(){});
+})();
+</script>

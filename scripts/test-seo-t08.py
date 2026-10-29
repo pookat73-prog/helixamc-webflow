@@ -1,4 +1,4 @@
-"""Offline Chromium integration checks for the provisional T08 review candidates.
+"""Offline Chromium integration checks for the T08 branch preservation with the current SEO representation.
 
 No live site, Webflow, CDN, or validator calls. Requires Chromium and Playwright.
 Evidence is written outside the repository to the directory passed as argv[1].
@@ -44,7 +44,9 @@ browser = runtime.chromium.launch(executable_path='/usr/bin/chromium', headless=
                                  args=['--no-sandbox', '--disable-dev-shm-usage'])
 
 for page in ('home', 'seocho'):
-    candidate = json.loads(read(CANDIDATES / (page + '-schema.candidate.json')))
+    candidate_path = (ROOT / 'docs/seo-followup/seocho-schema.json' if page == 'seocho'
+                      else CANDIDATES / 'home-schema.candidate.json')
+    candidate = json.loads(read(candidate_path))
     original = json.loads(read(CANDIDATES / (page + '-schema.live-before.json')))[0]
     assert candidate['@type'] == ['VeterinaryCare', 'LocalBusiness']
     for key, value in original.items():
@@ -60,7 +62,7 @@ for page in ('home', 'seocho'):
         before['@type'] = candidate['@type']
         assert candidate == before
         # The home loader has no branch node; use its current public inline code.
-        loader = read(CANDIDATES / 'home-loader.live-before.html')
+        loader = read(ROOT / 'home/seo-loader.html')
         snippet = read(ROOT / 'seo-snippets/home.html')
         expected_other = graph(snippet)
     else:
@@ -69,7 +71,7 @@ for page in ('home', 'seocho'):
         expected_other = [n for n in generated if n.get('@id') != BRANCH]
         assert candidate['employee'] == generated_branch['employee']
         for key in ('email', 'logo', 'image', 'sameAs', 'department',
-                    'medicalSpecialty', 'availableService'):
+                    'knowsAbout', 'hasOfferCatalog'):
             assert candidate[key] == generated_branch[key], key
         assert candidate['address']['postalCode'] == generated_branch['address']['postalCode']
 
@@ -101,7 +103,7 @@ document.getElementById('result').textContent=JSON.stringify({blocks:blocks,inva
         (OUT / (name + '-rendered.html')).write_text(tab.content())
         result = json.loads(tab.locator('#result').inner_text())
         blocks = result['blocks']
-        assert result['invalid'] == (1 if page == 'home' and mode == 'malformed' else 0)
+        assert result['invalid'] == 0
         tab.close()
         (OUT / (name + '-rendered-jsonld.json')).write_text(
             json.dumps(blocks, ensure_ascii=False, indent=2) + '\n')

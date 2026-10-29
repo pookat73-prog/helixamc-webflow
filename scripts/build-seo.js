@@ -187,7 +187,8 @@ function physicianNode(doc) {
     affiliation: { '@id': `${SEOCHO_BRANCH.url}#branch` },
   };
   if (doc.photo) node.image = doc.photo;
-  if (dept) node.medicalSpecialty = dept.nameEn;
+  // Keep the published department label without inventing a MedicalSpecialty enum.
+  if (dept) node.knowsAbout = dept.nameEn;
   if (Array.isArray(doc.education) && doc.education.length) {
     node.alumniOf = doc.education.map(e => ({ '@type': 'EducationalOrganization', name: e }));
   }
@@ -244,9 +245,9 @@ function buildHome() {
       email: HOSPITAL.email,
       address: postalAddress(SEOCHO_BRANCH.address),
       sameAs: HOSPITAL.sameAs,
-      medicalSpecialty: SEOCHO_BRANCH.departments.map(d => d.nameEn),
+      knowsAbout: SEOCHO_BRANCH.departments.map(d => d.nameEn),
       department: SEOCHO_BRANCH.departments.map(d => ({
-        '@type': 'MedicalSpecialty',
+        '@type': 'MedicalOrganization',
         name: d.nameKo,
         alternateName: d.nameEn,
       })),
@@ -350,16 +351,25 @@ function buildSeocho(doctors) {
     openingHoursSpecification: openingHoursSpec(SEOCHO_BRANCH.openingHours),
     parentOrganization: { '@id': `${HOSPITAL.origin}/#org` },
     sameAs: HOSPITAL.sameAs,
-    medicalSpecialty: SEOCHO_BRANCH.departments.map(d => d.nameEn),
+    knowsAbout: SEOCHO_BRANCH.departments.map(d => d.nameEn),
     department: SEOCHO_BRANCH.departments.map(d => ({
-      '@type': 'MedicalSpecialty',
+      '@type': 'MedicalOrganization',
       '@id': url + `#dept-${d.id}`,
       name: d.nameKo,
       alternateName: d.nameEn,
     })),
-    availableService: SEOCHO_BRANCH.departments.map(d => ({
-      '@type': 'MedicalProcedure', name: d.nameKo, procedureType: d.nameEn,
-    })),
+    // Departments describe services, not individual medical procedures.
+    // VeterinaryCare supports Organization.hasOfferCatalog (not availableService).
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: '진료과목',
+      itemListElement: SEOCHO_BRANCH.departments.map(d => ({
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service', name: d.nameKo, serviceType: d.nameEn,
+        },
+      })),
+    },
     hasCredential: HOSPITAL.certifications.map(c => ({
       '@type': 'EducationalOccupationalCredential',
       credentialCategory: 'certification',
@@ -569,7 +579,7 @@ function buildServices() {
         '@type': 'ListItem',
         position: i + 1,
         item: {
-          '@type': 'MedicalProcedure',
+          '@type': 'Service',
           name: d.nameKo,
           alternateName: d.nameEn,
           description: d.desc,
@@ -587,7 +597,7 @@ function buildServices() {
       name: HOSPITAL.nameKo,
       url: HOSPITAL.origin,
       logo: HOSPITAL.logo,
-      medicalSpecialty: SERVICES_DEPTS.map(d => d.nameEn),
+      knowsAbout: SERVICES_DEPTS.map(d => d.nameEn),
     },
   ];
   const jsonld = { '@context': 'https://schema.org', '@graph': graph };
