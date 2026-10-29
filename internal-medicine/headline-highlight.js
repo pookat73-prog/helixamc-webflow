@@ -316,6 +316,59 @@
     init();
   }
 })();
+/* 흩어진 데이터 문장이 제자리에서 수면 가까이 떠오르듯 선명해진다. */
+(function () {
+  'use strict';
+  function initDepthReveal() {
+    if (document.documentElement.getAttribute('data-wf-page') !== '69d74a8ea2cac3ea9cfed34d') return;
+    var heading = document.querySelector('.whiteframe_open .div-block-353 .hx-im-inner > h2:first-child');
+    if (!heading || heading.classList.contains('hx-im-depth-reveal')) return;
+    var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (motion.matches || !('IntersectionObserver' in window)) return;
+    var style = document.createElement('style');
+    style.textContent = '.hx-im-depth-reveal { opacity: var(--hx-im-depth-opacity, .025) !important; filter: blur(var(--hx-im-depth-blur, 4px)); }';
+    document.head.appendChild(style);
+    heading.style.setProperty('--hx-im-depth-opacity', '.025');
+    heading.style.setProperty('--hx-im-depth-blur', '4px');
+    heading.classList.add('hx-im-depth-reveal');
+    var frame = 0;
+    var started = false;
+    function finish() {
+      cancelAnimationFrame(frame);
+      heading.style.setProperty('--hx-im-depth-opacity', '1');
+      heading.style.setProperty('--hx-im-depth-blur', '0px');
+    }
+    function play() {
+      if (started) return;
+      started = true;
+      observer.disconnect();
+      var start;
+      function tick(now) {
+        if (start === undefined) start = now;
+        var t = Math.min(1, (now - start) / 1500);
+        var eased = 1 - Math.pow(1 - t, 3);
+        heading.style.setProperty('--hx-im-depth-opacity', String(.025 + .975 * eased));
+        heading.style.setProperty('--hx-im-depth-blur', (4 * (1 - eased)) + 'px');
+        if (t < 1) frame = requestAnimationFrame(tick);
+        else finish();
+      }
+      frame = requestAnimationFrame(tick);
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      if (entries.some(function (entry) { return entry.isIntersecting; })) play();
+    }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+    observer.observe(heading);
+    motion.addEventListener('change', function (event) {
+      if (!event.matches) return;
+      observer.disconnect();
+      started = true;
+      finish();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initDepthReveal, { once: true });
+  else initDepthReveal();
+})();
+
 /* 내과 통찰: 첫 문단 완성 후 결론 문장에 무광 표면 빛반사 한 번 */
 (function () {
   'use strict';
@@ -357,7 +410,8 @@
     var animation = null;
     var ringStarted = false;
     function startRingWhenReady() {
-      if (ringStarted || reduceMotion.matches || first.style.opacity === '' ||
+      if (ringStarted || reduceMotion.matches ||
+          (first.style.opacity === '' && !first.classList.contains('hx-im-depth-reveal')) ||
           Number(getComputedStyle(first).opacity) < 0.5) return;
       ringStarted = true;
       // Begin the first circle while the paragraph is still halfway visible.
