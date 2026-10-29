@@ -9,7 +9,7 @@
   if (window.__hxImHeadlineHighlightInit) return;
   window.__hxImHeadlineHighlightInit = true;
 
-  var EXPECTED = '정밀한 진단과 숙련된 의료진의 통찰, 그리고 보호자님과의 긴밀한 소통';
+  var EXPECTED = '정밀한 진단과 의료진의 통찰, 그리고 보호자님과의 긴밀한 소통.';
   var WORD_PATTERN = /진단|통찰|소통/g;
   var STYLE_ID = 'hx-im-headline-highlight-style';
   var RING_STYLE_ID = 'hx-im-insight-ring-style';
