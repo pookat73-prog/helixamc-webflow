@@ -1,0 +1,82 @@
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "VeterinaryCare",
+    "@id": "https://helix-amc.com/seocho#branch",
+    "name": "헬릭스동물메디컬센터 서초 본원",
+    "alternateName": "Helix Animal Medical Center",
+    "url": "https://helix-amc.com/seocho",
+    "telephone": "+82-2-2135-9119",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "신반포로 162 르본시티 2층",
+      "addressLocality": "서초구",
+      "addressRegion": "서울특별시",
+      "addressCountry": "KR"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "00:00",
+        "closes": "23:59"
+      }
+    ],
+    "hasCredential": [
+      {
+        "@type": "EducationalOccupationalCredential",
+        "@id": "https://helix-amc.com/aaha-cert#credential",
+        "name": "AAHA-KVMA 동물병원 공동 인증",
+        "credentialCategory": "Accreditation",
+        "url": "https://helix-amc.com/aaha-cert",
+        "recognizedBy": [
+          {
+            "@type": "Organization",
+            "name": "American Animal Hospital Association",
+            "alternateName": "AAHA"
+          },
+          {
+            "@type": "Organization",
+            "name": "대한수의사회",
+            "alternateName": "KVMA"
+          }
+        ]
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "@id": "https://helix-amc.com/emergency-cert#credential",
+        "name": "VECCS 응급·중환자 의료 시설 인증 레벨 2",
+        "credentialCategory": "Accreditation",
+        "url": "https://helix-amc.com/emergency-cert",
+        "recognizedBy": {
+          "@type": "Organization",
+          "name": "Veterinary Emergency and Critical Care Society",
+          "alternateName": "VECCS"
+        }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "@id": "https://helix-amc.com/cat-cert#credential",
+        "name": "고양이 친화 진료소 인증(Cat Friendly Clinic) GOLD",
+        "credentialCategory": "Accreditation",
+        "url": "https://helix-amc.com/cat-cert",
+        "recognizedBy": {
+          "@type": "Organization",
+          "name": "International Society of Feline Medicine",
+          "alternateName": "ISFM"
+        }
+      }
+    ],
+    "parentOrganization": {
+      "@id": "https://helix-amc.com/#org"
+    }
+  }
+]

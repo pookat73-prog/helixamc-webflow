@@ -1,0 +1,266 @@
+{
+  "@type": [
+    "VeterinaryCare",
+    "LocalBusiness"
+  ],
+  "@id": "https://helix-amc.com/seocho#branch",
+  "name": "헬릭스동물메디컬센터 서초 본원",
+  "alternateName": [
+    "Helix Animal Medical Center",
+    "Helix Animal Medical Center Seocho Branch"
+  ],
+  "url": "https://helix-amc.com/seocho",
+  "logo": "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d0b230b02c89db7a384990_%EC%9E%90%EC%82%B0%2025DVql.png",
+  "image": "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d0b230b02c89db7a384990_%EC%9E%90%EC%82%B0%2025DVql.png",
+  "telephone": "+82-2-2135-9119",
+  "email": "schelix@naver.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "신반포로 162 르본시티 2층",
+    "addressLocality": "서초구",
+    "addressRegion": "서울특별시",
+    "postalCode": "06546",
+    "addressCountry": "KR"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "00:00",
+      "closes": "23:59",
+      "name": "연중무휴 24시간 (외래 09:00~21:00 / 야간응급 21:00~09:00)"
+    }
+  ],
+  "parentOrganization": {
+    "@id": "https://helix-amc.com/#org"
+  },
+  "sameAs": [
+    "https://www.instagram.com/helix_amc/",
+    "https://blog.naver.com/helix_amc",
+    "https://map.naver.com/p/entry/place/36786130"
+  ],
+  "medicalSpecialty": [
+    "Internal Medicine",
+    "Surgery",
+    "Diagnostic Imaging",
+    "Interventional Radiology",
+    "Ophthalmology & Dentistry",
+    "Emergency Medicine",
+    "General Practice"
+  ],
+  "department": [
+    {
+      "@type": "MedicalSpecialty",
+      "@id": "https://helix-amc.com/seocho#dept-im",
+      "name": "내과",
+      "alternateName": "Internal Medicine"
+    },
+    {
+      "@type": "MedicalSpecialty",
+      "@id": "https://helix-amc.com/seocho#dept-sr",
+      "name": "외과",
+      "alternateName": "Surgery"
+    },
+    {
+      "@type": "MedicalSpecialty",
+      "@id": "https://helix-amc.com/seocho#dept-di",
+      "name": "영상의학과",
+      "alternateName": "Diagnostic Imaging"
+    },
+    {
+      "@type": "MedicalSpecialty",
+      "@id": "https://helix-amc.com/seocho#dept-is",
+      "name": "인터벤션 센터",
+      "alternateName": "Interventional Radiology"
+    },
+    {
+      "@type": "MedicalSpecialty",
+      "@id": "https://helix-amc.com/seocho#dept-op",
+      "name": "안과·치과",
+      "alternateName": "Ophthalmology & Dentistry"
+    },
+    {
+      "@type": "MedicalSpecialty",
+      "@id": "https://helix-amc.com/seocho#dept-em",
+      "name": "응급의학과",
+      "alternateName": "Emergency Medicine"
+    },
+    {
+      "@type": "MedicalSpecialty",
+      "@id": "https://helix-amc.com/seocho#dept-gp",
+      "name": "일반진료",
+      "alternateName": "General Practice"
+    }
+  ],
+  "availableService": [
+    {
+      "@type": "MedicalProcedure",
+      "name": "내과",
+      "procedureType": "Internal Medicine"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "외과",
+      "procedureType": "Surgery"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "영상의학과",
+      "procedureType": "Diagnostic Imaging"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "인터벤션 센터",
+      "procedureType": "Interventional Radiology"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "안과·치과",
+      "procedureType": "Ophthalmology & Dentistry"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "응급의학과",
+      "procedureType": "Emergency Medicine"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "일반진료",
+      "procedureType": "General Practice"
+    }
+  ],
+  "hasCredential": [
+    {
+      "@type": "EducationalOccupationalCredential",
+      "@id": "https://helix-amc.com/aaha-cert#credential",
+      "name": "AAHA-KVMA 동물병원 공동 인증",
+      "credentialCategory": "Accreditation",
+      "url": "https://helix-amc.com/aaha-cert",
+      "recognizedBy": [
+        {
+          "@type": "Organization",
+          "name": "American Animal Hospital Association",
+          "alternateName": "AAHA"
+        },
+        {
+          "@type": "Organization",
+          "name": "대한수의사회",
+          "alternateName": "KVMA"
+        }
+      ]
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      "@id": "https://helix-amc.com/emergency-cert#credential",
+      "name": "VECCS 응급·중환자 의료 시설 인증 레벨 2",
+      "credentialCategory": "Accreditation",
+      "url": "https://helix-amc.com/emergency-cert",
+      "recognizedBy": {
+        "@type": "Organization",
+        "name": "Veterinary Emergency and Critical Care Society",
+        "alternateName": "VECCS"
+      }
+    },
+    {
+      "@type": "EducationalOccupationalCredential",
+      "@id": "https://helix-amc.com/cat-cert#credential",
+      "name": "고양이 친화 진료소 인증(Cat Friendly Clinic) GOLD",
+      "credentialCategory": "Accreditation",
+      "url": "https://helix-amc.com/cat-cert",
+      "recognizedBy": {
+        "@type": "Organization",
+        "name": "International Society of Feline Medicine",
+        "alternateName": "ISFM"
+      }
+    }
+  ],
+  "employee": [
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-isoyun"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-jojuhyi"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gangyurim"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-iyeongeun"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimyunji"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimhyejin"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-hansangjin"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimjonggyeong"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimyumin"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-baggimseohyeon"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-igyeongsu"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimjaehyeon"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimtaeseong"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-jeonjonghyi"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-seongcanju"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-joseongu"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-sonyeongmin"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-hongyiju"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-jangmunseog"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-imjihyeon"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-jeongjeongyun"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimyujin"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-gimhyoju"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-jeongdahong"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-coejimin"
+    },
+    {
+      "@id": "https://helix-amc.com/seocho#doctor-hanjuyeol"
+    }
+  ],
+  "@context": "https://schema.org"
+}
