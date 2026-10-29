@@ -355,6 +355,17 @@
     var ready = first.style.opacity !== '' && Number(first.style.opacity) >= 0.999;
     var played = false;
     var animation = null;
+    var ringStarted = false;
+    function startRingWhenReady() {
+      if (ringStarted || reduceMotion.matches || first.style.opacity === '' ||
+          Number(getComputedStyle(first).opacity) < 0.5) return;
+      ringStarted = true;
+      // Begin the first circle while the paragraph is still halfway visible.
+      // Defer so the ring listener is ready even when this module loads late.
+      window.setTimeout(function () {
+        if (!reduceMotion.matches) window.dispatchEvent(new Event('hx-im-insight-ring-start'));
+      }, 0);
+    }
     function play() {
       if (played || !ready || !visible || reduceMotion.matches) return;
       played = true;
@@ -381,16 +392,15 @@
           (x - paintWidth / 2) + 'px ' + (y - paintHeight / 2) + 'px' });
       }
       animation = heading.animate(path, { duration: 2400, easing: 'linear' });
-      window.setTimeout(function () {
-        window.dispatchEvent(new Event('hx-im-insight-ring-start'));
-      }, 1200);
       animation.onfinish = function () { heading.style.backgroundImage = solid; };
     }
     var opacityObserver = new MutationObserver(function () {
       ready = Number(getComputedStyle(first).opacity) >= 0.999;
+      startRingWhenReady();
       play();
     });
     opacityObserver.observe(first, { attributes: true, attributeFilter: ['style'] });
+    startRingWhenReady();
     var visibilityObserver = new IntersectionObserver(function (entries) {
       visible = entries[0].isIntersecting;
       play();
@@ -698,6 +708,7 @@
   else init();
 })();
 
+
 /* 본문 → 심도 있는 통찰: 홈처럼 스크롤에 맞춰 그리고 꼬리부터 지우는 브랜드 선. */
 (function () {
   'use strict';
@@ -803,4 +814,23 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
+})();
+
+/* 통찰 첫 문단은 화면에 들어온 직후 시작하고 기존 재생 속도를 유지한다. */
+(function () {
+  'use strict';
+  if (document.documentElement.getAttribute('data-wf-page') !== '69d74a8ea2cac3ea9cfed34d') return;
+  function advanceReveal() {
+    if (!window.ScrollTrigger) return;
+    var heading = document.querySelector('.whiteframe_open .div-block-353 .hx-im-inner > h2:first-child');
+    if (!heading) return;
+    window.ScrollTrigger.getAll().forEach(function (trigger) {
+      if (trigger.trigger !== heading || trigger.vars.start !== 'top 70%') return;
+      trigger.vars.start = 'top 85%';
+      trigger.refresh();
+    });
+  }
+  // IX3 registers after its runtime is ready; the module can load on either side.
+  window.addEventListener('__wf_ix3_ready', advanceReveal);
+  advanceReveal();
 })();
