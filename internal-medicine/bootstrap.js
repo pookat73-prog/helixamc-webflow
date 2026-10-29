@@ -27,6 +27,17 @@
   var responsiveStyle = document.createElement('style');
   responsiveStyle.id = 'hx-im-responsive-style';
   responsiveStyle.textContent = `
+    /* Keep the process cards at a readable size on wide desktop screens.
+       The narrower gap places step 5 on the return arc, whose height is set
+       by the four stacked cards rather than by the viewport width. */
+    @media (min-width: 1440px) {
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-process-flow {
+        width: 100%;
+        max-width: 841px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 53px;
+      }
+    }
     @media (min-width: 768px) and (max-width: 1439px) {
       html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] {
         --hx-im-gutter: clamp(24px, calc(50vw - 458px), 18.2vw);
@@ -71,6 +82,11 @@
       html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-intro .about_mini_title {
         font-size: clamp(24px, 1.9vw, 27.36px);
         line-height: 1.4;
+      }
+    }
+    @media (min-width: 1040px) and (max-width: 1439px) {
+      html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-process-flow {
+        gap: clamp(53px, calc(215px - 11.25vw), 98px);
       }
     }
     @media (min-width: 768px) and (max-width: 1039px) {
