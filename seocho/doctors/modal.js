@@ -259,7 +259,11 @@
     if (doctorReader) doctorReader.stop();
     doctorContext = { item_type: 'doctor_detail', branch: '서초', group: group,
       slug: data.slug, doctor: data.name || data.slug, view_type: 'modal', page: 'seocho',
-      page_location: baseContext ? location.origin + baseContext.url : location.href };
+      page_location: location.origin + (baseContext ? baseContext.url.split(/[?#]/)[0] : location.pathname),
+      source_page: baseContext ? baseContext.url.split(/[?#]/)[0] : location.pathname,
+      section_key: 'doctor-modal', target_type: 'doctor', target_key: data.slug,
+      content_view_id: 'doctor-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10) };
+    window.__helixDoctorContext = doctorContext;
     if (window.HelixMeasure) doctorReader = window.HelixMeasure.reader('doctor_detail_read', doctorContext);
     var m = ensureModal();
     render(data, group);
@@ -291,6 +295,7 @@
     if (!modalEl || !modalEl.classList.contains('is-open')) return;
     if (doctorReader) { doctorReader.stop(); doctorReader = null; }
     if (window.HelixMeasure) window.HelixMeasure.emit('doctor_detail_close', doctorContext);
+    window.__helixDoctorContext = null;
     modalEl.classList.remove('is-open');
     document.documentElement.classList.remove('helix-doctor-modal-open');
     document.body.classList.remove('helix-doctor-modal-open');
@@ -412,7 +417,8 @@
         slug: slug,
         view_type: 'modal',
         page: 'seocho',
-        page_location: location.href,
+        page_location: location.origin + location.pathname,
+        source_page: location.pathname, section_key: 'medical-team', target_type: 'doctor', target_key: slug,
         /* 한글 이름도 같이 — slug 만 보내면 시트에서 'gimtaeseong' 처럼 찍혀
            누구인지 바로 안 보인다. 상세 데이터(fetchDoctor)는 이 시점엔 아직
            안 왔으므로, 이미 화면에 그려져 있는 카드의 이름 텍스트를 읽는다. */
