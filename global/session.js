@@ -234,6 +234,8 @@
     if (!params.event_id) params.event_id = newId();
     if (!params.event_ts) params.event_ts = Date.now();
     params.measurement_version = '2026-10-21';
+    params.context_version = '2026-10-30';
+    if (!params.source_page) params.source_page = location.pathname;
     /* Standard content dimensions remain queryable while custom dimension
        registration is pending in GA Admin. The complete original fields stay
        in the raw log too. These describe public UI/content, never form values. */
@@ -321,10 +323,22 @@
     var raw = target.getAttribute('href') || '';
     var url = '';
     try { var parsed = new URL(raw, location.href); url = parsed.protocol === 'tel:' ? 'tel:' : parsed.origin + parsed.pathname; } catch (e) {}
-    var label = target.getAttribute('aria-label') || target.getAttribute('name') || target.id || '';
+    var label = target.getAttribute('data-measure-label') || target.getAttribute('aria-label') || target.getAttribute('name') || '';
     if (!label && !target.matches('input,select,textarea') && !target.closest('form')) {
       label = (target.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100);
     }
+    /* Public UI only: never read form values or URL query strings. Explicit
+       labels/sections are optional overrides for genuinely ambiguous controls. */
+    var sectionNode = target.closest('[data-measure-section]');
+    var section = sectionNode ? sectionNode.getAttribute('data-measure-section') : '';
+    var modal = target.closest('.helix-doctor-modal');
+    var context = modal && window.__helixDoctorContext;
+    if (!section && modal) section = 'doctor-modal';
+    if (!section && target.closest('#medical-team,[data-doctor-open],[data-doctor-group]')) section = 'medical-team';
+    if (!section && target.closest('footer,.footer,.footer-sns-icon')) section = 'footer';
+    if (!section && target.closest('header,.hx-menu,.hx-menu-close,.menu-bar_mobile,.subheader_click-area')) section = 'menu';
+    var doctorSlug = '';
+    try { var destination = new URL(raw, location.href); if (raw && destination.origin === location.origin) doctorSlug = (destination.pathname.match(/^\/doctors\/([a-z0-9-]+)\/?$/) || [])[1] || ''; } catch (_) {}
     var controlKey = target.id ? '#' + target.id : target.tagName.toLowerCase();
     if (!target.id) {
       var classes = (target.getAttribute('class') || '').trim().split(/\s+/).filter(Boolean).slice(0, 3);
@@ -333,6 +347,10 @@
     }
     if (window.HelixMeasure) window.HelixMeasure.emit('ui_click', {
       item_type: 'ui_click', control_id: target.id || '', control_tag: target.tagName.toLowerCase(),
+      source_page: context ? context.source_page : location.pathname,
+      section_key: section || '', control_label: label.slice(0, 100),
+      target_type: context || doctorSlug ? 'doctor' : '', target_key: context ? context.slug : doctorSlug,
+      content_view_id: context ? context.content_view_id : '',
       control_key: controlKey.slice(0, 160), link_text: label.slice(0, 100), link_url: raw ? url : '', interaction_id: interaction, conv: 0
     });
     setTimeout(function () { if (window.__helixInteractionId === interaction) window.__helixInteractionId = ''; }, 500);

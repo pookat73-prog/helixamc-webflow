@@ -179,6 +179,7 @@
               window.gtag('event', eventName, {
                 item_type: 'footer_email',
                 page: FOOTER_PAGE,
+              source_page: location.pathname, section_key: 'footer', target_type: 'sns', target_key: 'official-' + entry.key,
                 device: device,
                 value: email
               });
@@ -187,6 +188,7 @@
                 event: eventName,
                 item_type: 'footer_email',
                 page: FOOTER_PAGE,
+              source_page: location.pathname, section_key: 'footer', target_type: 'sns', target_key: 'official-' + entry.key,
                 device: device,
                 value: email
               });
@@ -293,6 +295,8 @@
       img.setAttribute('role', 'link');
       img.setAttribute('tabindex', '0');
       img.setAttribute('aria-label', entry.label);
+      img.setAttribute('data-measure-section', 'footer');
+      img.setAttribute('data-measure-label', entry.label);
 
       function go(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
@@ -303,6 +307,7 @@
             window.gtag('event', eventName, {
               item_type: 'sns_click',
               page: FOOTER_PAGE,
+              source_page: location.pathname, section_key: 'footer', target_type: 'sns', target_key: 'official-' + entry.key,
               sns: entry.key,
               device: device,
               value: entry.url
@@ -312,6 +317,7 @@
               event: eventName,
               item_type: 'sns_click',
               page: FOOTER_PAGE,
+              source_page: location.pathname, section_key: 'footer', target_type: 'sns', target_key: 'official-' + entry.key,
               sns: entry.key,
               device: device,
               value: entry.url
