@@ -1,3 +1,5 @@
+import { createRequire } from 'node:module';
+const {photoSources} = createRequire(import.meta.url)('./doctor-photo-sources.cjs');
 import { readFileSync, readdirSync, mkdirSync, writeFileSync, existsSync, rmSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,7 +58,9 @@ export function directory(doctors) {
   return `<nav id="medical-team" class="helix-doctor-directory" aria-label="의료진 안내" data-doctor-directory>\n<h2>의료진 안내</h2>\n<ul>\n${doctors.map(({doctor:d, path, group}) => `<li><a href="${path}" data-doctor-open="${d.slug}" data-doctor-group="${group}" data-doctor-name="${escape(d.name)}">${escape(d.name)}${d.title ? ' ' + escape(d.title) : ''}</a></li>`).join('\n')}\n</ul>\n</nav>`;
 }
 export function profileBody({doctor:d, group, department}, sourceHash) {
-  const photo = d.photo ? `<div class="helix-doctor-modal_photo-wrap"><img class="helix-doctor-modal_photo" src="${escape(d.photo)}" alt="${escape([d.name,d.title].filter(Boolean).join(' '))}" width="120" height="120" decoding="async"></div>` : '';
+  const source = photoSources(d.photo);
+  const responsive = source.srcset ? ` srcset="${escape(source.srcset)}" sizes="(max-width: 767px) 108px, 135px"` : '';
+  const photo = d.photo ? `<div class="helix-doctor-modal_photo-wrap"><img class="helix-doctor-modal_photo" src="${escape(source.src)}"${responsive} alt="${escape([d.name,d.title].filter(Boolean).join(' '))}" width="120" height="120" decoding="async"></div>` : '';
   const sections = SECTIONS.filter(([key]) => d[key]?.length).map(([key,label]) => `<section class="helix-doctor-modal_section"><h2>${label}</h2><ul>${d[key].map(v => `<li>${escape(v)}</li>`).join('')}</ul></section>`).join('\n');
   return `<main class="helix-doctor-route" data-doctor-detail data-doctor-slug="${escape(d.slug)}" data-doctor-name="${escape(d.name)}" data-doctor-group="${group}" data-doctor-source="${sourceHash}">
 <div class="helix-doctor-modal helix-doctor-modal-direct is-open" role="dialog" aria-modal="true" aria-labelledby="helix-doctor-route-name">
