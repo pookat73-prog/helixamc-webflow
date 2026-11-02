@@ -323,7 +323,7 @@
           var link = item.matches('a') ? item : item.parentElement.querySelector('a[href]');
           return { text: textOf(item), href: link && link.getAttribute('href') };
         }) : [],
-        center: center ? { text: textOf(center), href: center.getAttribute('href'), target: center.getAttribute('target') } : null
+        center: center ? { element: center, home: null } : null
       };
     });
     if (data.length !== 6 || data.some(function (item, index) {
@@ -355,7 +355,7 @@
         font-size:.9375rem; line-height:1.75; overflow-wrap:anywhere; word-break:keep-all;
       }
       .hx-im-care-section :is(.hx-im-care-top, .hx-im-care-short-top) { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
-      .hx-im-care-section .hx-im-care-number { flex:none; color:#8195a8; font:400 1.8125rem/1 Georgia,serif; letter-spacing:-.03em; }
+      .hx-im-care-section .hx-im-care-number { flex:none; color:#0075d6; font:400 1.8125rem/1 Georgia,serif; letter-spacing:-.03em; }
       .hx-im-care-section .hx-im-care-english { margin:0; text-align:right; color:#5a6b7d; font:italic .8125rem/1.5 Georgia,serif; }
       .hx-im-care-section .hx-im-care-heading { min-height:var(--hx-im-care-heading-height,0px); }
       .hx-im-care-section .hx-im-care-heading-inner { display:flow-root; }
@@ -371,7 +371,7 @@
       .hx-im-care-section .hx-im-care-footer-inner:not(:empty) { border-top:1px solid #e2e8ee; padding-top:12px; }
       .hx-im-care-section .hx-im-care-procedure { display:block; margin:6px 0 0; color:#11202c; text-decoration:none; font-weight:500; }
       .hx-im-care-section .hx-im-care-procedure[aria-disabled="true"] { cursor:default; }
-      .hx-im-care-section .hx-im-care-center { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:16px; padding:12px 14px; background:#edf2f7; border-radius:6px; color:#3d4f6b; text-decoration:none; font-size:.8125rem; line-height:1.6; }
+      .hx-im-care-section .hx-im-care-center { display:flex; justify-content:flex-start; align-items:center; max-width:100%; margin-top:16px; }
       .hx-im-care-section .hx-im-care-short { display:none; }
       .hx-im-care-section :is(button,a):focus-visible { outline:3px solid #0075d6; outline-offset:4px; }
       .hx-im-care-section .hx-im-care-dialog {
@@ -482,14 +482,12 @@
         });
       }
       if (item.center) {
-        var link = node('a', 'hx-im-care-center', item.center.text);
-        link.setAttribute('href', item.center.href);
-        if (item.center.target) link.setAttribute('target', item.center.target);
-        link.rel = 'noopener';
-        var arrow = node('span', '', '↗');
-        arrow.setAttribute('aria-hidden', 'true');
-        link.appendChild(arrow);
-        inner.appendChild(link);
+        // Move the existing published "스빅 버튼" instance without rebuilding it.
+        // Its shared styles, arrow slot, link and event listeners stay intact.
+        var centerWrap = node('div', 'hx-im-care-center');
+        if (!item.center.home) item.center.home = centerWrap;
+        centerWrap.appendChild(item.center.element);
+        inner.appendChild(centerWrap);
       }
       return inner;
     }
@@ -573,6 +571,14 @@
     var active = null;
     var locked = null;
 
+    function restoreCenterButtons() {
+      data.forEach(function (item) {
+        if (item.center && item.center.element.parentElement !== item.center.home) {
+          item.center.home.appendChild(item.center.element);
+        }
+      });
+    }
+
     function openDetails(item, button) {
       if (!matchMedia('(max-width:767px)').matches || dialog.open) return;
       active = button;
@@ -595,6 +601,7 @@
       closeButton.focus({preventScroll:true});
     }
     dialog.addEventListener('close', function () {
+      restoreCenterButtons();
       if (!locked) return;
       var previous = locked;
       locked = null;
@@ -636,7 +643,10 @@
       if (width < (mobile ? 14 : 40) * rem) columns = 1;
       grid.style.gridTemplateColumns = 'repeat(' + columns + ',minmax(0,1fr))';
       if (!mobile) {
-        if (dialog.open) dialog.close();
+        if (dialog.open) {
+          restoreCenterButtons();
+          dialog.close();
+        }
         ['heading', 'footer'].forEach(function (part) {
           var max = Math.max.apply(null, Array.from(grid.querySelectorAll('.hx-im-care-' + part + '-inner')).map(function (element) { return element.getBoundingClientRect().height; }));
           grid.style.setProperty('--hx-im-care-' + part + '-height', Math.ceil(max) + 'px');
