@@ -971,9 +971,9 @@
   border-radius: 7px;
   background: transparent;
   box-shadow: none;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 10px;
-  text-align: left;
+  text-align: center;
 }
 .hx-fcta-shell .hx-fcta-form-btn::after {
   content: '↗' !important;
