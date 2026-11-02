@@ -25,7 +25,7 @@ function fixture({cached, fresh=false, initialized=true, entryMode=false, cached
   const scripts=f.added.filter(e=>e.tag==='script').map(e=>e.src);
   assert(scripts.some(s=>s.includes('@aaaaaaaaaa/about/about.js')));
   assert(!scripts.some(s=>/global\/(ga4-base|measure-gate|session|sheet-log)\.js/.test(s)));
-  assert(scripts.findIndex(s=>s.includes('about/about.js'))<scripts.findIndex(s=>s.includes('ga-inspector.js')));
+  assert(!scripts.some(s=>s.includes('ga-inspector.js')), 'Ordinary visitors do not request the debug-only file');
   assert.equal(f.added.find(e=>e.src?.includes('ScrollTrigger')).async,true);
   const before=f.added.length;f.requests[0].resolve({ok:true,json:async()=>({object:{sha:'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}})});await flush();
   assert.equal(f.added.length,before,'late API response must not load a second version');

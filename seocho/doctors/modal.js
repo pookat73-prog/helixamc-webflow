@@ -200,17 +200,21 @@
     return sec;
   }
 
-  /* Webflow CDN (cdn.prod.website-files.com 등) 은 ?w=N 리사이즈 지원.
-     원본이 수 MB 인 사진을 240px 슬롯에 그대로 받으면 모달 뜬 뒤 사진 자리가
-     한참 빈 채로 남는 문제 해결용. 다른 도메인은 그대로 통과. */
-  function sizedPhoto(url) {
-    if (!url || typeof url !== 'string') return url;
-    if (!/website-files\.com|webflow\.com/i.test(url)) return url;
-    if (/[?&]w=\d+/.test(url)) return url; /* 이미 사이즈 지정돼 있음 */
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = Math.round(240 * dpr); /* 슬롯 120px × 2 retina */
-    return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'w=' + w;
-  }
+  /* HELIX_PHOTO_SOURCES_START */
+  var photoSources = (function createPhotoSources(widths) {
+  return function photoSources(url) {
+    if (typeof url !== 'string') return {src: url || '', srcset: ''};
+    if (/-p-\d+\.(webp|jpe?g|png)$/i.test(url)) return {src: url, srcset: ''};
+    var match = url.match(/^https:\/\/(?:cdn\.prod\.website-files\.com|s3\.amazonaws\.com\/webflow-prod-assets)\/[a-f0-9]{24}\/([a-f0-9]{24})_[^?#]+\.(webp|jpe?g|png)$/i);
+    var sizes = match && widths[match[1]];
+    if (!sizes || !sizes.length) return {src: url, srcset: ''};
+    var sources = sizes.map(function (width) {
+      return {width: width, url: url.replace(/\.(webp|jpe?g|png)$/i, '-p-' + width + '.$1')};
+    });
+    return {src: sources[0].url, srcset: sources.map(function (s) { return s.url + ' ' + s.width + 'w'; }).join(', ')};
+  };
+})({"6a702e1de5f12c26d2a74665":[500,800],"6acc879accadfa2706f55cff":[500,800,1080],"6acc87997098a7afca4df0b8":[500,800,1080],"6acc8799e2de1966e9fce800":[500,800,1080],"6acc87991a0f9d9c6359c243":[500,800,1080],"6acc87981a0f9d9c6359c218":[500,800,1080],"6acc8799ff2549290e9152ed":[500,800,1080],"6acc87993715fdc430ce6c72":[500,800,1080],"6acc88134b19aa91751ccd7b":[500,800,1080],"6acc879a4f1bfe253be4969c":[500,800,1080],"6acc8798968645fd9f507b68":[500,800],"6acc8813f50d04eab30a8cae":[500,800,1080],"6acc879bc1eea5af072a3cd5":[500,800,1080],"6acc879933e846e23b8f66ee":[500,800,1080],"6acc8799fd7b7753f3aa8c57":[500,800,1080],"6acc8813f2094eb23a730902":[500,800,1080],"6acc8798ccadfa2706f55beb":[500,800,1080],"6acc8798ae8c81a490a193f6":[500,800,1080],"6acc8798cdd337debbd36a22":[500,800,1080],"6acc8799a19716f481d12e91":[500,800,1080],"6acc879854f9656736fc30f3":[500,800,1080],"6acc8812e9731573a67a546a":[500,800,1080],"6a18fcd13d9fd988458bc251":[500,800],"6a18fcd8b5e0a78506661dd2":[500,800],"6a13cfb19108cc68c1e5c9ca":[500,800],"6a13b9fa37421d3256cc39cc":[500,800]});
+  /* HELIX_PHOTO_SOURCES_END */
 
   function render(data, group) {
     var m = ensureModal();
@@ -219,10 +223,16 @@
     /* 사진은 선택. 빈 값이면 photo-wrap 통째로 숨겨 헤더가 텍스트만으로
        자연스럽게 정렬되게 함 (회색 빈 박스 보이는 사고 방지). */
     if (data.photo) {
-      img.src = sizedPhoto(data.photo);
+      var photo = photoSources(data.photo);
+      img.sizes = '(max-width: 767px) 108px, 135px';
+      if (photo.srcset) img.srcset = photo.srcset;
+      else img.removeAttribute('srcset');
+      img.src = photo.src;
       img.alt = data.name || '';
       panel.classList.remove('has-no-photo');
     } else {
+      img.removeAttribute('srcset');
+      img.removeAttribute('sizes');
       img.removeAttribute('src');
       img.alt = '';
       panel.classList.add('has-no-photo');

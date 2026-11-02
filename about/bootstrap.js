@@ -216,6 +216,11 @@
   }
 
   function loadFile(path, ref, ready) {
+    /* Ordinary visits never execute the inspector; avoid requesting it. */
+    if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
+      if (ready) ready();
+      return;
+    }
     /* HTML head의 선행 측정 모듈이 이미 초기화됐다면 같은 파일을
        다른 커밋 주소로 다시 받지 않는다. 실패한 선행 태그는 재시도한다. */
     var initialized = {

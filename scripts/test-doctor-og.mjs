@@ -26,6 +26,8 @@ try {
   mkdirSync(join(fixture, 'scripts'), {recursive: true});
   mkdirSync(join(fixture, 'seocho/doctors'), {recursive: true});
   cpSync(join(ROOT, 'scripts/build-doctor-pages.mjs'), join(fixture, 'scripts/build-doctor-pages.mjs'));
+  cpSync(join(ROOT, 'scripts/doctor-photo-sources.cjs'), join(fixture, 'scripts/doctor-photo-sources.cjs'));
+  cpSync(join(ROOT, 'seocho/doctors/photo-widths.json'), join(fixture, 'seocho/doctors/photo-widths.json'));
   cpSync(join(ROOT, 'seocho/doctors/data'), join(fixture, 'seocho/doctors/data'), {recursive: true});
   const first = doctors[0];
   const source = join(fixture, 'seocho/doctors/data', first.group, first.doctor.slug + '.json');
