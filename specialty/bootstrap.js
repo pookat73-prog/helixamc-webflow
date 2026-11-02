@@ -121,6 +121,18 @@
   }
 
   function loadFile(path, ref, isFallback) {
+    /* Ordinary visits never execute the inspector; avoid requesting it. */
+    if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
+      return;
+    }
+    /* Match the modules' own guards; retry if initial setup did not succeed. */
+    var initialized = {
+      'global/measure-gate.js': '__helixGateInit',
+      'global/ga4-base.js': '__helixGA4Init',
+      'global/session.js': '__helixSessionInit',
+      'global/sheet-log.js': '__helixSheetLogInit'
+    };
+    if (initialized[path] && window[initialized[path]]) return;
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
