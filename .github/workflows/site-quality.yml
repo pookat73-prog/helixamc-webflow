@@ -51,3 +51,4 @@ jobs:
           node scripts/test-quickbar-measurement.mjs
           node scripts/test-ilsan-schedule-measurement.mjs
           node scripts/test-home-faq-measurement.mjs
+          node scripts/test-footer-email-measurement.mjs

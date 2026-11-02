@@ -179,7 +179,7 @@
               window.gtag('event', eventName, {
                 item_type: 'footer_email',
                 page: FOOTER_PAGE,
-              source_page: location.pathname, section_key: 'footer', target_type: 'sns', target_key: 'official-' + entry.key,
+              source_page: location.pathname, section_key: 'footer', target_type: 'email', target_key: 'official-email',
                 device: device,
                 value: email
               });
@@ -188,7 +188,7 @@
                 event: eventName,
                 item_type: 'footer_email',
                 page: FOOTER_PAGE,
-              source_page: location.pathname, section_key: 'footer', target_type: 'sns', target_key: 'official-' + entry.key,
+              source_page: location.pathname, section_key: 'footer', target_type: 'email', target_key: 'official-email',
                 device: device,
                 value: email
               });
