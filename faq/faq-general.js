@@ -320,7 +320,12 @@
 
     // Webflow 탭/목록 지연 렌더 대비 감시 + 폴백 폴링
     try {
-      var mo = new MutationObserver(function () {
+      var mo = new MutationObserver(function (mutations) {
+        // Pager children are rebuilt by process() itself; do not observe our own render.
+        var externalChange = mutations.some(function (mutation) {
+          return !pagerEl || (mutation.target !== pagerEl && !pagerEl.contains(mutation.target));
+        });
+        if (!externalChange) return;
         if (mo.__t) return;
         mo.__t = setTimeout(function () { mo.__t = null; process(); }, 120);
       });
