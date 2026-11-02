@@ -42,6 +42,9 @@ const allowed = ['helixanimalmedicalcenter.webflow.io','www.helix-amc.com','heli
     },markup);
     const outsideSnapshot = () => page.evaluate(()=>[...document.body.children].filter(e=>!e.matches('[id="hx-im-areas"], [data-hx-im-care-source], script,style,link')).map(e=>({tag:e.tagName,class:e.className,width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height,font:getComputedStyle(e).fontFamily,color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor})));
     const before = await outsideSnapshot();
+    await page.evaluate(()=>{
+      window.__hxCareOriginalCenter = document.querySelector('#hx-c2-sample-oncology .hx-c2-center-button-wrap a') || document.querySelector('.hx-im-care-center > a.link-block');
+    });
     if (!live) await page.addScriptTag({content:addition});
     await page.waitForTimeout(150);
     const after = await outsideSnapshot();
@@ -52,7 +55,11 @@ const allowed = ['helixanimalmedicalcenter.webflow.io','www.helix-amc.com','heli
       for(const text of [original[i].title,...original[i].items,...original[i].procedures]) assert.ok(actual.includes(text),'Missing full card copy: '+text);
     }
     assert.equal(await page.locator('.hx-im-care-grid [data-hx-im-link-pending]').count(),5);
-    assert.equal(await page.locator('.hx-im-care-grid .hx-im-care-center').getAttribute('href'),original[5].links.find(href=>href.startsWith('https://')));
+    const centerSelector='.hx-im-care-center > a.link-block';
+    assert.equal(await page.locator('.hx-im-care-grid '+centerSelector).getAttribute('href'),original[5].links.find(href=>href.startsWith('https://')));
+    assert.equal(await page.locator('.hx-im-care-grid '+centerSelector).evaluate(e=>e===window.__hxCareOriginalCenter),true,'Reuse the published component node');
+    assert.equal(await page.locator('.hx-im-care-grid '+centerSelector+' [data-hx-slot="arrow"]').count(),1);
+    assert.equal(await page.locator('.hx-im-care-grid .hx-im-care-number').first().evaluate(e=>getComputedStyle(e).color),'rgb(0, 117, 214)');
     async function captureGrid(file) {
       const headers = page.locator('body > header,.hx-fcta-shell');
       const styles = await headers.evaluateAll(nodes=>nodes.map(node=>{const style=node.getAttribute('style');node.style.setProperty('display','none','important');return style}));
@@ -98,6 +105,11 @@ const allowed = ['helixanimalmedicalcenter.webflow.io','www.helix-amc.com','heli
       await page.waitForTimeout(50);
       assert.equal(await page.locator('#hx-im-care-dialog').evaluate(e=>e.open),true);
       const actual=await page.locator('.hx-im-care-dialog-body').innerText();
+      if(i===5){
+        assert.equal(await page.locator('#hx-im-care-dialog '+centerSelector).evaluate(e=>e===window.__hxCareOriginalCenter),true,'Modal uses the same component instance');
+        assert.equal(await page.locator('.hx-im-care-grid '+centerSelector).count(),0,'No duplicated component');
+        await page.screenshot({path:out+'/oncology-modal-390.png'});
+      }
       for(const text of original[i].items.concat(original[i].procedures).concat(original[i].lead?[original[i].lead]:[])) assert.ok(actual.includes(text),`Missing modal copy: ${text}`);
       assert.equal(await page.evaluate(()=>document.activeElement.className),'hx-im-care-close');
       assert.equal(await page.evaluate(()=>document.body.style.position),'fixed');
@@ -112,6 +124,7 @@ const allowed = ['helixanimalmedicalcenter.webflow.io','www.helix-amc.com','heli
       assert.equal(await page.locator('#hx-im-care-dialog').evaluate(e=>e.open),false);
       assert.equal(await buttons.nth(i).evaluate(e=>e===document.activeElement),true);
       assert.ok(Math.abs((await page.evaluate(()=>window.scrollY))+y)<2,'Scroll position restored');
+      assert.equal(await page.locator('.hx-im-care-grid '+centerSelector).evaluate(e=>e===window.__hxCareOriginalCenter),true,'Return component to its full card on close');
       modalResults.push({number:original[i].number,copy:true,focusReturn:true,scrollReturn:true,escape:true});
     }
     await buttons.nth(0).click();
