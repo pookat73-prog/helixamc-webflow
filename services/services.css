@@ -34,6 +34,14 @@ a.link-block-11,
   min-height: var(--screen-h, 100svh);
 }
 
+/* PC 사진 덱은 배경 이미지뿐이라 자체 콘텐츠 높이가 없다.
+   상위 섹션이 block 이어도 안과·치과 사진까지 펼쳐지도록 높이를 확보한다. */
+@media (min-width: 992px) {
+  .dept-container-dt {
+    min-height: 32vw;
+  }
+}
+
 /* 세로폰(≤767px) 영상의학과 사진 숨김 블록은 제거됨.
    사용자가 캔버스에 사진을 다시 넣었고 라이브에도 보이길 원함(위 헤더 참고).
    ⚠️ 여기에 .dept-card_di / .dept_image_di 세로폰 숨김 규칙을 다시 추가하지 말 것. */
