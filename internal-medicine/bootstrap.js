@@ -153,6 +153,10 @@
   ];
 
   function loadFile(path, ref) {
+    /* Ordinary visits never execute the inspector; avoid requesting it. */
+    if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
+      return;
+    }
     var url = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path;
     var cacheBust = /^[0-9a-f]{7,40}$/i.test(ref) ? '' : '?t=' + Math.floor(Date.now() / 60000);
     var element;

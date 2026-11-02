@@ -255,6 +255,14 @@
   }
 
   function loadFile(path, ref, done) {
+    /* Match the modules' own guards; retry if initial setup did not succeed. */
+    var initialized = {
+      'global/measure-gate.js': '__helixGateInit',
+      'global/ga4-base.js': '__helixGA4Init',
+      'global/session.js': '__helixSessionInit',
+      'global/sheet-log.js': '__helixSheetLogInit'
+    };
+    if (initialized[path] && window[initialized[path]]) return;
     /* 점검 화면은 ga-inspector.js와 같은 URL 조건에서만 내려받는다. */
     if (path === 'global/ga-inspector.js' &&
         !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
