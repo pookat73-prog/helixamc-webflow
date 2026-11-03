@@ -39,10 +39,50 @@
 
   var RECS = [];   // { item, box, qRow, answer, indicator }
 
-  var PAGE_SIZE = 10;        // 한 페이지에 보여줄 질문 수(총 37개 → 4페이지)
+  var PAGE_SIZE = 10;        // 한 페이지에 보여줄 질문 수
   var curPage = 1;
   var pagerEl = null;
   var generalListEl = null;
+  var activeCategory = '';
+  var categoryChips = [];
+
+  function categories(item) {
+    return (item.getAttribute('data-category') || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  }
+  function syncCategoryChips() {
+    categoryChips.forEach(function (entry) {
+      var count = RECS.filter(function (r) { return categories(r.item).indexOf(entry.value) >= 0; }).length;
+      var text = entry.value + ' ' + count;
+      if (entry.chip.textContent !== text) entry.chip.textContent = text;
+      entry.chip.classList.toggle('is-on', activeCategory === entry.value);
+      entry.chip.setAttribute('aria-pressed', activeCategory === entry.value ? 'true' : 'false');
+    });
+  }
+  function bindCategoryChips() {
+    var groups = document.querySelectorAll('.faq_common');
+    for (var i = 0; i < groups.length; i++) {
+      var chips = groups[i].querySelectorAll('.faq-chip, .faq-chip_reset');
+      for (var j = 0; j < chips.length; j++) {
+        (function (chip) {
+          if (chip.__helixGfaqFilter) return;
+          chip.__helixGfaqFilter = true;
+          var reset = chip.classList.contains('faq-chip_reset');
+          var value = (chip.textContent || '').replace(/\s+\d+\s*$/, '').trim();
+          if (!reset) categoryChips.push({ chip: chip, value: value });
+          function select(e) {
+            e.preventDefault();
+            activeCategory = reset || activeCategory === value ? '' : value;
+            curPage = 1;
+            syncCategoryChips();
+            applyPaging();
+          }
+          chip.addEventListener('click', select);
+          chip.addEventListener('keydown', function (e) { if (e.key === ' ') select(e); });
+        })(chips[j]);
+      }
+    }
+    syncCategoryChips();
+  }
 
   var BOX_SEL = '[class*="faq_box" i]';   // 질환용 카드 클래스(일반용엔 없음)
   var QA_SEL  = '[class*="faq_qa" i]';    // 질환용 질문블록 클래스
@@ -175,7 +215,7 @@
   }
 
   /* ── 페이징 (일반 목록 전용) ─────────────────────────────────────
-     일반 목록은 필터가 없어 전체를 PAGE_SIZE 씩 끊어 페이지로 보여줌.
+     선택된 분류를 통과한 항목을 PAGE_SIZE 씩 끊어 페이지로 보여줌.
      pager 는 질환용과 동일 스타일(faq.css .faq-pager/.faq-page-btn 등) 재사용,
      일반 섹션의 'Pages' 슬롯에 렌더(없으면 목록 뒤에 생성). */
   function pageWindow(cur, total) {
@@ -251,12 +291,14 @@
   }
   function applyPaging() {
     if (!generalListEl || !RECS.length) return;
-    var totalPages = Math.max(1, Math.ceil(RECS.length / PAGE_SIZE));
+    var matched = RECS.filter(function (r) { return !activeCategory || categories(r.item).indexOf(activeCategory) >= 0; });
+    var totalPages = Math.max(1, Math.ceil(matched.length / PAGE_SIZE));
     if (curPage > totalPages) curPage = totalPages;
     if (curPage < 1) curPage = 1;
     var start = (curPage - 1) * PAGE_SIZE, end = start + PAGE_SIZE;
     for (var i = 0; i < RECS.length; i++) {
-      var on = (i >= start && i < end);
+      var index = matched.indexOf(RECS[i]);
+      var on = (index >= start && index < end);
       RECS[i].item.style.display = on ? '' : 'none';
       if (!on) closeRec(RECS[i]);
     }
@@ -281,6 +323,7 @@
       }
     }
     if (fresh) log('일반용 카드', fresh, '개 처리 / 목록', lists.length, '개');
+    bindCategoryChips();
     applyPaging();   // 페이지 구간만 표시 + pager 렌더
     return lists.length;
   }
@@ -338,3 +381,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
 })();
+
