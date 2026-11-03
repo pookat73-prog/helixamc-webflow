@@ -29,7 +29,7 @@
      - 페이지 번호는 Webflow 에 마련된 슬롯(.pages, 목록 뒤 형제)에 렌더.
        슬롯이 없으면 목록 뒤에 직접 생성(폴백).
 
-   숫자(.faq-num)는 Webflow 정적 텍스트 그대로 둔다(재계산 안 함).
+   숫자(.faq-num)는 해당 목록의 전체 항목에서 계산한다(선택 조건과 무관한 총수).
 
    디버그: URL 에 ?debug-faq=1
    ================================================================ */
@@ -350,7 +350,10 @@
           chip.addEventListener('click', function (e) {
             e.preventDefault();
             group.active = {};
-            for (var j = 0; j < group.chips.length; j++) group.chips[j].classList.remove('is-on');
+            for (var j = 0; j < group.chips.length; j++) {
+              group.chips[j].classList.remove('is-on');
+              group.chips[j].setAttribute('aria-pressed', 'false');
+            }
             currentPage = 1;               // 필터 바뀌면 1페이지부터
             apply();
           });
@@ -358,6 +361,11 @@
         }
         var val = chipValue(chip);
         if (!val) return;
+        var num = chip.querySelector(NUM_SEL);
+        if (num) {
+          var count = items().filter(function (it) { return attrValues(it, attr).indexOf(val) >= 0; }).length;
+          if (num.textContent !== String(count)) num.textContent = String(count);
+        }
         group.chips.push(chip);
         chip.setAttribute('aria-pressed', 'false');
         chip.addEventListener('click', function (e) {
@@ -509,3 +517,4 @@
   var n = 0;
   var iv = setInterval(function () { sync(); if (++n >= 12) clearInterval(iv); }, 500);
 })();
+
