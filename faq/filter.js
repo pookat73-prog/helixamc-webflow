@@ -367,7 +367,11 @@
           if (num.textContent !== String(count)) num.textContent = String(count);
         }
         group.chips.push(chip);
+        chip.setAttribute('role', 'button');
         chip.setAttribute('aria-pressed', 'false');
+        chip.addEventListener('keydown', function (e) {
+          if (e.key === ' ') { e.preventDefault(); chip.click(); }
+        });
         chip.addEventListener('click', function (e) {
           e.preventDefault();
           var wasOn = !!group.active[val];
