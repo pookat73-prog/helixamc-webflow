@@ -127,12 +127,13 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path;
   }
 
-  function injectCss(url, onerr) {
-    var link = document.createElement('link');
+  function injectCss(url, onerr, existingLink) {
+    // Reuse the failed link so retries keep the original CSS cascade order.
+    var link = existingLink || document.createElement('link');
     link.rel  = 'stylesheet';
+    link.onerror = onerr || null;
     link.href = url;
-    if (onerr) link.onerror = onerr;
-    document.head.appendChild(link);
+    if (!existingLink) document.head.appendChild(link);
     return link;
   }
 
@@ -146,12 +147,12 @@
     return s;
   }
 
-  function loadFile(path, ref, isFallback) {
+  function loadFile(path, ref, isFallback, cssLink) {
     /* Ordinary visits never execute the inspector; avoid requesting it. */
     if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
       return;
     }
-    /* Retry if initial setup did not succeed. */
+    /* Match the modules' own guards; retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',
@@ -161,12 +162,13 @@
     if (initialized[path] && window[initialized[path]]) return;
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
+    var node;
     var fallback = function () {
       if (isFallback) { console.warn('[faq-bootstrap] load failed:', path); return; }
       console.warn('[faq-bootstrap] SHA load failed for ' + path + ', retry @' + BRANCH);
-      loadFile(path, BRANCH, true);
+      loadFile(path, BRANCH, true, ext === 'css' ? node : null);
     };
-    if (ext === 'css') injectCss(url, fallback);
+    if (ext === 'css') node = injectCss(url, fallback, cssLink);
     else if (ext === 'js') injectJs(url, null, fallback);
   }
 
