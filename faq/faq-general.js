@@ -66,6 +66,7 @@
         (function (chip) {
           if (chip.__helixGfaqFilter) return;
           chip.__helixGfaqFilter = true;
+          chip.setAttribute('role', 'button');
           var reset = chip.classList.contains('faq-chip_reset');
           var value = (chip.textContent || '').replace(/\s+\d+\s*$/, '').trim();
           if (!reset) categoryChips.push({ chip: chip, value: value });
@@ -106,7 +107,9 @@
   function setIndicator(rec, open) {
     if (rec.qRow) {
       rec.qRow.setAttribute('aria-expanded', open ? 'true' : 'false');
-      rec.qRow.setAttribute('aria-label', open ? '답변 접기' : '답변 펼치기');
+      // Keep the visible question in the accessible name for voice control.
+      var question = (rec.qRow.textContent || '').replace(/[+−]\\s*$/, '').trim();
+      rec.qRow.setAttribute('aria-label', question + (open ? ' · 답변 접기' : ' · 답변 펼치기'));
     }
   }
   function closeRec(r) {

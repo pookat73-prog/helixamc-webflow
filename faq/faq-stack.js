@@ -266,6 +266,20 @@
     return cards.length;
   }
 
+  // Ignore unrelated header/CTA animation mutations. Preserve changes inside the
+  // FAQ and ancestor/new-subtree changes so late Webflow cards are still processed.
+  function affectsFaq(mutation) {
+    var target = mutation.target;
+    if (target.nodeType !== 1) target = target.parentElement;
+    if (target && (target.matches(CARD_SEL) || target.closest('[class*="faq-list" i]') ||
+        target.querySelector(CARD_SEL))) return true;
+    for (var i = 0; i < mutation.addedNodes.length; i++) {
+      var node = mutation.addedNodes[i];
+      if (node.nodeType === 1 && (node.matches(CARD_SEL) || node.querySelector(CARD_SEL))) return true;
+    }
+    return false;
+  }
+
   function start() {
     process();
     relayout();
@@ -277,7 +291,8 @@
 
     // DOM 추가/필터 변경 감시 (layout 중엔 moStop 으로 잠시 끊어 루프 방지)
     try {
-      MO = new MutationObserver(function () {
+      MO = new MutationObserver(function (mutations) {
+        if (!mutations.some(affectsFaq)) return;
         if (MO.__t) return;
         MO.__t = setTimeout(function () { MO.__t = null; process(); relayout(); }, 90);
       });
