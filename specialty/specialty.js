@@ -503,7 +503,20 @@
      여백을 이 값으로 잡으면 흡수량(absorb)이 항상 grow 와 같아져 밀림이 0 이 된다.
      ⚠ 마우스가 올라가 있는 동안에는 건드리지 않는다. 그 항목은 여백을 이미
      인라인으로 줄여 쓰고 있어서, 여기서 바꾸면 서로 싸운다. */
+  function resetGridFloor() {
+    clearTimeout(floorTimer);
+    floorTimer = 0;
+    var grid = document.querySelector(GRID);
+    if (grid) {
+      grid.style.height = '';
+      grid.style.minHeight = '';
+      grid.__hxSpecFloorKey = '';
+    }
+  }
+
   function fitReserve() {
+    // Clear desktop-only geometry even while an item is busy or not measurable.
+    if (!isDesktop()) resetGridFloor();
     var maxGrow = 0, busy = false;
     items.forEach(function (it) {
       if (it.wrap.style.paddingBottom) busy = true;
@@ -590,6 +603,8 @@
        표 바닥을 공유한다. */
     clearTimeout(floorTimer);
     floorTimer = setTimeout(function () {
+      floorTimer = 0;
+      if (!isDesktop()) { resetGridFloor(); return; }
       if (items.some(function (it) { return !!it.wrap.style.paddingBottom; })) return;
       var liveGrid = document.querySelector(GRID);
       if (!liveGrid) return;
@@ -647,6 +662,7 @@
 
     var rt;
     window.addEventListener('resize', function () {
+      if (!isDesktop()) resetGridFloor();
       clearTimeout(rt);
       rt = setTimeout(measureAll, 150);
     });
