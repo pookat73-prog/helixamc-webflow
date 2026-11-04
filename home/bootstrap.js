@@ -52,7 +52,7 @@
       var rect;
       try { rect = img.getBoundingClientRect(); } catch (e) { return; }
       var vh = window.innerHeight || 800;
-      if (rect.width > 0 && rect.height > 0 && rect.top < vh * 1.5 && rect.bottom > -100) {
+      if (rect.top < vh * 1.5 && rect.bottom > -100) {
         img.loading = 'eager';
         img.setAttribute('fetchpriority', 'high');
         img.decoding = 'async';
