@@ -14,7 +14,14 @@ jobs:
       - name: Install image verification tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y libjpeg-turbo-progs python3-pil
+          sudo apt-get install -y libjpeg-turbo-progs python3-pil nasm cmake
+      - name: Build official pinned MozJPEG for lossless scan optimization
+        run: |
+          git init -q /tmp/moz-src
+          git -C /tmp/moz-src fetch -q --depth 1 https://github.com/mozilla/mozjpeg.git 6c9f0897afa1c2738d7222a0a9ab49e8b536a267
+          git -C /tmp/moz-src checkout -q --detach FETCH_HEAD
+          cmake -S /tmp/moz-src -B /tmp/moz-build -DCMAKE_BUILD_TYPE=Release -DENABLE_SHARED=OFF -DWITH_TURBOJPEG=OFF -DPNG_SUPPORTED=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          cmake --build /tmp/moz-build --target jpegtran-static -j2
       - name: Verify pixel-identical JPEG copies without changing live assets
         run: |
           python3 - <<'PY'
@@ -60,6 +67,30 @@ jobs:
            if equal and metadata and len(optimized)<len(data)*0.95:
             encoded=base64.b64encode(optimized).decode()
             for i in range(0,len(encoded),24000): print("HELIX_ASSET_CHUNK "+name+"-webp-lossless "+str(i//24000)+" "+encoded[i:i+24000],flush=True)
+          for name in images:
+           src=root/(name+"-original.jpg")
+           a=Image.open(src); a.load(); data=src.read_bytes()
+           for kind in ["mozjpeg-lossless","webp-q100"]:
+            dst=root/(name+"-"+kind+(".jpg" if kind.startswith("moz") else ".webp"))
+            if kind.startswith("moz"):
+             subprocess.run(["/tmp/moz-build/jpegtran-static","-copy","all","-optimize","-progressive","-outfile",str(dst),str(src)],check=True)
+            else:
+             a.save(dst,format="WEBP",lossless=False,quality=100,method=6,icc_profile=a.info.get("icc_profile",b""),exif=a.info.get("exif",b""))
+            b=Image.open(dst); b.load()
+            ar=a.convert("RGB"); br=b.convert("RGB")
+            equal=a.size==b.size and ar.tobytes()==br.tobytes()
+            metadata=(a.info.get("icc_profile") or b"")==(b.info.get("icc_profile") or b"") and dict(a.getexif())==dict(b.getexif())
+            hist=ImageChops.difference(ar,br).histogram(); n=a.width*a.height*3
+            mae=sum((i%256)*v for i,v in enumerate(hist))/n
+            mse=sum((i%256)**2*v for i,v in enumerate(hist))/n
+            import math
+            optimized=dst.read_bytes()
+            result={"name":name+"-"+kind,"originalBytes":len(data),"optimizedBytes":len(optimized),"dimensions":a.size,"pixelsEqual":equal,"colorAndOrientationMetadataEqual":metadata,"mae":mae,"psnr":None if mse==0 else 10*math.log10(255**2/mse),"optimizedSha256":hashlib.sha256(optimized).hexdigest(),"losslessRequired":kind.startswith("moz")}
+            results.append(result); print("HELIX_RESULT "+json.dumps(result),flush=True)
+            if kind.startswith("moz") and (not equal or not metadata): raise RuntimeError("MozJPEG equivalence failed: "+name)
+            if metadata and len(optimized)<len(data)*0.95 and (equal or kind=="webp-q100"):
+             encoded=base64.b64encode(optimized).decode()
+             for i in range(0,len(encoded),24000): print("HELIX_ASSET_CHUNK "+name+"-"+kind+" "+str(i//24000)+" "+encoded[i:i+24000],flush=True)
           (root/"results.json").write_text(json.dumps(results,indent=2))
           print("HELIX_AUDIT_COMPLETE "+str(len(results)),flush=True)
           if webp_failures: raise RuntimeError("WebP metadata/pixel equivalence failed: "+",".join(webp_failures))
