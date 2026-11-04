@@ -44,6 +44,21 @@ jobs:
            if len(optimized)<len(data)*0.95:
             encoded=base64.b64encode(optimized).decode()
             for i in range(0,len(encoded),24000): print("HELIX_ASSET_CHUNK "+name+" "+str(i//24000)+" "+encoded[i:i+24000],flush=True)
+          for name in images:
+           src=root/(name+"-original.jpg")
+           a=Image.open(src); a.load()
+           dst=root/(name+"-lossless.webp")
+           a.save(dst,format="WEBP",lossless=True,quality=100,method=6,icc_profile=a.info.get("icc_profile",b""),exif=a.info.get("exif",b""))
+           b=Image.open(dst); b.load()
+           equal=a.size==b.size and a.convert("RGB").tobytes()==b.convert("RGB").tobytes()
+           metadata=all(a.info.get(k,b"")==b.info.get(k,b"") for k in ["exif","icc_profile"])
+           optimized=dst.read_bytes(); data=src.read_bytes()
+           result={"name":name+"-webp-lossless","originalBytes":len(data),"optimizedBytes":len(optimized),"dimensions":a.size,"pixelsEqual":equal,"colorAndOrientationMetadataEqual":metadata,"originalSha256":hashlib.sha256(data).hexdigest(),"optimizedSha256":hashlib.sha256(optimized).hexdigest()}
+           results.append(result); print("HELIX_RESULT "+json.dumps(result),flush=True)
+           if not equal or not metadata: raise RuntimeError("Lossless WebP equivalence failed: "+name)
+           if len(optimized)<len(data)*0.95:
+            encoded=base64.b64encode(optimized).decode()
+            for i in range(0,len(encoded),24000): print("HELIX_ASSET_CHUNK "+name+"-webp-lossless "+str(i//24000)+" "+encoded[i:i+24000],flush=True)
           (root/"results.json").write_text(json.dumps(results,indent=2))
           print("HELIX_AUDIT_COMPLETE "+str(len(results)),flush=True)
           
