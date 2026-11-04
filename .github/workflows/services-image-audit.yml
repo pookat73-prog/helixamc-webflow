@@ -51,7 +51,7 @@ jobs:
            a.save(dst,format="WEBP",lossless=True,quality=100,method=6,icc_profile=a.info.get("icc_profile",b""),exif=a.info.get("exif",b""))
            b=Image.open(dst); b.load()
            equal=a.size==b.size and a.convert("RGB").tobytes()==b.convert("RGB").tobytes()
-           metadata=all(a.info.get(k,b"")==b.info.get(k,b"") for k in ["exif","icc_profile"])
+           metadata=all((a.info.get(k) or b"")==(b.info.get(k) or b"") for k in ["exif","icc_profile"])
            optimized=dst.read_bytes(); data=src.read_bytes()
            result={"name":name+"-webp-lossless","originalBytes":len(data),"optimizedBytes":len(optimized),"dimensions":a.size,"pixelsEqual":equal,"colorAndOrientationMetadataEqual":metadata,"originalSha256":hashlib.sha256(data).hexdigest(),"optimizedSha256":hashlib.sha256(optimized).hexdigest()}
            results.append(result); print("HELIX_RESULT "+json.dumps(result),flush=True)
