@@ -97,7 +97,7 @@
     document.head.appendChild(s);
   }
 
-  function loadFile(path, ref) {
+  function loadFile(path, ref, immutableRetry) {
     /* Retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
@@ -111,7 +111,17 @@
         !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
+    var geometryFailureHandled = false;
     var fallback = function () {
+      /* Native card geometry must never recover through an older branch file. */
+      if ((path === 'services/services.css' || path === 'services/dept-nav.js' ||
+           path === 'services/dept-border.js') && /^[0-9a-f]{7,40}$/i.test(ref)) {
+        if (geometryFailureHandled) return;
+        geometryFailureHandled = true;
+        if (!immutableRetry) loadFile(path, ref, true);
+        else console.warn('[services-bootstrap] immutable geometry retry failed:', path);
+        return;
+      }
       if (ref === BRANCH) {
         console.warn('[services-bootstrap] failed even from @' + BRANCH + ':', path);
         return;
