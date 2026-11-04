@@ -142,6 +142,12 @@
   }
 
   function resolveSha(done, fail) {
+    /* The page head already resolved immutable bootstrap URLs, including fresh=1
+       and last-known-SHA recovery. Reuse that exact revision without a second
+       API round trip. Branch URLs retain the existing cache/recovery path. */
+    var entry = document.currentScript && document.currentScript.src;
+    var pinned = entry && /^https:\/\/cdn\.jsdelivr\.net\/gh\/pookat73-prog\/helixamc-webflow@([0-9a-f]{10}|[0-9a-f]{40})\/services\/bootstrap\.js(?:[?#]|$)/i.exec(entry);
+    if (pinned) { done(pinned[1]); return; }
     if (!FRESH) {
       var cached = readSha(SHA_TTL);
       if (cached) { done(cached); return; }
