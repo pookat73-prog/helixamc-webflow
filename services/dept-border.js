@@ -64,4 +64,3 @@ function SEAM(){Array.prototype.forEach.call(document.querySelectorAll('[data-hx
 /* CSS 링크·폰트 로드 및 레이아웃 확정 이후(load) + 안전 지연 재드로우.
    R 은 기존 테두리를 지우고 현재 카드 크기로 다시 그려 멱등. */
 window.addEventListener('load',R);setTimeout(R,600)})();
-
