@@ -733,11 +733,6 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     corner-top-right-shape: superellipse(1.4);
   }
 
-  /* 모바일 첫 이미지는 이미 섹션 아래까지 이어지므로, 곡선 폭만큼 겹쳐 실제 이미지를 드러낸다. */
-  body > .sj_intro_frame {
-    overflow: visible;
-  }
-
   body > .hx-sg-responsive-frame2 {
     position: relative;
     z-index: 1;
@@ -818,17 +813,8 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   text-align: center;
 }
 
-/* 인트로 사진을 두 번째 섹션의 둥근 모서리 뒤까지 이어 보이게 한다. */
+/* 두 번째 섹션의 둥근 모서리. 인트로 사진과 페이드는 Webflow 설정을 따른다. */
 @media (min-width: 992px) {
-  body > .black-frame_mini.sj_intro_frame,
-  body > .sj_intro_frame .div-block-343 {
-    overflow: visible;
-  }
-
-  body > .sj_intro_frame .image-34 {
-    -webkit-box-reflect: below 0;
-  }
-
   body > .hx-sg-responsive-frame2 {
     position: relative;
     border-top-right-radius: 240px;
@@ -836,13 +822,6 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
     z-index: 1;
   }
 
-}
-
-/* 이 구간에서는 이미지 상자 아래의 빈 높이를 없애 반사가 사진 끝에서 시작되게 한다. */
-@media (min-width: 992px) and (max-width: 1439px) {
-  body > .sj_intro_frame .image-34 {
-    height: auto;
-  }
 }
 
 /* 좁은 화면에서 필기체를 한 줄로 유지한다. 글자 크기는 Webflow 설정을 따른다. */
@@ -861,14 +840,6 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 @media (min-width: 480px) and (max-width: 767px) {
   body > .sj_intro_frame .sj_intro_eng-keyword {
     margin: calc(10px - .3em) -.18em calc(48px - .3em) calc(14px - .18em);
-  }
-}
-
-/* 세로로 긴 이미지 상자에서도 인물을 원래 비율로 꽉 차게 보여준다. */
-@media (min-width: 480px) and (max-width: 991px) {
-  body > .sj_intro_frame .image-34 {
-    object-fit: cover;
-    object-position: 48% 0;
   }
 }
 
