@@ -123,6 +123,7 @@ jobs:
           REF="${{ steps.ref.outputs.branch }}"
           BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${REF}"
           FILES=(
+            "global/word-wrap.css"
             "home/bootstrap.js"
             "home/bootstrap-v2.js"
             "home/bootstrap-v3.js"
@@ -270,6 +271,7 @@ jobs:
             "global/ga-inspector.js"
             "global/sheet-log.js"
             "global/global.css"
+            "global/word-wrap.css"
             "global/ilsan-type.css"
             "global/floating-cta.css"
             "global/floating-cta.js"
