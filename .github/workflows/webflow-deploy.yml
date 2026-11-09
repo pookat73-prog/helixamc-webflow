@@ -124,6 +124,7 @@ jobs:
           BASE="https://purge.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@${REF}"
           FILES=(
             "global/word-wrap.css"
+            "services/imaging-card-shadows.js"
             "home/bootstrap.js"
             "home/bootstrap-v2.js"
             "home/bootstrap-v3.js"
@@ -272,6 +273,7 @@ jobs:
             "global/sheet-log.js"
             "global/global.css"
             "global/word-wrap.css"
+            "services/imaging-card-shadows.js"
             "global/ilsan-type.css"
             "global/floating-cta.css"
             "global/floating-cta.js"

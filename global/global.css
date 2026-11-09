@@ -717,3 +717,19 @@ html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-principles .div-322 > .div-
   mask-composite: intersect;
   pointer-events: none;
 }
+
+/* 영상의학과 섹션 2: 충분히 진입하면 위 카드부터 엇박으로 그림자를 켠다.
+   로더가 모션을 준비한 경우에만 숨긴다. 스크립트 실패 시 정적 그림자로 복구한다. */
+html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
+  opacity: 0;
+  transition: opacity 1100ms cubic-bezier(.76, 0, .24, 1);
+}
+html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-lit::before {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
+    opacity: 1;
+    transition: none;
+  }
+}
