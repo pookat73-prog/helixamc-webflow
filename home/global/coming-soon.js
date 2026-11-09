@@ -891,7 +891,11 @@
   function revealHeroWhenReady() {
     if (!document.getElementById('hx-hero-milestones') ||
         !document.getElementById('hx-branch-quickbar')) return;
-    document.documentElement.classList.add('hx-home-ready');
+    if (typeof window.__hxHomeFirstpaintReveal === 'function') {
+      window.__hxHomeFirstpaintReveal();
+    } else {
+      document.documentElement.classList.add('hx-home-ready');
+    }
   }
 
   function mountQuickbar() {
