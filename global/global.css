@@ -628,3 +628,60 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
     background-position: 50% 0;
   }
 }
+
+/* 영상의학과: 인트로=1, 2좌·3우·8좌·9우·10좌의 위 귀퉁이만.
+   10번의 데스크톱/모바일 대체 섹션에는 같은 방향을 적용한다.
+   배경 보조 면을 main 배경 위, 각 섹션 배경 아래에 두고 본문은 자르지 않는다. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page {
+  isolation: isolate;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-equipment, #hx-di-safety, #hx-di-workflow,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+) {
+  --hx-di-section-curve: 240px;
+  --hx-di-curve-backing: #0d1117;
+  position: relative;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(#hx-di-equipment, #hx-di-workflow) {
+  --hx-di-curve-backing: #f4f7fb;
+  border-top-right-radius: var(--hx-di-section-curve);
+  corner-top-right-shape: superellipse(1.4);
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-safety,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+) {
+  border-top-left-radius: var(--hx-di-section-curve);
+  corner-top-left-shape: superellipse(1.4);
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-equipment, #hx-di-safety, #hx-di-workflow,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: var(--hx-di-section-curve);
+  height: var(--hx-di-section-curve);
+  z-index: -1;
+  background: var(--hx-di-curve-backing);
+  pointer-events: none;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(#hx-di-equipment, #hx-di-workflow)::before {
+  right: 0;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-safety,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+)::before {
+  left: 0;
+}
+@media (max-width: 991px) {
+  html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+    #hx-di-principles, #hx-di-equipment, #hx-di-safety, #hx-di-workflow,
+    .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+  ) {
+    --hx-di-section-curve: clamp(56px, 12vw, 120px);
+  }
+}
