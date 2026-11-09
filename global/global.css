@@ -685,3 +685,32 @@ html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
     --hx-di-section-curve: clamp(56px, 12vw, 120px);
   }
 }
+
+/* 영상의학과 섹션 2: 내용 카드의 왼쪽 위에 위계 4색 ┌ 방향 그림자. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-principles .div-322 > .div-12 {
+  position: relative;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-principles .div-322 > .div-12::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: -8px -8px 20px -7px rgba(154, 170, 187, .62);
+  -webkit-mask-image:
+    linear-gradient(90deg, #000 0%, #000 18%, rgba(0, 0, 0, .65) 46%, transparent 78%),
+    linear-gradient(180deg, #000 0%, #000 22%, rgba(0, 0, 0, .65) 52%, transparent 88%);
+  mask-image:
+    linear-gradient(90deg, #000 0%, #000 18%, rgba(0, 0, 0, .65) 46%, transparent 78%),
+    linear-gradient(180deg, #000 0%, #000 22%, rgba(0, 0, 0, .65) 52%, transparent 88%);
+  -webkit-mask-size: calc(100% + 48px) calc(100% + 48px);
+  mask-size: calc(100% + 48px) calc(100% + 48px);
+  -webkit-mask-position: -24px -24px;
+  mask-position: -24px -24px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-clip: no-clip;
+  mask-clip: no-clip;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  pointer-events: none;
+}
