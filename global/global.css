@@ -695,17 +695,20 @@ html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-principles .div-322 > .div-
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: -8px -8px 20px -7px rgba(154, 170, 187, .62);
+  /* 모서리는 짧고 선명하게, 바깥 여운은 넓고 옅게 분리한다. */
+  box-shadow:
+    -5px -5px 12px -5px rgba(154, 170, 187, .82),
+    -8px -8px 34px -10px rgba(154, 170, 187, .30);
   -webkit-mask-image:
-    linear-gradient(90deg, #000 0%, #000 18%, rgba(0, 0, 0, .65) 46%, transparent 78%),
-    linear-gradient(180deg, #000 0%, #000 22%, rgba(0, 0, 0, .65) 52%, transparent 88%);
+    linear-gradient(90deg, #000 0%, #000 14%, rgba(0, 0, 0, .55) 38%, transparent 65%),
+    linear-gradient(180deg, #000 0%, #000 18%, rgba(0, 0, 0, .55) 44%, transparent 74%);
   mask-image:
-    linear-gradient(90deg, #000 0%, #000 18%, rgba(0, 0, 0, .65) 46%, transparent 78%),
-    linear-gradient(180deg, #000 0%, #000 22%, rgba(0, 0, 0, .65) 52%, transparent 88%);
-  -webkit-mask-size: calc(100% + 48px) calc(100% + 48px);
-  mask-size: calc(100% + 48px) calc(100% + 48px);
-  -webkit-mask-position: -24px -24px;
-  mask-position: -24px -24px;
+    linear-gradient(90deg, #000 0%, #000 14%, rgba(0, 0, 0, .55) 38%, transparent 65%),
+    linear-gradient(180deg, #000 0%, #000 18%, rgba(0, 0, 0, .55) 44%, transparent 74%);
+  -webkit-mask-size: calc(100% + 80px) calc(100% + 80px);
+  mask-size: calc(100% + 80px) calc(100% + 80px);
+  -webkit-mask-position: -40px -40px;
+  mask-position: -40px -40px;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-clip: no-clip;
