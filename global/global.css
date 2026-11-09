@@ -107,13 +107,17 @@
   }
 }
 
-/* ── 한글 본문 줄바꿈 정책 ──
-   word-break: keep-all   → 한글 단어 중간 끊김 방지 (예: "헬릭/스" X)
-   overflow-wrap: break-word → 너무 긴 영문/URL 은 어쩔 수 없이 끊어 오버플로우 방지
-   body 단위로 박아 사이트 전역(헤딩·본문·버튼·캡션 등) 자동 적용. */
+/* 전 페이지 텍스트는 단어 단위로 줄바꿈한다.
+   Webflow·페이지별 break-word/anywhere보다 우선해 단어 중간 분할과
+   브라우저 자동 하이픈을 막는다. 기존 공백·명시한 br은 그대로 유지한다. */
+body,
+body * {
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  -webkit-hyphens: none !important;
+  hyphens: none !important;
+}
 body {
-  word-break: keep-all;
-  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -165,7 +169,8 @@ html {
    padding + 음수 margin 은 큰 필기체가 잘리지 않게 마스크 영역만 넓힌다.
    ================================================================ */
 .subject-eng-keyword,
-body > .sj_intro_frame .sj_intro_eng-keyword {
+body > .sj_intro_frame .sj_intro_eng-keyword,
+.di_intro_frame .sj_intro_eng-keyword {
   -webkit-mask-image: linear-gradient(
     14deg,
     rgba(0, 0, 0, .08) 0%,
@@ -600,5 +605,35 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
     box-shadow: 0 -12px 28px -14px rgba(13, 17, 23, 0.24);
+  }
+}
+
+/* 영상의학과 인트로 강조어: 내과와 같은 블루 광선 sweep. */
+.di_intro_frame .sj_intro_body .text-span-7 {
+  color: #0075d6;
+  white-space: nowrap;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .di_intro_frame .sj_intro_body .text-span-7 {
+    background-image: linear-gradient(110deg,
+      #0075d6 0%, #0075d6 37%, #1d8ee8 45%, #69bbff 50%,
+      #1d8ee8 55%, #0075d6 63%, #0075d6 100%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: hxDeptIntroSweep 3.2s linear infinite;
+  }
+}
+@keyframes hxDeptIntroSweep {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .di_intro_frame .sj_intro_body .text-span-7 {
+    animation: none;
+    background-position: 50% 0;
   }
 }
