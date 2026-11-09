@@ -107,16 +107,7 @@
   }
 }
 
-/* 전 페이지 텍스트는 단어 단위로 줄바꿈한다.
-   Webflow·페이지별 break-word/anywhere보다 우선해 단어 중간 분할과
-   브라우저 자동 하이픈을 막는다. 기존 공백·명시한 br은 그대로 유지한다. */
-body,
-body * {
-  word-break: keep-all !important;
-  overflow-wrap: normal !important;
-  -webkit-hyphens: none !important;
-  hyphens: none !important;
-}
+/* 전 페이지 단어 줄바꿈은 사이트 head의 global/word-wrap.css에서 적용한다. */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
