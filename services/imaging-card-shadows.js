@@ -116,6 +116,148 @@
   else start();
 })();
 
+/* 판독 프로세스: 1은 고정, 2→3→4→5가 한 번 펼쳐진 뒤 진행선만 스크롤한다. */
+(function () {
+  'use strict';
+  if (window.__helixImagingWorkflowInit) return;
+  window.__helixImagingWorkflowInit = true;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var stack, rows, line, observer, resizeObserver;
+  var started = false, finished = false, disabled = false;
+  var animations = [], timers = [], frame = 0;
+  var lineTop = 0, lineHeight = 0;
+
+  function clearMotion() {
+    animations.forEach(function (animation) { animation.cancel(); });
+    timers.forEach(function (timer) { clearTimeout(timer); });
+    animations = []; timers = [];
+    if (rows) rows.forEach(function (row) {
+      row.style.removeProperty('transform');
+      row.classList.remove('hx-di-step-stacked');
+    });
+  }
+  function staticFallback() {
+    disabled = true;
+    if (observer) observer.disconnect();
+    if (resizeObserver) resizeObserver.disconnect();
+    clearMotion();
+    if (rows) rows.forEach(function (row) { row.style.removeProperty('z-index'); });
+    if (line) line.remove();
+    if (stack) stack.classList.remove('hx-di-workflow-motion');
+  }
+  function measureLine() {
+    var bounds = stack.getBoundingClientRect();
+    var first = rows[0].querySelector('.div-319').getBoundingClientRect();
+    var last = rows[rows.length - 1].querySelector('.div-319').getBoundingClientRect();
+    lineTop = first.top + first.height / 2 - bounds.top;
+    lineHeight = last.top + last.height / 2 - bounds.top - lineTop;
+    line.style.left = (first.left + first.width / 2 - bounds.left - 1) + 'px';
+    line.style.top = lineTop + 'px';
+    line.style.height = Math.max(0, lineHeight) + 'px';
+  }
+  function drawProgress() {
+    if (!finished || disabled || lineHeight <= 0) return;
+    var start = stack.getBoundingClientRect().top + lineTop;
+    var progress = Math.max(0, Math.min(1, (window.innerHeight * .55 - start) / lineHeight));
+    line.style.transform = 'scaleY(' + progress + ')';
+  }
+  function finish() {
+    clearMotion();
+    finished = true;
+    stack.setAttribute('data-hx-di-unfold', 'open');
+    measureLine();
+    drawProgress();
+  }
+  function open(animate) {
+    if (started || disabled) return;
+    started = true;
+    if (observer) observer.disconnect();
+    stack.setAttribute('data-hx-di-unfold', 'opening');
+    if (!animate) { finish(); return; }
+    var lastAnimation;
+    rows.forEach(function (row, index) {
+      if (!index) return;
+      var delay = (index - 1) * 90;
+      var animation = row.animate([
+        { transform: row.style.transform },
+        { transform: 'translateY(0px) scaleY(1)' }
+      ], { duration: 800, delay: delay, easing: 'cubic-bezier(.76, 0, .18, 1)', fill: 'both' });
+      animations.push(animation);
+      lastAnimation = animation;
+      /* 번호와 본문은 서로 겹치는 구간을 지난 뒤 함께 드러낸다. */
+      timers.push(setTimeout(function () { row.classList.remove('hx-di-step-stacked'); }, delay + 600));
+    });
+    lastAnimation.finished.then(finish).catch(function () {});
+  }
+  function observeEntry() {
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver(function (entries) {
+      if (entries.some(function (entry) { return entry.isIntersecting; })) open(true);
+    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px', threshold: 0 });
+    observer.observe(rows[0]);
+  }
+  function layout() {
+    if (disabled) return;
+    if (started) { finish(); return; }
+    rows.forEach(function (row) { row.style.removeProperty('transform'); });
+    measureLine();
+    var top = rows[0].getBoundingClientRect().top;
+    rows.forEach(function (row, index) {
+      row.style.zIndex = String(rows.length + 1 - index);
+      if (!index) return;
+      var offset = top - row.getBoundingClientRect().top + index * 10;
+      var scale = Math.min(1, rows[0].offsetHeight / row.offsetHeight);
+      row.style.transform = 'translateY(' + offset + 'px) scaleY(' + scale + ')';
+      row.classList.add('hx-di-step-stacked');
+    });
+    stack.setAttribute('data-hx-di-unfold', 'stacked');
+    observeEntry();
+    tick();
+  }
+  function tick() {
+    frame = 0;
+    if (disabled) return;
+    try {
+      var first = rows[0].getBoundingClientRect();
+      /* 빠른 스크롤·중간 위치 재방문으로 첫 카드를 건너뛰어도 본문을 복구한다. */
+      if (!started && first.top < window.innerHeight * .55) open(first.bottom > 0);
+      drawProgress();
+    } catch (error) { staticFallback(); }
+  }
+  function requestTick() {
+    if (!frame && !disabled) frame = requestAnimationFrame(tick);
+  }
+  function start() {
+    try {
+      stack = document.querySelector('#hx-di-workflow .div-328');
+      if (!stack || reduceMotion.matches || !('IntersectionObserver' in window) || !stack.animate) return;
+      rows = Array.prototype.slice.call(stack.querySelectorAll(':scope > .di-ref-step'));
+      if (rows.length !== 5 || rows.some(function (row) { return !row.querySelector('.div-319'); })) return;
+      stack.classList.add('hx-di-workflow-motion');
+      line = document.createElement('span');
+      line.className = 'hx-di-workflow-line';
+      line.setAttribute('aria-hidden', 'true');
+      stack.prepend(line);
+      layout();
+      window.addEventListener('scroll', requestTick, { passive: true });
+      window.addEventListener('resize', layout, { passive: true });
+      if ('ResizeObserver' in window) {
+        resizeObserver = new ResizeObserver(layout);
+        resizeObserver.observe(stack);
+      }
+      function motionChanged(event) { if (event.matches) staticFallback(); }
+      if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', motionChanged);
+      else if (reduceMotion.addListener) reduceMotion.addListener(motionChanged);
+      window.__helixImagingWorkflowReady = true;
+    } catch (error) {
+      staticFallback();
+      console.warn('[imaging-workflow] static fallback', error);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
+})();
+
 /* 장비 사진: 섹션 윗변이 화면의 55% 지점까지 들어오면 한 번만 연다. */
 (function () {
   'use strict';
