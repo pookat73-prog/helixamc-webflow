@@ -727,7 +727,31 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
 html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-lit::before {
   opacity: 1;
 }
+/* 영상의학과 장비 사진: 브랜드 블랙에서 천천히 시작해 선명하게 열린다.
+   기존 head의 모션 준비·실패 복구를 공유하고, 본문은 막 위에 유지한다. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq {
+  position: relative;
+  isolation: isolate;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: #0d1117;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1500ms cubic-bezier(.76, 0, .18, 1);
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq.hx-di-equipment-revealed::after {
+  opacity: 0;
+}
 @media (prefers-reduced-motion: reduce) {
+  html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq::after {
+    opacity: 0;
+    transition: none;
+  }
   html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
     opacity: 1;
     transition: none;
