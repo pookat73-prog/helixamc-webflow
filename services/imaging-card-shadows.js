@@ -63,6 +63,89 @@
   else start();
 })();
 
+/* 유산 결론: 첫 문장 900ms → 500ms 호흡 → 다음 문장 900ms. */
+(function () {
+  'use strict';
+  if (window.__helixImagingLegacyStatementInit) return;
+  window.__helixImagingLegacyStatementInit = true;
+  var groups = [], animations = [], observer, played = false, active = false;
+  var viewportWidth = 0;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function showAll() {
+    if (observer) observer.disconnect();
+    groups.forEach(function (group) {
+      group.classList.remove('hx-di-legacy-statement-ready');
+      group.setAttribute('data-hx-di-statement', 'done');
+    });
+    animations.forEach(function (animation) { animation.cancel(); });
+    animations = [];
+    active = false;
+  }
+  function play(group) {
+    if (played || !group.offsetWidth) return;
+    played = true; active = true;
+    observer.disconnect();
+    group.setAttribute('data-hx-di-statement', 'playing');
+    var headings = group.querySelectorAll(':scope > h2');
+    headings.forEach(function (heading, index) {
+      animations.push(heading.animate([
+        { opacity: 0, transform: 'scale(.95)' },
+        { opacity: 1, transform: 'scale(1)' }
+      ], { duration: 900, delay: index * 1400, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'both' }));
+    });
+    animations[animations.length - 1].finished.then(showAll).catch(function () {});
+  }
+  function skipped() {
+    if (played) return;
+    if (groups.some(function (group) { return group.offsetWidth && group.getBoundingClientRect().bottom <= 0; })) {
+      played = true;
+      showAll();
+    }
+  }
+  function observe() {
+    if (observer) observer.disconnect();
+    var width = document.documentElement.clientWidth;
+    if (played || reduceMotion.matches) {
+      if (active && (reduceMotion.matches || width !== viewportWidth)) showAll();
+      viewportWidth = width;
+      return;
+    }
+    viewportWidth = width;
+    observer = new IntersectionObserver(function (entries) {
+      try {
+        entries.forEach(function (entry) { if (entry.isIntersecting) play(entry.target); });
+        skipped();
+      } catch (error) { played = true; showAll(); }
+    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px', threshold: 0 });
+    groups.forEach(function (group) { observer.observe(group); });
+  }
+  function start() {
+    try {
+      if (reduceMotion.matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+      groups = Array.prototype.slice.call(document.querySelectorAll(
+        '#hx-di-page > .for-di-legacy-desktop .div-340, #hx-di-page > .whiteframe_open.for-m .div-340'
+      )).filter(function (group) { return group.querySelectorAll(':scope > h2').length === 2; });
+      groups.forEach(function (group) {
+        group.classList.add('hx-di-legacy-statement-ready');
+        group.setAttribute('data-hx-di-statement', 'ready');
+      });
+      observe();
+      skipped();
+      window.addEventListener('resize', observe, { passive: true });
+      window.addEventListener('scroll', skipped, { passive: true });
+      function motionChanged(event) { if (event.matches) { played = true; showAll(); } }
+      if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', motionChanged);
+      else if (reduceMotion.addListener) reduceMotion.addListener(motionChanged);
+      window.__helixImagingLegacyStatementReady = true;
+    } catch (error) {
+      played = true; showAll();
+      console.warn('[imaging-legacy-statement] static fallback', error);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
+})();
+
 /* 유산의 세 문구: 한 줄이 사라진 뒤 400ms 여유, 0→1600→3200ms. */
 (function () {
   'use strict';
