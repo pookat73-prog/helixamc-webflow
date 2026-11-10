@@ -8,6 +8,9 @@
 (function () {
   'use strict';
 
+  if (window.__helixTopButtonInit) return;
+  window.__helixTopButtonInit = true;
+
   var DEBUG = /[?&]debug-topbtn=1/.test(location.search);
   function dbg(){ if(DEBUG) console.log.apply(console, ['[top-btn]'].concat([].slice.call(arguments))); }
 
