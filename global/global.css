@@ -737,10 +737,10 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
 #hx-di-page .hx-di-legacy-marker::before {
   content: "";
   position: absolute;
-  left: -.04em;
-  right: -.04em;
+  left: -.08em;
+  right: -.3em;
   top: .35em;
-  height: .6em;
+  height: 1em;
   border-radius: .06em;
   background: linear-gradient(90deg,
     rgba(38, 163, 255, 0) 0%, rgba(38, 163, 255, .08) 20%,
