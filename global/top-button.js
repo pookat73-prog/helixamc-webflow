@@ -36,30 +36,6 @@
     if (n) dbg('purged legacy nodes:', n);
   }
 
-  // ScrollTrigger refresh can cancel a native smooth scroll at its current
-  // offset. Finish the requested navigation, unless the visitor takes control.
-  var cancelTopScroll = null;
-  function scrollToTop() {
-    if (cancelTopScroll) cancelTopScroll();
-    var timer;
-    var inputs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
-    function cancel() {
-      clearTimeout(timer);
-      window.removeEventListener('scrollend', finish);
-      inputs.forEach(function (name) { window.removeEventListener(name, cancel, true); });
-      cancelTopScroll = null;
-    }
-    function finish() {
-      cancel();
-      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'instant' });
-    }
-    cancelTopScroll = cancel;
-    inputs.forEach(function (name) { window.addEventListener(name, cancel, { capture: true, passive: true }); });
-    window.addEventListener('scrollend', finish);
-    timer = setTimeout(finish, 1500);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
   function inject() {
     if (btn && document.body.contains(btn)) return btn;
     btn = document.createElement('a');
@@ -80,7 +56,7 @@
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       if (window.HelixMeasure) window.HelixMeasure.emit('back_to_top', { item_type: 'navigation' });
-      scrollToTop();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     document.body.appendChild(btn);
     dbg('injected');

@@ -44,6 +44,41 @@
     'home/global/footer.js': '__HELIX_FOOTER_INIT__'
   };
 
+  // ScrollTrigger refresh can cancel a native smooth scroll at its current
+  // offset. Finish the requested navigation, unless the visitor takes control.
+  var cancelTopScroll = null;
+  function scrollToTop() {
+    if (cancelTopScroll) cancelTopScroll();
+    var timer;
+    var inputs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+    function cancel() {
+      clearTimeout(timer);
+      window.removeEventListener('scrollend', finish);
+      inputs.forEach(function (name) { window.removeEventListener(name, cancel, true); });
+      cancelTopScroll = null;
+    }
+    function finish() {
+      cancel();
+      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    cancelTopScroll = cancel;
+    inputs.forEach(function (name) { window.addEventListener(name, cancel, { capture: true, passive: true }); });
+    window.addEventListener('scrollend', finish);
+    timer = setTimeout(finish, 1500);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Some page heads still pin an older top-button module. Capture navigation
+  // here so the same completion and cancellation rules apply to those visitors.
+  window.addEventListener('click', function (event) {
+    var target = event.target && event.target.closest && event.target.closest('.helix-top-btn');
+    if (!target) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.HelixMeasure) window.HelixMeasure.emit('back_to_top', { item_type: 'navigation' });
+    scrollToTop();
+  }, true);
+
   function present(path) {
     if (guards[path] && window[guards[path]]) return true;
     // Match the repository path across revisions, including in-flight page loads.
