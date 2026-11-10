@@ -736,8 +736,8 @@ html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-
   position: absolute;
   left: 0;
   right: 0;
-  /* 소제목 아래 기존 여백 안에 선만 배치한다. */
-  bottom: -.5em;
+  /* 기존 소제목·본문 간격(1.5vw)의 정중앙에 1px 선의 중심을 맞춘다. */
+  bottom: calc(-.75vw - .5px);
   height: 1px;
   background: var(--c-blue, #0075d6);
   transform-origin: left center;
@@ -749,6 +749,12 @@ html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div
 }
 html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321.hx-di-line-drawn .div-block-317 > .div-12 > .sub_title::after {
   transform: scaleX(1);
+}
+@media (max-width: 479px) {
+  html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
+    /* 세로폰에서는 Webflow의 기존 간격이 4vw다. */
+    bottom: calc(-2vw - .5px);
+  }
 }
 /* 영상의학과 장비 사진: 브랜드 블랙에서 천천히 시작해 선명하게 열린다.
    기존 head의 모션 준비·실패 복구를 공유하고, 본문은 막 위에 유지한다. */
