@@ -63,6 +63,82 @@
   else start();
 })();
 
+/* 유산의 세 문구: PC·모바일 중 보이는 묶음에서만 한 번, 0→800→1600ms. */
+(function () {
+  'use strict';
+  if (window.__helixImagingLegacyHighlightInit) return;
+  window.__helixImagingLegacyHighlightInit = true;
+  var groups = [], observer, active = null, played = false;
+  var viewportWidth = 0;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function stop() {
+    if (observer) observer.disconnect();
+    groups.forEach(function (group) {
+      group.classList.remove('hx-di-legacy-playing');
+      group.setAttribute('data-hx-di-legacy-highlight', 'done');
+    });
+    active = null;
+  }
+  function play(group) {
+    if (played || reduceMotion.matches || !group.offsetWidth) return;
+    played = true;
+    active = group;
+    observer.disconnect();
+    group.setAttribute('data-hx-di-legacy-highlight', 'playing');
+    group.classList.add('hx-di-legacy-playing');
+  }
+  function observe() {
+    if (observer) observer.disconnect();
+    var width = document.documentElement.clientWidth;
+    if (played || reduceMotion.matches) {
+      /* 모바일 주소창에 따른 높이 변화는 재생을 끊지 않는다. */
+      if (active && (reduceMotion.matches || width !== viewportWidth)) stop();
+      viewportWidth = width;
+      return;
+    }
+    viewportWidth = width;
+    observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && entry.target.offsetWidth) play(entry.target);
+      });
+    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px', threshold: 0 });
+    groups.forEach(function (group) { observer.observe(group); });
+  }
+  function start() {
+    try {
+      if (reduceMotion.matches || !('IntersectionObserver' in window)) return;
+      groups = Array.prototype.slice.call(document.querySelectorAll(
+        '#hx-di-page > .for-di-legacy-desktop .div-339, #hx-di-page > .whiteframe_open.for-m .div-339'
+      )).filter(function (group) { return group.querySelectorAll(':scope > p').length === 3; });
+      groups.forEach(function (group) {
+        var paragraphs = group.querySelectorAll(':scope > p');
+        paragraphs.forEach(function (paragraph, index) {
+          var span = document.createElement('span');
+          span.className = 'hx-di-legacy-marker';
+          span.style.setProperty('--hx-di-marker-delay', (index * 800) + 'ms');
+          while (paragraph.firstChild) span.appendChild(paragraph.firstChild);
+          paragraph.appendChild(span);
+        });
+        group.setAttribute('data-hx-di-legacy-highlight', 'ready');
+        group.addEventListener('animationend', function (event) {
+          if (event.animationName === 'hxDiLegacyMarker' && event.target === paragraphs[2].firstElementChild) stop();
+        });
+      });
+      observe();
+      window.addEventListener('resize', observe, { passive: true });
+      function motionChanged(event) { if (event.matches) { played = true; stop(); } }
+      if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', motionChanged);
+      else if (reduceMotion.addListener) reduceMotion.addListener(motionChanged);
+      window.__helixImagingLegacyHighlightReady = true;
+    } catch (error) {
+      stop();
+      console.warn('[imaging-legacy-highlight] static fallback', error);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
+})();
+
 /* 촬영·마취 관리: 각 영역이 충분히 진입하면 파란 선만 독립적으로 그린다. */
 (function () {
   'use strict';
