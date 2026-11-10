@@ -63,7 +63,7 @@
   else start();
 })();
 
-/* 유산의 세 문구: PC·모바일 중 보이는 묶음에서만 한 번, 0→800→1600ms. */
+/* 유산의 세 문구: 한 줄이 사라진 뒤 다음 줄, 0→1300→2600ms. */
 (function () {
   'use strict';
   if (window.__helixImagingLegacyHighlightInit) return;
@@ -115,7 +115,7 @@
         paragraphs.forEach(function (paragraph, index) {
           var span = document.createElement('span');
           span.className = 'hx-di-legacy-marker';
-          span.style.setProperty('--hx-di-marker-delay', (index * 800) + 'ms');
+          span.style.setProperty('--hx-di-marker-delay', (index * 1300) + 'ms');
           while (paragraph.firstChild) span.appendChild(paragraph.firstChild);
           paragraph.appendChild(span);
         });
