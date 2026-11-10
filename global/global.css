@@ -727,6 +727,47 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
 html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-lit::before {
   opacity: 1;
 }
+/* 영상의학의 유산: 머리가 거의 다 그어진 뒤 꼬리가 따라잡아 사라지는 강조. */
+#hx-di-page .hx-di-legacy-marker {
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  isolation: isolate;
+}
+#hx-di-page .hx-di-legacy-marker::before {
+  content: "";
+  position: absolute;
+  left: -.04em;
+  right: -.04em;
+  top: .35em;
+  height: .6em;
+  border-radius: .06em;
+  background: linear-gradient(90deg,
+    rgba(38, 163, 255, 0) 0%, rgba(38, 163, 255, .08) 20%,
+    rgba(38, 163, 255, .24) 58%, rgba(38, 163, 255, .42) 100%);
+  transform-origin: left center;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+#hx-di-page .hx-di-legacy-playing .hx-di-legacy-marker::before {
+  animation: hxDiLegacyMarker 1200ms linear both;
+  animation-delay: var(--hx-di-marker-delay, 0ms);
+}
+@keyframes hxDiLegacyMarker {
+  0% { transform: scaleX(0); clip-path: inset(0); opacity: 0; animation-timing-function: cubic-bezier(.22, .65, .3, 1); }
+  6% { opacity: 1; }
+  65% { transform: scaleX(.94); clip-path: inset(0); opacity: 1; animation-timing-function: cubic-bezier(.4, 0, .65, 1); }
+  78% { transform: scaleX(1); clip-path: inset(0 0 0 35%); opacity: 1; }
+  99% { opacity: 1; }
+  100% { transform: scaleX(1); clip-path: inset(0 0 0 100%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #hx-di-page .hx-di-legacy-playing .hx-di-legacy-marker::before {
+    animation: none;
+    opacity: 0;
+  }
+}
 /* 판독 프로세스: 원래 읽기 공간을 유지한 채 2~5단계만 첫 카드 뒤에서 펼친다. */
 #hx-di-workflow .div-328.hx-di-workflow-motion {
   position: relative;
