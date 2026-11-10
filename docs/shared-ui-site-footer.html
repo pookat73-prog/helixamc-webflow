@@ -1,0 +1,38 @@
+<!-- HELIX shared UI: complete missing page modules from an immutable revision. -->
+<script>
+(function () {
+  'use strict';
+  if (window.self !== window.top || /^\/doctors\//.test(location.pathname) || window.__helixSharedUiEntry) return;
+  window.__helixSharedUiEntry = true;
+  var branch = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
+  var seed = branch === 'staging' ? 'HELIX_SHARED_UI_STAGING_SHA' : 'HELIX_SHARED_UI_MAIN_SHA';
+  var key = 'helix.shared-ui.sha.' + branch + '.' + seed;
+  var loaded = false;
+  function load(sha) {
+    if (loaded || !/^[0-9a-f]{40}$/i.test(sha || '')) return;
+    loaded = true;
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + sha + '/global/bootstrap.js';
+    document.head.appendChild(script);
+  }
+  Promise.resolve(window.__helixMeasurementReady).then(function () {
+    var cached;
+    try { cached = JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (_) {}
+    if (!/[?&]fresh=1\b/.test(location.search) && cached && /^[0-9a-f]{40}$/i.test(cached.sha || '') && Date.now() - cached.t < 60000) {
+      load(cached.sha);
+      return;
+    }
+    var timer = setTimeout(function () { load(seed); }, 2500);
+    fetch('https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/' + branch,
+      { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
+      .then(function (response) { if (!response.ok) throw new Error('UI revision unavailable'); return response.json(); })
+      .then(function (data) {
+        clearTimeout(timer);
+        var sha = data.object && data.object.sha || seed;
+        try { sessionStorage.setItem(key, JSON.stringify({sha:sha,t:Date.now()})); } catch (_) {}
+        load(sha);
+      })
+      .catch(function () { clearTimeout(timer); load(seed); });
+  });
+})();
+</script>
