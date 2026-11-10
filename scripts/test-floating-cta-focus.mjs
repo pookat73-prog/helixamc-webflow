@@ -6,7 +6,7 @@ const source=readFileSync(new URL('../global/floating-cta.js',import.meta.url),'
 const start=source.indexOf("  document.addEventListener('keydown', function (e) {");
 const end=source.indexOf('  /* ── 페이지 식별',start);
 assert.ok(start>=0&&end>start,'actual keyboard handler exists');
-const successStart=source.indexOf('  function onSubmitSuccess() {');
+const successStart=source.indexOf('  function onSubmitSuccess(');
 const successEnd=source.indexOf('  } // end run()',successStart);
 assert.ok(successStart>=0&&successEnd>successStart,'actual completion handler exists');
 
@@ -37,6 +37,6 @@ test('single visible control stays focused',f=>{f.middle.visible=false;f.last.vi
 test('closed modal leaves page keyboard alone',f=>{f.setOpen(false);f.outside.focus();assert.equal(f.press('Tab').prevented,false);f.press('Escape');assert.equal(f.closed,0);});
 test('Escape closes open modal',f=>{f.first.focus();f.press('Escape');assert.equal(f.closed,1);assert.equal(f.document.activeElement,f.outside);});
 test('non-navigation keys remain untouched',f=>{f.middle.focus();assert.equal(f.press('a').prevented,false);assert.equal(f.document.activeElement,f.middle);});
-test('success focuses visible confirmation and skips hidden form',f=>{f.last.focus();f.context.onSubmitSuccess();assert.equal(f.form.style.display,'none');assert.equal(f.document.activeElement,f.doneClose);f.press('Tab');assert.equal(f.document.activeElement,f.first);f.press('Tab',true);assert.equal(f.document.activeElement,f.doneClose);});
-test('late success never takes focus from closed page',f=>{f.setOpen(false);f.outside.focus();f.context.onSubmitSuccess();assert.equal(f.document.activeElement,f.outside);});
+test('success focuses visible confirmation and skips hidden form',f=>{f.last.focus();f.context.onSubmitSuccess('-focus-test', {cta_src:'floating_cta',form_id:'focus-test'});assert.equal(f.form.style.display,'none');assert.equal(f.document.activeElement,f.doneClose);f.press('Tab');assert.equal(f.document.activeElement,f.first);f.press('Tab',true);assert.equal(f.document.activeElement,f.doneClose);});
+test('late success never takes focus from closed page',f=>{f.setOpen(false);f.outside.focus();f.context.onSubmitSuccess('-focus-test', {cta_src:'floating_cta',form_id:'focus-test'});assert.equal(f.document.activeElement,f.outside);});
 console.log(`All floating CTA focus tests passed (${checks} scenarios).`);

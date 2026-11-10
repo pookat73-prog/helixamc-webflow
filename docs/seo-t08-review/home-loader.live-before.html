@@ -1,0 +1,13 @@
+<script>
+(function(){
+  var b=/webflow[.]io$/i.test(location.hostname)?"staging":"main";
+  fetch("https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@"+b+"/seo-snippets/home.html")
+    .then(function(r){return r.ok?r.text():"";})
+    .then(function(h){
+      if(!h)return;
+      var d=document.createElement("div");d.innerHTML=h;
+      var n=d.querySelectorAll('script[type="application/ld+json"]');
+      for(var i=0;i<n.length;i++){var s=document.createElement("script");s.type="application/ld+json";s.textContent=n[i].textContent;document.head.appendChild(s);}
+    }).catch(function(){});
+})();
+</script>

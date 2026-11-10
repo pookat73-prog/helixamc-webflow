@@ -32,8 +32,48 @@
 (function () {
   'use strict';
 
-  if (window.__helixPageTimeInit) return;
+  /* A pinned page asset can initialize the clock before the shared loader
+     fetches this version. Enrich that existing clock; never start a second one. */
+  function doctorContext() {
+    var match = (location.pathname || '').match(/^\/doctors\/([a-z0-9-]+)\/?$/);
+    var profile = match && document.querySelector('[data-doctor-detail]');
+    if (!profile || profile.getAttribute('data-doctor-slug') !== match[1]) return null;
+    return { profile: profile, params: {
+      slug: profile.getAttribute('data-doctor-slug'),
+      doctor: profile.getAttribute('data-doctor-name'),
+      group: profile.getAttribute('data-doctor-group'),
+      branch: profile.getAttribute('data-doctor-branch') || '서초',
+      view_type: 'page',
+      page_location: location.origin + location.pathname
+    } };
+  }
+  if (window.__helixPageTimeInit) {
+    if (window.__helixDoctorPageTimeIdentity || window.__helixDoctorPageTimeIdentityPending || window.__helixNoMeasure ||
+        /\.webflow\.io$/i.test(location.hostname) || window.self !== window.top) return;
+    var context = doctorContext();
+    if (!context || typeof window.gtag !== 'function') return;
+    window.__helixDoctorPageTimeIdentity = true;
+    var forward = window.gtag;
+    window.gtag = function () {
+      if (arguments[0] === 'event' && arguments[1] === 'doctor_time_on_page') {
+        var args = Array.prototype.slice.call(arguments);
+        args[2] = Object.assign({}, args[2] || {}, context.params);
+        return forward.apply(this, args);
+      }
+      return forward.apply(this, arguments);
+    };
+    /* The old clock listens on window. Forward only direct-profile scrolling
+       so its existing idle/visibility/delta rules continue to own the time. */
+    var pending = false;
+    context.profile.addEventListener('scroll', function () {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; window.dispatchEvent(new Event('scroll')); });
+    }, { passive: true, capture: true });
+    return;
+  }
   window.__helixPageTimeInit = true;
+  if (/^\/doctors\//.test(location.pathname)) window.__helixDoctorPageTimeIdentityPending = true;
 
   /* ⚠️ 측정은 정식 사이트(main)에서만 (CLAUDE.md GA4 도메인 게이트 정책) */
   if (/\.webflow\.io$/i.test(location.hostname)) return;
@@ -52,8 +92,10 @@
      세 모듈의 page 값이 어긋나면 시트에서 같은 페이지가 둘로 갈린다. */
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
-    if (/^\/doctors\/[a-z0-9-]+\/?$/.test(p)) return 'doctor';
+    if (/^\/(aaha-cert|emergency-cert|cat-cert)\/?$/.test(p)) return p.slice(1).replace(/\/$/, '').replace(/-/g, '_');
+    if (/^\/doctors\//.test(p)) return 'doctor';
     if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     if (/(^|\/)services(\/|$)/.test(p) ||
         document.querySelector('[class*="dept-card_"]')) return 'services';
     /* 특화진료 페이지 — 이 분기가 없으면 방문·스크롤·체류가 전부 home 으로
@@ -76,10 +118,11 @@
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
-    return 'home';
+    return p === '/' ? 'home' : p.replace(/^\/+|\/+$/g, '').replace(/[^a-z0-9_]/gi, '_');
   }
 
   var PAGE = pageKey();
+  var directProfile, directIdentity;
   function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
 
   var MIN_MS  = 1000;    /* 1초 미만은 '스쳐 지나감' — 기록 안 함 */
@@ -162,6 +205,7 @@
       bounce_kind: v.bounce_kind,
       value:      Math.round(activeDelta / 1000)
     };
+    if (directIdentity) Object.assign(params, directIdentity);
     try {
       if (typeof window.gtag === 'function') {
         params.transport_type = 'beacon';
@@ -187,6 +231,11 @@
   }
 
   function init() {
+    window.__helixDoctorPageTimeIdentityPending = false;
+    var context = doctorContext();
+    directProfile = context && context.profile;
+    directIdentity = context && context.params;
+    if (context) window.__helixDoctorPageTimeIdentity = true;
     var ticking = false;
     function onScroll() {
       lastActivity = Date.now();
@@ -197,6 +246,7 @@
     function bump() { lastActivity = Date.now(); }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    if (directProfile) directProfile.addEventListener('scroll', onScroll, { passive: true, capture: true });
     window.addEventListener('resize', onScroll, { passive: true });
     var acts = ['mousemove', 'keydown', 'touchstart', 'click', 'wheel'];
     for (var i = 0; i < acts.length; i++) {

@@ -46,6 +46,7 @@
        about DOM 마커를 가질 수 있어, DOM 마커보다 경로를 먼저 가린다. */
     if (/discover/.test(p)) return 'discover';
     if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
+    if (/^\/internal-medicine\/?$/.test(p)) return 'internal_medicine';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -82,7 +83,7 @@
   ================================================================ */
   var TARGETS = [
     /* 전 페이지 공통 — 플로팅 상담 CTA */
-    { sel: '#hxFctaToggle',         label: '플로팅 · 상담 문의하기', event: 'cta_open' },
+    { sel: '#hxFctaToggle',         label: '플로팅 · 상담 문의하기', event: 'cta_open / cta_form_open (동일 진입)' },
     { sel: '#hxFctaCallBtn',        label: '플로팅 · 전화 상담',  event: 'cta_call' },
     { sel: '#hxFctaFormBtn',        label: '플로팅 · 폼 열기',    event: 'cta_form_open' },
     { sel: '#hxFctaSubmit',         label: '플로팅 · 폼 제출',    event: 'cta_form_submit' },
@@ -172,6 +173,64 @@
         return !(p && p.closest && p.closest('[data-coming-soon]'));
       } }
   ];
+
+  /* Home FAQ entries: the same two destinations as buttons.js; the tools bridge
+     automatically includes these targets in its next visible-target snapshot. */
+  if (PAGE === 'home' && /^\/(?:index\.html)?$/.test(location.pathname)) {
+    function isHomeFaqLink(el) {
+      var url;
+      try { url = new URL(el.href, location.href); } catch (error) { return false; }
+      return url.origin === location.origin && /^\/faq\/?$/.test(url.pathname);
+    }
+    TARGETS = TARGETS.concat([
+      { sel: 'a#home-faq.hx-prep-faq-link', label: '홈 · 본문 FAQ', event: 'home_faq_click (care_preparation)', match: isHomeFaqLink },
+      { sel: 'a.hx-footer-faq-button', label: '홈 · 푸터 FAQ', event: 'home_faq_click (footer)', match: isHomeFaqLink }
+    ]);
+  }
+
+  /* 일산 진료 소식 링크 — seocho.js의 전용 측정 위치와 목적지만 표시.
+     표시 전용이며 이벤트를 추가 전송하거나 운영자 제외를 해제하지 않는다. */
+  if (PAGE === 'ilsan' && /^\/ilsan\/?$/.test(location.pathname)) {
+    TARGETS = TARGETS.concat([
+      { sel: '#intro a[href]', label: '일산 · 의료진 & 진료 일정',
+        event: 'ilsan_schedule_link_click_* (hero)', match: isIlsanScheduleLink },
+      { sel: '#vets a.vets-cta-button[href]', label: '일산 · 인스타그램 바로가기',
+        event: 'ilsan_schedule_link_click_* (doctors)', match: isIlsanScheduleLink }
+    ]);
+  }
+
+  function isIlsanScheduleLink(el) {
+    if (el.closest('footer, [class*="footer" i]')) return false;
+    var url;
+    try { url = new URL(el.href, location.href); } catch (e) { return false; }
+    return url.protocol === 'https:' && url.hostname === 'www.instagram.com' &&
+      !url.port && !url.username && !url.password && url.pathname === '/helixamc_ilsan/';
+  }
+
+  /* 내과 전용 측정과 같은 목적지 판정. 잘못된 링크에는 배지를 붙이지 않는다. */
+  if (PAGE === 'internal_medicine') {
+    TARGETS = TARGETS.concat([
+      { sel: '.hx-sg-cta-row a', label: '내과 · 하단 지점 CTA',
+        event: 'internal_medicine_branch_click_* (internal_medicine_outro)', match: isInternalMedicineBranchLink },
+      { sel: '#hx-im-areas a[href]', label: '내과 · 진료 영역 센터 CTA',
+        event: 'internal_medicine_branch_click_* (internal_medicine_areas)', match: isInternalMedicineBranchLink }
+    ]);
+  }
+
+  function isInternalMedicineBranchLink(el) {
+    var url;
+    try { url = new URL(el.getAttribute('href') || '', location.href); } catch (e) { return false; }
+    return (url.origin === location.origin && /^\/(seocho|ilsan)(?:\/|$)/i.test(url.pathname)) ||
+      (/^https?:$/.test(url.protocol) && /^(www\.)?svicc\.co\.kr$/i.test(url.hostname));
+  }
+
+  if (PAGE === 'surgery') {
+    TARGETS.push({
+      sel: '.hx-sg-cta-row a',
+      label: '외과 · 하단 지점 선택',
+      event: 'surgery_branch_click_*'
+    });
+  }
 
   /* about(=/discover-helix) 페이지 전용 — .cta-style / .link-block 등은 다른
      페이지에도 존재하므로 이 페이지에서만 표시(오표시 방지). 의료진 지점 버튼은
@@ -296,6 +355,7 @@
     events.push(entry);
     if (events.length > 200) events.shift();
     renderLog();
+    scheduleToolsSnapshot();
     if (entry.el) flashElement(entry.el);
   }
 
@@ -412,6 +472,7 @@
         '<div class="hx-gai-title">GA 측정 점검' +
           '<small>' + GA_ID + ' · ' + PAGE + ' 페이지</small></div>' +
         '<span class="hx-gai-spacer"></span>' +
+        '<button class="hx-gai-btn" data-act="tools">관리 도구 ↗</button>' +
         '<button class="hx-gai-btn on" data-act="badges">측정 위치</button>' +
         '<button class="hx-gai-btn" data-act="clear">지우기</button>' +
         '<button class="hx-gai-btn" data-act="min">_</button>' +
@@ -429,7 +490,9 @@
       var b = e.target.closest('.hx-gai-btn');
       if (!b) return;
       var act = b.getAttribute('data-act');
-      if (act === 'badges') {
+      if (act === 'tools') {
+        window.open('https://helix-website-control-center.pookat73.workers.dev/website-tools/?view=inspect&page=' + encodeURIComponent(location.pathname), '_blank', 'noopener,noreferrer');
+      } else if (act === 'badges') {
         showBadges = !showBadges;
         b.classList.toggle('on', showBadges);
         overlay.style.display = showBadges ? '' : 'none';
@@ -509,11 +572,52 @@
         corner.className = 'hx-gai-corner';
         box.appendChild(corner);
         overlay.appendChild(box);
-        boxMap.push({ el: el, box: box });
+        boxMap.push({ el: el, box: box, target: t });
       });
     });
     position();
+    scheduleToolsSnapshot();
   }
+
+  /* HELIX_TOOLS_BRIDGE_START
+     Read-only connection to the authenticated website workspace. Only the
+     opening workspace window can request it. Never send parameter values,
+     element text, visitor IDs, form content or collection credentials. */
+  var toolsOrigin = 'https://helix-website-control-center.pookat73.workers.dev';
+  var toolsPeer = null, toolsTimer = null;
+  function sendToolsSnapshot() {
+    if (!toolsPeer || toolsPeer.closed) return;
+    var targets = [];
+    (boxMap || []).slice(0, 1000).forEach(function (item) {
+      var t = item.target;
+      if (!t) return;
+      var found = targets.filter(function (row) { return row.label === t.label && row.event === t.event; })[0];
+      if (found) found.count++;
+      else if (targets.length < 250) targets.push({ label: String(t.label).slice(0, 200), event: String(t.event).slice(0, 200), count: 1 });
+    });
+    try {
+      toolsPeer.postMessage({
+        type: 'HELIX_INSPECT_SNAPSHOT', version: 1,
+        path: location.pathname, measurementBlocked: !!window.__helixNoMeasure,
+        targets: targets,
+        events: events.slice(-50).map(function (entry) {
+          return { name: String(entry.name).slice(0, 100), time: entry.time,
+            keys: Object.keys(entry.params || {}).slice(0, 30).map(function (key) { return key.slice(0, 80); }) };
+        })
+      }, toolsOrigin);
+    } catch (e) { toolsPeer = null; }
+  }
+  function scheduleToolsSnapshot() {
+    if (!toolsPeer || toolsTimer) return;
+    toolsTimer = setTimeout(function () { toolsTimer = null; sendToolsSnapshot(); }, 300);
+  }
+  window.addEventListener('message', function (event) {
+    if (event.origin !== toolsOrigin || !window.opener || event.source !== window.opener) return;
+    if (!event.data || event.data.type !== 'HELIX_INSPECT_REQUEST' || event.data.version !== 1) return;
+    toolsPeer = event.source;
+    sendToolsSnapshot();
+  });
+  /* HELIX_TOOLS_BRIDGE_END */
 
   /* 모달/오버레이 등에 실제로 가려진 요소인지 — 중심점을 히트테스트.
      중심이 뷰포트 밖이면(스크롤로 화면 밖) 판정 skip → 아래쪽 배지는

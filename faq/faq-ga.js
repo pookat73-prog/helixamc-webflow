@@ -82,6 +82,7 @@
     if (!now) return;
     if (lastTab === null) { lastTab = now; return; }   // 초기 상태는 기록만
     if (now !== lastTab) {
+      readEnd();
       lastTab = now;
       send('faq_tab_select', { item_type: 'tab', tab: now, value: now });
     }
@@ -130,6 +131,7 @@
     // 필터 초기화 칩
     var reset = tgt.closest('[class*="faq-chip_reset" i]');
     if (reset) {
+      readEnd();
       var g = chipGroup(reset) || 'all';
       send('faq_filter_reset', { item_type: 'filter', filter_group: g, value: g });
       return;
@@ -140,11 +142,12 @@
     if (chip && !/faq-chip_reset/i.test(chip.className || '')) {
       var grp = chipGroup(chip);
       if (grp) {   // species/field 로 해석되는 질환 필터만
+        readEnd();
         var val = chipValue(chip);
         // 켜져 있던 걸 다시 눌러 끄는 경우는 제외(선택된 상태만 측정)
         setTimeout(function () {
           var on = chip.classList.contains('is-on') || chip.getAttribute('aria-pressed') === 'true';
-          if (on) send('faq_filter_select', { item_type: 'filter', filter_group: grp, filter_value: val, value: val });
+          send(on ? 'faq_filter_select' : 'faq_filter_deselect', { item_type: 'filter', filter_group: grp, filter_value: val, value: val });
         }, 0);
       }
       return;
@@ -153,6 +156,7 @@
     // 페이지 이동 (질환/일반 공통 .faq-page-btn — 숫자/‹/› 버튼)
     var pageBtn = tgt.closest('[class*="faq-page-btn" i]');
     if (pageBtn && !pageBtn.disabled) {
+      readEnd();
       var lblEl = pageBtn.querySelector('[class*="faq-page-lbl" i]');
       var label = ((lblEl ? lblEl.textContent : pageBtn.textContent) || '').trim();
       var sec = pageBtn.closest('section');
@@ -170,6 +174,7 @@
           send('faq_open', { item_type: 'faq', category: 'disease', question: questionText(dItem), value: 'disease' });
           readStart('disease', questionText(dItem));
         } else {
+          send('faq_close', { item_type: 'faq', category: 'disease', question: questionText(dItem) });
           readEnd();          // 접은 것 — 여기까지 읽은 시간 회수
         }
       }, 0);
@@ -184,6 +189,7 @@
           send('faq_open', { item_type: 'faq', category: 'general', question: questionText(gItem), value: 'general' });
           readStart('general', questionText(gItem));
         } else {
+          send('faq_close', { item_type: 'faq', category: 'general', question: questionText(gItem) });
           readEnd();
         }
       }, 0);
@@ -201,14 +207,20 @@
      다른 질문을 펼치면 이전 질문의 시간이 먼저 회수된다(아코디언). */
   var READ_MIN_MS = 2000;
   var readFrom = 0, readCat = '', readQ = '';
+  var readReader = null;
 
   function readStart(cat, q) {
     readEnd();                 // 앞서 열려 있던 질문 정산 후 새로 시작
+    if (window.HelixMeasure) {
+      readReader = window.HelixMeasure.reader('faq_read', { item_type: 'faq_read', category: cat, question: q });
+      return;
+    }
     readFrom = Date.now();
     readCat = cat; readQ = q;
   }
 
   function readEnd() {
+    if (readReader) { readReader.stop(); readReader = null; return; }
     if (!readFrom) return;
     var ms = Date.now() - readFrom;
     var cat = readCat, q = readQ;
@@ -226,7 +238,7 @@
   /* 펼쳐둔 채 페이지를 떠나거나 탭을 돌리는 경우도 회수 */
   window.addEventListener('pagehide', readEnd);
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) readEnd();
+    if (document.hidden && !readReader) readEnd();
   });
 
   function start() {

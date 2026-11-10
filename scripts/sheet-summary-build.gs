@@ -22,8 +22,7 @@
      옮기는 김에 집계 규칙을 손보면, 숫자가 안 맞을 때 원인이 이사
      때문인지 규칙 변경 때문인지 가릴 수 없다. 그래서 눈에 밟히는
      것들도 그대로 뒀고, 어디가 왜 이상한지는 주석으로 남겼다.
-     (표5 와 표8 의 전화 세는 법이 다른 것 · 표1 합계가 표2 와 89
-      차이 나는 것 — 둘 다 아래 해당 자리에 설명이 있다.)
+     (표1 합계가 표2 와 89 차이 나는 것 — 해당 자리에 설명이 있다.)
 
    ── 쓰는 법 ──────────────────────────────────────────────────
    1) 요약 스프레드시트에서 [확장 프로그램] → [Apps Script]
@@ -412,8 +411,8 @@ function sbBuildGrid_(period, log, data) {
     services: sbCount_(ev, function (e) { return e.name === 'services_scroll_depth' && e.num === 100; })
   };
 
-  g.set(10, 'A', '1. 페이지별 방문 · 끝까지 읽은 비율');
-  g.set(11, 'A', '페이지'); g.set(11, 'C', '방문수'); g.set(11, 'D', '끝까지(100%)');
+  g.set(10, 'A', '1. 페이지별 열림 · 끝까지 읽은 비율');
+  g.set(11, 'A', '페이지'); g.set(11, 'C', '페이지 열린 횟수'); g.set(11, 'D', '끝까지(100%)');
   g.set(11, 'E', '끝까지 비율'); g.set(11, 'F', '비고');
 
   var pageRows = [
@@ -443,12 +442,12 @@ function sbBuildGrid_(period, log, data) {
   var visitCount = sbSetSize_(visits);
   var newPv = sbCount_(ev, function (e) { return sbIsPageView_(e) && e.visitor === 'new'; });
 
-  g.set(19, 'A', "2. 사람 기준 — 몇 '번' 이 아니라 몇 '명분' 인가  (8/3 부터 쌓임)");
+  g.set(19, 'A', '2. 방문(세션) 기준 — 30분 무활동 후 새 세션으로 묶음 (8/3 부터 쌓임)');
   g.set(20, 'A', '지표'); g.set(20, 'B', '값'); g.set(20, 'C', '설명');
-  g.set(21, 'A', '순 방문 횟수'); g.set(21, 'B', visitCount); g.set(21, 'C', '같은 사람이 새로고침해도 1로 셉니다');
+  g.set(21, 'A', '고유 세션 수'); g.set(21, 'B', visitCount); g.set(21, 'C', '30분 무활동 기준 sid 수. GA4 사용자 수와 다릅니다');
   g.set(22, 'A', '페이지 열린 횟수'); g.set(22, 'B', allPv); g.set(22, 'C', '새로고침도 각각 셈');
-  g.set(23, 'A', '방문당 페이지 수'); g.set(23, 'B', visitCount ? sbRound1_(allPv / visitCount) : ''); g.set(23, 'C', '1에 가까우면 첫 페이지만 보고 나감');
-  g.set(24, 'A', '신규 방문 비중'); g.set(24, 'B', sbPct_(newPv, allPv)); g.set(24, 'C', '처음 온 사람의 비중');
+  g.set(23, 'A', '세션당 페이지 열림 수'); g.set(23, 'B', visitCount ? sbRound1_(allPv / visitCount) : ''); g.set(23, 'C', '페이지 열린 횟수 ÷ 고유 세션 수');
+  g.set(24, 'A', '첫 방문 표식 페이지 비중'); g.set(24, 'B', sbPct_(newPv, allPv)); g.set(24, 'C', 'visitor=new 페이지 열림 ÷ 전체 페이지 열림');
 
   /* ── 3. 전화까지 간 방문의 특징 ─────────────────────────── */
   var callCount = sbSetSize_(callVisits);
@@ -457,25 +456,25 @@ function sbBuildGrid_(period, log, data) {
   var noVet = visitCount - vetCount;
   var noVetCall = callCount - vetCall;
 
-  g.set(26, 'A', '3. 전화까지 간 방문의 특징  ← 홈페이지 개선 판단의 핵심');
+  g.set(26, 'A', '3. 전화 행동이 있었던 세션의 특징  ← 홈페이지 개선 판단의 핵심');
   g.set(27, 'A', '지표'); g.set(27, 'B', '값'); g.set(27, 'C', '해석');
-  g.set(28, 'A', '전체 방문'); g.set(28, 'B', visitCount);
-  g.set(29, 'A', '전화까지 간 방문'); g.set(29, 'B', callCount); g.set(29, 'C', '전화·상담전화를 한 번이라도 누른 방문');
-  g.set(30, 'A', '전화 전환율'); g.set(30, 'B', sbPct_(callCount, visitCount)); g.set(30, 'C', '100명이 오면 몇 명이 전화하나');
-  g.set(32, 'A', '의료진 섹션을 본 방문'); g.set(32, 'B', vetCount); g.set(32, 'C', '서초 의료진 파트까지 스크롤한 방문');
-  g.set(33, 'A', '그중 전화까지 간 방문'); g.set(33, 'B', vetCall);
-  g.set(34, 'A', '→ 전환율 (A)'); g.set(34, 'B', sbPct_(vetCall, vetCount)); g.set(34, 'C', '의료진을 본 사람의 전화율');
-  g.set(35, 'A', '의료진을 안 본 방문'); g.set(35, 'B', noVet);
-  g.set(36, 'A', '그중 전화까지 간 방문'); g.set(36, 'B', noVetCall);
-  g.set(37, 'A', '→ 전환율 (B)'); g.set(37, 'B', sbPct_(noVetCall, noVet)); g.set(37, 'C', '의료진을 안 본 사람의 전화율');
-  g.set(38, 'A', '의료진 열람 효과 (A÷B)');
+  g.set(28, 'A', '전체 세션'); g.set(28, 'B', visitCount);
+  g.set(29, 'A', '전화 행동 세션'); g.set(29, 'B', callCount); g.set(29, 'C', '전화 관련 이벤트가 한 번 이상 기록된 세션');
+  g.set(30, 'A', '전화 행동 세션 비율'); g.set(30, 'B', sbPct_(callCount, visitCount)); g.set(30, 'C', '전화 행동이 기록된 세션 ÷ 전체 세션');
+  g.set(32, 'A', '의료진 섹션 도달 세션'); g.set(32, 'B', vetCount); g.set(32, 'C', '서초 의료진 섹션 도달 이벤트가 포함된 세션');
+  g.set(33, 'A', '그중 전화 행동 세션'); g.set(33, 'B', vetCall);
+  g.set(34, 'A', '→ 전화 행동률 (A)'); g.set(34, 'B', sbPct_(vetCall, vetCount)); g.set(34, 'C', '의료진 섹션 도달 세션 중 전화 이벤트가 있는 비율');
+  g.set(35, 'A', '의료진 섹션 미도달 세션'); g.set(35, 'B', noVet);
+  g.set(36, 'A', '그중 전화 행동 세션'); g.set(36, 'B', noVetCall);
+  g.set(37, 'A', '→ 전화 행동률 (B)'); g.set(37, 'B', sbPct_(noVetCall, noVet)); g.set(37, 'C', '의료진 섹션 미도달 세션 중 전화 이벤트 비율');
+  g.set(38, 'A', '의료진 도달·미도달 전화 행동률 비');
   g.set(38, 'B', (vetCount && noVet && noVetCall) ? sbRound1_((vetCall / vetCount) / (noVetCall / noVet)) + '배' : '');
-  g.set(38, 'C', '1보다 크면 의료진 파트가 전화를 끌어낸다는 뜻');
+  g.set(38, 'C', '1보다 크면 도달 세션의 비율이 더 높음. 인과관계는 뜻하지 않음');
 
   /* ── 4. 섹션별 도달 · 체류 · 이탈 ───────────────────────── */
-  g.set(40, 'A', '4. 섹션별 — 어디까지 읽고, 몇 초 머물고, 어디서 나가나');
-  g.set(41, 'A', '페이지'); g.set(41, 'B', '섹션'); g.set(41, 'C', '도달수');
-  g.set(41, 'D', '도달률'); g.set(41, 'E', '방문당 체류(초)'); g.set(41, 'F', '여기서 이탈');
+  g.set(40, 'A', '4. 섹션별 — 어디까지 읽고, 몇 초 머물렀나');
+  g.set(41, 'A', '페이지'); g.set(41, 'B', '섹션'); g.set(41, 'C', '도달 이벤트 수');
+  g.set(41, 'D', '페이지 열림 대비 도달률'); g.set(41, 'E', '페이지 열림당 체류(초)'); g.set(41, 'F', '다음 섹션 미도달 수');
 
   var r = 42;
   for (var gi = 0; gi < SB_SECTION_GROUPS.length; gi++) {
@@ -500,20 +499,8 @@ function sbBuildGrid_(period, log, data) {
   }
 
   /* ── 5. 모바일 vs PC ────────────────────────────────────── */
-  /* ⚠️ 여기의 전화 세는 법은 표8과 다르다. 이 표는 이름에 phone_call 이
-     든 것 + emergency_call_* + cta_call 만 세고, 표8이 함께 세는
-     tel_copy_*(번호 복사)와 emergency_modal_call_*(응급 팝업 전화)은
-     빠진다. 그래서 8월 기준 두 표의 전화가 2건 어긋난다.
-     지금은 있는 그대로 옮긴다 — 전환 중에 규칙을 바꾸면 숫자가 안 맞을
-     때 원인이 이사 때문인지 규칙 변경 때문인지 가릴 수 없다.
-     맞출지 말지는 대조가 끝난 뒤에 따로 정한다. */
   function deviceCalls(dev) {
-    return sbCount_(ev, function (e) {
-      return e.device === dev &&
-             (e.name.indexOf('phone_call') >= 0 ||
-              e.name.indexOf('emergency_call_') === 0 ||
-              e.name === 'cta_call');
-    });
+    return sbCount_(ev, function (e) { return e.device === dev && sbIsCallEvent_(e); });
   }
   var mobilePv = sbCount_(ev, function (e) { return sbIsPageView_(e) && e.device === 'mobile'; });
   var deskPv = sbCount_(ev, function (e) { return sbIsPageView_(e) && e.device === 'desktop'; });
@@ -521,8 +508,8 @@ function sbBuildGrid_(period, log, data) {
   var deskCall = deviceCalls('desktop');
 
   g.set(65, 'A', '5. 모바일 vs PC');
-  g.set(66, 'A', '기기'); g.set(66, 'B', '방문수'); g.set(66, 'C', '비중');
-  g.set(66, 'D', '전화 건수'); g.set(66, 'E', '전화 전환율');
+  g.set(66, 'A', '기기'); g.set(66, 'B', '페이지 열린 횟수'); g.set(66, 'C', '페이지 열림 비중');
+  g.set(66, 'D', '전화 CTA 동작 수'); g.set(66, 'E', '전화 CTA 동작 ÷ 페이지 열림');
   g.set(67, 'A', '모바일'); g.set(67, 'B', mobilePv); g.set(67, 'C', sbPct_(mobilePv, allPv));
   g.set(67, 'D', mobileCall); g.set(67, 'E', sbPct_(mobileCall, mobilePv));
   g.set(68, 'A', 'PC'); g.set(68, 'B', deskPv); g.set(68, 'C', sbPct_(deskPv, allPv));
@@ -538,8 +525,8 @@ function sbBuildGrid_(period, log, data) {
     byDow[ev[i2].dow]++;
   }
 
-  g.set(70, 'A', '6. 시간대별 방문  ← 야간·새벽 응급 수요 파악');
-  g.set(71, 'A', '시각'); g.set(71, 'B', '방문수'); g.set(71, 'D', '시각'); g.set(71, 'E', '방문수');
+  g.set(70, 'A', '6. 시간대별 페이지 열림  ← 야간·새벽 응급 수요 파악');
+  g.set(71, 'A', '시각'); g.set(71, 'B', '페이지 열린 횟수'); g.set(71, 'D', '시각'); g.set(71, 'E', '페이지 열린 횟수');
   for (var hh = 0; hh < 12; hh++) {
     g.set(72 + hh, 'A', hh + '시');
     g.set(72 + hh, 'B', byHour[hh]);
@@ -549,33 +536,41 @@ function sbBuildGrid_(period, log, data) {
 
   /* ── 7. 요일별 ──────────────────────────────────────────── */
   var dowName = ['', '일', '월', '화', '수', '목', '금', '토'];
-  g.set(85, 'A', '7. 요일별 방문');
-  g.set(86, 'A', '요일'); g.set(86, 'B', '방문수');
+  g.set(85, 'A', '7. 요일별 페이지 열림');
+  g.set(86, 'A', '요일'); g.set(86, 'B', '페이지 열린 횟수');
   for (var w = 1; w <= 7; w++) {
     g.set(86 + w, 'A', dowName[w]);
     g.set(86 + w, 'B', byDow[w]);
   }
 
   /* ── 8. 전화 · 상담 ─────────────────────────────────────── */
-  var homeCall = sbCountPrefix_(ev, 'home_phone_call_') + sbCountPrefix_(ev, 'tel_copy_');
-  var seochoCall = sbCountName_(ev, 'seocho_phone_call');
+  var homeCall = sbCount_(ev, function (e) {
+    return /^home_phone_call_/.test(e.name) || /^tel_copy_/.test(e.name);
+  });
+  var quickbarCall = sbCountPrefix_(ev, 'home_quickbar_phone_call_');
+  var branchCall = sbCountName_(ev, 'seocho_phone_call') + sbCountName_(ev, 'ilsan_phone_call');
   var faqCall = sbCountName_(ev, 'faq_phone_call');
-  var emCall = sbCountPrefix_(ev, 'emergency_call_') + sbCountPrefix_(ev, 'emergency_modal_call_');
+  var emCall = sbCount_(ev, function (e) {
+    return /^emergency_(?:modal_)?call_/.test(e.name) || /^emergency_card_phone_call_/.test(e.name);
+  });
+  var floatingCall = sbCountName_(ev, 'cta_call');
+  var allPhoneActions = sbCount_(ev, sbIsCallEvent_);
   var ctaFormOpen = sbCountName_(ev, 'cta_form_open');
   var ctaFormSubmit = sbCountName_(ev, 'cta_form_submit');
 
-  g.set(95, 'A', '8. 전화 · 상담 (전환 행동)');
+  g.set(95, 'A', '8. 전화 CTA 동작 · 상담 기록');
   g.set(96, 'A', '행동'); g.set(96, 'B', '건수'); g.set(96, 'C', '비고');
-  g.set(97, 'A', '홈 지점카드 전화'); g.set(97, 'B', homeCall); g.set(97, 'C', '옛 이름 합산');
-  g.set(98, 'A', '서초 전화'); g.set(98, 'B', seochoCall);
-  g.set(99, 'A', 'FAQ 전화'); g.set(99, 'B', faqCall);
-  g.set(100, 'A', '응급 전화'); g.set(100, 'B', emCall);
-  g.set(101, 'A', '전화 합계'); g.set(101, 'B', homeCall + seochoCall + faqCall + emCall);
-  g.set(102, 'A', '상담 메뉴 열기'); g.set(102, 'B', sbCountName_(ev, 'cta_open'));
-  g.set(103, 'A', '상담 → 전화 걸기'); g.set(103, 'B', sbCountName_(ev, 'cta_call'));
-  g.set(104, 'A', '상담 폼 열기'); g.set(104, 'B', ctaFormOpen);
-  g.set(105, 'A', '상담 폼 제출'); g.set(105, 'B', ctaFormSubmit); g.set(105, 'C', '실제 상담 접수');
-  g.set(106, 'A', '폼 작성 완료율'); g.set(106, 'B', sbPct_(ctaFormSubmit, ctaFormOpen)); g.set(106, 'C', '낮으면 폼이 길거나 어렵다는 뜻');
+  g.set(97, 'A', '홈 지점카드 전화 CTA'); g.set(97, 'B', homeCall); g.set(97, 'C', '과거 tel_copy_* 포함');
+  g.set(98, 'A', '홈 퀵바 전화 CTA'); g.set(98, 'B', quickbarCall);
+  g.set(99, 'A', '지점 상세 전화 CTA'); g.set(99, 'B', branchCall); g.set(99, 'C', '서초·일산');
+  g.set(100, 'A', 'FAQ 전화 CTA'); g.set(100, 'B', faqCall);
+  g.set(101, 'A', '응급 페이지·카드 전화 CTA'); g.set(101, 'B', emCall);
+  g.set(102, 'A', '플로팅 상담 전화 CTA'); g.set(102, 'B', floatingCall);
+  g.set(103, 'A', '전화 CTA 동작 합계'); g.set(103, 'B', allPhoneActions);
+  g.set(104, 'A', '상담 메뉴 열기'); g.set(104, 'B', sbCountName_(ev, 'cta_open'));
+  g.set(105, 'A', '상담 폼 열기'); g.set(105, 'B', ctaFormOpen);
+  g.set(106, 'A', '상담 폼 제출'); g.set(106, 'B', ctaFormSubmit); g.set(106, 'C', '실제 상담 접수');
+  g.set(107, 'A', '폼 작성 완료율'); g.set(107, 'B', sbPct_(ctaFormSubmit, ctaFormOpen)); g.set(107, 'C', '폼 제출 ÷ 폼 열기');
 
   /* ── 9. 진료과목 카드 클릭 ──────────────────────────────── */
   g.set(108, 'A', '9. 진료과목 카드 클릭  ← 어느 과 상세페이지부터 만들지');
@@ -711,11 +706,12 @@ function sbSumValue_(rows, name) {
 
 function sbIsPageView_(e) { return /_page_view$/.test(e.name); }
 
-/* 전화까지 간 방문을 가르는 기준 — 옛 AV열 수식의 정규식 그대로.
-   이름 어딘가에 phone_call / emergency_call / cta_call 이 든 것.
-   (tel_copy_* 번호 복사와 emergency_modal_call_* 은 여기 안 들어간다 —
-    표8은 그 둘을 세므로 두 표의 전화 숫자가 다르다. 위 표5 주석 참고) */
-function sbIsCallEvent_(e) { return /(phone_call|emergency_call|cta_call)/.test(e.name); }
+/* 전화 CTA 동작 기준. 통화 연결 완료가 아니라 전화 링크·CTA 활성화 기록이다.
+   데스크톱 번호 복사와 과거 tel_copy_* 이벤트도 포함하며, 모바일에서
+   전화 앱이 열렸는지 여부는 will_dial 파라미터로 별도 구분한다. */
+function sbIsCallEvent_(e) {
+  return /(_phone_call($|_)|^tel_copy_|^cta_call$|^emergency_call_|^emergency_modal_call_)/.test(e.name);
+}
 
 /** 조건에 맞는 기록의 방문 표식(sid) 모으기 — 빈 것은 빼고 중복 제거 */
 function sbSidSet_(rows, pred) {
@@ -883,7 +879,7 @@ function sbWriteSheet_(rows) {
   /* GA4와 이름이 비슷하지만 계산 기준이 다른 지표는 셀 메모에 정의를
      남긴다. 표를 다시 만들어도 정의가 함께 복원된다. */
   var metricNoteCells = ['A7', 'A11', 'A21', 'A22', 'A23', 'A24',
-                         'A28', 'A29', 'A30', 'A31', 'A32'];
+                         'A28', 'A29', 'A30', 'A31', 'A32', 'B97', 'B103'];
   for (var nc = 0; nc < metricNoteCells.length; nc++) {
     sh.getRange(metricNoteCells[nc]).clearNote();
   }
@@ -893,8 +889,10 @@ function sbWriteSheet_(rows) {
     A21: '선택 기간의 원본 로그에서 고유 sid 수를 센 값입니다. GA4 사용자 수와 정의가 달라 직접 비교하지 않습니다.',
     A22: '표준 page_view가 아니라 원본 로그의 커스텀 *_page_view 기록 수입니다. 새로고침도 각각 포함됩니다.',
     A28: '선택 기간의 고유 sid 수입니다. 위의 순 방문 횟수와 같은 기준입니다.',
-    A29: '전화·상담전화 관련 행동을 한 번이라도 기록한 고유 sid 수입니다.',
-    A30: '전화까지 간 고유 sid ÷ 전체 고유 sid입니다. 주요 이벤트 합계가 아닙니다.'
+    A29: '전화 링크 또는 전화 CTA 동작 이벤트가 한 번 이상 기록된 고유 sid 수입니다. 통화 연결 완료를 뜻하지 않습니다.',
+    A30: '전화 CTA 동작 이벤트가 기록된 고유 sid ÷ 전체 고유 sid입니다.',
+    B97: '현재 home_phone_call_* 이벤트와 과거 tel_copy_* 이벤트를 함께 셉니다. 과거 tel_copy_*는 모바일 번호 링크를 눌러 복사 후 전화 앱을 여는 동작이었으며, 통화 연결 완료는 확인하지 않습니다.',
+    B103: '공통 전화 CTA 규칙으로 세는 이벤트 횟수입니다. 같은 세션에서 여러 번 누르면 여러 건이며, 실제 통화 연결 건수가 아닙니다.'
   };
   for (var noteCell in metricNotes) {
     if (Object.prototype.hasOwnProperty.call(metricNotes, noteCell)) {
@@ -936,13 +934,16 @@ function verifySummaryAgainstBaseline() {
     ['C17', 311, '표1 진료과목 방문수'],
     ['B21', 2157, '표2 순 방문 횟수'], ['B22', 4768, '표2 페이지 열린 횟수'],
     ['B23', 2.2, '표2 방문당 페이지 수'], ['B24', '80.6%', '표2 신규 방문 비중'],
-    ['B29', 49, '표3 전화까지 간 방문'], ['B32', 703, '표3 의료진 본 방문'],
+    ['B29', 49, '표3 전화 CTA 동작 세션'], ['B32', 703, '표3 의료진 본 방문'],
     ['B33', 18, '표3 그중 전화'], ['B35', 1454, '표3 안 본 방문'],
     ['B36', 31, '표3 안 본 중 전화'], ['B38', '1.2배', '표3 열람 효과'],
     ['B67', 3046, '표5 모바일 방문수'], ['B68', 1722, '표5 PC 방문수'],
-    ['D67', 58, '표5 모바일 전화'], ['D68', 15, '표5 PC 전화'],
-    ['B101', 54, '표8 전화 합계'], ['B102', 96, '표8 상담 메뉴 열기'],
-    ['B105', 7, '표8 폼 제출'], ['B106', '23.3%', '표8 폼 완료율'],
+    ['D67', 60, '표5 모바일 전화 CTA 동작'], ['D68', 15, '표5 PC 전화 CTA 동작'],
+    ['B97', 51, '표8 홈 지점카드 전화 CTA'], ['B98', 0, '표8 홈 퀵바 전화 CTA'],
+    ['B99', 1, '표8 지점 상세 전화 CTA'], ['B100', 1, '표8 FAQ 전화 CTA'],
+    ['B101', 1, '표8 응급 전화 CTA'], ['B102', 21, '표8 플로팅 전화 CTA'],
+    ['B103', 75, '표8 전화 CTA 동작 합계'], ['B104', 96, '표8 상담 메뉴 열기'],
+    ['B106', 7, '표8 폼 제출'], ['B107', '23.3%', '표8 폼 완료율'],
     ['B110', 209, '표9 내과'], ['B111', 181, '표9 외과']
   ];
 

@@ -18,7 +18,8 @@
   'use strict';
 
   /* 중복 로드 가드 (한 페이지에 두 번 주입돼도 한 번만 동작) */
-  if (window.__helixScrollDepthInit) return;
+  var existing = !!window.__helixScrollDepthInit;
+  if (existing && (!/^\/doctors\//.test(location.pathname) || window.__helixDoctorPanelScrollInit || window.__helixDoctorPanelScrollPending)) return;
   window.__helixScrollDepthInit = true;
 
   /* ⚠️ 측정은 정식 사이트(main)에서만 — 스테이징(*.webflow.io)에선
@@ -29,17 +30,21 @@
   if (window.__helixNoMeasure) return;
 
 
+  if (/^\/doctors\//.test(location.pathname)) window.__helixDoctorPanelScrollPending = true;
+
   var DEBUG = /[?&]debug-ga=1/.test(location.search);
   function log() { if (DEBUG) console.log.apply(console, ['[helix-ga]'].concat([].slice.call(arguments))); }
 
   /* 페이지 식별 — DOM 마커 우선(슬러그 변경에 강함), 경로는 보조 */
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
-    if (/^\/doctors\/[a-z0-9-]+\/?$/.test(p)) return 'doctor';
+    if (/^\/(aaha-cert|emergency-cert|cat-cert)\/?$/.test(p)) return p.slice(1).replace(/\/$/, '').replace(/-/g, '_');
+    if (/^\/doctors\//.test(p)) return 'doctor';
     /* 경로 우선 — discover-helix 는 about 템플릿(+about/bootstrap.js)을 재사용해
        about DOM 마커(.about-heading 등)를 가질 수 있다. DOM 마커보다 경로를
        먼저 가려야 디스커버 트래픽이 about 으로 섞이지 않는다. */
     if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -69,7 +74,7 @@
     if (document.querySelector('.about-heading, .about_three_contents-box')) return 'about';
     if (/seocho|서초/.test(p)) return 'seocho';
     if (/about/.test(p)) return 'about';
-    return 'home';
+    return p === '/' ? 'home' : p.replace(/^\/+|\/+$/g, '').replace(/[^a-z0-9_]/gi, '_');
   }
 
   var PAGE = pageKey();
@@ -85,6 +90,7 @@
         base.group = profile.getAttribute('data-doctor-group');
         base.branch = '서초';
         base.view_type = 'page';
+        base.page_location = location.origin + location.pathname;
       }
       for (var k in params) { if (params.hasOwnProperty(k)) base[k] = params[k]; }
       if (typeof window.gtag === 'function') {
@@ -108,6 +114,9 @@
     var thresholds = [25, 50, 75, 100];
     var fired = {};
     var ticking = false;
+    var panel = PAGE === 'doctor' && document.querySelector('[data-doctor-detail] .helix-doctor-modal_panel');
+    if (existing && !panel) return;
+    if (panel) window.__helixDoctorPanelScrollInit = true;
 
     function check() {
       ticking = false;
@@ -119,6 +128,7 @@
         body ? body.scrollHeight : 0, doc.scrollHeight,
         body ? body.offsetHeight : 0, doc.offsetHeight
       );
+      if (panel) { scrollTop = panel.scrollTop; winH = panel.clientHeight; docH = panel.scrollHeight; }
       var scrollable = docH - winH;
 
       /* 화면보다 짧아 스크롤할 게 없는 페이지 — 예전엔 여기서 percent 를 100
@@ -152,6 +162,7 @@
       /* 모두 발사되면 리스너 해제 */
       if (fired[100]) {
         window.removeEventListener('scroll', onScroll);
+        if (panel) panel.removeEventListener('scroll', onScroll);
       }
     }
 
@@ -162,13 +173,15 @@
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    if (panel) panel.addEventListener('scroll', onScroll, { passive: true });
     /* 첫 화면에서 이미 일부 도달했거나 페이지가 짧은 경우 즉시 1회 평가 */
     check();
   }
 
   function init() {
+    window.__helixDoctorPanelScrollPending = false;
     log('page =', PAGE);
-    trackPageView();
+    if (!existing) trackPageView();
     initScrollDepth();
   }
 

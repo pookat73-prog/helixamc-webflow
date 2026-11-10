@@ -1,0 +1,138 @@
+{
+  "property": "properties/538482327",
+  "status": "prepared_not_registered",
+  "dimensions": [
+    {
+      "parameterName": "doctor",
+      "displayName": "의료진 이름",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "slug",
+      "displayName": "콘텐츠 식별자",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "dept",
+      "displayName": "진료과",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "symptom",
+      "displayName": "응급 증상",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "cert",
+      "displayName": "인증 종류",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "item",
+      "displayName": "진료 항목",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "group",
+      "displayName": "콘텐츠 그룹",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "cta_src",
+      "displayName": "상담 진입 경로",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "cta_id",
+      "displayName": "상담 버튼",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "field",
+      "displayName": "상담 입력 항목",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "form_state",
+      "displayName": "상담 진행 상태",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "close_reason",
+      "displayName": "상담 닫기 경로",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "error_type",
+      "displayName": "상담 오류 유형",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "direction",
+      "displayName": "갤러리 이동 방식",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "slide_index",
+      "displayName": "인증 상세 장 번호",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "filter_group",
+      "displayName": "FAQ 필터 그룹",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "filter_value",
+      "displayName": "FAQ 필터 항목",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "section",
+      "displayName": "페이지 내 위치",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "control_key",
+      "displayName": "클릭 요소 위치",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "tag_group",
+      "displayName": "상담 선택항목 그룹",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "tag_value",
+      "displayName": "상담 선택항목",
+      "scope": "EVENT"
+    }
+  ],
+  "metrics": [
+    {
+      "parameterName": "active_sec",
+      "displayName": "페이지 활성 체류 증가분",
+      "scope": "EVENT",
+      "measurementUnit": "SECONDS"
+    },
+    {
+      "parameterName": "total_sec",
+      "displayName": "페이지 전체 체류 증가분",
+      "scope": "EVENT",
+      "measurementUnit": "SECONDS"
+    },
+    {
+      "parameterName": "read_sec",
+      "displayName": "콘텐츠 활성 읽기 증가분",
+      "scope": "EVENT",
+      "measurementUnit": "SECONDS"
+    }
+  ],
+  "excludeHighCardinality": [
+    "sid",
+    "event_id",
+    "interaction_id",
+    "form_id"
+  ],
+  "note": "Read existing GA4 definitions before creating. This file is a setup manifest, not proof of registration."
+}

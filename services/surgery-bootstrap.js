@@ -1333,3 +1333,55 @@
     initPrincipleCardShadows();
   }
 })();
+
+/* 외과 본문 하단의 지점 선택. 플로팅 상담 CTA는 기존 공통 모듈이 잰다. */
+(function () {
+  'use strict';
+
+  if (window.__helixSurgeryBranchMeasureInit) return;
+  window.__helixSurgeryBranchMeasureInit = true;
+  if (/\.webflow\.io$/i.test(location.hostname)) return;
+  if (!/(^|\/)surgery(\/|$)/i.test(location.pathname)) return;
+
+  function device() {
+    return window.HelixVP ? HelixVP.device() :
+      (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+  }
+
+  function init() {
+    document.addEventListener('click', function (event) {
+      if (window.__helixNoMeasure) return;
+      var link = event.target && event.target.closest &&
+        event.target.closest('.hx-sg-cta-row a');
+      if (!link) return;
+
+      var href = link.getAttribute('href') || '';
+      var url;
+      try { url = new URL(href, location.href); } catch (e) { return; }
+      /* 잘못된 #https 링크나 다른 사이트 URL을 실제 지점 이동으로 세지 않는다. */
+      var branch = url.origin === location.origin && /^\/seocho(?:\/|$)/i.test(url.pathname) ? 'seocho' :
+        url.origin === location.origin && /^\/ilsan(?:\/|$)/i.test(url.pathname) ? 'ilsan' :
+        /^https?:$/.test(url.protocol) && /^(www\.)?svicc\.co\.kr$/i.test(url.hostname) ? 'svicc' : '';
+      if (!branch) return;
+
+      var params = {
+        item_type: 'branch_click',
+        page: 'surgery',
+        device: device(),
+        cta_src: 'surgery_outro',
+        branch_key: branch,
+        value: branch,
+        transport_type: 'beacon'
+      };
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'surgery_branch_click_' + params.device, params);
+      }
+    }, true);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
