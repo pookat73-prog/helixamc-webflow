@@ -740,7 +740,7 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
   left: -.08em;
   right: -.3em;
   top: .35em;
-  height: 1em;
+  height: .85em;
   border-radius: .06em;
   background: linear-gradient(90deg,
     rgba(38, 163, 255, 0) 0%, rgba(38, 163, 255, .08) 20%,
@@ -757,7 +757,7 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
 @keyframes hxDiLegacyMarker {
   0% { transform: scaleX(0); clip-path: inset(0); opacity: 0; animation-timing-function: cubic-bezier(.22, .65, .3, 1); }
   6% { opacity: 1; }
-  65% { transform: scaleX(.94); clip-path: inset(0); opacity: 1; animation-timing-function: cubic-bezier(.4, 0, .65, 1); }
+  65% { transform: scaleX(1); clip-path: inset(0); opacity: 1; animation-timing-function: cubic-bezier(.4, 0, .65, 1); }
   78% { transform: scaleX(1); clip-path: inset(0 0 0 35%); opacity: 1; }
   99% { opacity: 1; }
   100% { transform: scaleX(1); clip-path: inset(0 0 0 100%); opacity: 0; }
