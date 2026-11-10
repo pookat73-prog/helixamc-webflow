@@ -727,6 +727,18 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
 html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-lit::before {
   opacity: 1;
 }
+/* 유산의 결론 문단: 첫 문장 뒤에 호흡을 두고 다음 문장이 선명해진다. */
+#hx-di-page .hx-di-legacy-statement-ready > h2 {
+  opacity: 0;
+  transform: scale(.95);
+  transform-origin: center center;
+}
+@media (prefers-reduced-motion: reduce) {
+  #hx-di-page .hx-di-legacy-statement-ready > h2 {
+    opacity: 1;
+    transform: none;
+  }
+}
 /* 영상의학의 유산: 머리가 거의 다 그어진 뒤 꼬리가 따라잡아 사라지는 강조. */
 #hx-di-page .hx-di-legacy-marker {
   display: inline-block;
