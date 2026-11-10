@@ -28,8 +28,8 @@ const allowed = new Set(['www.helix-amc.com','helix-amc.com','helixanimalmedical
       const response = await route.fetch();
       const entry = fs.readFileSync(path.join(root,'docs/shared-ui-site-footer.html'),'utf8').replace(/HELIX_SHARED_UI_(?:MAIN|STAGING)_SHA/g,'d4227152b49391b0d3ef0956125273139837e05d');
       const html = await response.text();
-      assert.ok(html.includes('<!-- HELIX shared mobile consultation:'), 'Existing footer must match before override');
-      return route.fulfill({response,body:html.replace(/<!-- HELIX shared mobile consultation:[\s\S]*?<\/script>/,entry)});
+      assert.ok(/<!-- HELIX shared (?:mobile consultation:|UI:)/.test(html), 'Existing footer must match before override');
+      return route.fulfill({response,body:html.replace(/<!-- HELIX shared (?:mobile consultation:|UI:)[\s\S]*?<\/script>/,entry)});
     }
     return route.continue();
   });
@@ -92,6 +92,11 @@ const allowed = new Set(['www.helix-amc.com','helix-amc.com','helixanimalmedical
           if (canShowTop) {
             await page.evaluate(()=>window.scrollTo({top:700,behavior:'instant'}));
             await page.locator('.helix-top-btn').waitFor({state:'visible'});
+            await page.waitForFunction(()=>{
+              const t=document.querySelector('.helix-top-btn').getBoundingClientRect(),c=document.querySelector('.hx-fcta-shell').getBoundingClientRect();
+              const active=c.width?c:document.querySelector('.helix-branch-cta.is-mounted').getBoundingClientRect();
+              return t.bottom<=active.top+1;
+            });
             geometry = await page.evaluate(()=>{
               const top=document.querySelector('.helix-top-btn').getBoundingClientRect(),cta=document.querySelector('.hx-fcta-shell').getBoundingClientRect();
               const branch=document.querySelector('.helix-branch-cta.is-mounted');const active=cta.width?cta:branch.getBoundingClientRect();
@@ -99,6 +104,10 @@ const allowed = new Set(['www.helix-amc.com','helix-amc.com','helixanimalmedical
             });
             assert.ok(geometry.top.x>=0 && geometry.top.right<=width+1 && geometry.top.y>=0 && geometry.top.bottom<=geometry.cta.y+1,JSON.stringify(geometry));
             await page.locator('.helix-top-btn').click();
+            if (process.env.HELIX_UI_INTERRUPT === '1') {
+              // Reproduce a layout refresh that cancels smooth scrolling.
+              await page.evaluate(()=>setTimeout(()=>window.scrollTo({top:500,behavior:'instant'}),80));
+            }
             await page.waitForFunction(()=>scrollY<=5);
             await page.waitForTimeout(350);
           } else {
