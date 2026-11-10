@@ -727,6 +727,38 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
 html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-lit::before {
   opacity: 1;
 }
+/* 판독 프로세스: 원래 읽기 공간을 유지한 채 2~5단계만 첫 카드 뒤에서 펼친다. */
+#hx-di-workflow .div-328.hx-di-workflow-motion {
+  position: relative;
+  isolation: isolate;
+}
+#hx-di-workflow .hx-di-workflow-motion > .di-ref-step {
+  position: relative;
+  transform-origin: top left;
+}
+#hx-di-workflow .hx-di-step-stacked .sj_di_step-card > *,
+#hx-di-workflow .hx-di-step-stacked > .div-319 {
+  opacity: 0;
+}
+#hx-di-workflow .hx-di-workflow-motion .sj_di_step-card > *,
+#hx-di-workflow .hx-di-workflow-motion .div-319 {
+  transition: opacity 180ms ease-out;
+}
+#hx-di-workflow .hx-di-step-stacked {
+  pointer-events: none;
+}
+#hx-di-workflow .hx-di-workflow-motion:is([data-hx-di-unfold="stacked"], [data-hx-di-unfold="opening"]) .sj_di_step-card {
+  box-shadow: 0 0 0 2px #0d1117;
+}
+#hx-di-workflow .hx-di-workflow-line {
+  position: absolute;
+  width: 2px;
+  background: #f4f7fb;
+  transform: scaleY(0);
+  transform-origin: top center;
+  z-index: 0;
+  pointer-events: none;
+}
 /* 영상의학과 촬영·마취 관리: 내용 소제목과 설명 사이에 메인 블루 선을 그린다. */
 html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title {
   position: relative;
