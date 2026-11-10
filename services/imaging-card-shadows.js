@@ -63,6 +63,59 @@
   else start();
 })();
 
+/* 촬영·마취 관리: 각 영역이 충분히 진입하면 파란 선만 독립적으로 그린다. */
+(function () {
+  'use strict';
+  if (window.__helixImagingSafetyLinesInit) return;
+  window.__helixImagingSafetyLinesInit = true;
+  var root = document.documentElement;
+  var observer;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function showStatic() {
+    if (observer) observer.disconnect();
+    root.classList.add('hx-di-safety-lines-static');
+  }
+  function start() {
+    try {
+      if (!root.classList.contains('hx-di-card-shadow-motion')) return;
+      var blocks = document.querySelectorAll('#hx-di-safety .div-325 > .div-321');
+      if (!blocks.length || reduceMotion.matches || !('IntersectionObserver' in window)) {
+        showStatic();
+        return;
+      }
+      function observeBlocks() {
+        if (observer) observer.disconnect();
+        if (reduceMotion.matches || root.classList.contains('hx-di-safety-lines-static')) return;
+        observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('hx-di-line-drawn');
+            observer.unobserve(entry.target);
+          });
+        }, {
+          root: null,
+          rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px',
+          threshold: 0
+        });
+        blocks.forEach(function (block) {
+          if (!block.classList.contains('hx-di-line-drawn')) observer.observe(block);
+        });
+      }
+      observeBlocks();
+      window.addEventListener('resize', observeBlocks, { passive: true });
+      function motionChanged(event) { if (event.matches) showStatic(); }
+      if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', motionChanged);
+      else if (reduceMotion.addListener) reduceMotion.addListener(motionChanged);
+    } catch (error) {
+      showStatic();
+      console.warn('[imaging-safety-lines] static fallback', error);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
+})();
+
 /* 장비 사진: 섹션 윗변이 화면의 55% 지점까지 들어오면 한 번만 연다. */
 (function () {
   'use strict';
