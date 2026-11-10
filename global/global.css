@@ -763,7 +763,7 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
   pointer-events: none;
 }
 #hx-di-page .hx-di-legacy-playing .hx-di-legacy-marker::before {
-  animation: hxDiLegacyMarker 1200ms linear both;
+  animation: hxDiLegacyMarker 1050ms linear both;
   animation-delay: var(--hx-di-marker-delay, 0ms);
 }
 @keyframes hxDiLegacyMarker {

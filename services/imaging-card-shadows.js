@@ -63,7 +63,7 @@
   else start();
 })();
 
-/* 유산 결론: 첫 문장 900ms → 500ms 호흡 → 다음 문장 900ms. */
+/* 유산 결론: 첫 문장 800ms → 400ms 호흡 → 다음 문장 800ms. */
 (function () {
   'use strict';
   if (window.__helixImagingLegacyStatementInit) return;
@@ -91,7 +91,7 @@
       animations.push(heading.animate([
         { opacity: 0, transform: 'scale(.95)' },
         { opacity: 1, transform: 'scale(1)' }
-      ], { duration: 900, delay: index * 1400, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'both' }));
+      ], { duration: 800, delay: index * 1200, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'both' }));
     });
     animations[animations.length - 1].finished.then(showAll).catch(function () {});
   }
@@ -146,7 +146,7 @@
   else start();
 })();
 
-/* 유산의 세 문구: 한 줄이 사라진 뒤 400ms 여유, 0→1600→3200ms. */
+/* 유산의 세 문구: 한 줄이 사라진 뒤 350ms 여유, 0→1400→2800ms. */
 (function () {
   'use strict';
   if (window.__helixImagingLegacyHighlightInit) return;
@@ -198,7 +198,7 @@
         paragraphs.forEach(function (paragraph, index) {
           var span = document.createElement('span');
           span.className = 'hx-di-legacy-marker';
-          span.style.setProperty('--hx-di-marker-delay', (index * 1600) + 'ms');
+          span.style.setProperty('--hx-di-marker-delay', (index * 1400) + 'ms');
           while (paragraph.firstChild) span.appendChild(paragraph.firstChild);
           paragraph.appendChild(span);
         });
