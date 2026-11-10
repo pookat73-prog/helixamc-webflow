@@ -352,8 +352,12 @@
          - 데스크탑 (≥992px): 전화번호 복사만 (tel 앱 연결 안 함)
          - 그 외 (태블릿/모바일): 전화번호 복사 + 전화 앱 연결
     ────────────────────────────────────────────────────────── */
-    document.querySelectorAll('a[href^="tel:"]').forEach(function (link) {
-      link.addEventListener('click', function (e) {
+  document.querySelectorAll('a[href^="tel:"]').forEach(function (link) {
+    if (!link || link.id === 'hxFctaCallBtn' || link.classList.contains('hx-fcta-call-btn')) {
+      return;
+    }
+
+    link.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
 

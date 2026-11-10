@@ -107,13 +107,8 @@
   }
 }
 
-/* ── 한글 본문 줄바꿈 정책 ──
-   word-break: keep-all   → 한글 단어 중간 끊김 방지 (예: "헬릭/스" X)
-   overflow-wrap: break-word → 너무 긴 영문/URL 은 어쩔 수 없이 끊어 오버플로우 방지
-   body 단위로 박아 사이트 전역(헤딩·본문·버튼·캡션 등) 자동 적용. */
+/* 전 페이지 단어 줄바꿈은 사이트 head의 global/word-wrap.css에서 적용한다. */
 body {
-  word-break: keep-all;
-  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -145,6 +140,11 @@ body {
      en-w400~en-w800 유틸리티가 그 예 — CLAUDE.md 폰트 절 참고). */
   font-weight: 500;
 }
+
+/* 진료과 상세 아웃트로 표식은 병원명과 분과명 모두 일반 굵기를 기본으로 한다. */
+.hx-sg-dept-mark-light {
+  font-weight: 400;
+}
 /* 윈도우 Chrome 등에서도 transform 적용된 픽셀 정렬 텍스트가 흐려지지 않도록.
    transform/translate3d 가 걸린 컨테이너의 텍스트는 subpixel 위치로 떨어져
    ClearType 가 회색 띠로 보이는 케이스 완화. */
@@ -160,7 +160,8 @@ html {
    padding + 음수 margin 은 큰 필기체가 잘리지 않게 마스크 영역만 넓힌다.
    ================================================================ */
 .subject-eng-keyword,
-body > .sj_intro_frame .sj_intro_eng-keyword {
+body > .sj_intro_frame .sj_intro_eng-keyword,
+.di_intro_frame .sj_intro_eng-keyword {
   -webkit-mask-image: linear-gradient(
     14deg,
     rgba(0, 0, 0, .08) 0%,
@@ -323,10 +324,8 @@ select,
   }
 }
 
-/* Internal-medicine launch: staging visuals scoped to this page; existing main fixes remain. */
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-sg-dept-mark-light { font-weight: 400; }
 /* Reusable SVICC button: glow follows every instance of the shared arrow slot. */
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+.link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
   transition: none !important;
   animation: hxSharedSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
 }
@@ -337,22 +336,22 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .link-block:has(> .div-block-18 > 
 }
 
 @media (prefers-reduced-motion: reduce) {
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
     animation: none !important;
     box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.76) !important;
   }
 }
 
 /* Internal-medicine area cards and outro: keep the shared SVICC glow compact and subtle. */
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-responsive-closing-frame .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+.hx-im-responsive-closing-frame .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
   box-shadow: none !important;
 }
 
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+:is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
   animation: hxImAreaCardSviccGlow 5s cubic-bezier(0.445, 0.05, 0.55, 0.95) 1.5s infinite both !important;
 }
 
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-responsive-closing-frame .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+.hx-im-responsive-closing-frame .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
   --hx-im-svicc-glow-blur: calc(0.7vw + 3px);
 }
 
@@ -362,7 +361,7 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-im-responsive-closing-frame .l
 }
 
 @media (prefers-reduced-motion: reduce) {
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+  :is(#hx-im-areas, .hx-im-responsive-closing-frame) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
     animation: none !important;
     box-shadow: 0 0 var(--hx-im-svicc-glow-blur, 0.7vw) 0.22vw rgba(85, 40, 170, 0.4) !important;
   }
@@ -370,21 +369,21 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] :is(#hx-im-areas, .hx-im-responsiv
 
 /* Department detail buttons: steady glow and arrows. The shared outro row
    identifies detail pages; home/about keep their existing button loops. */
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body:has(#hx-im-intro, .hx-sg-cta-row) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+body:has(#hx-im-intro, .hx-sg-cta-row) .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
   animation: none !important;
   box-shadow: 0 0 0.7vw 0.22vw rgba(85, 40, 170, 0.4) !important;
 }
 
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .hx-sg-cta-row .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
+.hx-sg-cta-row .div-block-335:has(> .link-block > .div-block-18 > [data-hx-slot="arrow"]) {
   animation: none !important;
   box-shadow: 0 0 12px -2px rgba(85, 40, 170, 0.85) !important;
 }
 
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body:has(#hx-im-intro, .hx-sg-cta-row) .hx-sg-cta-row .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
+body:has(#hx-im-intro, .hx-sg-cta-row) .hx-sg-cta-row .link-block:has(> .div-block-18 > [data-hx-slot="arrow"]) {
   box-shadow: none !important;
 }
 
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body:has(.hx-sg-cta-row) :is([data-hx-slot="arrow"],
+body:has(.hx-sg-cta-row) :is([data-hx-slot="arrow"],
     .link-block > .div-block-18 > .div-block-337,
     .cta_seocho_button-call-link > .div-block-338 > .flex-block-38)::before {
   animation: none !important;
@@ -418,7 +417,6 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] .whiteframe_open .div-block-352 .a
     -webkit-text-fill-color: transparent;
   }
 }
-
 
 /* 내과: 인트로를 1번으로 세어 2좌·4우·5좌·6우의 위 모서리만 외과와 맞춘다.
    모서리 밖은 앞 섹션 색으로 채우고, 본문·사진·프로세스 선은 자르지 않는다.
@@ -467,31 +465,6 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
 @media (max-width: 991px) {
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(#hx-im-intro, .white-frame_mini.im, #hx-im-process, #hx-im-areas.whiteframe_open) {
     --hx-im-section-curve: clamp(56px, 12vw, 120px);
-  }
-}
-
-/* 내과 진료 프로세스: 제목과 첫 문진 카드 사이를 데스크탑의 1.8rem으로 맞춘다. */
-@media (max-width: 767px) {
-  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process > .hx-im-inner {
-    row-gap: .8rem;
-  }
-
-  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-flow {
-    margin-top: 1rem;
-  }
-}
-
-/* 러닝 메이트: 화면 비율과 관계없이 배경 사진이 섹션 전체를 채우게 한다. */
-html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
-
-/* 모바일 원형 카드의 아래 여백이 섹션 밖으로 빠져 흰 띠를 만들지 않게 한다. */
-@media (max-width: 479px) {
-  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open > .sg_rings.for-internal-medicine {
-    margin-bottom: 0;
   }
 }
 
@@ -593,8 +566,313 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
   }
 }
 
-/* Internal-medicine mobile spacing from staging. */
+/* 러닝 메이트: 화면 비율과 관계없이 배경 사진이 섹션 전체를 채우게 한다. */
+html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* 내과 진료 프로세스: 제목과 첫 문진 카드 사이를 데스크탑의 1.8rem으로 맞춘다. */
+@media (max-width: 767px) {
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process > .hx-im-inner {
+    row-gap: .8rem;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .hx-im-process-flow {
+    margin-top: 1rem;
+  }
+}
+
+/* 모바일 원형 카드의 아래 여백이 섹션 밖으로 빠져 흰 띠를 만들지 않게 한다. */
 @media (max-width: 479px) {
-  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open:has(> .sg_rings.for-internal-medicine) { padding-bottom: 40px; }
-  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im { box-shadow: 0 -12px 28px -14px rgba(13, 17, 23, 0.24); }
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open:has(> .sg_rings.for-internal-medicine) {
+    padding-bottom: 40px;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .whiteframe_open > .sg_rings.for-internal-medicine {
+    margin-bottom: 0;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > .white-frame_mini.im {
+    box-shadow: 0 -12px 28px -14px rgba(13, 17, 23, 0.24);
+  }
+}
+
+/* 영상의학과 인트로 강조어: 내과와 같은 블루 광선 sweep. */
+.di_intro_frame .sj_intro_body .text-span-7 {
+  color: #0075d6;
+  white-space: nowrap;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .di_intro_frame .sj_intro_body .text-span-7 {
+    background-image: linear-gradient(110deg,
+      #0075d6 0%, #0075d6 37%, #1d8ee8 45%, #69bbff 50%,
+      #1d8ee8 55%, #0075d6 63%, #0075d6 100%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: hxDeptIntroSweep 3.2s linear infinite;
+  }
+}
+@keyframes hxDeptIntroSweep {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .di_intro_frame .sj_intro_body .text-span-7 {
+    animation: none;
+    background-position: 50% 0;
+  }
+}
+
+/* 영상의학과: 인트로=1, 2좌·3우·8좌·9우·10좌의 위 귀퉁이만.
+   10번의 데스크톱/모바일 대체 섹션에는 같은 방향을 적용한다.
+   배경 보조 면을 main 배경 위, 각 섹션 배경 아래에 두고 본문은 자르지 않는다. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page {
+  isolation: isolate;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-equipment, #hx-di-safety, #hx-di-workflow,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+) {
+  --hx-di-section-curve: 240px;
+  --hx-di-curve-backing: #0d1117;
+  position: relative;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(#hx-di-equipment, #hx-di-workflow) {
+  --hx-di-curve-backing: #f4f7fb;
+  border-top-right-radius: var(--hx-di-section-curve);
+  corner-top-right-shape: superellipse(1.4);
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-safety,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+) {
+  border-top-left-radius: var(--hx-di-section-curve);
+  corner-top-left-shape: superellipse(1.4);
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-equipment, #hx-di-safety, #hx-di-workflow,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: var(--hx-di-section-curve);
+  height: var(--hx-di-section-curve);
+  z-index: -1;
+  background: var(--hx-di-curve-backing);
+  pointer-events: none;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(#hx-di-equipment, #hx-di-workflow)::before {
+  right: 0;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+  #hx-di-principles, #hx-di-safety,
+  .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+)::before {
+  left: 0;
+}
+@media (max-width: 991px) {
+  html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-page > :is(
+    #hx-di-principles, #hx-di-equipment, #hx-di-safety, #hx-di-workflow,
+    .whiteframe_open.for-di-legacy-desktop, .whiteframe_open.for-m
+  ) {
+    --hx-di-section-curve: clamp(56px, 12vw, 120px);
+  }
+}
+
+/* 영상의학과 섹션 2: 내용 카드의 왼쪽 위에 위계 4색 ┌ 방향 그림자. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-principles .div-322 > .div-12 {
+  position: relative;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-principles .div-322 > .div-12::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* 윗변의 여운은 넓게 열고, 왼쪽 변의 세로 꼬리는 짧게 마무리한다. */
+  box-shadow:
+    -5px -5px 12px -5px rgba(154, 170, 187, .82),
+    -8px -8px 52px -6px rgba(154, 170, 187, .40);
+  -webkit-mask-image:
+    linear-gradient(90deg, #000 0%, #000 26%, rgba(0, 0, 0, .65) 60%, transparent 92%),
+    linear-gradient(180deg, #000 0%, #000 20%, rgba(0, 0, 0, .55) 34%, transparent 52%);
+  mask-image:
+    linear-gradient(90deg, #000 0%, #000 26%, rgba(0, 0, 0, .65) 60%, transparent 92%),
+    linear-gradient(180deg, #000 0%, #000 20%, rgba(0, 0, 0, .55) 34%, transparent 52%);
+  -webkit-mask-size: calc(100% + 112px) calc(100% + 112px);
+  mask-size: calc(100% + 112px) calc(100% + 112px);
+  -webkit-mask-position: -56px -56px;
+  mask-position: -56px -56px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-clip: no-clip;
+  mask-clip: no-clip;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  pointer-events: none;
+}
+
+/* 영상의학과 섹션 2: 충분히 진입하면 위 카드부터 엇박으로 그림자를 켠다.
+   로더가 모션을 준비한 경우에만 숨긴다. 스크립트 실패 시 정적 그림자로 복구한다. */
+html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
+  opacity: 0;
+  transition: opacity 1100ms cubic-bezier(.76, 0, .24, 1);
+}
+html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-lit::before {
+  opacity: 1;
+}
+/* 유산의 결론 문단: 첫 문장 뒤에 호흡을 두고 다음 문장이 선명해진다. */
+#hx-di-page .hx-di-legacy-statement-ready > h2 {
+  opacity: 0;
+  transform: scale(.95);
+  transform-origin: center center;
+}
+@media (prefers-reduced-motion: reduce) {
+  #hx-di-page .hx-di-legacy-statement-ready > h2 {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* 영상의학의 유산: 머리가 거의 다 그어진 뒤 꼬리가 따라잡아 사라지는 강조. */
+#hx-di-page .hx-di-legacy-marker {
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  isolation: isolate;
+}
+#hx-di-page .hx-di-legacy-marker::before {
+  content: "";
+  position: absolute;
+  left: -.08em;
+  right: -.3em;
+  top: .35em;
+  height: .85em;
+  border-radius: .06em;
+  background: linear-gradient(90deg,
+    rgba(38, 163, 255, 0) 0%, rgba(38, 163, 255, .08) 20%,
+    rgba(38, 163, 255, .24) 58%, rgba(38, 163, 255, .42) 100%);
+  transform-origin: left center;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+#hx-di-page .hx-di-legacy-playing .hx-di-legacy-marker::before {
+  animation: hxDiLegacyMarker 1050ms linear both;
+  animation-delay: var(--hx-di-marker-delay, 0ms);
+}
+@keyframes hxDiLegacyMarker {
+  0% { transform: scaleX(0); clip-path: inset(0); opacity: 0; animation-timing-function: cubic-bezier(.22, .65, .3, 1); }
+  6% { opacity: 1; }
+  65% { transform: scaleX(1); clip-path: inset(0); opacity: 1; animation-timing-function: cubic-bezier(.4, 0, .65, 1); }
+  78% { transform: scaleX(1); clip-path: inset(0 0 0 35%); opacity: 1; }
+  99% { opacity: 1; }
+  100% { transform: scaleX(1); clip-path: inset(0 0 0 100%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #hx-di-page .hx-di-legacy-playing .hx-di-legacy-marker::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+/* 판독 프로세스: 원래 읽기 공간을 유지한 채 2~5단계만 첫 카드 뒤에서 펼친다. */
+#hx-di-workflow .div-328.hx-di-workflow-motion {
+  position: relative;
+  isolation: isolate;
+}
+#hx-di-workflow .hx-di-workflow-motion > .di-ref-step {
+  position: relative;
+  transform-origin: top left;
+}
+#hx-di-workflow .hx-di-step-stacked .sj_di_step-card > *,
+#hx-di-workflow .hx-di-step-stacked > .div-319 {
+  opacity: 0;
+}
+#hx-di-workflow .hx-di-workflow-motion .sj_di_step-card > *,
+#hx-di-workflow .hx-di-workflow-motion .div-319 {
+  transition: opacity 180ms ease-out;
+}
+#hx-di-workflow .hx-di-step-stacked {
+  pointer-events: none;
+}
+#hx-di-workflow .hx-di-workflow-motion:is([data-hx-di-unfold="stacked"], [data-hx-di-unfold="opening"]) .sj_di_step-card {
+  box-shadow: 0 4px 14px -4px var(--텍스트위계4, #9aaabb);
+}
+#hx-di-workflow .hx-di-workflow-line {
+  position: absolute;
+  width: 1px;
+  background: #f4f7fb;
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 1000ms cubic-bezier(.22, 1, .36, 1);
+  z-index: 0;
+  pointer-events: none;
+}
+/* 영상의학과 촬영·마취 관리: 내용 소제목과 설명 사이에 메인 블루 선을 그린다. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title {
+  position: relative;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* 기존 소제목·본문 간격(1.5vw)의 정중앙에 1px 선의 중심을 맞춘다. */
+  bottom: calc(-.75vw - .5px);
+  height: 1px;
+  background: var(--c-blue, #0075d6);
+  transform-origin: left center;
+  pointer-events: none;
+}
+html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
+  transform: scaleX(0);
+  transition: transform 1500ms cubic-bezier(.76, 0, .18, 1);
+}
+html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321.hx-di-line-drawn .div-block-317 > .div-12 > .sub_title::after {
+  transform: scaleX(1);
+}
+@media (max-width: 479px) {
+  html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
+    /* 세로폰에서는 Webflow의 기존 간격이 4vw다. */
+    bottom: calc(-2vw - .5px);
+  }
+}
+/* 영상의학과 장비 사진: 브랜드 블랙에서 천천히 시작해 선명하게 열린다.
+   기존 head의 모션 준비·실패 복구를 공유하고, 본문은 막 위에 유지한다. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq {
+  position: relative;
+  isolation: isolate;
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: #0d1117;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1500ms cubic-bezier(.76, 0, .18, 1);
+}
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq.hx-di-equipment-revealed::after {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
+    transform: none;
+    transition: none;
+  }
+  html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq::after {
+    opacity: 0;
+    transition: none;
+  }
+  html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
+    opacity: 1;
+    transition: none;
+  }
 }

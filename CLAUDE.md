@@ -286,7 +286,8 @@ console.log('화면폭', innerWidth+'×'+innerHeight,
 - 병원명·분과명 자식은 별도 굵기가 명시되지 않은 한 wrapper 의 400을 그대로 상속한다.
 - 병원명만 `.hx-sg-dept-brand-light { font-weight: 400; }` 로 보정하는 방식은 금지한다. 옆 분과명이 전역 500을 상속해 굵기 차이가 재발한다.
 - `!important` 는 사용하지 않는다. 향후 Webflow 에서 특정 자식의 굵기를 의도적으로 지정하면 그 명시값이 우선해야 한다.
-- 새 진료과 상세페이지를 만들 때도 같은 wrapper 기본 400 규칙을 적용한다.
+- 이 규칙은 각 페이지의 별도 stylesheet 가 아니라 모든 대상 페이지에서 불러오는 `global/global.css` 에 둔다. 그래야 아웃트로 wrapper 를 재사용하는 새 진료과 페이지에도 자동 적용된다.
+- 새 진료과 상세페이지를 만들 때 같은 wrapper 를 사용하고, `global/global.css` 가 해당 페이지 로더에 포함됐는지 확인한다.
 - Designer 화면만 보고 완료하지 않는다. 발행 대상에서 병원명과 분과명의 계산된 `font-weight` 가 모두 400인지 확인한다.
 
 ---

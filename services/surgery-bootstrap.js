@@ -2,11 +2,12 @@
    HELIX AMC — 외과(/surgery) 공통 기능 BOOTSTRAP LOADER  v1.2
 
    외과 페이지의 Webflow 네이티브 본문은 그대로 두고, 다른 공개 페이지와
-   동일한 전역 화면·내비게이션과 기존 공통 측정을 연결한다.
+   동일한 전역 화면·내비게이션 기능만 연결한다.
 
-   전화 상담은 기존 cta_call / floating_cta 집계에 편입한다. 공통 측정은
-   화면 기능보다 먼저 연결하고, 운영자 제외와 스테이징 도메인 게이트는
-   다른 페이지와 동일하게 유지한다. 본문 하단 지점 선택만 외과 전용으로 잰다.
+   측정 모듈은 포함하지 않는다. 측정 변경은 staging이 아니라 main에서
+   별도로 검증·반영하는 프로젝트 규칙을 따른다. 다만 화면 기능 모듈이
+   자체적으로 gtag를 호출할 수 있으므로 webflow.io에서는 이를 no-op으로
+   바꿔 스테이징 테스트 이벤트가 정식 속성에 섞이지 않게 한다.
    ================================================================ */
 
 (function () {
@@ -28,15 +29,6 @@
   var FILES = [
     'global/viewport-fix.js',
     'global/viewport.js',
-    /* 기존 전화 이벤트가 GA4·시트에 동일하게 기록되도록 먼저 준비한다. */
-    'global/measure-gate.js',
-    'global/ga4-base.js',
-    'global/session.js',
-    'global/ga-inspector.js',
-    'global/sheet-log.js',
-    'global/scroll-depth.js',
-    'global/page-time.js',
-    'global/section-reach.js',
     'global/accessibility.js',
     'global/global.css',
     'services/surgery-card-stack.css',
@@ -63,7 +55,7 @@
     if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
       return;
     }
-    /* Retry if initial setup did not succeed. */
+    /* Match the modules' own guards; retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',
@@ -185,29 +177,29 @@
     ring.classList.add(READY_CLASS);
   }
 
-  function createOverlapShield(leftRing, rightRing) {
+  function createOverlapShield(firstRing, secondRing) {
     var shield = document.createElement('span');
 
     shield.className = OVERLAP_SHIELD_CLASS;
     shield.setAttribute('aria-hidden', 'true');
-    rightRing.appendChild(shield);
+    secondRing.appendChild(shield);
 
     function positionShield() {
-      var leftBounds = leftRing.getBoundingClientRect();
-      var rightBounds = rightRing.getBoundingClientRect();
+      var firstBounds = firstRing.getBoundingClientRect();
+      var secondBounds = secondRing.getBoundingClientRect();
 
-      shield.style.left = (leftBounds.left - rightBounds.left - OVERLAP_SHIELD_PADDING) + 'px';
-      shield.style.top = (leftBounds.top - rightBounds.top - OVERLAP_SHIELD_PADDING) + 'px';
-      shield.style.width = (leftBounds.width + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
-      shield.style.height = (leftBounds.height + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+      shield.style.left = (firstBounds.left - secondBounds.left - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.top = (firstBounds.top - secondBounds.top - OVERLAP_SHIELD_PADDING) + 'px';
+      shield.style.width = (firstBounds.width + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
+      shield.style.height = (firstBounds.height + (OVERLAP_SHIELD_PADDING * 2)) + 'px';
     }
 
     positionShield();
 
     if ('ResizeObserver' in window) {
       var resizeObserver = new ResizeObserver(positionShield);
-      resizeObserver.observe(leftRing);
-      resizeObserver.observe(rightRing);
+      resizeObserver.observe(firstRing);
+      resizeObserver.observe(secondRing);
     } else {
       window.addEventListener('resize', positionShield, { passive: true });
     }
@@ -243,7 +235,7 @@
       .filter(isVisible);
     if (rings.length < 2) return;
 
-    /* 데스크톱은 좌우, 모바일 세로 스택은 위아래 순으로 고른다. */
+    /* 데스크톱은 좌우, 모바일 세로 스택은 위아래 순으로 기준을 고른다. */
     rings.sort(function (a, b) {
       var rectA = a.getBoundingClientRect();
       var rectB = b.getBoundingClientRect();
@@ -270,6 +262,7 @@
       var secondBounds = secondRing.getBoundingClientRect();
       var horizontal = Math.abs(secondBounds.left - firstBounds.left) >=
         Math.abs(secondBounds.top - firstBounds.top);
+
       directionClasses.forEach(function (className) {
         firstRing.classList.remove(className);
         secondRing.classList.remove(className);
@@ -278,6 +271,7 @@
       secondRing.classList.add(horizontal ? directionClasses[1] : directionClasses[3]);
     }
 
+    /* 겹치는 경계의 방향에 맞춰 안쪽 선을 숨긴다. */
     updateOverlapDirection();
     window.addEventListener('resize', updateOverlapDirection, { passive: true });
     secondRing.classList.add(GLOW_CLASS);
@@ -309,7 +303,9 @@
 
     ensureLowerHalo();
     window.addEventListener('resize', positionLowerHalo, { passive: true });
-    if ('ResizeObserver' in window) new ResizeObserver(positionLowerHalo).observe(secondRing);
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(positionLowerHalo).observe(secondRing);
+    }
 
     function revealGlow() {
       if (mobileStack.matches) {
@@ -951,7 +947,7 @@
   }
 })();
 
-/* 통증 관리 문구: 지정한 세 줄만 유지하고, 좁은 폭에서는 글자 크기만 맞춘다. */
+/* 통증 관리 문구: 넓은 화면에서는 세 줄을 유지하고, 모바일에서는 자연스럽게 접는다. */
 (function () {
   'use strict';
 
@@ -969,6 +965,7 @@
     '회복에만 전념할 수 있도록\u00a0정교한',
     '통증 제어에 집중합니다.'
   ];
+  var MIN_THREE_LINE_FONT_SIZE = 13;
 
   function initPainThreeLines() {
     var statement = document.querySelector(
@@ -1042,9 +1039,24 @@
       );
       if (!naturalSize || !availableWidth || !requiredWidth) return;
 
+      if (naturalSize < MIN_THREE_LINE_FONT_SIZE) {
+        statement.style.fontSize = MIN_THREE_LINE_FONT_SIZE + 'px';
+        statement.style.whiteSpace = 'normal';
+        return;
+      }
+
       if (requiredWidth <= availableWidth) return;
 
       var fittedSize = naturalSize * ((availableWidth - 2) / requiredWidth);
+
+      /* 320px 안팎에서는 세 줄을 고수하는 대신 본문이 지나치게 작아지지
+         않도록, 기존 줄 구분은 유지한 채 긴 가운데 문장만 자연스럽게 접는다. */
+      if (fittedSize < MIN_THREE_LINE_FONT_SIZE) {
+        statement.style.fontSize = MIN_THREE_LINE_FONT_SIZE + 'px';
+        statement.style.whiteSpace = 'normal';
+        return;
+      }
+
       statement.style.fontSize = fittedSize.toFixed(3) + 'px';
     }
 

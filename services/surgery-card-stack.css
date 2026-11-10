@@ -170,11 +170,6 @@
 
 }
 
-/* 진료과 상세 아웃트로: 별도 지정이 없으면 병원명과 분과명 모두 일반 굵기를 유지한다. */
-.hx-sg-dept-mark-light {
-  font-weight: 400;
-}
-
 /* 외과 인트로 필기체: 글자 밑면에서 시작해 빠르게 선명해진다. */
 .hx-sg-hero-script-safe {
   -webkit-mask-image: linear-gradient(
@@ -273,7 +268,7 @@
   background-color: #0d1117;
 }
 
-/* 세로 모바일 스택의 후광은 원 밖 레이어에만 그린다. */
+/* 스크롤 후광은 원 바깥 전용 레이어에 그려 원 내부와 겹침부를 비운다. */
 .hx-sg-rings > .hx-sg-ring-lower-halo {
   display: none;
   position: absolute !important;
@@ -366,16 +361,7 @@
   mask-image: radial-gradient(ellipse 24% 40% at 0 50%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
 }
 
-.hx-sg-ring-draw-inner-bottom .hx-sg-ring-draw {
-  -webkit-mask-image: radial-gradient(ellipse 40% 24% at 50% 100%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
-  mask-image: radial-gradient(ellipse 40% 24% at 50% 100%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
-}
-
-.hx-sg-ring-draw-inner-top .hx-sg-ring-draw {
-  -webkit-mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
-  mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
-}
-
+/* 모바일 세로 스택: 위·아래 원의 만나는 면에서 안쪽 외곽선이 겹치지 않게 한다. */
 @media (max-width: 991px) {
   .hx-sg-rings {
     position: relative !important;
@@ -385,6 +371,12 @@
   .hx-sg-ring-overlap-shield {
     display: none !important;
   }
+
+  .hx-sg-rings > .hx-sg-ring-lower-halo {
+    display: block;
+  }
+
+  /* 세로 스택에서는 리퍼·재수술 원을 더 크게, 최상단 레이어에 둔다. */
   .hx-sg-rings > .hx-sg-ring-small {
     --hx-sg-small-diameter: min(390px, calc(100vw - 32px));
     z-index: 2 !important;
@@ -444,15 +436,21 @@
     margin-top: 24px !important;
   }
 
-  .hx-sg-rings > .hx-sg-ring-lower-halo {
-    display: block;
-  }
-
   .hx-sg-rings > .hx-sg-ring-lower-halo::before {
     -webkit-mask-image: radial-gradient(ellipse 230px 100px at 50% 63px,
       transparent 0%, transparent 42%, rgba(0, 0, 0, .25) 65%, #000 100%);
     mask-image: radial-gradient(ellipse 230px 100px at 50% 63px,
       transparent 0%, transparent 42%, rgba(0, 0, 0, .25) 65%, #000 100%);
+  }
+
+  .hx-sg-ring-draw-inner-bottom .hx-sg-ring-draw {
+    -webkit-mask-image: radial-gradient(ellipse 40% 24% at 50% 100%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+    mask-image: radial-gradient(ellipse 40% 24% at 50% 100%, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+  }
+
+  .hx-sg-ring-draw-inner-top .hx-sg-ring-draw {
+    -webkit-mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
+    mask-image: radial-gradient(ellipse 40% 24% at 50% 0, transparent 0 22%, rgba(0, 0, 0, .28) 52%, #000 100%);
   }
 }
 
@@ -501,18 +499,13 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   }
 }
 
-/* 예후 관리 카드의 오른쪽 아래 모서리를 수술 철학 카드와 맞춘다. */
-.hx-sg-aftercare-card {
-  border-bottom-right-radius: 36px;
-}
-
-/* 수술 철학·예후 관리 카드: 그림자와 반대 방향의 메인 블루 후광을 화면 진입 시에만 드러낸다. */
+/* 수술 철학·예후 관리 카드: 진입 시 그림자를 은은하게 드러낸다. */
 @media (prefers-reduced-motion: no-preference) {
   html.hx-sg-principle-shadow-motion .hx-sg-principle-card,
   html.hx-sg-principle-shadow-motion .hx-sg-aftercare-card {
     box-shadow:
-      0 2px 6px -6px rgba(154, 170, 187, 0),
-      0 -2px 6px -6px rgba(0, 117, 214, 0) !important;
+      11px 11px 28px -5px rgba(154, 170, 187, 0),
+      -11px -11px 28px -5px rgba(0, 117, 214, 0) !important;
     transition: box-shadow 800ms cubic-bezier(0.89, 0, 0.15, 0.97);
   }
 
@@ -537,6 +530,55 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
 .hx-sg-readable-caption.hx-sg-caption-contrast,
 .hx-sg-readable-caption-center.hx-sg-caption-contrast {
   color: #3d4f6b;
+}
+
+/* 장비 컴포넌트의 공용 내부 클래스를 외과 카드 안에서만 조정한다. */
+.hx-sg-equipment-card .div-block-313 {
+  gap: 5px;
+  margin-bottom: 16px;
+}
+
+.hx-sg-equipment-card .div-block-314 {
+  margin-top: 18px;
+}
+
+.hx-sg-equipment-card .hx-sg-readable-body {
+  line-height: 1.67;
+}
+
+@media (max-width: 767px) {
+  body > .hx-sg-responsive-frame3 .div-block-315,
+  body > .hx-sg-responsive-frame4 .div-block-315,
+  body > .hx-sg-responsive-frame5 .div-block-315 {
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  body > .hx-sg-responsive-frame5 .hx-sg-equipment-card {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  body > .hx-sg-responsive-frame7:nth-of-type(7),
+  body > .hx-sg-responsive-frame7:nth-of-type(8),
+  body > .hx-sg-responsive-frame7:nth-of-type(10) {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  html.hx-sg-principle-shadow-motion .hx-sg-aftercare-card,
+  html.hx-sg-principle-shadow-motion .hx-sg-aftercare-card.hx-sg-principle-shadow-visible {
+    box-shadow: none !important;
+    transition: none;
+  }
+
+}
+
+@media (max-width: 479px) {
+  .hx-sg-principle-card {
+    corner-bottom-right-shape: superellipse(1.4);
+  }
 }
 
 /* 통증 관리: 환자 원은 고정하고, 원 바깥의 격자만 긴장→정렬→안정 순으로 움직인다. */
@@ -567,7 +609,7 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   box-shadow: var(--hx-core-shadow);
 }
 
-[data-hx-sg-pain-motion] .hx-sg-pain-oval > :not(.hx-sg-pain-art) {
+[data-hx-sg-pain-motion] .hx-sg-pain-oval > :not(.hx-sg-pain-art):not(.hx-sg-pain-field-art) {
   position: relative;
   z-index: 1;
 }
@@ -677,6 +719,94 @@ html:not(.hx-sg-styles-ready) .hx-sg-expertise-copy .hx-sg-readable-statement-wh
   }
 }
 
+/* 데스크톱 곡면 전환을 태블릿·모바일에서도 같은 방향으로 유지한다.
+   240px 데스크톱 반경은 화면 폭에 맞춰 줄이고, 원래 곡선이 있던 섹션에만 적용한다. */
+@media (max-width: 991px) {
+  body {
+    --hx-sg-section-curve: clamp(56px, 12vw, 120px);
+  }
+
+  body > .hx-sg-responsive-frame2,
+  body > .hx-sg-responsive-frame6,
+  body > .hx-sg-daily-comfort-banner {
+    border-top-right-radius: var(--hx-sg-section-curve);
+    corner-top-right-shape: superellipse(1.4);
+  }
+
+  /* 모바일 첫 이미지는 이미 섹션 아래까지 이어지므로, 곡선 폭만큼 겹쳐 실제 이미지를 드러낸다. */
+  body > .sj_intro_frame {
+    overflow: visible;
+  }
+
+  body > .hx-sg-responsive-frame2 {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--hx-sg-section-curve));
+    padding-top: calc(20vw + var(--hx-sg-section-curve));
+  }
+
+  body > .hx-sg-responsive-frame3,
+  body > .hx-sg-responsive-frame7:nth-of-type(7),
+  body > .hx-sg-responsive-frame7:nth-of-type(10) {
+    position: relative;
+  }
+
+  body > .hx-sg-responsive-frame3,
+  body > .hx-sg-responsive-frame7:nth-of-type(7) {
+    background-color: #0d1117;
+  }
+
+  body > .hx-sg-responsive-frame3::before,
+  body > .hx-sg-responsive-frame7:nth-of-type(7)::before,
+  body > .hx-sg-responsive-frame7:nth-of-type(10)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-color: #f4f7fb;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    pointer-events: none;
+  }
+
+  body > .hx-sg-responsive-frame7:nth-of-type(7)
+  .hx-sg-principle-photo-single {
+    z-index: 0;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    overflow: clip;
+  }
+
+  body > .hx-sg-responsive-frame6,
+  body > .hx-sg-daily-comfort-banner {
+    overflow: clip;
+  }
+
+  body > .hx-sg-responsive-frame7:nth-of-type(10)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--hx-sg-section-curve);
+    border-top: 2px solid #0075d6;
+    border-left: 2px solid #0075d6;
+    border-top-left-radius: var(--hx-sg-section-curve);
+    corner-top-left-shape: superellipse(1.4);
+    -webkit-mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    mask-image:
+      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
+      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    pointer-events: none;
+  }
+}
+
 /* 예후 관리: 섹션 제목은 왼쪽, 두 카드의 제목 묶음은 가운데로 맞춘다. */
 #hx-sg-aftercare .hx-sg-section-heading h2,
 #hx-sg-aftercare .hx-sg-section-heading .hx-sg-readable-section-caption {
@@ -717,6 +847,7 @@ body > .sj_intro_frame .div-block-344 {
     corner-top-right-shape: superellipse(1.4);
     z-index: 1;
   }
+
 }
 
 /* 이 구간에서는 이미지 상자 아래의 빈 높이를 없애 반사가 사진 끝에서 시작되게 한다. */
@@ -859,105 +990,6 @@ body > .sj_intro_frame .div-block-344 {
 }
 
 
-/* 데스크톱 곡면 전환을 태블릿·모바일에서도 같은 방향으로 유지한다.
-   240px 데스크톱 반경은 화면 폭에 맞춰 줄이고, 원래 곡선이 있던 섹션에만 적용한다. */
-@media (max-width: 991px) {
-  body {
-    --hx-sg-section-curve: clamp(56px, 12vw, 120px);
-  }
-
-  body > .hx-sg-responsive-frame2,
-  body > .hx-sg-responsive-frame6,
-  body > .hx-sg-daily-comfort-banner {
-    border-top-right-radius: var(--hx-sg-section-curve);
-    corner-top-right-shape: superellipse(1.4);
-  }
-
-  /* 모바일 첫 이미지는 이미 섹션 아래까지 이어지므로, 곡선 폭만큼 겹쳐 실제 이미지를 드러낸다. */
-  body > .sj_intro_frame {
-    overflow: visible;
-  }
-
-  body > .hx-sg-responsive-frame2 {
-    position: relative;
-    z-index: 1;
-    margin-top: calc(-1 * var(--hx-sg-section-curve));
-    padding-top: calc(20vw + var(--hx-sg-section-curve));
-  }
-
-  body > .hx-sg-responsive-frame3,
-  body > .hx-sg-responsive-frame7:nth-of-type(7),
-  body > .hx-sg-responsive-frame7:nth-of-type(10) {
-    position: relative;
-  }
-
-  body > .hx-sg-responsive-frame3,
-  body > .hx-sg-responsive-frame7:nth-of-type(7) {
-    background-color: #0d1117;
-  }
-
-  body > .hx-sg-responsive-frame3::before,
-  body > .hx-sg-responsive-frame7:nth-of-type(7)::before,
-  body > .hx-sg-responsive-frame7:nth-of-type(10)::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-color: #f4f7fb;
-    border-top-left-radius: var(--hx-sg-section-curve);
-    corner-top-left-shape: superellipse(1.4);
-    pointer-events: none;
-  }
-
-  body > .hx-sg-responsive-frame7:nth-of-type(7)
-  .hx-sg-principle-photo-single {
-    z-index: 0;
-    border-top-left-radius: var(--hx-sg-section-curve);
-    corner-top-left-shape: superellipse(1.4);
-    overflow: clip;
-  }
-
-  body > .hx-sg-responsive-frame6,
-  body > .hx-sg-daily-comfort-banner {
-    overflow: clip;
-  }
-
-  body > .hx-sg-responsive-frame7:nth-of-type(10)::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    box-sizing: border-box;
-    width: 100%;
-    height: var(--hx-sg-section-curve);
-    border-top: 2px solid #0075d6;
-    border-left: 2px solid #0075d6;
-    border-top-left-radius: var(--hx-sg-section-curve);
-    corner-top-left-shape: superellipse(1.4);
-    -webkit-mask-image:
-      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
-      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
-    mask-image:
-      linear-gradient(90deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 20%, rgba(0, 0, 0, .22) 34%, transparent 48%),
-      linear-gradient(180deg, #000 0%, #000 8%, rgba(0, 0, 0, .58) 24%, rgba(0, 0, 0, .22) 44%, transparent 64%);
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-    pointer-events: none;
-  }
-}
-@media (max-width: 479px) {
-  body > .hx-sg-daily-comfort-banner {
-    padding-bottom: var(--hx-sg-section-curve);
-  }
-
-  body > .hx-sg-daily-comfort-banner + .hx-sg-responsive-frame7 {
-    z-index: 1;
-    margin-top: calc(-1 * var(--hx-sg-section-curve));
-    padding-top: var(--hx-sg-section-curve);
-    background-color: transparent !important;
-  }
-}
 /* 모바일 통증 관리: 모션은 미니 심볼을 중심으로 원 밖에서만 움직인다. */
 @media (max-width: 767px) {
   [data-hx-sg-pain-motion] {
@@ -1062,24 +1094,38 @@ body > .sj_intro_frame .div-block-344 {
   object-fit: cover;
 }
 
-/* 479px 이하 수술 철학 카드 오른쪽 아래 모서리에 Webflow와 같은 40% 스쿼클을 적용한다. */
-@media (max-width: 479px) {
-  .hx-sg-principle-card {
-    corner-bottom-right-shape: superellipse(1.4);
-  }
-}
 /* 모바일 수술 철학: 예후 카드와 같은 면·그림자, 사진 없이 여백으로 분리한다. */
 @media (max-width: 767px) {
-  #hx-sg-principles .div-block-348 { display:none !important; background-image:none !important; }
-  #hx-sg-principles .hx-sg-principles-cards { row-gap:32px !important; }
-  #hx-sg-principles .hx-sg-principle-card + .hx-sg-principle-card { margin-top:0 !important; }
+  #hx-sg-principles .div-block-348 {
+    display: none !important;
+    background-image: none !important;
+  }
+
+  #hx-sg-principles .hx-sg-principles-cards {
+    row-gap: 32px !important;
+  }
+
+  #hx-sg-principles .hx-sg-principle-card + .hx-sg-principle-card {
+    margin-top: 0 !important;
+  }
+
   #hx-sg-principles .hx-sg-principle-card,
   #hx-sg-principles .hx-sg-principle-card.hx-sg-principle-shadow-visible {
-    gap:15px !important; padding:28px 24px 30px !important;
-    background:#f4f7fb !important; background-image:none !important; border:0 !important;
-    border-radius:0 0 36px !important; corner-bottom-right-shape:superellipse(1.4) !important;
-    box-shadow:5px 6px 16px -8px rgba(154,170,187,.52), -5px -4px 14px -8px rgba(0,117,214,.18) !important;
+    gap: 15px !important;
+    padding: 28px 24px 30px !important;
+    background: #f4f7fb !important;
+    background-image: none !important;
+    border: 0 !important;
+    border-radius: 0 0 36px !important;
+    corner-bottom-right-shape: superellipse(1.4) !important;
+    box-shadow:
+      5px 6px 16px -8px rgba(154, 170, 187, .52),
+      -5px -4px 14px -8px rgba(0, 117, 214, .18) !important;
   }
+
   #hx-sg-principles .hx-sg-principle-card::before,
-  #hx-sg-principles .div-block-328 { display:none !important; content:none !important; }
+  #hx-sg-principles .div-block-328 {
+    display: none !important;
+    content: none !important;
+  }
 }

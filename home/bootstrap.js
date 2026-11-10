@@ -151,6 +151,12 @@
     'global/page-time.js',
     /* 전역 GA4 분석 (섹션 도달 — 어느 파트까지 봤나) */
     'global/section-reach.js',
+    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
+    'global/popup.css',
+    'global/popup.js',
+    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
+    'global/top-button.css',
+    'global/top-button.js',
     /* 햄버거 메뉴 (전 페이지 공통) — 다른 페이지 bootstrap 엔 다 있는데 홈만
        빠져 있어 홈에서 메뉴가 안 열렸음. coming-soon.js 보다 먼저 로드해도
        버튼 바인딩은 exempt 방식이라 순서 무관. */
@@ -176,13 +182,7 @@
     'home/global/scroll-hint.css',
     'home/global/scroll-hint.js',
     /* 핵심 장비 섹션 — 캐논 알페닉스 빛반사만 (콘텐츠 페이드는 Webflow IX2) */
-    'home/equipment/equipment.js',
-    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
-    'global/popup.css',
-    'global/popup.js',
-    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
-    'global/top-button.css',
-    'global/top-button.js'
+    'home/equipment/equipment.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:
@@ -234,27 +234,28 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + q;
   }
 
-  function injectCss(url, onerr) {
+  function injectCss(url, onerr, onload) {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
     link.href = url;
+    if (onload) link.onload = onload;
     if (onerr) link.onerror = onerr;
     document.head.appendChild(link);
     return link;
   }
 
-  function injectJs(url, onload, onerr) {
+  function injectJs(url, onload, onerr, independent) {
     var s = document.createElement('script');
     s.src   = url;
-    s.async = false;
+    s.async = !!independent;
     if (onload) s.onload = onload;
     if (onerr)  s.onerror = onerr;
     document.head.appendChild(s);
     return s;
   }
 
-  function loadFile(path, ref) {
-    /* Retry if initial setup did not succeed. */
+  function loadFile(path, ref, done) {
+    /* Match the modules' own guards; retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',
@@ -270,21 +271,50 @@
     var fallback = function () {
       if (ref === BRANCH) {
         console.warn('[helix-bootstrap] failed even from @' + BRANCH + ':', path);
+        if (done) done();
         return;
       }
       console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
-      loadFile(path, BRANCH);
+      loadFile(path, BRANCH, done);
     };
     if (ext === 'css') {
-      injectCss(url, fallback);
+      injectCss(url, fallback, done);
     } else if (ext === 'js') {
-      injectJs(url, null, fallback);
+      injectJs(url, done, fallback);
     }
   }
 
   function injectAll(ref) {
     console.log('[helix-bootstrap] injecting ' + FILES.length + ' files at ref=' + ref + ':\n  - ' + FILES.join('\n  - '));
-    FILES.forEach(function (path) { loadFile(path, ref); });
+    /* 첫 화면은 보조 기능의 응답을 기다리지 않는다. 뷰포트 → 홈 배치 →
+       히어로 순서는 유지하고, 필수 CSS가 파싱된 뒤에만 크기를 측정한다. */
+    var first = ['global/viewport-fix.js', 'global/viewport.js',
+      'home/global/coming-soon.js', 'home/section1/section1.js'];
+    var critical = ['global/global.css', 'home/global/coming-soon.css',
+      'home/section1/section1.css', 'home/global/buttons.css'];
+    var styles = critical.map(function (path) {
+      return new Promise(function (resolve) { loadFile(path, ref, resolve); });
+    });
+    FILES.filter(function (path) { return /\.css$/.test(path) && critical.indexOf(path) === -1; })
+      .forEach(function (path) { loadFile(path, ref); });
+    first.forEach(function (path) {
+      var hint = document.createElement('link');
+      hint.rel = 'preload'; hint.as = 'script'; hint.href = cdn(ref, path);
+      document.head.appendChild(hint);
+    });
+    Promise.all(styles).then(function () {
+      function auxiliary() {
+        /* 기존 순서대로 측정 게이트 → GA4 → 세션 → 이벤트 모듈을 실행한다. */
+        FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
+          .forEach(function (path) { loadFile(path, ref); });
+      }
+      first.forEach(function (path, index) {
+        loadFile(path, ref, index === first.length - 1 ? function () {
+          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auxiliary, { once: true });
+          else auxiliary();
+        } : null);
+      });
+    });
   }
 
   /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
@@ -321,7 +351,7 @@
     if (window.gsap && window.gsap.registerPlugin) {
       window.gsap.registerPlugin(ScrollTrigger);
     }
-  });
+  }, null, true);
 
   /* 진입점(bootstrap-v3.js)이 이미 최신 SHA 를 알아내 넘겨줬으면 재사용
      → GitHub API 중복 호출 제거 (rate limit 보호) */

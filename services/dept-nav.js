@@ -80,22 +80,9 @@
     '.dept-card_di:hover~.div-block-263 [data-hx-sh-l],' +  /* 영상 위 = 컨테이너 l */
     '.div-block-263:hover [data-hx-sh-l],' +                /* 안과/치과: 컨테이너 l */
     '.div-block-263:hover [data-hx-sh-ri]{opacity:0}' +      /* 안과/치과: 컨테이너 우측 */
-    /* 영상 카드 이미지 강제 표시 — Webflow 게시본 버그 우회.
-       증상: 디자이너 캔버스엔 영상 이미지가 보이는데, 라이브 태블릿(768~991)에서만
-       display:none 으로 사라짐. Webflow 게시 CSS 가 디자인과 어긋나 이 셀만 숨김을 내보내며,
-       재게시·요소 재생성으로도 안 지워짐(플랫폼 단 꼬임). → 사이트가 원래 주입하는 이 CSS 로
-       !important 강제 표시해 그 숨김을 이김.
-       .dept_image_di 는 데스크탑 덱(dept-container(DT))에만 있고 그 덱은 ≤767 에서 통째로
-       숨겨지므로, 이 규칙은 모바일(가로모바일 텍스트덱)에 영향 없음. min-height 는 영상 카드가
-       격자에서 혼자 앉아 높이를 못 받아 접히는 것 방지(다른 카드는 짝이 있어 불필요). */
+    /* 카드 높이·이미지 표시·클립은 Webflow 기본 스타일에서 관리한다.
+       실제 img 자식이 있는 경우의 비율 유지 규칙은 보존한다. */
     '@media screen and (min-width:768px) and (max-width:991px){' +
-    /* 카드에 클립 — 이미지가 카드 바닥 밖으로 삐져나가지 않게. 아이패드 미니(768px,
-       태블릿 최소폭)에서 이미지 세로가 넘쳐 바닥을 뚫던 문제 차단. */
-    '.dept-card_di{min-height:418px !important;overflow:hidden !important}' +
-    /* 높이는 상한 없이 min 만(=바닥). 카드가 큰 기기(아이패드 에어 등)에선 카드
-       높이만큼 이미지가 늘어나 채우고, 좁은 기기(미니)에선 카드 overflow 로 잘림.
-       ※ 상한(max-height)을 박으면 큰 카드에서 이미지 밑에 검은 띠가 생김 → 넣지 말 것. */
-    '.dept_image_di{display:flex !important;min-height:348px !important;overflow:hidden !important}' +
     /* 안쪽 실제 이미지는 비율 유지하며 영역을 꽉 채우되 넘치지 않게 */
     '.dept_image_di img,.dept_image_di>*{object-fit:cover !important;width:100% !important;height:100% !important}' +
     '}' +
@@ -151,40 +138,15 @@
     });
   }
 
-  /* 영상 카드 이미지 강제 표시 (JS) — 일부 게시본에서 이미지에 인라인/고특이도 display:none 이
-     걸려 CSS !important 로도 안 밀릴 때, 인라인 !important 를 직접 걸어 무조건 이긴다.
-     태블릿(768~991) 에서만 적용. 그 밖에선 우리가 건 인라인만 해제(원래 규칙 따르게).
-     .dept_image_di 는 데스크탑 덱(dept-container(DT)) 전용 → 모바일 텍스트덱 무영향. */
-  function forceDiTablet() {
-    var img = document.querySelector('.dept_image_di');
-    if (!img) return;
-    if (window.innerWidth >= 768 && window.innerWidth <= 991) {
-      img.style.setProperty('display', 'flex', 'important');
-      img.style.setProperty('min-height', '348px', 'important');
-      /* 클립만(상한 없음) — 좁은 태블릿(미니)에선 넘침을 잘라내고, 큰 태블릿
-         (에어)에선 이미지가 카드 높이만큼 늘어나 검은 띠가 안 생기게.
-         CSS !important 가 인라인에 밀리는 게시본까지 커버. */
-      img.style.setProperty('overflow', 'hidden', 'important');
-    } else {
-      img.style.removeProperty('display');
-      img.style.removeProperty('min-height');
-      img.style.removeProperty('overflow');
-    }
-  }
-
   function init() {
     injectCss();
-    forceDiTablet();
-    [300, 1200].forEach(function (t) { setTimeout(forceDiTablet, t); });
     markCurrentNav();
     [300, 1200, 2500].forEach(function (t) { setTimeout(markCurrentNav, t); });
-    var _rt;
-    window.addEventListener('resize', function () { clearTimeout(_rt); _rt = setTimeout(forceDiTablet, 150); });
     document.querySelectorAll('[class*="dept-card_"]').forEach(function (card) {
       var k = keyFor(card);
       if (!k || !(k in LINKS)) return;
-      /* 외과의 실제 링크는 브라우저 기본 이동·새 탭·키보드 동작을 사용. */
-      if (k === 'sg' && card.tagName === 'A' && card.getAttribute('href')) return;
+      /* 내과·외과의 실제 링크는 브라우저 기본 이동·새 탭·키보드 동작을 사용. */
+      if ((k === 'im' || k === 'sg') && card.tagName === 'A' && card.getAttribute('href')) return;
       card.addEventListener('click', function () {
         var url = LINKS[k];
         if (url) location.href = url;
