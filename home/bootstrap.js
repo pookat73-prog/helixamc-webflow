@@ -151,12 +151,6 @@
     'global/page-time.js',
     /* 전역 GA4 분석 (섹션 도달 — 어느 파트까지 봤나) */
     'global/section-reach.js',
-    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
-    'global/popup.css',
-    'global/popup.js',
-    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
-    'global/top-button.css',
-    'global/top-button.js',
     /* 햄버거 메뉴 (전 페이지 공통) — 다른 페이지 bootstrap 엔 다 있는데 홈만
        빠져 있어 홈에서 메뉴가 안 열렸음. coming-soon.js 보다 먼저 로드해도
        버튼 바인딩은 exempt 방식이라 순서 무관. */
@@ -182,7 +176,13 @@
     'home/global/scroll-hint.css',
     'home/global/scroll-hint.js',
     /* 핵심 장비 섹션 — 캐논 알페닉스 빛반사만 (콘텐츠 페이드는 Webflow IX2) */
-    'home/equipment/equipment.js'
+    'home/equipment/equipment.js',
+    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
+    'global/popup.css',
+    'global/popup.js',
+    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
+    'global/top-button.css',
+    'global/top-button.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:
