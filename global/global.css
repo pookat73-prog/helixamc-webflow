@@ -727,27 +727,27 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12::before {
 html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-lit::before {
   opacity: 1;
 }
-/* 영상의학과 촬영·마취 관리: 제목과 본문 사이의 메인 블루 선만 그린다. */
-html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 > .sj_title_pair {
+/* 영상의학과 촬영·마취 관리: 내용 소제목과 설명 사이에 메인 블루 선을 그린다. */
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title {
   position: relative;
 }
-html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 > .sj_title_pair::after {
+html[data-wf-page="69d74aa2fe513b8132cd8ffc"] #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  /* 기존 제목·본문 간격(3vw)의 한가운데. 레이아웃과 본문은 유지한다. */
-  bottom: -1.5vw;
+  /* 소제목 아래 기존 여백 안에 선만 배치한다. */
+  bottom: -.5em;
   height: 1px;
   background: var(--c-blue, #0075d6);
   transform-origin: left center;
   pointer-events: none;
 }
-html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321 > .sj_title_pair::after {
+html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
   transform: scaleX(0);
   transition: transform 1500ms cubic-bezier(.76, 0, .18, 1);
 }
-html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321.hx-di-line-drawn > .sj_title_pair::after {
+html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321.hx-di-line-drawn .div-block-317 > .div-12 > .sub_title::after {
   transform: scaleX(1);
 }
 /* 영상의학과 장비 사진: 브랜드 블랙에서 천천히 시작해 선명하게 열린다.
@@ -771,7 +771,7 @@ html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-d
   opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {
-  html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321 > .sj_title_pair::after {
+  html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div-321 .div-block-317 > .div-12 > .sub_title::after {
     transform: none;
     transition: none;
   }
