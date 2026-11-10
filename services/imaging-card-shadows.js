@@ -151,7 +151,7 @@
     var last = rows[rows.length - 1].querySelector('.div-319').getBoundingClientRect();
     lineTop = first.top + first.height / 2 - bounds.top;
     lineHeight = last.top + last.height / 2 - bounds.top - lineTop;
-    line.style.left = (first.left + first.width / 2 - bounds.left - 1) + 'px';
+    line.style.left = (first.left + first.width / 2 - bounds.left - line.offsetWidth / 2) + 'px';
     line.style.top = lineTop + 'px';
     line.style.height = Math.max(0, lineHeight) + 'px';
   }

@@ -748,14 +748,15 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
   pointer-events: none;
 }
 #hx-di-workflow .hx-di-workflow-motion:is([data-hx-di-unfold="stacked"], [data-hx-di-unfold="opening"]) .sj_di_step-card {
-  box-shadow: 0 0 0 2px #0d1117;
+  box-shadow: 0 4px 14px -4px var(--텍스트위계4, #9aaabb);
 }
 #hx-di-workflow .hx-di-workflow-line {
   position: absolute;
-  width: 2px;
+  width: 1px;
   background: #f4f7fb;
   transform: scaleY(0);
   transform-origin: top center;
+  transition: transform 1000ms cubic-bezier(.22, 1, .36, 1);
   z-index: 0;
   pointer-events: none;
 }
