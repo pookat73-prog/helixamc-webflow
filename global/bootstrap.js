@@ -121,9 +121,69 @@
     });
   }
 
+  // The services head can pin an older department loader. Complete only the
+  // newly opened imaging card and its structured URL from this shared revision.
+  function imagingEntry(ref) {
+    if (!/^\/services\/?$/.test(location.pathname)) return;
+    document.querySelectorAll('.dept-card_di').forEach(function (card) {
+      if (card.tagName === 'A' && card.getAttribute('href') === '/diagnostic-imaging') return;
+      var link = document.createElement('a');
+      Array.prototype.forEach.call(card.attributes, function (attribute) {
+        link.setAttribute(attribute.name, attribute.value);
+      });
+      link.href = '/diagnostic-imaging';
+      link.setAttribute('aria-label', '영상의학과 자세히 보기');
+      link.style.color = 'inherit';
+      link.style.textDecoration = 'none';
+      while (card.firstChild) link.appendChild(card.firstChild);
+      card.parentNode.replaceChild(link, card);
+    });
+    var id = 'helix-services-schema';
+    if (document.getElementById(id)) return;
+    fetch(ROOT + ref + '/seo-snippets/services.html')
+      .then(function (r) { if (!r.ok) throw new Error('Services SEO unavailable'); return r.text(); })
+      .then(function (html) {
+        if (document.getElementById(id)) return;
+        var box = document.createElement('div');
+        box.innerHTML = html;
+        var node = box.querySelector('script[type="application/ld+json"]');
+        if (!node) return;
+        JSON.parse(node.textContent);
+        var schema = document.createElement('script');
+        schema.id = id;
+        schema.type = 'application/ld+json';
+        schema.textContent = node.textContent;
+        var observer;
+        function removePrevious() {
+          var removed = false;
+          document.querySelectorAll('script[type="application/ld+json"]').forEach(function (previous) {
+            if (previous.id === id) return;
+            try {
+              var data = JSON.parse(previous.textContent);
+              if ((data['@graph'] || []).some(function (entry) { return entry['@id'] === 'https://helix-amc.com/services#page'; })) {
+                previous.remove();
+                removed = true;
+              }
+            } catch (_) {}
+          });
+          if (removed && observer) observer.disconnect();
+          return removed;
+        }
+        // If the pinned loader's fetch is still pending, retire just its old
+        // services graph when it arrives. Other page/site entities are untouched.
+        if (!removePrevious()) {
+          observer = new MutationObserver(removePrevious);
+          observer.observe(document.head, { childList: true });
+          setTimeout(function () { observer.disconnect(); }, 30000);
+        }
+        document.head.appendChild(schema);
+      }).catch(function (error) { console.warn('[services-seo]', error); });
+  }
+
   function inject(ref) {
     if (!/^[0-9a-f]{10,40}$/i.test(ref || '')) return;
     imagingSeo(ref);
+    imagingEntry(ref);
     document.documentElement.classList.add('hx-fcta-mobile-bar');
     document.documentElement.classList.remove('hx-fcta-mobile-only');
     FILES.forEach(function (path) {

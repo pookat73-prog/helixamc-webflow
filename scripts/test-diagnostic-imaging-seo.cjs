@@ -9,7 +9,7 @@ const remote = new Map();
 const root = path.resolve(__dirname, '..');
 const candidate = process.argv.includes('--candidate');
 const base = 'https://helixanimalmedicalcenter.webflow.io';
-const files = ['global/bootstrap.js', 'services/dept-nav.js', 'seo-snippets/diagnostic-imaging.html', 'seo-snippets/services.html'];
+const files = ['global/bootstrap.js', 'seo-snippets/diagnostic-imaging.html', 'seo-snippets/services.html'];
 (async () => {
   const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
   try {
@@ -62,6 +62,10 @@ const files = ['global/bootstrap.js', 'services/dept-nav.js', 'seo-snippets/diag
       await page.goto(base + '/services?fresh=1', { waitUntil: 'networkidle', timeout: 60000 });
       await page.waitForFunction(() => document.querySelectorAll('a.dept-card_di[href="/diagnostic-imaging"]').length === 3);
       assert.equal(await page.locator('#helix-diagnostic-imaging-schema').count(), 0, 'Schema must be scoped to imaging page');
+      await page.waitForSelector('#helix-services-schema', { state: 'attached' });
+      const servicesGraphs = await page.locator('script[type="application/ld+json"]').evaluateAll(nodes => nodes.map(n => JSON.parse(n.textContent)).filter(data => (data['@graph'] || []).some(n => n['@id'] === 'https://helix-amc.com/services#page')));
+      assert.equal(servicesGraphs.length, 1, 'Pinned services loader must not duplicate the graph');
+      assert(JSON.stringify(servicesGraphs[0]).includes('https://helix-amc.com/diagnostic-imaging'));
       const link = page.locator('a.dept-card_di:visible').first();
       await link.click();
       await page.waitForURL('**/diagnostic-imaging');
