@@ -304,7 +304,8 @@ select,
   pointer-events: none;
 }
 
-.link-block > .div-block-18 > .div-block-337 {
+.link-block > .div-block-18 > .div-block-337,
+a[href*="svicc.co.kr"] [data-hx-slot="arrow"] {
   --hx-arrow-color: #5528aa; /* Existing SVICC button artwork/glow color. */
 }
 
