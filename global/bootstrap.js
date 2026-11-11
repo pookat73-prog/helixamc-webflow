@@ -44,6 +44,56 @@
     'home/global/footer.js': '__HELIX_FOOTER_INIT__'
   };
 
+  /* Imaging click coverage lives in the already-loaded shared entry, independent
+     of motion preferences. One page-specific record per action; the existing
+     ui_click and semantic events remain separate and must not be summed. */
+  var imaging = /^\/diagnostic-imaging\/?$/.test(location.pathname);
+  var trackImagingClick = null;
+  if (imaging && !/\.webflow\.io$/i.test(location.hostname)) {
+    var imagingSelector = 'a,button,summary,video,[role="button"],[role="tab"],[tabindex],input[type="checkbox"],input[type="radio"],select,.image-18,.menu-bar_mobile,.footer-logo-clickable,.footer-email-clickable,.footer-sns-icon,[data-cta-target],[data-coming-soon]';
+    window.__helixImagingMeasure = { selector: imagingSelector };
+    if (/[?&](ga-inspect|debug-ga)=1(?:&|$)/.test(location.search)) FILES.unshift('global/ga-inspector.js');
+    trackImagingClick = function (event) {
+      if (window.__helixNoMeasure || !window.HelixMeasure) return;
+      var el = event.target && event.target.closest && event.target.closest(imagingSelector);
+      if (!el || el.closest('#helix-noga-badge,[class*="hx-gai-"]') || el.disabled) return;
+      var raw = el.getAttribute('href') || '', destination = '', targetKey = '', branch = '';
+      try {
+        var url = new URL(raw, location.href);
+        if (raw && /^https?:$/.test(url.protocol)) destination = url.origin + url.pathname;
+        if (url.protocol === 'tel:') destination = 'tel:';
+        if (/^#hx-di-(principles|equipment|workflow|safety)$/.test(raw)) targetKey = raw.slice(1);
+        if (url.origin === location.origin && /^\/(seocho|ilsan)\/?$/.test(url.pathname)) branch = url.pathname.slice(1).replace(/\/$/, '');
+        if (/^(www\.)?svicc\.co\.kr$/i.test(url.hostname)) branch = 'svicc';
+      } catch (_) {}
+      if (!branch && el.closest('.hx-sg-cta-row')) {
+        var branchName = el.querySelector('.branch-name-2');
+        var branchText = branchName && branchName.textContent.trim();
+        if (branchText === '서초') branch = 'seocho';
+        if (branchText === '일산') branch = 'ilsan';
+      }
+      var sectionEl = el.closest('[data-measure-section],section[id]');
+      var section = sectionEl && (sectionEl.getAttribute('data-measure-section') || sectionEl.id) || '';
+      if (el.closest('#hxFctaModal,#hxFctaRoot,.hx-fcta-wrap')) section = 'consultation';
+      else if (el.closest('#hx-menu-overlay,.hx-menu-close,header,#Header')) section = 'menu';
+      else if (el.closest('footer,.footer')) section = 'footer';
+      else if (el.closest('.hx-sg-cta-row')) section = 'imaging_outro';
+      else if (el.matches('.hx-di-nav-link')) section = 'imaging_navigation';
+      else if (el.matches('.helix-top-btn')) section = 'back_to_top';
+      var label = el.getAttribute('data-measure-label') || el.getAttribute('aria-label') || el.getAttribute('alt') || '';
+      if (!label && !el.matches('input,select,textarea') && !el.closest('form')) label = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      var key = el.id ? '#' + el.id : el.tagName.toLowerCase() + '.' + (el.getAttribute('class') || '').trim().split(/\s+/).filter(Boolean).slice(0, 3).join('.');
+      if (!el.id && el.parentElement) key += ':nth-child(' + (Array.prototype.indexOf.call(el.parentElement.children, el) + 1) + ')';
+      window.HelixMeasure.emit('diagnostic_imaging_click', {
+        page: 'diagnostic_imaging', source_page: '/diagnostic-imaging',
+        section_key: section || 'imaging_content', item_type: targetKey ? 'section_navigation' : branch ? 'branch_link' : 'control',
+        control_id: el.id || '', control_key: key.slice(0, 160), control_label: (label || el.id || '클릭 요소').slice(0, 100),
+        target_key: targetKey, branch: branch, link_url: destination, conv: 0
+      });
+    };
+    document.addEventListener('click', trackImagingClick, true);
+  }
+
   // ScrollTrigger refresh can cancel a native smooth scroll at its current
   // offset. Finish the requested navigation, unless the visitor takes control.
   var cancelTopScroll = null;
@@ -73,6 +123,7 @@
   window.addEventListener('click', function (event) {
     var target = event.target && event.target.closest && event.target.closest('.helix-top-btn');
     if (!target) return;
+    if (imaging && typeof trackImagingClick === 'function') trackImagingClick(event);
     event.preventDefault();
     event.stopPropagation();
     if (window.HelixMeasure) window.HelixMeasure.emit('back_to_top', { item_type: 'navigation' });
