@@ -38,7 +38,7 @@
   var LINKS = {
     im: '/internal-medicine',  // 내과
     sg: '/surgery',  // 외과
-    di: null,  // 영상의학과
+    di: '/diagnostic-imaging',  // 영상의학과
     oc: null,  // 안과
     dt: null   // 치과
   };
@@ -145,8 +145,24 @@
     document.querySelectorAll('[class*="dept-card_"]').forEach(function (card) {
       var k = keyFor(card);
       if (!k || !(k in LINKS)) return;
-      /* 내과·외과의 실제 링크는 브라우저 기본 이동·새 탭·키보드 동작을 사용. */
-      if ((k === 'im' || k === 'sg') && card.tagName === 'A' && card.getAttribute('href')) return;
+      // Imaging cards are still divs in Webflow's three responsive layouts.
+      // Preserve their attributes and children while exposing a real anchor,
+      // including native keyboard, new-tab and crawler navigation.
+      if (k === 'di' && card.tagName !== 'A') {
+        var link = document.createElement('a');
+        Array.prototype.forEach.call(card.attributes, function (attribute) {
+          link.setAttribute(attribute.name, attribute.value);
+        });
+        link.href = LINKS.di;
+        link.setAttribute('aria-label', '영상의학과 자세히 보기');
+        link.style.color = 'inherit';
+        link.style.textDecoration = 'none';
+        while (card.firstChild) link.appendChild(card.firstChild);
+        card.parentNode.replaceChild(link, card);
+        card = link;
+      }
+      /* 실제 링크는 브라우저 기본 이동·새 탭·키보드 동작을 사용. */
+      if ((k === 'im' || k === 'sg' || k === 'di') && card.tagName === 'A' && card.getAttribute('href')) return;
       card.addEventListener('click', function () {
         var url = LINKS[k];
         if (url) location.href = url;
