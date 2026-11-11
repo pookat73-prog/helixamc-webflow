@@ -47,6 +47,7 @@
     if (/discover/.test(p)) return 'discover';
     if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     if (/^\/internal-medicine\/?$/.test(p)) return 'internal_medicine';
+    if (/^\/diagnostic-imaging\/?$/.test(p)) return 'diagnostic_imaging';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -230,6 +231,18 @@
       label: '외과 · 하단 지점 선택',
       event: 'surgery_branch_click_*'
     });
+  }
+
+  /* Page-specific handler and inspector share the exact clickable selector.
+     Specific common-event badges win; the fallback covers dynamic controls too. */
+  if (PAGE === 'diagnostic_imaging' && window.__helixImagingMeasure) {
+    TARGETS = TARGETS.concat([
+      { sel: '.hx-di-nav-link', label: '영상의학과 · 본문 이동', event: 'diagnostic_imaging_click' },
+      { sel: '.hx-sg-cta-row a', label: '영상의학과 · 지점 선택', event: 'diagnostic_imaging_click' },
+      { sel: '.helix-top-btn', label: '영상의학과 · 맨 위로', event: 'diagnostic_imaging_click / back_to_top' },
+      { sel: window.__helixImagingMeasure.selector, label: '영상의학과 · 클릭', event: 'diagnostic_imaging_click',
+        match: function (el) { return !el.disabled && !el.closest('#helix-noga-badge,[class*="hx-gai-"]'); } }
+    ]);
   }
 
   /* about(=/discover-helix) 페이지 전용 — .cta-style / .link-block 등은 다른
