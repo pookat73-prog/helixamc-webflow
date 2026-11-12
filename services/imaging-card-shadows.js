@@ -417,7 +417,7 @@
   else start();
 })();
 
-/* 장비 사진: 섹션 윗변이 화면의 55% 지점까지 들어오면 한 번만 연다. */
+/* 장비 사진: 섹션 윗변이 화면의 65% 지점까지 들어오면 한 번만 연다. */
 (function () {
   'use strict';
   if (window.__helixImagingEquipmentInit) return;
@@ -451,7 +451,7 @@
         }, {
           root: null,
           /* IO의 % 여백은 화면 너비 기준이므로 높이로 px를 계산한다. */
-          rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px',
+          rootMargin: '0px 0px -' + Math.round(window.innerHeight * .35) + 'px 0px',
           threshold: 0
         });
         sections.forEach(function (section) {
