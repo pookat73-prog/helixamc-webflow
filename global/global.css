@@ -740,6 +740,18 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
     transform: none;
   }
 }
+/* 모바일 연혁: 최초 표기는 한 덩어리로, 설명의 다음 줄은 콜론 뒤에 정렬한다. */
+@media (max-width: 767px) {
+  #hx-di-page > .whiteframe_open.for-m .div-332.for-m > .di-ref-history-kicker {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  #hx-di-page > .whiteframe_open.for-m .div-332.for-m > .heading-12 {
+    min-width: 0;
+    padding-inline-start: 1ch;
+    text-indent: -1ch;
+  }
+}
 /* 영상의학의 유산: 머리가 거의 다 그어진 뒤 꼬리가 따라잡아 사라지는 강조. */
 #hx-di-page .hx-di-legacy-marker {
   display: inline-block;
@@ -774,6 +786,23 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
   78% { transform: scaleX(1); clip-path: inset(0 0 0 35%); opacity: 1; }
   99% { opacity: 1; }
   100% { transform: scaleX(1); clip-path: inset(0 0 0 100%); opacity: 0; }
+}
+/* 모바일: 0→140→280ms에 그린 뒤, 모두 980ms부터 함께 지운다. */
+@media (max-width: 767px) {
+  #hx-di-page .hx-di-legacy-playing .hx-di-legacy-marker::before {
+    animation: hxDiLegacyMarkerDraw 280ms cubic-bezier(.22, .65, .3, 1) both,
+      hxDiLegacyMarkerErase 350ms cubic-bezier(.4, 0, .65, 1) forwards;
+    animation-delay: var(--hx-di-marker-mobile-delay, 0ms), 980ms;
+  }
+}
+@keyframes hxDiLegacyMarkerDraw {
+  0% { transform: scaleX(0); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+@keyframes hxDiLegacyMarkerErase {
+  0% { clip-path: inset(0); }
+  100% { clip-path: inset(0 0 0 100%); }
 }
 @media (prefers-reduced-motion: reduce) {
   #hx-di-page .hx-di-legacy-playing .hx-di-legacy-marker::before {

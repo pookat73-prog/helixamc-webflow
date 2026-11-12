@@ -147,7 +147,7 @@
   else start();
 })();
 
-/* 유산의 세 문구: 한 줄이 사라진 뒤 350ms 여유, 0→1400→2800ms. */
+/* 유산의 세 문구: PC는 순차 재생, 모바일은 빠르게 그린 뒤 함께 지운다. */
 (function () {
   'use strict';
   if (window.__helixImagingLegacyHighlightInit) return;
@@ -200,12 +200,13 @@
           var span = document.createElement('span');
           span.className = 'hx-di-legacy-marker';
           span.style.setProperty('--hx-di-marker-delay', (index * 1400) + 'ms');
+          span.style.setProperty('--hx-di-marker-mobile-delay', (index * 140) + 'ms');
           while (paragraph.firstChild) span.appendChild(paragraph.firstChild);
           paragraph.appendChild(span);
         });
         group.setAttribute('data-hx-di-legacy-highlight', 'ready');
         group.addEventListener('animationend', function (event) {
-          if (event.animationName === 'hxDiLegacyMarker' && event.target === paragraphs[2].firstElementChild) stop();
+          if ((event.animationName === 'hxDiLegacyMarker' || event.animationName === 'hxDiLegacyMarkerErase') && event.target === paragraphs[2].firstElementChild) stop();
         });
       });
       observe();
