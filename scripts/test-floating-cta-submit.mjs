@@ -48,7 +48,7 @@ function fixture(fetchImpl) {
   [
     'hxFctaForm', 'hxFctaSubmit', 'hxFctaDone', 'hxFctaToggle',
     'hxFctaModal', 'hxFctaModalClose', 'hxFctaModalBackdrop',
-    'hxFcta_owner', 'hxFcta_phone', 'hxFcta_privacy', 'hxFcta_privacy_err',
+    'hxFcta_owner', 'hxFcta_phone', 'hxFcta_memo', 'hxFcta_memo_err', 'hxFcta_privacy', 'hxFcta_privacy_err',
     'hxFcta_owner_err', 'hxFcta_phone_err', 'hxFcta_submit_err'
   ].forEach(id => { ids[id] = element(id); });
 
@@ -63,6 +63,7 @@ function fixture(fetchImpl) {
     form.resetCount++;
     ids.hxFcta_owner.value = '';
     ids.hxFcta_phone.value = '';
+    ids.hxFcta_memo.value = '';
     ids.hxFcta_privacy.checked = false;
   };
 
@@ -88,6 +89,7 @@ function fixture(fetchImpl) {
     backdrop: ids.hxFctaModalBackdrop,
     ownerInput: ids.hxFcta_owner,
     phoneInput: ids.hxFcta_phone,
+    memoInput: ids.hxFcta_memo,
     privacyEl: ids.hxFcta_privacy,
     privacyDetail: element('privacyDetail'),
     privacyMore: element('privacyMore'),
@@ -224,4 +226,41 @@ await testSuccess();
 await testFailureRetainsFormAndRetryClearsError();
 await testDuplicateClickAndLateSuccess();
 await testLateFailureAfterCloseReopen();
-console.log('All floating CTA submit handler tests passed (4 scenarios).');
+
+async function testOptionalMemo() {
+  const sent = [];
+  let fail = true;
+  const f = fixture(async (url, options) => {
+    sent.push(JSON.parse(options.body));
+    return fail ? response(false, { error: 'unavailable' }) : response(true, { name: '-memo-key' });
+  });
+  const memo = '가'.repeat(20);
+  f.ids.hxFcta_memo.value = memo;
+  await f.submit();
+  assert.equal(sent[0].inquiry, memo, '20-character memo reaches existing dashboard inquiry field');
+  assert.equal(f.ids.hxFcta_memo.value, memo, 'failed requests preserve memo for retry');
+  assert.equal(JSON.stringify(f.context.allGaEvents).includes(memo), false, 'memo text must not reach analytics');
+  fail = false;
+  await f.submit();
+  assert.equal(sent[1].inquiry, memo);
+  f.context.openModal();
+  assert.equal(f.ids.hxFcta_memo.value, '', 'successful form starts with an empty memo when reopened');
+  console.log('PASS optional 20-character memo persistence, retry, analytics exclusion and reset');
+}
+
+async function testOverlongMemoIsNotSubmitted() {
+  let calls = 0;
+  const f = fixture(async () => { calls++; return response(true, { name: '-unexpected' }); });
+  f.ids.hxFcta_memo.value = '나'.repeat(21);
+  await f.submit();
+  assert.equal(calls, 0, 'overlong programmatically supplied memo must not be sent');
+  assert.equal(f.ids.hxFcta_memo.focused, true);
+  assert.equal(f.ids.hxFcta_memo_err.textContent, '메모는 20자 이내로 입력해 주세요.');
+  assert.equal(JSON.stringify(f.context.allGaEvents).includes(f.ids.hxFcta_memo.value), false);
+  console.log('PASS memo length validation without sending reservation or memo text');
+}
+
+await testOptionalMemo();
+await testOverlongMemoIsNotSubmitted();
+
+console.log('All floating CTA submit handler tests passed (6 scenarios).');
