@@ -1032,3 +1032,10 @@ section.section > .div-block-220 {
     display: flex !important;
   }
 }
+
+/* 서초 의료진 — 모바일에서는 기존 #vets_M 목록만 표시한다. */
+@media screen and (max-width: 767px) {
+  html[data-wf-page="69d4224c0ef3c80daa5212e4"] #vets.whiteframe {
+    display: none;
+  }
+}
