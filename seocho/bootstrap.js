@@ -11,6 +11,27 @@
 (function () {
   'use strict';
 
+  /* 시설 사진은 본문을 파싱하기 전에 화면에 충분한 기존 CDN 변형을 선택한다.
+     늦게 로드되는 seocho.css 에서 교체하면 원본도 중복 요청될 수 있다.
+     1600px 을 넘지 않는 확인 범위에만 적용하고 나머지는 원본을 유지한다. */
+  (function prepareFacilityPhotos() {
+    var id = 'helix-seocho-facility-responsive-photos';
+    if (!document.head ||
+        document.documentElement.getAttribute('data-wf-page') !== '69d4224c0ef3c80daa5212e4' ||
+        document.getElementById(id)) return;
+    var style = document.createElement('style');
+    style.id = id;
+    style.textContent =
+      '@media (max-width:479px) and (max-resolution:3dppx), ' +
+      '(min-width:992px) and (max-width:1440px) and (max-resolution:1dppx) {' +
+      'html[data-wf-page="69d4224c0ef3c80daa5212e4"] .slide {' +
+      'background-image:url("https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6a17d99edbfb7df6f03aed2e_%EB%A1%9C%EB%B9%84-p-1600.webp");}' +
+      'html[data-wf-page="69d4224c0ef3c80daa5212e4"] .slide-3 {' +
+      'background-image:url("https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6a17d99f8174a1fa61c87a46_%ED%8C%90%EB%A7%A4%EB%8C%80-p-1600.webp");}' +
+      '}';
+    document.head.appendChild(style);
+  })();
+
   /* STAGING SELF-REDIRECT — Webflow head 는 @main 으로 고정이라
      새 파일을 FILES 에 추가하는 변경은 main 머지 전엔 staging 에
      안 들어왔던 문제. 스테이징 도메인이면 @staging bootstrap 을
