@@ -132,7 +132,7 @@
           '<div class="hx-fcta-form__group">',
             '<label class="hx-fcta-form__label" for="hxFcta_memo">메모 (선택 · 최대 20자)</label>',
             '<input class="hx-fcta-form__input" id="hxFcta_memo" name="메모"',
-              ' type="text" maxlength="20" placeholder="예: 오후 통화 희망"',
+              ' type="text" maxlength="20" placeholder="예: 구토·설사, 오후 통화 희망"',
               ' autocomplete="off" enterkeyhint="next" aria-describedby="hxFcta_memo_err">',
             '<p class="hx-fcta-form__error" id="hxFcta_memo_err" role="alert"></p>',
           '</div>',
