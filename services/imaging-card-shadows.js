@@ -152,20 +152,21 @@
   'use strict';
   if (window.__helixImagingLegacyHighlightInit) return;
   window.__helixImagingLegacyHighlightInit = true;
-  var groups = [], observer, active = null, played = false;
+  var groups = [], observer, active = null;
   var viewportWidth = 0;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   function stop() {
     if (observer) observer.disconnect();
     groups.forEach(function (group) {
+      if (!group.classList.contains('hx-di-legacy-playing')) return;
       group.classList.remove('hx-di-legacy-playing');
       group.setAttribute('data-hx-di-legacy-highlight', 'done');
     });
     active = null;
   }
   function play(group) {
-    if (played || reduceMotion.matches || !group.offsetWidth) return;
-    played = true;
+    if (reduceMotion.matches || !group.offsetWidth ||
+        group.getAttribute('data-hx-di-legacy-highlight') !== 'ready') return;
     active = group;
     observer.disconnect();
     group.setAttribute('data-hx-di-legacy-highlight', 'playing');
@@ -174,19 +175,18 @@
   function observe() {
     if (observer) observer.disconnect();
     var width = document.documentElement.clientWidth;
-    if (played || reduceMotion.matches) {
-      /* 모바일 주소창에 따른 높이 변화는 재생을 끊지 않는다. */
-      if (active && (reduceMotion.matches || width !== viewportWidth)) stop();
-      viewportWidth = width;
-      return;
-    }
+    /* 세로·가로는 서로 다른 문구 그룹이다. 숨겨진 쪽의 재생까지 완료하지 않는다. */
+    if (active && (reduceMotion.matches || width !== viewportWidth || !active.offsetWidth)) stop();
     viewportWidth = width;
+    if (reduceMotion.matches) return;
     observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting && entry.target.offsetWidth) play(entry.target);
       });
     }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * (window.matchMedia('(max-width: 767px)').matches ? .35 : .45)) + 'px 0px', threshold: 0 });
-    groups.forEach(function (group) { observer.observe(group); });
+    groups.forEach(function (group) {
+      if (group.getAttribute('data-hx-di-legacy-highlight') === 'ready') observer.observe(group);
+    });
   }
   function start() {
     try {
@@ -211,7 +211,7 @@
       });
       observe();
       window.addEventListener('resize', observe, { passive: true });
-      function motionChanged(event) { if (event.matches) { played = true; stop(); } }
+      function motionChanged(event) { if (event.matches) stop(); }
       if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', motionChanged);
       else if (reduceMotion.addListener) reduceMotion.addListener(motionChanged);
       window.__helixImagingLegacyHighlightReady = true;
