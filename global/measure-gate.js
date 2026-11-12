@@ -75,7 +75,30 @@
   /* 한쪽만 남아 있으면 다른 쪽을 되살리고, 켜져 있으면 만료 시계도 되감는다 */
   if (off) writeMark(true);
 
-  window.__helixNoMeasure = off;
+  window.__helixEmbeddedMeasure = window.self !== window.top;
+  var blocked = off || /\.webflow\.io$/i.test(location.hostname) || window.__helixEmbeddedMeasure;
+  window.__helixNoMeasure = blocked;
+  /* Replace an already-created Webflow gtag too. Merely keeping it would let
+     excluded visits continue to send through the earlier global tag. */
+  if (blocked) {
+    window['ga-disable-G-PWCB5MVC32'] = true;
+    window.gtag = function () {};
+    window.fbq = function () {};
+    window.ttq = { page: function () {}, track: function () {} };
+    /* Older cached/staging CTA files wrote phone analytics with fetch rather
+       than gtag. Exclude that exact analytics endpoint too, while preserving
+       actual lead submissions and every unrelated fetch. */
+    if (typeof window.fetch === 'function') {
+      var originalFetch = window.fetch;
+      window.fetch = function (input) {
+        var url = typeof input === 'string' ? input : input && input.url;
+        if (/^https:\/\/helixamc-pm-default-rtdb\.firebaseio\.com\/branches\/[^/]+\/phone_clicks\.json(?:[?#]|$)/.test(url || '')) {
+          return Promise.resolve(new Response(null, { status: 204 }));
+        }
+        return originalFetch.apply(this, arguments);
+      };
+    }
+  }
 
   if (toggled === true) {
     console.log('%c[helix-gate] 이 브라우저는 이제 측정에서 제외됩니다. ' +
@@ -93,7 +116,7 @@
   /* 뒤이어 로드될 모듈들이 안심하고 gtag 를 부를 수 있도록 빈 껍데기만
      만들어 둔다. ga4-base.js 의 스테이징 게이트와 같은 방식. */
   window.dataLayer = window.dataLayer || [];
-  if (typeof window.gtag !== 'function') { window.gtag = function () {}; }
+  window.gtag = function () {};
 
   /* ── 지금 제외 중이라는 걸 화면에 보여준다 ───────────────────────
      여태 콘솔에만 찍혀서, 켜졌는지 확인하려면 매번 F12 를 열어야 했다.
@@ -140,4 +163,66 @@
   } else {
     badge();
   }
+})();
+
+/* Site-head entry: establish exclusion synchronously, then load the same
+   measurement pipeline on every top-level page, including certificate URLs.
+   Page bootstraps keep their existing guards and cannot initialize it twice. */
+(function () {
+  'use strict';
+  var entry = document.currentScript;
+  if (!entry || !entry.hasAttribute('data-helix-measurement-entry') || window.__helixMeasurementEntry) return;
+  window.__helixMeasurementEntry = true;
+  var match = entry.src.match(/@([0-9a-f]{7,40})\/global\/measure-gate\.js/);
+  var fallback = match && match[1];
+  if (window.__helixNoMeasure || !fallback) {
+    window.__helixMeasurementReady = Promise.resolve();
+    return;
+  }
+  var files = ['ga4-base.js', 'session.js', 'sheet-log.js', 'scroll-depth.js', 'page-time.js'];
+  var branch = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
+  var key = 'helix.measurement.sha.' + branch;
+  var cached;
+  try { cached = JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) {}
+  function valid(sha) { return /^[0-9a-f]{40}$/i.test(sha || ''); }
+  function load(ref) {
+    return files.reduce(function (ready, file) {
+      return ready.then(function () {
+        return new Promise(function (resolve) {
+          function attempt(version) {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + version + '/global/' + file;
+            script.async = false;
+            script.onload = resolve;
+            script.onerror = function () {
+              if (version !== fallback) { attempt(fallback); return; }
+              console.warn('[helix-measurement] load failed:', file); resolve();
+            };
+            document.head.appendChild(script);
+          }
+          attempt(ref);
+        });
+      });
+    }, Promise.resolve());
+  }
+  var fresh = /[?&]fresh=1(?:&|$)/.test(location.search);
+  var resolved;
+  if (!fresh && cached && valid(cached.sha) && Date.now() - cached.t < 600000) {
+    resolved = Promise.resolve(cached.sha);
+  } else {
+    /* Bound a stalled API request; the pinned entry is also a safe recovery. */
+    resolved = Promise.race([
+      fetch('https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/' + branch,
+        { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('ref unavailable'); return r.json(); })
+        .then(function (data) {
+          var sha = data.object && data.object.sha;
+          if (!valid(sha)) throw new Error('invalid ref');
+          try { localStorage.setItem(key, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
+          return sha;
+        }),
+      new Promise(function (resolve) { setTimeout(function () { resolve(fallback); }, 2500); })
+    ]).catch(function () { return fallback; });
+  }
+  window.__helixMeasurementReady = resolved.then(load);
 })();

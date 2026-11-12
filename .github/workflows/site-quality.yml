@@ -34,11 +34,27 @@ jobs:
       - name: Test About loading priority and version lookup failures
         run: node scripts/test-about-bootstrap.mjs
 
-      - name: Validate static doctor pages and single source data
-        run: node scripts/test-doctor-pages.mjs
-
       - name: Test floating CTA Firebase submission
         run: node scripts/test-floating-cta-submit.mjs
+
+      - name: Test dynamic section measurement without sending analytics
+        run: node scripts/test-section-reach.mjs
+
+      - name: Test surgery CTA attribution and analytics exclusion without network
+        run: node scripts/test-surgery-cta-measurement.mjs
+
+      - name: Test shared analytics coverage, reading clocks and transport fallbacks
+        run: node scripts/test-measurement-coverage.mjs
+
+      - name: Test quickbar and Ilsan schedule attribution
+        run: |
+          node scripts/test-quickbar-measurement.mjs
+          node scripts/test-ilsan-schedule-measurement.mjs
+          node scripts/test-home-faq-measurement.mjs
+          node scripts/test-footer-email-measurement.mjs
+
+      - name: Validate static doctor pages and single source data
+        run: node scripts/test-doctor-pages.mjs
 
       - name: Test floating CTA keyboard focus
         run: node scripts/test-floating-cta-focus.mjs

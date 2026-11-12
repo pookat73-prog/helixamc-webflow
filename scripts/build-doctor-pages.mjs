@@ -100,7 +100,7 @@ export function build({outDir='/tmp/helix-doctor-preview', origin='https://helix
     const {doctor:d, path, department} = item;
     const title = `${d.name}${d.title ? ' ' + d.title : ''} · ${department} | 헬릭스동물메디컬센터 서초 본원`;
     const description = `${d.name}${d.title ? ' ' + d.title : ''}의 소속 분과와 학력·이력 안내. 헬릭스동물메디컬센터 서초 본원 ${department}.`;
-    const head = `<title>${escape(title)}</title>\n<meta name="description" content="${escape(description)}">\n<link rel="canonical" href="${origin + path}">\n<meta property="og:url" content="${origin + path}">\n<meta property="og:title" content="${escape(title)}">\n<meta property="og:description" content="${escape(description)}">\n${css}\n${scripts}`;
+    const head = `<title>${escape(title)}</title>\n<meta name="description" content="${escape(description)}">\n<link rel="canonical" href="${origin + path}">\n<meta property="og:url" content="${origin + path}">\n<meta property="og:title" content="${escape(title)}">\n<meta property="og:description" content="${escape(description)}">\n<meta property="og:type" content="website">\n${d.photo ? `<meta property="og:image" content="${escape(d.photo)}">\n` : ''}${css}\n${scripts}`;
     const body = profileBody(item, sourceHash);
     writeFileSync(join(outDir,path.slice(1)+'.html'), `<!doctype html>\n<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">\n${head}</head><body>${body}</body></html>\n`);
     writeFileSync(join(outDir,'fragments',d.slug+'.html'),body+'\n');

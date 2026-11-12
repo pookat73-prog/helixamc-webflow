@@ -40,6 +40,45 @@ window.HelixBranch = window.HelixBranch || (function () {
   };
 })();
 
+/* 일산 진료 소식 외부 링크 — #intro / #vets의 실제 링크만 측정.
+   GA4 자동 외부 click 및 푸터 SNS와 합산하지 않는다. 열람 완료/전환 아님.
+   gtag 한 번으로 GA4와 sheet-log 양쪽 전송 경로를 재사용한다. */
+(function () {
+  'use strict';
+  if (!/^\/ilsan\/?$/.test(location.pathname)) return;
+  if (window.__helixIlsanScheduleTrack) return;
+  window.__helixIlsanScheduleTrack = true;
+
+  var SELECTOR = '#intro a[href], #vets a.vets-cta-button[href]';
+  var qa = /[?&]ilsan-schedule-qa=(desktop|mobile)(?:&|$)/.exec(location.search);
+
+  document.addEventListener('click', function (e) {
+    if (/\.webflow\.io$/i.test(location.hostname) || window.__helixNoMeasure) return;
+    var target = e.target;
+    if (!target || typeof target.closest !== 'function') return;
+    var link = target.closest(SELECTOR);
+    if (!link || link.closest('footer, [class*="footer" i]')) return;
+    var url;
+    try { url = new URL(link.href, location.href); } catch (err) { return; }
+    if (url.protocol !== 'https:' || url.hostname !== 'www.instagram.com' ||
+        url.port || url.username || url.password || url.pathname !== '/helixamc_ilsan/') return;
+    if (typeof window.gtag !== 'function') return;
+    var device = window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+    var params = {
+      item_type: 'schedule_link_click',
+      branch: '일산',
+      page: 'ilsan',
+      section: link.closest('#intro') ? 'hero' : 'doctors',
+      device: device,
+      value: link.href,
+      transport_type: 'beacon'
+    };
+    if (qa) { params.qa_test = qa[1]; params.debug_mode = true; }
+    try { window.gtag('event', 'ilsan_schedule_link_click_' + device, params); } catch (err) {}
+    /* preventDefault / window.open 없이 원래 링크 동작을 유지한다. */
+  }, true);
+})();
+
 (function () {
   'use strict';
 
@@ -1864,6 +1903,32 @@ window.HelixBranch = window.HelixBranch || (function () {
       var next = slider.querySelector('.w-slider-arrow-right');
       if (prev) bindArrow(slider, prev, 'prev');
       if (next) bindArrow(slider, next, 'next');
+      [].slice.call(slider.querySelectorAll('.w-slider-dot')).forEach(function (dot) { bindArrow(slider, dot, 'dot'); });
+      if (!slider.__helixGalleryGestures) {
+        slider.__helixGalleryGestures = true;
+        var startX = null, startIndex = '';
+        slider.addEventListener('touchstart', function (event) {
+          startX = event.touches[0] && event.touches[0].clientX;
+          startIndex = slideInfo(slider).index;
+        }, { passive: true });
+        slider.addEventListener('touchend', function (event) {
+          var end = event.changedTouches[0];
+          if (startX === null || !end || Math.abs(end.clientX - startX) < 30) return;
+          startX = null;
+          setTimeout(function () {
+            var info = slideInfo(slider);
+            if (info.index && info.index !== startIndex) track('swipe', info);
+          }, 120);
+        }, { passive: true });
+        slider.addEventListener('keydown', function (event) {
+          if (!/^(ArrowLeft|ArrowRight|Home|End)$/.test(event.key)) return;
+          var before = slideInfo(slider).index;
+          setTimeout(function () {
+            var info = slideInfo(slider);
+            if (info.index && info.index !== before) track('keyboard', info);
+          }, 120);
+        });
+      }
       log('bound', !!prev, !!next);
     });
   }

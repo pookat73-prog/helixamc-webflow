@@ -48,6 +48,7 @@
   function pageKey() {
     var p = (location.pathname || '/').toLowerCase();
     if (/discover/.test(p)) return 'discover';
+    if (/(^|\/)surgery(\/|$)/.test(p)) return 'surgery';
     /* 진료과목 페이지 — 이 분기가 없으면 방문이 home 으로 잘못 집계된다
        (응급증상이 겪었던 것과 같은 문제). */
     if (/(^|\/)services(\/|$)/.test(p) ||
@@ -83,8 +84,8 @@
   var SECTIONS = {
     home: [
       { key: 'hero',   label: '메인 첫화면',   sel: '.home_slogan, [class*="lackFrame_Image"]' },
-      { key: 'sec2',   label: '섹션2',         sel: '.section2-heading', nth: 0 },
-      { key: 'sec3',   label: '섹션3',         sel: '.section2-heading', nth: 1 },
+      { key: 'sec2',   label: '섹션2',         sel: '.home_background_2 h2.home_title', fallbackSel: '.section2-heading', fallbackNth: 0 },
+      { key: 'sec3',   label: '섹션3',         sel: '.home_background_3 h2.home_title, .home_background_3-mobile h2.home_title', fallbackSel: '.section2-heading', fallbackNth: 1 },
       { key: 'branch', label: '지점 카드',     sel: '.home_branch-card' },
       { key: 'svicc',  label: 'SVICC',        sel: '.home_background_svicc' }
     ],
@@ -124,6 +125,26 @@
       { key: 'g2',    label: '인터벤션',              sel: '.hst_col', nth: 1, self: true },
       { key: 'g3',    label: '고난도 수술',           sel: '.hst_col', nth: 2, self: true },
       { key: 'g4',    label: '특수 전문 치료',        sel: '.hst_col', nth: 3, self: true }
+    ],
+    surgery: [
+      /* 페이지 판정은 이미 /surgery로 제한된다. 없어진 .hx-sg-page에
+         의존하면 본문을 읽거나 지점 버튼을 눌러도 기록이 남지 않는다.
+         장비는 현재 같은 section 안의 카드 5개이므로 카드 자체를 관측한다.
+         옛 section 구조는 폴백으로 유지한다. */
+      { key: 'hero',       label: '첫화면',               sel: '.sj_intro_frame', fallbackSel: 'section.hx-sg-responsive-frame1' },
+      { key: 'expertise',  label: '진료 분야와 재수술',    sel: 'section.hx-sg-responsive-frame2' },
+      { key: 'equipment1', label: '핵심 장비 1',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 0, self: true, fallbackSel: 'section.hx-sg-responsive-frame3' },
+      { key: 'equipment2', label: '핵심 장비 2',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 1, self: true, fallbackSel: 'section.hx-sg-responsive-frame4' },
+      { key: 'equipment3', label: '핵심 장비 3',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 2, self: true, fallbackSel: 'section.hx-sg-responsive-frame5' },
+      { key: 'safety',     label: '안전 시스템',          sel: '#hx-sg-safety' },
+      { key: 'principle',  label: '수술 철학과 진료 기준', sel: '#hx-sg-principles' },
+      { key: 'pain',       label: '통증 관리',            sel: '.hx-sg-pain-oval' },
+      { key: 'daily',      label: '일상 회복 메시지',     sel: 'section.hx-sg-daily-comfort-banner' },
+      { key: 'aftercare',  label: '예후 관리',            sel: '#hx-sg-aftercare' },
+      { key: 'outro',      label: '지점 선택',            sel: '.hx-sg-cta-row' },
+      /* 기존 section_index는 보존하고 추가 장비는 뒤에 붙인다. */
+      { key: 'equipment4', label: '핵심 장비 4',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 3, self: true },
+      { key: 'equipment5', label: '핵심 장비 5',          sel: '#hx-sg-equipment .hx-sg-equipment-card', nth: 4, self: true }
     ],
     seocho: [
       { key: 'hero',  label: '첫화면',   sel: 'section[class*="intro_backgra"]' },
@@ -257,6 +278,7 @@
 
   /* [{ def, els: [...], total: 누적ms, since: 시작ts|null, sent: 전송한ms }] */
   var tracked = [];
+  var dwellStarted = false;
   var lastActivity = Date.now();
   var docHidden = false;
 
@@ -338,7 +360,8 @@
   }
 
   function initDwell() {
-    if (!tracked.length) return;
+    if (!tracked.length || dwellStarted) return;
+    dwellStarted = true;
     docHidden = !!document.hidden;
 
     var ticking = false;
@@ -387,54 +410,91 @@
       }
     }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
 
-    var found = 0;
-    for (var i = 0; i < DEFS.length; i++) {
-      var def = DEFS[i];
-      def.index = i + 1;
-      var nodes = document.querySelectorAll(def.sel);
-      if (!nodes.length) { log('missing section', def.key, def.sel); continue; }
-
-      /* nth 지정(홈 섹션2/3 처럼 같은 셀렉터가 순서로만 구분되는 경우) */
-      var picked = [];
-      if (typeof def.nth === 'number') {
-        if (nodes[def.nth]) picked.push(nodes[def.nth]);
-      } else {
-        picked = [].slice.call(nodes);
-      }
-
-      /* 듀얼 마크업이면 후보를 모두 관측해두고, 실제로 보이는 쪽이
-         먼저 교차할 때 1회만 발사한다(fired 가드로 중복 차단). */
-      var observed = 0;
-      var els = [];
-      for (var j = 0; j < picked.length; j++) {
-        var target = def.self ? picked[j] : resolve(picked[j]);
-        /* ⚠️ 한 <section> 안에 여러 파트가 들어 있는 경우(홈: 지점 카드 +
-           SVICC 배너 / 진료과목: 진료과 카드 5장) 승격하면 전부 같은
-           section 을 가리킨다. 먼저 온 파트가 그 section 을 차지해 버려
-           뒤 파트는 관측 대상이 0개가 되고, 도달·체류가 통째로 안 잡혔다.
-           (실측: home_sec_svicc 0건 / services_sec_sg·di·oc·dt 전부 0건,
-            반면 같은 기간 svicc 버튼 클릭은 22건 — 클릭은 있는데 도달이
-            0인 모순으로 발각)
-           그럴 땐 승격을 포기하고 요소 자체를 관측한다. 섹션 상단 대신
-           그 파트 상단 기준이 되어 오히려 정확하다. */
-        if (target && target.__helixSecDef && target.__helixSecDef !== def) {
-          target = picked[j];
+    function refreshTargets() {
+      var changed = false;
+      for (var i = 0; i < DEFS.length; i++) {
+        var def = DEFS[i];
+        def.index = i + 1;
+        var nodes = document.querySelectorAll(def.sel);
+        var nth = def.nth;
+        if (!nodes.length && def.fallbackSel) {
+          nodes = document.querySelectorAll(def.fallbackSel);
+          nth = def.fallbackNth;
         }
-        if (!target || target.__helixSecDef) continue;
-        target.__helixSecDef = def;
-        io.observe(target);
-        els.push(target);
-        observed++;
+
+        /* 옛 홈 heading 폴백 및 순서로 구분하는 기존 페이지 정의 */
+        var picked = [];
+        if (typeof nth === 'number') {
+          if (nodes[nth]) picked.push(nodes[nth]);
+        } else {
+          picked = [].slice.call(nodes);
+        }
+
+        /* 듀얼 마크업이면 후보를 모두 관측해두고, 실제로 보이는 쪽이
+           먼저 교차할 때 1회만 발사한다(fired 가드로 중복 차단). */
+        var els = [];
+        for (var j = 0; j < picked.length; j++) {
+          var target = def.self ? picked[j] : resolve(picked[j]);
+          /* ⚠️ 한 <section> 안에 여러 파트가 들어 있는 경우(홈: 지점 카드 +
+             SVICC 배너 / 진료과목: 진료과 카드 5장) 승격하면 전부 같은
+             section 을 가리킨다. 먼저 온 파트가 그 section 을 차지해 버려
+             뒤 파트는 관측 대상이 0개가 되고, 도달·체류가 통째로 안 잡혔다.
+             (실측: home_sec_svicc 0건 / services_sec_sg·di·oc·dt 전부 0건,
+              반면 같은 기간 svicc 버튼 클릭은 22건 — 클릭은 있는데 도달이
+              0인 모순으로 발각)
+             그럴 땐 승격을 포기하고 요소 자체를 관측한다. 섹션 상단 대신
+             그 파트 상단 기준이 되어 오히려 정확하다. */
+          if (target && target.__helixSecDef && target.__helixSecDef !== def) {
+            target = picked[j];
+          }
+          if (!target || (target.__helixSecDef && target.__helixSecDef !== def)) continue;
+          target.__helixSecDef = def;
+          if (els.indexOf(target) < 0) els.push(target);
+        }
+        var previous = def.els || [];
+        if (previous.length === els.length && previous.every(function (el, index) { return el === els[index]; })) continue;
+        /* 새 DOM으로 바꾸기 전에 기존 체류 증가분을 닫아 중복·유실을 막는다. */
+        if (!changed) recompute(true);
+        changed = true;
+        for (var k = 0; k < previous.length; k++) if (els.indexOf(previous[k]) < 0) io.unobserve(previous[k]);
+        for (var k = 0; k < els.length; k++) if (previous.indexOf(els[k]) < 0 && !fired[def.key]) io.observe(els[k]);
+        def.els = els;
+        var entry = null;
+        for (var k = 0; k < tracked.length; k++) if (tracked[k].def === def) { entry = tracked[k]; break; }
+        if (entry) entry.els = els;
+        else if (els.length) tracked.push({ def: def, els: els, total: 0, since: null, sent: 0 });
       }
-      if (observed) {
-        found++;
-        def.els = els;              /* 깊이(depth_*) 계산에 쓴다 */
-        /* 도달과 같은 요소로 체류도 잰다 (셀렉터 이원화 방지) */
-        tracked.push({ def: def, els: els, total: 0, since: null, sent: 0 });
-      }
+      initDwell();
+      recompute(false);
+      log('page =', PAGE, '| sections tracked =', tracked.length, '/', DEFS.length);
     }
-    log('page =', PAGE, '| sections observed =', found, '/', DEFS.length);
-    initDwell();
+    /* 클래스 후처리·지연 삽입·모바일 DOM 교체를 같은 정의에 연결한다.
+       fired/total/sent는 재탐색 때 초기화하지 않고 타이머도 하나만 유지한다. */
+    var pending = false;
+    function scheduleRefresh() {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; refreshTargets(); });
+    }
+    var mutations = typeof MutationObserver === 'function' ? new MutationObserver(scheduleRefresh) : null;
+    function watch() {
+      if (mutations) mutations.observe(document.body || document.documentElement, {
+        childList: true, subtree: true, attributes: true, attributeFilter: ['class']
+      });
+    }
+    refreshTargets();
+    watch();
+    window.addEventListener('load', scheduleRefresh, { once: true });
+    window.addEventListener('resize', scheduleRefresh, { passive: true });
+    window.addEventListener('pagehide', function () { if (mutations) mutations.disconnect(); });
+    window.addEventListener('pageshow', function (event) {
+      if (!event.persisted) return;
+      docHidden = !!document.hidden;
+      lastActivity = Date.now();
+      watch();
+      recompute(false);
+      scheduleRefresh();
+    });
   }
 
   if (document.readyState === 'loading') {

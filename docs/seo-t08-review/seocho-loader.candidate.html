@@ -1,0 +1,49 @@
+<!-- Review candidate only. Replace the existing SEO loader after reconciling
+     the latest saved page head; never replace the whole head with this file. -->
+<script>
+(function(){
+  var b=/\.webflow\.io$/i.test(location.hostname)?"staging":"main";
+  var branchId="https://helix-amc.com/seocho#branch";
+  function hasCanonicalBranch(){
+    var scripts=document.querySelectorAll('script[type="application/ld+json"]');
+    var branches=[];
+    for(var i=0;i<scripts.length;i++){
+      try{
+        var data=JSON.parse(scripts[i].textContent);
+        var graph=data["@graph"] || [data];
+        for(var j=0;j<graph.length;j++){
+          if(graph[j]["@id"]===branchId && Object.keys(graph[j]).length>1)branches.push(graph[j]);
+        }
+      }catch(e){}
+    }
+    if(branches.length!==1)return false;
+    var node=branches[0];
+    var types=[].concat(node["@type"] || []);
+    var credentials=node.hasCredential || [];
+    var ids=credentials.map(function(c){return c["@id"];});
+    return types.indexOf("LocalBusiness")!==-1 &&
+      Array.isArray(node.employee) && node.employee.length>0 &&
+      ["aaha-cert","emergency-cert","cat-cert"].every(function(slug){
+        return ids.indexOf("https://helix-amc.com/"+slug+"#credential")!==-1;
+      });
+  }
+  fetch("https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@"+b+"/seo-snippets/seocho.html")
+    .then(function(r){return r.ok?r.text():"";})
+    .then(function(h){
+      if(!h)return;
+      var d=document.createElement("div");d.innerHTML=h;
+      var n=d.querySelectorAll('script[type="application/ld+json"]');
+      var canonical=hasCanonicalBranch();
+      for(var i=0;i<n.length;i++){
+        var data=JSON.parse(n[i].textContent);
+        if(canonical && Array.isArray(data["@graph"])){
+          data["@graph"]=data["@graph"].filter(function(node){
+            return node["@id"]!==branchId;
+          });
+        }
+        var s=document.createElement("script");s.type="application/ld+json";
+        s.textContent=JSON.stringify(data);document.head.appendChild(s);
+      }
+    }).catch(function(){});
+})();
+</script>

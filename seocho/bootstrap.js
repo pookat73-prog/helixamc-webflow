@@ -175,7 +175,7 @@
     if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
       return;
     }
-    /* Match the modules' own guards; retry if initial setup did not succeed. */
+    /* Retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',

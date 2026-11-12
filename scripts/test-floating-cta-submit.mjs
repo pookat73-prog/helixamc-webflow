@@ -15,8 +15,8 @@ function between(startMarker, endMarker) {
 
 const errorFns = between('  function setError(', "  ownerInput.addEventListener('input'");
 const modalFns = between('  function openModal() {', "  backdrop.addEventListener('click', closeModal);");
-const submitFns = between('  async function persistLead(', '  function onSubmitSuccess() {');
-const successFn = between('  function onSubmitSuccess() {', '  } // end run()');
+const submitFns = between('  async function persistLead(', '  function onSubmitSuccess(');
+const successFn = between('  function onSubmitSuccess(', '  } // end run()');
 
 function classList() {
   const values = new Set();
@@ -48,8 +48,7 @@ function fixture(fetchImpl) {
   [
     'hxFctaForm', 'hxFctaSubmit', 'hxFctaDone', 'hxFctaToggle',
     'hxFctaModal', 'hxFctaModalClose', 'hxFctaModalBackdrop',
-    'hxFcta_owner', 'hxFcta_phone', 'hxFcta_pet', 'hxFcta_symptom',
-    'hxFcta_etc', 'hxFcta_privacy', 'hxFcta_privacy_err',
+    'hxFcta_owner', 'hxFcta_phone', 'hxFcta_privacy', 'hxFcta_privacy_err',
     'hxFcta_owner_err', 'hxFcta_phone_err', 'hxFcta_submit_err'
   ].forEach(id => { ids[id] = element(id); });
 
@@ -64,16 +63,11 @@ function fixture(fetchImpl) {
     form.resetCount++;
     ids.hxFcta_owner.value = '';
     ids.hxFcta_phone.value = '';
-    ids.hxFcta_pet.value = '';
-    ids.hxFcta_symptom.value = '';
-    ids.hxFcta_etc.value = '';
     ids.hxFcta_privacy.checked = false;
   };
 
   ids.hxFcta_owner.value = '모의 보호자';
   ids.hxFcta_phone.value = '01012345678';
-  ids.hxFcta_pet.value = '모의 반려동물';
-  ids.hxFcta_symptom.value = '모의 상담 내용';
   ids.hxFcta_privacy.checked = true;
 
   const modal = ids.hxFctaModal;
@@ -94,23 +88,18 @@ function fixture(fetchImpl) {
     backdrop: ids.hxFctaModalBackdrop,
     ownerInput: ids.hxFcta_owner,
     phoneInput: ids.hxFcta_phone,
-    petInput: ids.hxFcta_pet,
-    symptomInput: ids.hxFcta_symptom,
-    etcInput: ids.hxFcta_etc,
     privacyEl: ids.hxFcta_privacy,
-    chipEls: [],
-    etcWrap: element('etcWrap'),
     privacyDetail: element('privacyDetail'),
     privacyMore: element('privacyMore'),
     modalReturnFocus: ids.hxFctaToggle,
     phoneDigits: () => ids.hxFcta_phone.value.replace(/\D/g, ''),
-    chipValues: () => [],
+    getAttributionUtm: () => ({ utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '' }),
     fetch: fetchImpl,
     LEADS_URL: 'https://mock.invalid/branches/seocho/leads.json',
     CTA_PAGE: 'home',
     formSrc: 'floating_cta',
-    gaEvents: [],
-    ga(name, data) { context.gaEvents.push({ name, data }); },
+    gaEvents: [], allGaEvents: [],
+    ga(name, data) { context.allGaEvents.push({ name, data }); if (name === 'cta_form_submit') context.gaEvents.push({ name, data }); },
     location: { search: '', pathname: '/' },
     navigator: { userAgent: 'submit-handler-test' },
     URLSearchParams: class { get() { return null; } }
@@ -118,6 +107,7 @@ function fixture(fetchImpl) {
 
   vm.runInNewContext([
     guardDecl,
+    source.match(/^[ \t]*var formTracking = .*;$/m)[0],
     errorFns,
     modalFns,
     submitFns,
@@ -139,6 +129,14 @@ async function testSuccess() {
     calls++;
     assert.equal(url, 'https://mock.invalid/branches/seocho/leads.json');
     assert.equal(options.method, 'POST');
+    const lead = JSON.parse(options.body);
+    assert.equal(lead.name, '모의 보호자');
+    assert.equal(lead.phone, '01012345678');
+    assert.equal(lead.petType, '미선택');
+    for (const field of ['petName', 'species', 'petAge', 'ageGroup', 'conditionEtc', 'symptom', 'inquiry']) {
+      assert.equal(lead[field], '', field + ' remains compatible without collecting animal details');
+    }
+    assert.deepEqual(lead.conditions, []);
     return response(true, { name: '-mock-key' });
   });
   await f.submit();
@@ -227,4 +225,3 @@ await testFailureRetainsFormAndRetryClearsError();
 await testDuplicateClickAndLateSuccess();
 await testLateFailureAfterCloseReopen();
 console.log('All floating CTA submit handler tests passed (4 scenarios).');
-

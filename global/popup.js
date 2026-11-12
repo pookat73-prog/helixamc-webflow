@@ -106,6 +106,7 @@
     markSeen();
 
     function destroy() {
+      if (overlay.classList.contains('is-open') && window.HelixMeasure) window.HelixMeasure.emit('notice_popup_close', { item_type: 'notice' });
       overlay.classList.remove('is-open');
       document.removeEventListener('keydown', onKey);
       setTimeout(function () {
@@ -125,7 +126,10 @@
     document.addEventListener('keydown', onKey);
 
     requestAnimationFrame(function () {
-      requestAnimationFrame(function () { overlay.classList.add('is-open'); });
+      requestAnimationFrame(function () {
+        overlay.classList.add('is-open');
+        if (window.HelixMeasure) window.HelixMeasure.emit('notice_popup_view', { item_type: 'notice' });
+      });
     });
   }
 

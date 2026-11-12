@@ -200,8 +200,8 @@
       var state = { v: 0 };
       gsap.to(state, {
         v: 1,
-        duration: duration,
-        delay: delay,
+        duration: typeof window.__hxHomeFirstpaintReveal === 'function' ? 0 : duration,
+        delay: typeof window.__hxHomeFirstpaintReveal === 'function' ? 0 : delay,
         ease: ease,
         onStart: function () {
           log(name + ' fade start (delay=' + delay + 's)');

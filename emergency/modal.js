@@ -295,13 +295,24 @@
      잘못 눌렀거나 원하던 내용이 아니었다는 뜻이라 기록하지 않는다. */
   var READ_MIN_MS = 2000;
   var readFrom = 0, readOf = null;
+  var symptomReader = null, openedSymptom = null;
 
   function readStart(data) {
+    readEnd();
+    openedSymptom = data;
+    if (window.HelixMeasure) {
+      var dev = window.HelixVP ? window.HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop');
+      symptomReader = window.HelixMeasure.reader('emergency_symptom_read_' + dev, {
+        item_type: 'emergency_symptom_read', symptom: data.name || data.slug, slug: data.slug
+      });
+      return;
+    }
     readFrom = Date.now();
     readOf = data || null;
   }
 
   function readEnd() {
+    if (symptomReader) { symptomReader.stop(); symptomReader = null; return; }
     if (!readFrom || !readOf) { readFrom = 0; readOf = null; return; }
     var ms = Date.now() - readFrom;
     readFrom = 0;
@@ -319,7 +330,7 @@
   /* 모달을 열어둔 채 페이지를 떠나거나 탭을 돌리는 경우도 회수 */
   window.addEventListener('pagehide', readEnd);
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) readEnd();
+    if (document.hidden && !symptomReader) readEnd();
   });
 
   function open(data) {
@@ -342,6 +353,7 @@
   function close() {
     if (!modalEl || !modalEl.classList.contains('is-open')) return;
     readEnd();
+    if (openedSymptom) emGa('emergency_symptom_close', { item_type: 'emergency_symptom', symptom: openedSymptom.name || openedSymptom.slug, slug: openedSymptom.slug });
     modalEl.classList.remove('is-open');
     document.documentElement.classList.remove('helix-emergency-modal-open');
     document.body.classList.remove('helix-emergency-modal-open');
