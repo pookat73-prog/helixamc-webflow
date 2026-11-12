@@ -1,3 +1,4 @@
+/* 모바일(767px 이하)은 장비를 제외한 스크롤 모션의 시작 기준만 조금 앞당긴다. */
 /* HELIX 영상의학과 섹션 2: 카드 그림자 1 → 2 엇박 점등. */
 (function () {
   'use strict';
@@ -39,7 +40,7 @@
       }, 180));
     }, {
       root: null,
-      rootMargin: '0px 0px -35% 0px',
+      rootMargin: window.matchMedia('(max-width: 767px)').matches ? '0px 0px -25% 0px' : '0px 0px -35% 0px',
       threshold: .12
     });
     observer.observe(cards[0]);
@@ -116,7 +117,7 @@
         entries.forEach(function (entry) { if (entry.isIntersecting) play(entry.target); });
         skipped();
       } catch (error) { played = true; showAll(); }
-    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * (window.matchMedia('(max-width: 767px)').matches ? .35 : .45)) + 'px 0px', threshold: 0 });
     groups.forEach(function (group) { observer.observe(group); });
   }
   function start() {
@@ -184,7 +185,7 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting && entry.target.offsetWidth) play(entry.target);
       });
-    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * (window.matchMedia('(max-width: 767px)').matches ? .35 : .45)) + 'px 0px', threshold: 0 });
     groups.forEach(function (group) { observer.observe(group); });
   }
   function start() {
@@ -254,7 +255,7 @@
           });
         }, {
           root: null,
-          rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px',
+          rootMargin: '0px 0px -' + Math.round(window.innerHeight * (window.matchMedia('(max-width: 767px)').matches ? .35 : .45)) + 'px 0px',
           threshold: 0
         });
         blocks.forEach(function (block) {
@@ -317,7 +318,7 @@
   function drawProgress() {
     if (!finished || disabled || lineHeight <= 0) return;
     var start = stack.getBoundingClientRect().top + lineTop;
-    var progress = Math.max(0, Math.min(1, (window.innerHeight * .55 - start) / lineHeight));
+    var progress = Math.max(0, Math.min(1, (window.innerHeight * (window.matchMedia('(max-width: 767px)').matches ? .65 : .55) - start) / lineHeight));
     line.style.transform = 'scaleY(' + progress + ')';
   }
   function finish() {
@@ -352,7 +353,7 @@
     if (observer) observer.disconnect();
     observer = new IntersectionObserver(function (entries) {
       if (entries.some(function (entry) { return entry.isIntersecting; })) open(true);
-    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * .45) + 'px 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -' + Math.round(window.innerHeight * (window.matchMedia('(max-width: 767px)').matches ? .35 : .45)) + 'px 0px', threshold: 0 });
     observer.observe(rows[0]);
   }
   function layout() {
@@ -379,7 +380,7 @@
     try {
       var first = rows[0].getBoundingClientRect();
       /* 빠른 스크롤·중간 위치 재방문으로 첫 카드를 건너뛰어도 본문을 복구한다. */
-      if (!started && first.top < window.innerHeight * .55) open(first.bottom > 0);
+      if (!started && first.top < window.innerHeight * (window.matchMedia('(max-width: 767px)').matches ? .65 : .55)) open(first.bottom > 0);
       drawProgress();
     } catch (error) { staticFallback(); }
   }
