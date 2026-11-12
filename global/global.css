@@ -858,7 +858,7 @@ html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-d
   background: #0d1117;
   opacity: 1;
   pointer-events: none;
-  transition: opacity 1500ms cubic-bezier(.76, 0, .18, 1);
+  transition: opacity 1200ms cubic-bezier(.76, 0, .18, 1);
 }
 html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq.hx-di-equipment-revealed::after {
   opacity: 0;

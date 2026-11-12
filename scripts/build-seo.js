@@ -548,7 +548,7 @@ function buildEmergency(conditions) {
 const SERVICES_DEPTS = [
   { nameKo: '내과',     nameEn: 'Internal Medicine',  desc: '다양한 전신 질환을 아우르는 환자 맞춤형 진료',           slug: 'internal-medicine',            published: true },
   { nameKo: '외과',     nameEn: 'Surgery',            desc: '표준화된 프로토콜로 안정성을 높인 고난도 수술',           slug: 'surgery',             published: true },
-  { nameKo: '영상의학과', nameEn: 'Diagnostic Imaging',  desc: '안전한 마취와 첨단 장비로 완성하는 정밀 진단',            slug: 'diagnostic-imaging', published: false },
+  { nameKo: '영상의학과', nameEn: 'Diagnostic Imaging',  desc: '안전한 마취와 첨단 장비로 완성하는 정밀 진단',            slug: 'diagnostic-imaging', published: true },
   { nameKo: '안과',     nameEn: 'Ophthalmology',      desc: '미세 검진과 빠른 판단을 통한 전신 질환 가능성 판별',        slug: 'ophthalmology',             published: false },
   { nameKo: '치과',     nameEn: 'Dentistry',          desc: '구조·염증·통증까지 살피는 대체 불가한 치아의 안전한 진료',   slug: 'dentistry',             published: false },
 ];
@@ -663,6 +663,78 @@ function buildSurgery() {
   return wrapJsonLd({ '@context': 'https://schema.org', '@graph': graph });
 }
 
+function buildDiagnosticImaging() {
+  const url = HOSPITAL.origin + '/diagnostic-imaging';
+  const serviceId = url + '#service';
+  const breadcrumbId = url + '#breadcrumb';
+  const description = '헬릭스동물메디컬센터 영상의학과의 반려동물 CT·MRI·초음파 검사와 판독 과정을 안내합니다. 전담 방사선사의 촬영 관리, 마취 전담 수의사의 모니터링, 진료과 협진을 확인하세요.';
+  const graph = [
+    {
+      '@type': 'WebPage',
+      '@id': url + '#page',
+      url,
+      name: '영상의학과 · CT·MRI·초음파 | ' + HOSPITAL.nameKo,
+      description,
+      inLanguage: 'ko',
+      isPartOf: { '@id': HOSPITAL.origin + '/#website' },
+      about: { '@id': serviceId },
+      mainEntity: { '@id': serviceId },
+      breadcrumb: { '@id': breadcrumbId },
+    },
+    {
+      '@type': 'Service',
+      '@id': serviceId,
+      name: HOSPITAL.nameKo + ' 영상의학과',
+      alternateName: 'Diagnostic Imaging',
+      serviceType: '반려동물 CT·MRI·초음파 검사 및 영상 판독',
+      description,
+      url,
+      provider: { '@id': SEOCHO_BRANCH.url + '#branch' },
+      mainEntityOfPage: { '@id': url + '#page' },
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: '영상 검사',
+        itemListElement: ['CT 검사', 'MRI 검사', '초음파 검사'].map(name => ({
+          '@type': 'Offer',
+          itemOffered: { '@type': 'Service', name, provider: { '@id': SEOCHO_BRANCH.url + '#branch' } },
+        })),
+      },
+    },
+    {
+      ...breadcrumb([
+        { name: '홈', url: HOSPITAL.origin },
+        { name: '진료과목', url: HOSPITAL.origin + '/services' },
+        { name: '영상의학과', url },
+      ]),
+      '@id': breadcrumbId,
+    },
+    {
+      '@type': 'VeterinaryCare',
+      '@id': SEOCHO_BRANCH.url + '#branch',
+      name: HOSPITAL.nameKo + ' ' + SEOCHO_BRANCH.branchNameKo,
+      url: SEOCHO_BRANCH.url,
+      parentOrganization: { '@id': HOSPITAL.origin + '/#org' },
+    },
+    {
+      '@type': 'MedicalOrganization',
+      '@id': HOSPITAL.origin + '/#org',
+      name: HOSPITAL.nameKo,
+      url: HOSPITAL.origin,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': HOSPITAL.origin + '/#website',
+      url: HOSPITAL.origin,
+      name: HOSPITAL.nameKo,
+      inLanguage: 'ko',
+      publisher: { '@id': HOSPITAL.origin + '/#org' },
+    },
+  ];
+  // Only describe reviewed, visible content. No invented prices, review dates,
+  // ratings, or human Radiography specialty applied to veterinary services.
+  return wrapJsonLd({ '@context': 'https://schema.org', '@graph': graph });
+}
+
 function buildFaq(faq) {
   const url = HOSPITAL.origin + '/faq';
 
@@ -736,6 +808,7 @@ function main() {
     'faq.html':               buildFaq(faq),
     'services.html':          buildServices(),
     'surgery.html':           buildSurgery(),
+    'diagnostic-imaging.html': buildDiagnosticImaging(),
   };
 
   for (const [file, content] of Object.entries(pages)) {
