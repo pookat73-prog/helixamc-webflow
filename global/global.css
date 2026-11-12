@@ -872,6 +872,14 @@ html.hx-di-card-shadow-motion:not(.hx-di-safety-lines-static) #hx-di-safety .div
     bottom: calc(-2vw - .5px);
   }
 }
+/* 가로 모바일: 2·4번 장비 제목도 본문과 같은 오른쪽 열에서 시작한다. */
+@media (min-width: 480px) and (max-width: 767px) and (orientation: landscape) and (max-height: 500px) {
+  #hx-di-page > section.di_eq:is(.vr, .us) .di_eq_contents-box {
+    display: grid;
+    grid-template: "Area Area-2" / 1fr 1fr;
+    column-gap: 35px;
+  }
+}
 /* 영상의학과 장비 사진: 브랜드 블랙에서 천천히 시작해 선명하게 열린다.
    기존 head의 모션 준비·실패 복구를 공유하고, 본문은 막 위에 유지한다. */
 html[data-wf-page="69d74aa2fe513b8132cd8ffc"].hx-di-card-shadow-motion:not(.hx-di-equipment-static) #hx-di-page > section.di_eq {
