@@ -740,6 +740,18 @@ html.hx-di-card-shadow-motion #hx-di-principles .div-322 > .div-12.hx-di-shadow-
     transform: none;
   }
 }
+/* 모바일 연혁: 최초 표기는 한 덩어리로, 설명의 다음 줄은 콜론 뒤에 정렬한다. */
+@media (max-width: 767px) {
+  #hx-di-page > .whiteframe_open.for-m .div-332.for-m > .di-ref-history-kicker {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  #hx-di-page > .whiteframe_open.for-m .div-332.for-m > .heading-12 {
+    min-width: 0;
+    padding-inline-start: 1ch;
+    text-indent: -1ch;
+  }
+}
 /* 영상의학의 유산: 머리가 거의 다 그어진 뒤 꼬리가 따라잡아 사라지는 강조. */
 #hx-di-page .hx-di-legacy-marker {
   display: inline-block;
