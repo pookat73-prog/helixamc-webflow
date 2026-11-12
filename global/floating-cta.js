@@ -129,6 +129,15 @@
             '</div>',
           '</div>',
 
+          /* 짧은 메모 — 선택 입력, 기존 문의 내용 필드로 함께 접수 */
+          '<div class="hx-fcta-form__group">',
+            '<label class="hx-fcta-form__label" for="hxFcta_memo">메모 (선택 · 최대 20자)</label>',
+            '<input class="hx-fcta-form__input" id="hxFcta_memo" name="메모"',
+              ' type="text" maxlength="20" placeholder="예: 오후 통화 희망"',
+              ' autocomplete="off" enterkeyhint="next" aria-describedby="hxFcta_memo_err">',
+            '<p class="hx-fcta-form__error" id="hxFcta_memo_err" role="alert"></p>',
+          '</div>',
+
           /* 개인정보 동의 — 요약 한 줄, 전문은 '자세히 보기' 로 펼침 */
           '<div class="hx-fcta-consent">',
             '<div class="hx-fcta-consent__row">',
@@ -143,7 +152,7 @@
             '</div>',
             '<div class="hx-fcta-consent__detail" id="hxFctaPrivacyDetail" hidden>',
               '<p class="hx-fcta-consent__detail-title">개인정보 수집·이용 동의</p>',
-              '<p>수집 항목: 이름, 연락처</p>',
+              '<p>수집 항목: 이름, 연락처, 메모(선택)</p>',
               '<p>수집 목적: 예약 신청 접수 및 일정 조율</p>',
               '<p>보유 기간: 예약 안내 완료 후 1년</p>',
               '<p>귀하는 개인정보 수집·이용을 거부할 권리가 있으며,',
@@ -184,6 +193,7 @@
   var ownerInput   = document.getElementById('hxFcta_owner');
   var phoneInput   = document.getElementById('hxFcta_phone');
   var privacyEl    = document.getElementById('hxFcta_privacy');
+  var memoInput    = document.getElementById('hxFcta_memo');
 
   /* ── 모바일 응급 지점 카드와 겹침 방지 ──
      /symptoms 의 지점 카드는 화면 하단에 고정되고 펼침·접힘 높이가 달라진다.
@@ -246,6 +256,7 @@
   function clearErrors() {
     setError(ownerInput, 'hxFcta_owner_err', '');
     setError(phoneInput, 'hxFcta_phone_err', '');
+    setError(memoInput,  'hxFcta_memo_err', '');
     setError(null,       'hxFcta_privacy_err', '');
     setError(null,       'hxFcta_submit_err', '');
   }
@@ -253,13 +264,16 @@
   ownerInput.addEventListener('input', function () {
     setError(ownerInput, 'hxFcta_owner_err', '');
   });
+  memoInput.addEventListener('input', function () {
+    setError(memoInput, 'hxFcta_memo_err', '');
+  });
   privacyEl.addEventListener('change', function () {
     if (privacyEl.checked) setError(null, 'hxFcta_privacy_err', '');
   });
 
   /* ── 연락처: 입력하는 동안 하이픈을 넣어 보여준다 ──
      저장·전송은 숫자 11자리만 (dashboard 에서 전화 걸기 링크 만들 때 편함).
-     11자리를 다 채우면 개인정보 동의로 커서가 넘어감. */
+     11자리를 다 채우면 선택 메모 칸으로 커서가 넘어감. */
   function phoneDigits() {
     return phoneInput.value.replace(/\D/g, '').slice(0, 11);
   }
@@ -278,12 +292,12 @@
     setError(phoneInput, 'hxFcta_phone_err', '');
     if (d.length === 11 && !phoneCompletedOnce) {
       phoneCompletedOnce = true;
-      if (document.activeElement === phoneInput) privacyEl.focus();
+      if (document.activeElement === phoneInput) memoInput.focus();
     }
   });
 
   /* ── Enter(모바일 키보드 '다음') 로 다음 칸 이동 ──
-     이름 → 연락처 → 개인정보 동의 순서로 이동. */
+     이름 → 연락처 → 메모 → 개인정보 동의 순서로 이동. */
   function nextOnEnter(fromEl, toEl) {
     var composing = false;
     var justComposed = false;
@@ -301,7 +315,8 @@
     });
   }
   nextOnEnter(ownerInput, phoneInput);
-  nextOnEnter(phoneInput, privacyEl);
+  nextOnEnter(phoneInput, memoInput);
+  nextOnEnter(memoInput, privacyEl);
 
   /* ── 개인정보 전문 펼치기 ── */
   var privacyMore   = document.getElementById('hxFctaPrivacyMore');
@@ -619,6 +634,7 @@
     clearErrors();
 
     var ownerVal = ownerInput.value.trim();
+    var memoVal  = memoInput.value.trim();
     var digits   = phoneDigits();
     var bad      = null;
 
@@ -632,6 +648,10 @@
     } else if (digits.length < 10) {
       setError(phoneInput, 'hxFcta_phone_err', '연락처를 다시 확인해 주세요.');
       bad = bad || phoneInput;
+    }
+    if (memoVal.length > 20) {
+      setError(memoInput, 'hxFcta_memo_err', '메모는 20자 이내로 입력해 주세요.');
+      bad = bad || memoInput;
     }
     if (!privacyEl.checked) {
       setError(null, 'hxFcta_privacy_err', '개인정보 수집·이용에 동의해 주세요.');
@@ -649,7 +669,7 @@
       petType:      '미선택',
       petBreed:     '',
       petAge:       '',
-      inquiry:      '',
+      inquiry:      memoVal,
       submittedAt:  new Date().toISOString(),
       userAgent:    navigator.userAgent,
       utm_source:   attributionUtm.utm_source,
