@@ -1,0 +1,100 @@
+# HELIX 홈페이지 안정화 — 인계
+
+갱신일: 2026-11-13 (Asia/Seoul)
+
+## 1. 작업 개요
+
+- 현재 단계: **STEP 01 정밀진단 완료. STEP 02는 미착수.**
+- 목표: 수정 영향 범위를 작고 예측 가능하게 만들기 위한 원인·소유 경계 파악.
+- 이번 변경: [01-diagnosis.md](01-diagnosis.md), 이 파일 두 개만 작성.
+- 구현 코드·AGENTS.md·기존 인계 문서·Webflow 설정·배포 설정 변경 없음. reset/clean/force push/기존 변경 덮어쓰기 없음.
+- 시작 시 미커밋·staged·untracked 변경이 없었으며 문서 전용 브랜치로 작업했다.
+- 기존 `docs/quality/HANDOFF.md`는 없었다. 루트의 반응형·측정로그 `HANDOVER-*.md`는 그대로 보존했다.
+
+## 2. 기술적 결정 사항
+
+- 전면 재작성·기계적 파일 분리·추상화 확대·breakpoint 일괄 통일을 해결책으로 채택하지 않았다.
+- 확인 사실 / 유력 가설 / 추가 검증 / 유지 대상을 진단서에서 구분했다.
+- 로컬 체크아웃이 최신 main보다 오래되어, **별도 임시 스냅샷에서 최신 원격 변경 41개의 Git blob 해시를 검증**한 후 대조했다. 원본 구현 파일을 최신 원격 파일로 덮어쓰지 않았다.
+- 소스 근거는 `68aaaa4…` 고정 GitHub 링크, 실행 근거는 실제 정식·staging 관찰로 구분했다. 문서 브랜치의 부모와 진단한 최신 원격 SHA는 다르다.
+- 알려진 보호장치(clip·flow-root·폰트/글로우 게이트·초기화 가드), 기기별 복제 마크업, 정상 공통 UI는 유지 대상으로 분류했다.
+
+## 3. 현재 상태
+
+### 완료 사항과 핵심 발견
+
+| ID | 발견 | 상태 / 위험 |
+| --- | --- | --- |
+| D01 | 홈 섹션 CSS가 공통 `overflow-x: clip`을 `hidden`으로 덮고 body Y를 auto로 바꿈 | 실제 홈 4조건·격리 재현 확인 / 높음. 개별 sticky 장애 인과는 미확정. |
+| D02 | `body * !important` 줄바꿈 규칙이 내과의 `overflow-wrap:anywhere`를 무력화 | 최신 소스·격리 재현 확인 / 높음. 실제 긴 문자열 장애는 추가 검증. |
+| D03 | `.bt-box-3` shadow·hold·loop를 두 JS 모듈이 제어; LOCKED 설명과 현재 선택자 불일치 | 제어 중복 확인, 타이밍 회귀 가설 / 높음. |
+| D04 | staging 홈은 최신 branch가 아닌 고정 후보 `0011fc…`; 공통 UI는 다른 SHA | 공개 HTML·브라우저 확인 / 높음. 후보 고정의 의도는 확인 필요. |
+| D05 | CTA CSS의 동일 선택자·상태별 덮어쓰기 누적 | 확인 / 중간. mobile-bar에서 제외되는 레거시 규칙을 현재 버그로 오진하지 않음. |
+| D06 | 레이아웃·측정·viewport meta 교정 기준이 여러 곳에 있음 | 확인 / 중간. 목적 차이 자체는 결함이 아님. 회전·실기기 미검증. |
+| D07 | 공통 파일에 페이지 배치·호환·초기 화면 제어 책임이 섞임 | 확인 / 중간. page ID·section root로 한정된 규칙은 유지. |
+| D08 | 기존 테스트는 있으나 CSS 계산값·전후 화면 차이를 CI가 포괄하지 못함 | workflow 확인 / 중간. branch protection 미확인. |
+
+역사적 body font-variation 상속 사고와 FAQ margin collapse 사고는 Git diff로 확인했으며 **현재 해결 상태**로 분류했다. Codex의 불필요한 광범위 수정 여부는 원 요청·PR 맥락이 부족해 확정하지 않았다.
+
+검증 완료: 로컬 품질 8개·loader 9개, 최신 main 스냅샷의 홈 로딩 6개 출력 그룹·예약 포커스 15시나리오·모의 제출 6시나리오. 실제 staging 공통 UI는 4페이지×2폭=8조건 PASS. 정식·staging 홈의 별도 4조건 스크린샷·계산값 확인, 페이지 오류·실패 요청 0. Chromium의 프록시 CA 오류는 해당 환경 인증서 SPKI를 지정해 재실행했다. 실제 예약·측정 전송 없음.
+
+### 미해결·검증 한계
+
+- 원래 회귀 각각의 화면·재현 순서·발생 전후 커밋 연결이 아직 없다.
+- staging 홈 후보 고정의 목적과 다른 진행 작업을 확인해야 한다. 이번 작업에서 후보 고정을 해제하지 않았다.
+- Safari/iOS 실기기, 모든 breakpoint ±1px, 회전 왕복, 긴 영문·URL·입력값, slow-network 전체 상태 전이는 미검증.
+- Webflow head의 첫 화면 스타일·함수와 저장소 코드의 완전한 버전 대응표가 없다.
+- 최신 main 스냅샷 검증과 실제 staging 검증은 서로 다른 실행 대상을 검사했다. 서로의 결과를 대체하지 않는다.
+- 원격 Git HTTPS 경로가 `CONNECT tunnel failed, response 403`으로 차단됨. GitHub 읽기 API·CDN 접근 성공은 Git push 권한·접속 성공을 의미하지 않는다.
+
+### 브랜치와 커밋
+
+| 용도 | 값 |
+| --- | --- |
+| 저장소 | `https://github.com/pookat73-prog/helixamc-webflow.git` |
+| 문서 브랜치 | `docs/helix-quality-step01-20261113` |
+| 문서 커밋 부모 | `c2041b471f52435c3f349b8f068488d358fc5af5` (`work` 시작점, #2014) |
+| 분석한 원격 main | `68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d` (#2068) |
+| 확인한 원격 staging | `11daa6d47a864d49dda835b7c208f726f275b629` (#2067) |
+| 실제 staging 홈 본체 | `0011fc2323a69260f758f84bc13e0a289e78d9b4` |
+| 문서 커밋 식별 | 아래 `git log`로 이 두 파일을 작성한 커밋의 전체 SHA 확인. 같은 커밋 안에 자기 SHA를 기입하지 않는다. 최종 작업 응답과 인계 patch에도 식별자가 남는다. |
+| 원격 반영 | Git HTTPS 차단으로 원격 반영 불가. main/staging 병합·Publish 없음. |
+
+```bash
+git log -1 --format='%H %s' -- docs/quality/01-diagnosis.md docs/quality/HANDOFF.md
+git show --stat docs/helix-quality-step01-20261113
+```
+
+## 4. 다음 단계
+
+**STEP 02 입력 문서: [01-diagnosis.md](01-diagnosis.md) 전체와 이 파일. 설계 착수 준비는 되었고 구현 계획은 아직 확정하지 않았다.**
+
+1. 최신 저장소 상태·실제 로드 SHA·staging 후보 목적을 다시 확인한다. 기존 진행자의 변경을 보존한다.
+2. D01/D02부터 정상 대조 화면과 재현 경로를 고정한다. D03은 observer·타이머 발사 시각을 계측해 경쟁 여부를 판정한다.
+3. 선택자·속성·상태별 소유자 / 영향 페이지 / 유지할 계산값·배치·기능 / 필요한 검사 / 되돌릴 단위를 표로 만든다.
+4. 충돌 하나를 해결하는 최소 후보를 설계한다. 전체 CSS 정리·breakpoint 변경·로더 교체를 동시에 묶지 않는다.
+5. 실제 구현은 후속 요청 범위에서 별도로 진행한다. 이번 진단 완료는 사이트 안정화 구현 완료나 정식 반영 완료가 아니다.
+
+### 원격 접속이 가능한 환경으로 인계
+
+완료 후 생성하는 `/workspace/helix-step01-diagnosis.patch`는 **문서 커밋 한 개의 format-patch**다. 두 Markdown 파일과 커밋 메타데이터를 포함하며 구현 코드를 포함하지 않는다. 원격 접속 가능한 최신 저장소에서 기존 변경을 보존한 별도 브랜치를 만든 뒤 적용한다.
+
+```bash
+# 원격 접속 가능한 환경의 clean checkout 또는 별도 worktree에서 수행
+git fetch origin
+git switch -c docs/helix-quality-step01-import origin/main
+git am /path/to/helix-step01-diagnosis.patch
+git show --stat HEAD
+git diff HEAD^ HEAD --check
+git push -u origin docs/helix-quality-step01-import
+```
+
+로컬 문서 브랜치에 접근할 수 있다면 patch 대신 문서 커밋 SHA 하나만 cherry-pick해도 된다. 최신 저장소에 같은 경로의 새 문서가 생겼다면 덮어쓰지 말고 내용을 보존하며 충돌을 검토한다. 이 전송 절차는 main/staging에 merge하거나 홈페이지를 배포하는 절차가 아니다.
+
+## 5. 참고 파일과 증거
+
+- [진단서](01-diagnosis.md): 소스 고정 링크, 역사적 diff, 검증 결과·한계, 재현용 read-only 명령.
+- [AGENTS.md](../../AGENTS.md), [CLAUDE.md](../../CLAUDE.md), [README.md](../../README.md).
+- [반응형 인계](../../HANDOVER-반응형-2026-08-17.md), [측정로그 인계](../../HANDOVER-측정로그-2026-08-28.md): 보존한 기존 기록. 과거 상태를 현재 사실로 자동 승계하지 않는다.
+- 이번 환경의 임시 증거: `/tmp/helix-quality-evidence/`. 공개 HTML·GitHub API 응답·해시 검증 스냅샷·스크린샷·브라우저 결과 JSON. 환경 종료 후 보존을 보장하지 않으며, 핵심 결과는 진단서에 기록했다.
+- 홈페이지: `https://www.helix-amc.com/`, staging: `https://helixanimalmedicalcenter.webflow.io/`.
