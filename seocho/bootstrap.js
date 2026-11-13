@@ -32,6 +32,15 @@
     document.head.appendChild(style);
   })();
 
+  /* 기본 SVG 크기가 먼저 노출되지 않도록 기존 아이콘 크기만 준비한다. */
+  (function prepareHeroIconSizes() {
+    if (document.documentElement.getAttribute('data-wf-page') !== '69d4224c0ef3c80daa5212e4' || document.getElementById('helix-seocho-hero-initial-icons')) return;
+    var css = document.createElement('style');
+    css.id = 'helix-seocho-hero-initial-icons';
+    css.textContent = '.helix-copy-btn svg, .helix-map-btn svg { width: 1em; height: 1em; flex: 0 0 auto; }';
+    document.head.appendChild(css);
+  })();
+
   /* STAGING SELF-REDIRECT — Webflow head 는 @main 으로 고정이라
      새 파일을 FILES 에 추가하는 변경은 main 머지 전엔 staging 에
      안 들어왔던 문제. 스테이징 도메인이면 @staging bootstrap 을
