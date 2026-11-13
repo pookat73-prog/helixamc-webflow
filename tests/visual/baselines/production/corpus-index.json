@@ -1,0 +1,1722 @@
+{
+  "schema": 1,
+  "target": "production",
+  "requests": {
+    "https://www.helix-amc.com/": {
+      "sha256": "335c90a798e2b66a057e9463573a0709562ea4228ab9d574488a8537a9f6dae5",
+      "bytes": 46600,
+      "contentType": "text/html; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:23.178Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.3c2f00975.css": {
+      "sha256": "987da220fa65abeb6b56fcc1c0b9e4b23ed6fc94c52b03914911b8c56e87c0fa",
+      "bytes": 636554,
+      "contentType": "text/css",
+      "capturedAt": "2026-11-13T08:14:23.253Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.schunk.0fc84c59f0155ba1.js": {
+      "sha256": "bb0236368075e3fb30f031487346178412b1b2ed5fca86e899338e662bda63d3",
+      "bytes": 36151,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:14:23.350Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.751e0867.6551f58fa950fc60.js": {
+      "sha256": "93eac35f3b297beb9cd4b23d6406a28c10f7c347eff5d20ba8eea7efc438d2a5",
+      "bytes": 1069,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:14:23.406Z"
+    },
+    "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js": {
+      "sha256": "81016ac6be850b72df5d4faa0c3cec8e2c1b0ba0045712144a6766adfad40bee",
+      "bytes": 13188,
+      "contentType": "text/javascript; charset=UTF-8",
+      "capturedAt": "2026-11-13T08:14:24.404Z"
+    },
+    "https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69d090ea69d828e27d16ea29": {
+      "sha256": "f7f6a5894f1d19ddad6fa392b2ece2c5e578cbf7da4ea805b6885eb6985b6e3d",
+      "bytes": 89476,
+      "contentType": "application/javascript",
+      "capturedAt": "2026-11-13T08:14:24.721Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js": {
+      "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+      "bytes": 10986,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:24.797Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js": {
+      "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+      "bytes": 10322,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:25.626Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js": {
+      "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+      "bytes": 19836,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:25.691Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js": {
+      "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+      "bytes": 8372,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:25.733Z"
+    },
+    "https://use.typekit.net/yun6zxv.js": {
+      "sha256": "16b3016a8509e8f5bb1326e2fa568aeff4ef04cc597c69f3ef1040cee620fa54",
+      "bytes": 251676,
+      "contentType": "text/javascript;charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:25.778Z"
+    },
+    "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js": {
+      "sha256": "efc85c7eb141819717cda0033484a84b1c890d13b02e355a2fec79d424b20e7a",
+      "bytes": 71520,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:25.804Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css": {
+      "sha256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+      "bytes": 406,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:25.843Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69e0c39b414cc720f7c6d7db_(%EC%84%A0%EB%B3%84)IMG_3297.jpg(%ED%81%AC%EB%A1%AD).webp": {
+      "sha256": "7cb15f376e979c72e7e3e1fa472c678ddb551a85966c8d8c16df256fcb76a022",
+      "bytes": 387936,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:25.859Z"
+    },
+    "https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/main": {
+      "sha256": "2a4527f1d8beaec059a1573bccf08065c50c8e16bcaf4931a9a1a3a25e3615a4",
+      "bytes": 397,
+      "contentType": "application/json; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:26.450Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ddec5a48f0231645682ae1b3b31f111162e0f2e1/home/bootstrap-v3.js": {
+      "sha256": "64557acb69b846217fccdd58415a640698ec1dbaf76112f1a57db2e5ea181845",
+      "bytes": 7526,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:26.491Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/seo-snippets/home.html": {
+      "sha256": "e53e5b193434776eca3737dc671d48ca392e703da6ce7d8838dcdedd531a7788",
+      "bytes": 3949,
+      "contentType": "text/plain; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:26.548Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d3751f675a72450e4ab4dc_%EC%9E%90%EC%82%B0%208.webp": {
+      "sha256": "1a068494aa4300c8b68c1d6c73f401bfcb0e9757bef5141a53e325231fcf5e5a",
+      "bytes": 17806,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.611Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69e19bb2f9aa87efa38d9a88_db9331f21b79e737ff1279cff705393a_(2%EB%B2%88)-%EB%B3%B4%EC%A0%95%EB%B3%B8-p-1080.webp": {
+      "sha256": "911805f6979d7ac2ea7c31d7c4beb299fd8f4d8d4145969a45f84d2b0bb51492",
+      "bytes": 45598,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.647Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69e19b60d5d2b19aabfaf895_133f0daf5395e92750aae7cbef9f1d90_%285%EB%B2%88%29%28%EC%84%A0%EB%B3%84%29IMG_0038%2875%25%29-p-2600.webp": {
+      "sha256": "48e4370c2a2f6f889890c6c7014dcc8ed22961c548753d9a32c00747a02d383b",
+      "bytes": 380246,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.693Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69f1b769f82612f643978a50_%EC%9D%91%EA%B8%89-%EC%83%81%ED%99%A9-%EC%9D%B4%EB%AF%B8%EC%A7%80.webp": {
+      "sha256": "c0f63516388ec451ce331dd563fa8615deb3f07d9843ba0a70edb0d4cfd9abcc",
+      "bytes": 474340,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.748Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d37c1cc0a7b60f6acd0ec3_483a4a13cb95331d185ae4fdd51d6c17_%EB%AA%A8%EB%85%B8%EA%B7%B8%EB%9E%A8.svg": {
+      "sha256": "e6e1d618d362675413ec06b9d8ee7c8c50ec1d250bccd4412c23d593ec0eeb31",
+      "bytes": 15817,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:14:26.815Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69f199ab996da5f0e0676549_c0eb7ed74b94907fb1a7b56d545c772a_%EC%9D%91%EA%B8%89-%EC%84%B9%EC%85%98-%EC%86%A1%EC%9A%B0%EB%8F%99-p-1080.webp": {
+      "sha256": "5b7de270d370b6ce6f4e3c453a4d321f6729983617f9bb1c6e8977232b3a04a5",
+      "bytes": 84216,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.860Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69e19b5f1abc136518f9a763_(6%EB%B2%88)IMG_0306-%EB%B3%B4%EC%A0%95(100%25)-p-2600.webp": {
+      "sha256": "d8bc7694c9d13e18702992fd60f7f6d787daa9af85dbf9e9366b992fa4151082",
+      "bytes": 204338,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.892Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69e19b5f8cf8872b6fd41431_(7%EB%B2%88)%ED%97%AC%EB%A6%AD%EC%8A%A4-%EC%9D%BC%EC%82%B0(50%25)-p-1080.webp": {
+      "sha256": "d7f9224b35b2827eeacc66187bee94583d5db16c540bf2f8f01d41183bf605f6",
+      "bytes": 57952,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.926Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d0b230b02c89db7a384990_%EC%9E%90%EC%82%B0%2025DVql.webp": {
+      "sha256": "816a4baa1cc3f756b443ac3b2aab5af69f6893bee44ccefc122ea46005137a65",
+      "bytes": 6838,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:26.956Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d0b35133f5d0f252ea2428_Map%20pin.svg": {
+      "sha256": "fa50d875735f83723cfce9f6b71b51443821516cf4b6941bbb528287bd9c6bd5",
+      "bytes": 659,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:14:27.001Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d0b451ae00dda769d5ac7d_Menu.svg": {
+      "sha256": "a43ccc6e17e0e4c48d4447d67a22e6d0bfcdec2391986a8f2e4f23bc6d258918",
+      "bytes": 218,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:14:27.026Z"
+    },
+    "https://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic%7CGreat+Vibes:400%7CPT+Serif:400,400italic,700,700italic%7CNewsreader:400%7CNoto+Sans+KR:300,400,500,600,700&subset=korean,latin": {
+      "sha256": "21888df656eaa111adbd65d4e045ab3313f11573338f622d6c9a127f0a017708",
+      "bytes": 475401,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:27.169Z"
+    },
+    "https://use.typekit.net/af/7c02fe/0000000000000000775dd7dd/31/l?unicode=AAAHygAAAAdhg4V2jXrgvTqablOmIuR90xJ6f7oYX7HHszHOhbuHChMcgQn5RM8D_2_09h-EDof5QbhEgbbA63nwPrW_c-fWpSq9I3W2wnPr2mXL5hwU9XCfpfCkLYjBT4lM8H7L4ONWX3ugfaTSwXm4HDcbyteaHuCpkuHywfcZB3Qmfrf-lhmtbmdiEYP1_3wmtwTqUe-84RpPif-WvZba-nEoqF8x54v53DpQrOTj48ldu33mIr3t5_p7J-7EIbKWiAPY-6fOlmzgfKcT52EWvLAE-pP79aefMQlHioFliM5EGken-uDgxR0sm5rfhBd4WUTkH-k-gPs7g-WyugAAAb0&features=ALL&v=3": {
+      "sha256": "0d93477e76022ad4ca0060d020f22f7c87b2e028ae5ec7c7fb40c519f67a28d5",
+      "bytes": 24732,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:27.604Z"
+    },
+    "https://use.typekit.net/af/ef6f06/00000000000000007735d231/31/l?unicode=AAAHRAAAAAeXBn-W36H2z-xdHmz7-7znOz0jjyKOwOPDCCmepXwxguOT7cWXf2oWKeqOSqrkq1lElkDvHNWHicHxuRGko6gkcfkjPFCWmMpEnw5sAcaKxPAgeA_6d9QMfX4UR_8fBNnwU8SeTCL2vAqVl8SdYDAn1T_sW9ZjJLXMYPJX77CYAqSitrIkTDNqox0Dojxv_g5vUo-PeD4syEmTG-OH0E1WwpRA3pSGreLaFZWxFPUt3a-3Sry-2KFL_w5gIA7UPByG1Xk2Drhh1lGngSuwKi5_4PRbk1ttx_mlwWs80m7VSl8ulaLa9-CtAAAADA&features=ALL&v=3": {
+      "sha256": "0b1ccf33d8a00a1264dddc4b8fea511b60fbeb8ecb0c425f647f63a5ac397d77",
+      "bytes": 37824,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:28.195Z"
+    },
+    "https://use.typekit.net/af/71ccd4/0000000000000000775dd7da/31/l?unicode=AAAHygAAAAdhg4V2jXrgvTqablOmIuR90xJ6f7oYX7HHszHOhbuHChMcgQn5RM8D_2_09h-EDof5QbhEgbbA63nwPrW_c-fWpSq9I3W2wnPr2mXL5hwU9XCfpfCkLYjBT4lM8H7L4ONWX3ugfaTSwXm4HDcbyteaHuCpkuHywfcZB3Qmfrf-lhmtbmdiEYP1_3wmtwTqUe-84RpPif-WvZba-nEoqF8x54v53DpQrOTj48ldu33mIr3t5_p7J-7EIbKWiAPY-6fOlmzgfKcT52EWvLAE-pP79aefMQlHioFliM5EGken-uDgxR0sm5rfhBd4WUTkH-k-gPs7g-WyugAAAb0&features=ALL&v=3": {
+      "sha256": "a5ddeef79936972f3f2e7e22d351cc7fc70c38ee011dfb2c9c72fd71450be114",
+      "bytes": 25408,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:28.257Z"
+    },
+    "https://use.typekit.net/af/c609b6/00000000000000007735c5ac/31/l?unicode=AAAHygAAAAdhg4V2jXrgvTqablOmIuR90xJ6f7oYX7HHszHOhbuHChMcgQn5RM8D_2_09h-EDof5QbhEgbbA63nwPrW_c-fWpSq9I3W2wnPr2mXL5hwU9XCfpfCkLYjBT4lM8H7L4ONWX3ugfaTSwXm4HDcbyteaHuCpkuHywfcZB3Qmfrf-lhmtbmdiEYP1_3wmtwTqUe-84RpPif-WvZba-nEoqF8x54v53DpQrOTj48ldu33mIr3t5_p7J-7EIbKWiAPY-6fOlmzgfKcT52EWvLAE-pP79aefMQlHioFliM5EGken-uDgxR0sm5rfhBd4WUTkH-k-gPs7g-WyugAAAb0&features=ALL&v=3": {
+      "sha256": "0110ef0bfd36cb9f3c6e705cf1fece5e2ddb062511932a9af4a007ca6dfc98be",
+      "bytes": 40152,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:28.827Z"
+    },
+    "https://use.typekit.net/af/6504ec/00000000000000007735b143/31/l?unicode=AAAHfgAAAAd-50ECBAbtvKWjb5xdPRz8V7sOfKBRepoMkdkf8tdqYDhH7X_c5uLxr9oQ7_Ikif8KqOzrF-2NIsr-FlS6KSzPNbJAwSgeIf7AkCiD7cJtzBN0v2P-f3GBxCj2yTi06MJVb-xKn3zdb9AtiTO6PokFPYeVDu6tvR9OZvo6ef167e21Nr4Fl-1hP3p13uY5_hid4KrOR1E0mbIwIVSaaXrazN582PLtizPE6_6OmbATigEswYbdroJaGVrKpMi-12ueAKpb5uB8xGbQHhpqLB_yfhkB7umXXfi0Y1N1sIgsn8g6tzQH-joB8-JROgi2dsU&features=ALL&v=3": {
+      "sha256": "b86a8121319d6acf83f8de359159d1594ef288f1af890c1c994489fce3320be9",
+      "bytes": 36100,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:29.447Z"
+    },
+    "https://use.typekit.net/af/a0fc19/00000000000000007735feda/31/l?unicode=AAAHygAAAAdhg4V2jXrgvTqablOmIuR90xJ6f7oYX7HHszHOhbuHChMcgQn5RM8D_2_09h-EDof5QbhEgbbA63nwPrW_c-fWpSq9I3W2wnPr2mXL5hwU9XCfpfCkLYjBT4lM8H7L4ONWX3ugfaTSwXm4HDcbyteaHuCpkuHywfcZB3Qmfrf-lhmtbmdiEYP1_3wmtwTqUe-84RpPif-WvZba-nEoqF8x54v53DpQrOTj48ldu33mIr3t5_p7J-7EIbKWiAPY-6fOlmzgfKcT52EWvLAE-pP79aefMQlHioFliM5EGken-uDgxR0sm5rfhBd4WUTkH-k-gPs7g-WyugAAAb0&features=ALL&v=3": {
+      "sha256": "da552c9a4f42e1f6a42ddf640b8b43d30d536b763d4010e210eaa29a4aa8f287",
+      "bytes": 34236,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:29.584Z"
+    },
+    "https://use.typekit.net/af/44d372/0000000000000000773721eb/31/l?unicode=AAAHpAAAAAf4aSeyMqCGinbOeXBPi4MYepe75Z4-5rkSF3nG1uA8wsdK_oUqX-qhniu-fUw9U4aisBBHbvtPkqHXoFTFauxgMylfO_Ac-j15-Xk5Zpq8cqL-fBKIXQxE8nf3LKHiHAt87_z8qLMKcmkn2vIPEfno2XoapHo-BC_aVmR7yM4XZ0w1XfPHh_D0Uvm7dICGv8wWIThrfmLtASs0FtaWg84_aFd499r2OL5oXrwSp2Zb8k_FHr088Zf1We0z-07bGuiUulUcBQmV7G9D8XDL8c0EmtX3fG2pqlFFGKPRZSwITmwMJjEa2G18XZ06WfW1qpyFO6y0AAAACw&features=ALL&v=3": {
+      "sha256": "01dcce9f34026c25441fc52bc34de4d8b14754ded8d64856fda0da3fde603ff3",
+      "bytes": 38428,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:29.957Z"
+    },
+    "https://use.typekit.net/af/ef62e5/0000000000000000774ee020/31/l?unicode=AAAH1AAAAAcRv6_WaG9-OwvDrhn4RB_9i_4V6F8Uy_fJETfgT7pgIAJxtbuqjFtdyS7i9RxigBzkWW6oStRCdF_nmvf2R5gaw4DD-vtwER4g8tGNAhck331emp0srIDUd8tzWS7Adk20giDxJj9fl0_EvRgH9yln87vj-NzBDxYLIs9oIPh9H8Pqm5k575QnvDn8-BMUadv_1E1a0TbBWZDRj4-E_hYdfPKq4TWHraEcE-ilfTf9pnhPwHA6dWL-SZiCveuOgi5uYuyQoCdsUmV3mXI1wHuKsQLGzHvr942wevot_gparEyocj4upnCOy-2oj-o6ZdvaNDxBgGsmHAAP_8E&features=ALL&v=3": {
+      "sha256": "5d88380a682afbe35a1ad925b553d11b496d7cd26d6c30826ad6b7c8fdc9f563",
+      "bytes": 242668,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:30.331Z"
+    },
+    "https://use.typekit.net/af/7115ee/00000000000000007750b2bd/31/l?unicode=AAAHJwAAAAd0EeYTusNzN7sTu-EynudoVd17Ve9mZJXMU4_fnJC_zQ9oeVxskaD59fqzt7M7mRqI9DmqJ0mR_XZ6vn6-tfQyL56OZSZQfJddGppzpOttKOVRzmVeBHVSec9xQOfWzWanzuLdbVxU65NZmEiDOz9DTQD8fIbfLfvQtCrhZQg6bcA53rzuW0RTTbBqPVMdePRWL72IKh5BOOqeE-6LF_eYCwRK81f-ylauNKBjWLEhhaxYtDK5PVYRI-yB9Y4xcam65MggSMlQscW1tqKew66YtEWvl0csqSqlEVfSkSu-sOF0ILUAAABX&features=ALL&v=3": {
+      "sha256": "73f3afc1ef89fd3906e557cee29a68000f03feef744b5d9bc0ee0badefba6e8e",
+      "bytes": 45964,
+      "contentType": "application/font-woff2",
+      "capturedAt": "2026-11-13T08:14:30.370Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=21.75.78.81.85.95.173.255.334.382.525.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "381322276c93a25a214756074dcad2bedab03caa8fcf7b9056b5331e6a717ad4",
+      "bytes": 691876,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:14:30.962Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "edfbfdbf14a287229c83af71b38aedeb1de9e082ae25a1d90e92868cdf97f23d",
+      "bytes": 307984,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:14:31.555Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=21.75.78.81.85.95.173.255.334.382.525.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "c13f34116a4c01cf0d1f2c088a0d1df80f160cefd737bacd3b91123dd9043327",
+      "bytes": 697040,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:14:31.812Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "fa85918bdfd4c8802b6dc2917a65af46f976457f9e87f8daebba511b7e68b5c4",
+      "bytes": 300012,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:14:31.931Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/ga4-base.js": {
+      "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+      "bytes": 10322,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:31.979Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/bootstrap.js": {
+      "sha256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+      "bytes": 18354,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:32.042Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "2de37af91b3b08677f2e0b30d7a2c5613d1d36d79fdd5341dd32774c3eedd0d9",
+      "bytes": 308044,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:14:32.185Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5CgmG0X7t.woff2": {
+      "sha256": "6ecf7205a09aea30481edc34156d1beba7be11f72d03e80bdb6bbf592594ba15",
+      "bytes": 25880,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:33.170Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.119.woff2": {
+      "sha256": "18e5aa97a223c7b5f62403bb20bffec9ebd2097a83fbaad5ec356eb563c89598",
+      "bytes": 16568,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:33.287Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.118.woff2": {
+      "sha256": "099e7ffea8d6d95de481f078370d72c22d4cd225607bd9f4acd9bf682424ef40",
+      "bytes": 14564,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:34.267Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.117.woff2": {
+      "sha256": "d602fe02018943163f91e7418a82c71b6fbb37882d4089fbdb543534b4fb8c2e",
+      "bytes": 14296,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:34.483Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.116.woff2": {
+      "sha256": "554faa6e9030be693d0663e14170d38125f2dc47ab11eed86ab2cb3b8347be1a",
+      "bytes": 16116,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:35.323Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.114.woff2": {
+      "sha256": "a181067ee87266ad19b00287f7e2dbeac8d3c55a8581a95d8aa33b953bec71bc",
+      "bytes": 16096,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:35.685Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.115.woff2": {
+      "sha256": "8d152cfefe1ebc859d46e6d6020af7e4b712974ae07bdb143c1b4f9e9c57ac9f",
+      "bytes": 16204,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:36.568Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.111.woff2": {
+      "sha256": "c098d730dbc3ed4266ce154084d915cf73f27d56d8cf1cff267231aaa6d12d42",
+      "bytes": 17392,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:36.927Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.112.woff2": {
+      "sha256": "9d2429a42f2f25d96fe8c367af405b8853d98a9d97e7ca7073ea33b267363715",
+      "bytes": 16360,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:37.074Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.113.woff2": {
+      "sha256": "e432f58c6b07476e1eb4edb9c55726aeb2fa361b5b494047f6670e92cee93cc5",
+      "bytes": 16380,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:37.838Z"
+    },
+    "https://fonts.gstatic.com/s/vollkorn/v30/0yb9GDoxxrvAnPhYGxkpaE0.woff2": {
+      "sha256": "3d9ff812bd542e52bb7f0c204f3a21152e22aead4572ff09722c1b38f30d7567",
+      "bytes": 46356,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:38.446Z"
+    },
+    "https://fonts.gstatic.com/s/vollkorn/v30/0yb7GDoxxrvAnPhYGxksWE8eqQ.woff2": {
+      "sha256": "2b21f0fe01d929e246f513850bb1e2658eb77d9ab80c68a53a460725d66a5059",
+      "bytes": 47528,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:38.922Z"
+    },
+    "https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XFiaQ.woff2": {
+      "sha256": "c59dc73d29daf142ef2431f455d21464172374aa750d793a79d608735db2d856",
+      "bytes": 42800,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:39.859Z"
+    },
+    "https://fonts.gstatic.com/s/ptserif/v19/EJRVQgYoZZY2vCFuvAFWzr8.woff2": {
+      "sha256": "4271064a37f3ffc0aac5f3806db8a72acc23e19447d1804e4e80d8796cbf6330",
+      "bytes": 33116,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:40.496Z"
+    },
+    "https://fonts.gstatic.com/s/ptserif/v19/EJRTQgYoZZY2vCFuvAFT_r21cg.woff2": {
+      "sha256": "cb373bde18855c82a0ebf2946ea661ebd0be58a7fbabdf20f7744ecd9c0a9cfd",
+      "bytes": 34896,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:41.177Z"
+    },
+    "https://fonts.gstatic.com/s/ptserif/v19/EJRSQgYoZZY2vCFuvAnt66qSVys.woff2": {
+      "sha256": "bf23a7a4eebedbb87d4084a69496b29815914a18e339a00f5dc73a03c9c9328f",
+      "bytes": 29588,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:41.632Z"
+    },
+    "https://fonts.gstatic.com/s/ptserif/v19/EJRQQgYoZZY2vCFuvAFT9gaQZynfoA.woff2": {
+      "sha256": "3cb3cfab3c562cbbb5a53accf433f65ed1cd0403ea3bdd6ceeb73bf87f23521c",
+      "bytes": 28516,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:42.210Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/session.js": {
+      "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+      "bytes": 19836,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.255Z"
+    },
+    "https://fonts.gstatic.com/s/newsreader/v26/cY9qfjOCX1hbuyalUrK49dLac06G1ZGsZBtoBCzBDXXD9JVF438weI_wC-ZF.woff2": {
+      "sha256": "e66067814f1c672d33a457e4f4d102c818b481420e2234cf685ebdbf2f443904",
+      "bytes": 22480,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:42.259Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d39160537239833ee5ed2d_%EC%9E%90%EC%82%B0%209.webp": {
+      "sha256": "fba4c17f5d47ffce3f13d68c1af53c6d3843c0097707588c1ea28eef762eb5a0",
+      "bytes": 1898,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:42.316Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d39160a58d7071c8161446_%EC%9E%90%EC%82%B0%2010.webp": {
+      "sha256": "23e00f2ccaafd80de4b1bcc9f440f6ff95b4dea367bcf636d34cce0398da15e1",
+      "bytes": 1956,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:42.369Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69f306681c151b8905cd31c4_%EC%9E%90%EC%82%B0%209A.webp": {
+      "sha256": "3c234677a629691601e5befaf0a602bed958f4e6cfb23b34048b89355fea4681",
+      "bytes": 6884,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:14:42.424Z"
+    },
+    "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js": {
+      "sha256": "65f6c13748b0c8d8f9eabd0373a130ac293b3f16bf34aaa946d953980372b932",
+      "bytes": 42667,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.448Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/global.css": {
+      "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+      "bytes": 36744,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.472Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/coming-soon.css": {
+      "sha256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf",
+      "bytes": 11376,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.493Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/buttons.css": {
+      "sha256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+      "bytes": 20934,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.545Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/floating-cta.css": {
+      "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+      "bytes": 32381,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.619Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/floating-cta-mobile-fix.css": {
+      "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+      "bytes": 2829,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.671Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/popup.css": {
+      "sha256": "e3b66db802850b637f585166c191b266ff5dadfcc7c93c96b59c43a952407fec",
+      "bytes": 2963,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.697Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/top-button.css": {
+      "sha256": "4814c4b5bbdf7bdecc137e946230626a5daace3c7373e8d5c6a4e1a3860a4917",
+      "bytes": 2123,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.769Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/hamburger.css": {
+      "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+      "bytes": 6150,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.807Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/section-divider/divider.css": {
+      "sha256": "e44b794d46188d27baeb392efef2ab760b73c814eb3bfc225a0e36e4942a2e38",
+      "bytes": 812,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.869Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/section1/section1.css": {
+      "sha256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+      "bytes": 2817,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:42.988Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/footer.css": {
+      "sha256": "07d55be895e65677451897f1ee18c46b7fe3c816181b346e3dac80f26a427ed2",
+      "bytes": 4569,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:43.021Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/card-stack.css": {
+      "sha256": "eb09a7a4b4e814b54a8bdeff06586bbe2e898c24b7a1afca16c8c8254cf87949",
+      "bytes": 4788,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:43.050Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/scroll-hint.css": {
+      "sha256": "1b86941e2f8211beb3e0a4b16b329886601d9f47ba61d2102c4b35d3f24db3d7",
+      "bytes": 3704,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:43.074Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/sections-animations.css": {
+      "sha256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+      "bytes": 10435,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:43.588Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/viewport.js": {
+      "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+      "bytes": 7222,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:43.625Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/viewport-fix.js": {
+      "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+      "bytes": 5970,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:43.709Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/coming-soon.js": {
+      "sha256": "70e41d018b4448c33914cc8441372a675aded2a504c9a3f049cf6082a39665da",
+      "bytes": 47891,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:44.125Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/section1/section1.js": {
+      "sha256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+      "bytes": 18817,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:44.199Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=517.653.663&state=21.75.78.81.85.95.173.255.334.382.525.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "60bb3da6db46d40b909275195fc78fa05dfce6db201fe2a88feea262777418ce",
+      "bytes": 94656,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:45.088Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=517.653.663&state=21.75.78.81.85.95.173.255.334.382.525.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "91fb92fc4653108218ab4cc35fb2c437d37a27d2de0a8d192512c47b6af607b5",
+      "bytes": 94630,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:45.377Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=258&state=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "14f7ccfd458d9f0fe8865eccb3bb51431b5290d1aeb2775a55112fdc011252f3",
+      "bytes": 47541,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:46.423Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=258&state=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "3ea9ccd022a49dc622782c7d84fe11080373ce0d07ef7f2fd7516e1a73bef3ad",
+      "bytes": 47577,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:46.770Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/sheet-log.js": {
+      "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+      "bytes": 8372,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:47.535Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=258&state=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "0893a59562558e4d65695db5868ce647c4d7e8eb11254beab7650466d0f44413",
+      "bytes": 47554,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:47.691Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/scroll-depth.js": {
+      "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+      "bytes": 9587,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:47.737Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=529.616&state=21.75.78.81.85.95.173.255.326.331.334.382.517.525.605.624.640.641.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "489ab73cc8057f6e8038408f90e1b6e6139200072f620928a160b9accbbfbc5f",
+      "bytes": 73546,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:48.598Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.110.woff2": {
+      "sha256": "9a71279b4e52c6b3edff0b577f79c121b92a9e0134ab0221a1654940145a26af",
+      "bytes": 17464,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:48.949Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=529.616&state=21.75.78.81.85.95.173.255.326.331.334.382.517.525.605.624.640.641.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "8de5ee2b8d2aa30d10a0078ad1fe9bf1a289312751785113c8bad0bbbf836325",
+      "bytes": 73518,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:49.830Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=263&state=4.16.36.47.109.127.215.258.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "4024cd3683e30a2ff28e0208ca272497403d3bfeeb62884dd4f827b62a746127",
+      "bytes": 46087,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:49.868Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/accessibility.js": {
+      "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+      "bytes": 2766,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:49.909Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/floating-cta.js": {
+      "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+      "bytes": 37747,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:49.965Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/floating-cta-mobile-fix.js": {
+      "sha256": "c0a4047f21eda63d1dd1a9515e8e61e9f26f5aad44bfb59b6e367e41bb14b6f2",
+      "bytes": 708,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:50.012Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/page-time.js": {
+      "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+      "bytes": 13879,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:50.932Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=263&state=4.16.36.47.109.127.215.258.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "0ace8348d1871118c66d97aaac07319c03e5e6e3f00e3bc7d4c97cad88ea5ab9",
+      "bytes": 46084,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:50.944Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/section-reach.js": {
+      "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+      "bytes": 25990,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:50.972Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/popup.js": {
+      "sha256": "084203181dbbbb7f5ef59c4dd147c62233bf990019fcacd1282a24cafd5b698a",
+      "bytes": 4803,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:50.990Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/top-button.js": {
+      "sha256": "6e15de8e59a72fb710b64710853894dc1ed41ff30a3afb864faa3f7a518cd995",
+      "bytes": 6157,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.022Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/section-divider/divider.js": {
+      "sha256": "be4e75046c098ebe31def5bf605a5f34264a3ac0a7cb55ddcc8c2ffe9a4f1f83",
+      "bytes": 9632,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.062Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/hamburger.js": {
+      "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+      "bytes": 17566,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.074Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/buttons.js": {
+      "sha256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+      "bytes": 28585,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.100Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/sections-animations.js": {
+      "sha256": "8f2dfda1aec1a107f18315f074df469969c2e6a13ae4328c6db9b45dfcbf2d79",
+      "bytes": 42042,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.122Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/footer.js": {
+      "sha256": "ef8868bc098ea8400b5c17a5ab92e2b59a310997aa3d99919270d7290d0c0928",
+      "bytes": 21139,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.145Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/scroll-hint.js": {
+      "sha256": "0006a7950afb4ade3d2ebb6ccac015e4f9188f6d39c6804363543ec41a839bde",
+      "bytes": 5299,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.208Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/equipment/equipment.js": {
+      "sha256": "32fff2ffa274b44e9eece631d044467ca87c088d2e84e27c3937c1538e6d078e",
+      "bytes": 8444,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:51.590Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/home/global/card-stack.js": {
+      "sha256": "c1e3179b6439138cdefdf5f334d50ebef3f48ecb0568bd24d0c1d584ebf6888c",
+      "bytes": 19556,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:52.284Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/cta-done.svg": {
+      "sha256": "1b2270e23a9b5a1209e53395b96f64d8396ad11df3400efc3b8c8244eafdbf9f",
+      "bytes": 7308,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:14:52.331Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/cta-mascot.svg": {
+      "sha256": "e62e5954bc45480cbaf6f2349193cfdcc2b283f07591aa7315d2cc0be4d6b0e1",
+      "bytes": 9967,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:14:52.378Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=263&state=4.16.36.47.109.127.215.258.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "04d2dfdac820d8ef25f2708ac3958cf542e4ace51554c051a238dd1506f7f133",
+      "bytes": 45952,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:52.841Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=183.626.639.651.739.776.779&state=21.75.78.81.85.95.173.255.326.331.334.382.517.525.529.605.616.624.640.641.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "2d1a024683c8e564d85c8e7db303f50ff62e3cb344f5a60c3a291d9e2e780fc6",
+      "bytes": 103872,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:53.752Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=183.626.639.651.739.776.779&state=21.75.78.81.85.95.173.255.326.331.334.382.517.525.529.605.616.624.640.641.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "8906b73aa757b23391a7120c3d827f5c15f243c2e89eec217b9bd705600792b4",
+      "bytes": 103553,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:54.362Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=151.200.292.317.404.405.445&state=4.16.36.47.109.127.215.258.260.263.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "d83eb6243b82f2427b76c9e3f317bb47d2fc7219ad65119e36890918ddc144c0",
+      "bytes": 62548,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:55.052Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=151.200.292.317.404.405.445&state=4.16.36.47.109.127.215.258.260.263.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "4bf14c93752b21637353ae992322d9422769a7998dd057dddbc32e37766790be",
+      "bytes": 61933,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:55.836Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.107.woff2": {
+      "sha256": "0d27a2a224e4caae421ce9f3f7a28af5def8750d37b5b12cf6cf496dd60add3e",
+      "bytes": 18392,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:14:56.283Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/global/bootstrap.js": {
+      "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+      "bytes": 13954,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:14:56.343Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=49.151.257.289.292.308.317.409.421.435.445&state=4.16.36.47.109.127.215.258.260.263.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "62c843b540b972df6b0b47159697bb0be065bab1d0403a9757785e0aa9980f10",
+      "bytes": 91671,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:56.658Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=513.515.623.642.671.743.755.775&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.529.605.616.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0": {
+      "sha256": "c83108eb49ed121ebfe44004e9e128570c26d33cdb5bda2b61208561fc59064d",
+      "bytes": 142326,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:58.172Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=513.515.623.642.671.743.755.775&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.529.605.616.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0": {
+      "sha256": "a4336cb1f58bd4f8b566551248869de1f93bc3dd8ac2cb88bcfdb510f5595a01",
+      "bytes": 141822,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:58.788Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=257.289.308.400.409.421.435&state=4.16.36.47.109.127.151.200.201.215.258.260.263.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+      "sha256": "bcf65358282ffad797120a8c85382cbc402363d1719c407368b46a7be837ba68",
+      "bytes": 69516,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:14:58.975Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69fefd8a4460b77e20564418_%EC%9E%90%EC%82%B0-23DVq.png": {
+      "sha256": "37b8f7b0e19e06363da622dade4e97131fbcb3b8fd87d333d832ea48787874d4",
+      "bytes": 1637,
+      "contentType": "image/png",
+      "capturedAt": "2026-11-13T08:14:59.047Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=257.289.308.400.409.421.435&state=4.16.36.47.109.127.151.200.201.215.258.260.263.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+      "sha256": "dad400a2ae010e658da23b36cec52cb3251c1acd19684784803abbf4c4e4330d",
+      "bytes": 68706,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:15:00.114Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=517.529.616&state=21.75.78.81.85.95.173.255.334.382.525.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "614c302d1c72d104918fde601a0b0bbae9a32378192b0cd52d4ab64b162b9540",
+      "bytes": 95431,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:43.363Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=517.529.616&state=21.75.78.81.85.95.173.255.334.382.525.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "939b686acbc7658b3953cf8c1ca9a00e3cbbcdd1bbee844314bc2ac6f0f47b93",
+      "bytes": 95350,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:43.610Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=258.263&state=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "12d4a50db08bea1a4932e29eb4dd1368208cba4f6aa2121fbb097c371ddefd3e",
+      "bytes": 52402,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:44.487Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=258.263&state=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "26b805a7d46c42de9cc30b2f2b6835eea3bfa9b3ec692f67fa99a1ab81949299",
+      "bytes": 52435,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:44.894Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=258.263&state=4.16.36.47.109.127.215.260.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "32be1bc82ea7d9d73f9e5f1c500eee22597fdd1cd74e9b3301aecae501467da7",
+      "bytes": 52280,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:44.988Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=183.387.513.515.623.626.639.642.651.653.663.671.739.743.755.779&state=21.75.78.81.85.95.173.255.334.382.517.525.529.605.616.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "ad52b185c0124bf17000f3b0afc27c20d6153492eb847701ff743290a422e2e3",
+      "bytes": 193399,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:45.455Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=183.387.513.515.623.626.639.642.651.653.663.671.739.743.755.779&state=21.75.78.81.85.95.173.255.334.382.517.525.529.605.616.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "b99e9261d856fd280c12049eeccc9cea002b23b1d85dc29be7e1b0a572edf8d6",
+      "bytes": 194333,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:45.611Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=49.151.257.289.292.308.317.409.421.435.445&state=4.16.36.47.109.127.215.258.260.263.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "197ae29614a9fa93a7dd059233ed64c02c0909436ebc0b238a0cb580a220bdb0",
+      "bytes": 91933,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:45.866Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=49.151.257.289.292.308.317.409.421.435.445&state=4.16.36.47.109.127.215.258.260.263.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "4fe2a84f021209670acd85f85b1b72901fcd3bc96da48989431c7a14681f3b35",
+      "bytes": 90393,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:16:46.138Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=183.626.639.651.653.663.739.776.779&state=21.75.78.81.85.95.173.255.334.382.517.525.529.605.616.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "684cce77f57203c64e3eb6d1f5634a97c3dea0a01be44847c77912b1383ac938",
+      "bytes": 113626,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:17:41.744Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=183.626.639.651.653.663.739.776.779&state=21.75.78.81.85.95.173.255.334.382.517.525.529.605.616.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0": {
+      "sha256": "cbef6b8c85450c43af33f0ff84c9d0495b0595ce6fd54640d3f46b6e14744b23",
+      "bytes": 114046,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:17:42.026Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=151.200.292.317.404.405.445&state=4.16.36.47.109.127.215.258.260.263.290.306.307.403.408.411.418.420.426.427.436.437&order=0": {
+      "sha256": "1ef170e2577ebd252fa082b3d14602f04801b5e745f9b5c519f11aeaf7e79903",
+      "bytes": 62540,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:17:42.864Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=257.289.308.400.409.421.435&state=4.16.36.47.109.127.151.200.201.215.258.260.263.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+      "sha256": "129178ca9898fa55df45f3fe45a95b6a142bdc064dd2ba4ffd1e3ed06e364b9a",
+      "bytes": 69294,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:17:44.240Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d770c8a33c7c86203c4d31_%EB%A1%9C%EA%B3%A02%20%ED%91%B8%ED%84%B0%20%ED%9D%91%EB%B0%B1.webp": {
+      "sha256": "d1b490008f1e8412908fdc78d82596b850630182524c5c174c8ac1a40c386013",
+      "bytes": 3260,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:52.503Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d77aef7ddb73352608d23c_%EC%9D%B8%EC%8A%A4%ED%83%80.svg": {
+      "sha256": "663248722b46e4fc4656096ebb3911b2c142532f9662b90e4eae5eb0e648bbf4",
+      "bytes": 1005,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:17:52.526Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d77af47f88abf84eae53f5_%EB%B8%94%EB%A1%9C%EA%B7%B8.svg": {
+      "sha256": "746061dd699d29f937c1541da1a951c1d8d36f86604c52db21d4bd5379564220",
+      "bytes": 6516,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:17:52.566Z"
+    },
+    "https://www.helix-amc.com/discover-helix": {
+      "sha256": "3bd5c26e05e472b844e362d9e74c1b2e6c0a274f0e4ee6096cc42a30ddb24eda",
+      "bytes": 87080,
+      "contentType": "text/html; charset=utf-8",
+      "capturedAt": "2026-11-13T08:17:57.129Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69f4dce66fa5bfa30cf61c89_Gemini_Generated_Image_r8tfhur8tfhur8tf2.webp": {
+      "sha256": "4abc5f1fbca64e44428f27edbc433558e8c11f167fdda0a7641c456e2f269fc9",
+      "bytes": 310930,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:57.614Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69fb0812be1666cfe7843c0b_%ED%8A%B9%EC%A7%84.webp": {
+      "sha256": "d5fb67b3bd28809f5ec1487e05465e24d4589e2a2648c855176bcd6918a1707c",
+      "bytes": 233936,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:57.700Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/seo-snippets/discover-helix.html": {
+      "sha256": "2dd58b5abf9658874c757a1b7398839d73ad6353d969045ced024c0ce67c4e14",
+      "bytes": 2963,
+      "contentType": "text/plain; charset=utf-8",
+      "capturedAt": "2026-11-13T08:17:57.706Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69edb6e74104ad1d78491c29_S3%20%EC%9D%B4%EB%AF%B8%EC%A7%801.webp": {
+      "sha256": "ebf4b05ba63d34c3aa5e8eae8f55fe59a35d99c3ef4c8dab4fa01dfbd5caaecc",
+      "bytes": 122864,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:57.751Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69edbccfae0e6bb1fa20011b_%EC%9D%B8%ED%84%B0%EB%B2%A4%EC%85%98-%EA%B7%B8%EB%9E%98%ED%94%BD.webp": {
+      "sha256": "3c6c95ba56fb412e9278ac3f1573c76cdf7dee9d84f61040b49f1aa2613a61b0",
+      "bytes": 372362,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:57.756Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d880167fff32a303fe122e_Ellipse%2070.svg": {
+      "sha256": "05a2d5bf1d2f757ed421fa4c9909253a920510f4b0d92c075da8f9f6b87b87bb",
+      "bytes": 646,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:17:57.807Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69edc537ccf7d761ba7bf3f4_%ED%95%98%EB%B8%8C%EC%88%98.webp": {
+      "sha256": "fcf2df11a563693d9fc96c323a72edf99d1b36fd4d9c652e4e8abfcfcead5e3a",
+      "bytes": 377824,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:57.810Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d700bcc34b330ceea4724c_%EC%A1%B0%ED%95%A9%ED%98%95%20%EB%A1%9C%EA%B3%A02.webp": {
+      "sha256": "b321eb7267332763ea710b5242daf8f5c39b05776755046324c7bdf96088ba14",
+      "bytes": 8506,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:57.902Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.108.woff2": {
+      "sha256": "46dfea3f360d34de0c6b543a17646608b7bef3beaef532747b39b27650fe29e9",
+      "bytes": 19700,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:17:58.921Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.109.woff2": {
+      "sha256": "e1be5f30719497b3460457d611fa8645149930e0b1755e259b7238503d1a23cd",
+      "bytes": 17912,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:17:59.097Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d48bdd4f64fe0069378849_%EC%9E%90%EC%82%B0%2023DVq.webp": {
+      "sha256": "245d4bc6c3f3bb1b8f3713ed9a44418262d6b87ea92136876c5b2a6051620319",
+      "bytes": 2210,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:17:59.138Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=4.18.47.63.525.529.605&order=0": {
+      "sha256": "a9fc54968ac9d2abfb4fcdd0f3dabf36b1738f38707ed050da56ea6dba92aa4c",
+      "bytes": 1247228,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:00.128Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.105.woff2": {
+      "sha256": "77b99af17900815d9a6c187f4fdf842300191183f79b8c9133973a165534121c",
+      "bytes": 25312,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:00.216Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=4.18.47.63.525.529.605&order=0": {
+      "sha256": "1d6aa9272c4ba1e6284a33430a7bd8f76550efb902bcbe5e8ffd9ec6d9ceee24",
+      "bytes": 1238816,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:00.924Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=0&order=0": {
+      "sha256": "9074f030558c4b5054be75eeae0e11e4c8f686aa5d1ed14726ae7789b6848401",
+      "bytes": 508952,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:01.413Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=0&order=0": {
+      "sha256": "3931611dd73541b18d324723a24c8f2ea00c808e8f3f8b576b67a6d978d215f0",
+      "bytes": 521408,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:01.432Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/global.css": {
+      "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+      "bytes": 36744,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:01.518Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/about/about.css": {
+      "sha256": "3e9da95b9832001f19beaba921a82d4dc6845f8ddabe521ef348597b11065216",
+      "bytes": 40253,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:01.793Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/about/cert-modal/modal.css": {
+      "sha256": "3698f5db08862685ae8c5e3ed65e5ce8f8c940a68ef7b0815b1ea3d8b14c1787",
+      "bytes": 9623,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:02.261Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=0&order=0": {
+      "sha256": "30461ad8e4995f49c664aa13a3e7e4f1c4a62231e3dac9ef7cd9f30c7ebdb0c7",
+      "bytes": 520576,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:02.841Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/card-stack.css": {
+      "sha256": "eb09a7a4b4e814b54a8bdeff06586bbe2e898c24b7a1afca16c8c8254cf87949",
+      "bytes": 4788,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:02.850Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/about/bootstrap.js": {
+      "sha256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+      "bytes": 20690,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:03.577Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/popup.css": {
+      "sha256": "e3b66db802850b637f585166c191b266ff5dadfcc7c93c96b59c43a952407fec",
+      "bytes": 2963,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:03.633Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/floating-cta.css": {
+      "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+      "bytes": 32381,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:03.671Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/coming-soon.css": {
+      "sha256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf",
+      "bytes": 11376,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:03.721Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/hamburger.css": {
+      "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+      "bytes": 6150,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:03.989Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/footer.css": {
+      "sha256": "07d55be895e65677451897f1ee18c46b7fe3c816181b346e3dac80f26a427ed2",
+      "bytes": 4569,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:04.022Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/viewport-fix.js": {
+      "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+      "bytes": 5970,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:04.192Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/viewport.js": {
+      "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+      "bytes": 7222,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:04.219Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/coming-soon.js": {
+      "sha256": "70e41d018b4448c33914cc8441372a675aded2a504c9a3f049cf6082a39665da",
+      "bytes": 47891,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:04.285Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/hamburger.js": {
+      "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+      "bytes": 17566,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:04.325Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/about/about.js": {
+      "sha256": "b53ca21632292dee2b59c524ac4f124e87f3bf92eee745fb49fe614b928f92ff",
+      "bytes": 124922,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:04.774Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/top-button.css": {
+      "sha256": "4814c4b5bbdf7bdecc137e946230626a5daace3c7373e8d5c6a4e1a3860a4917",
+      "bytes": 2123,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:04.921Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/card-stack.js": {
+      "sha256": "c1e3179b6439138cdefdf5f334d50ebef3f48ecb0568bd24d0c1d584ebf6888c",
+      "bytes": 19556,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:05.398Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/about/cert-modal/modal.js": {
+      "sha256": "53099512cd019e52cf9a73ed92bb04becca3b4920565ff940d6647abac00f364",
+      "bytes": 27334,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:05.907Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/accessibility.js": {
+      "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+      "bytes": 2766,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:05.909Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/floating-cta.js": {
+      "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+      "bytes": 37747,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:05.951Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/scroll-depth.js": {
+      "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+      "bytes": 9587,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:05.983Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/page-time.js": {
+      "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+      "bytes": 13879,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:06.025Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/section-reach.js": {
+      "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+      "bytes": 25990,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:06.078Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/popup.js": {
+      "sha256": "084203181dbbbb7f5ef59c4dd147c62233bf990019fcacd1282a24cafd5b698a",
+      "bytes": 4803,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:06.120Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/top-button.js": {
+      "sha256": "6e15de8e59a72fb710b64710853894dc1ed41ff30a3afb864faa3f7a518cd995",
+      "bytes": 6157,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:06.728Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/home/global/footer.js": {
+      "sha256": "ef8868bc098ea8400b5c17a5ab92e2b59a310997aa3d99919270d7290d0c0928",
+      "bytes": 21139,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:06.767Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/global/cta-done.svg": {
+      "sha256": "1b2270e23a9b5a1209e53395b96f64d8396ad11df3400efc3b8c8244eafdbf9f",
+      "bytes": 7308,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:18:07.284Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/global/cta-mascot.svg": {
+      "sha256": "e62e5954bc45480cbaf6f2349193cfdcc2b283f07591aa7315d2cc0be4d6b0e1",
+      "bytes": 9967,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:18:07.320Z"
+    },
+    "https://www.helix-amc.com/services": {
+      "sha256": "e98fa504e1cc5954f6a64dadb2a047843134c85a9943e3561ae811e29d92421b",
+      "bytes": 27730,
+      "contentType": "text/html; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:17.689Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6ad6b0bad182f0e668c6e9fa_%EB%82%B4%EA%B3%BC-%EC%A0%84%EB%8B%AC%EC%B5%9C%EC%A0%81%ED%99%94-q95-20261019.webp": {
+      "sha256": "d25cb18870dea5c8465750c8bae6ad14b8b6b82af90fa48789f2470c0f4e7f6f",
+      "bytes": 620524,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:18:18.013Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6aea95cc181bb038bdfde447_helix-services-surgery-q100-original-preserved-20261104.webp": {
+      "sha256": "0f5adf4bd1482fec429a97d8522e0c0fee81b9cc2f9a2e98a90c6d8c63ba4875",
+      "bytes": 215392,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:18:18.083Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6aea95d06c74c420ea42bc1a_helix-services-radiology-q100-original-preserved-20261104.webp": {
+      "sha256": "32bdd5e1e788a5bf8dfecbf5199231fd94ae9f9843da6d99c088f87a78e33f7b",
+      "bytes": 297996,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:18:18.135Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6aea95d354d0d7b1aabdc52f_helix-services-ophthalmology-q100-original-preserved-20261104.webp": {
+      "sha256": "250aed9f63a03eb628e1c3733688a3e6cddc06c1fe3ed38de62980e9303a36b4",
+      "bytes": 127818,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:18:18.184Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6aea955a28cd5488d62f6cbe_helix-services-dentistry-q100-original-preserved-20261104-p-1080.webp": {
+      "sha256": "bd2b1d3a48c772fdb1038df72efd2827ce42c39e6ca8d18d211a113aade2bfa9",
+      "bytes": 40796,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:18:18.242Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/bootstrap.js": {
+      "sha256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638",
+      "bytes": 8968,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:18.313Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=38.43.75.81.255.347.361.367.369.372.377.384.386.517.525.605.641.654.664.666.669.672.675.678.688.690.693.719.721.754.760.761.766&order=0": {
+      "sha256": "cc639701aec9d8784b27528938d9b5f74868ce3f2bf186b8f035f04c6b1e9d09",
+      "bytes": 639644,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:18.671Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=22.31.33.47.89.104.109.144.148.162.205.217.280.293.299.302.303.307.320.322.328.330.332.335.338.341.344.354.356.402.405.407.426.427.432&order=0": {
+      "sha256": "ed95c904595f7b7d2de84b893b34b6c5756fd003e5c7ab981e2cec075da45151",
+      "bytes": 255632,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:19.144Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=38.43.75.81.255.347.361.367.369.372.377.384.386.517.525.605.641.654.664.666.669.672.675.678.688.690.693.719.721.754.760.761.766&order=0": {
+      "sha256": "09b102715859d7f3c2251d4907bb2cd00ce6ec66e5f2df6070dca6d1b2b6875c",
+      "bytes": 635468,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:19.505Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=22.31.33.47.89.104.109.144.148.162.205.217.280.293.299.302.303.307.320.322.328.330.332.335.338.341.344.354.356.402.405.407.426.427.432&order=0": {
+      "sha256": "565e35ac28e0d98a7f1b8d95c585f99b34b06dd6bafbcb97add5989a82c7898d",
+      "bytes": 249064,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:19.610Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=22.31.33.47.89.104.109.144.148.162.205.217.280.293.299.302.303.307.320.322.328.330.332.335.338.341.344.354.356.402.405.407.426.427.432&order=0": {
+      "sha256": "25f3184ab6d5f2cbb616e9cf8472168efba2a8cb536fe3a947728c5e9d233db5",
+      "bytes": 255360,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:19.897Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/viewport.js": {
+      "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+      "bytes": 7222,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:19.971Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/viewport-fix.js": {
+      "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+      "bytes": 5970,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:20.069Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/scroll-depth.js": {
+      "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+      "bytes": 9587,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:20.326Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/page-time.js": {
+      "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+      "bytes": 13879,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:20.355Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/accessibility.js": {
+      "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+      "bytes": 2766,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:20.506Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/services-ga.js": {
+      "sha256": "e5c080d14c3f9f5904ece38b9139fd3dfd8f985aa1729de52fb53f7336739bb3",
+      "bytes": 3762,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:20.544Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/section-reach.js": {
+      "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+      "bytes": 25990,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:21.251Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/floating-cta.css": {
+      "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+      "bytes": 32381,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:21.302Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/global.css": {
+      "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+      "bytes": 25435,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:21.449Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.css": {
+      "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+      "bytes": 6150,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:21.902Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.js": {
+      "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+      "bytes": 17566,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:21.935Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/floating-cta.js": {
+      "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+      "bytes": 37747,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:22.113Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/coming-soon.css": {
+      "sha256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf",
+      "bytes": 11376,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:22.430Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/coming-soon.js": {
+      "sha256": "f66d26b7a67be609590a95a2a8105f7ba10b9612c8ea330a9b717e9cea950076",
+      "bytes": 47092,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:22.554Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/services.css": {
+      "sha256": "5c4541c344115bfd50051a6e85b1091299be306307e8281ff3d51dd1441f7076",
+      "bytes": 2307,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:22.873Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/dept-border.js": {
+      "sha256": "a162b309be91d539561491aa14f3e7d963626563d61ef10172eaefbdf34fe1fb",
+      "bytes": 14870,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:23.010Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/dept-nav.js": {
+      "sha256": "6e4188c65ffe5b89409e7ee455af51b6300d7968687a5085ada1bef3810ef5e7",
+      "bytes": 9621,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:23.348Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/seo-loader.js": {
+      "sha256": "430b57d4c9487d117f02a76512ed2dfcafbbf715237e03366ad9ad1244e37844",
+      "bytes": 1749,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:23.472Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=319.651.653.663.673.689.738.752.771.776.779&state=38.43.75.81.255.347.361.367.369.372.377.384.386.517.525.605.641.654.664.666.669.672.675.678.688.690.693.719.721.754.760.761.766&order=0": {
+      "sha256": "5119e57cfffe2b03bfcb84db85cb0f069960d5cabde8ac4c84694e501e4e40ce",
+      "bytes": 117143,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:23.755Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=319.651.653.663.673.689.738.752.771.776.779&state=38.43.75.81.255.347.361.367.369.372.377.384.386.517.525.605.641.654.664.666.669.672.675.678.688.690.693.719.721.754.760.761.766&order=0": {
+      "sha256": "51968d418dd1cb2911f91afb88469cadd679ff6007939d199694acfaf9b2292d",
+      "bytes": 116545,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:23.922Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=292.304.306.317.319.329.339.355.401.404.418.437.445&state=22.31.33.47.89.104.109.144.148.162.205.217.280.293.299.302.303.307.320.322.328.330.332.335.338.341.344.354.356.402.405.407.426.427.432&order=0": {
+      "sha256": "35932c450270279bf5903f817d1c12019c4c2dc456f9c352ce17ff495af2e3a9",
+      "bytes": 65856,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:24.150Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=292.304.306.317.319.329.339.355.401.404.418.437.445&state=22.31.33.47.89.104.109.144.148.162.205.217.280.293.299.302.303.307.320.322.328.330.332.335.338.341.344.354.356.402.405.407.426.427.432&order=0": {
+      "sha256": "94b1204609604b03c5b09304c68eeebca6536d35f69020d3d1de7ae471354cdf",
+      "bytes": 64846,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:24.332Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/seo-snippets/services.html": {
+      "sha256": "61f91d61220c8aaa633abd927583c0f13f5639913e87d5685e09e1383307d9a3",
+      "bytes": 4358,
+      "contentType": "text/plain; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:24.369Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=292.304.306.317.319.329.339.355.401.404.418.437.445&state=22.31.33.47.89.104.109.144.148.162.205.217.280.293.299.302.303.307.320.322.328.330.332.335.338.341.344.354.356.402.405.407.426.427.432&order=0": {
+      "sha256": "85973947c9ff7e42de0f74dd1832f0f559d0a2342d322a7df036875a774ba0fd",
+      "bytes": 65766,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:24.599Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d/seo-snippets/services.html": {
+      "sha256": "f4ae046d934a30b4923cd2ccd04d8da2769f4c0b6f1dcedcadf060777b677756",
+      "bytes": 4483,
+      "contentType": "text/plain; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:24.948Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=513.733.737.743&state=38.43.75.81.255.319.326.331.344.347.361.367.369.372.377.384.386.517.525.605.641.651.666.669.672.673.675.678.688.693.719.721.738.752.754.760.761.766.771.776.779&order=0": {
+      "sha256": "4408cf0ed848320764e31bd23b0b6815a0ccfe40acabc13cc8875d0b5f5f451b",
+      "bytes": 88862,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:25.399Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=513.733.737.743&state=38.43.75.81.255.319.326.331.344.347.361.367.369.372.377.384.386.517.525.605.641.651.666.669.672.673.675.678.688.693.719.721.738.752.754.760.761.766.771.776.779&order=0": {
+      "sha256": "97c74c03f2681cd2a424e63179d551c4cf868f9f89b0cf09bd0b151496f49dfc",
+      "bytes": 88982,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:25.447Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=279.323.400.403.409&state=22.31.33.47.89.104.109.144.148.151.159.162.164.177.200.205.217.280.292.293.299.302.306.307.317.322.328.332.335.338.339.341.344.354.404.405.407.418.426.427.432.437.445&order=0": {
+      "sha256": "96a5cb8457577b6d4b40302fbb6f623451283d89c67c3f26807063653c5753c7",
+      "bytes": 49787,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:25.791Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=279.323.400.403.409&state=22.31.33.47.89.104.109.144.148.151.159.162.164.177.200.205.217.280.292.293.299.302.306.307.317.322.328.332.335.338.339.341.344.354.404.405.407.418.426.427.432.437.445&order=0": {
+      "sha256": "3e43ebf5fd39504d3d0339c6a8a7d08aee840dd775a78d840e39fa9a0d6d5419",
+      "bytes": 49303,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:25.892Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=279.323.400.403.409&state=22.31.33.47.89.104.109.144.148.151.159.162.164.177.200.205.217.280.292.293.299.302.306.307.317.322.328.332.335.338.339.341.344.354.404.405.407.418.426.427.432.437.445&order=0": {
+      "sha256": "64706fdd8e2382a0470a397cc103f51c3acc3aa1a7769979722c1217befee34b",
+      "bytes": 49818,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:18:26.237Z"
+    },
+    "https://www.helix-amc.com/faq": {
+      "sha256": "0cf9fd0da25a625841cbec173211753873d97fa183c450426b6cd9273470a338",
+      "bytes": 137716,
+      "contentType": "text/html; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:33.075Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.schunk.121b0d7ff03e0f4a.js": {
+      "sha256": "53fd172162279e64b54acefc8ddb9a5a871b20403aba15e10f9c85973068fce1",
+      "bytes": 3247,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:18:33.194Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.7fdf50bc.6edc4a4f581aad61.js": {
+      "sha256": "b88db1039dd304f661c6751a1cb942b9d71dbb791702794212a6626d455476bf",
+      "bytes": 2181,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:18:33.513Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.56.woff2": {
+      "sha256": "827a99438e3082a852d08b2aeec5c0d1ac9d3ba4e0ad4d46c51a191b379ff4e1",
+      "bytes": 21252,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:34.843Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.106.woff2": {
+      "sha256": "40f74eafa4ab5b031e8ea319799c2d5582b1c4a26a430035821ea94aab71320b",
+      "bytes": 24736,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:35.084Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.15.woff2": {
+      "sha256": "7e0af82b79aabc25814d54c3a8785218768262649a43d33fb6ffeee5f718ab78",
+      "bytes": 22596,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:35.911Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.102.woff2": {
+      "sha256": "a1392a57c52e3f13f71d1f8881addb2bc46d24723d1f9644b9b19ad3dd40064a",
+      "bytes": 26336,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:36.208Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.27.woff2": {
+      "sha256": "7a2e5a857cecfd865efbc98c1ed990b37feda47b7b5712a3d2457974a5e9590e",
+      "bytes": 24308,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:37.284Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.104.woff2": {
+      "sha256": "00386be024448b786bec7250e6cdd4e4ca4dbce55ea81020f1deb9dcb46fd6a7",
+      "bytes": 29096,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:37.521Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.103.woff2": {
+      "sha256": "ba28061072aa52d90e4e59047002ca690096f05761dc8c39e25e391382940452",
+      "bytes": 24540,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:38.082Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.101.woff2": {
+      "sha256": "42fdd16baa93a8678b35077efa2466e414369442344eb7e50272c9d39ab62dcd",
+      "bytes": 26060,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:38.443Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.65.woff2": {
+      "sha256": "84c8d4810d7722e29e91cdeb6c78e71ca1928a1be4f419feb37b43fe8103440b",
+      "bytes": 64796,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:39.276Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.32.woff2": {
+      "sha256": "e9208c7e17742428baaeadb229da09043ccf4339c2b3b74b474513ace7900e07",
+      "bytes": 26184,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:39.530Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.100.woff2": {
+      "sha256": "75b716ea45a402efa4bb7eb84afbea3c6e77c8c9bf55764a39eca7528014bd10",
+      "bytes": 26300,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:18:40.467Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq.css": {
+      "sha256": "30c8349d1f79cb3f9bb775d3f62a6ef06c994ca2cbd90cc21a202b4b5e2c5025",
+      "bytes": 13732,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:41.224Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq-responsive.css": {
+      "sha256": "67ce02c2498e0512406d5307ff3e96ff617e2933d48f2236581d42a5b85c5aa6",
+      "bytes": 19473,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:41.674Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/bootstrap.js": {
+      "sha256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+      "bytes": 9137,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:42.127Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=1.47&order=0": {
+      "sha256": "7a175c10ca8e594676da2a9c945a4ffa1aff2483e25fb253b5718ec2894704b6",
+      "bytes": 3803936,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:43.941Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=1.47&order=0": {
+      "sha256": "7e3689178a7d680579f535563c6dec22f94dff74f12510befc9bae5f41b366a3",
+      "bytes": 3791420,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:44.430Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/floating-cta-mobile-fix.css": {
+      "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+      "bytes": 2829,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:44.507Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/global/floating-cta-mobile-fix.js": {
+      "sha256": "c0a4047f21eda63d1dd1a9515e8e61e9f26f5aad44bfb59b6e367e41bb14b6f2",
+      "bytes": 708,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:45.022Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq-ga.js": {
+      "sha256": "5373b8a04850eca6dabae726c7fbc61cfd9de7fb7dd4a941a82572b7ca8f5625",
+      "bytes": 11448,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:45.174Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/cta-call.js": {
+      "sha256": "8fed115c5e17ab3913b9f52c867ea189844dcb0518fac3a766062ad595e203fb",
+      "bytes": 7902,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:45.595Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq-stack.css": {
+      "sha256": "fd2d9a778e66cc0f9c708661bb0569ae99e64b82defc6509cd3fd7fbe969cd90",
+      "bytes": 7266,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:45.982Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq-stack.js": {
+      "sha256": "1178792fd66bc167e6517163205fac272fe3f639db664113d84eb6d6f36c965a",
+      "bytes": 13729,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:46.465Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/filter.js": {
+      "sha256": "75d6b373b06086bae29ccee21953743041e537ebc34471e37f1f2c8b235bac66",
+      "bytes": 21445,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:47.422Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq.js": {
+      "sha256": "f37e775dc02edd7c097a17f2c43bf9f2b6d7f312c3874160beacd1bea27c272e",
+      "bytes": 14057,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:47.868Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq-general.css": {
+      "sha256": "65b8b3458202e075ef998e97b23b3b2c3bc424138afe25943d0089f08844d91b",
+      "bytes": 7847,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:48.089Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/faq-general.js": {
+      "sha256": "ec631c790af45b59295ddbcc605c7abd67273801315b035afb999dafa612b38d",
+      "bytes": 17092,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:48.784Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/seo-loader.js": {
+      "sha256": "5c19900a6b28acca0456a285161835e5797b875d5fa99bd0a40684287983a33b",
+      "bytes": 2313,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:48.863Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/faq/protect.js": {
+      "sha256": "9eaa31d02ef4bbdf21832d8e19300a83ff58122c4c5cf1d5a3dc0fbac0e3abf4",
+      "bytes": 2426,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:49.428Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/seo-snippets/faq.html": {
+      "sha256": "114818728699dfa97ee615b1f4786ef0be1b5cba42320cc8d8b7feaab15b7e14",
+      "bytes": 166174,
+      "contentType": "text/plain; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:49.756Z"
+    },
+    "https://www.helix-amc.com/internal-medicine": {
+      "sha256": "f33c07c43fd6939ceabbcdaf7c6c8bd6582baadbe4d03eaa2c59c18902006b34",
+      "bytes": 53193,
+      "contentType": "text/html; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:52.665Z"
+    },
+    "https://cdn.prod.website-files.com/gsap/3.15.0/gsap.min.js": {
+      "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb",
+      "bytes": 72927,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:18:52.767Z"
+    },
+    "https://cdn.prod.website-files.com/gsap/3.15.0/ScrollTrigger.min.js": {
+      "sha256": "b0b14d67b55b0c43c756ac0b106cfcb09d0879945f6ead64451065b0672916a2",
+      "bytes": 44575,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:18:52.851Z"
+    },
+    "https://cdn.prod.website-files.com/gsap/3.15.0/CustomEase.min.js": {
+      "sha256": "466e426a5c60c21c94b15a30a3dffacac9bb39ce8f4e07d071d7d4bb1be43390",
+      "bytes": 7143,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:18:52.923Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.e388ced0.bf818ffe2c1a4e8a.js": {
+      "sha256": "014be050a4f8b74cca0a16db3cb097a059fe15551777c02b60d62967de4f30c6",
+      "bytes": 225736,
+      "contentType": "text/javascript",
+      "capturedAt": "2026-11-13T08:18:52.994Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@6e64a396af818ff7531044c4fc7e40c5b463ad03/global/performance-assets/6ae00b37e60db16308b09f0a-lossless.webp": {
+      "sha256": "044d5d21f056bff1c290c0bd0c2a372213f288b71cf49588092fe151302ed35b",
+      "bytes": 1426064,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:18:53.729Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/internal-medicine/bootstrap.js": {
+      "sha256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+      "bytes": 35982,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:54.849Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@6e64a396af818ff7531044c4fc7e40c5b463ad03/global/performance-assets/6ae00b364f444a427b240af2-lossless.webp": {
+      "sha256": "4be5118e114370396013a3b9bd0b0e6bbc8b3f9e2a477f777ddcbe0c767ae914",
+      "bytes": 1177226,
+      "contentType": "image/webp",
+      "capturedAt": "2026-11-13T08:18:54.925Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=4.18.47.255.515.517.525.529.605&order=0": {
+      "sha256": "555809d598ed66ad8740517b67036fbc1fb32eb3e03bb94d1aa4313445f9ebad",
+      "bytes": 1168448,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:56.642Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=4.18.47.255.515.517.525.529.605&order=0": {
+      "sha256": "104847ef7d04b8c2b57aa4439c3dec3cf381c8e30e08b7562911831fd6faa200",
+      "bytes": 1159944,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:56.908Z"
+    },
+    "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=1.5&order=0": {
+      "sha256": "d5baa17bc7e7a23b4a9d35eb3cddc82c855ddf7e4111dd79d708c935a75fb653",
+      "bytes": 520436,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:58.371Z"
+    },
+    "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=1.5&order=0": {
+      "sha256": "7f78c9eece803dbb958814b5ce696b46cecc1c02d640ec1799db78cb5cc7047c",
+      "bytes": 508000,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:58.430Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/internal-medicine/headline-highlight.js": {
+      "sha256": "c67b5f7498715fcc3f5d3b98fa665da98db741f3657ea60ad381b4a25ef76e42",
+      "bytes": 40351,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-13T08:18:59.332Z"
+    },
+    "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=1.5&order=0": {
+      "sha256": "d7451e40f149acd65e64c24831c75b13eed6c40b26de4649f8779ac1b3aca5b3",
+      "bytes": 519600,
+      "contentType": "font/opentype",
+      "capturedAt": "2026-11-13T08:18:59.503Z"
+    },
+    "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=513&state=4.18.47.255.515.517.525.529.605&order=0": {
+      "sha256": "4ee1223dc5dc1ecfe240ef2ec92c6d48582d7fe2cabada84cf6fd8300cc36793",
+      "bytes": 92176,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:19:00.521Z"
+    },
+    "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=513&state=4.18.47.255.515.517.525.529.605&order=0": {
+      "sha256": "b445242e67d8ef5140d6ae89610757b88ae14750498f08c827be75fd60c623cb",
+      "bytes": 92195,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-13T08:19:00.556Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6ae00b37e60db16308b09f0a_HELIX_%EB%A1%9C%EB%B9%84_%EC%96%BC%EA%B5%B4%EB%B6%80%EB%B6%84%ED%95%A9%EC%84%B1-p-1080.png": {
+      "sha256": "ac14005c2f2a8f30468d4396dbffc04ddc4a1cd136e2f4537a44d423653d5898",
+      "bytes": 196380,
+      "contentType": "image/png",
+      "capturedAt": "2026-11-13T08:19:50.673Z"
+    },
+    "https://fonts.gstatic.com/s/notosanskr/v40/PbykFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.98.woff2": {
+      "sha256": "cc4ea982856185c8a23b1bd32c7fd508a382cd844d61be143630e260d75cf44c",
+      "bytes": 12196,
+      "contentType": "font/woff2",
+      "capturedAt": "2026-11-13T08:20:44.402Z"
+    },
+    "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/about/bg-video.mp4?v=68aaaa4f5e": {
+      "sha256": "77e8cd409e04ac389a1a33037966fa384e04c2a5356f2176a8aa6f5b02c115d4",
+      "bytes": 6918908,
+      "contentType": "video/mp4",
+      "capturedAt": "2026-11-13T08:22:12.981Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d5acf0dc790ef3588b3720_grayppoint.svg": {
+      "sha256": "049eaabd6c8402da8f32cfe1091dae02e2add6c4c060ab8116956171a62f7382",
+      "bytes": 196,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:25:26.297Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d35ba176ec05ace1d501f9_arrow%20right.svg": {
+      "sha256": "d5a0525549cba3dcd74630ff03b42c0c64b95c4a50a54fb020acaf51245bd88d",
+      "bytes": 247,
+      "contentType": "image/svg+xml",
+      "capturedAt": "2026-11-13T08:26:27.527Z"
+    },
+    "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6ae00b37e60db16308b09f0a_HELIX_%EB%A1%9C%EB%B9%84_%EC%96%BC%EA%B5%B4%EB%B6%80%EB%B6%84%ED%95%A9%EC%84%B1-p-500.png": {
+      "sha256": "c695a21a43b325eccfe4f506a7f7fda978b8e05481d6675ad92148aba4b3119f",
+      "bytes": 53580,
+      "contentType": "image/png",
+      "capturedAt": "2026-11-13T08:26:58.609Z"
+    }
+  }
+}

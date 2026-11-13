@@ -2,6 +2,54 @@
 
 갱신일: 2026-11-13 (Asia/Seoul)
 
+## 현재 인계 — STEP 03
+
+### 1. 작업 개요
+
+검증 기반 구축. [04-baseline.md](04-baseline.md), 실행 가능한 Playwright 설정·선택 실행기·고정 응답 보관/검사 도구, 검토용 PNG 33개를 작성했다. 구조 리팩터링·D01/D02 수정·AGENTS.md 통합·운영/staging merge·Webflow Publish는 수행하지 않았다.
+
+### 2. 기술적 결정 사항
+
+- 이전 STEP 02 최종 커밋 `316126611db7c39d78914920ea60d4f2c0d80476`을 원격에서 확인하고 원래 Git 객체 해시를 검증해 로컬에 복원했다. STEP 01/02 문서 네 개와 조상 이력이 실제 작업 브랜치에 포함됐다.
+- 브랜치는 `test/helix-quality-step03-20261113`, 부모 `3161266`. 문서 브랜치의 사이트 구현 기준은 여전히 `c2041b4`다. 이 브랜치를 사이트 배포본으로 사용하지 않는다.
+- 브라우저 대상은 정식 운영의 실제 HTML·자산 응답을 고정한 격리본이다. main `68aaaa4…`, staging `11daa6d…`와 별도로 페이지별 실제 ref·본문 해시를 `provenance.json`/`corpus-index.json`에 기록했다. 모든 페이지가 최신 main만 로드한다고 가정하지 않았다.
+- 홈·소개·services·FAQ·내과 × 1440×900 / 820×1180 / 390×844. 첫 화면 외에 홈 메뉴/예약창/푸터, 소개 스크롤 화면, FAQ 목록, 내과 프로세스를 비교한다.
+- 알려진 D01/D02는 별도 expected failure 6건으로 표시한다. PNG는 관찰 기준이며 전체 디자인 승인이 아니다. D03/D06·iOS·실기기·초기 로딩/모션 시간은 미검증이다.
+- 고정 응답 재생은 외부 요청 전달 0, 분석 차단 사전 probe, 본문 해시·글꼴·화면 내 이미지·JS 오류를 검사한다. `test`는 없는 기준을 자동 생성하지 않는다. 선택 실행과 후보 파일 대입은 [04-baseline.md](04-baseline.md)의 절차를 따른다.
+
+### 3. 현재 상태
+
+**지정 범위의 검증 환경 구축 완료. 사이트 구조 수정·공개 배포·D01/D02 해결은 미착수.**
+
+- 최종 전체 재생: 2026-11-13 17:34:45~17:37:54 KST. 정상 시나리오 15개·PNG 33개 비교 통과, 알려진 D01/D02 expected failure 6개 재현. 예상 밖 실패/flaky/skipped 0. 재생 외부 전달·후보 대입·네트워크/JS/폰트/화면 내 이미지 오류 0.
+- 선택 실행 `home/pc` 통과. 예약 버튼 배경만 바꾼 임시 후보는 4,798 픽셀 차이로 종료 코드 1. 기준 PNG 해시 33개 불변 확인. 복구 선택 실행도 정상 1건·알려진 실패 1건이 약 17.4초에 예상대로 통과했다. 최종 전달 결과는 아래 완료 기록에 남긴다.
+- `tests/visual/baselines/production/`의 PNG 9,798,512 B와 작은 `review.json`, `run-summary.json`, `provenance.json`, `corpus-index.json`만 저장소에 둔다. 큰 입력·actual/diff/trace는 제외했다.
+- corpus 로컬 압축본: `/workspace/artifacts/HELIX-STEP03-Production-Corpus-20261113.tar.gz`, 30,429,721 B, SHA-256 `1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56`. 원격 보관은 미완료: 전용 Drive 폴더로 업로드하려 했으나 자동 승인 검토가 자료/목적지에 대한 구체적 승인 부족을 이유로 거절했다. 우회·재시도하지 않았다. 환경 종료 전 로컬 압축본을 내려받거나 구체적 승인 후 원격 보관해야 한다.
+- 초기 CA·lazy image·모달 가시성·media range·IP 조회·CSS ref 선택·GSAP 시간 고정·완료 전 캡처 실험의 실패 근거는 선별 JSON/PNG 압축본 및 `/tmp/helix-step03/runs/` 원시 trace로 구분 보존한다. 캡처 성공과 비교 통과를 혼동하지 않았다.
+
+### 4. 다음 단계
+
+1. 같은 기준의 검사를 실행하려면 완료 기록의 corpus 압축본을 복원하고 `corpus.cjs verify` 후 `run.cjs test`를 실행한다. corpus가 없으면 검증 불가이며 새 라이브 화면을 자동 정답으로 사용하지 않는다.
+2. 후속 구현은 최신 대상 main/staging에서 별도 브랜치를 만들고 **검증 도구·문서 변경만 이관**한다. 이 오래된 문서 브랜치 전체를 병합해 최신 구현을 덮지 않는다.
+3. U01 overflow 한 건을 진행할 때 home+about 비교, 관련 경계, 실제 fixed/sticky geometry·빠른 스크롤을 추가한다. D01 expected failure를 후보의 정방향 검사로 전환한다. 현재 PNG 통과만으로 U01 완료를 판정하지 않는다.
+4. 공개 staging 홈 고정 후보 `0011fc…`의 목적/담당 작업은 아직 미확인이다. 이를 해제하지 않는다. 실제 후보 자산이 공개 staging에 도달한 검사와 격리 대입 검사는 별개다.
+5. D02 긴 문자열 실제 증상, D03 모션 경쟁, D06 iPad/iOS 회전, CTA legacy/전체 focus trap/모의 제출·전체 FAQ 흐름은 해당 후속 변경 시 보완한다. 이번 단계는 전 사이트 안정화나 성능 개선 완료가 아니다.
+
+### 5. 참고 파일·복구점
+
+- [기준선·실행·범위·보관 정책](04-baseline.md)
+- [Playwright 설정](../../playwright.config.cjs), [실행기](../../scripts/visual/run.cjs), [검사](../../tests/visual/baseline.spec.cjs), [알려진 문제 계약](../../tests/visual/contracts.spec.cjs)
+- [기준 PNG·index·버전 자료](../../tests/visual/baselines/production/)
+- 원본 `work/c2041b4`, STEP 02 브랜치/`3161266`는 보존했다. 테스트 커밋만 revert하면 사이트 소스에 영향을 주지 않는다.
+
+## STEP 02 인계 원문 — 이력 보존
+
+아래는 `3161266`에서 받은 이전 기록이다. 다음 단계로 overflow 구현을 제안한 내용은 **당시 제안**이며 이번 사용자 요청은 검증 기반 구축까지만이다.
+
+# HELIX 홈페이지 안정화 — 인계
+
+갱신일: 2026-11-13 (Asia/Seoul)
+
 ## 현재 인계 — STEP 02
 
 ### 1. 작업 개요

@@ -1,0 +1,186 @@
+{
+  "target": "production-frozen-response-replay",
+  "stats": {
+    "startTime": "2026-11-13T08:34:45.461Z",
+    "duration": 189105.992,
+    "expected": 21,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "normalScenarios": 15,
+  "knownDefectExpectedFailures": 6,
+  "referencePngs": 33,
+  "forwardedExternalRequests": 0,
+  "candidateOverlays": 0,
+  "networkErrors": [],
+  "pageErrors": [],
+  "brokenImages": [],
+  "fontErrors": [],
+  "stateRecords": 15,
+  "rows": [
+    {
+      "project": "pc",
+      "test": "home baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "about baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "services baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "faq baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "internal baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "home baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "about baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "services baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "faq baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "internal baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "home baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "about baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "services baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "faq baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "internal baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "D01 known overflow conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "pc",
+      "test": "D02 known long-text exception conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "tablet",
+      "test": "D01 known overflow conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "tablet",
+      "test": "D02 known long-text exception conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "mobile",
+      "test": "D01 known overflow conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "mobile",
+      "test": "D02 known long-text exception conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    }
+  ],
+  "positiveControl": {
+    "mutation": "temporary frozen-response overlay changes reservation button background to magenta",
+    "scope": "home / pc",
+    "expectedExit": 1,
+    "actualExit": 1,
+    "detectedDifferentPixels": 4798,
+    "baselineHashesUnchanged": true,
+    "externalRequests": 0,
+    "recoveryWithoutOverlay": {
+      "exit": 0,
+      "normalScenarios": 1,
+      "knownExpectedFailures": 1,
+      "durationSeconds": 17.4
+    }
+  },
+  "remoteCorpusUpload": "automatic approval review rejected; local archive retained"
+}

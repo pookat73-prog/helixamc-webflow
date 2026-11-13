@@ -1,0 +1,7 @@
+{
+  "name": "helix-visual-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Development-only Playwright runner; never loaded by Webflow",
+  "devDependencies": { "playwright": "1.57.0" }
+}
