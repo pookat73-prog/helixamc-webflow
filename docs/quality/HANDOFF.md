@@ -2,6 +2,75 @@
 
 갱신일: 2026-11-13 (Asia/Seoul)
 
+## 현재 인계 — STEP 02
+
+### 1. 작업 개요
+
+- **STEP 02 구조·개발 수칙 설계 완료. 구현·배포·AGENTS.md 통합은 미착수.**
+- 산출물: [02-architecture.md](02-architecture.md), [03-rules.md](03-rules.md), 이 인계서 갱신. STEP 01 진단서는 입력 원본을 유지한다.
+- AGENTS.md·CLAUDE.md·홈페이지 구현·workflow·Webflow 설정 변경 없음. 문서 작업 브랜치만 전달하며 main/staging merge·Publish는 하지 않는다.
+- 사용자 요청대로 안전한 조사·설계·자체 검토·커밋·전달을 중간 승인 없이 진행한다.
+
+### 2. 기술적 결정 사항
+
+- 파일 분리보다 선택자·속성·상태 소유권을 먼저 정했다. 전역 문서 정책, 공통 UI, 페이지/섹션, 초기 화면 head, 로더·측정의 경계를 구분한다.
+- 공통 CSS 소비자·variant·실제 로드 SHA를 확인한 뒤 변경한다. global 파일 안의 이미 한정된 페이지 규칙은 자동 이관하지 않는다.
+- D01~D08을 구현 단위 U00~U07과 연결했다. 각 단위에 영향 범위·위험도·최소 검증·복구를 정의했으며 첫 경로는 **U00 기준선 확보→U01 overflow 충돌 한 건**이다.
+- 낮음/중간/높음 위험도별 최소 검증을 정했다. 문서/사소한 국소 수정에 전체 사이트 검사를 요구하지 않으며 고위험도 자동 승인 대기 사유로 삼지 않는다.
+- 정상 화면 보존, 관련 viewport/상태 검증, 원문 정리와 임시 덮어쓰기 금지, 두 번 연속 실패 시 재진단, 안전한 국소 복구, 후보/staging/정식 완료 구분을 수칙에 담았다.
+- AGENTS.md 통합은 별도 문서 단위로 남겼다. 기존 우선순위·LOCKED·staging 우선/측정 예외를 보존하고 핵심 수칙과 링크만 통합하는 안이다. 이번 문서가 자동으로 전역 지침에 설치됐다고 보지 않는다.
+
+### 3. 현재 상태와 증거
+
+| 항목 | STEP 02 확인 결과 |
+| --- | --- |
+| 최초 입력 | 사용자가 제공한 format-patch를 clean 별도 브랜치에서 `git am`으로 적용, 문서 두 개만 반영. 적용 SHA `2686276646bf821e9e3be636353812b4c6fb4b6a` |
+| 최신 입력 보정 | 사용자의 원격 전달 안내 후 `7d3e61604c585fc41d4bb4f2aada763ddcdfa385`의 두 문서를 다시 읽음. 후속 API 전달 기록 외 진단 결론 변경 없음 |
+| 원본 이력 검증 | 허용된 GitHub 읽기 API로 누락 Git 객체를 받아 내용 해시를 검사. 최초 `9e6d4d5a494fffeb94b625511b13993bf6a92ddc`와 후속 `7d3e616…`을 **동일 SHA**로 복원. 구현 기준 `c2041b4…`에서 문서 두 파일만 달라짐 |
+| 작업 브랜치 / 부모 | `docs/helix-quality-step02-20261113` / `7d3e61604c585fc41d4bb4f2aada763ddcdfa385`. 초기 patch 적용 브랜치는 `docs/helix-quality-step02-patch-import-20261113`로 별도 보존 |
+| main / staging 재확인 | GitHub 연결 도구로 main `68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d`, staging `11daa6d47a864d49dda835b7c208f726f275b629` 확인. STEP 01 분석 버전과 같음 |
+| 공개 HTML 재조회 | 2026-11-13 16:49 KST 정식·staging 모두 HTTP 200. staging 도메인 분기의 홈 고정 `0011fc…`, word-wrap `63812a31…`, 정식/staging 생성 CSS 차이 유지. HTML 정적 조회만 했으며 JS 실행·최종 로드 SHA·새 시각 검증으로 확대하지 않음 |
+| STEP 01 증거 | 아래 보존 기록과 진단서의 검사 결과는 **이전 단계 결과**다. `/tmp/helix-quality-evidence/`는 현재 환경에 없음. 이전 캡처를 현재 기준선으로 재사용하지 않음 |
+| 이번 단계 검증 | 요구사항·D01~D08/구현 단위 대응·지침 충돌 자체 검토, Markdown 내부 링크·표 구조·공백·변경 파일 범위 검사. 구현 불변·진단 입력 불변 대조. 상세 최종 결과와 전송 SHA는 아래 전달 기록으로 식별 |
+| 브라우저/구현 검사 | 이번 변경은 Markdown뿐이므로 코드 테스트·전후 화면 검사를 새로 실행하지 않음. 홈페이지 정상화·성능 개선·운영 반영 완료를 주장하지 않음 |
+
+미해결 조건: staging 후보 고정의 목적/담당 작업, Webflow head와 자산의 완전한 대응표, D03 실행 경쟁 재현, D06 회전/iOS 검증, 원래 각 회귀의 전후 연결. **설계 완료를 막지는 않지만 해당 구현·공개 검증의 선행 조건**이다. D01의 sticky 장애 인과와 D02의 실제 긴 문자열 장애는 여전히 미확정이다.
+
+### 4. STEP 03 입력 조건과 시작점
+
+1. 이 인계의 현재 절, [01-diagnosis.md](01-diagnosis.md), [02-architecture.md](02-architecture.md), [03-rules.md](03-rules.md)를 읽는다. 기존 AGENTS.md/CLAUDE.md와 후속 사용자 요청도 대조한다.
+2. 문서 브랜치를 구현 배포본으로 사용하지 않는다. 구현 기준은 여전히 `c2041b4…`이므로, 후속 요청이 승인한 대상의 최신 staging/main과 실제 공개 자산을 먼저 확인한 별도 작업 브랜치를 쓴다. 문서만 이관하고 최신 구현 파일을 이 오래된 작업본으로 덮지 않는다.
+3. U00: 대상 선택자·소비 페이지·상태·실제 head/자산/생성 CSS·정상 대조 화면을 새로 고정한다. STEP 01 검사 통과를 새 후보의 통과로 승계하지 않는다. 조회 시점 이후 버전이 달라졌다면 관련 진단만 재확인한다.
+4. 첫 구현은 U01 한 건을 권장한다. 기존 홈 sections CSS의 문서 overflow 충돌만 최소 후보로 만들고 격리 재현→홈 PC/태블릿/모바일·관련 경계→소개 sticky 등 정상 대조 순서로 검증한다. global 보호·글로우·로더·breakpoint 일괄 변경을 묶지 않는다.
+5. 공개 staging의 홈 고정 후보가 다른 작업이면 바꾸지 않는다. 기존 기록에서 목적을 확인하고, 독립 격리본의 후보 검증은 계속할 수 있다. 공개 화면의 SHA가 후보와 다르면 staging 검증은 미완료로 남긴다.
+6. 구현·배포·AGENTS.md 통합은 후속 요청의 범위에서 수행한다. 안전한 자체 검증은 자율 진행하되, 실제 차단된 대상/의사결정만 확인한다. 정상 대조가 없거나 필수 검증에 실패하면 완료 처리하지 않는다.
+
+### 5. 커밋 식별과 전달
+
+- STEP 01 원격 기준: `docs/helix-quality-step01-20261113` / `7d3e61604c585fc41d4bb4f2aada763ddcdfa385`.
+- STEP 02 전달 대상: `docs/helix-quality-step02-20261113`만. 일반 Git HTTPS는 CONNECT 403이므로 허용된 GitHub API로 정확한 Git 객체를 전달하고 SHA·문서 blob·ref를 대조한다. force 갱신은 하지 않는다.
+- 설계 커밋과 최종 전달 확인은 아래 조회로 식별한다. 같은 커밋 안에 자기 SHA를 쓰는 대신, 확인된 설계 커밋 SHA는 후속 인계 기록에 적고 최종 인계 커밋은 브랜치 HEAD로 확인한다.
+
+```bash
+git log --format='%H %s' 7d3e61604c585fc41d4bb4f2aada763ddcdfa385..docs/helix-quality-step02-20261113
+git diff --name-status 7d3e61604c585fc41d4bb4f2aada763ddcdfa385 docs/helix-quality-step02-20261113
+```
+
+원격 반영 후 다른 환경에서 받을 때:
+
+```bash
+git fetch origin docs/helix-quality-step02-20261113
+git show FETCH_HEAD:docs/quality/HANDOFF.md
+git show FETCH_HEAD:docs/quality/02-architecture.md
+git show FETCH_HEAD:docs/quality/03-rules.md
+```
+
+현재 단계의 정적 조회 증거는 `/tmp/helix-quality-step02/public-html.json`과 HTML 두 개에 있다. 임시 파일이며 보존을 보장하지 않는다. 핵심 조건·버전·미검증 범위는 위에 기록했다.
+
+## STEP 01 인계 원문 — 이력 보존
+
+아래는 `7d3e616…`에서 받은 이전 인계다. 'STEP 02 미착수' 등은 **이전 시점 상태**이며 현재 상태는 위 STEP 02 절을 따른다. 기존 진단·검증·실패·전달 기록은 삭제하지 않는다.
+
 ## 1. 작업 개요
 
 - 현재 단계: **STEP 01 정밀진단 완료. STEP 02는 미착수.**
