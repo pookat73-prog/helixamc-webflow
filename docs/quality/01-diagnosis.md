@@ -29,6 +29,7 @@
 | 원격 main, 읽기 API 확인 | `68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d` (2026-11-13, #2068) |
 | 원격 staging, 읽기 API 확인 | `11daa6d47a864d49dda835b7c208f726f275b629` (#2067) |
 | Git 통신 제약 | `git ls-remote origin refs/heads/main refs/heads/staging`가 `CONNECT tunnel failed, response 403`. `github.com` Git HTTPS 경로가 환경 정책상 차단됨. `api.github.com` 읽기와 jsDelivr 읽기는 가능. |
+| 후속 원격 전달 확인 | 2026-11-13 GitHub CLI 인증과 API 쓰기 권한을 확인했다. 허용된 Git Database API로 최초 문서 커밋 `9e6d4d5a494fffeb94b625511b13993bf6a92ddc`를 동일 SHA로 업로드하고 문서 브랜치 생성을 검증했다. 일반 Git HTTPS 차단과 API 원격 전달 가능 여부는 별개다. |
 | 기존 인계 문서 | 요청한 `docs/quality/HANDOFF.md`는 없었음. 루트의 반응형·측정로그 `HANDOVER-*.md`는 보존. |
 
 로컬 HEAD를 최신 배포본으로 간주하지 않았다. API의 `compare/c2041b4…68aaaa4` 결과는 ahead 464, 변경 파일 41개다. **464는 병합된 과거 staging 이력까지 포함한 도달 가능 커밋 차이이며, 11월 5일 이후 신규 작업 464건이라는 뜻이 아니다.** 같은 API에서 해당 시각 이후 작성된 main 이력을 조회하면 36개가 반환된다. 원격 main 대비 staging 비교는 ahead 22 / behind 3이다. 단순히 어느 한 브랜치를 다른 쪽으로 덮어쓸 상태가 아니다.

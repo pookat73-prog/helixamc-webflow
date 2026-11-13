@@ -10,6 +10,7 @@
 - 구현 코드·AGENTS.md·기존 인계 문서·Webflow 설정·배포 설정 변경 없음. reset/clean/force push/기존 변경 덮어쓰기 없음.
 - 시작 시 미커밋·staged·untracked 변경이 없었으며 문서 전용 브랜치로 작업했다.
 - 기존 `docs/quality/HANDOFF.md`는 없었다. 루트의 반응형·측정로그 `HANDOVER-*.md`는 그대로 보존했다.
+- 후속 전달 상태: **문서 브랜치를 GitHub에 생성하고 최초 진단 커밋의 동일 SHA를 확인했다.** 일반 Git push는 프록시에서 차단되지만, 인증된 GitHub API 쓰기 경로는 정상이다. 이 후속 변경도 문서 두 파일의 전달 상태 기록만 갱신한다.
 
 ## 2. 기술적 결정 사항
 
@@ -45,7 +46,7 @@
 - Safari/iOS 실기기, 모든 breakpoint ±1px, 회전 왕복, 긴 영문·URL·입력값, slow-network 전체 상태 전이는 미검증.
 - Webflow head의 첫 화면 스타일·함수와 저장소 코드의 완전한 버전 대응표가 없다.
 - 최신 main 스냅샷 검증과 실제 staging 검증은 서로 다른 실행 대상을 검사했다. 서로의 결과를 대체하지 않는다.
-- 원격 Git HTTPS 경로가 `CONNECT tunnel failed, response 403`으로 차단됨. GitHub 읽기 API·CDN 접근 성공은 Git push 권한·접속 성공을 의미하지 않는다.
+- 일반 Git HTTPS 경로는 `CONNECT tunnel failed, response 403`으로 계속 차단된다. 다만 후속 조사에서 GitHub CLI 인증과 저장소 API 쓰기 권한을 확인했고, Git Database API 전달에 성공했다. 초기의 "원격 반영 불가" 판단은 일반 Git 경로에만 해당하는 것으로 정정한다.
 
 ### 브랜치와 커밋
 
@@ -53,12 +54,13 @@
 | --- | --- |
 | 저장소 | `https://github.com/pookat73-prog/helixamc-webflow.git` |
 | 문서 브랜치 | `docs/helix-quality-step01-20261113` |
-| 문서 커밋 부모 | `c2041b471f52435c3f349b8f068488d358fc5af5` (`work` 시작점, #2014) |
+| 최초 진단 커밋 | `9e6d4d5a494fffeb94b625511b13993bf6a92ddc` — 동일 SHA로 원격 전달 확인 |
+| 최초 진단 커밋 부모 | `c2041b471f52435c3f349b8f068488d358fc5af5` (`work` 시작점, #2014) |
 | 분석한 원격 main | `68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d` (#2068) |
 | 확인한 원격 staging | `11daa6d47a864d49dda835b7c208f726f275b629` (#2067) |
 | 실제 staging 홈 본체 | `0011fc2323a69260f758f84bc13e0a289e78d9b4` |
 | 문서 커밋 식별 | 아래 `git log`로 이 두 파일을 작성한 커밋의 전체 SHA 확인. 같은 커밋 안에 자기 SHA를 기입하지 않는다. 최종 작업 응답과 인계 patch에도 식별자가 남는다. |
-| 원격 반영 | Git HTTPS 차단으로 원격 반영 불가. main/staging 병합·Publish 없음. |
+| 원격 반영 | GitHub API로 `docs/helix-quality-step01-20261113` 브랜치 생성·커밋 SHA 검증 완료. 후속 전달 상태 갱신은 같은 브랜치에 fast-forward로 전달한다. main/staging 병합·Publish 없음. |
 
 ```bash
 git log -1 --format='%H %s' -- docs/quality/01-diagnosis.md docs/quality/HANDOFF.md
@@ -77,7 +79,15 @@ git show --stat docs/helix-quality-step01-20261113
 
 ### 원격 접속이 가능한 환경으로 인계
 
-완료 후 생성하는 `/workspace/helix-step01-diagnosis.patch`는 **문서 커밋 한 개의 format-patch**다. 두 Markdown 파일과 커밋 메타데이터를 포함하며 구현 코드를 포함하지 않는다. 원격 접속 가능한 최신 저장소에서 기존 변경을 보존한 별도 브랜치를 만든 뒤 적용한다.
+현재는 원격 브랜치에서 받는 방법을 우선한다. 기존 작업 공간에 미커밋 변경이 있으면 별도 worktree를 사용한다.
+
+```bash
+git fetch origin docs/helix-quality-step01-20261113
+git show FETCH_HEAD:docs/quality/HANDOFF.md
+git show FETCH_HEAD:docs/quality/01-diagnosis.md
+```
+
+초기 Git push 실패 때 만든 `/workspace/helix-step01-diagnosis.patch`는 **최초 진단 커밋 `9e6d4d5…` 한 개의 format-patch**다. 원격 전달 전의 상태 기록을 담고 있으므로 현재 전달 상태는 원격 브랜치의 이 파일을 기준으로 한다. patch에는 두 Markdown 파일과 커밋 메타데이터만 있으며 구현 코드를 포함하지 않는다. patch를 이용해야 한다면 원격 접속 가능한 최신 저장소에서 기존 변경을 보존한 별도 브랜치를 만든 뒤 적용한다.
 
 ```bash
 # 원격 접속 가능한 환경의 clean checkout 또는 별도 worktree에서 수행
