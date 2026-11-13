@@ -112,7 +112,7 @@ node scripts/visual/run.cjs test --changed-from=<구현-기준-SHA>
 
 기준 PNG는 **9,798,512 B**(약 9.35 MiB), 15 MiB 예산 안이다. [run-summary.json](../../tests/visual/baselines/production/run-summary.json), [review.json](../../tests/visual/baselines/production/review.json), [provenance.json](../../tests/visual/baselines/production/provenance.json), [corpus-index.json](../../tests/visual/baselines/production/corpus-index.json)에 결과·검토·실제 입력 버전·286개 응답 해시를 분리했다.
 
-고정 corpus: `/workspace/artifacts/HELIX-STEP03-Production-Corpus-20261113.tar.gz`, **30,429,721 B**, SHA-256 `1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56`. 저장소 루트에서 `tar -xzf <압축본>`으로 복원한 뒤 `node scripts/visual/corpus.cjs verify`를 실행한다. 같은 이름의 `.sha256`도 보존한다. Drive 업로드는 자동 승인 검토 거절로 미완료다.
+고정 corpus: `/workspace/artifacts/HELIX-STEP03-Production-Corpus-20261113.tar.gz`, **30,429,721 B**, SHA-256 `1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56`. 저장소 루트에서 `tar -xzf <압축본>`으로 복원한 뒤 `node scripts/visual/corpus.cjs verify`를 실행한다. 같은 이름의 `.sha256`도 보존한다. 처음 자동 승인 검토에서 거절됐으나 사용자의 명시 승인 후 [Drive 기준 압축본](https://drive.google.com/file/d/1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0/view?usp=drivesdk)과 [SHA-256 파일](https://drive.google.com/file/d/1sXl5g4kclfyeuP4TkCyD3yq7YZYY5rcd/view?usp=drivesdk)을 같은 전용 폴더에 보관했다. 파일ID·크기·소속 폴더와 체크섬 파일 내용 readback을 확인했다. Drive 메타데이터가 원격 본문 해시를 반환하지 않아 원격 바이너리 SHA 검증과는 구분한다. 다운로드 후 SHA 및 286개 본문 해시를 검증한다.
 
 커밋·원격 전달 식별자는 [HANDOFF.md](HANDOFF.md)의 완료 기록과 작업 브랜치 HEAD로 확인한다. 초기 실행 실패(Cloud CA, 화면 밖 lazy image 대기, opacity 기반 모달 가시성 오판, 영상 range, IP 조회 분류, 여러 실제 CSS ref를 하나로 가정한 fixture 조회, 시간 고정이 GSAP를 멈춘 실험, 홈 카드/내과 프로세스 완료 전 캡처)는 별도 로그로 보존한다. 시간 고정은 제거했으며 애니메이션 완료 신호를 관찰한다. 이를 사이트 회귀나 성공 표본으로 바꾸어 보고하지 않는다.
 
@@ -121,7 +121,7 @@ node scripts/visual/run.cjs test --changed-from=<구현-기준-SHA>
 - 저장소에는 검토한 기준 PNG, 작은 corpus index·검토/결과 요약, 테스트·설정·문서만 둔다. 기준 PNG 전체 예산은 15 MiB다. 초과하면 범위를 재검토하고 외부 보관한다.
 - `.visual-corpus/`, `.visual-results/`, traces/actual/diff·보고서는 `.gitignore`로 제외한다. 대용량 글꼴·사진·영상·매 실행 결과를 커밋하지 않는다.
 - 최종 corpus와 선별한 실패 근거(JSON/PNG)는 저장소 밖 `/workspace/artifacts/` 압축본에 SHA-256과 함께 보관한다. 같은 기준의 재검사에 필요한 corpus를 먼저 복원하고 `verify`한다. corpus가 없으면 검증 불가로 실패하며 새 공개본을 옛 기준처럼 사용하지 않는다.
-- 기준 corpus는 그 기준이 사용되는 동안, 직전 기준과 실패 원자료는 최소 30일 보관하는 정책이다. Cloud 로컬 파일의 실제 30일 보존은 보장되지 않는다. 환경 종료 전 인계의 압축본을 내려받거나 승인된 팀 영구 아티팩트 저장소로 옮겨야 한다. 원시 trace는 `/tmp/helix-step03/runs/`에 따로 남기며 모두 압축본/저장소에 중복 보관하지 않는다. 자동 CI 연결은 이번에 구성하지 않았다. 전용 Drive 폴더로 30,429,721 B corpus를 업로드하려 했으나 자동 승인 검토가 자료/목적지에 대한 구체적 승인 부족을 이유로 거절했다. 우회하거나 재시도하지 않았고 로컬 압축본을 보존했다. 공통 Drive 인계서에 내부 작업 상태·경로·해시를 적는 작업도 같은 이유로 자동 승인 검토에서 거절되어 문서는 변경하지 않았다. 두 외부 작업은 구체적 승인이 있어야 재개한다.
+- 기준 corpus는 그 기준이 사용되는 동안, 직전 기준과 실패 원자료는 최소 30일 보관하는 정책이다. Cloud 로컬 파일의 실제 30일 보존은 보장되지 않는다. 환경 종료 전 인계의 압축본을 내려받거나 승인된 팀 영구 아티팩트 저장소로 옮겨야 한다. 원시 trace는 `/tmp/helix-step03/runs/`에 따로 남기며 모두 압축본/저장소에 중복 보관하지 않는다. 자동 CI 연결은 이번에 구성하지 않았다. Drive 업로드와 공통 인계서 갱신은 최초 자동 승인 검토에서 자료/목적지에 대한 구체적 승인 부족으로 거절됐다. 이후 사용자가 “내가 승인할게 다시 시도해줘”라고 명시 승인해 두 작업을 재개·완료했다. [공통 인계서](https://docs.google.com/document/d/1babP7FWxd7zDF0hnyo3SV294iJ46k_b9yE5idGi0CoM/edit)의 새 현재 요약·날짜별 기록을 readback했고, 기존의 비어 있지 않은 모든 문단이 원래 순서로 보존됨을 확인했다. 본문 공유 범위나 기존 서초 작업 상태를 변경하지 않았다.
 - CI에 연결할 때도 동일 Playwright·Chromium/OS·검증된 corpus를 복원한 후 `node scripts/visual/run.cjs test`를 실행한다. corpus 없이 라이브 캡처로 CI를 통과시키지 않는다.
 
 ## 8. 다음 단계 준비와 한계

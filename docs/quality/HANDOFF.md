@@ -24,7 +24,7 @@
 - 최종 전체 재생: 2026-11-13 17:34:45~17:37:54 KST. 정상 시나리오 15개·PNG 33개 비교 통과, 알려진 D01/D02 expected failure 6개 재현. 예상 밖 실패/flaky/skipped 0. 재생 외부 전달·후보 대입·네트워크/JS/폰트/화면 내 이미지 오류 0.
 - 선택 실행 `home/pc` 통과. 예약 버튼 배경만 바꾼 임시 후보는 4,798 픽셀 차이로 종료 코드 1. 기준 PNG 해시 33개 불변 확인. 복구 선택 실행도 정상 1건·알려진 실패 1건이 약 17.4초에 예상대로 통과했다. 최종 전달 결과는 아래 완료 기록에 남긴다.
 - `tests/visual/baselines/production/`의 PNG 9,798,512 B와 작은 `review.json`, `run-summary.json`, `provenance.json`, `corpus-index.json`만 저장소에 둔다. 큰 입력·actual/diff/trace는 제외했다.
-- corpus 로컬 압축본: `/workspace/artifacts/HELIX-STEP03-Production-Corpus-20261113.tar.gz`, 30,429,721 B, SHA-256 `1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56`. 원격 보관은 미완료: 전용 Drive 폴더로 업로드하려 했으나 자동 승인 검토가 자료/목적지에 대한 구체적 승인 부족을 이유로 거절했다. 우회·재시도하지 않았다. 환경 종료 전 로컬 압축본을 내려받거나 구체적 승인 후 원격 보관해야 한다.
+- corpus 로컬 압축본: `/workspace/artifacts/HELIX-STEP03-Production-Corpus-20261113.tar.gz`, 30,429,721 B, SHA-256 `1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56`. 원격 보관 완료: 최초 자동 승인 검토 거절 후 사용자 명시 승인으로 [Drive 압축본](https://drive.google.com/file/d/1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0/view?usp=drivesdk)과 [체크섬 파일](https://drive.google.com/file/d/1sXl5g4kclfyeuP4TkCyD3yq7YZYY5rcd/view?usp=drivesdk) 업로드 성공. 파일ID·크기·소속 폴더·체크섬 파일 내용 readback 확인. 원격 본문 해시는 도구가 반환하지 않았으므로 다운로드 시 SHA 검증한다.
 - 초기 CA·lazy image·모달 가시성·media range·IP 조회·CSS ref 선택·GSAP 시간 고정·완료 전 캡처 실험의 실패 근거는 선별 JSON/PNG 압축본 및 `/tmp/helix-step03/runs/` 원시 trace로 구분 보존한다. 캡처 성공과 비교 통과를 혼동하지 않았다.
 
 ### 4. 다음 단계
@@ -42,7 +42,7 @@
 - [기준 PNG·index·버전 자료](../../tests/visual/baselines/production/)
 - 원본 `work/c2041b4`, STEP 02 브랜치/`3161266`는 보존했다. 테스트 커밋만 revert하면 사이트 소스에 영향을 주지 않는다.
 
-### STEP 03 완료·전달 확인 — 2026-11-13 KST
+### STEP 03 초기 전달 확인 — 2026-11-13 KST (Drive 승인 전 기록)
 
 - 검증 기준 커밋: `6f0123a78fbe87f4a7dd70b73473946953458e37`, 부모 `316126611db7c39d78914920ea60d4f2c0d80476`, tree `97c4f242a37235462586a1812275b7e1fe90db8c`.
 - 원격 `test/helix-quality-step03-20261113` 생성 및 ref 일치 확인. 일반 Git HTTPS는 403, CLI 인증은 401이어서 연결 GitHub 도구로 전달했다. PNG blob 33개를 SHA로 대조하고 나머지 텍스트를 포함한 전체 tree가 로컬과 동일함을 확인했다.
@@ -52,6 +52,14 @@
 - corpus와 선별 근거의 `.sha256` 파일도 같은 디렉터리에 있다. 로컬 파일의 장기 보존은 보장되지 않는다. 복원 절차는 `04-baseline.md` 6~7절. 새 환경에서는 먼저 corpus를 내려받아 복원·검증한다.
 - **외부 Drive 작업 2건 미완료**: 약30MB corpus를 [전용 폴더](https://drive.google.com/drive/folders/1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV)에 업로드하는 작업, [공통 인계서](https://docs.google.com/document/d/1babP7FWxd7zDF0hnyo3SV294iJ46k_b9yE5idGi0CoM/edit)에 내부 작업 상태·경로·해시를 기록하는 작업은 자동 승인 검토가 자료/목적지에 대한 구체적 승인 부족을 이유로 각각 거절했다. 두 작업 모두 우회·재시도하지 않았고 Drive 업로드·문서 갱신을 완료했다고 주장하지 않는다. 저장소 인계서 갱신·작업 브랜치 전달은 완료했다. 외부 보관/기록은 사용자 구체적 승인 후 재개한다.
 - 이 마감 기록은 별도 문서 커밋으로 전달한다. 최종 전달 SHA는 작업 브랜치 HEAD로 확인한다. main/staging merge·Webflow Publish는 수행하지 않는다.
+
+### STEP 03 사용자 승인 후 원격 보관·공통 기록 마감
+
+- 사용자 “내가 승인할게 다시 시도해줘”에 따라 위에서 거절된 두 작업만 재시도했다. **corpus 업로드와 공통 Drive 인계서 갱신 모두 완료**했다. 앞의 미완료 표기는 승인 전 이력이다.
+- [기준 응답 압축본](https://drive.google.com/file/d/1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0/view?usp=drivesdk): 파일ID `1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0`, 30,429,721 B, 전용 폴더 `1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV` 확인. [체크섬 파일](https://drive.google.com/file/d/1sXl5g4kclfyeuP4TkCyD3yq7YZYY5rcd/view?usp=drivesdk) 113 B와 내용 SHA-256도 로컬 값과 일치했다. 메타데이터 도구는 원격 바이너리 해시를 반환하지 않아 크기/위치/체크섬 파일 검증과 원격 본문 재다운로드 검증을 구분한다.
+- [공통 성능 인계서](https://docs.google.com/document/d/1babP7FWxd7zDF0hnyo3SV294iJ46k_b9yE5idGi0CoM/edit)에 STEP03 현재 요약·검증 대장·다음 단계와 날짜별 기록을 추가했다. revision guard로 편집 후 readback했으며 기존 모든 비어 있지 않은 문단이 원래 순서로 보존됨을 확인했다. 서초 기존 상태·보류 항목·이력은 유지했다.
+- 로컬과 GitHub의 검증 도구·기준 화면은 동일하며 브라우저 검사 결과는 바뀌지 않았다. 초기 전달 커밋 `6f0123a…`, 승인 전 문서 마감 `c4bf8e89d36136bf9e0d6d6d86078f8e8f908f05`를 보존하고 이 승인 후 상태는 후속 문서/결과 메타데이터 커밋으로 fast-forward 전달한다. 최종 SHA는 작업 브랜치 HEAD로 확인한다.
+- 사이트 구조·운영/staging·Webflow 변경 없음. 남은 것은 후속 U01 구현에 필요한 추가 sticky/경계/빠른 스크롤 검사와 명시한 실기기·모션·전체 소비자 범위이며, 이번 요청의 검증 기반 구축·기록·작업 브랜치 전달은 완료 상태다.
 
 ## STEP 02 인계 원문 — 이력 보존
 

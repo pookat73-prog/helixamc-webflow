@@ -182,5 +182,24 @@
       "durationSeconds": 17.4
     }
   },
-  "remoteCorpusUpload": "automatic approval review rejected; local archive retained"
+  "remoteCorpusUpload": {
+    "status": "completed after explicit user approval following initial automatic approval rejection",
+    "fileId": "1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0",
+    "url": "https://drive.google.com/file/d/1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0/view?usp=drivesdk",
+    "bytes": 30429721,
+    "parentFolderId": "1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV",
+    "localSha256": "1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56",
+    "checksumFileUrl": "https://drive.google.com/file/d/1sXl5g4kclfyeuP4TkCyD3yq7YZYY5rcd/view?usp=drivesdk",
+    "verified": [
+      "file ID",
+      "size",
+      "parent folder",
+      "checksum file content"
+    ],
+    "remoteBinaryHashReturned": false
+  },
+  "sharedHandoff": {
+    "url": "https://docs.google.com/document/d/1babP7FWxd7zDF0hnyo3SV294iJ46k_b9yE5idGi0CoM/edit",
+    "status": "updated and read back; prior nonempty paragraphs preserved in order"
+  }
 }
