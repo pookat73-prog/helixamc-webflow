@@ -42,6 +42,17 @@
 - [기준 PNG·index·버전 자료](../../tests/visual/baselines/production/)
 - 원본 `work/c2041b4`, STEP 02 브랜치/`3161266`는 보존했다. 테스트 커밋만 revert하면 사이트 소스에 영향을 주지 않는다.
 
+### STEP 03 완료·전달 확인 — 2026-11-13 KST
+
+- 검증 기준 커밋: `6f0123a78fbe87f4a7dd70b73473946953458e37`, 부모 `316126611db7c39d78914920ea60d4f2c0d80476`, tree `97c4f242a37235462586a1812275b7e1fe90db8c`.
+- 원격 `test/helix-quality-step03-20261113` 생성 및 ref 일치 확인. 일반 Git HTTPS는 403, CLI 인증은 401이어서 연결 GitHub 도구로 전달했다. PNG blob 33개를 SHA로 대조하고 나머지 텍스트를 포함한 전체 tree가 로컬과 동일함을 확인했다.
+- 초기 로컬 커밋 `0d13e551b34793a48a5c926016ddd7a7b3558396`과 위 전달 커밋은 **tree가 같고 커밋 메타데이터가 다르다**. 연결 도구가 만든 전달 커밋의 원본 객체를 다시 받아 SHA를 검증해 로컬에도 동일 SHA로 반영했다. 초기 커밋은 `recovery/helix-step03-local-0d13e55`에 보존했다. 원본 `work`, STEP02 이력은 유지했다.
+- 최종 전체 재생과 복구 선택 실행의 결과는 위 현재 상태 및 `run-summary.json`을 따른다. 예약 버튼 임시 색상 변경은 거절됐고, 기준 PNG는 변경되지 않았다. 최종 기존 품질 검사 8개/추적 JS·CJS 94개 문법, JSON/링크/공백·범위 검사 통과. 사이트 소스·AGENTS·CLAUDE·기존 STEP01/02 설계·workflow 변경 없음.
+- 선별 실행 근거: `/workspace/artifacts/HELIX-STEP03-Selected-Evidence-20261113.tar.gz`, **21,829,925 B**, SHA-256 `f137b65ae5ec5ca0788e667c6c7cd376fae2995681175263dd49a078386c631f`. 실패·성공 JSON/PNG/요약을 보관하고 중복 대형 원시 trace는 별도 로컬 보존했다.
+- corpus와 선별 근거의 `.sha256` 파일도 같은 디렉터리에 있다. 로컬 파일의 장기 보존은 보장되지 않는다. 복원 절차는 `04-baseline.md` 6~7절. 새 환경에서는 먼저 corpus를 내려받아 복원·검증한다.
+- **외부 Drive 작업 2건 미완료**: 약30MB corpus를 [전용 폴더](https://drive.google.com/drive/folders/1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV)에 업로드하는 작업, [공통 인계서](https://docs.google.com/document/d/1babP7FWxd7zDF0hnyo3SV294iJ46k_b9yE5idGi0CoM/edit)에 내부 작업 상태·경로·해시를 기록하는 작업은 자동 승인 검토가 자료/목적지에 대한 구체적 승인 부족을 이유로 각각 거절했다. 두 작업 모두 우회·재시도하지 않았고 Drive 업로드·문서 갱신을 완료했다고 주장하지 않는다. 저장소 인계서 갱신·작업 브랜치 전달은 완료했다. 외부 보관/기록은 사용자 구체적 승인 후 재개한다.
+- 이 마감 기록은 별도 문서 커밋으로 전달한다. 최종 전달 SHA는 작업 브랜치 HEAD로 확인한다. main/staging merge·Webflow Publish는 수행하지 않는다.
+
 ## STEP 02 인계 원문 — 이력 보존
 
 아래는 `3161266`에서 받은 이전 기록이다. 다음 단계로 overflow 구현을 제안한 내용은 **당시 제안**이며 이번 사용자 요청은 검증 기반 구축까지만이다.
