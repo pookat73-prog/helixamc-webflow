@@ -1,0 +1,1165 @@
+{
+  "atKST": "2026-11-16T18:27:29.336734+09:00",
+  "branch": "fix/helix-followup-current-20261116",
+  "base": "ac87f91b91469311ddf627041504f52e35bcfceb",
+  "mainObserved": "5b8827e9a7b0430683354f1f1b3dcff45626e68d",
+  "reviewedHead": "48fe888269cc4c8ac705a41900963557df30e059",
+  "oldBranchPreserved": "fix/helix-followup-20261116",
+  "oldHeadPreserved": "0685a30c2095aaa53acdc84dfd45c8454c4248a1",
+  "otherChangesPreserved": [
+    "docs/home-quickbar-measurement.md",
+    "home/global/coming-soon.css",
+    "home/global/coming-soon.js",
+    "home/global/scroll-hint.css",
+    "scripts/test-quickbar-measurement.mjs"
+  ],
+  "replay": [
+    {
+      "old": "9120f1b12be09702f27c2c8d5cc5e8dfdd8d010a",
+      "new": "f79e1c0b9d8d638ab9e06aaae3f74ecc0a64fa1e",
+      "tree": "5f59f39c63bbd32a5c6beb0fbba56932b4aa5c77",
+      "message": "docs(quality): verify current assets and isolate approved follow-up scope"
+    },
+    {
+      "old": "456ef38c8edef27cd8c2c0653c6de1fea917de5a",
+      "new": "f35a0f1ad81a85b02f0fcb7010739b581d062bce",
+      "tree": "87a4a56925f50f756818d5f621635d1fbb1842c5",
+      "message": "test(quality): isolate wheel, lock ownership and breakpoint re-entry checks"
+    },
+    {
+      "old": "0b03f71e3fdc7822fff17fedf5c893a6ab092f54",
+      "new": "b1e74dc589592afe9a4af26ba6e0e94df7c343d6",
+      "tree": "d5479c5393bfcf5e5d20a3e45b6ea6499d305d2b",
+      "message": "fix(menu): lock the viewport scroll owner while the menu is open"
+    },
+    {
+      "old": "ba80e911833847df7b5af98d88084fa29b8b6384",
+      "new": "a115b0338353fb936ca0f44d1db3249cc6d5168d",
+      "tree": "6ce76d9bf763361e45168edf321a00d65a76e8e6",
+      "message": "fix(home): initialize newly exposed card sections once after viewport changes"
+    },
+    {
+      "old": "37b0c7d2f7327e4f56ba55f12f223b145a423f48",
+      "new": "fabc7c0eaa2a5e596aafed626fd44e3b0f1c5557",
+      "tree": "685a388307625b4b53ee2aa79f689dc0ca75a61c",
+      "message": "fix(reservation): derive viewport scroll lock from existing modal state"
+    },
+    {
+      "old": "3ec456a24815c9a0d44aedccc5c3998591e27104",
+      "new": "24e3e83b1a1f5aa85c0c28ee0d2806c96eeefccc",
+      "tree": "1456e34fd74b43cd2f6daf852302fc3041985053",
+      "message": "test(quality): verify shared consumers and keep wheel controls within scroll range"
+    },
+    {
+      "old": "933d5c025057fb0e0311e1d845cf22099a405b8c",
+      "new": "46460e1580ed57e977ebf92c8123e3c23e443768",
+      "tree": "b88529bfd25422cb87c574a2b2fa5a18ae4e23f1",
+      "message": "test(quality): enforce reference environment and unchanged closed-state contracts"
+    },
+    {
+      "old": "0685a30c2095aaa53acdc84dfd45c8454c4248a1",
+      "new": "48fe888269cc4c8ac705a41900963557df30e059",
+      "tree": "0495aa40f380c15998ab9d0d6d37a56ace975cc9",
+      "message": "docs(quality): record isolated fixes, independent review failures and remaining structural work"
+    }
+  ],
+  "publicSnapshot": [
+    {
+      "origin": "https://www.helix-amc.com",
+      "htmlSha256": "76eb2383609a7826330fe3bf54257cfe503fd6f74860dd32c993b369dd5b012f",
+      "runtimeRef": "5b8827e9a7b0430683354f1f1b3dcff45626e68d",
+      "assets": [
+        "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css",
+        "https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D9EMN6BC77UD5IE52MB0&lib=ttq",
+        "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js",
+        "https://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic%7CGreat+Vibes:400%7CPT+Serif:400,400italic,700,700italic%7CNewsreader:400%7CNoto+Sans+KR:300,400,500,600,700&subset=korean,latin",
+        "https://use.typekit.net/yun6zxv.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js",
+        "https://www.googletagmanager.com/gtag/js?id=G-PWCB5MVC32",
+        "https://connect.facebook.net/en_US/fbevents.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ddec5a48f0231645682ae1b3b31f111162e0f2e1/home/bootstrap-v3.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/ga4-base.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/bootstrap.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/session.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/global.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/coming-soon.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/section1/section1.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/buttons.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/floating-cta.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/floating-cta-mobile-fix.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/popup.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/top-button.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/hamburger.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/section-divider/divider.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/sections-animations.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/footer.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/card-stack.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/scroll-hint.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/sheet-log.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/viewport-fix.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/viewport.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/coming-soon.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/section1/section1.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/scroll-depth.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/accessibility.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/floating-cta.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/floating-cta-mobile-fix.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/scroll-depth.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/page-time.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/section-reach.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/popup.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/top-button.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/hamburger.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/section-divider/divider.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/buttons.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/sections-animations.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/footer.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/card-stack.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/global/scroll-hint.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/home/equipment/equipment.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/page-time.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@5b8827e9a7b0430683354f1f1b3dcff45626e68d/global/bootstrap.js",
+        "https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69d090ea69d828e27d16ea29",
+        "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.schunk.80b2e6a92cba2801.js",
+        "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.751e0867.6551f58fa950fc60.js"
+      ],
+      "pageErrors": [
+        "Network request failed"
+      ]
+    },
+    {
+      "origin": "https://helixanimalmedicalcenter.webflow.io",
+      "htmlSha256": "8ed739c6f3ab7566ba183285f247c4a53870269f95f9c9366d0e248ba9609360",
+      "runtimeRef": "b8d8248c727aa01e985f1c8f24e2e540ebdf0fea",
+      "assets": [
+        "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css",
+        "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js",
+        "https://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic%7CGreat+Vibes:400%7CPT+Serif:400,400italic,700,700italic%7CNewsreader:400%7CNoto+Sans+KR:300,400,500,600,700&subset=korean,latin",
+        "https://use.typekit.net/yun6zxv.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/bootstrap.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/viewport-fix.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/viewport.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/accessibility.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/global.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/floating-cta.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/floating-cta.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/floating-cta-mobile-fix.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/floating-cta-mobile-fix.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/scroll-depth.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/page-time.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/section-reach.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/hamburger.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/hamburger.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/coming-soon.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/coming-soon.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/section1/section1.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/section1/section1.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/section-divider/divider.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/section-divider/divider.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/buttons.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/buttons.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/sections-animations.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/sections-animations.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/footer.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/footer.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/card-stack.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/card-stack.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/scroll-hint.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/global/scroll-hint.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/home/equipment/equipment.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/popup.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/popup.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/top-button.css",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@b8d8248c727aa01e985f1c8f24e2e540ebdf0fea/global/top-button.js",
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ac87f91b91469311ddf627041504f52e35bcfceb/global/bootstrap.js",
+        "https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69d090ea69d828e27d16ea29",
+        "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.schunk.80b2e6a92cba2801.js",
+        "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.751e0867.6551f58fa950fc60.js"
+      ],
+      "pageErrors": [
+        "Network request failed"
+      ]
+    }
+  ],
+  "currentFunctional": [
+    {
+      "pathname": "/",
+      "width": 1440,
+      "checks": {
+        "scrollControlAvailable": true,
+        "menuBackgroundLocked": true,
+        "menuFocusRestored": true,
+        "menuScrollRestored": true,
+        "formBackgroundLocked": true,
+        "formScrollRestored": true,
+        "formFocusRestored": true,
+        "overlapRetains-menu": true,
+        "overlapReleases-menu": true,
+        "overlapRetains-form": true,
+        "overlapReleases-form": true,
+        "coldCardsVisible": true,
+        "cardsAfter990-1": true,
+        "cardsAfter991-2": true,
+        "cardsAfter992-3": true,
+        "cardsAfter766-4": true,
+        "cardsAfter767-5": true,
+        "cardsAfter768-6": true,
+        "cardsAfter478-7": true,
+        "cardsAfter479-8": true,
+        "cardsAfter480-9": true,
+        "cardsAfter820-10": true,
+        "cardsAfter1440-11": true,
+        "networkErrors": true,
+        "pageErrors": true,
+        "zeroExternalRequests": true
+      },
+      "failures": [],
+      "menuStart": 0,
+      "menuEnd": 0,
+      "menuReleased": 600,
+      "formStart": 0,
+      "formEnd": 0,
+      "formReleased": 600,
+      "coldCards": [
+        {
+          "cls": "div-block-151 is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 262.078125,
+            "y": 392.84375,
+            "width": 280.078125,
+            "height": 329.765625,
+            "top": 392.84375,
+            "right": 542.15625,
+            "bottom": 722.609375,
+            "left": 262.078125
+          }
+        },
+        {
+          "cls": "home_branch-card is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 262.078125,
+            "y": 392.84375,
+            "width": 280.078125,
+            "height": 329.765625,
+            "top": 392.84375,
+            "right": 542.15625,
+            "bottom": 722.609375,
+            "left": 262.078125
+          }
+        },
+        {
+          "cls": "div-block-151 is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 570.953125,
+            "y": 392.84375,
+            "width": 280.078125,
+            "height": 329.765625,
+            "top": 392.84375,
+            "right": 851.03125,
+            "bottom": 722.609375,
+            "left": 570.953125
+          }
+        },
+        {
+          "cls": "home_branch-card is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 570.953125,
+            "y": 392.84375,
+            "width": 280.078125,
+            "height": 329.765625,
+            "top": 392.84375,
+            "right": 851.03125,
+            "bottom": 722.609375,
+            "left": 570.953125
+          }
+        },
+        {
+          "cls": "home_background_svicc",
+          "opacity": 1,
+          "box": {
+            "x": 879.828125,
+            "y": 326.609375,
+            "width": 560.171875,
+            "height": 453.59375,
+            "top": 326.609375,
+            "right": 1440,
+            "bottom": 780.203125,
+            "left": 879.828125
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "width": 990,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 99,
+                "y": 0.015625,
+                "width": 386.09375,
+                "height": 360.34375,
+                "top": 0.015625,
+                "right": 485.09375,
+                "bottom": 360.359375,
+                "left": 99
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 504.890625,
+                "y": 0.015625,
+                "width": 386.109375,
+                "height": 344.34375,
+                "top": 0.015625,
+                "right": 891,
+                "bottom": 344.359375,
+                "left": 504.890625
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 99,
+                "y": 392.359375,
+                "width": 891,
+                "height": 416.875,
+                "top": 392.359375,
+                "right": 990,
+                "bottom": 809.234375,
+                "left": 99
+              }
+            }
+          ]
+        },
+        {
+          "width": 991,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 99.09375,
+                "y": 0.03125,
+                "width": 386.5,
+                "height": 360.34375,
+                "top": 0.03125,
+                "right": 485.59375,
+                "bottom": 360.375,
+                "left": 99.09375
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 505.40625,
+                "y": 0.03125,
+                "width": 386.5,
+                "height": 344.34375,
+                "top": 0.03125,
+                "right": 891.90625,
+                "bottom": 344.375,
+                "left": 505.40625
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 99.09375,
+                "y": 392.375,
+                "width": 891.90625,
+                "height": 417.0625,
+                "top": 392.375,
+                "right": 991,
+                "bottom": 809.4375,
+                "left": 99.09375
+              }
+            }
+          ]
+        },
+        {
+          "width": 992,
+          "cards": [
+            {
+              "cls": "div-block-151 is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 180.53125,
+                "y": 549.1875,
+                "width": 192.953125,
+                "height": 227.75,
+                "top": 549.1875,
+                "right": 373.484375,
+                "bottom": 776.9375,
+                "left": 180.53125
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 180.53125,
+                "y": 549.1875,
+                "width": 192.953125,
+                "height": 227.75,
+                "top": 549.1875,
+                "right": 373.484375,
+                "bottom": 776.9375,
+                "left": 180.53125
+              }
+            },
+            {
+              "cls": "div-block-151 is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 393.3125,
+                "y": 549.1875,
+                "width": 192.953125,
+                "height": 227.75,
+                "top": 549.1875,
+                "right": 586.265625,
+                "bottom": 776.9375,
+                "left": 393.3125
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 393.3125,
+                "y": 549.1875,
+                "width": 192.953125,
+                "height": 227.75,
+                "top": 549.1875,
+                "right": 586.265625,
+                "bottom": 776.9375,
+                "left": 393.3125
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 606.09375,
+                "y": 503.5625,
+                "width": 385.90625,
+                "height": 313.046875,
+                "top": 503.5625,
+                "right": 992,
+                "bottom": 816.609375,
+                "left": 606.09375
+              }
+            }
+          ]
+        },
+        {
+          "width": 766,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 76.59375,
+                "y": 489.359375,
+                "width": 294.40625,
+                "height": 269.40625,
+                "top": 489.359375,
+                "right": 371,
+                "bottom": 758.765625,
+                "left": 76.59375
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 395,
+                "y": 489.359375,
+                "width": 294.40625,
+                "height": 253.40625,
+                "top": 489.359375,
+                "right": 689.40625,
+                "bottom": 742.765625,
+                "left": 395
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 76.59375,
+                "y": 790.765625,
+                "width": 689.40625,
+                "height": 178.96875,
+                "top": 790.765625,
+                "right": 766,
+                "bottom": 969.734375,
+                "left": 76.59375
+              }
+            }
+          ]
+        },
+        {
+          "width": 767,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 76.6875,
+                "y": 489.359375,
+                "width": 294.8125,
+                "height": 269.40625,
+                "top": 489.359375,
+                "right": 371.5,
+                "bottom": 758.765625,
+                "left": 76.6875
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 395.5,
+                "y": 489.359375,
+                "width": 294.8125,
+                "height": 253.40625,
+                "top": 489.359375,
+                "right": 690.3125,
+                "bottom": 742.765625,
+                "left": 395.5
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 76.6875,
+                "y": 790.765625,
+                "width": 690.3125,
+                "height": 179.09375,
+                "top": 790.765625,
+                "right": 767,
+                "bottom": 969.859375,
+                "left": 76.6875
+              }
+            }
+          ]
+        },
+        {
+          "width": 768,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 76.796875,
+                "y": 463.140625,
+                "width": 299.515625,
+                "height": 359,
+                "top": 463.140625,
+                "right": 376.3125,
+                "bottom": 822.140625,
+                "left": 76.796875
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 391.671875,
+                "y": 463.140625,
+                "width": 299.53125,
+                "height": 343,
+                "top": 463.140625,
+                "right": 691.203125,
+                "bottom": 806.140625,
+                "left": 391.671875
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 76.796875,
+                "y": 854.140625,
+                "width": 691.203125,
+                "height": 384.0625,
+                "top": 854.140625,
+                "right": 768,
+                "bottom": 1238.203125,
+                "left": 76.796875
+              }
+            }
+          ]
+        },
+        {
+          "width": 478,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 32,
+                "y": 229.484375,
+                "width": 414,
+                "height": 352.796875,
+                "top": 229.484375,
+                "right": 446,
+                "bottom": 582.28125,
+                "left": 32
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 32,
+                "y": 612.671875,
+                "width": 414,
+                "height": 331.65625,
+                "top": 612.671875,
+                "right": 446,
+                "bottom": 944.328125,
+                "left": 32
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 32,
+                "y": 990.65625,
+                "width": 446,
+                "height": 288.921875,
+                "top": 990.65625,
+                "right": 478,
+                "bottom": 1279.578125,
+                "left": 32
+              }
+            }
+          ]
+        },
+        {
+          "width": 479,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 32,
+                "y": 229.484375,
+                "width": 415,
+                "height": 352.796875,
+                "top": 229.484375,
+                "right": 447,
+                "bottom": 582.28125,
+                "left": 32
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 32,
+                "y": 612.671875,
+                "width": 415,
+                "height": 331.65625,
+                "top": 612.671875,
+                "right": 447,
+                "bottom": 944.328125,
+                "left": 32
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 32,
+                "y": 990.6875,
+                "width": 447,
+                "height": 289.234375,
+                "top": 990.6875,
+                "right": 479,
+                "bottom": 1279.921875,
+                "left": 32
+              }
+            }
+          ]
+        },
+        {
+          "width": 480,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 48,
+                "y": 199.359375,
+                "width": 180,
+                "height": 312.484375,
+                "top": 199.359375,
+                "right": 228,
+                "bottom": 511.84375,
+                "left": 48
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 252,
+                "y": 199.359375,
+                "width": 180,
+                "height": 296.484375,
+                "top": 199.359375,
+                "right": 432,
+                "bottom": 495.84375,
+                "left": 252
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 48,
+                "y": 543.84375,
+                "width": 432,
+                "height": 136.65625,
+                "top": 543.84375,
+                "right": 480,
+                "bottom": 680.5,
+                "left": 48
+              }
+            }
+          ]
+        },
+        {
+          "width": 820,
+          "cards": [
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 82,
+                "y": 644.4375,
+                "width": 319.796875,
+                "height": 359.3125,
+                "top": 644.4375,
+                "right": 401.796875,
+                "bottom": 1003.75,
+                "left": 82
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 418.1875,
+                "y": 644.4375,
+                "width": 319.8125,
+                "height": 343.3125,
+                "top": 644.4375,
+                "right": 738,
+                "bottom": 987.75,
+                "left": 418.1875
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 82,
+                "y": 1035.75,
+                "width": 738,
+                "height": 391.75,
+                "top": 1035.75,
+                "right": 820,
+                "bottom": 1427.5,
+                "left": 82
+              }
+            }
+          ]
+        },
+        {
+          "width": 1440,
+          "cards": [
+            {
+              "cls": "div-block-151 is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 262.078125,
+                "y": 569.84375,
+                "width": 280.078125,
+                "height": 329.765625,
+                "top": 569.84375,
+                "right": 542.15625,
+                "bottom": 899.609375,
+                "left": 262.078125
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 262.078125,
+                "y": 569.84375,
+                "width": 280.078125,
+                "height": 329.765625,
+                "top": 569.84375,
+                "right": 542.15625,
+                "bottom": 899.609375,
+                "left": 262.078125
+              }
+            },
+            {
+              "cls": "div-block-151 is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 570.953125,
+                "y": 569.84375,
+                "width": 280.078125,
+                "height": 329.765625,
+                "top": 569.84375,
+                "right": 851.03125,
+                "bottom": 899.609375,
+                "left": 570.953125
+              }
+            },
+            {
+              "cls": "home_branch-card is-shadowed",
+              "opacity": 1,
+              "box": {
+                "x": 570.953125,
+                "y": 569.84375,
+                "width": 280.078125,
+                "height": 329.765625,
+                "top": 569.84375,
+                "right": 851.03125,
+                "bottom": 899.609375,
+                "left": 570.953125
+              }
+            },
+            {
+              "cls": "home_background_svicc",
+              "opacity": 1,
+              "box": {
+                "x": 879.828125,
+                "y": 503.609375,
+                "width": 560.171875,
+                "height": 453.59375,
+                "top": 503.609375,
+                "right": 1440,
+                "bottom": 957.203125,
+                "left": 879.828125
+              }
+            }
+          ]
+        }
+      ],
+      "networkErrors": [],
+      "pageErrors": [],
+      "forwarded": 0,
+      "overlays": [
+        [
+          "home/global/hamburger.js",
+          "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39"
+        ],
+        [
+          "home/global/sections-animations.js",
+          "8a4c64686f8c184284af665b3215dcc387161ac4a184835b56cd7253406b065c"
+        ],
+        [
+          "home/global/hamburger.css",
+          "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        ],
+        [
+          "global/floating-cta.css",
+          "cc9f8a387105136e7a5763559740c575aa7a6af4b3b7220e5a7e1321e37bc4d0"
+        ]
+      ]
+    },
+    {
+      "pathname": "/",
+      "width": 820,
+      "checks": {
+        "scrollControlAvailable": true,
+        "menuBackgroundLocked": true,
+        "menuFocusRestored": true,
+        "menuScrollRestored": true,
+        "formBackgroundLocked": true,
+        "formScrollRestored": true,
+        "formFocusRestored": true,
+        "overlapRetains-menu": true,
+        "overlapReleases-menu": true,
+        "overlapRetains-form": true,
+        "overlapReleases-form": true,
+        "coldCardsVisible": true,
+        "networkErrors": true,
+        "pageErrors": true,
+        "zeroExternalRequests": true
+      },
+      "failures": [],
+      "menuStart": 0,
+      "menuEnd": 0,
+      "menuReleased": 600,
+      "formStart": 0,
+      "formEnd": 0,
+      "formReleased": 600,
+      "coldCards": [
+        {
+          "cls": "home_branch-card is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 82,
+            "y": 396.4375,
+            "width": 319.796875,
+            "height": 359.3125,
+            "top": 396.4375,
+            "right": 401.796875,
+            "bottom": 755.75,
+            "left": 82
+          }
+        },
+        {
+          "cls": "home_branch-card is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 418.1875,
+            "y": 396.4375,
+            "width": 319.8125,
+            "height": 343.3125,
+            "top": 396.4375,
+            "right": 738,
+            "bottom": 739.75,
+            "left": 418.1875
+          }
+        },
+        {
+          "cls": "home_background_svicc",
+          "opacity": 1,
+          "box": {
+            "x": 82,
+            "y": 787.75,
+            "width": 738,
+            "height": 391.75,
+            "top": 787.75,
+            "right": 820,
+            "bottom": 1179.5,
+            "left": 82
+          }
+        }
+      ],
+      "networkErrors": [],
+      "pageErrors": [],
+      "forwarded": 0,
+      "overlays": [
+        [
+          "home/global/hamburger.js",
+          "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39"
+        ],
+        [
+          "home/global/sections-animations.js",
+          "8a4c64686f8c184284af665b3215dcc387161ac4a184835b56cd7253406b065c"
+        ],
+        [
+          "home/global/hamburger.css",
+          "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        ],
+        [
+          "global/floating-cta.css",
+          "cc9f8a387105136e7a5763559740c575aa7a6af4b3b7220e5a7e1321e37bc4d0"
+        ]
+      ]
+    },
+    {
+      "pathname": "/",
+      "width": 390,
+      "checks": {
+        "scrollControlAvailable": true,
+        "menuBackgroundLocked": true,
+        "menuFocusRestored": true,
+        "menuScrollRestored": true,
+        "formBackgroundLocked": true,
+        "formScrollRestored": true,
+        "formFocusRestored": true,
+        "overlapRetains-menu": true,
+        "overlapReleases-menu": true,
+        "overlapRetains-form": true,
+        "overlapReleases-form": true,
+        "coldCardsVisible": true,
+        "networkErrors": true,
+        "pageErrors": true,
+        "zeroExternalRequests": true
+      },
+      "failures": [],
+      "menuStart": 0,
+      "menuEnd": 0,
+      "menuReleased": 600,
+      "formStart": 0,
+      "formEnd": 0,
+      "formReleased": 600,
+      "coldCards": [
+        {
+          "cls": "home_branch-card is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 32,
+            "y": 200.96875,
+            "width": 326,
+            "height": 352.796875,
+            "top": 200.96875,
+            "right": 358,
+            "bottom": 553.765625,
+            "left": 32
+          }
+        },
+        {
+          "cls": "home_branch-card is-shadowed",
+          "opacity": 1,
+          "box": {
+            "x": 32,
+            "y": 584.15625,
+            "width": 326,
+            "height": 331.125,
+            "top": 584.15625,
+            "right": 358,
+            "bottom": 915.28125,
+            "left": 32
+          }
+        },
+        {
+          "cls": "home_background_svicc",
+          "opacity": 1,
+          "box": {
+            "x": 32,
+            "y": 958.96875,
+            "width": 358,
+            "height": 260.796875,
+            "top": 958.96875,
+            "right": 390,
+            "bottom": 1219.765625,
+            "left": 32
+          }
+        }
+      ],
+      "networkErrors": [],
+      "pageErrors": [],
+      "forwarded": 0,
+      "overlays": [
+        [
+          "home/global/hamburger.js",
+          "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39"
+        ],
+        [
+          "home/global/sections-animations.js",
+          "8a4c64686f8c184284af665b3215dcc387161ac4a184835b56cd7253406b065c"
+        ],
+        [
+          "home/global/hamburger.css",
+          "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        ],
+        [
+          "global/floating-cta.css",
+          "cc9f8a387105136e7a5763559740c575aa7a6af4b3b7220e5a7e1321e37bc4d0"
+        ]
+      ]
+    }
+  ],
+  "closedStatePairs": [
+    {
+      "width": 1440,
+      "pass": true
+    },
+    {
+      "width": 820,
+      "pass": true
+    },
+    {
+      "width": 390,
+      "pass": true
+    }
+  ],
+  "inputCompletion": [
+    {
+      "url": "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=183.626.639.651.653.663.739.776.779&state=21.75.78.81.85.95.173.255.334.382.517.525.529.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0",
+      "sha256": "49cf2ae59cf1ff2c2df4917a3298b18ad3db59692ebda46a1a8033ffa9cd9d9f",
+      "bytes": 113332,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-16T09:22:33.963430+00:00"
+    },
+    {
+      "url": "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=183.626.639.651.653.663.739.776.779&state=21.75.78.81.85.95.173.255.334.382.517.525.529.605.624.640.641.654.664.666.672.673.675.678.737.742.745.752.754.760.761&order=0",
+      "sha256": "6b7e755e40d3635d5f81cac1d31e344fe26c1a53e9eedaff1d57733563752f1b",
+      "bytes": 113752,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-16T09:22:35.536559+00:00"
+    },
+    {
+      "url": "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=513.515.616.623.642.671.743.755.775&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.529.605.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0",
+      "sha256": "1e159bd5a7f89adc90679059e5346bac74e8977045cd7f3d3fdcb4c9e1aa7a61",
+      "bytes": 146771,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-16T09:24:48.831701+00:00"
+    },
+    {
+      "url": "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=513.515.616.623.642.671.743.755.775&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.529.605.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0",
+      "sha256": "534a456c11300feeacf79bb276daeacd1f74680676b78c211cf7d5d457b38c55",
+      "bytes": 146230,
+      "contentType": "application/x-typekit-augmentation",
+      "capturedAt": "2026-11-16T09:24:52.311512+00:00"
+    }
+  ],
+  "preservedFailures": {
+    "firstMissingInput": "review-latest-current/results.json",
+    "partialInput": "review-latest-complete/results.json",
+    "scopeFirstFailure": "review-latest-scope.log",
+    "classification": "unrecorded incremental font augmentation; source tests and error assertions unchanged"
+  },
+  "inputs": {
+    "main": {
+      "path": "/workspace/artifacts/helix-followup/current-input-final/main/manifest.json",
+      "sha256": "8634deaf415c222853091f95ecb10b3a812284a322d3c92c7c7ecf8d8fca7db1",
+      "responses": 119
+    },
+    "staging": {
+      "path": "/workspace/artifacts/helix-followup/current-input-final/staging/manifest.json",
+      "sha256": "c42723694b50623d43fc7c213aa8963b68a421d016beeca49068a4146face9a2",
+      "responses": 115
+    },
+    "extra": {
+      "path": "/workspace/artifacts/helix-followup/current-extra-final/manifest.json",
+      "sha256": "7974f8184b5aa636317f255d825564172b93575e5ed004996681f7ae163b500d",
+      "responses": 371
+    }
+  },
+  "remainingVerdict": "INCOMPLETE: prior frozen footer remains unstable; latest source integration does not resolve V0/U01/D02/D03/D05",
+  "deployment": {
+    "mainOrStagingMerge": false,
+    "publish": false,
+    "fixedHomeReplacement": false
+  }
+}

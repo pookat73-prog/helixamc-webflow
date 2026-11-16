@@ -1290,5 +1290,15 @@
     "publish": false,
     "fixedHomeChanged": false,
     "productionChanged": false
+  },
+  "latestIntegration": {
+    "branch": "fix/helix-followup-current-20261116",
+    "base": "ac87f91b91469311ddf627041504f52e35bcfceb",
+    "main": "5b8827e9a7b0430683354f1f1b3dcff45626e68d",
+    "reviewedHead": "48fe888269cc4c8ac705a41900963557df30e059",
+    "functionalPass": 3,
+    "closedStatePairsPass": 3,
+    "details": "followup-latest.json",
+    "verdictStillIncomplete": true
   }
 }

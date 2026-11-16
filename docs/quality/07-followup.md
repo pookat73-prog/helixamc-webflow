@@ -134,3 +134,19 @@ HELIX_INTERACTION_INPUT=/absolute/path/to/current-input \
 대표 실패 그림: [원본 태블릿](evidence/followup/original-tablet-diff.png), [독립 재검수](evidence/followup/independent-tablet-diff.png). 원시 JSON/PNG/trace·진단 실패·폐기 실험은 `/workspace/artifacts/helix-followup/`에 있다. 작은 결과 대장과 대표 실패는 GitHub에 영구 기록한다. 자료 없는 전체 STEP04 Git 객체 동일성·branch protection·Work/Safari/iOS/실기기/초기 모션·방문자 성과는 완료로 전환하지 않는다.
 
 복구는 메뉴 `0b03f71`, 카드 `ba80e91`, 예약창 CSS `37b0c7d` 각각 한 커밋만 revert한다. 검사는 별도 커밋이다. 공개 배포가 없으므로 운영 rollback은 필요하지 않다. 다른 진행자의 의료진 기록·공개 고정·기존 work 체크아웃에는 reset/clean/force/전체 덮어쓰기를 하지 않았다. 최종 전달 SHA는 작업 브랜치 HEAD로 식별하며 main/staging merge·Publish는 없다.
+
+## 7. 작업 중 외부 진행 발견·최신 기준으로 최소 이관
+
+마감 조회에서 다른 진행으로 main이 `5b8827e9a7b0430683354f1f1b3dcff45626e68d`, staging이 `ac87f91b91469311ddf627041504f52e35bcfceb`로 진행됐다. 변경5파일은 `home/global/coming-soon.css/js`, `home/global/scroll-hint.css`, `scripts/test-quickbar-measurement.mjs`, `docs/home-quickbar-measurement.md`이다. 퀵액세스/스크롤 안내 변경이며 이번 수정4파일과 직접 겹치지 않는다. 서로의 최신 tip 실행 코드가 동일하고 의료진 기록 한 문서만 다르다는 직접 대조도 유지한다.
+
+기존 작업 브랜치 `fix/helix-followup-20261116`/0685a30은 보존했다. 새 작업 브랜치 **`fix/helix-followup-current-20261116`**를 최신 staging ac87f91에서 만들고, 이미 검증한 자신의8단위만 개별 재적용했다. merge/force/감사 브랜치 전체 병합은 없다. 각 tree를 로컬 Git hash와 대조했고 새 parent를 제외한 자기 변경 blob은 동일하다. 외부5파일은 최신 원문/해시 그대로 보존한다. 재적용 이력과 최신 검증은 [최신 기준 이관 기록](evidence/followup-latest.json)을 따른다.
+
+최신 공개 브라우저 확인에서는 정식 home이5b8827e…를 실행했고, 공개 staging home 고정도 다른 진행으로 **b8d8248c727aa01e985f1c8f24e2e540ebdf0fea**로 바뀌었다. 이전0011fc…를 복원하거나 새 고정을 교체하지 않았다. 현재 관찰된 고정을 유지한다. 생성 CSS73c0c0934, 페이지별 `Network request failed` 1건은 유지해0으로 표현하지 않는다. 이 변경을 이번 작업이 배포한 것으로 기록하지 않는다.
+
+새 입력은 origin별 manifest와 본문을 분리해 같은URL의 외부 응답 변형이 서로 덮이지 않게 했다. `current-input-final/main`과 `current-extra-final`을 사용한다. 첫 재생은 Adobe subset2응답이 없어 차단됐으며, 보충 후 다음 incremental state의2응답도 필요했다. 정확한4주소를 별도 GET해200/본문 해시를 확보한 뒤 기존URL 덮어쓰기 없이 보충했다. 실패 실행은 보존한다. 미기록 응답을 허용하거나 라이브 요청을 검사 중 통과시키지 않았다. 최신 quickbar의8개 측정 계약·홈로더 검사는 통과했다.
+
+이 절은 최초 구현 전490a313 기준과933d5c0 독립 검사 이력을 덮어쓰지 않는다. 최신 외부 변경을 포함한 추가 기능/영향 검사 결과는 별도 최신 대장에 기록하며, 푸터 안정화·U01/D02/D03/D05 미완료 판정과 배포 금지는 계속 유지한다.
+
+**최신 재검수 완료:**48fe888의 새 디렉터리에서 main5b8827e의 origin별 고정 입력으로 기능1440/820/390과 경계11회 전환·왕복, 원본/후보 닫힌 상태3쌍을 통과했다. 최종 재생 외부 전달/네트워크/JS오류0. 문서 높이·가로폭·정책·제목/링크·주요 좌표·글꼴이 정확히 동일하다. 새 퀵액세스의 의도한112px 변경을 옛PNG와 비교해 회귀로 판정하지 않았다. 과거 고정 하단 실패는 그대로 남고, 최신 코드 위의 전체 시각 안정화/운영 통과를 선언하지 않는다.
+
+현재 복구 커밋은 메뉴 **b1e74dc**, 카드 **a115b03**, 예약창 CSS **fabc7c0**이다. 이전 커밋과의 대응은 최신 대장에 보존한다. 최종 작업 브랜치는 `fix/helix-followup-current-20261116`이며 위6절의 최초 브랜치는 보존 이력이다.
