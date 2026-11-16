@@ -100,6 +100,7 @@
 }
 
 /* --- Scroll lock --- */
+html.hx-menu-open,
 body.hx-menu-open {
   overflow: hidden;
 }
