@@ -9,10 +9,10 @@ SVG path, animation, floating CTA, or raw-log receiver changes.
 | --- | --- |
 | `home_quickbar_view` | At least 50% of the bar visible for 1 continuous second; once per page load |
 | `home_quickbar_dwell` | Incremental active-visible seconds; sum `dwell_sec` or numeric `value` (not event count) |
-| `home_quickbar_phone_call_seocho` | Seocho phone intent, wide and compact layout |
-| `home_quickbar_phone_call_ilsan` | Ilsan phone intent, wide and compact layout |
-| `home_quickbar_detail_seocho` | Seocho detail link, compact layout only |
-| `home_quickbar_detail_ilsan` | Ilsan detail link, compact layout only |
+| `home_quickbar_phone_call_seocho` | Seocho phone intent, compact layout only |
+| `home_quickbar_phone_call_ilsan` | Ilsan phone intent, compact layout only |
+| `home_quickbar_detail_seocho` | Seocho detail link, wide and compact layout |
+| `home_quickbar_detail_ilsan` | Ilsan detail link, wide and compact layout |
 | `home_quickbar_detail_svicc` | 서울동물영상종양센터 link, wide and compact layout |
 
 There are 3 links in wide markup and 5 in compact markup; only one layout is
