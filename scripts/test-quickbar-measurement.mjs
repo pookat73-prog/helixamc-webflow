@@ -15,7 +15,7 @@ function fixture({ hostname = 'helix-amc.com', excluded = false, qa = '', width 
   const events = [];
   const listeners = {};
   const intervals = [];
-  const links = ['phone_call:seocho', 'phone_call:ilsan', 'detail:svicc', 'detail:seocho', 'phone_call:seocho', 'detail:ilsan', 'phone_call:ilsan', 'detail:svicc'].map((key, index) => {
+  const links = ['detail:seocho', 'detail:ilsan', 'detail:svicc', 'detail:seocho', 'phone_call:seocho', 'detail:ilsan', 'phone_call:ilsan', 'detail:svicc'].map((key, index) => {
     const [action, branch] = key.split(':');
     const href = action === 'phone_call' ? (branch === 'seocho' ? 'tel:0221359119' : 'tel:0319787575') : (branch === 'svicc' ? 'https://www.svicc.co.kr/' : '/' + branch);
     return { index, nodeType: 1, action, branch, href, handlers: [],
