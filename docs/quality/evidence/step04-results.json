@@ -1,0 +1,405 @@
+{
+  "recordedAt": "2026-11-16T01:40:18.832Z",
+  "status": "U01 candidate verified within listed scope; full regression and public release blocked",
+  "sourceBase": {
+    "upstreamStaging": "11daa6d47a864d49dda835b7c208f726f275b629",
+    "tree": "48b07ea3947dbd92e4bd7b937bde44c99cddbd3a",
+    "localSnapshot": "280f14ad69ecf959dfa26091d5f0da7a3ccfd67a"
+  },
+  "commits": {
+    "references": "4057b71",
+    "checks": "6b49ff2",
+    "runtime": "e68ea46368469ac2ad0655f6601294d3fe59032d"
+  },
+  "candidate": {
+    "file": "home/global/sections-animations.css",
+    "sha256": "32e656ac7225bc481fec1bfb22c4a4aa780d83ff09f1e0a741b647bb7e7c410c"
+  },
+  "runtime": {
+    "playwright": "1.57.0",
+    "chromium": "151.0.7922.173",
+    "os": "Debian13 x86_64",
+    "dpr": 1,
+    "locale": "ko-KR",
+    "timezone": "Asia/Seoul"
+  },
+  "unchangedReferences": {
+    "corpusResponses": 286,
+    "pngs": 33,
+    "archiveSha256": "1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56"
+  },
+  "supplementalResponses": {
+    "schema": 1,
+    "purpose": "Additional static assets exposed by U01 breakpoint/scroll checks; original production index and PNGs remain unchanged.",
+    "requests": {
+      "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/69d59394e6c7901bc0200531_Plus.svg": {
+        "sha256": "38a3021ef5d09d753807dbb226979016736d4b4b3091ebb18ac036dc2815e6a3",
+        "bytes": 248,
+        "contentType": "image/svg+xml",
+        "capturedAt": "2026-11-16",
+        "source": "URL observed in frozen page asset graph during boundary check"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@68aaaa4f5e/about/assets/history-background.svg": {
+        "sha256": "3c6aa68b8fd0e5f1826c87c83c32f7c68d414f02ac35fd8d29c1253fd1f08cee",
+        "bytes": 678630,
+        "contentType": "image/svg+xml",
+        "capturedAt": "2026-11-16",
+        "source": "URL observed in frozen page asset graph during boundary check",
+        "gitBlob": "e437e4158be9ed9f95c10346c0951d404e0bcd4d"
+      }
+    }
+  },
+  "checks": {
+    "siteQuality": {
+      "passed": 9,
+      "trackedJsCjs": 101
+    },
+    "homeLoading": {
+      "passedOutputGroups": 6
+    },
+    "ctaFocus": {
+      "passed": 15
+    },
+    "ctaMockSubmit": {
+      "passed": 6
+    },
+    "D01": {
+      "originalOverlayExit": 1,
+      "candidatePassed": 3,
+      "expectedFailureForCandidate": false
+    },
+    "fullReplay": {
+      "stats": {
+        "startTime": "2026-11-16T01:22:41.953Z",
+        "duration": 191406.01,
+        "expected": 20,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "normalPassed": 14,
+      "normalFailed": 1,
+      "D01Passed": 3,
+      "D02ExpectedFailures": 3,
+      "pngPassed": 32,
+      "pngFailed": 1
+    },
+    "sameDocumentComparison": {
+      "passedCases": 28,
+      "imagePairs": 112,
+      "threshold": 0.2,
+      "maxDiffPixels": 100,
+      "geometryEqual": true,
+      "cases": [
+        {
+          "page": "home",
+          "width": 320,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 320,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 390,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 390,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 478,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 478,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 479,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 479,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 480,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 480,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 766,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 766,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 767,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 767,
+          "height": 844,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 768,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 768,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 820,
+          "height": 1180,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 820,
+          "height": 1180,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 990,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 990,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 991,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 991,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 992,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 992,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 1440,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 1440,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "home",
+          "width": 1920,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 5,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        },
+        {
+          "page": "about",
+          "width": 1920,
+          "height": 900,
+          "passed": true,
+          "visualPairs": 3,
+          "forwarded": 0,
+          "networkErrors": 0,
+          "pageErrors": 0
+        }
+      ]
+    }
+  },
+  "unresolved": [
+    {
+      "case": "tablet/home-footer.png",
+      "originalDifferentPixels": [
+        618,
+        1206
+      ],
+      "candidateDifferentPixels": 283,
+      "cause": "Unconfirmed; glyph raster differences with frozen input; not silently accepted",
+      "referenceUpdated": false,
+      "toleranceRaised": false
+    }
+  ],
+  "notRun": [
+    "public candidate staging/production delivery",
+    "Safari/iOS/iPad/physical devices/rotation",
+    "early/fault frame and motion timing",
+    "all site pages/legacy UI/map/real reservation or call",
+    "visitor CWV"
+  ],
+  "publication": {
+    "push": false,
+    "pr": false,
+    "merge": false,
+    "webflowPublish": false
+  },
+  "evidenceRoot": "/workspace/artifacts/helix-step04",
+  "reproduction": "docs/quality/05-refactoring.md"
+}

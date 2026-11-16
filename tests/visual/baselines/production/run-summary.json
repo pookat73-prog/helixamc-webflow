@@ -1,0 +1,205 @@
+{
+  "target": "production-frozen-response-replay",
+  "stats": {
+    "startTime": "2026-11-13T08:34:45.461Z",
+    "duration": 189105.992,
+    "expected": 21,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "normalScenarios": 15,
+  "knownDefectExpectedFailures": 6,
+  "referencePngs": 33,
+  "forwardedExternalRequests": 0,
+  "candidateOverlays": 0,
+  "networkErrors": [],
+  "pageErrors": [],
+  "brokenImages": [],
+  "fontErrors": [],
+  "stateRecords": 15,
+  "rows": [
+    {
+      "project": "pc",
+      "test": "home baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "about baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "services baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "faq baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "internal baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "home baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "about baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "services baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "faq baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "tablet",
+      "test": "internal baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "home baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "about baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "services baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "faq baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "mobile",
+      "test": "internal baseline",
+      "expected": "passed",
+      "actual": "passed",
+      "classification": "visual-and-behavior-comparison-passed"
+    },
+    {
+      "project": "pc",
+      "test": "D01 known overflow conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "pc",
+      "test": "D02 known long-text exception conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "tablet",
+      "test": "D01 known overflow conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "tablet",
+      "test": "D02 known long-text exception conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "mobile",
+      "test": "D01 known overflow conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    },
+    {
+      "project": "mobile",
+      "test": "D02 known long-text exception conflict (desired contract)",
+      "expected": "failed",
+      "actual": "failed",
+      "classification": "known-defect-reproduced"
+    }
+  ],
+  "positiveControl": {
+    "mutation": "temporary frozen-response overlay changes reservation button background to magenta",
+    "scope": "home / pc",
+    "expectedExit": 1,
+    "actualExit": 1,
+    "detectedDifferentPixels": 4798,
+    "baselineHashesUnchanged": true,
+    "externalRequests": 0,
+    "recoveryWithoutOverlay": {
+      "exit": 0,
+      "normalScenarios": 1,
+      "knownExpectedFailures": 1,
+      "durationSeconds": 17.4
+    }
+  },
+  "remoteCorpusUpload": {
+    "status": "completed after explicit user approval following initial automatic approval rejection",
+    "fileId": "1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0",
+    "url": "https://drive.google.com/file/d/1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0/view?usp=drivesdk",
+    "bytes": 30429721,
+    "parentFolderId": "1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV",
+    "localSha256": "1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56",
+    "checksumFileUrl": "https://drive.google.com/file/d/1sXl5g4kclfyeuP4TkCyD3yq7YZYY5rcd/view?usp=drivesdk",
+    "verified": [
+      "file ID",
+      "size",
+      "parent folder",
+      "checksum file content"
+    ],
+    "remoteBinaryHashReturned": false
+  },
+  "sharedHandoff": {
+    "url": "https://docs.google.com/document/d/1babP7FWxd7zDF0hnyo3SV294iJ46k_b9yE5idGi0CoM/edit",
+    "status": "updated and read back; prior nonempty paragraphs preserved in order"
+  }
+}
