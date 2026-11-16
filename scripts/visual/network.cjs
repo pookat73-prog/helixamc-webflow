@@ -18,11 +18,26 @@ const keyFor = raw => {
   }
   return u.href;
 };
-async function install(context) {
+async function install(context, options = {}) {
+  const root = options.inputRoot || exports.corpusRoot;
+  const manifestFile = path.join(root, 'manifest.json');
   if (!record && !fs.existsSync(manifestFile)) throw new Error('Frozen corpus missing: ' + manifestFile + '. Restore the matching archive; capture is a separate review operation.');
   fs.mkdirSync(path.join(root, 'bodies'), { recursive: true });
   const manifest = fs.existsSync(manifestFile) ? JSON.parse(fs.readFileSync(manifestFile)) : { schema: 1, target, requests: {} };
   assert.equal(manifest.target, target);
+  // Extra immutable inputs remain separate; they cannot replace an original URL.
+  const bodyRoots = new Map(Object.values(manifest.requests).map(e => [e.sha256, root]));
+  for (const extraRoot of options.extraRoots || []) {
+    const extra = JSON.parse(fs.readFileSync(path.join(extraRoot, 'manifest.json')));
+    for (const [url, entry] of Object.entries(extra.requests)) {
+      assert.ok(!manifest.requests[url], 'Extra fixture overwrites original URL: ' + url);
+      const bytes = fs.readFileSync(path.join(extraRoot, 'bodies', entry.sha256));
+      assert.equal(hash(bytes), entry.sha256, 'Corrupt extra fixture ' + url);
+      assert.equal(bytes.length, entry.bytes, 'Truncated extra fixture ' + url);
+      manifest.requests[url] = entry;
+      bodyRoots.set(entry.sha256, extraRoot);
+    }
+  }
   const audit = { target, mode: record ? 'capture' : 'offline-replay', forwarded: 0, cacheHits: 0, blocked: [], errors: [], overlays: [], requests: [] };
   const overlay = (process.env.HELIX_VISUAL_OVERLAY || '').split(',').filter(Boolean);
   for (const p of overlay) assert.ok(/^(home|global|about|services|faq|internal-medicine)\/[\w./-]+\.(css|js|json)$/.test(p) && !p.includes('..'), 'Invalid overlay path');
@@ -64,7 +79,7 @@ async function install(context) {
         }));
         entry = await pending.get(key);
       } else audit.cacheHits++;
-      let bytes = fs.readFileSync(path.join(root, 'bodies', entry.sha256));
+      let bytes = fs.readFileSync(path.join(bodyRoots.get(entry.sha256) || root, 'bodies', entry.sha256));
       assert.equal(hash(bytes), entry.sha256, 'Corrupt corpus ' + key);
       const match = u.hostname === 'cdn.jsdelivr.net' && u.pathname.match(/^\/gh\/pookat73-prog\/helixamc-webflow@([^/]+)\/(.+)$/);
       if (match && overlay.includes(match[2])) {
@@ -81,3 +96,4 @@ async function install(context) {
   return { audit, manifest, root, origin: origins[target] };
 }
 exports.install = install;
+exports.corpusRoot = root;
