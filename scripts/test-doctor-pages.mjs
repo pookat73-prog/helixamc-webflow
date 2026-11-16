@@ -10,12 +10,13 @@ const checks=[];
 function check(name, fn) { fn();checks.push(name); }
 const manifest=build({outDir:out});
 const {doctors,sourceHash}=readDoctors();
-check('공개 목록과 번들 일치; 휴직/목록 제외 대상은 미생성',()=>{
+check('공개 목록과 번들 일치; 복귀 대상 생성·목록 제외 대상 미생성',()=>{
   const bundle=JSON.parse(readFileSync(join(ROOT,'seocho/doctors/data/_all.json')));
   const keys=Object.entries(bundle.groups).flatMap(([group,v])=>v.order.map(slug=>group+'/'+slug));
   assert.deepEqual(doctors.map(d=>d.group+'/'+d.doctor.slug).sort(),keys.sort());
   for (const d of doctors) assert.deepEqual(d.doctor,bundle.groups[d.group].doctors[d.doctor.slug]);
-  assert(!doctors.some(d=>['eomharim','guhaein'].includes(d.doctor.slug)));
+  assert(doctors.some(d=>d.group==='di-2' && d.doctor.slug==='eomharim'));
+  assert(!doctors.some(d=>d.doctor.slug==='guhaein'));
 });
 check('전체 원본 HTML·고유 제목·대표 주소·이력·내부 링크',()=>{
   assert.equal(new Set(manifest.pages.map(p=>p.title)).size,doctors.length);
@@ -65,10 +66,10 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
   try {
     const rawLinks=await (await fetch(base+'/seocho')).text();
     for (const d of doctors) assert(rawLinks.includes(`href="${d.path}"`));
-    for(const path of ['/doctors/not-a-doctor','/doctors/eomharim','/doctors/guhaein','/doctors/','/doctors/isoyun/unknown']) {
+    for(const path of ['/doctors/not-a-doctor','/doctors/guhaein','/doctors/','/doctors/isoyun/unknown']) {
       assert.equal((await fetch(base+path)).status,404,path);
     }
-    records.push('없는 주소·휴직·목록 제외 주소 HTTP 404');
+    records.push('없는 주소·목록 제외 주소 HTTP 404');
     for(const width of [1440,390]) {
       const context=await browser.newContext({viewport:{width,height:900},javaScriptEnabled:false});
       await context.route('**/*',route=>new URL(route.request().url()).origin===new URL(base).origin?route.continue():route.abort());
@@ -109,7 +110,7 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
       });
       const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://helix-amc.com/seocho');
-      await page.waitForFunction(()=>document.querySelectorAll('[data-doctor-slug]').length===52);
+      await page.waitForFunction(count=>document.querySelectorAll('[data-doctor-slug]').length===count,doctors.length*2);
       assert.equal(await page.locator('[data-doctor-slug][aria-hidden="true"]').count(),0);
       for(const text of await page.locator('[data-doctor-slug]').allTextContents()) assert(!text.includes('어디어디 정회원'));
       await page.evaluate(()=>{window.__helixNoMeasure=false;});
@@ -138,14 +139,14 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
       assert.equal(await page.locator(`${view} [data-doctor-slug="gimyunji"] [data-doctor-open]`).count(),0);
       // 새 탭 첫 탐색은 Chromium의 가상 외부 도메인 라우팅 제한을 피하고 실제 로컬 서버에서 검증.
       await page.goto(base+'/seocho');
-      await page.waitForFunction(()=>document.querySelectorAll('[data-doctor-slug]').length===52);
+      await page.waitForFunction(count=>document.querySelectorAll('[data-doctor-slug]').length===count,doctors.length*2);
       const first=page.locator(`${view} [data-doctor-slug="isoyun"] [data-doctor-open]`);
       const before=events.length;
       const [newTab]=await Promise.all([context.waitForEvent('page'),first.click({modifiers:['Control']})]);
       await newTab.waitForURL('**/doctors/isoyun');await newTab.waitForLoadState();assert.equal(new URL(newTab.url()).pathname,'/doctors/isoyun');
       assert.equal(events.length,before);assert.equal(await page.locator('.helix-doctor-modal.is-open').count(),0);await newTab.close();
       await page.goto('https://helix-amc.com/seocho');
-      await page.waitForFunction(()=>document.querySelectorAll('[data-doctor-slug]').length===52);
+      await page.waitForFunction(count=>document.querySelectorAll('[data-doctor-slug]').length===count,doctors.length*2);
       await page.evaluate(()=>{window.__helixNoMeasure=false;});
       await first.click();await page.locator('.helix-doctor-modal.is-open').waitFor();
       await page.locator('.helix-doctor-modal_close').click();await page.waitForURL('**/seocho');await page.waitForTimeout(340);
@@ -177,7 +178,7 @@ if (process.env.DOCTOR_BROWSER_TEST === '1') {
       assert.equal(pv[0][2].slug,'isoyun');assert.equal(pv[0][2].view_type,'page');
       assert.equal(events.filter(e=>e[1]==='home_page_view'||e[1]==='seocho_page_view').length,0);
       assert.deepEqual(errors,[]);await context.close();
-      records.push(`${width}px: 24명 주소 동반 모달·새 탭·닫기/포커스·뒤로/앞으로·새로고침·직접 접속 모달·이벤트 중복 없음`);
+      records.push(`${width}px: ${doctors.filter(d=>d.group!=='di-3').length}명 주소 동반 모달·새 탭·닫기/포커스·뒤로/앞으로·새로고침·직접 접속 모달·이벤트 중복 없음`);
     }
     // staging/operator gates: browser mocks only, no GA4 scripts or requests.
     for(const hostname of ['preview.webflow.io','helix-amc.com']) {
