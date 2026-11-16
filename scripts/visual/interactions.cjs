@@ -7,6 +7,7 @@ const { pw, repo } = require('./runtime.cjs');
 const { install } = require('./network.cjs');
 const output = process.env.HELIX_INTERACTION_OUTPUT || path.join(repo, '.visual-results/interactions');
 const widths = (process.env.HELIX_INTERACTION_WIDTHS || '1440,820,390').split(',').map(Number);
+const paths = (process.env.HELIX_INTERACTION_PATHS || '/').split(',');
 const options = {
   ...(process.env.HELIX_INTERACTION_INPUT ? { inputRoot: path.resolve(process.env.HELIX_INTERACTION_INPUT) } : {}),
   extraRoots: (process.env.HELIX_INTERACTION_EXTRAS || '').split(',').filter(Boolean).map(p => path.resolve(p)),
@@ -35,18 +36,27 @@ async function reachCards(page) {
     args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const results = [];
   try {
-    for (const width of widths) {
+    for (const width of widths) for (const pathname of paths) {
       const context = await browser.newContext({ viewport: { width, height: width === 820 ? 1180 : width <= 480 ? 844 : 900 }, locale: 'ko-KR', timezoneId: 'Asia/Seoul', serviceWorkers: 'block' });
       const network = await install(context, options), page = await context.newPage(), errors = [];
       page.on('pageerror', e => errors.push(e.message));
-      const row = { width, checks: {}, failures: [] };
+      const row = { pathname, width, checks: {}, failures: [] };
       const check = (name, value, message) => { row.checks[name] = value; if (!value) row.failures.push(message || name); };
       try {
-        await page.goto(network.origin, { waitUntil: 'domcontentloaded' });
+        await page.goto(network.origin + pathname, { waitUntil: 'domcontentloaded' });
         await page.locator('.hx-fcta-shell').waitFor({ state: 'visible' });
         await page.waitForTimeout(7000);
-        await page.evaluate(() => scrollTo(0, 300));
-        const burger = page.getByRole('button', { name: '메뉴 열기', exact: true }).filter({ visible: true }).first();
+        check('scrollControlAvailable', await page.evaluate(() => document.documentElement.scrollHeight > innerHeight));
+        await page.evaluate(() => scrollTo(0, 0));
+        const burgers = page.getByRole('button', { name: '메뉴 열기', exact: true }).filter({ visible: true });
+        let burger;
+        for (let i = 0; i < await burgers.count(); i++) {
+          if (await burgers.nth(i).evaluate(e => {
+            const r = e.getBoundingClientRect(), hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+            return hit === e || e.contains(hit);
+          })) { burger = burgers.nth(i); break; }
+        }
+        assert.ok(burger, 'A visible menu trigger must receive pointer input');
         await burger.click();
         await page.waitForTimeout(700);
         row.menuStart = await page.evaluate(() => scrollY);
@@ -57,6 +67,7 @@ async function reachCards(page) {
         check('menuFocusRestored', await burger.evaluate(e => document.activeElement === e));
         row.menuReleased = await wheel(page);
         check('menuScrollRestored', row.menuReleased > row.menuEnd);
+        await page.evaluate(() => scrollTo(0, 0));
         await page.locator('.hx-fcta-form-btn').click();
         await page.waitForTimeout(400);
         row.formStart = await page.evaluate(() => scrollY);
@@ -78,6 +89,7 @@ async function reachCards(page) {
         check('formFocusRestored', await page.locator('.hx-fcta-form-btn').evaluate(e => document.activeElement === e));
         // Two independent owners must not unlock one another.
         for (const firstClose of ['menu', 'form']) {
+          await page.evaluate(() => scrollTo(0, 0));
           await burger.click();
           await page.locator('.hx-fcta-form-btn').evaluate(e => e.click());
           await page.waitForTimeout(450);
@@ -89,10 +101,11 @@ async function reachCards(page) {
           await page.waitForTimeout(400);
           check('overlapReleases-' + firstClose, await wheel(page) > start);
         }
+        if (pathname === '/') {
         row.coldCards = await reachCards(page);
         check('coldCardsVisible', row.coldCards.length >= 3 && row.coldCards.every(e => e.opacity === 1));
         if (width === 1440) {
-          for (const nextWidth of [820, 1440, 390, 820, 1440]) {
+          for (const nextWidth of (process.env.HELIX_INTERACTION_TRANSITIONS || '820,1440,390,820,1440').split(',').map(Number)) {
             await page.setViewportSize({ width: nextWidth, height: nextWidth === 820 ? 1180 : 900 });
             await page.waitForTimeout(400);
             const state = await reachCards(page);
@@ -100,18 +113,19 @@ async function reachCards(page) {
             check('cardsAfter' + nextWidth + '-' + row.transitions.length, state.length >= 3 && state.every(e => e.opacity === 1));
           }
         }
+        }
         check('networkErrors', network.audit.errors.length === 0);
         check('pageErrors', errors.length === 0);
         check('zeroExternalRequests', network.audit.forwarded === 0);
-        await page.screenshot({ path: path.join(output, width + '.png') });
+        await page.screenshot({ path: path.join(output, pathname.replaceAll('/', '_') + width + '.png') });
       } catch (e) { row.failures.push(e.stack); }
       finally {
         row.network = network.audit; row.pageErrors = errors; results.push(row);
         fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ at: new Date().toISOString(), options, overlay: process.env.HELIX_VISUAL_OVERLAY || '', results }, null, 2));
-        console.log(width, row.failures.length ? 'FAIL ' + row.failures.join(', ') : 'PASS');
+        console.log(pathname, width, row.failures.length ? 'FAIL ' + row.failures.join(', ') : 'PASS');
         await context.close();
       }
     }
   } finally { await browser.close(); }
-  assert.ok(results.length === widths.length && results.every(r => !r.failures.length), 'Interaction regression failed; see results.json');
+  assert.ok(results.length === widths.length * paths.length && results.every(r => !r.failures.length), 'Interaction regression failed; see results.json');
 })().catch(e => { console.error(e); process.exitCode = 1; });
