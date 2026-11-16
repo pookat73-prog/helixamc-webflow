@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const { pw, repo } = require('./runtime.cjs');
+const { pw, repo, assertBrowser } = require('./runtime.cjs');
 const { install } = require('./network.cjs');
 const output = process.env.HELIX_INTERACTION_OUTPUT || path.join(repo, '.visual-results/interactions');
 const widths = (process.env.HELIX_INTERACTION_WIDTHS || '1440,820,390').split(',').map(Number);
@@ -36,6 +36,7 @@ async function reachCards(page) {
     args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const results = [];
   try {
+    assertBrowser(browser);
     for (const width of widths) for (const pathname of paths) {
       const context = await browser.newContext({ viewport: { width, height: width === 820 ? 1180 : width <= 480 ? 844 : 900 }, locale: 'ko-KR', timezoneId: 'Asia/Seoul', serviceWorkers: 'block' });
       const network = await install(context, options), page = await context.newPage(), errors = [];

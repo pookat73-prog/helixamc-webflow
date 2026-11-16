@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const { pw: { test, expect } } = require('../../scripts/visual/runtime.cjs');
+const { pw: { test, expect }, assertBrowser } = require('../../scripts/visual/runtime.cjs');
 const { pages } = require('../../scripts/visual/matrix.cjs');
 const { install } = require('../../scripts/visual/network.cjs');
 const selected = process.env.HELIX_VISUAL_PAGES?.split(',') || pages.map(p => p.id);
@@ -54,6 +54,7 @@ async function shot(page, name) {
 }
 for (const item of pages.filter(p => selected.includes(p.id))) {
   test(item.id + ' baseline', async ({ page, context, browser }, info) => {
+    assertBrowser(browser);
     const network = await install(context), errors = [];
     page.on('pageerror', e => errors.push(e.message));
     try {
