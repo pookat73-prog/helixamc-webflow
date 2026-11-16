@@ -745,8 +745,7 @@
   function desktopBranch(branch) {
     return '<article class="hx-qb__cell">' +
       '<h3 class="hx-qb__name">' + branch.name + '</h3>' +
-      '<p class="hx-qb__role">' + branch.role + '</p>' +
-      '<a class="hx-qb__cta hx-qb__cta--phone" data-qb-branch="' + branch.key + '" data-qb-action="phone_call" href="tel:' + branch.tel + '" aria-label="' + branch.name + ' ' + branch.number + ' 전화 연결">' + PHONE_ICON + '<span>' + branch.number + '</span></a></article>';
+      '<a class="hx-qb__cta" data-qb-branch="' + branch.key + '" data-qb-action="detail" href="' + branch.url + '" aria-label="' + branch.name + ' 지점 안내">지점 안내 <span aria-hidden="true">→</span></a></article>';
   }
 
   function mobileBranch(branch) {
@@ -918,10 +917,9 @@
     bar.setAttribute('aria-label', '진료지점 빠른 선택');
     bar.innerHTML = '<div class="hx-qb__inner">' +
       '<div class="hx-qb__cell hx-qb__intro"><p class="hx-qb__eyebrow">QUICK ACCESS</p>' +
-      '<h2 class="hx-qb__intro-title">진료지점 선택</h2>' +
-      '<div class="hx-qb__intro-copy"><span>서초와 일산 중 가까운 지점을 선택하세요.</span><span>서울동물영상종양센터 안내도 함께 확인할 수 있습니다.</span></div></div>' +
+      '<h2 class="hx-qb__intro-title">진료지점 선택</h2></div>' +
       BRANCHES.map(desktopBranch).join('') +
-      '<article class="hx-qb__cell"><h3 class="hx-qb__name hx-qb__name--center">서울동물<wbr>영상종양센터</h3><p class="hx-qb__role">영상진단·종양 치료</p>' +
+      '<article class="hx-qb__cell"><h3 class="hx-qb__name hx-qb__name--center">서울동물<wbr>영상종양센터</h3>' +
       '<a class="hx-qb__cta hx-qb__cta--guide" data-qb-branch="svicc" data-qb-action="detail" href="https://www.svicc.co.kr/" aria-label="서울동물영상종양센터 안내">센터 안내 <span aria-hidden="true">→</span></a></article></div>' +
       '<div class="hx-qb__mobile" aria-label="모바일 빠른 지점 안내"><div class="hx-qb__mobile-layout"><div class="hx-qb__clinic-group">' +
       BRANCHES.map(mobileBranch).join('') + '</div><span aria-hidden="true"></span>' +
