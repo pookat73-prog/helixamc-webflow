@@ -21,5 +21,13 @@ if (process.argv[2] === 'pin') {
 } else {
   assert.equal(process.argv[2], 'verify', 'Use pin (after capture review) or verify');
   assert.deepEqual(manifest, JSON.parse(fs.readFileSync(pinned)), 'Corpus does not match tracked references');
+  const baseline = path.dirname(pinned);
+  const review = JSON.parse(fs.readFileSync(path.join(baseline, 'review.json')));
+  for (const entry of review.files) {
+    const bytes = fs.readFileSync(path.join(baseline, entry.path));
+    assert.equal(bytes.length, entry.bytes, 'Reference size changed: ' + entry.path);
+    assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'), entry.sha256, 'Reference hash changed: ' + entry.path);
+  }
+  console.log('verify: ' + review.files.length + ' reviewed PNG hashes unchanged');
 }
 console.log(process.argv[2] + ': ' + Object.keys(manifest.requests).length + ' response hashes verified (' + target + ')');
