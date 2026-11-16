@@ -47,6 +47,14 @@
 - 일반 Git HTTPS는403이었다. 최종 문서 커밋을 안전하게 작성하고 작업 브랜치만 전송한다. 최종 SHA와 실제 원격 전달 결과는 아래 전달 확인에 남긴다. main/staging merge·Webflow Publish는 포함하지 않는다.
 - 감사 변경은 문서 전용 커밋만 revert하면 복구된다. 공개 사이트는 이번에 변경하지 않았다. U01 후보의 복구 단위는 원문 기록의 `e68ea46`이며 현재 배포되지 않았다는 기록과 구분한다.
 
+### STEP 05 전달 확인 — 2026-11-16 KST
+
+- 감사·AGENTS 통합 커밋: `a9d97e835c93fa92985e5665e93d8b8ec35bc9d8`. STEP04 원문 보존 커밋: `5befb34e81df32d1af26b7fb61f130576463437c`.
+- 두 커밋의 blob/tree/commit을 GitHub API로 **동일 SHA**로 전달하고 [감사 작업 브랜치](https://github.com/pookat73-prog/helixamc-webflow/tree/docs/helix-quality-step05-20261116)의 ref 일치를 확인했다. 일반 Git push의403과 API 전달 성공을 구분한다. force·PR·main/staging merge·Webflow Publish는 하지 않았다.
+- 요청 산출물3개의 내부 링크, JSON 파싱, 10개 감사 항목, STEP04 HANDOFF 원문 suffix 보존, 기준 PNG33 해시, 구현·검사·workflow·설정 불변, diff 공백을 검증했다. 사이트 검사에 남은 실패·미검증은 위 현재 판정대로 유지한다.
+- 실행·복원 소스·실패 화면·원시 JSON을 묶은 감사 증거: `/workspace/artifacts/HELIX-STEP05-Audit-Evidence-20261116.zip`, 11,330,631B, SHA256 `4f167bb854b65be96b348507b80f5850ef11987ff8149745571ae2634f6948ac`. 묶음은 감사 커밋 시점 문서와 실행 근거이며 이 후속 전달 확인 문단은 Git 인계서를 따른다. 원본 STEP04 bundle을 포함한 것으로 오인하지 않는다.
+- 이 전달 확인은 별도 문서 커밋으로 남긴다. 최종 전달 SHA는 작업 브랜치 HEAD/`git log -1`로 식별한다. 감사 실패 판정을 정상화 완료로 바꾸지 않는다.
+
 ---
 
 ## STEP 04 및 선행 인계 원문 — 이력 보존
