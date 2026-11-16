@@ -154,3 +154,5 @@ HELIX_INTERACTION_INPUT=/absolute/path/to/current-input \
 현재 복구 커밋은 메뉴 **b1e74dc**, 카드 **a115b03**, 예약창 CSS **fabc7c0**이다. 이전 커밋과의 대응은 최신 대장에 보존한다. 최종 작업 브랜치는 `fix/helix-followup-current-20261116`이며 위6절의 최초 브랜치는 보존 이력이다.
 
 Drive 공통 인계서 갱신은 HELIX 웹 성능 개선 스킬의 공통 기록 갱신 지침에 따라 시도했으나, 자동 승인 검토가 이번 승인을 GitHub 작업 브랜치 기록으로 한정해 외부 문서 기록을 거절했다. Drive 변경은 없고 재시도/우회하지 않았다. 요청된 단계별 GitHub 기록과 이 HANDOFF는 전달했다. 예약창 JS 전달 거절은2절의 CSS 대안으로 해결했으며 서로 다른 승인 검토 결과를 혼동하지 않는다.
+
+최신 입력 부분 복원 묶음은 로컬 `/workspace/artifacts/HELIX-Followup-Current-Inputs-20261116.zip`으로 준비했다. 추가 묶음 전달 도구가 중단되어 GitHub에는 올라가지 않았으며, 원격 전달 완료로 표시하지 않는다. origin별 manifest와 변할 수 있는 HTML/CSS/API JSON 본문만 포함한다. 저장소 JS와 글꼴/미디어 바이너리는 복제하지 않았으므로 **완전한 오프라인 corpus가 아니다**. 기존 STEP03/Work 보관본 또는 정확한 immutable URL에서 누락 본문을 가져와 모든 SHA256을 검증한 후 사용한다. 누락/불일치를 라이브 폴백으로 숨기지 않는다. 크기·SHA·생략 목록은 최신 대장과 묶음 README/OMITTED를 따른다.

@@ -1161,5 +1161,16 @@
     "mainOrStagingMerge": false,
     "publish": false,
     "fixedHomeReplacement": false
+  },
+  "recoveryKit": {
+    "file": "followup-current-inputs.zip",
+    "bytes": 603322,
+    "sha256": "cd3c3084d58c2a6363dde3ee40514953fe52746091171f52bec26ddc73749679",
+    "completeOfflineCorpus": false,
+    "omitted": "repository JS/CSS/JSON and font/media binaries; exact URL/SHA manifest included",
+    "volatileBodies": 14,
+    "remoteUploaded": false,
+    "workspacePath": "/workspace/artifacts/HELIX-Followup-Current-Inputs-20261116.zip",
+    "interruption": "Tool interrupted before GitHub ref update; metadata and local recovery kit retained, no binary re-upload retry."
   }
 }
