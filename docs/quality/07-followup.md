@@ -24,4 +24,113 @@
 
 ## 현재 상태
 
-구현 전 기준 확인 완료. 시각 재현·기능 원인 분석 진행. 격리 후보/전체 검증/공개 반영은 아직 완료되지 않았다. 단계별 결과를 이 문서와 작은 JSON에 추가한다. 과거 감사 실패와 이력은 보존한다.
+**기능별 격리 후보 통과, 전체 안정화·시각 검증 안정화·U01 승격은 미완료.** 구현 전 기준 확인과 기능3단위의 원인 제거·소비자/경계 검증·새 디렉터리 독립 재실행을 완료했다. 푸터 픽셀 비교가 독립 재실행에서도 실패하므로 전체 green·배포 준비 완료를 선언하지 않는다. main/staging 병합·공개 반영 없음. 자세한 판정은 아래4~5절, [기능 결과](evidence/followup-interactions.json), [감사 재검수 결과](evidence/followup-verdict.json)를 따른다.
+
+## 1. 시각 비교 원인 분리와 검증 운영
+
+- 원본286응답/PNG33와 Playwright1.57.0·Chromium151.0.7922.173·Debian13·DPR1을 확인했다. 태블릿/PC 정상 선택 실행은 각각 한 번 통과했지만 반복 진단에서는820px 하단 차이가1206/1206/1097/708/0px로 변했다. 한 번의 통과를 안정화 완료로 보지 않는다.
+- 차이는 '푸터' 캡처에 함께 들어간 첫 지점 카드 글자 주변에 집중된다. 실제 플랫폼 폰트(NotoSansKR-Thin·PeridotPEVariableRegular), 글자 좌표·문서 높이·scrollY가 같은 실행 사이에도0/1096px 차이가 났다. 고정 입력에서도 재현돼 외부 GoogleCSS 응답 변형만으로 설명할 수 없다. 정확한 Chromium 래스터 캐시/합성 내부 원인은 미확정이다.
+- 단순 추가 대기/1px 왕복 스크롤, 카드 경유 스크롤, 합성 draw 플래그, GPU 비활성화, GSAP 정지, screencast flush는 모두 해결 근거를 만들지 못했다. Clock 주입은 결과를 크게 바꿔 폐기했다. 이들은 진단용이며 제품·기본 검사 설정에 적용하지 않았다.
+- 원인 분리를 위해 카드 will-change만 auto로 바꾼 진단에서는4회2517px로 일정해졌다. 합성 상태가 결과에 영향을 준다는 근거지만 기존 기준과 불일치하므로 CSS 처방이나 마스크로 채택하지 않았다. 이 실험은 진단일 뿐 실제 사이트 오류 확정·해결이 아니다.
+- 480×844 첫 화면은 이번 고정 원본3회에서 최초 캡처 대비0/0/0px였다. 과거 Work의221px 실패를 해결·무효화한 것으로 해석하지 않는다. 운영체제/입력/캡처 경로가 다르고 동일 원인을 확정하지 못했다. 480px의 기기별 메뉴 trigger 중 뒤의 헤더에 가린 요소가 'visible'로 검색되는 경우도 있어, 기능 검사는 실제 pointer를 받는 버튼을 선택한다. 강제 클릭으로 통과시키지 않는다.
+- 개선한 안전장치: 검사 시작 전 PNG33 해시와286본문/index 검증, 실제 Chromium·OS·아키텍처 가드, extra fixture의 기존URL 덮어쓰기 금지/본문 해시 확인, 사용하지 않은 후보 파일 거절, 실제 휠의 닫힌 상태 대조·소비자 검사·원본/후보 독립 결과 보존. 틀린 Chromium을 거절했고 정상 환경은 통과했다.
+- **실패는 그대로 차단한다.** PNG·100px·threshold0.2·mask·기존 expected failure를 바꾸지 않았다. 실패 후 재시도 성공만 골라 green으로 집계하지 않는다. 시각 비교가 안정되기 전 필수 CI 연결·U01 승격·추가 구조 변경 누적은 보류한다. 독립적으로 검증 가능한 기능 후보의 전달은 계속한다.
+
+V0 다음 실험은 지점 카드의 합성 레이어 생성/해제와 첫 raster 시점을 실제 LayerTree/트레이스로 짝대조하는 한 단위다. 재현 입력·스크롤/모션 완료·실제 폰트·고정 결과를 함께 보존한다. 브라우저 내부 문제와 캡처 준비 조건 중 인과관계가 확인된 경로만 수정한다. 정상 코드의 will-change 제거, 폰트 교체, PNG 갱신을 우선 처방으로 삼지 않는다. 원인 대조와 원래 기준의 전체3회 무실패가 없으면 V0 미완료를 유지한다.
+
+## 2. 기능별 원인·독립 수정
+
+### 끝 버전 직접 대조에 따른 정정
+
+GitHub compare의 changed-files 목록은 공통 조상 이후 변경이며 두 tip의 직접 차이가 아니다. 조사 초기 이 목록으로 `global/floating-cta.js` 등에 tip 차이가 있다고 해석한 부분을 정정한다. main3078984/staging490a313의 전체 blob을 직접 대조하니 실행 코드 전체가 동일하고 `docs/eomharim-restore-2026-11-16.md` 한 문서만 다르다. 실제 정식에서 받은 floating-cta.js 본문도 staging 원본과 동일했다. `ahead25/behind5` 이력 분기는 남지만 이를 실행 코드 차이로 확대하지 않는다. 최초 로컬 복원은 staging의 tree/commit 해시를 검증했고, 이 직접 대조는 이후 확인임을 구분한다. 다른 진행자의 의료진 기록과 공개 고정을 보존한다.
+
+### 메뉴 — `0b03f71`
+
+원본의 `body.hx-menu-open {overflow:hidden}`만으로는 root viewport 스크롤이 잠기지 않는다. 현재 홈의 root/body hidden/auto 및 실제 휠 이동으로 확인했다. 같은 open/close 담당 함수가 html 상태도 제어하고 기존 스크롤 잠금 선언에 해당 root를 포함한다. 닫힌 상태의 문서 정책은 바꾸지 않는다. 메뉴 전용 overlay에서 배경300→900이300→300으로 바뀌고 예약창/태블릿 카드의 원본 실패는 그대로 남아 수정 경계를 확인했다.
+
+### 폭 전환 카드 — `ba80e91`
+
+초기 `initSectionsOnce`는 숨은 기기별 카드 section을 건너뛰고, 이후 resize는 지그 라인만 재생성했다. 카드의 기존 초기화 블록만 별도 함수로 옮겨 처음 표시되는 section을 WeakSet으로 한 번 초기화한다. resize에서 그 함수만 호출하며 헤딩·글로우·복사/전화 바인딩 전체를 재실행하지 않는다. 기존 모션 값·DOM·breakpoint는 유지한다. 카드 전용 overlay에서 메뉴/예약창 실패는 유지되고1440→820→1440→390→820→1440의 카드/SVICC 노출만 해결됐다.
+
+### 예약창 — `37b0c7d`
+
+기존 모달 `is-open`이 유일한 상태 소유자다. `global/floating-cta.css`에서 `html:has(#hxFctaModal.is-open)`의 viewport 스크롤만 잠근다. JavaScript·Firebase endpoint·payload·동의·측정은 원본과 바이트 단위 동일하다. 현재 지원 전제(iOS16+/현대 Chrome)의 :has 지원을 사용하며 실제 Safari/touch 검증은 별도 미검증이다.
+
+처음 시험한 JavaScript root class2줄 후보는 파일 전체 업로드의 기존 Firebase payload를 새 전송으로 판정한 자동 승인 검토에서2회 거절됐다. 두 줄을 제거하면 원본과 완전히 같은 바이트라는 확인 후 재검토도 거절됐다. 우회 전송하지 않고 해당 JS 변경을 폐기, 기존 DOM 상태를 읽는 CSS만으로 축소했다. 실제 예약 제출/사용자 자료 전송은 하지 않았다. CSS 대안의3크기 배경 잠금·내부 스크롤·교차 잠금 재검증 통과.
+
+### 검증 범위
+
+원본은3크기 모두 메뉴/예약창 배경 잠금 실패, PC→태블릿 전환 카드 실패를 재현했다. 메뉴만·예약창만·카드만 대입한 결과는 비대상 실패를 유지한다. 최종 CSS 상태 후보는3크기에서 열기/닫기·닫은 뒤 실제 휠·포커스·내부 스크롤(넘침 있을 때)·두 UI의 잠금 소유권을 통과했다. 입력은 STEP03 고정286응답+별도60응답, 외부 전달0이다.
+
+현재 공개 홈 HTML/생성CSS73c0c0934/실제 자산을 별도 고정한 검사에서도3크기 및990/991/992,766/767/768,478/479/480 전환·왕복 노출을 통과했다. 이는 격리된 현재 입력에 후보를 대입한 결과이며 공개 staging/정식 후보 도달을 뜻하지 않는다. 과거의 JS 상태 후보 결과와 최종 CSS 후보 결과는 구분 보존한다.
+
+다른 공통 UI 소비자(소개/services/FAQ/내과)의 검사를 진행한다. 첫 시도 중 짧은 문서 끝에 도달해 닫은 뒤 하향 휠 대조가 성립하지 않은 결과는 보존했다. 각 검사 전 정상 스크롤 여유를 검증하고 시작 위치를0으로 고정한 검사를 별도로 실행한다. assertion·오차를 완화하지 않는다.
+
+## 3. 잔여 구조 문제의 후속 실행 계획
+
+아래는 **미해결 대장**이다. 이번 기능 수정·목록 작성·PNG 통과가 D02/D03/D05 등 전체 구조 개선 완료를 뜻하지 않는다. 다음 구현은 한 원인·한 root/variant·한 복구 커밋으로 제한한다. 위험/소비자가 확인되지 않으면 조사만 진행하고 다른 독립 단위를 이어간다.
+
+| 순서·단위 | 실제 개선 범위·착수 조건 | 보존/완료 계약·복구 | 예상 작업량 |
+| --- | --- | --- | --- |
+| V0 시각 입력/캡처 | 푸터·480홈의 반복 실패를 원본부터 분리. 원본PNG/100px/threshold0.2 유지 | 원인 대조·외부전달0·독립 전체3회 무실패·오류 대조 거절. 실패하면U01/CI 승격 보류 | 대, 진행중 |
+| U01 기존 후보 이관 | V0와 현재 소비자 확인 뒤, `sections-animations.css`의 검증된 hunk만 이관. 새 구현 금지 | D01 정방향, 홈/소개 geometry·fixed/sticky·빠른스크롤·관련 경계, 독립 로드 보존. runtime hunk만 revert | 중,2–4시간 |
+| U04/D05 CTA 한 속성 | V0 후 `floating-cta.css`/mobile-fix의 실제 base/desktop/mobile-bar/legacy 계산값 확보. 첫 대상은 폼 버튼 높이의 중복 선언 한 속성. 동일값을 상태별 원문으로 정리할 수 있을 때만 구현 | 최종 높이·줄수·화살표·세 variant·관련 경계±1·포커스/모의제출 동등. legacy fixture 확인 불가면 삭제 보류. 한 커밋 revert | 중,3–5시간 |
+| U02/D02 줄바꿈 예외 | 실제 고정 `@63812a31…/global/word-wrap.css` 소비자를 확인. 첫 대상 내과 `.sj_step_list`/`#hx-im-process`의 긴 문자열 예외 한 root. 전역 한글 정책 일괄 철회 금지 | 한글 단어 보존, URL/공백없는영문/숫자의 넘침 방지 red→green. word-wrap 소비 페이지 표본의 폭/줄수/높이 동일. 정책과 필요한 참조를 같은 복구 단위로 취급. 현재 expected failure3개는 여전히 미해결 | 대,4–8시간 |
+| U03/D03 bt3 단일 제어 | `buttons.js`와 `sections-animations.js` observer/hold/inline 제거 시점 계측부터. 중복 실행이 실제 재현되고 LOCKED 의도와 맞는 경우 bt3 경로 하나만 제거 | cold/warm·왕복/빠른스크롤·CSS/폰트지연·reduced-motion에서 fade→1.5초 hold→loop, bt1/2/4·소개·hero 이벤트 보존. 계측과 구현은 별도 커밋 | 대,4–8시간 |
+| D04/D07 로더/head 결합 | 혼재SHA·누락보완·중복 바인딩을 실제 소비 경로로 대조. 고정 후보의 목적/담당이 불명인 동안 공개 설정 변경 금지. 재현된 중복 한 경로만 조정 | 메뉴/폼/top-button 각1·이벤트1회·기존 고정본/실패복구 보존. 로더·등록·참조는 한 복구 단위 | 대,4–8시간 |
+| U05/D06 viewport | meta 원본 보관·회전 복구의 중복을 계측. 이번 카드 노출 수정과 분리. 실제 실패와 해당 엔진/기기 확보 후 한 교정 주체만 조정 | 991/992·1032세로·교정상하한·세로→가로→세로, meta/innerWidth/복제DOM 일관성. Chromium 폭 변경만으로 iOS 통과 금지 | 대,4–8시간+기기검증 |
+| U07 CI 연결 | V0·corpus 복원·동일 실행 환경 확보 후 별도 workflow 커밋. 현재에는 연결하지 않음 | 원본 오류 대조 exit1/정상 exit0·해시불일치/후보미실행 거절. 보호 브랜치 강제는 별도 권한 확인. 검사 실패를 숨기지 않음 | 중,2–4시간 |
+
+D02 긴 문자열의 실제 사용자 장애가 먼저 재현되면 U04보다 앞선다. D03의 제어 중복 확인을 곧 타이밍 결함 확정으로 취급하지 않는다. U04의 호환 variant를 합치거나 D06의 기기별 DOM을 통합하지 않는다. 새 라이브러리·전역 breakpoint 체계·폴더 재편·선택자 일괄 개명·CSS layer 전환은 이 계획에 없다.
+
+실질적 개선은 수정 root/상태의 예측과 정상 대조 보존으로 판단한다. 각 단위에 '예상 소비자→실제 변경된 계산값/배치/이벤트→비대상 보존→복구 결과'를 붙인다. 단순 테스트 개수·파일 줄 수 감소를 회귀 감소로 보고하지 않는다. 배포하지 않은 후보의 실제 방문자 회귀율 감소는 아직 측정할 수 없다.
+
+## 4. 실제 적용과 변경 영향 확인
+
+최종 runtime 변경은 메뉴2파일·카드1파일·예약창 CSS1파일이다. 새 runtime 파일/로드 등록/로더/생성 CSS/기기별 DOM/폰트/측정/예약 제출 경로/viewport 정책을 바꾸지 않았다. `global/floating-cta.js`와 U01 대상 CSS는 원본 그대로다. 작업 브랜치는 최신 staging490a313에서 이어졌고 감사 브랜치 전체를 merge하지 않았다. 문서·기준 이미지·검사만 선별 이관했다.
+
+관련 소비자 검증: 소개/services/FAQ/내과 ×1440/390의8조건은 실제 메뉴·예약창 입력·닫힌 상태 대조·포커스·중첩 잠금 통과. 현재 홈의1440/820/390은 열기/닫기·내부 스크롤·폭 경계11회 왕복에서 통과했다. 원본의 같은 검사 실패와 후보의 결과를 [기능 결과](evidence/followup-interactions.json)에서 구분한다.
+
+현재 홈 입력의 원본/후보 독립 로드3쌍은 닫힌 상태의 문서 높이·가로폭·overflow/transform 정책·제목·링크·주요 요소 좌표·글꼴·공통 UI 개수가 **정확히 동일**했다. 의도한 개선은 열린 상태의 배경 잠금과 전환 뒤 처음 표시되는 카드에 한정된다. 실제 자산의 경로/해시와 대입 로그로 후보가 실행됐는지 확인했다. 공개 사이트를 바꾸지 않았으므로 이 결과를 운영 회귀율 개선이나 공개 staging 통과로 표현하지 않는다.
+
+## 5. 독립 재실행과 최종 판정
+
+코드·검사 동결 `933d5c025057fb0e0311e1d845cf22099a405b8c`의 git archive를 새 디렉터리 `/workspace/helix-review-final`에 풀고 별도 브라우저/context로 재실행했다. 같은 작성 에이전트의 독립 실행이며 별도 사람/제3자 코드 리뷰로 과장하지 않는다. 별도 `/workspace/helix-review`의 비홈 검사와 범위를 구분한다.
+
+| 검사 | 결과 | 판정 경계 |
+| --- | --- | --- |
+| 현재 홈 기능·경계 재실행 |3크기 통과, 외부전달/네트워크/JS오류0 | 메뉴·예약창·PC→태블릿 등11회 전환. 실제 iOS/touch 아님 |
+| 현재 홈 원본/후보 닫힌 상태3쌍 | geometry·콘텐츠·문서 정책·글꼴 정확히 동일 | 픽셀 기준의 불안정성 해결을 대신하지 않음 |
+| 소개/services/FAQ/내과 고정 시각 검사 | 정상12·기존D02 예상실패3, 예상밖실패/미실행/flaky0, exit0 | D02 해결 통과가 아님. 후보 파일은 실제 소비하는 메뉴/예약창 CSS만 선택 |
+| 첫 전체 후보 suite | 태블릿 하단310px 실패,13개 중단 | PC 정상5와 기존 계약2만 먼저 완료. 분할 성공을 전체green으로 합치지 않음 |
+| 새 디렉터리 태블릿 홈 시각 재검수 | 하단282px 실패, 뒤 계약1개 미실행 | 독립 비교 안정화 실패 유지 |
+| 오류 대조 | 임시 예약 버튼 배경 변경4548px, exit1 | 임시 외부 overlay만 사용. 제품 CSS·기준PNG 불변. 실제 오류 탐지 유지 |
+| 기존 소스·폼·푸터·홈 로더 | Site Quality·CTA focus15/모의제출6·푸터28·홈로딩6출력그룹 통과 | 실제 예약/통화/분석 전달 없음 |
+| 입력/기준 보호 |286응답/index·PNG33 해시 불변. 틀린 Chromium 거절 | 오차/mask/기존expected failure 변경 없음 |
+
+**최종 판정: 기능3단위의 격리 개선과 영향 경계 보존은 인정. 전체 홈페이지 안정화·시각 검증 안정화·U01 배포 준비는 미완료.** 원인/소유 경로가 좁아지고 비대상 화면 보존을 실제 확인했지만, 공개 환경의 장기 회귀 빈도·개발시간 감소는 아직 실증되지 않았다. D02·D03·D05 등 구조 문제는3절의 순서와 조건에 따라 계속 미해결로 관리한다.
+
+다음 재개는V0의 합성/래스터 인과관계 규명이다. 독립인 D03 계측·D05 variant 계약 수집·D02 소비자 지도는 병행 가능하나 미검증 구조 패치를 이번 후보 위에 쌓지 않는다. V0와 소비자 조건을 충족한 뒤 U01 최소hunk 검증, 다음 제한 구현은U04 한 속성으로 진행하고 실제 D02 사용자 장애가 재현되면 우선순위를 올린다. 검사 기준 변경이 필요해 보이더라도 이번 범위에서 조용히 바꾸지 않는다.
+
+## 6. 재현·전달·복구
+
+```bash
+export HELIX_PLAYWRIGHT_MODULE=/opt/codex/cua_node/lib/node_modules/playwright
+export HELIX_CHROMIUM_PATH=/usr/bin/chromium
+node scripts/visual/corpus.cjs verify
+node scripts/visual/run.cjs test
+# 위 전체 명령은 현재 푸터 불안정성 때문에 실패할 수 있다. 실패를 유지한다.
+HELIX_VISUAL_OVERLAY=home/global/hamburger.css,home/global/hamburger.js,global/floating-cta.css,home/global/sections-animations.js \
+  HELIX_INTERACTION_EXTRAS=/absolute/path/to/supplemental-v5 \
+  node scripts/visual/interactions.cjs
+# 현재 입력은 동일 실행 당시 manifest+본문을 명시한다. 없으면 현재 결과 재현은 미검증이다.
+HELIX_INTERACTION_INPUT=/absolute/path/to/current-input \
+  HELIX_INTERACTION_EXTRAS=/absolute/path/to/current-extra \
+  node scripts/visual/scope.cjs
+```
+
+원본 corpus와 보충60응답은 [감사](06-audit.md)의 Drive 원본·해시로 복원한다. `current-extra`는 현재 입력에 이미 존재하는 URL을 제외한 원본/보충 응답이며 같은URL을 덮어쓰지 않는다. 최신 홈 고정 입력은 로컬 `/workspace/artifacts/helix-followup/current-input`과 `current-extra`에 보존했고, manifest 해시는 결과 대장에 적는다. 로컬 장기 보존은 보장되지 않는다. 원본/현재 입력을 섞거나 최신 HTML을 옛PNG의 입력으로 바꾸지 않는다.
+
+대표 실패 그림: [원본 태블릿](evidence/followup/original-tablet-diff.png), [독립 재검수](evidence/followup/independent-tablet-diff.png). 원시 JSON/PNG/trace·진단 실패·폐기 실험은 `/workspace/artifacts/helix-followup/`에 있다. 작은 결과 대장과 대표 실패는 GitHub에 영구 기록한다. 자료 없는 전체 STEP04 Git 객체 동일성·branch protection·Work/Safari/iOS/실기기/초기 모션·방문자 성과는 완료로 전환하지 않는다.
+
+복구는 메뉴 `0b03f71`, 카드 `ba80e91`, 예약창 CSS `37b0c7d` 각각 한 커밋만 revert한다. 검사는 별도 커밋이다. 공개 배포가 없으므로 운영 rollback은 필요하지 않다. 다른 진행자의 의료진 기록·공개 고정·기존 work 체크아웃에는 reset/clean/force/전체 덮어쓰기를 하지 않았다. 최종 전달 SHA는 작업 브랜치 HEAD로 식별하며 main/staging merge·Publish는 없다.
