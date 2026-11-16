@@ -1,8 +1,109 @@
+# HELIX 홈페이지 안정화 — 최종 인계
+
+갱신일: 2026-11-16 (Asia/Seoul)
+
+## 현재 인계 — STEP 05 최종 감사
+
+### 1. 작업 개요
+
+**종합 감사 실패: 제한 없는 정상 개발 재개·U01 배포 준비는 보류한다.** U01 후보의 문서 overflow 소유권 개선과 검증 기반의 실제 오류 탐지는 확인했다. 운영 개선 효과, 반복 실행의 시각 안정성, 전체 구조 문제 해결을 완료로 선언하지 않는다. 독립적인 국소 개발은 최신 대상에서 관련 검증을 수행하는 조건으로 진행 가능하다.
+
+산출물은 [06-audit.md](06-audit.md), 최종 [AGENTS.md](../../AGENTS.md), 이 인계다. [감사 결과 대장](evidence/step05-results.json)과 STEP04 원문 문서/결과도 보존했다. 사이트 구현·기준 PNG·corpus index·허용 오차·workflow·Webflow 설정은 이번 감사에서 바꾸지 않았다.
+
+### 2. 기술적 결정 사항
+
+- 원본 `work/c2041b4`를 보존했다. STEP01~03의 commit/tree/blob을 GitHub API로 받아 SHA 검증·원래 이력 복원 후 `3fc4609d408e33c915f0ceb87276eb9604045d65`에서 문서 전용 브랜치 `docs/helix-quality-step05-20261116`을 만들었다. 이 브랜치는 오래된 구현을 포함하므로 통째로 배포본에 merge하지 않는다.
+- STEP04 [전달 ZIP](https://drive.google.com/file/d/1IOr_7DANbeRl7n1tXCFmJvnZlDrV88Ec/view)의 manifest60개를 검증하고, PNG33/JSON4가 STEP03과 동일함을 확인했다. 후보 patch를 before에 적용한 결과가 candidate와 일치했다. U01 후보 SHA256 `32e656ac7225bc481fec1bfb22c4a4aa780d83ff09f1e0a741b647bb7e7c410c`.
+- STEP04 사이트 코드는 현재 작업본에 적용하지 않았다. 원자료 문서 세 개를 보존한 커밋은 `5befb34`다. 사이트 수정 `e68ea46`과 검사 `6b49ff2`는 별도 입력이며, 확보·재실행 범위를 감사 대장에서 구분한다.
+- AGENTS에는 이미 요청된 작업의 연속 수행, 소유자/소비자 확인, 원문 최소 수정, 위험도별 검사·명령, 실패 보존·복구, 후보/staging/정식 완료 구분을 통합했다. 상세 표는 기존 수칙에 연결했다. LOCKED·staging 우선/측정 예외·기존 변경 보호를 유지했다.
+
+### 3. 현재 상태
+
+- STEP03 corpus 다운로드 SHA256 및 286개 응답/index 검증 통과. Playwright1.57.0 / Chromium151.0.7922.173 / Debian13, DPR1로 원본 재생했다. 이 고정 입력은 현재 공개 운영본과 별개다.
+- 전체 실행은 PC 정상5·알려진 충돌2 재현 뒤 태블릿 홈 푸터506px 차이로 실패,13개는 중단돼 미실행이었다. 태블릿 홈 한 번 재실행은 통과했으며, 나머지 태블릿·모바일도 분할 실행했다. 정상15개 모두 적어도 한 번 통과했지만 이를 단일 전체 green으로 합치지 않는다.
+- 실제 오류 대조는 임시 예약 버튼 색상 변경을4,548px 차이로 거절했다. 대입 제거 후 PC 첫 화면/메뉴/예약은 통과했으나 PC 푸터602px 차이로 실패했다. **푸터 비교 불안정성은 태블릿에만 한정되지 않는다.** 원인 확정 전 기준 이미지·mask·100px한도를 바꾸지 않는다.
+- D01 독립 fixture는390/820/1440에서 hidden/auto→clip/visible을 확인했다. body margin0 대조의 비대상 geometry는 동일했고, margin8px 합성 DOM은 첫 section Y19→11px로 변했다. 합성 경계 사례이며 실제 홈 회귀라고 주장하지 않는다. document 정책 변경에는 실제 주변 배치 검증이 필요하다.
+- 시작 `c2041b4`의 기존 CI 검사·로더 검사와 푸터 행동 검사는 통과했다. 과거 푸터 오류의 부모 소스에서는 동일 행동 검사가 이벤트0/기대1로 실패했다. 최신 운영 전체나 STEP04 전체 검증으로 확대하지 않는다.
+- 이번 조회의 원격 main `307898486e80dc209ed7d1c5755c24c0875a3935`, staging `490a3133320d63b197d138498cffd7690bd1d074`. 공개 HTML 둘 다 HTTP200, 생성 CSS73c0c0934와 staging용0011fc…분기 코드가 존재했다. 실제 동적 자산 선택·후보 도달은 미검증이다. 옛 정식 corpus와 현재 생성 CSS가 다르다.
+- 시각 재생은 관찰한 main workflow에 연결되지 않았다. branch protection 조회는 권한403으로 미검증이다. 자료 없는 강제 체크를 있다고/없다고 단정하지 않는다.
+- 직접 미검증 범위와 자료 접근 상태는 [감사 결과 대장](evidence/step05-results.json)을 따른다. 원문 STEP04의28조건112쌍과 Work 전달 지시를 이번 독립 실행·최종 Work 통과로 자동 승계하지 않는다.
+- 추가 탐색으로 [최종 Work 텍스트](https://drive.google.com/file/d/172HJrZkC2TitAIfyRro7uRhH6HZGzz1h/view)와 [보충 ZIP](https://drive.google.com/file/d/1DsBz_M5FQ1dFMYPf8gd8ls8_eXH8Mb2h/view)을 찾았다. 내부 체크섬80개·추가60응답을 검증하고 원시 JSON/서버 소스를 대조했다. 후보62조건은0~61px로 한도 내지만 원본480홈 반복221px 실패와 공통 배경 잠금·폭 전환 카드 실패가 남는다.
+- 원본 bundle/extras 압축본은 현 환경·Drive에서 찾지 못했다. 이전 “개선 HELIX 홈페이지 구조” 채팅의 잘리지 않은 변경 기록으로 검사 소스8개를 복원·문법 검증했고, D01 후보3개 및820 홈/소개2조건8 PNG쌍을 독립 재실행해 통과했다. 추가 SVG 두 본문은 같은 해시로 확보했다. 원본 bundle의 전체 Git 객체 체인 동일성은 미검증으로 유지한다.
+- **공통 기능 실패도 독립 재현했다.** 원본과 후보 모두 PC1440에서 메뉴 휠0→600, 예약창600→1200으로 배경이 움직였다. 닫은 뒤 입력 대조도1200→1800으로 작동했다. PC 카드 표시 후820으로 줄이면 카드/SVICC3개가 opacity0으로 남았다. 외부 전달·네트워크·JS 오류0. U01 추가 회귀로 분류하지 않지만 정상 개발 재개의 남은 위험이다.
+
+### 4. 다음 단계
+
+1. U01 승격/추가 구조 변경 누적 전에 PC·태블릿 푸터의 고정 입력 비교 불안정성을 원본부터 분리한다. 후보가 없는 상태에서도 난 실패와 실제 후보 차이를 구별하고 전체 독립 로드 무실패 근거를 확보한다. 사이트 CSS 덮어쓰기·PNG 갱신·허용 오차 확대를 처방으로 삼지 않는다.
+2. 검사 내용·최종 Work 판정 대조는 위 범위에서 마쳤다. 원본 bundle 전체 이력 동일성은 추가 확보 시 검증한다. 배경 잠금·PC→태블릿 카드 노출 문제는 별도 최소 변경/회귀 검사 또는 명시적 처리 결정을 갖춘다. U01에 필요한 현재 대상 소비자·같은 SHA의 검사·실제 생성 CSS를 갱신한다.
+3. 공개 staging 홈 고정의 목적/담당을 확인한 뒤 승인된 후보 경로의 실제 자산 SHA·화면·기능을 검증한다. 고정을 무단 교체하거나 이번 문서 전달을 배포 승인으로 해석하지 않는다.
+4. 최신 대상 브랜치에서 독립인 국소 개발은 영향 메모·관련 테스트 조건으로 진행할 수 있다. 이 문서 브랜치 전체가 아니라 필요한 문서/검사 커밋만 선별한다. D02·D03·CTA·viewport는 별도 진단·단위·복구점을 갖춘다.
+5. 시각 재생 안정화·검증된 corpus 복원·같은 실행 환경을 갖춘 뒤 별도 CI 연결을 검토한다. iOS/회전·초기/실패 모션·전 사이트/legacy·방문자 성능은 해당 변경 범위에서 검증한다.
+
+### 5. 참고 파일·전달·복구
+
+- [최종 감사](06-audit.md), [AGENTS](../../AGENTS.md), [개발 수칙](03-rules.md), [기준선/복원](04-baseline.md), [STEP04 원문](05-refactoring.md).
+- [STEP04 전달 ZIP](https://drive.google.com/file/d/1IOr_7DANbeRl7n1tXCFmJvnZlDrV88Ec/view), [Work 보고서 원본](https://drive.google.com/file/d/1OKGDuUhpO4Qz_jaCEMsopb8_r1yU7ko9/view), [STEP03 corpus](https://drive.google.com/file/d/1ug3U3MkiS1ozuir4axB8ynAXS3X53tX0/view).
+- 현재 환경의 실행별 결과·PNG·trace·독립 fixture·공개 HTML: `/workspace/artifacts/helix-step05/`. 로컬 장기 보존은 보장되지 않는다. 작은 결과 대장과 실패 판정은 저장소에 보존한다.
+- 일반 Git HTTPS는403이었다. 최종 문서 커밋을 안전하게 작성하고 작업 브랜치만 전송한다. 최종 SHA와 실제 원격 전달 결과는 아래 전달 확인에 남긴다. main/staging merge·Webflow Publish는 포함하지 않는다.
+- 감사 변경은 문서 전용 커밋만 revert하면 복구된다. 공개 사이트는 이번에 변경하지 않았다. U01 후보의 복구 단위는 원문 기록의 `e68ea46`이며 현재 배포되지 않았다는 기록과 구분한다.
+
+---
+
+## STEP 04 및 선행 인계 원문 — 이력 보존
+
+아래는 전달 ZIP의 HANDOFF 원문이다. “현재 인계 STEP04”, “다음 단계” 등은 해당 시점 기록이며 현재 판정은 위 STEP05 절이 우선한다. 실패·기준·커밋·이전 단계 이력을 삭제하지 않는다.
+
+
 # HELIX 홈페이지 안정화 — 인계
 
-갱신일: 2026-11-13 (Asia/Seoul)
+갱신일: 2026-11-16 (Asia/Seoul)
 
-## 현재 인계 — STEP 03
+사용자 후속 결정: 화면 검증은 Work에서 진행한다. [Work 전달문](WORK-REVIEW-STEP04.md)과 `/workspace/artifacts/HELIX-STEP04-Work-Review-20261116.zip`을 전달한다. 후보는 공개 미반영 상태이므로 공개 원본 확인과 후보 실제 적용 검증을 구분한다. 이 결정은 배포 승인이 아니다.
+
+## 현재 인계 — STEP 04
+
+### 1. 작업 개요
+
+U01/D01의 문서 overflow 소유권 충돌 한 건을 최소 수정하고 지정 후보 검증을 마쳤다. **기존 기준 PNG 실패1건으로 전체 회귀 green·전체 STEP04·staging/운영 적용은 미완료다.** 상세 변경·실행·실패·복구는 [05-refactoring.md](05-refactoring.md)를 따른다. 이전 단계 원문은 아래에 보존한다.
+
+### 2. 기술적 결정 사항
+
+- clean 원본 `work/c2041b4` 보존. 최신 staging `11daa6d…`의 전체 tree `48b07ea3947dbd92e4bd7b937bde44c99cddbd3a`를 해시 대조해 로컬 snapshot `280f14a`로 복원했다. snapshot은 upstream과 tree만 같고 commit SHA는 다르다. 오래된 STEP03 구현을 병합하지 않았다.
+- 작업 브랜치 `claude/helix-quality-step04-20261116`. 선행 도구·문서·PNG만 이관한 커밋 `4057b71`.
+- `home/global/sections-animations.css`의 `html, body { overflow-x:hidden }` 원문을 제거했다. `global/global.css`가 기존 clip/fixed/transform 보호를 계속 소유한다. 로더·전역 CSS·모션·글로우·반응형 조건·AGENTS·배포 설정은 이번 사이트 수정 대상이 아니다.
+- corpus 압축본 다운로드 SHA256 및 286개 본문 해시 확인. PNG33 불변. 도구/브라우저는 STEP03과 동일. 이번 운영 홈 HTML SHA256도 corpus와 동일했다.
+- D01은 원본 overlay에서 실패→후보 3크기에서 정방향 통과. 기본 고정 production 재생의 알려진 D01과 로컬 후보 검사를 구분한다. 같은 문서 CSS 전후 비교를 추가했고 독립 로드 suite도 별도로 실행했다.
+
+### 3. 현재 상태
+
+- 독립 로드 전체 결과: 정상14/15 통과, D01 3개 통과, D02 예상 실패3개 재현. 예상 밖 실패1, skipped0, flaky0. PNG32/33 비교 통과. 재생 외부 전달/네트워크/미처리 JS 오류0.
+- **태블릿 홈 푸터 PNG 실패가 남는다.** 수정 전618px→원본 재시도1206px, 후보283px 차이. 글자 주변에 집중되고 원인 미확정. 기준 PNG/100px 허용오차를 바꾸지 않았다. 새로운 CSS 덮어쓰기로 숨기지 않는다. 동일 문서 후보 전후 geometry/시각 검사와 이 역사적 기준 비교 실패를 구분한다.
+- Site Quality9개(최종 추적 JS/CJS101개), 홈 로딩6출력그룹, CTA focus15/모의 제출6 통과. 실제 예약/통화 없음.
+- 홈/소개 ×14폭(320/390/478/479/480/766/767/768/820/990/991/992/1440/1920), 28조건·PNG112쌍 통과. 문서 가로 폭·geometry·제목/링크·모션 값, fixed UI/소개 sticky·위로가기 클릭 확인. 재생 외부 전달/네트워크/JS/폰트/화면 내 이미지 오류0. 820×1180 포함. 같은 문서 CSS 대입과 독립 로드 suite를 구분하며, 초기 실패/미완료 조건은 집계에서 제외했다.
+- GitHub push/PR/merge·Webflow Publish·공개 후보 교체 없음. 현재 배포본에 이번 CSS가 도달했다고 주장하지 않는다.
+
+### 4. 다음 단계
+
+1. 원본 태블릿 푸터의 PNG 차이 원인을 분리해 독립 로드 전체 비교를 통과시킨다. 원본/후보 실패 자료를 유지한다. 이 조건 전에는 전체 STEP04 완료나 배포 준비 완료로 표시하지 않는다.
+2. 공개 staging 홈 고정 `0011fc…`의 목적/담당을 확인하고 향후 승인된 실제 후보 경로에서 검증한다. 해당 설정을 자동 해제하지 않는다.
+3. U02 word-wrap/글로우/CTA/viewport 후속 단위는 각각 진단·소비자·기준 입력이 갖춰진 뒤 진행한다. U01 위에 무관한 구조 변경을 쌓지 않는다.
+4. Work 연결 브라우저·Safari/iOS/iPad·실기기/회전·초기/실패 모션·전체 페이지·방문자 성능은 미검증이다.
+
+### 5. 참고 파일·복구점
+
+- [구조 개선·테스트·실패·실행 방법](05-refactoring.md), [선행 검증 기반](04-baseline.md).
+- `/workspace/artifacts/helix-step04/`에 기준 실패 2회, 후보 전체 결과, D01 red/green, 전후 PNG·geometry·network 및 도구 초기 실패를 보존한다. 선택 증거 압축본/최종 커밋은 마감 기록을 따른다.
+- 사이트 수정 커밋만 revert할 수 있도록 테스트 도구와 분리한다. 원본 work와 snapshot은 유지한다. 로컬 snapshot/검증 도구 브랜치 전체를 배포본에 병합하지 않는다. reset/clean/force push는 금지한다.
+
+### STEP 04 마감 기록 — 2026-11-16 KST
+
+- 기준 복원 `4057b71`, 회귀 검사 `6b49ff2`, 사이트 수정 **`e68ea46`**. 복구는 `git revert e68ea46`. 사이트 코드는 CSS 한 파일 +3/-5(주석 포함)이며 source SHA256 `32e656ac7225bc481fec1bfb22c4a4aa780d83ff09f1e0a741b647bb7e7c410c`.
+- [실제 결과 JSON](evidence/step04-results.json)에 원본 red/후보 green, 14/15 정상 시나리오, 남은 PNG 실패1건, 28조건·112쌍과 미실행 항목을 기록했다. 원본 PNG33/index/선행 진단·설계·수칙·기준 문서 blob을 대조했다. 기준 이미지 교체·오차 완화는 없다.
+- 추가 경계 시험에만 필요한 정적 SVG2개를 별도 fixture로 고정했다. 원본286응답 index와 중복 덮어쓰기를 금지한다. 복원 파일 `/workspace/artifacts/HELIX-STEP04-Corpus-Extras-20261116.tar.gz` 512563B, SHA256 `e68333394e76ede716cc4e3f67b331f67203c1204fea44aa2bf933dbca993510`. 원본 corpus 복원 후 같은 저장소 루트에서 풀면 된다.
+- runtime 전용 패치 `/workspace/artifacts/HELIX-STEP04-U01-20261116.patch`. 선택 증거는 `/workspace/artifacts/HELIX-STEP04-Evidence-20261116.tar.gz`, 로컬 작업 이력은 `/workspace/artifacts/HELIX-STEP04-20261116.bundle`에 보관한다. 체크섬은 같은 디렉터리의 `.sha256`을 확인한다. 이 로컬 파일의 장기 보존은 보장하지 않는다. 새 Drive 파일 업로드는 하지 않는다.
+- 기존 태블릿 푸터 PNG 차이를 원인 확정·해결한 것으로 표시하지 않았다. 다음 재개는 이 차이 분리 및 후보 독립 로드 전체 green이다. 그전 U02 등 다음 구조 변경·공개 반영을 진행하지 않았다. 문서/결과 최종 SHA는 이 브랜치 HEAD로 식별한다.
+
+## STEP 03 인계 원문 — 이력 보존
 
 ### 1. 작업 개요
 

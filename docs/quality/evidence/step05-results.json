@@ -1,0 +1,1819 @@
+{
+  "schema": 1,
+  "recordedAtKST": "2026-11-16T16:18:19.815428+09:00",
+  "verdict": "FAIL: unconditional development resumption and U01 release readiness not established",
+  "branchBase": "3fc4609d408e33c915f0ceb87276eb9604045d65",
+  "inputs": {
+    "step04ZipSha256": "b37c8f8217f949a32ce8f97d709cdc29e9d75fdf2b827ab7a3f6b2eb78dd44df",
+    "step04ManifestFilesVerified": 60,
+    "step04ReferenceFilesByteEqual": 37,
+    "step04CandidateSha256": "32e656ac7225bc481fec1bfb22c4a4aa780d83ff09f1e0a741b647bb7e7c410c",
+    "step04PatchAppliedToBeforeMatchesCandidate": true,
+    "step04TestsSourceAvailable": true,
+    "step04WorkFinalReportRead": true,
+    "corpusArchiveSha256": "1fc6c81ad6c4d627eb8ff6c1e9a1913b503ba4b4f6fe22119b5845ca0c768d56",
+    "corpusResponsesVerified": 286,
+    "unchangedReferencePngs": 33,
+    "unchangedConfigSha256": "e0f5aa362f738abdc3f1523a6b8edcc2e573a75af908aa2048a4a90068a6b532",
+    "step04TestsSourceProvenance": "Untruncated recorded fileChange reconstruction, six base files match STEP03, exact patches; original Git bundle unavailable"
+  },
+  "runtime": {
+    "playwright": "1.57.0",
+    "chromium": "151.0.7922.173",
+    "os": "Debian 13",
+    "dpr": 1
+  },
+  "replays": [
+    {
+      "name": "full-replay",
+      "resultSha256": "ed332edd2f0b060ff800bfe759d0df73f3cd4482288d8d9a6c1f862471423b59",
+      "stats": {
+        "startTime": "2026-11-16T07:04:02.051Z",
+        "duration": 83459.835,
+        "expected": 7,
+        "skipped": 13,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "rows": [
+        {
+          "project": "pc",
+          "test": "home baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 14835
+            }
+          ]
+        },
+        {
+          "project": "pc",
+          "test": "about baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 11198
+            }
+          ]
+        },
+        {
+          "project": "pc",
+          "test": "services baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 8376
+            }
+          ]
+        },
+        {
+          "project": "pc",
+          "test": "faq baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 11474
+            }
+          ]
+        },
+        {
+          "project": "pc",
+          "test": "internal baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 16429
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "home baseline",
+          "expectedStatus": "passed",
+          "status": "unexpected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 15622
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "about baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "tablet",
+          "test": "services baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "tablet",
+          "test": "faq baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "tablet",
+          "test": "internal baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "mobile",
+          "test": "home baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "mobile",
+          "test": "about baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "mobile",
+          "test": "services baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "mobile",
+          "test": "faq baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "mobile",
+          "test": "internal baseline",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "pc",
+          "test": "D01 known overflow conflict (desired contract)",
+          "expectedStatus": "failed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 1223
+            }
+          ]
+        },
+        {
+          "project": "pc",
+          "test": "D02 known long-text exception conflict (desired contract)",
+          "expectedStatus": "failed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 1168
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "D01 known overflow conflict (desired contract)",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "tablet",
+          "test": "D02 known long-text exception conflict (desired contract)",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "mobile",
+          "test": "D01 known overflow conflict (desired contract)",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        },
+        {
+          "project": "mobile",
+          "test": "D02 known long-text exception conflict (desired contract)",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        }
+      ],
+      "networkRecords": 6,
+      "forwarded": 0,
+      "networkErrors": 0,
+      "pageErrors": 0
+    },
+    {
+      "name": "tablet-rerun",
+      "resultSha256": "43e58cc8b64300d6f7597701191b165a6b54e1881dd02b277a3e7fc28b363d21",
+      "stats": {
+        "startTime": "2026-11-16T07:07:26.530Z",
+        "duration": 17020.565,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "rows": [
+        {
+          "project": "tablet",
+          "test": "home baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 14828
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "D01 known overflow conflict (desired contract)",
+          "expectedStatus": "failed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 1181
+            }
+          ]
+        }
+      ],
+      "networkRecords": 1,
+      "forwarded": 0,
+      "networkErrors": 0,
+      "pageErrors": 0
+    },
+    {
+      "name": "tablet-rest",
+      "resultSha256": "a55d43fb5049c8a42292bafb50ea03ce17ed7f53df59e39bd758d241a449b500",
+      "stats": {
+        "startTime": "2026-11-16T07:07:53.464Z",
+        "duration": 49719.850000000006,
+        "expected": 5,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "rows": [
+        {
+          "project": "tablet",
+          "test": "about baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 11890
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "services baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 8259
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "faq baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 11337
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "internal baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 16141
+            }
+          ]
+        },
+        {
+          "project": "tablet",
+          "test": "D02 known long-text exception conflict (desired contract)",
+          "expectedStatus": "failed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 1173
+            }
+          ]
+        }
+      ],
+      "networkRecords": 4,
+      "forwarded": 0,
+      "networkErrors": 0,
+      "pageErrors": 0
+    },
+    {
+      "name": "mobile",
+      "resultSha256": "cb3ae9c79f40eb1a3d16d14fce6b7849a9fe8e2c35f58aa04aea2d3d5e33f1b8",
+      "stats": {
+        "startTime": "2026-11-16T07:09:23.873Z",
+        "duration": 59395.79,
+        "expected": 7,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "rows": [
+        {
+          "project": "mobile",
+          "test": "home baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 14382
+            }
+          ]
+        },
+        {
+          "project": "mobile",
+          "test": "about baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 11011
+            }
+          ]
+        },
+        {
+          "project": "mobile",
+          "test": "services baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 8081
+            }
+          ]
+        },
+        {
+          "project": "mobile",
+          "test": "faq baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 11330
+            }
+          ]
+        },
+        {
+          "project": "mobile",
+          "test": "internal baseline",
+          "expectedStatus": "passed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "passed",
+              "durationMs": 10962
+            }
+          ]
+        },
+        {
+          "project": "mobile",
+          "test": "D01 known overflow conflict (desired contract)",
+          "expectedStatus": "failed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 1207
+            }
+          ]
+        },
+        {
+          "project": "mobile",
+          "test": "D02 known long-text exception conflict (desired contract)",
+          "expectedStatus": "failed",
+          "status": "expected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 1264
+            }
+          ]
+        }
+      ],
+      "networkRecords": 5,
+      "forwarded": 0,
+      "networkErrors": 0,
+      "pageErrors": 0
+    },
+    {
+      "name": "positive-control",
+      "resultSha256": "ee345337f9b897c7b701a55977cf0d5f05685bccf82bb1e042a1771d4d6a4471",
+      "stats": {
+        "startTime": "2026-11-16T07:11:33.896Z",
+        "duration": 12755.110999999999,
+        "expected": 0,
+        "skipped": 1,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "rows": [
+        {
+          "project": "pc",
+          "test": "home baseline",
+          "expectedStatus": "passed",
+          "status": "unexpected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 10701
+            }
+          ]
+        },
+        {
+          "project": "pc",
+          "test": "D01 known overflow conflict (desired contract)",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        }
+      ],
+      "networkRecords": 1,
+      "forwarded": 0,
+      "networkErrors": 0,
+      "pageErrors": 0
+    },
+    {
+      "name": "recovery",
+      "resultSha256": "620feb03fa4b17e92ef85a7a3b35969c0c750b256d4d77873742d447d1035b12",
+      "stats": {
+        "startTime": "2026-11-16T07:12:34.794Z",
+        "duration": 18908.685999999998,
+        "expected": 0,
+        "skipped": 1,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "rows": [
+        {
+          "project": "pc",
+          "test": "home baseline",
+          "expectedStatus": "passed",
+          "status": "unexpected",
+          "results": [
+            {
+              "status": "failed",
+              "durationMs": 16516
+            }
+          ]
+        },
+        {
+          "project": "pc",
+          "test": "D01 known overflow conflict (desired contract)",
+          "expectedStatus": "passed",
+          "status": "skipped",
+          "results": []
+        }
+      ],
+      "networkRecords": 1,
+      "forwarded": 0,
+      "networkErrors": 0,
+      "pageErrors": 0
+    }
+  ],
+  "pixelFailures": [
+    {
+      "run": "full-replay",
+      "project": "tablet",
+      "snapshot": "home-footer.png",
+      "differentPixels": 506
+    },
+    {
+      "run": "positive-control",
+      "project": "pc",
+      "snapshot": "home-hero.png",
+      "differentPixels": 4548,
+      "intentionalMutation": true
+    },
+    {
+      "run": "recovery",
+      "project": "pc",
+      "snapshot": "home-footer.png",
+      "differentPixels": 602
+    }
+  ],
+  "u01IndependentFixture": {
+    "candidateSha256": "32e656ac7225bc481fec1bfb22c4a4aa780d83ff09f1e0a741b647bb7e7c410c",
+    "scope": "isolated CSS ownership fixture; does not prove full-page geometry or public delivery",
+    "rows": [
+      {
+        "width": 390,
+        "bodyMargin": "8px",
+        "before": {
+          "overflow": [
+            {
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "unrelated": {
+            "x": 19,
+            "y": 19,
+            "width": 313.1875,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "after": {
+          "overflow": [
+            {
+              "x": "clip",
+              "y": "visible"
+            },
+            {
+              "x": "clip",
+              "y": "visible"
+            }
+          ],
+          "unrelated": {
+            "x": 19,
+            "y": 11,
+            "width": 313.1875,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "geometryEqual": false,
+        "sectionOnly": {
+          "before": "hidden",
+          "after": "visible"
+        }
+      },
+      {
+        "width": 390,
+        "bodyMargin": "0px",
+        "before": {
+          "overflow": [
+            {
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "unrelated": {
+            "x": 11,
+            "y": 11,
+            "width": 326,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "after": {
+          "overflow": [
+            {
+              "x": "clip",
+              "y": "visible"
+            },
+            {
+              "x": "clip",
+              "y": "visible"
+            }
+          ],
+          "unrelated": {
+            "x": 11,
+            "y": 11,
+            "width": 326,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "geometryEqual": true,
+        "sectionOnly": {
+          "before": "hidden",
+          "after": "visible"
+        }
+      },
+      {
+        "width": 820,
+        "bodyMargin": "8px",
+        "before": {
+          "overflow": [
+            {
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "unrelated": {
+            "x": 19,
+            "y": 19,
+            "width": 657.1875,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "after": {
+          "overflow": [
+            {
+              "x": "clip",
+              "y": "visible"
+            },
+            {
+              "x": "clip",
+              "y": "visible"
+            }
+          ],
+          "unrelated": {
+            "x": 19,
+            "y": 11,
+            "width": 657.1875,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "geometryEqual": false,
+        "sectionOnly": {
+          "before": "hidden",
+          "after": "visible"
+        }
+      },
+      {
+        "width": 820,
+        "bodyMargin": "0px",
+        "before": {
+          "overflow": [
+            {
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "unrelated": {
+            "x": 11,
+            "y": 11,
+            "width": 670,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "after": {
+          "overflow": [
+            {
+              "x": "clip",
+              "y": "visible"
+            },
+            {
+              "x": "clip",
+              "y": "visible"
+            }
+          ],
+          "unrelated": {
+            "x": 11,
+            "y": 11,
+            "width": 670,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "geometryEqual": true,
+        "sectionOnly": {
+          "before": "hidden",
+          "after": "visible"
+        }
+      },
+      {
+        "width": 1440,
+        "bodyMargin": "8px",
+        "before": {
+          "overflow": [
+            {
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "unrelated": {
+            "x": 19,
+            "y": 19,
+            "width": 1153.1875,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "after": {
+          "overflow": [
+            {
+              "x": "clip",
+              "y": "visible"
+            },
+            {
+              "x": "clip",
+              "y": "visible"
+            }
+          ],
+          "unrelated": {
+            "x": 19,
+            "y": 11,
+            "width": 1153.1875,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "geometryEqual": false,
+        "sectionOnly": {
+          "before": "hidden",
+          "after": "visible"
+        }
+      },
+      {
+        "width": 1440,
+        "bodyMargin": "0px",
+        "before": {
+          "overflow": [
+            {
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "unrelated": {
+            "x": 11,
+            "y": 11,
+            "width": 1166,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "after": {
+          "overflow": [
+            {
+              "x": "clip",
+              "y": "visible"
+            },
+            {
+              "x": "clip",
+              "y": "visible"
+            }
+          ],
+          "unrelated": {
+            "x": 11,
+            "y": 11,
+            "width": 1166,
+            "height": 114,
+            "color": "rgb(0, 0, 0)",
+            "font": "\"Times New Roman\""
+          }
+        },
+        "geometryEqual": true,
+        "sectionOnly": {
+          "before": "hidden",
+          "after": "visible"
+        }
+      }
+    ]
+  },
+  "footerHistoricalControl": {
+    "beforeCommit": "9a00676^",
+    "afterCommit": "9a00676",
+    "beforeAssertion": "0 events != 1 expected",
+    "afterCasesPassed": 28,
+    "note": "Historical real defect; not STEP04 operational improvement"
+  },
+  "currentRemoteRefs": {
+    "main": "307898486e80dc209ed7d1c5755c24c0875a3935",
+    "staging": "490a3133320d63b197d138498cffd7690bd1d074"
+  },
+  "publicHtml": {
+    "observedAtUTC": "2026-11-16T07:12:57.847573+00:00",
+    "scope": "HTML only; no browser execution or candidate delivery verification",
+    "rows": [
+      {
+        "target": "production",
+        "url": "https://www.helix-amc.com/",
+        "status": 200,
+        "bytes": 46600,
+        "sha256": "df123389398bc0f8603a9116972a1ad8396ff7861fe9b9621106329a5bb2e603",
+        "homePinned0011fcPresent": true,
+        "repoRefs": [
+          "0011fc2323a69260f758f84bc13e0a289e78d9b4",
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCss": [
+          "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.73c0c0934.css",
+          "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css"
+        ]
+      },
+      {
+        "target": "staging",
+        "url": "https://helixanimalmedicalcenter.webflow.io/",
+        "status": 200,
+        "bytes": 46618,
+        "sha256": "5fa6570a3bf911f8fcd38f9a9b15f1c1d5cc02bd9117eb2d0077729b85c5d784",
+        "homePinned0011fcPresent": true,
+        "repoRefs": [
+          "0011fc2323a69260f758f84bc13e0a289e78d9b4",
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCss": [
+          "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.73c0c0934.css",
+          "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css"
+        ]
+      }
+    ],
+    "note": "0011fc appears in hostname-dependent staging branch in both HTML documents; this is not proof that production executes that ref."
+  },
+  "branchProtection": "UNVERIFIED: integration returned HTTP 403 for main and staging",
+  "visualCi": "not connected in observed current main workflow",
+  "notVerified": [
+    "Original STEP04 bundle full Git object and commit-chain equality; checker content was recovered and reviewed from recorded file changes",
+    "current public candidate execution/delivery",
+    "full site and legacy variants",
+    "Safari/iOS/iPad/touch/rotation",
+    "early frames and motion failure paths",
+    "visitor performance and measured developer time saving",
+    "All image pixels embedded in the 49MB Work HTML; text and raw JSON records were read and independently checked within listed scope"
+  ],
+  "publication": {
+    "runtimeApplied": false,
+    "mainOrStagingMerged": false,
+    "webflowPublished": false
+  },
+  "localEvidenceRoot": "/workspace/artifacts/helix-step05",
+  "workFinalReview": {
+    "sourceZip": "https://drive.google.com/file/d/1DsBz_M5FQ1dFMYPf8gd8ls8_eXH8Mb2h/view",
+    "zipSha256": "7f03ee33d42f104566bf9d20a86472a44dbb2a890a406f9a64ad631fc7710d21",
+    "textUrl": "https://drive.google.com/file/d/172HJrZkC2TitAIfyRro7uRhH6HZGzz1h/view",
+    "checksummedFilesVerified": 80,
+    "supplementalResponseHashesVerified": 60,
+    "supplementalOriginalUrlOverlap": 0,
+    "candidatePairsWithin100Pixels": 62,
+    "maxCandidatePixels": 61,
+    "originalRepeatFailure": {
+      "case": "480-fresh-home",
+      "pixels": 221
+    },
+    "wheelCasesWithFailedLock": 6,
+    "resizeBothVersionsRemainOpacity0": true,
+    "pixelResults": [
+      {
+        "label": "1440-fresh-home",
+        "originalRepeat": 18,
+        "candidate": 61,
+        "rawOriginalRepeat": 487,
+        "rawCandidate": 969,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "1440-fresh-section2",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "1440-fresh-section3",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "1440-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "1440-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "1440-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "820-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 45,
+        "rawOriginalRepeat": 368,
+        "rawCandidate": 561,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "820-fresh-section2",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "820-fresh-section3",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 2216,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "820-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "820-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "820-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "390-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 205,
+        "rawCandidate": 305,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "390-fresh-section2",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "390-fresh-section3",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "390-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "390-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "390-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 9396,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "320-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 205,
+        "rawCandidate": 305,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "320-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "320-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "320-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 6737,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "478-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 264,
+        "rawCandidate": 358,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "478-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "478-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "478-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 12929,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "479-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 21,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "479-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "479-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "479-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 14933,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "480-fresh-home",
+        "originalRepeat": 221,
+        "candidate": 0,
+        "rawOriginalRepeat": 960,
+        "rawCandidate": 887,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": false,
+        "paintReady": true
+      },
+      {
+        "label": "480-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "480-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "480-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 14972,
+        "rawCandidate": 12889,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "766-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 272,
+        "rawCandidate": 373,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "paintReady": true
+      },
+      {
+        "label": "766-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "766-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "766-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "767-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "767-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "767-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "767-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "768-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "768-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 543,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "768-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "768-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "990-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "990-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 805,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "990-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "990-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "991-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "991-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 731,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "991-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "991-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "992-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "992-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "992-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "992-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "1920-fresh-home",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "1920-fresh-footer",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true,
+        "cardReady": true
+      },
+      {
+        "label": "1920-fresh-menu",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      },
+      {
+        "label": "1920-fresh-reservation",
+        "originalRepeat": 0,
+        "candidate": 0,
+        "rawOriginalRepeat": 0,
+        "rawCandidate": 0,
+        "threshold": 0.2,
+        "maxDiffPixels": 100,
+        "geometryEqual": true,
+        "pass": true
+      }
+    ]
+  },
+  "independentCommonBehavior": {
+    "scope": "independent cold PC load, native wheel input, then resize to 820; frozen production + non-overlapping Work 60 response additions",
+    "rows": [
+      {
+        "version": "before",
+        "menu": {
+          "before": 0,
+          "after": 600,
+          "locked": false
+        },
+        "modal": {
+          "before": 600,
+          "after": 1200,
+          "locked": false
+        },
+        "unlockedWheel": {
+          "before": 1200,
+          "after": 1800
+        },
+        "pcCards": [
+          {
+            "class": "home_branch-card is-shadowed",
+            "opacity": "1"
+          },
+          {
+            "class": "home_branch-card is-shadowed",
+            "opacity": "1"
+          },
+          {
+            "class": "home_background_svicc",
+            "opacity": "1"
+          }
+        ],
+        "tabletCards": [
+          {
+            "class": "home_branch-card",
+            "opacity": "0"
+          },
+          {
+            "class": "home_branch-card",
+            "opacity": "0"
+          },
+          {
+            "class": "home_background_svicc",
+            "opacity": "0"
+          }
+        ],
+        "network": {
+          "forwarded": 0,
+          "errors": [],
+          "pageErrors": []
+        },
+        "overlays": []
+      },
+      {
+        "version": "candidate",
+        "menu": {
+          "before": 0,
+          "after": 600,
+          "locked": false
+        },
+        "modal": {
+          "before": 600,
+          "after": 1200,
+          "locked": false
+        },
+        "unlockedWheel": {
+          "before": 1200,
+          "after": 1800
+        },
+        "pcCards": [
+          {
+            "class": "home_branch-card is-shadowed",
+            "opacity": "1"
+          },
+          {
+            "class": "home_branch-card is-shadowed",
+            "opacity": "1"
+          },
+          {
+            "class": "home_background_svicc",
+            "opacity": "1"
+          }
+        ],
+        "tabletCards": [
+          {
+            "class": "home_branch-card",
+            "opacity": "0"
+          },
+          {
+            "class": "home_branch-card",
+            "opacity": "0"
+          },
+          {
+            "class": "home_background_svicc",
+            "opacity": "0"
+          }
+        ],
+        "network": {
+          "forwarded": 0,
+          "errors": [],
+          "pageErrors": []
+        },
+        "overlays": [
+          {
+            "path": "home/global/sections-animations.css",
+            "originalRef": "68aaaa4f5e73661b3cfbb9e5efabb37b2d4c1f2d",
+            "sha256": "32e656ac7225bc481fec1bfb22c4a4aa780d83ff09f1e0a741b647bb7e7c410c"
+          }
+        ]
+      }
+    ]
+  },
+  "recoveredStep04Source": {
+    "sourceChat": "6afa5725-d49c-8191-b9a5-15374cb48094",
+    "method": "untruncated recorded fileChange additions and ordered patches; exact hunk matching; not a recovered Git bundle",
+    "ledger": [
+      {
+        "path": "scripts/visual/corpus.cjs",
+        "baseMatchesStep03": true
+      },
+      {
+        "path": "scripts/visual/network.cjs",
+        "baseMatchesStep03": true
+      },
+      {
+        "path": "scripts/visual/matrix.cjs",
+        "baseMatchesStep03": true
+      },
+      {
+        "path": "scripts/visual/run.cjs",
+        "baseMatchesStep03": true
+      },
+      {
+        "path": "scripts/visual/runtime.cjs",
+        "baseMatchesStep03": true
+      },
+      {
+        "path": "tests/visual/contracts.spec.cjs",
+        "baseMatchesStep03": true
+      },
+      {
+        "path": "scripts/visual/diagnose-footer.cjs",
+        "baseMatchesStep03": false
+      },
+      {
+        "path": "scripts/visual/overflow.cjs",
+        "baseMatchesStep03": false
+      },
+      {
+        "finalFiles": {
+          "tests/visual/contracts.spec.cjs": "9c1006895c6dce9a54a740e24b576279232689c5a30585a180ccc213d8300196",
+          "scripts/visual/network.cjs": "f5c1a45f605e9b0671b1eceee9771eb7c5f93f307850ca9d5edcf59986e830a2",
+          "scripts/visual/overflow.cjs": "ef5982153c9f1afe2d6f7e831ca1bf7b5f1c69cbc1cf57ed286aa540169eef93",
+          "scripts/visual/runtime.cjs": "9ef86187351d5cec075e45e649dc05ae9dc0ce6bbbd04e3870fb4b0c22b78271",
+          "scripts/visual/corpus.cjs": "c97a1cc52eff1a22f8df512b1bf21db4aa74e8d9215300fbd21d8ec8b12f1580",
+          "scripts/visual/diagnose-footer.cjs": "559e5d3c060800e29b52e8ba11fae37d9b5b4598734a7eda6509419f8fedf3d9",
+          "scripts/visual/run.cjs": "e08b8d27f428fcbaa716c83db3ef4f8e9ae7da866e7aa474bb3763480abf5069",
+          "scripts/visual/matrix.cjs": "69d5c18112f0ea555fd326c136bd26289af2ebde1ee0cb685771ea2efcaa95c9"
+        }
+      }
+    ]
+  },
+  "recoveredStep04Checks": {
+    "candidateD01Passed": 3,
+    "D01DurationSeconds": 3.4,
+    "overflow820Cases": 2,
+    "overflow820Passed": 2,
+    "overflow820PngPairs": 8,
+    "browser": "151.0.7922.173",
+    "scope": "Recorded checker source reconstruction in isolated sandbox, not original Git bundle restoration"
+  }
+}
