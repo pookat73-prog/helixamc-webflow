@@ -9,7 +9,7 @@ const scratch = mkdtempSync(join(tmpdir(), 'helix-doctor-og-'));
 try {
   const manifest = build({outDir: join(scratch, 'actual')});
   const {doctors} = readDoctors();
-  assert.equal(manifest.pages.length, 26);
+  assert.equal(manifest.pages.length, doctors.length);
   for (const page of manifest.pages) {
     const doctor = doctors.find(item => item.doctor.slug === page.slug).doctor;
     assert(doctor.photo, 'Current public doctors must retain their existing photo');
@@ -42,7 +42,7 @@ try {
   writeFileSync(source, JSON.stringify(doc));
   const escaped = fixtureModule.build({outDir: join(scratch, 'escaped')}).pages.find(p => p.slug === first.doctor.slug);
   assert(escaped.head.includes('content="https://cdn.example.test/photo?a=1&amp;b=&quot;quoted&quot;"'));
-  console.log('Doctor OG regression checks passed: 26 public profiles, no-photo input, escaped image URL.');
+  console.log(`Doctor OG regression checks passed: ${doctors.length} public profiles, no-photo input, escaped image URL.`);
 } finally {
   rmSync(scratch, {recursive: true, force: true});
 }
