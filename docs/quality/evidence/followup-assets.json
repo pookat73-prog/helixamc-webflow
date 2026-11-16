@@ -784,5 +784,12 @@
     "Network request failed pageerror once per page; not counted as zero",
     "Only desktop live asset probe; no candidate deployed",
     "staging fixed home purpose/owner unconfirmed; retained"
-  ]
+  ],
+  "tipComparison": {
+    "runtimeFilesIdentical": true,
+    "differentPaths": [
+      "docs/eomharim-restore-2026-11-16.md"
+    ],
+    "warning": "GitHub compare changed-files is relative to merge base, not direct tip difference; initial interpretation corrected"
+  }
 }
