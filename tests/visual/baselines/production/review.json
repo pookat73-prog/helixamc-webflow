@@ -1,0 +1,317 @@
+{
+  "reviewedAtKST": "2026-11-13T17:38:57.159564+09:00",
+  "reviewer": "Codex visual inspection",
+  "method": "All 33 references inspected in viewport contact sheets; targeted full-size home/menu/footer diffs, mobile About hero and PC internal content inspected. Browser assertions verify loading and common interaction states.",
+  "classification": "observed regression references; no blanket design approval",
+  "knownDefectsNotApproved": [
+    "D01 overflow ownership conflict",
+    "D02 global wrapping override"
+  ],
+  "notVerified": [
+    "iOS/Safari/touch/rotation",
+    "all breakpoints",
+    "early-frame and motion timing",
+    "all pages and legacy UI variants",
+    "actual public staging candidate arrival",
+    "full design sign-off"
+  ],
+  "files": [
+    {
+      "path": "mobile/about-hero.png",
+      "sha256": "22f03b045debbc45cee8ab50d426e1634c2890cdb1ded929dea83522f5af2cef",
+      "bytes": 160594,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/about-scrolled.png",
+      "sha256": "d08eb8666ebe3cab32cfcdd8f0f1b54de8238226070a04c9a7b0d5a149f0dc74",
+      "bytes": 117883,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/faq-content.png",
+      "sha256": "f0ee60ee13ba809c49434c60f6ab2e367d26e5e0cbc849602bc4e11db7a57300",
+      "bytes": 67719,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/faq-hero.png",
+      "sha256": "f8433b4f6c3b0cb636e3e10be3bfa63648a7db66a2f5983c01a370e8fc07c3e4",
+      "bytes": 58209,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/home-footer.png",
+      "sha256": "8c0c93d9550ab8ea7f79cabc59e48bd77f0aafdb549b61a0c9a215c6c4417310",
+      "bytes": 127687,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/home-hero.png",
+      "sha256": "d355e87c9322333ae1047b95ae9b86a6bb57ad868fec28438a3bc8137032aa0f",
+      "bytes": 202220,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/home-menu.png",
+      "sha256": "5fd1a1e893e72c941e42aa130299ed8aa48231fe71e4f18a58784d104c3cecff",
+      "bytes": 22333,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/home-reservation.png",
+      "sha256": "7c42e86c0f7b1f59cd07f4acb57adc61fb3d56f769c3b6236e115d4d4ced0343",
+      "bytes": 125450,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/internal-content.png",
+      "sha256": "9e47871374cf9fabdb3d7ae91179d18519ccdc454e69de0d9fd79e11da350d38",
+      "bytes": 139553,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/internal-hero.png",
+      "sha256": "4194eb085624b81d40c6723a6be8bce0dee54a591682f2f7bc227f33d90e2f57",
+      "bytes": 203871,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "mobile/services-hero.png",
+      "sha256": "b8c4dcc3b2d95aaa3dfc6cbea5ad0617e799b1751370b63fe41f89d1c2d91da2",
+      "bytes": 187336,
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "path": "pc/about-hero.png",
+      "sha256": "e110d0840df2329efd8c97a29edd681efd3443feaaf6303d16a01522f1d85e47",
+      "bytes": 544237,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/about-scrolled.png",
+      "sha256": "1982375e7e44adccf44564c8d482dce3eb24d0934444d82539945afd1fb4ca21",
+      "bytes": 229956,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/faq-content.png",
+      "sha256": "2bcfa9aa2c4b7b137a43422b3fe112f024378a3e6650569d56b266dd343fff4c",
+      "bytes": 94454,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/faq-hero.png",
+      "sha256": "608d6845b627554d7f53d5a23a1bf5be14021f841b58e7d164a0a4563e22a3c4",
+      "bytes": 87245,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/home-footer.png",
+      "sha256": "07cd58fa87b180c4ce953a17b0b896d8cba7cfb02282b44a1258f3317dfa38f8",
+      "bytes": 251662,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/home-hero.png",
+      "sha256": "1b63b5affbdebb41600a74160b683def8f9067669759ecb172c6df63210f7f02",
+      "bytes": 842339,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/home-menu.png",
+      "sha256": "f5b0c2882fbeb019be3d921fcc8a2d32a81c356b839859c0b6c9f2485d0dff76",
+      "bytes": 521801,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/home-reservation.png",
+      "sha256": "386ae686cc12fe406a6a3edea2f7077a5a569cc9c0d0cb7a6fd3645c32abb3b2",
+      "bytes": 490981,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/internal-content.png",
+      "sha256": "486023219d0b2ff4f3ccd610ac9949541929c93c7a48b1748013de31b7b392e0",
+      "bytes": 249148,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/internal-hero.png",
+      "sha256": "e60342df2a64a7055f73a532696c81967dad4285be91d020e59651216b8980b9",
+      "bytes": 715465,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "pc/services-hero.png",
+      "sha256": "551463c452025ac11ea8d245e54dc6460a6def70c1eac256d3f5ba8cafc110b1",
+      "bytes": 726528,
+      "viewport": [
+        1440,
+        900
+      ]
+    },
+    {
+      "path": "tablet/about-hero.png",
+      "sha256": "cd86c80e908e09d8954bf53e176d60777e58b1e27f21533c2cb6ad3ff6b91ca2",
+      "bytes": 407758,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/about-scrolled.png",
+      "sha256": "9a34e7b49dd8c1cf1f84fe0e2b43139d61e4e0e30137889e6c1b518b39813f73",
+      "bytes": 183031,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/faq-content.png",
+      "sha256": "2317d33ebca311563276a5586c813858170463f8f4da889eeab576f209a4f8a8",
+      "bytes": 107359,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/faq-hero.png",
+      "sha256": "3b7969803ebe79edee535415565aa8bed05fcf8496b9040dec392ea853a75cc1",
+      "bytes": 114708,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/home-footer.png",
+      "sha256": "b225e0c48d2c942e2998eaaf3f312504360ef508fb311b8115448103b60717e4",
+      "bytes": 259515,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/home-hero.png",
+      "sha256": "8f733ca7e0afad8c85385e69c5d585ff425333dd8f40b094eeae32785966208d",
+      "bytes": 563289,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/home-menu.png",
+      "sha256": "84f56efe1d01e60366f46ee4c56885c60e37e4a1874658678280c3e41e379170",
+      "bytes": 274417,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/home-reservation.png",
+      "sha256": "e6fe8cf69014ea4deeafe92ae9ee122899e20bf95e3c89533d4fb9849ca57af5",
+      "bytes": 301285,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/internal-content.png",
+      "sha256": "e3607f8adad784ad8f64ec1334b2af2e9438d31a4b51fa8b0ea34100ac3999c1",
+      "bytes": 454469,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/internal-hero.png",
+      "sha256": "e0c92f4106d0e902b6dd7e0c5ce284ef7358c970ec22cb99c19c51687a4a2bd7",
+      "bytes": 403451,
+      "viewport": [
+        820,
+        1180
+      ]
+    },
+    {
+      "path": "tablet/services-hero.png",
+      "sha256": "756feac8fbd0407e419ddfbc63f655b460dbb86bf3002d9f418c2078b141d1c3",
+      "bytes": 562559,
+      "viewport": [
+        820,
+        1180
+      ]
+    }
+  ]
+}
