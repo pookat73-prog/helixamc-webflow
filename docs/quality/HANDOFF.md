@@ -2,6 +2,14 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
+## 최종 통합 전 동결 준비 — D02 / hero / JS 소유 경계
+
+D02 db1c034·hero a9626dd·D04 [b2277bf](https://github.com/pookat73-prog/helixamc-webflow/commit/b2277bfad32db10ded5cb5372759b906b1ac1d98)을 개별 제품 커밋으로 분리했다. D05 b890736과 이전 개선은 보존한다. D04는 services 생산자가 실제native JS 오류의 URL만 자기tag에 기록하고, 공통 소비자가 그실패tag만 무시해 재시도한다. 실제 pinned 생산자 최소hunk/현재생산자×2폭×4경로×원본/후보32회 통과: 정상1요청/첫오류후성공2요청 유지, 두오류후원본메뉴없음→후보3요청1메뉴, 영구실패는4요청제한. [근거·복구](evidence/remaining-js-owner.json).
+
+**제한:** 성공한역사적@main JS응답은없어해당성공경로만기존immutable body의명시적합성alias로검사했다. 최신응답대체없음. 혼합자산4조건은producer-only/shared-only모두메뉴없음으로미해결을확인했으며공개pin은안바꿨다. 무응답10초는pending/메뉴없음,동일응답해제뒤복구를관측했지만timeout정책은미수정이다. WebKit2227실행파일/실제Safari·iOS·iPad환경없어D06미검증·제품미변경. V0/U01보류유지.
+
+이문서뒤소스/검사를동결한별도clone에서기존10단계+border108/36·consent15쌍·hero12회·JS32회·mixed4조건의 **15단계 단일 연속 검증**을시작한다. 아직전체통합통과아니다. 원본PNG/corpus33/286해시확인,mask/허용오차/expected failure불변. 최신main3c4f78d4/staginga074f455및정식/스테이징10HTML SHA는중단전과동일,generatedCSS46f7fbd5d다. 운영/공개자산은미변경이며아래중단판정은이력이다.
+
 ## 복구 후 현재 상태 — D02 개별 검증 회수 완료
 
 D03/D07 추가 단위: [a9626dd](https://github.com/pookat73-prog/helixamc-webflow/commit/a9626dd955d838a6cbe7be259ae3a92118223a14)은 heading hook 마킹만 Hero viewport 인접성 guard 앞으로 이동했다. 3폭×정상/숨은인접요소×원본/후보12회에서 실제 원본hook0/line0→후보hook3/line1을 입증했고, 정상PNG·모든section/button배치·타이포 exact 및실제hero event/heading fade/loop/폭전환을 보존했다. viewport 속성/guard·지그알고리즘·폰트/glow는 고치지 않았다. [결과·별도복구](evidence/remaining-hero.json). D04다른loader JS는 별도 검증 중, 최종통합 미완료다.

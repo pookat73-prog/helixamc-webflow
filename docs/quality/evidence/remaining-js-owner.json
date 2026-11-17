@@ -1,0 +1,67 @@
+{
+  "product": "b2277bfad32db10ded5cb5372759b906b1ac1d98",
+  "recoveryCommit": "16d85dc2b29a7ff2907b496330097e2374d6c3b5",
+  "recoveryApplied": false,
+  "scope": "services injectJs records exact URL on native menu JS error only; shared present() ignores that failed owner tag only. No replacement of foreign tags, timers, other-module policy or public pins.",
+  "pairedMatrixRuns": 32,
+  "owners": [
+    "actual pinned ba91 source plus only injectJs hunk",
+    "current services producer"
+  ],
+  "widths": [
+    1440,
+    390
+  ],
+  "scenarios": [
+    "normal1 request/1menu",
+    "first error then labeled synthetic fallback success2/1",
+    "two native errors: original2/0 -> joint candidate3/1",
+    "permanent: original2/0 -> bounded candidate4/0; not an availability pass"
+  ],
+  "firstError": "Actual native event before shared entry, delivery gated on native event; no dispatched error",
+  "mixedRuns": 4,
+  "mixedVerdict": "UNRESOLVED: producer-only/shared-only both2 requests and0menus in1440/390. Two source assets must be coordinated; public pinned producer remains unchanged.",
+  "fallbackInput": {
+    "kind": "synthetic URL alias to archived immutable response; not historical branch-response evidence",
+    "fromURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.js",
+    "fromSHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+    "toURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/home/global/hamburger.js",
+    "latestNetworkResponseUsed": false
+  },
+  "missingInput": "No historical successful @main JS response exists. Do not claim alias is a raw branch capture; no latest network response substituted.",
+  "hang": {
+    "fixture": "Hold actual immutable menu JS response10s, no native error and no artificial entry gate; release original archived response",
+    "pending": {
+      "readyState": "interactive",
+      "shared": false,
+      "menuInit": false,
+      "menus": 0,
+      "tags": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.js",
+          "failed": null
+        }
+      ]
+    },
+    "releaseRecovered": true,
+    "verdict": "OBSERVED, UNRESOLVED while response pending; recovery after release verified",
+    "productTimeoutChanged": false
+  },
+  "validationFailuresPreserved": [
+    "First full JS run stopped on missing original branch-response input; no product workaround. New explicit derived fixture distinguishes synthetic success from historical input.",
+    "First mixed test expected joint-candidate3 requests for producer-only; actual2/0 led to explicit unresolved oracle. Both version mixes confirmed in fresh4-condition run."
+  ],
+  "rawEvidence": "Local only",
+  "fullIntegration": "pending",
+  "artifactSHA256": {
+    "js-before.log": "8f6600c93f0ad9da87acec4d263284c3b4305fb27a5f3aea55b9ff9f0a1b3464",
+    "js-full.log": "b09eda87b136fc1f0c51783867dfd1a930675a99b70c47e92171bb5747202161",
+    "js-full-derived/results.json": "8d905e16e9db03103f2c7784c150ef1d027920eea57785afc91b1575412e8b24",
+    "js-full-derived.log": "f5302d45209f350b6a860cb814ad7a58d86cbfd27340517348a3b3eb1e8cad4d",
+    "js-mixed.log": "f48be5bf45e9c103c551b8563d3c5b2af3e8249895328c00e8f71427191aab3f",
+    "js-mixed-classified/results.json": "071532fc08fc1c817a12ab12964248da9c8c95492c12bc582bf2390b415fc017",
+    "js-mixed-classified.log": "b95fe08630dcf83ccb35e715d7c0cb7c5e72ce7a414a8bf5b2ca65aa54afde10",
+    "js-hang-probe.json": "bd537914bfbc37d4ab772eb8f354ecc9607235a5afd400087bf9b6b789763051",
+    "js-hang-probe.cjs": "e81280f5069a7777184082631eb94ffe40829d22562547d7af829b35688d17f3"
+  }
+}

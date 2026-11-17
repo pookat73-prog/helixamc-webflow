@@ -1,5 +1,13 @@
 # HELIX 다음 잔여 개선 실행 — 18541d2 이후
 
+## D04 단위 완료 / 최종 동결 준비
+
+제품b2277bf는services `injectJs`의메뉴JS native오류URL기록과shared `present()`의해당실패tag판정만추가했다. 새모듈/전역timer/다른loader태그교체없음. 32조건에서실제첫native오류가shared진입보다앞서는것을assert하고원본2실패/메뉴0→후보3요청/메뉴1,영구4요청상한,정상1/폴백성공2/중복진입무추가/메뉴열기닫기를확인했다. 실제pinned ba91의injectJs정확한hunk와현재tip생산자를분리했다. [판정·역커밋](evidence/remaining-js-owner.json).
+
+성공한역사적branch JS원시는누락돼있다. 최초검사는해당미기록요청에서정지했으며최신응답으로대체하지않았다. 이후그경로만기존보관immutable바이트를복제한별도합성alias와출처SHA를명시해검사했다. 정상/두native오류/영구실패경로는기존고정원시기반이다. 첫mixed예상요청수오류도보존하고fresh4조건에서producer-only/shared-only의2요청/메뉴0을미해결로판정했다. 공개pin/설정변경없이두자산채택조건만문서화한다.
+
+무응답의별도관측은실제menuJS응답만10초보류했다(가짜error/entrygate없음). readyState interactive/shared未진입/menu0/pending tag가남고원래보관응답을해제하면동일1요청/menu1로회복했다. 제품timeout은추측하지않았다. D06 WebKit실행파일없음으로실제기기검증보류,제품미수정. 최신main/staging은기존SHA와같고10공개HTML도중단전SHA와같다. 현재소스의별도clone 단일15단계통합과오류주입·복구는다음실행이며이전결과로대신하지않는다.
+
 ## 환경 복구 및 D02 결과 회수 (2026-11-17)
 
 후속 D03/D07 제품a9626dd: 무관한 invisible sibling이끼면 Hero adjacency guard가 제목3개hook까지생략해지그가없어지는원본을재현했다. 기존마킹순서만 guard앞으로이동해12회단일검사통과. 정상6실행의PNG/geometry/type exact, fixture삽입자체 visible geometry불변, 후보3폭모두hooks3/line1/실제hero event·fade/1.5s뒤loop·PC→mobile→tablet→PC타깃을보존했다. 최초검사2회는공개HTML기존viewport속성존재를잘못가정한검사실패라원시증거를보존하고재진단했다. 제품보정은쌓지않았다. 정확한공개속성보존계약으로원본red→후보green을확인했다. [단위결과·복구](evidence/remaining-hero.json). 모든hero/firstpaint문제가해결된것은아니다.
