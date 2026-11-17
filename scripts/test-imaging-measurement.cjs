@@ -1,11 +1,24 @@
 const {chromium}=require('playwright');const fs=require('fs');const assert=require('assert/strict');const root=require('path').resolve(__dirname,'..')+'/';
-(async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH || '/usr/bin/chromium',args:['--no-sandbox']});
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH || '/usr/bin/chromium',args:['--no-sandbox'],proxy:process.env.HTTPS_PROXY?{server:process.env.HTTPS_PROXY}:undefined});
+try{
 for(const width of [1440,390]){
 const page=await browser.newPage({ignoreHTTPSErrors:true,viewport:{width,height:1000},reducedMotion:width===390?'reduce':'no-preference'});
 await page.addInitScript(()=>{navigator.sendBeacon=()=>true;});
 await page.route(/google-analytics|googletagmanager|script.google|ipify|facebook|tiktok|firebaseio/,r=>r.abort());
 await page.route(/\/global\/(bootstrap|ga-inspector)\.js(?:\?|$)/,r=>r.fulfill({contentType:'application/javascript',body:fs.readFileSync(root+'global/'+r.request().url().match(/(bootstrap|ga-inspector)\.js/)[0],'utf8')}));
-await page.goto('https://www.helix-amc.com/diagnostic-imaging?ga-inspect=1',{waitUntil:'domcontentloaded'});await page.waitForTimeout(7000);
+await page.goto('https://www.helix-amc.com/diagnostic-imaging?ga-inspect=1',{waitUntil:'domcontentloaded'});
+// A bare HTML layout can put the title over the menu. Stop before making a UI
+// diagnosis if the published Webflow stylesheet was blocked or failed to load.
+try{
+ await page.waitForFunction(()=>{
+  const links=[...document.querySelectorAll('link[rel="stylesheet"]')].filter(el=>el.href.includes('/css/')&&el.href.includes('.webflow.'));
+  return links.length>0&&links.every(el=>el.sheet&&!el.disabled);
+ },null,{timeout:8000});
+}catch{
+ const styles=await page.locator('link[rel="stylesheet"]').evaluateAll(els=>els.filter(el=>el.href.includes('.webflow.')).map(el=>({url:el.href,loaded:!!el.sheet})));
+ throw new Error('Webflow 기본 스타일 로딩 실패 — 메뉴 클릭·화면 검증을 중단합니다. 검사환경의 허용 도메인과 네트워크를 확인하세요. '+JSON.stringify(styles));
+}
+await page.waitForTimeout(7000);
 await page.addStyleTag({content:'#hx-gai-panel,#hx-gai-panel *{pointer-events:none!important}'});
 await page.locator('#hx-gai-panel').evaluate(el=>{el.style.top='60px';el.style.bottom='auto'});
 await page.locator('#hxFctaToggle').click();await page.waitForTimeout(500);
@@ -27,4 +40,4 @@ const result=await page.evaluate(()=>{
 });assert.deepEqual(result.failures,[]);assert(result.excluded);assert(result.inspector);assert(result.badges>0);assert(result.title.includes('diagnostic_imaging'));console.log(width,result);
 await page.close();
 }
-await browser.close();})();
+}finally{await browser.close();}})();
