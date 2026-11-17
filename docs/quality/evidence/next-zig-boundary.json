@@ -1,0 +1,33 @@
+{
+  "status": "component candidate PASS; no public application",
+  "product": "34f093c274fb180b26ac8d2574359fd3acac4adc",
+  "baseSectionBlob": "42d432705def71d5486472b4f94aa099ad8d8c31",
+  "actualBeforeProductHead": "6590ff1e9005e6bd57799a9470bf0cc724762d21",
+  "sameBeforeSectionRuntime": true,
+  "cause": "Zig destination selected global second heading, source selected first global discover-helix_button; an invisible device copy reordered ahead of hero changes both owners",
+  "after": "Scope source anchor to bt-box-1 and destination to rendered sec3 heading; no line geometry, draw/hold/erase, lifecycle/event/timer or button animation changes",
+  "singleFullRun": "zig-full-preserved-order",
+  "executions": 12,
+  "originalDefectReproducedWidths": [
+    1440,
+    820
+  ],
+  "mobileControlWidth": 390,
+  "hotTransitionWidths": [
+    390,
+    820,
+    1440
+  ],
+  "originalNormalAndCandidatePathsStylesAndUnrelatedGeometry": "exact equal, including adversarial cold order",
+  "actualDraw": "Nonzero line dash after actual scroll",
+  "heroPreservation": "Actual hero adjacency, three heading class hooks and helix-s1-done retained",
+  "unexpectedPageErrors": 0,
+  "unexpectedNetworkErrors": 0,
+  "forwarded": 0,
+  "rejectedPrototype": "Destination-only first candidate returned a line with wrong sourceX319.148 to0; scoped source to actual bt1, no line algorithm rewrite",
+  "rejectedTestAssumption": "Initial hot fixture exposed moved hidden mobile section above hero; titleY350 vsbtn2Y1685 madeHnegative. Same candidate trace600/1500/3000ms disproved timing assumption. Test now restores copy while hidden and asserts visible geometry before hot transitions. Earlier failures retained; no existing criterion loosened.",
+  "localResultsSHA256": "c09993d846e7c5fd1cff1c5ba75cf22aec1069f5aa636539e06a269040eab465",
+  "rawLocalOnly": "/workspace/artifacts/helix-next-20261117",
+  "recovery": "Reverse only product34f093c; retain prior heading first-exposure/pairing/card fixes",
+  "remaining": "Coming-soon class writer/hero initialization and other firstpaint dependencies remain; this unit removes only zig global order dependence"
+}

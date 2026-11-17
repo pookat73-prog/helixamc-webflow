@@ -37,3 +37,13 @@ D05/D02제품커밋과각양성검사를마친뒤착수한다. 지그는전역 `
 지그원본6실행에서normal3폭은선1개, hidden-first1440/820은선0개,390은선1개로재현했다. section3선택만고친첫후보는선이돌아왔지만1440 hidden-first의시작X가319.148→0이어서정확한기하학검사에서거절됐다. 같은전역첫요소문제로btn1도숨은section3의 `.discover-helix_button`을잡고있었다. 실제DOM의4개해당anchor가각각bt1/2/3/3안에있음을확인하고기존btn1탐색원문을 `.bt-box-1 .discover-helix_button`으로한정한다. selector두끝의책임만고치고선알고리즘/타이밍은그대로다. 첫후보실패를보존하고새단일12실행으로다시판정한다.
 
 두번째후보실행은hot390선0에서멈춰추가제품패치를중단하고, 같은후보의600/1500/3000ms좌표를계측했다. 이동한mobile복제가390에서실제노출돼titleY350/btn2Y1685로H가음수였다. 대기부족이나hero복구실패증거가아니고새fixture가보이는섹션순서를바꾼검사오류였다. cold숨은순서대조는유지하고, 아직숨겨진동안원래DOM위치로복구해visiblegeometry동일을assert한뒤hot390/820/1440을검사하도록도구만정정한다. 기존기준/선경로exact대조는완화하지않는다. 제품후보는같은scoped selector그대로새단일full을수행한다.
+
+## D03/D07-P3 결과 — 지그 두 끝의 소유권
+
+제품34f093c는지그시작점을bt1안의anchor,도착점을실제렌더된section3 heading으로한정했다. `zig-full-preserved-order` 단일12실행에서normal3폭의원본/후보경로·색·굵기·geometry가exact동일하고,hidden-first1440/820의원본선누락→후보정상경로복구를확인했다.390대조와hot390/820/1440의선1개·두trigger의보이는section3도착·실제스크롤draw를검사했다. 실제heading3개마킹/hero완료event와visiblegeometry보존도assert했다. 첫경로후보실패와잘못된hotfixture실패를정상으로합산하지않으며최종단일12실행만근거다. [판정](evidence/next-zig-boundary.json). hero/coming-soon전체초기화책임은그대로남는다.
+
+## D04 다음 단위 — 다른loader가남긴실패tag
+
+D03단위검증/제품커밋뒤실제services소비자를재생한다. 페이지loader가메뉴CSS/JS의immutable/branch fallback모두실패했을때남는tag때문에공통present가복구를막는지관측한다. 오류는실제route실패로주고sharedentry준비후load전발생을명시한다. 관측된실패와성공/pending소유자를구분하는근거가확보돼야만공통메뉴2자산의경계만고친다. 타loader tag삭제/pin교체/viewport복구범위확대는금지한다. 원본실패가없으면제품수정하지않는다.
+
+D04첫원본은다른loader menuCSS2요청실패/잔존tag2/menu static과unexpected오류0을확인했다. 의도적으로실패시킨CSS도overlay성공을요구한신규assert오류로중단됐다. 실패대상미소비는실패증거로유지하고나머지성공자산모두의실제소비를assert하도록고쳤다. 정상/복구시에는대상포함전체소비를요구한다.
