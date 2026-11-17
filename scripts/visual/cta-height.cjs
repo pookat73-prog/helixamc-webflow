@@ -10,7 +10,8 @@ const { install } = require('./network.cjs');
 const base = process.env.HELIX_STRUCTURE_BASE || 'dffc7405c96bfcf0549600aa5045c2e6dc82536f';
 const output = process.env.HELIX_STRUCTURE_OUTPUT || path.join(repo, '.visual-results/cta-height');
 const file = 'global/floating-cta.css';
-const before = execFileSync('git', ['show', base + ':' + file], { cwd: repo, encoding: 'utf8' });
+const baselineCSS = process.env.HELIX_STRUCTURE_BASE_CSS;
+const before = baselineCSS ? fs.readFileSync(path.resolve(baselineCSS), 'utf8') : execFileSync('git', ['show', base + ':' + file], { cwd: repo, encoding: 'utf8' });
 const after = fs.readFileSync(path.join(repo, file), 'utf8');
 const mobileFix = fs.readFileSync(path.join(repo, 'global/floating-cta-mobile-fix.css'), 'utf8');
 const widths = [320, 359, 360, 361, 390, 479, 480, 766, 767, 768, 820, 990, 991, 992, 1279, 1280, 1440, 1920];
@@ -120,7 +121,7 @@ const modes = ['', 'hx-fcta-mobile-bar', 'hx-fcta-overlap-fix', 'hx-fcta-overlap
       }
     }
     await context.close();
-    fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ base, cases: results.length, owners, decorationOwners, results, prediction }, null, 2));
+    fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ base, baselineCSS: baselineCSS || null, cases: results.length, owners, decorationOwners, results, prediction }, null, 2));
     console.log('PASS', results.length, 'paired component states: exact CSS/geometry/pixels;', prediction.length, 'controlled edit cases: predictable scope and adjacent flow preserved');
   } finally { await browser.close(); }
 })().catch(e => { console.error(e); process.exitCode = 1; });

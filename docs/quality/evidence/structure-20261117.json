@@ -756,6 +756,44 @@
       "generatedCSS": "46f7fbd5d",
       "limitation": "Read-only live probe blocks measurements and external requests; Network request failed on both live captures is not counted as a clean replay. Captured inputs must pass strict offline guards."
     },
-    "finalReplay": "pending"
+    "finalReplay": "PASS separate clone source b13e96e; see structure-review-20261117.json",
+    "latestObservedStaging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "latestObservedMain": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+    "externalRuntimeUpdatesPreserved": [
+      "home/global/coming-soon.css",
+      "home/global/scroll-hint.css"
+    ],
+    "finalExternalCTARecheck": {
+      "baselineStaging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+      "baselineBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+      "externalBytesRetained": 858,
+      "mergeProof": "candidate == prior validated candidate + exact external tail; external baseline == common base + same tail",
+      "componentPairedStates": 108,
+      "controlledEdits": 36,
+      "closedScopePairs": 3,
+      "interactionsWidths": [
+        1440,
+        820,
+        390
+      ],
+      "transitionChecksPerWidth": 11,
+      "limitations": "D03 and D02 results remain the earlier independently isolated cause tests; unaffected by the CTA phone-alignment-only tail. Final CTA/component/scope/interactions rerun against the exact latest external CSS foundation."
+    }
+  },
+  "finalVerdict": {
+    "isolatedCandidate": "PASS for four structural units (D05 height, D05 decoration, D03 bt3 owner, D02 mobile list exception)",
+    "wholeStructure": "INCOMPLETE",
+    "V0": "FAIL retained (0/1109/0), thresholds unchanged",
+    "U01": "held, not applied",
+    "publicStagingReach": "not performed, no deployment",
+    "operationalRegressionReductionRate": "not measured",
+    "remaining": [
+      "global D02 important policy/other roots/desktop",
+      "D05 other properties",
+      "D03 hidden-copy lifecycle",
+      "D04 pin/source delivery boundary",
+      "D06 real device viewport ownership",
+      "D07 heading order/firstpaint coupling"
+    ]
   }
 }

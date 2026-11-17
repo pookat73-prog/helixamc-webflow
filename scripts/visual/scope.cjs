@@ -20,7 +20,8 @@ const candidate = process.env.HELIX_SCOPE_OVERLAY || 'home/global/hamburger.css,
     for (const [width, height] of [[1440, 900], [820, 1180], [390, 844]]) {
       const pair = { width, height };
       for (const version of ['original', 'candidate']) {
-        process.env.HELIX_VISUAL_OVERLAY = version === 'candidate' ? candidate : '';
+        process.env.HELIX_VISUAL_OVERLAY = version === 'candidate' ? candidate : process.env.HELIX_SCOPE_BASE_OVERLAY || '';
+        if (process.env.HELIX_SCOPE_BASE_ROOT) process.env.HELIX_VISUAL_OVERLAY_ROOT = version === 'candidate' ? repo : path.resolve(process.env.HELIX_SCOPE_BASE_ROOT);
         const context = await browser.newContext({ viewport: { width, height }, locale: 'ko-KR', timezoneId: 'Asia/Seoul', serviceWorkers: 'block' });
         const network = await install(context, options), page = await context.newPage(), errors = [];
         page.on('pageerror', e => errors.push(e.message));

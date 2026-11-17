@@ -1,0 +1,561 @@
+{
+  "review": "Separate clone/process execution by same agent; final CTA sync reviewed as exact858-byte tail plus immutable runtime hashes, not a separate human review",
+  "observedStaging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+  "observedMain": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+  "runtimeSHA256": {
+    "global/floating-cta.css": "7546e2ae7fccac3921843f7f52de68127ed6967131847edcd9a514b5b35ccc44",
+    "global/global.css": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2",
+    "home/global/buttons.js": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+    "home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "home/global/sections-animations.js": "8a4c64686f8c184284af665b3215dcc387161ac4a184835b56cd7253406b065c"
+  },
+  "unrelatedLatestRuntimePreserved": [
+    "home/global/coming-soon.css",
+    "home/global/scroll-hint.css",
+    "global/floating-cta.css external858-byte appended phone alignment block"
+  ],
+  "component": {
+    "pairedStates": 108,
+    "computedStylesGeometryPNG": "exact equal vs dffc740",
+    "controlledEditCases": 36,
+    "owners": [
+      [
+        "",
+        "38px"
+      ],
+      [
+        "(max-width: 767px)",
+        "28px"
+      ]
+    ],
+    "decorationOwners": [
+      [
+        "none",
+        "none"
+      ]
+    ]
+  },
+  "glow": [
+    {
+      "width": 1440,
+      "scenario": "normal-warm",
+      "beforeHoldMS": 964.5,
+      "afterHoldMS": 1500.7000000001863,
+      "beforeRemovals": 2,
+      "afterRemovals": 1,
+      "reentryWrites": 0,
+      "finalButtonsPreserved": true
+    },
+    {
+      "width": 1440,
+      "scenario": "fast-reduced-delayed",
+      "beforeHoldMS": 944.2000000001863,
+      "afterHoldMS": 1500.7000000001863,
+      "beforeRemovals": 2,
+      "afterRemovals": 1,
+      "reentryWrites": 0,
+      "finalButtonsPreserved": true
+    },
+    {
+      "width": 820,
+      "scenario": "normal-warm",
+      "beforeHoldMS": 958.5,
+      "afterHoldMS": 1500.5999999996275,
+      "beforeRemovals": 2,
+      "afterRemovals": 1,
+      "reentryWrites": 0,
+      "finalButtonsPreserved": true
+    },
+    {
+      "width": 820,
+      "scenario": "fast-reduced-delayed",
+      "beforeHoldMS": 943,
+      "afterHoldMS": 1500.7999999998137,
+      "beforeRemovals": 2,
+      "afterRemovals": 1,
+      "reentryWrites": 0,
+      "finalButtonsPreserved": true
+    },
+    {
+      "width": 390,
+      "scenario": "normal-warm",
+      "beforeHoldMS": 942.6000000005588,
+      "afterHoldMS": 1500.9000000003725,
+      "beforeRemovals": 2,
+      "afterRemovals": 1,
+      "reentryWrites": 0,
+      "finalButtonsPreserved": true
+    },
+    {
+      "width": 390,
+      "scenario": "fast-reduced-delayed",
+      "beforeHoldMS": 964.5,
+      "afterHoldMS": 1500.5,
+      "beforeRemovals": 2,
+      "afterRemovals": 1,
+      "reentryWrites": 0,
+      "finalButtonsPreserved": true
+    }
+  ],
+  "scope": [
+    {
+      "width": 1440,
+      "pass": true,
+      "consumed": [
+        {
+          "path": "global/global.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        },
+        {
+          "path": "global/floating-cta.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "a4d5f56505c2fa4b093b1d52f9fa7c732e37460d1c2dcbcf0caf25c24219d0f6"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39"
+        },
+        {
+          "path": "home/global/buttons.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113"
+        },
+        {
+          "path": "home/global/sections-animations.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "8a4c64686f8c184284af665b3215dcc387161ac4a184835b56cd7253406b065c"
+        }
+      ]
+    },
+    {
+      "width": 820,
+      "pass": true,
+      "consumed": [
+        {
+          "path": "global/global.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        },
+        {
+          "path": "global/floating-cta.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "a4d5f56505c2fa4b093b1d52f9fa7c732e37460d1c2dcbcf0caf25c24219d0f6"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39"
+        },
+        {
+          "path": "home/global/buttons.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113"
+        },
+        {
+          "path": "home/global/sections-animations.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "8a4c64686f8c184284af665b3215dcc387161ac4a184835b56cd7253406b065c"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "pass": true,
+      "consumed": [
+        {
+          "path": "global/global.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        },
+        {
+          "path": "global/floating-cta.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "a4d5f56505c2fa4b093b1d52f9fa7c732e37460d1c2dcbcf0caf25c24219d0f6"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39"
+        },
+        {
+          "path": "home/global/buttons.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113"
+        },
+        {
+          "path": "home/global/sections-animations.js",
+          "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+          "sha256": "8a4c64686f8c184284af665b3215dcc387161ac4a184835b56cd7253406b065c"
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "width": 1440,
+      "checks": {
+        "scrollControlAvailable": true,
+        "menuBackgroundLocked": true,
+        "menuFocusRestored": true,
+        "menuScrollRestored": true,
+        "formBackgroundLocked": true,
+        "formScrollRestored": true,
+        "formFocusRestored": true,
+        "overlapRetains-menu": true,
+        "overlapReleases-menu": true,
+        "overlapRetains-form": true,
+        "overlapReleases-form": true,
+        "coldCardsVisible": true,
+        "cardsAfter990-1": true,
+        "cardsAfter991-2": true,
+        "cardsAfter992-3": true,
+        "cardsAfter766-4": true,
+        "cardsAfter767-5": true,
+        "cardsAfter768-6": true,
+        "cardsAfter478-7": true,
+        "cardsAfter479-8": true,
+        "cardsAfter480-9": true,
+        "cardsAfter820-10": true,
+        "cardsAfter1440-11": true,
+        "networkErrors": true,
+        "pageErrors": true,
+        "zeroExternalRequests": true
+      },
+      "failures": []
+    },
+    {
+      "width": 820,
+      "checks": {
+        "scrollControlAvailable": true,
+        "menuBackgroundLocked": true,
+        "menuFocusRestored": true,
+        "menuScrollRestored": true,
+        "formBackgroundLocked": true,
+        "formScrollRestored": true,
+        "formFocusRestored": true,
+        "overlapRetains-menu": true,
+        "overlapReleases-menu": true,
+        "overlapRetains-form": true,
+        "overlapReleases-form": true,
+        "coldCardsVisible": true,
+        "networkErrors": true,
+        "pageErrors": true,
+        "zeroExternalRequests": true
+      },
+      "failures": []
+    },
+    {
+      "width": 390,
+      "checks": {
+        "scrollControlAvailable": true,
+        "menuBackgroundLocked": true,
+        "menuFocusRestored": true,
+        "menuScrollRestored": true,
+        "formBackgroundLocked": true,
+        "formScrollRestored": true,
+        "formFocusRestored": true,
+        "overlapRetains-menu": true,
+        "overlapReleases-menu": true,
+        "overlapRetains-form": true,
+        "overlapReleases-form": true,
+        "coldCardsVisible": true,
+        "networkErrors": true,
+        "pageErrors": true,
+        "zeroExternalRequests": true
+      },
+      "failures": []
+    }
+  ],
+  "wrap": [
+    {
+      "width": 1440,
+      "pathname": "/",
+      "naturalSHA256": "2debf100119b3bf9ac2b7f514dd9c4c4d77020fe34cb2d774d6e9651e372727c",
+      "originalSHA256": "2debf100119b3bf9ac2b7f514dd9c4c4d77020fe34cb2d774d6e9651e372727c",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 1440,
+      "pathname": "/discover-helix",
+      "naturalSHA256": "b47b03e35e0223872271227ea6ffcde5b53c2cfcf190bffcfc58d158a2a5ca05",
+      "originalSHA256": "b47b03e35e0223872271227ea6ffcde5b53c2cfcf190bffcfc58d158a2a5ca05",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "d337d1a0be",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 1440,
+      "pathname": "/services",
+      "naturalSHA256": "8a3fc5e53f489c92d4b184c26bce0717c095d1dad15f55baa3be7613447b1da3",
+      "originalSHA256": "8a3fc5e53f489c92d4b184c26bce0717c095d1dad15f55baa3be7613447b1da3",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 1440,
+      "pathname": "/faq",
+      "naturalSHA256": "c995d1031ea3e8f2d929387e2a1befd9b9313d26fdd85efefa7ef2046e687e52",
+      "originalSHA256": "c995d1031ea3e8f2d929387e2a1befd9b9313d26fdd85efefa7ef2046e687e52",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 1440,
+      "pathname": "/internal-medicine",
+      "naturalSHA256": "94e8b4fdb09e668fdedcb09f850af82bcb21ba163c37a8664c061b7dfc37cf9c",
+      "originalSHA256": "94e8b4fdb09e668fdedcb09f850af82bcb21ba163c37a8664c061b7dfc37cf9c",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 12
+    },
+    {
+      "width": 820,
+      "pathname": "/",
+      "naturalSHA256": "888fc26ef68e21e0a7358b123280b5354b476ee809f19352a1a014380620d373",
+      "originalSHA256": "888fc26ef68e21e0a7358b123280b5354b476ee809f19352a1a014380620d373",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 820,
+      "pathname": "/discover-helix",
+      "naturalSHA256": "a4bbd1f26e5c6eefc77f24165ab61f9c6ba5292c7849a71274e4ea144c737cdb",
+      "originalSHA256": "a4bbd1f26e5c6eefc77f24165ab61f9c6ba5292c7849a71274e4ea144c737cdb",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "d337d1a0be",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 820,
+      "pathname": "/services",
+      "naturalSHA256": "bfd9df729bf33c36fc432d616f2b0efc46e7051c7447c74e22d8b4e17b24b2e9",
+      "originalSHA256": "bfd9df729bf33c36fc432d616f2b0efc46e7051c7447c74e22d8b4e17b24b2e9",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 820,
+      "pathname": "/faq",
+      "naturalSHA256": "4e47ce9cd92d6daab6d71e5a22cf72a0d4f8385673b1cbe80571bbcbb4d97b5c",
+      "originalSHA256": "4e47ce9cd92d6daab6d71e5a22cf72a0d4f8385673b1cbe80571bbcbb4d97b5c",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 820,
+      "pathname": "/internal-medicine",
+      "naturalSHA256": "d360aa4ff721de75bd091fbd671c4a783eb291c179e0c2142215660e8490380b",
+      "originalSHA256": "d360aa4ff721de75bd091fbd671c4a783eb291c179e0c2142215660e8490380b",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 12
+    },
+    {
+      "width": 390,
+      "pathname": "/",
+      "naturalSHA256": "efc629dc241ce46af8e05c6c318fe530f4a8ba239290be4aace429dcc63c17e2",
+      "originalSHA256": "efc629dc241ce46af8e05c6c318fe530f4a8ba239290be4aace429dcc63c17e2",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455fdd2c384af2049ae4e39c07cafc0c2",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 390,
+      "pathname": "/discover-helix",
+      "naturalSHA256": "e0abf2e630a0ed5d3ae9bd24ac00d0b5cac96655b0de1c3578d0846bcb6fa7a1",
+      "originalSHA256": "e0abf2e630a0ed5d3ae9bd24ac00d0b5cac96655b0de1c3578d0846bcb6fa7a1",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "d337d1a0be",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 390,
+      "pathname": "/services",
+      "naturalSHA256": "3952b77fe6cf6d6088ae1a24aa24e658f7dd90a59edf49984cdcdda7abc806d9",
+      "originalSHA256": "3952b77fe6cf6d6088ae1a24aa24e658f7dd90a59edf49984cdcdda7abc806d9",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 390,
+      "pathname": "/faq",
+      "naturalSHA256": "9dbadcd5d52d00d3e139f34fcb951cb843cf822855be56a92b9ef328399cc20b",
+      "originalSHA256": "9dbadcd5d52d00d3e139f34fcb951cb843cf822855be56a92b9ef328399cc20b",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 0
+    },
+    {
+      "width": 390,
+      "pathname": "/internal-medicine",
+      "naturalSHA256": "638fb7d1813665707c513007ced106bc38d375f56f86fcd0b7564abc4be626df",
+      "originalSHA256": "638fb7d1813665707c513007ced106bc38d375f56f86fcd0b7564abc4be626df",
+      "applied": {
+        "path": "global/global.css",
+        "originalRef": "7395b95455",
+        "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+      },
+      "stressCases": 12
+    }
+  ],
+  "negativeControl": {
+    "change": "Private clone only: mobile form min-height28->29",
+    "expectedExit": 1,
+    "observedExit": 1,
+    "guard": "320px all-style/geometry equality rejects1px shell change",
+    "privateCloneRestored": true,
+    "actualCandidateNeverMutated": true
+  },
+  "integrity": {
+    "PNGsUnchanged": 33,
+    "responsesVerified": 286,
+    "siteQualityGroups": 9,
+    "trackedJSSyntax": 105,
+    "networkForwarded": 0,
+    "unexpectedNetworkErrors": 0,
+    "pageErrors": 0
+  },
+  "inputSnapshots": {
+    "parts": [
+      {
+        "file": "structure-inputs-current-1.json",
+        "requests": 168,
+        "sha256": "0560b5fa6548f3432be643c2cf4c854cf7eb90b3f905ef51ec53bcc541ced887"
+      },
+      {
+        "file": "structure-inputs-current-2.json",
+        "requests": 168,
+        "sha256": "b4409dee3e6aea55e26f241e8ee29ff87a2fb88e2b65ffbf4e84119ad7478438"
+      },
+      {
+        "file": "structure-inputs-current-3.json",
+        "requests": 168,
+        "sha256": "4b280e7c5a42ad586845d1b1dd981d4933344de57fea07f0f6947b8e95685c0e"
+      },
+      {
+        "file": "structure-inputs-current-4.json",
+        "requests": 168,
+        "sha256": "b413489250f8bfc9be04c9e8fee5e33491551f49c9eb131d7e0729fc6d8d04be"
+      }
+    ],
+    "perPageOverrides": {
+      "home": {},
+      "discover-helix": {
+        "https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/main": {
+          "sha256": "948b615c0a930408693ff30442a04d7de5e4eae3408539c715dcd59eb5cc85d8",
+          "bytes": 397,
+          "status": 200,
+          "contentType": "application/json; charset=utf-8",
+          "capturedAt": "2026-11-17T01:19:06.825Z"
+        }
+      },
+      "services": {},
+      "faq": {},
+      "internal-medicine": {}
+    }
+  },
+  "inputBodyArchiveUploaded": false,
+  "bodyArchiveLimitation": "New binary/HTML/API response bodies remain local; manifest parts and hashes are durable, fully portable clean-machine replay is not established. No retry of the interrupted optional archive upload.",
+  "verdict": {
+    "isolatedCandidate": "PASS for four structural units (D05 height, D05 decoration, D03 bt3 owner, D02 mobile list exception)",
+    "wholeStructure": "INCOMPLETE",
+    "V0": "FAIL retained (0/1109/0), thresholds unchanged",
+    "U01": "held, not applied",
+    "publicStagingReach": "not performed, no deployment",
+    "operationalRegressionReductionRate": "not measured",
+    "remaining": [
+      "global D02 important policy/other roots/desktop",
+      "D05 other properties",
+      "D03 hidden-copy lifecycle",
+      "D04 pin/source delivery boundary",
+      "D06 real device viewport ownership",
+      "D07 heading order/firstpaint coupling"
+    ]
+  },
+  "initialReviewSourceCommit": "b13e96ec295aa943e639920f71cece6c8503ffbf",
+  "finalExternalCTARecheck": {
+    "baselineStaging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "baselineBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+    "externalBytesRetained": 858,
+    "mergeProof": "candidate == prior validated candidate + exact external tail; external baseline == common base + same tail",
+    "componentPairedStates": 108,
+    "controlledEdits": 36,
+    "closedScopePairs": 3,
+    "interactionsWidths": [
+      1440,
+      820,
+      390
+    ],
+    "transitionChecksPerWidth": 11,
+    "limitations": "D03 and D02 results remain the earlier independently isolated cause tests; unaffected by the CTA phone-alignment-only tail. Final CTA/component/scope/interactions rerun against the exact latest external CSS foundation."
+  },
+  "sourceIdentity": "Initial frozen commit b13e96e + explicitly validated external CTA tail; final committed runtime is identified by runtimeSHA256, unchanged after tests."
+}

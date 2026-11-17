@@ -69,7 +69,7 @@ D05는 기존108쌍 보존뿐 아니라 **36개 통제 수정**을 추가했다.
 
 새 브랜치 **`fix/helix-structure-current-20261117`**는 최신 staging에서 분기했다. 기존 감사 브랜치를 병합하지 않고 문서/검증74개 경로만 기존 blob으로 선별 전달한 뒤 기존 기능3개와 이번 구조4개를 각각7개 runtime 복구 단위로 재적용했다. 원본 브랜치/dffc740/이번 최초 branch도 보존했다. 최종 트리와 이전 후보의 직접 차이가 외부 coming-soon.css 하나뿐임을 확인했고 최신 staging과의 runtime 차이는6경로뿐이다. 복구 SHA 대응은 [기계 판정](evidence/structure-20261117.json)에 있다. 문서 이력을 지우지 않도록 runtime hunk만 역적용하는 복구를 우선하며 main/staging/공개 설정은 건드리지 않는다.
 
-2026-11-17 10:17 KST 실제 읽기에서 정식 home은d337d1a, 공개 staging home은**454dacce… 고정**, 생성CSS는 양쪽46f7fbd5d였다. 과거b8d8248/73c0c0934를 되살리지 않았다. 차단한 외부 요청으로 두 live probe에 Network request failed가 있어 이 캡처 자체를 오류0 통과로 세지 않는다. 새 응답을 고정한 오프라인 검사를 별도로 수행한다. 기존 PNG33/286응답/100px 기준은 그대로고 새로운 공개CSS로 조용히 기준선을 승격하지 않는다.
+2026-11-17 10:17 KST 실제 읽기에서 정식 home은d337d1a, 공개 staging home은**454dacce… 고정**, 생성CSS는 양쪽46f7fbd5d였다. 과거b8d8248/73c0c0934를 되살리지 않았다. 외부 요청 차단을 적용한 두 live probe에는 원인이 확정되지 않은 Network request failed가 있어 이 캡처 자체를 오류0 통과로 세지 않는다. 새 응답을 고정한 오프라인 검사를 별도로 수행한다. 기존 PNG33/286응답/100px 기준은 그대로고 새로운 공개CSS로 조용히 기준선을 승격하지 않는다.
 
 ## 잔여 실행 순서 — 미완료를 실제 개선으로 잇는 단위
 
@@ -90,3 +90,28 @@ D05는 기존108쌍 보존뿐 아니라 **36개 통제 수정**을 추가했다.
 ### 마감 추가 외부 변경 보존
 
 마감 조회 중 main7395b95/staging06306d4로 외부 변경이 추가됐다. 이전 이관 기준3d11dd7과의 실행 차이는 coming-soon.css(838e0ef…)와 scroll-hint.css(4872ba3…) 두 파일뿐이고 이번6개 runtime 경로와 겹치지 않았다. 두 파일을 최신 원문 그대로 보존 동기화한다. 공개 조회는 페이지별로 실제 관측한 시점/API SHA가 다르므로 각 primary manifest를 분리해 오래된 API/HTML 충돌을 배제한다. 다른 시점의 main 응답을 묵시적으로 한 입력으로 합치지 않는다. 최신 source와의 직접 경로 비교·폐쇄 재생 검증을 마감 근거로 삼으며 main/staging 자체는 수정하지 않는다.
+
+## 최종 구조 재검수와 판정
+
+runtime 동결 소스 **b13e96e**를 별도 `/workspace/helix-structure-review`에 clone하고 같은 고정 브라우저로 독립 프로세스 재실행했다. 같은 agent의 새 디렉터리 검증이며 별도 사람/agent 리뷰를 뜻하지 않는다. 새 홈 primary는 main7395b95를 실제 읽은2026-11-17 10:27 KST 입력이다. 비홈은 실제 수집한 페이지별 epoch를 유지해 소개의main d337 API1개와 나머지7395 API를 섞지 않는다. URL/본문hash·4개 manifest part·페이지별1개 예외를 [최종 검사 대장](evidence/structure-review-20261117.json)에 기록했다. 운영·staging 공개 pin은 바꾸지 않았다.
+
+- CTA108쌍 전체 계산값/geometry/PNG 동일, 통제 수정36조건의 예상 범위 도달/비대상 보존 통과. 실제 장식은 여전히 숨김.
+- glow6쌍: 원본의 조기 해제·2중 제거를 재현하고 후보의1회 제거·fade 후1500ms 이상 hold 확인. 4개 버튼 최종 표현·hero 이벤트·왕복 추가쓰기0 보존.
+- 5페이지×3크기15쌍: 게시 콘텐츠/배치/타이포 동일, 내과 모바일12조건 넘침 해소·후행 고정정책/범위 밖 대조·766/767/768 통과. 실제 global.css 도달과 고정63812a 정책을 확인.
+- 최신 입력의 메뉴/폼 실휠 잠금·해제·포커스·교차 잠금·카드 cold/hot 및11회 경계 전환을3크기 모두 통과. 닫힌 화면 원본/최종 후보3쌍은 geometry/내용/문서정책 동일하며6개 후보 파일 모두 실제 소비됐다.
+- 별도 negative clone의 모바일 높이를28→29px로1px 틀리게 바꾸니 첫320px 계산/geometry 검사에서 exit1로 거절됐다. private 복사본은 원문 복구했고 실제 후보/원본 작업장은 건드리지 않았다. 성공만 나오는 검사가 아님을 확인했다.
+- 원본 PNG33·286응답 해시 보존, site-quality9그룹/105JS 문법 통과. 이전 비홈 정상시각12와 일반D02 예상실패3도 유지한다. 모든 오프라인 최종 검사에서 외부 전달/예상밖 네트워크/JS 오류0. 기존 전체 V0 실패를 지우거나 이번 후보 통과로 대신하지 않았다.
+
+**실제 안정화 수준:** D05 두 속성군·D03 bt3 제어·D02 모바일 목록 경계의 **격리된 구조 개선4단위 통과**다. 수정 위치를 통제한 실험과 비대상 화면 계약으로 해당 부분의 영향 범위가 더 예측 가능해졌다. 전체 CSS 간섭 해소, 모든 viewport/loader 의존 제거, 공개 staging 반영 또는 실제 방문자의 연쇄 오류 감소율은 입증하지 않았다. V0는 실패이며U01은 미적용, 전역 D02·나머지 D05·D04/D06/D07 등은 위 실행 계약대로 미완료다.
+
+**전달/복구:** 최종 브랜치 `fix/helix-structure-current-20261117`. 기존 기능 복구는 menu04c160e/card33c024f/reservation9eef3c3, 이번 구조는 height340f703/glow2a09eb7/wrap8cee429/decoration70ff271. 각 runtime diff만 역적용하고 이후 HANDOFF 이력과 외부CSS2개를 보존한다. main/staging merge·공개 설정 변경·운영배포는 수행하지 않았다.
+
+원시 결과·현재 응답본문은 `/workspace/artifacts/helix-structure-20261117/`에 있고 보존 기간은 보장되지 않는다. 최신 입력 manifest/해시는 GitHub에 기록했으나 HTML/API/바이너리 본문 archive는 업로드하지 않았다. 이전 중단된 선택적 archive 업로드는 재시도하지 않았으며, clean machine에서 최신 epoch 전체 복원이 완료됐다고 말하지 않는다. 이 제한은 D04/인계 재현성의 잔여 위험이다.
+
+### 마지막 외부 CTA 변경과 최종 확정
+
+마감 확인에서 staging은 **a074f455…**로 갱신됐고, 변경은 `global/floating-cta.css`의 phone icon/label 정렬 후행858바이트였다(외부blob143c269…). 기존 공통 base ac87의 바이트 뒤에 이 블록만 붙은 것을 확인했다. **최종 후보=검증된b13e96e CTA+동일858바이트**, **최신 외부원본=공통base+동일858바이트**의 관계를 확인해 외부 변경과 자신의 root-lock/높이/장식 hunk를 모두 보존했다. 외부 정렬을 새로 정리하거나 다시 디자인하지 않았다.
+
+이 새 변경 때문에 CTA 관련 검사만 재실행했다. 최신staging a074의 정확한 CSS blob을 명시적 전후 비교 기준으로 사용해108쌍 모든 CSS/geometry/PNG와36통제 수정을 통과했다. 닫힌 화면3쌍은 같은 외부 CSS를 양쪽 foundation에 적용해 깊은 동등성을 요구했고, 최종6개 overlay의 메뉴/폼/카드·11회 전환도3크기 재통과했다. 비교 입력을 명시했을 뿐 PNG/허용오차/기존 실패 기준을 완화하지 않았다. D03/D02 원인별 검사는 이 CTA 정렬만의 외부 변경과 독립이라 불필요하게 반복하지 않았다. 최종 runtime SHA256은 [재검수 대장](evidence/structure-review-20261117.json)에 고정했다.
+
+새 환경에서 최신 CTA 검사를 재현할 때는 `HELIX_STRUCTURE_BASE=a074f455a4adc3dd8515255f6d779dea0afeeb10`을 명시한다. 해당 Git 객체가 없다면 같은 blob143c269…의 원문을 복구해 `HELIX_STRUCTURE_BASE_CSS=<원문경로>`로 제공한다. 기본 dffc 기준의 과거 검사와 새 외부 디자인을 혼동하지 않는다. 최종 scope 대조도 `HELIX_SCOPE_BASE_OVERLAY=global/floating-cta.css`와 `HELIX_SCOPE_BASE_ROOT=<최신원본root>`로 같은 외부 정렬을 양쪽에 적용한다. 후보 소비6경로/계산값/정방향 기준은 그대로다.
