@@ -71,3 +71,15 @@ D04 보완단위: 실패기록을node+URL로구분하고같은node의native load
 보완후검증은실제services(새tag)·FAQ(재사용tag)32조건과,실제영상의학과페이지에분명히표시한controlled owner가동일tag/동일URL을native error→재시도→load성공하는4조건을각단일실행으로분리한다. 후자는게시된페이지loader라고주장하지않고브라우저native자원lifecycle의합성경계로명시한다. URL변경만아니라동일URL성공표식해제를검증한다. 최종별도작업본선택통합은기존8단계에FAQ성공소유권4조건/동일URL소유권4조건을추가한 **10단계**로고정한다. 이전8단계성공은166소스의과거결과이며최종10단계로합산하지않는다.
 
 동일URL첫fixture는DCL에서늦게생성돼원본요청2/foreign tag1/shared tag1이었고,3요청을가정한새assert는실패했다. native요청은같은URL로합류할수있어태그중복과요청횟수는동일하지않다. 이결과를회귀재현으로세지않는다. 판별조건을원본해시검증한영상의학과HTML의head에명시적인controlled owner하나를추가하는독립파생fixture로정확히한다. 원본corpus/PNG는불변이며파생SHA를따로기록한다. 생성loading/error·load가complete이전이라는전제를assert한다. 성공소유자가있는데원본의shared tag1이추가되고후보는0인지를주계약으로검사하고후보요청은정확히2를요구한다. 기존검사기준/이미지허용오차는바꾸지않는다.
+
+## D04 최종 보완 결과 — 성공 소유권 회복
+
+제품b0fa548은db92의실패기록을node+URL로바꾸고동일node의native load성공때해제한다. URL이바뀐새요청/pending은기존소유권으로보고실패라고단정하지않는다. document error/load관측은모두boot에서해제한다. 메뉴CSS한경로만대상이며태그삭제·pin교체·ownCSS/JS재시도정책변경없다.
+
+`css-owner-full` 단일32조건(services새tag/FAQ재사용tag×2폭×4상황×원본166/후보)에서FAQ성공fallback의3→2요청/중복shared tag해소와다른정상·일시실패·영구실패상한보존을확인했다. `same-url-owner-early`는별도단일4조건으로합성owner의생성loading/error·load interactive를입증해동일node/URL성공에도원본shared tag1→후보0/foreign tag1/후보요청2를확인했다. 두실행을36조건전체성공으로합산하지않는다. [최종대장](evidence/next-css-owner-reuse.json).
+
+최종제품runtime는b0fa548이다. 새동결소스의최종별도작업본10단계통합을진행하며166의정상8단계는과거선택범위결과로남긴다. 이사례는정상화면테스트통과만으로구조적간섭완료라고판정할수없는실제근거다.
+
+## 개별 복구 커밋
+
+[복구대장](evidence/next-recovery.json)의D05 a79b52c, D02 7eaf567, 지그85a46dc, D04최종d5db1fa를각recovery브랜치에분리했다. 정상작업/main/staging에는적용하지않았다. 각각대상파일1개만바꾸며역/정방향roundtrip과GitHub tree SHA일치를검증했다. 복구는최신격리작업본에 **선택한역커밋의diff만** cherry-pick/적용하며recovery브랜치전체스냅샷으로프로젝트를대체하지않는다. 앞세커밋은166부모지만해당파일bytes는최종과같고후속D04를건드리지않는다. D04역커밋은초기db92와보완b0fa를함께되돌리고기존65227ownretry를보존한다. 오래된e840c46은첫초안용으로이력보존만하며최종복구로사용하지않는다.

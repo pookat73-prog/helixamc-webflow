@@ -1,0 +1,90 @@
+{
+  "status": "Four isolated inverse commits, none applied to work/main/staging",
+  "currentRuntime": "b0fa5486116282fd623579362312912754d662e3",
+  "use": "Cherry-pick only the selected inverse commit on a fresh current isolated branch; do not replace the project with the entire recovery branch snapshot. Recheck affected contracts.",
+  "units": [
+    {
+      "unit": "d05-gap",
+      "product": "21bccd670b1a8d4692f38777abbb4804fbaaf6a5",
+      "path": "global/floating-cta.css",
+      "base": "166e9d8d47a1884aaf8773017516e86c5ad01637",
+      "baseTree": "5d69246011654b6cdacadb12e32314aa1698f793",
+      "inverseTree": "14b891145208bbdb6f7fa5654792db0d7b0b0003",
+      "inverseBlob": "565f083afb721be54f3d62ed291cc50b35558496",
+      "contentFile": "/workspace/artifacts/helix-next-20261117/recovery/d05-gap/global/floating-cta.css",
+      "inverseBytesSHA256": "def8ab49496ed89312f972a6f569ab872d7f5dc17d24b145fe0b5ac9d45fcac7",
+      "branch": "recovery/helix-next-d05-gap-20261117",
+      "patchRoundTripExact": true,
+      "changedPaths": [
+        "global/floating-cta.css"
+      ],
+      "recoveryCommit": "a79b52c76fcea365771018c09cd8f7fd4b2d9ba9",
+      "url": "https://github.com/pookat73-prog/helixamc-webflow/commit/a79b52c76fcea365771018c09cd8f7fd4b2d9ba9",
+      "appliedToWorkBranch": false
+    },
+    {
+      "unit": "d02-intro",
+      "product": "fe86354a8d86aca3df9921c67c37e482cfb4857d",
+      "path": "global/floating-cta.css",
+      "base": "166e9d8d47a1884aaf8773017516e86c5ad01637",
+      "baseTree": "5d69246011654b6cdacadb12e32314aa1698f793",
+      "inverseTree": "b4b17730de517df0c7a72cc8cf8529cae8d8675c",
+      "inverseBlob": "bca93ee2be9baa8b2dfbffcf5b97d97e5b35c89f",
+      "contentFile": "/workspace/artifacts/helix-next-20261117/recovery/d02-intro/global/floating-cta.css",
+      "inverseBytesSHA256": "0076417595ff5219568506ef56bcc55bc44f1c909e313f63a31197e34f9990ff",
+      "branch": "recovery/helix-next-d02-intro-20261117",
+      "patchRoundTripExact": true,
+      "changedPaths": [
+        "global/floating-cta.css"
+      ],
+      "recoveryCommit": "7eaf567586675ef30e8a29dbee3ff2d7e39eb98c",
+      "url": "https://github.com/pookat73-prog/helixamc-webflow/commit/7eaf567586675ef30e8a29dbee3ff2d7e39eb98c",
+      "appliedToWorkBranch": false
+    },
+    {
+      "unit": "d07-zig",
+      "product": "34f093c274fb180b26ac8d2574359fd3acac4adc",
+      "path": "home/global/sections-animations.js",
+      "base": "166e9d8d47a1884aaf8773017516e86c5ad01637",
+      "baseTree": "5d69246011654b6cdacadb12e32314aa1698f793",
+      "inverseTree": "ecb05b8223a47738dcffd84952202c8669eee2d7",
+      "inverseBlob": "83a51636bfa685384313b29934290a2eb4ddf0cf",
+      "contentFile": "/workspace/artifacts/helix-next-20261117/recovery/d07-zig/home/global/sections-animations.js",
+      "inverseBytesSHA256": "61be6611be54640a41ca0ee6770456f8691d65b349aa5eefa35407fc4a7059e4",
+      "branch": "recovery/helix-next-d07-zig-20261117",
+      "patchRoundTripExact": true,
+      "changedPaths": [
+        "home/global/sections-animations.js"
+      ],
+      "recoveryCommit": "85a46dcd003f57969d0cb0b3232f6c0bad4327e1",
+      "url": "https://github.com/pookat73-prog/helixamc-webflow/commit/85a46dcd003f57969d0cb0b3232f6c0bad4327e1",
+      "appliedToWorkBranch": false
+    },
+    {
+      "unit": "d04-css-v2",
+      "product": "db92c09f505607790063c135553ec73bc5b77d80 and b0fa5486116282fd623579362312912754d662e3",
+      "products": [
+        "db92c09f505607790063c135553ec73bc5b77d80",
+        "b0fa5486116282fd623579362312912754d662e3"
+      ],
+      "path": "global/bootstrap.js",
+      "base": "b0fa5486116282fd623579362312912754d662e3",
+      "baseTree": "da50f9adc3da8300511c6114018a056e71bf8bfa",
+      "inverseTree": "7ef67eefc8944f5226615cb149b3433408d4e247",
+      "inverseBlob": "856de6593d97f6045cb31806a12375321aa9bb86",
+      "contentFile": "/workspace/artifacts/helix-next-20261117/recovery/d04-css-v2/global/bootstrap.js",
+      "inverseBytesSHA256": "de99fb663a836ccee6b69fc3315bc476652467a3e3dd63f3ed395cf350ef7a12",
+      "branch": "recovery/helix-next-final-d04-css-20261117",
+      "patchRoundTripExact": true,
+      "changedPaths": [
+        "global/bootstrap.js"
+      ],
+      "supersedes": "e840c46797475adb979a56e0811993bb0dd1db6f",
+      "recoveryCommit": "d5db1fa0258f67cb576193920546ea4af947289f",
+      "url": "https://github.com/pookat73-prog/helixamc-webflow/commit/d5db1fa0258f67cb576193920546ea4af947289f",
+      "appliedToWorkBranch": false
+    }
+  ],
+  "supersededD04Recovery": "e840c46797475adb979a56e0811993bb0dd1db6f reverts only the first D04 draft and is not the final recovery; kept as history",
+  "verification": "Every inverse changes one listed runtime file; reverse/forward patch roundtrip exact; remote inverse trees match independently computed local temporary-index tree SHAs. Earlier D05/D02/D07 inverse target-file bytes remain identical at final runtime; later D04 code is preserved when only their patch is applied."
+}

@@ -1,0 +1,128 @@
+{
+  "status": "corrected D04 component candidate PASS; db92-only owner state is superseded",
+  "productCommits": [
+    "db92c09f505607790063c135553ec73bc5b77d80",
+    "b0fa5486116282fd623579362312912754d662e3"
+  ],
+  "frozenRuntime": "b0fa5486116282fd623579362312912754d662e3",
+  "regression": "Actual FAQ reused its CSS link on fallback; stale node-only failure record made shared loader add a third request.166 selected normal8 passed but missed this failure path.",
+  "correction": "Record failed node+URL; invalidate when owner changes href; remove failure on native successful load of same node; remove both observation listeners on boot. No tag deletion, public pin change or nonmenu/JS recovery expansion.",
+  "actualConsumersRun": {
+    "name": "css-owner-full",
+    "base": "166e9d8d47a1884aaf8773017516e86c5ad01637",
+    "conditions": 32,
+    "consumers": [
+      "services/new-tag",
+      "faq/reused-tag"
+    ],
+    "widths": [
+      1440,
+      390
+    ],
+    "scenarios": [
+      "normal",
+      "fallback-wins",
+      "foreign-fails",
+      "permanent"
+    ],
+    "versions": [
+      "original",
+      "candidate"
+    ],
+    "FAQSuccessRequests": {
+      "before": 3,
+      "after": 2
+    },
+    "foreignOwnerTagsNeverRemoved": true,
+    "duplicateEntryExtraRequests": 0,
+    "permanentAvailabilityRecovered": false,
+    "permanentOwnRequestsBounded": 2
+  },
+  "nativeBoundaryRun": {
+    "name": "same-url-owner-early",
+    "conditions": 4,
+    "base": "166e9d8d47a1884aaf8773017516e86c5ad01637",
+    "controlledDerivedFixture": true,
+    "publicSiteOrHeadModified": false,
+    "definition": "One explicit retry owner added to a SHA-verified copy of imaging HTML head; native error/retry/load on one node and exact URL, before boot. Not an actual published page-loader claim.",
+    "cases": [
+      {
+        "width": 1440,
+        "version": "original",
+        "requests": 2,
+        "foreignTags": 1,
+        "sharedTags": 1,
+        "nativeOwner": {
+          "failures": 1,
+          "loads": 1,
+          "createdAt": "loading",
+          "errorAt": "interactive",
+          "loadAt": "interactive"
+        }
+      },
+      {
+        "width": 1440,
+        "version": "candidate",
+        "requests": 2,
+        "foreignTags": 1,
+        "sharedTags": 0,
+        "nativeOwner": {
+          "failures": 1,
+          "loads": 1,
+          "createdAt": "loading",
+          "errorAt": "interactive",
+          "loadAt": "interactive"
+        }
+      },
+      {
+        "width": 390,
+        "version": "original",
+        "requests": 2,
+        "foreignTags": 1,
+        "sharedTags": 1,
+        "nativeOwner": {
+          "failures": 1,
+          "loads": 1,
+          "createdAt": "loading",
+          "errorAt": "interactive",
+          "loadAt": "interactive"
+        }
+      },
+      {
+        "width": 390,
+        "version": "candidate",
+        "requests": 2,
+        "foreignTags": 1,
+        "sharedTags": 0,
+        "nativeOwner": {
+          "failures": 1,
+          "loads": 1,
+          "createdAt": "loading",
+          "errorAt": "interactive",
+          "loadAt": "interactive"
+        }
+      }
+    ],
+    "document": {
+      "originalSHA256": "a4f52fcd6233194f0e7e8a315de4c98333736fac01d4714f64256ccf2b248607",
+      "derivedSHA256": "4a77efc958af7afecc55c703b3b62573aeb0c3ee93f66976b05bdc83e23f191e",
+      "change": "Add one explicit same-URL retry owner during head parse; original corpus untouched"
+    }
+  },
+  "failedEarlierNativeFixture": "DCL owner insertion did not establish preboot phase and concurrent identical URLs could merge. Its expected3request assert failed; retained as invalid initial fixture, not a product fix or successful run.",
+  "unexpectedNetworkAndPageErrors": 0,
+  "externalForwarded": 0,
+  "separateFullRunsNotAggregated": "Actual32 and controlled4 are separate full unit runs; not claimed one36-condition suite. Final continuous integration explicitly includes selected FAQ4 and native4.",
+  "remaining": [
+    "Foreign JS error phase",
+    "Menu CSS errors outside observed preboot window",
+    "Hanging/no-error requests",
+    "Mixed public pins"
+  ],
+  "recovery": "d5db1fa0258f67cb576193920546ea4af947289f reverses both D04 products as one isolated file change, retains earlier ownCSS/JS bounded retry; olde840 recovery is superseded",
+  "localOnlyRawEvidence": "/workspace/artifacts/helix-next-20261117",
+  "resultHashes": {
+    "css-owner-full": "b0f8a637b90574bfd073dcdff1a1f078316e4f9e7ea1cf17b69d55440c60354a",
+    "same-url-owner-early": "f03567d3604cdf16ea2e431ef6902dac7ab31d7f740d564361a3838185733bc4"
+  }
+}
