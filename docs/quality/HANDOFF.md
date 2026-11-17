@@ -4,7 +4,7 @@
 
 ## 현재 실행 — 2026-11-17 구조 개선
 
-사용자 후속 지시에 따라 dffc740에서 `fix/helix-structure-20261117`을 분기해 실제 구조 개선을 진행한다. [08-structural-execution.md](08-structural-execution.md)가 최신 실행 기록이다. V0 새 paint 명령 가설은 0/1,109/0px로 실패했고, 첫 카드 명령은 이미지 uniqueID 제외 동일했다. 근거 없는 처방 없이 제한 조사를 닫고 독립적인 D05/D03/D02 개선을 이어간다. U01은V0 원래 통과 조건 충족 시에만 기존 hunk를 이관한다. 기존 세 기능 수정과 다른 작업자의 코드·실패 이력은 보존하며 main/staging 병합·공개 설정 변경·배포는 없다. D05-U04 폼 높이는9→2개의 base/mobile 소유자로 줄였고108쌍의 CSS·geometry·픽셀이 동일했다. mobile-bar/overlap/legacy는 보존했다. D03/D02는 아직 검증 중이며 전체 구조 안정화 완료가 아니다. 아래는 이전 전달 당시 기록이다.
+사용자 후속 지시에 따라 dffc740에서 `fix/helix-structure-20261117`을 분기해 실제 구조 개선을 진행한다. [08-structural-execution.md](08-structural-execution.md)가 최신 실행 기록이다. V0 새 paint 명령 가설은 0/1,109/0px로 실패했고, 첫 카드 명령은 이미지 uniqueID 제외 동일했다. 근거 없는 처방 없이 제한 조사를 닫고 독립적인 D05/D03/D02 개선을 이어간다. U01은V0 원래 통과 조건 충족 시에만 기존 hunk를 이관한다. 기존 세 기능 수정과 다른 작업자의 코드·실패 이력은 보존하며 main/staging 병합·공개 설정 변경·배포는 없다. D05-U04 폼 높이는9→2개의 base/mobile 소유자로 줄였고108쌍의 CSS·geometry·픽셀이 동일했다. mobile-bar/overlap/legacy는 보존했다. D03-U03은 실제 조기 해제940–960ms를 재현해 제어2→1·hold1500ms로 개선했고6쌍을 통과했다. D02는 아직 검증 중이며 전체 구조 안정화 완료가 아니다. 아래는 이전 전달 당시 기록이다.
 
 ## 현재 인계 — 승인된 후속 안정화
 

@@ -30,3 +30,13 @@ U01·D02·D03·D04/D06/D07과 D05 나머지 속성은 아직 해결 완료가 �
 `scripts/visual/cta-height.cjs`: 실제 현재 CTA DOM을 오프라인 추출해18폭×6상태=**108쌍**에서 전체 요소/가상요소의 모든 계산 CSS·geometry·PNG가 전후 동일했다. 360/479/767/991/1279 경계와 양옆을 포함한다. 최종38/28/44 값과 base/mobile 각1개 소유자도 정방향 검사한다. 포커스15·모의 제출6 통과. 통합 후보(D03 포함)의 기존 홈 메뉴/폼/카드 상호작용3크기 통과. 첫 도구 실행은 잘못된 기본Playwright 경로로 버전 가드가 차단했고, 이후 고정1.57.0에서만 검사했다. 검사 코드의 SVG className/CSS nesting rule 순회 오류를 수정했으며 제품 기준을 바꾸지 않았다.
 
 이 개선의 성공은 **높이 변경 위치를 상태별로 예측 가능하게 만들고 이전 최종 디자인을 그대로 보존한 것**이다. D05 전체 CSS 중복 해소나 전체 시각 검사 통과를 의미하지 않는다. 복구는 이 D05 커밋만 revert. 원시 결과 `/workspace/artifacts/helix-structure-20261117/d05/`.
+
+## D03-U03 실제 결과
+
+실제 현재 입력의1440px에서 동일한 보이는 bt3에 `sections-animations.js`와 `buttons.js`가 각각 set/remove/loop를 실행했다. section fadeComplete 약11,373ms 뒤 buttons 타이머는12,329ms에 먼저 inline을 제거했고 section 타이머는12,873ms에 다시 제거했다. 단순 경쟁 가설이 아니라 **1.5초 hold를 약0.96초로 줄이는 실행 결함**을 재현했다. 숨은 모바일/PC 복제 DOM의 이벤트도 구분해 계측했다.
+
+수정은 buttons.js의 glow 대상에서 `.bt-box-3`만 제외(주석 포함3줄 변경)한다. bt3의 fade/hold/loop는 기존 sections-animations.js가 소유하며 bt1/2/4와 소개는 기존 담당자가 유지된다. 색·shadow값·5초 loop·fade duration·hold 값·측정 핸들러는 변경하지 않았다. 사용자 실행 지시와 LOCKED의 의도적 bt3 제외 계약에 부합한다.
+
+`scripts/visual/glow-ownership.cjs`: 보존한 기존 기능 패치를 양쪽에 동일 적용한 뒤 buttons.js만 전후 비교했다. **3크기×2시나리오=6쌍** 모두 원본 set/remove/loop 각2회→후보 각1회, fade 후hold 약940–960ms→1500–1501ms. 실제 CSSStyleDeclaration 쓰기/제거 call stack·GSAP fade 완료·loop 전환을 기록했다. cold 일반 진입, warm 왕복(추가 쓰기0), 빠른 이탈/재진입, reduced-motion+CSS/font1200ms 지연을 포함했다. 모든 보이는 bt1/2/3/4의 최종 크기·텍스트·opacity·shadow·곡률·loop가 동일하고 hero 완료 이벤트 유지, JS/네트워크 오류·외부 전달0. 소비 로더는 home/bootstrap(.v2)이며 소개는 about.js의 별도 클래스/제어를 쓴다.
+
+warm은 동일 문서 재진입이며 디스크 cache 검증은 아니다. 지연 검사는 임의 로더 실패나 Safari/실기기 모션 판정을 대신하지 않는다. D03의 bt3 중복 제어만 격리 후보 통과이며 hero 준비/viewport 연동 등은 미완료다. 복구는 이 D03 커밋만 revert. 원시 계측 `/workspace/artifacts/helix-structure-20261117/d03/results.json`.

@@ -83,6 +83,144 @@
     "replay": "current-main immutable input + final immutable extras; external forwarding0, JS/network errors0",
     "restore": "revert D05 commit only"
   },
-  "d03": "pending",
+  "d03": {
+    "status": "bt3 single-owner isolated candidate PASS; hero/viewport ownership remains unresolved",
+    "sourceChange": "Remove only bt-box-3 from generic glow selector; retain emergency click tracking and all timing/colors/CSS values",
+    "pairs": [
+      {
+        "width": 1440,
+        "scenario": "normal-warm",
+        "beforeHoldMS": 955.9,
+        "afterHoldMS": 1500.4,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 0,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 1440,
+        "scenario": "fast-reduced-delayed",
+        "beforeHoldMS": 945,
+        "afterHoldMS": 1500.6,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 22,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "scenario": "normal-warm",
+        "beforeHoldMS": 959.9,
+        "afterHoldMS": 1500.5,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 0,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "scenario": "fast-reduced-delayed",
+        "beforeHoldMS": 945.1,
+        "afterHoldMS": 1500.6,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 22,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 390,
+        "scenario": "normal-warm",
+        "beforeHoldMS": 960,
+        "afterHoldMS": 1500.5,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 0,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 390,
+        "scenario": "fast-reduced-delayed",
+        "beforeHoldMS": 939.7,
+        "afterHoldMS": 1501,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 22,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      }
+    ],
+    "limitations": [
+      "Warm means same-page reentry, not browser disk-cache validation (offline routing disables HTTP cache).",
+      "Late CSS/font requests were delayed1200ms; no proof for arbitrary loader failure.",
+      "Chromium only, no Safari/iOS device or motion perception review."
+    ],
+    "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+    "restore": "revert D03 commit only"
+  },
   "d02": "pending"
 }
