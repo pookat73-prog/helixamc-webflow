@@ -23,6 +23,16 @@
 
 ## 단위 P1 — 생산자의 native 실패 소유권 철회
 
+## 실제 자산 채택 후보 — 공개 설정 미변경
+
+현재 공개 services pin ba91d70의 전체 tree를 기준으로 **services/bootstrap.js 한 파일만** 두 독립 커밋으로 이관한 [별도 채택 후보7195463](https://github.com/pookat73-prog/helixamc-webflow/tree/candidate/helix-services-owner-adoption-20261117)을 준비했다. 다른 asset Git blob은 전부 공개 pin과 같고, 생산자 bytes는 위 실제 pinned 함수 이관 검사와 동일하다. 작업 브랜치 전체나 최신 main/staging을 섞지 않았다. [자산24개·검증·복구](evidence/consistency-adoption-package.json).
+
+실제 후보 immutable URL24개의 HTTP200/payload SHA/Git blob을 확보한 새 입력으로 **게시 기준/후보×2폭×정상/두실패/영구실패12조건을 한 번 완전히 실행**했다. 정상 배치/문구/타이포는 exact이며 메뉴/Escape/초점을 보존했다. 공개 구공통로더와도 두실패 뒤 기존2요청/menu0→후보3요청/menu1로 회복했다. 구공통로더는1회만 요청하므로 영구실패 상한도3이다. 작업 소스 공통로더의2회/총4회 상한과 구분한다. 영구실패는 기능 통과가 아니다.
+
+원래 브라우저 live 시도는 DNS EAI_AGAIN으로 중단됐다. 대체 읽기 경로의 최초 실제 응답도21/24였고3개가403이었다. 불완전한 묶음으로 재생을 기동한 준비 순서 오류를 보존하고 전체 검증을 중단했다. 응답 헤더 재진단에서 동일 URL3개가200/후보commit을 반환하고 payload SHA가 immutable blob과 같아진 새 사실을 확인했다. 기존 실패를 바꾸지 않고 완전한 별도24응답을 구성해 새12조건만 판정했다. 동일 SHA의 기존 content-addressed payload를 재사용한3개는 출처를 명시했고 과거 URL 응답을 새 응답으로 대체하지 않았다. 최초403의 원인은 미확정이며 특정 실행환경/시점의 실제 도달과 재생 검증이다.
+
+[공개 head 변경안](evidence/consistency-proposed-services-head.patch)은 구pin→7195463의 구체적 **미적용 제안**이다. 공개 head/설정/pin·main/staging·Publish·운영은 바꾸지 않았다. 이 외부 변경은 별도 승인 대상이며 후보의 공개 staging 도달을 주장하지 않는다. 원격 source/판정/해시/복구는 보존하지만 body/PNG/전체 로그는 로컬 전용이다. 작업 소스의 최종18단계 연속 검증은 별도로 진행 중이다.
+
 후속 독립 단위 P2 제품 `7bea97c`: 공통 로더가 메뉴를 실제 복구한 뒤 services 생산자가 재진입하면 메뉴 JS를 다시 요청하던 원본을 재현했다. 기존 initialized map에 메뉴의 초기화 점유 guard 한 항목만 연결해 그 추가 요청을1→0으로 줄였다. 단일4조건(2폭×원본/후보)에서 메뉴/초기화1회와 실제 열기/Escape/초점을 보존했다. P1은 양쪽 대조군에 동일하게 유지했다. **guard=true는 점유 의미이며 실행 성공의 증거로 승격하지 않는다.** [판정·독립 역커밋](evidence/consistency-claimed-adoption.json).
 
 제품 `90ee4a2`는 services 메뉴JS가 native error를 받은 뒤 **그 생산자 자신의 실패 script만** 제거한다. 기존 정확한 URL 오류 기록은 detached node에 남고 기존 fallback/공통 retry 상한은 그대로다. 공통 로더가 다른 생산자의 태그를 삭제하지 않는다. pending·성공·다른 모듈·CSS는 손대지 않았다.

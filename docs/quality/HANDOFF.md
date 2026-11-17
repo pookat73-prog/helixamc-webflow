@@ -4,6 +4,8 @@
 
 ## 진행 중 — D04 혼합 자산 및 로더 상태
 
+공개 pin을 바꾸지 않은 채, 실제 ba91 자산 집합에서 services/bootstrap.js 한 파일만 이관한 [채택 후보7195463](https://github.com/pookat73-prog/helixamc-webflow/tree/candidate/helix-services-owner-adoption-20261117)을 준비했다. 다른 asset blob은 동일하고 실제 후보 URL24개의200/바이트를 검증한 입력의 단일12조건에서 구공통로더와도 두실패 뒤 메뉴를 복구했다. [판정·별도복구·실제도달 한계](evidence/consistency-adoption-package.json), [미적용 공개head 제안](evidence/consistency-proposed-services-head.patch). 최초 DNS/403/불완전 입력 실패는 보존했고 이후 새 완전한 실행만 판정했다. 공개 설정 변경은 별도 승인 대상이며 적용하지 않았다. 작업 소스18단계와 별도 후보12조건은 합산하지 않는다.
+
 두 번째 독립 제품 `7bea97c`: 이미 공통 소유자가 초기화를 점유한 메뉴에 생산자가 추가 요청하던 원본을 재현했고, 기존 guard 연결 한 항목으로 추가 요청1→0을 검증했다(2폭 원본/후보4조건, 메뉴/초기화1회·Escape/초점 보존). [결과·역커밋](evidence/consistency-claimed-adoption.json). 실행 중 예외로 guard만 남는 경우는 성공으로 보지 않으며 미해결이다.
 
 첫 제품 단위 `90ee4a2`: services 생산자가 native 실패한 자기 메뉴 script만 철회해 구공통로더도 복구할 수 있게 했다. 원본2요청/menu0→후보3요청/menu1, 단일16조건에서 정상1/현재 실제fallback2/영구상한4 및 Escape·닫기·초점/중복 진입을 확인했다. [결과·역커밋](evidence/consistency-native-owner.json). shared-only의 소비자 이전 오류는 미해결이며 HTTP200 실행 예외·guard=true/menu0도 별도 진단했다. 과거 이벤트가 없는 상태를 tag/Resource Timing만으로 추측하지 않았다. 다음은 이미 다른 소유자가 초기화를 점유한 뒤 생산자가 불필요하게 다시 요청하는지 별도 단위로 검증한다.

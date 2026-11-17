@@ -1,0 +1,286 @@
+{
+  "basePublishedPin": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+  "candidateBranch": "candidate/helix-services-owner-adoption-20261117",
+  "candidateCommits": [
+    {
+      "stage": "p1",
+      "commit": "5f9e55fcbd773e1c01f9b9402f92386ea418e66a",
+      "tree": "e3da32b2deec3b7c793cc44e15a9d61bd9312d4d",
+      "blob": "c6f0bd69bfc5927ba3583957f03bcbc38caf9137"
+    },
+    {
+      "stage": "p2",
+      "commit": "719546330ce1413b2e68b6c3da45dd2d3798e7eb",
+      "tree": "12eee2c553021d48d4a705de1607bd206849c713",
+      "blob": "58f2c046e4987311544d79f2bb575899f7df0aa9"
+    }
+  ],
+  "onlyChangedPath": "services/bootstrap.js",
+  "otherAssetBlobsUnchanged": true,
+  "candidateCDN24": {
+    "schema": 1,
+    "target": "production",
+    "requests": {
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/bootstrap.js": {
+        "sha256": "3fbf77621adc78be33679decb8665e49de6a4caa30b76c0d4495e8d965c63f84",
+        "bytes": 9472,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:43:01.273415+00:00",
+        "gitBlob": "58f2c046e4987311544d79f2bb575899f7df0aa9",
+        "repositoryPath": "services/bootstrap.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/hamburger.js": {
+        "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+        "bytes": 17566,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:43:01.151694+00:00",
+        "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+        "repositoryPath": "home/global/hamburger.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/hamburger.css": {
+        "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+        "bytes": 6150,
+        "status": 200,
+        "contentType": "text/css; charset=utf-8",
+        "capturedAt": "2026-11-17T08:43:00.828648+00:00",
+        "gitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+        "repositoryPath": "home/global/hamburger.css"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/accessibility.js": {
+        "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+        "bytes": 2766,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:50.486381+00:00",
+        "gitBlob": "c949be9275f5132ff7f3c76bddbbba08940800be",
+        "repositoryPath": "global/accessibility.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/floating-cta.css": {
+        "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+        "bytes": 32381,
+        "status": 200,
+        "contentType": "text/css; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:50.527998+00:00",
+        "gitBlob": "6b0d8186e5ec2b5b8e111224127f06e87b5f864e",
+        "repositoryPath": "global/floating-cta.css"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/ga4-base.js": {
+        "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+        "bytes": 10322,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:51.200965+00:00",
+        "gitBlob": "8ddcc180a2c49b621f28f43f859f1d0efa3a44cb",
+        "repositoryPath": "global/ga4-base.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/global.css": {
+        "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+        "bytes": 25435,
+        "status": 200,
+        "contentType": "text/css; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:51.020609+00:00",
+        "gitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+        "repositoryPath": "global/global.css"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/measure-gate.js": {
+        "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+        "bytes": 10986,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:51.570870+00:00",
+        "gitBlob": "ea949e7ee740511bd49bc05a36484e4b161eea6c",
+        "repositoryPath": "global/measure-gate.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/page-time.js": {
+        "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+        "bytes": 13879,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:51.657315+00:00",
+        "gitBlob": "7e967543f45750cdaf23c3b9955e57569d68f95d",
+        "repositoryPath": "global/page-time.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/scroll-depth.js": {
+        "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+        "bytes": 9587,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:52.577635+00:00",
+        "gitBlob": "5bc1efee585ec4af7ce33164a84609c858ef8915",
+        "repositoryPath": "global/scroll-depth.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/section-reach.js": {
+        "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+        "bytes": 25990,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:52.557806+00:00",
+        "gitBlob": "e3f887cdc1f3341a9f8b0caae581eed7af862956",
+        "repositoryPath": "global/section-reach.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/session.js": {
+        "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+        "bytes": 19836,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:53.863939+00:00",
+        "gitBlob": "2883424b7b044dff4ee9b84292005fe27e8a198e",
+        "repositoryPath": "global/session.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/sheet-log.js": {
+        "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+        "bytes": 8372,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:53.831894+00:00",
+        "gitBlob": "5f29d93e99fce5d24338f5396d1b0427efd1ff5d",
+        "repositoryPath": "global/sheet-log.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/viewport.js": {
+        "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+        "bytes": 7222,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:54.480157+00:00",
+        "gitBlob": "e78e469ea1dd5c92960a470e3b76419286f15d21",
+        "repositoryPath": "global/viewport.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/coming-soon.css": {
+        "sha256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf",
+        "bytes": 11376,
+        "status": 200,
+        "contentType": "text/css; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:54.899143+00:00",
+        "gitBlob": "532401d127df54bd5d319f795e60884b395ad2a6",
+        "repositoryPath": "home/global/coming-soon.css"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/coming-soon.js": {
+        "sha256": "f66d26b7a67be609590a95a2a8105f7ba10b9612c8ea330a9b717e9cea950076",
+        "bytes": 47092,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:55.670456+00:00",
+        "gitBlob": "36a6b333dd5dd244142f978cd7cecdd3cdf8c26d",
+        "repositoryPath": "home/global/coming-soon.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/dept-border.js": {
+        "sha256": "a162b309be91d539561491aa14f3e7d963626563d61ef10172eaefbdf34fe1fb",
+        "bytes": 14870,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:56.306484+00:00",
+        "gitBlob": "b1b91aaa06ccac5a2b1960fc45922be96d8c8aec",
+        "repositoryPath": "services/dept-border.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/dept-nav.js": {
+        "sha256": "6e4188c65ffe5b89409e7ee455af51b6300d7968687a5085ada1bef3810ef5e7",
+        "bytes": 9621,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:56.482571+00:00",
+        "gitBlob": "2d81af7fbe8d0d54bba2fbb17b6c1cab397f918f",
+        "repositoryPath": "services/dept-nav.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/seo-loader.js": {
+        "sha256": "430b57d4c9487d117f02a76512ed2dfcafbbf715237e03366ad9ad1244e37844",
+        "bytes": 1749,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:57.021925+00:00",
+        "gitBlob": "19e0fd3234d332b3fed99184259b73702b0f2cac",
+        "repositoryPath": "services/seo-loader.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/services-ga.js": {
+        "sha256": "e5c080d14c3f9f5904ece38b9139fd3dfd8f985aa1729de52fb53f7336739bb3",
+        "bytes": 3762,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:57.201837+00:00",
+        "gitBlob": "48cf550071f08912cbe401da4b63c51555b6a600",
+        "repositoryPath": "services/services-ga.js"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/services.css": {
+        "sha256": "5c4541c344115bfd50051a6e85b1091299be306307e8281ff3d51dd1441f7076",
+        "bytes": 2307,
+        "status": 200,
+        "contentType": "text/css; charset=utf-8",
+        "capturedAt": "2026-11-17T08:53:56.953716+00:00",
+        "gitBlob": "973a48dd770e10b0077f44d814e2ff14aee2fe9f",
+        "repositoryPath": "services/services.css"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/floating-cta.js": {
+        "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+        "bytes": 37747,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:55:40.749648+00:00",
+        "gitBlob": "d0d0969fc77064a20eda33bf68f6dab15329668b",
+        "repositoryPath": "global/floating-cta.js",
+        "deduplicatedIdenticalPayloadFrom": "/workspace/artifacts/helix-residual-20261117/inputs/services/bodies/c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+        "provenance": "Actual NEW immutable URL returned200 with this exact SHA256 in diagnostic observation; identical content-addressed payload reused, not a historical response substitution"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/viewport-fix.js": {
+        "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+        "bytes": 5970,
+        "status": 200,
+        "contentType": "application/javascript; charset=utf-8",
+        "capturedAt": "2026-11-17T08:55:40.749648+00:00",
+        "gitBlob": "cab59c9a81d82cd30078da7608bcd48e8b7677f4",
+        "repositoryPath": "global/viewport-fix.js",
+        "deduplicatedIdenticalPayloadFrom": "/workspace/artifacts/helix-residual-20261117/inputs/services/bodies/1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+        "provenance": "Actual NEW immutable URL returned200 with this exact SHA256 in diagnostic observation; identical content-addressed payload reused, not a historical response substitution"
+      },
+      "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/seo-snippets/services.html": {
+        "sha256": "61f91d61220c8aaa633abd927583c0f13f5639913e87d5685e09e1383307d9a3",
+        "bytes": 4358,
+        "status": 200,
+        "contentType": "text/plain; charset=utf-8",
+        "capturedAt": "2026-11-17T08:55:40.749648+00:00",
+        "gitBlob": "87516d11f052b96e518c007e1a7c2793d7cd5005",
+        "repositoryPath": "seo-snippets/services.html",
+        "deduplicatedIdenticalPayloadFrom": "/workspace/artifacts/helix-residual-20261117/inputs/services/bodies/61f91d61220c8aaa633abd927583c0f13f5639913e87d5685e09e1383307d9a3",
+        "provenance": "Actual NEW immutable URL returned200 with this exact SHA256 in diagnostic observation; identical content-addressed payload reused, not a historical response substitution"
+      }
+    }
+  },
+  "isolatedBrowserConditions": 12,
+  "publishedBaseNormal": "1request/1menu",
+  "publishedBaseNativeTwice": "2requests/0menu",
+  "proposedNativeTwice": "3requests/1menu; actual unchanged public shared loader has1attempt, not the work-source2attempts",
+  "proposedPermanent": "3requests/0menu bounded, not availability pass",
+  "normalGeometryTextTypography": "exact at1440/390",
+  "interaction": "Menu open/Escape/focus verified with actual published menu module bytes",
+  "publicHeadWrite": false,
+  "published": false,
+  "approvalStatus": "NOT APPROVED: proposed public head change only. Source/pin/Publish needs explicit approval; availability was transient and isolated replay is not public staging adoption.",
+  "sourceReview": "Package derives from exact ba91 published asset set, not wholesale audit branch; tested candidate producer bytes match3fbf77621adc78be33679decb8665e49de6a4caa30b76c0d4495e8d965c63f84",
+  "deliveryFailures": "First browser route.fetch DNS EAI_AGAIN; proxy capture21/24 with3HTTP403; incomplete-input replay preparation error retained. Stopped and re-diagnosed. Same3URLs subsequently200 with candidate commit headers and exact body SHA; new complete24-response input created. No historical response substitution and no combining failed/partial runs.403 origin not established.",
+  "recovery": [
+    {
+      "unit": "native",
+      "commit": "2b48adc8b6c53b0ce0a0330eae9f4f27298f4c79",
+      "branch": "recovery/helix-loader-package-native-20261117"
+    },
+    {
+      "unit": "claim",
+      "commit": "f702659d50cb18e02be4e3170c9848a2f16a6c3a",
+      "branch": "recovery/helix-loader-package-claim-20261117"
+    }
+  ],
+  "evidenceSHA256": {
+    "package/github-proof.json": "aa958fd23f313cf556404e88b8058a9e2a6c9e75895e7b7c77cfd202c0598bd6",
+    "package/preparation.json": "2b7e18b6d397a970b9c4d66f80f5e213a87c149f95a085bdb30eac299e1025c1",
+    "package-browser.log": "f2cd2d21da19a41e396729d91033438f4da34fb203acfd54db90fae9dc1a277a",
+    "package-prefetched-browser.log": "5dbf92267edf9e723949ea6525a75dbc0f921880eabc061f4670a9b1ea0bc027",
+    "package/live-input/prefetch-observation.json": "b9f4029889d258c11a33513cc202b34c70340518bb328e5741745f500cc2f612",
+    "package/live-input/blocked-response-diagnosis.json": "953a98cc098cca35dd8a305f9820f4e4ea7dec60cc867af412f23afa2a9841d0",
+    "package/complete-input/manifest.json": "23ac082bdb525d3a9d1a1ee2c322c39a9336becd3aa5a06cbfaeee5727b73c98",
+    "package/browser-complete/results.json": "70630cf92433319048fa13e51f449f2b606779d72367fa2c4497e258d73416f9",
+    "package-complete-browser.log": "281292c1102b0cffae559fc4f12b51e3eb8377cc71f98ad4cd020248bc660415",
+    "package-complete-observe.cjs": "19cc5754b5d37357e05a1d0e9bcf5c7045db5a66e783548e61c7719893a1b427",
+    "package/proposed-services-head.patch": "82a2c59e8aa9b5cb499bc3b9e9e75e2116d9bcdfbbf7a727091dfed00885c6c8"
+  },
+  "rawStorage": "Local only; GitHub records source commits, manifests/verdict/hashes and proposed patch; not a remote binary archive"
+}
