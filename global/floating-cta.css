@@ -627,13 +627,6 @@ html:has(#hxFctaModal.is-open) {
   color: var(--hx-ink-sub);
 }
 
-/* Consent copy owns emergency token wrapping, including its label/link text.
-   Keep the checkbox, other form roots and global Korean policy outside it. */
-.hx-fcta-form .hx-fcta-consent__body,
-.hx-fcta-form .hx-fcta-consent__body * {
-  overflow-wrap: anywhere !important;
-}
-
 .hx-fcta-consent__text { cursor: pointer; }
 
 .hx-fcta-consent__more {
