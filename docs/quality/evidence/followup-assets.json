@@ -1,0 +1,795 @@
+{
+  "at": "2026-11-16T08:17:01.984Z",
+  "browser": "151.0.7922.173",
+  "main": "307898486e80dc209ed7d1c5755c24c0875a3935",
+  "staging": "490a3133320d63b197d138498cffd7690bd1d074",
+  "audit": "02c92adaf65db1f63553c3f82ae5e419a65eb677",
+  "published": [
+    {
+      "origin": "https://www.helix-amc.com",
+      "status": 200,
+      "htmlSha256": "df123389398bc0f8603a9116972a1ad8396ff7861fe9b9621106329a5bb2e603",
+      "runtimeRef": "307898486e80dc209ed7d1c5755c24c0875a3935",
+      "overflow": [
+        {
+          "tag": "HTML",
+          "x": "hidden",
+          "y": "auto"
+        },
+        {
+          "tag": "BODY",
+          "x": "hidden",
+          "y": "auto"
+        }
+      ],
+      "counts": {
+        "menus": 1,
+        "forms": 1
+      },
+      "pageErrors": [
+        "Network request failed"
+      ],
+      "assets": [
+        {
+          "url": "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.73c0c0934.css",
+          "sha256": "c80fabcb96548d6add4357df0c3d3a6d5f5f8e82d14d5482d1c4637729c43a06",
+          "bytes": 636639,
+          "status": 200,
+          "contentType": "text/css",
+          "capturedAt": "2026-11-16T08:16:54.662Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js",
+          "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+          "bytes": 10986,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.637Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js",
+          "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+          "bytes": 10322,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.638Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js",
+          "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+          "bytes": 19836,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.635Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js",
+          "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+          "bytes": 8372,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.616Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+          "sha256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+          "bytes": 406,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.624Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ddec5a48f0231645682ae1b3b31f111162e0f2e1/home/bootstrap-v3.js",
+          "sha256": "64557acb69b846217fccdd58415a640698ec1dbaf76112f1a57db2e5ea181845",
+          "bytes": 7526,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:47.579Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/bootstrap.js",
+          "sha256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+          "bytes": 18354,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:49.575Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/ga4-base.js",
+          "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+          "bytes": 10322,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:49.117Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/global.css",
+          "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "bytes": 36744,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.015Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/coming-soon.css",
+          "sha256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf",
+          "bytes": 11376,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.044Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/section1/section1.css",
+          "sha256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+          "bytes": 2817,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:49.830Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/buttons.css",
+          "sha256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+          "bytes": 20934,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:49.830Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/floating-cta.css",
+          "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+          "bytes": 32381,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.251Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/floating-cta-mobile-fix.css",
+          "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+          "bytes": 2829,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.043Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/popup.css",
+          "sha256": "e3b66db802850b637f585166c191b266ff5dadfcc7c93c96b59c43a952407fec",
+          "bytes": 2963,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.134Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/top-button.css",
+          "sha256": "4814c4b5bbdf7bdecc137e946230626a5daace3c7373e8d5c6a4e1a3860a4917",
+          "bytes": 2123,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.361Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/hamburger.css",
+          "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "bytes": 6150,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.134Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/section-divider/divider.css",
+          "sha256": "e44b794d46188d27baeb392efef2ab760b73c814eb3bfc225a0e36e4942a2e38",
+          "bytes": 812,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.085Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/sections-animations.css",
+          "sha256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+          "bytes": 10435,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.202Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/footer.css",
+          "sha256": "07d55be895e65677451897f1ee18c46b7fe3c816181b346e3dac80f26a427ed2",
+          "bytes": 4569,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.084Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/card-stack.css",
+          "sha256": "eb09a7a4b4e814b54a8bdeff06586bbe2e898c24b7a1afca16c8c8254cf87949",
+          "bytes": 4788,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.058Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/scroll-hint.css",
+          "sha256": "1b86941e2f8211beb3e0a4b16b329886601d9f47ba61d2102c4b35d3f24db3d7",
+          "bytes": 3704,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.121Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/session.js",
+          "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+          "bytes": 19836,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.086Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/viewport-fix.js",
+          "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+          "bytes": 5970,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.126Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/viewport.js",
+          "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+          "bytes": 7222,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:49.885Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/coming-soon.js",
+          "sha256": "70e41d018b4448c33914cc8441372a675aded2a504c9a3f049cf6082a39665da",
+          "bytes": 47891,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.088Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/section1/section1.js",
+          "sha256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+          "bytes": 18817,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.055Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/sheet-log.js",
+          "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+          "bytes": 8372,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.309Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/accessibility.js",
+          "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+          "bytes": 2766,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.367Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/floating-cta.js",
+          "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+          "bytes": 37747,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.413Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/floating-cta-mobile-fix.js",
+          "sha256": "c0a4047f21eda63d1dd1a9515e8e61e9f26f5aad44bfb59b6e367e41bb14b6f2",
+          "bytes": 708,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.556Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/scroll-depth.js",
+          "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+          "bytes": 9587,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.556Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/page-time.js",
+          "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+          "bytes": 13879,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.429Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/section-reach.js",
+          "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+          "bytes": 25990,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.519Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/popup.js",
+          "sha256": "084203181dbbbb7f5ef59c4dd147c62233bf990019fcacd1282a24cafd5b698a",
+          "bytes": 4803,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.581Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/top-button.js",
+          "sha256": "6e15de8e59a72fb710b64710853894dc1ed41ff30a3afb864faa3f7a518cd995",
+          "bytes": 6157,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.429Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/hamburger.js",
+          "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "bytes": 17566,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.429Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/section-divider/divider.js",
+          "sha256": "be4e75046c098ebe31def5bf605a5f34264a3ac0a7cb55ddcc8c2ffe9a4f1f83",
+          "bytes": 9632,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.536Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/buttons.js",
+          "sha256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+          "bytes": 28585,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.521Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/sections-animations.js",
+          "sha256": "8f2dfda1aec1a107f18315f074df469969c2e6a13ae4328c6db9b45dfcbf2d79",
+          "bytes": 42042,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.606Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/footer.js",
+          "sha256": "ef8868bc098ea8400b5c17a5ab92e2b59a310997aa3d99919270d7290d0c0928",
+          "bytes": 21139,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.613Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/card-stack.js",
+          "sha256": "c1e3179b6439138cdefdf5f334d50ebef3f48ecb0568bd24d0c1d584ebf6888c",
+          "bytes": 19556,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.613Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/global/scroll-hint.js",
+          "sha256": "0006a7950afb4ade3d2ebb6ccac015e4f9188f6d39c6804363543ec41a839bde",
+          "bytes": 5299,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.517Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/home/equipment/equipment.js",
+          "sha256": "32fff2ffa274b44e9eece631d044467ca87c088d2e84e27c3937c1538e6d078e",
+          "bytes": 8444,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.536Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/scroll-depth.js",
+          "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+          "bytes": 9587,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.556Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/page-time.js",
+          "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+          "bytes": 13879,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:50.429Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@307898486e80dc209ed7d1c5755c24c0875a3935/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "bytes": 13954,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:51.554Z"
+        }
+      ]
+    },
+    {
+      "origin": "https://helixanimalmedicalcenter.webflow.io",
+      "status": 200,
+      "htmlSha256": "5fa6570a3bf911f8fcd38f9a9b15f1c1d5cc02bd9117eb2d0077729b85c5d784",
+      "runtimeRef": "0011fc2323a69260f758f84bc13e0a289e78d9b4",
+      "overflow": [
+        {
+          "tag": "HTML",
+          "x": "hidden",
+          "y": "auto"
+        },
+        {
+          "tag": "BODY",
+          "x": "hidden",
+          "y": "auto"
+        }
+      ],
+      "counts": {
+        "menus": 1,
+        "forms": 1
+      },
+      "pageErrors": [
+        "Network request failed"
+      ],
+      "assets": [
+        {
+          "url": "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.73c0c0934.css",
+          "sha256": "c80fabcb96548d6add4357df0c3d3a6d5f5f8e82d14d5482d1c4637729c43a06",
+          "bytes": 636639,
+          "status": 200,
+          "contentType": "text/css",
+          "capturedAt": "2026-11-16T08:16:54.662Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js",
+          "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+          "bytes": 10986,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.637Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js",
+          "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+          "bytes": 10322,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.638Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js",
+          "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+          "bytes": 19836,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.635Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js",
+          "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+          "bytes": 8372,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.616Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+          "sha256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+          "bytes": 406,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:54.624Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/bootstrap.js",
+          "sha256": "b557102e2dd1d17f20ea959ae25ac577ef121c9626d5c687d136ef3da1ff827b",
+          "bytes": 16637,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.281Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/viewport-fix.js",
+          "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+          "bytes": 5970,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.254Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/viewport.js",
+          "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+          "bytes": 7222,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.276Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/accessibility.js",
+          "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+          "bytes": 2766,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.271Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/global.css",
+          "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+          "bytes": 25435,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.368Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/floating-cta.css",
+          "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+          "bytes": 32381,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.377Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/floating-cta.js",
+          "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+          "bytes": 37747,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.309Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/floating-cta-mobile-fix.css",
+          "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+          "bytes": 2829,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.368Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/floating-cta-mobile-fix.js",
+          "sha256": "c0a4047f21eda63d1dd1a9515e8e61e9f26f5aad44bfb59b6e367e41bb14b6f2",
+          "bytes": 708,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.280Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/scroll-depth.js",
+          "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+          "bytes": 9587,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.280Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/page-time.js",
+          "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+          "bytes": 13879,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.330Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/section-reach.js",
+          "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+          "bytes": 25990,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.330Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/hamburger.css",
+          "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "bytes": 6150,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.367Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/hamburger.js",
+          "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "bytes": 17566,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.330Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/coming-soon.css",
+          "sha256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf",
+          "bytes": 11376,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.368Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/coming-soon.js",
+          "sha256": "19ad1d056f46381787eb421ca7011928ac780c968883d5fabd61861866e9e21d",
+          "bytes": 47219,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.341Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/section1/section1.css",
+          "sha256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+          "bytes": 2817,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.352Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/section1/section1.js",
+          "sha256": "fa734c16f84c2c9c908979e7c3258f4199cb47b35cd0fcbacc2e5c07bb3932e9",
+          "bytes": 18264,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.333Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/section-divider/divider.css",
+          "sha256": "e44b794d46188d27baeb392efef2ab760b73c814eb3bfc225a0e36e4942a2e38",
+          "bytes": 812,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.368Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/section-divider/divider.js",
+          "sha256": "be4e75046c098ebe31def5bf605a5f34264a3ac0a7cb55ddcc8c2ffe9a4f1f83",
+          "bytes": 9632,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.350Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/buttons.css",
+          "sha256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+          "bytes": 20934,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.376Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/buttons.js",
+          "sha256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+          "bytes": 28585,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.496Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/sections-animations.css",
+          "sha256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+          "bytes": 10435,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.368Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/sections-animations.js",
+          "sha256": "c6ca5c364581b9cbe117d9cccf58b4784deac1a83487bf6e4c7364d5c028be2e",
+          "bytes": 41930,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.822Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/footer.css",
+          "sha256": "07d55be895e65677451897f1ee18c46b7fe3c816181b346e3dac80f26a427ed2",
+          "bytes": 4569,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.377Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/footer.js",
+          "sha256": "ef8868bc098ea8400b5c17a5ab92e2b59a310997aa3d99919270d7290d0c0928",
+          "bytes": 21139,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.833Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/card-stack.css",
+          "sha256": "eb09a7a4b4e814b54a8bdeff06586bbe2e898c24b7a1afca16c8c8254cf87949",
+          "bytes": 4788,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.377Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/card-stack.js",
+          "sha256": "c1e3179b6439138cdefdf5f334d50ebef3f48ecb0568bd24d0c1d584ebf6888c",
+          "bytes": 19556,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:58.065Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/scroll-hint.css",
+          "sha256": "1b86941e2f8211beb3e0a4b16b329886601d9f47ba61d2102c4b35d3f24db3d7",
+          "bytes": 3704,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.839Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/global/scroll-hint.js",
+          "sha256": "0006a7950afb4ade3d2ebb6ccac015e4f9188f6d39c6804363543ec41a839bde",
+          "bytes": 5299,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.350Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/home/equipment/equipment.js",
+          "sha256": "32fff2ffa274b44e9eece631d044467ca87c088d2e84e27c3937c1538e6d078e",
+          "bytes": 8444,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.365Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/popup.css",
+          "sha256": "e3b66db802850b637f585166c191b266ff5dadfcc7c93c96b59c43a952407fec",
+          "bytes": 2963,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.391Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/popup.js",
+          "sha256": "084203181dbbbb7f5ef59c4dd147c62233bf990019fcacd1282a24cafd5b698a",
+          "bytes": 4803,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.938Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/top-button.css",
+          "sha256": "4814c4b5bbdf7bdecc137e946230626a5daace3c7373e8d5c6a4e1a3860a4917",
+          "bytes": 2123,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:56.405Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@0011fc2323a69260f758f84bc13e0a289e78d9b4/global/top-button.js",
+          "sha256": "2b276a16d59b979c6d41425ceb89ddcab04a78d4d057e3288ccda1760fbbbe8a",
+          "bytes": 6071,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.350Z"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@490a3133320d63b197d138498cffd7690bd1d074/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "bytes": 13954,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-16T08:16:57.496Z"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Network request failed pageerror once per page; not counted as zero",
+    "Only desktop live asset probe; no candidate deployed",
+    "staging fixed home purpose/owner unconfirmed; retained"
+  ],
+  "tipComparison": {
+    "runtimeFilesIdentical": true,
+    "differentPaths": [
+      "docs/eomharim-restore-2026-11-16.md"
+    ],
+    "warning": "GitHub compare changed-files is relative to merge base, not direct tip difference; initial interpretation corrected"
+  }
+}

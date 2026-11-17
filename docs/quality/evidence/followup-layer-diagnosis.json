@@ -1,0 +1,498 @@
+{
+  "version": "Chromium151.0.7922.173 Debian13",
+  "samples": [
+    {
+      "run": 0,
+      "pixels": 21,
+      "cardLayers": [
+        {
+          "layerId": "18",
+          "parentLayerId": "5",
+          "backendNodeId": 97,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 440,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            42,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 32,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 359
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        },
+        {
+          "layerId": "19",
+          "parentLayerId": "5",
+          "backendNodeId": 117,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 424,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            378,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 33,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 343
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "run": 1,
+      "pixels": 2202,
+      "cardLayers": [
+        {
+          "layerId": "18",
+          "parentLayerId": "5",
+          "backendNodeId": 97,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 440,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            42,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 33,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 359
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        },
+        {
+          "layerId": "19",
+          "parentLayerId": "5",
+          "backendNodeId": 117,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 424,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            378,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 33,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 343
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "pixels": 2202,
+      "cardLayers": [
+        {
+          "layerId": "17",
+          "parentLayerId": "5",
+          "backendNodeId": 96,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 440,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            42,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 32,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 359
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        },
+        {
+          "layerId": "18",
+          "parentLayerId": "5",
+          "backendNodeId": 116,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 424,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            378,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 32,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 343
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "pixels": 0,
+      "cardLayers": [
+        {
+          "layerId": "17",
+          "parentLayerId": "5",
+          "backendNodeId": 96,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 440,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            42,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 33,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 359
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        },
+        {
+          "layerId": "18",
+          "parentLayerId": "5",
+          "backendNodeId": 116,
+          "offsetX": 0,
+          "offsetY": 0,
+          "width": 400,
+          "height": 424,
+          "transform": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            378,
+            248,
+            0,
+            1
+          ],
+          "anchorX": 0,
+          "anchorY": 0,
+          "anchorZ": 0,
+          "paintCount": 33,
+          "drawsContent": true,
+          "scrollRects": [
+            {
+              "rect": {
+                "x": 40,
+                "y": 18,
+                "width": 320,
+                "height": 343
+              },
+              "type": "TouchEventHandler"
+            }
+          ],
+          "cls": "home_branch-card is-shadowed",
+          "reasons": {
+            "compositingReasons": [
+              "Has a will-change: transform compositing hint.",
+              "Has a will-change: opacity compositing hint."
+            ],
+            "compositingReasonIds": [
+              "WillChangeTransform",
+              "WillChangeOpacity"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "fontNetworkOrder": {
+    "candidate310vsIndependent282": "30 Typekit requests, exact same ordered request/body-hash list; all129requests same count"
+  },
+  "partialRasterDisabled": [
+    {
+      "run": 0,
+      "pixels": 881
+    },
+    {
+      "run": 1,
+      "pixels": 0
+    },
+    {
+      "run": 2,
+      "pixels": 310
+    }
+  ],
+  "conclusion": "persistent will-change compositing confirmed; final layer transforms/offsets equal across passing/failing runs; internal raster-cache cause still unconfirmed; no product/test style mutation adopted",
+  "temporaryHintDropAndExactRestore": [
+    {
+      "run": 0,
+      "pixels": 661
+    },
+    {
+      "run": 1,
+      "pixels": 661
+    },
+    {
+      "run": 2,
+      "pixels": 661
+    },
+    {
+      "run": 3,
+      "pixels": 661
+    }
+  ],
+  "temporaryHintConclusion": "4 runs stayed at661px, still above100px. Repaint normalization was diagnostic only and not adopted; gold image and source CSS stay unchanged."
+}

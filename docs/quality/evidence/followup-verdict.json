@@ -1,0 +1,1304 @@
+{
+  "atKST": "2026-11-16T18:03:48.947401+09:00",
+  "reviewedCodeCommit": "933d5c025057fb0e0311e1d845cf22099a405b8c",
+  "overall": "INCOMPLETE: visual stability and full structural stabilization remain blocked",
+  "implementation": "isolated functional candidates passed; never deployed",
+  "sourceChanges": [
+    "home/global/hamburger.css",
+    "home/global/hamburger.js",
+    "home/global/sections-animations.js",
+    "global/floating-cta.css"
+  ],
+  "unchangedSubmissionJs": true,
+  "referencePolicy": {
+    "maxDiffPixels": 100,
+    "threshold": 0.2,
+    "pngCount": 33,
+    "pngChanges": 0,
+    "masksAdded": 0,
+    "expectedFailuresAdded": 0
+  },
+  "independentReview": {
+    "method": "fresh git archive of reviewed commit, separate directory and browser contexts; same agent, not a separate human reviewer",
+    "currentFunctionalResults": [
+      {
+        "pathname": "/",
+        "width": 1440,
+        "checks": {
+          "scrollControlAvailable": true,
+          "menuBackgroundLocked": true,
+          "menuFocusRestored": true,
+          "menuScrollRestored": true,
+          "formBackgroundLocked": true,
+          "formScrollRestored": true,
+          "formFocusRestored": true,
+          "overlapRetains-menu": true,
+          "overlapReleases-menu": true,
+          "overlapRetains-form": true,
+          "overlapReleases-form": true,
+          "coldCardsVisible": true,
+          "cardsAfter990-1": true,
+          "cardsAfter991-2": true,
+          "cardsAfter992-3": true,
+          "cardsAfter766-4": true,
+          "cardsAfter767-5": true,
+          "cardsAfter768-6": true,
+          "cardsAfter478-7": true,
+          "cardsAfter479-8": true,
+          "cardsAfter480-9": true,
+          "cardsAfter820-10": true,
+          "cardsAfter1440-11": true,
+          "networkErrors": true,
+          "pageErrors": true,
+          "zeroExternalRequests": true
+        },
+        "failures": [],
+        "menuStart": 0,
+        "menuEnd": 0,
+        "menuReleased": 600,
+        "formStart": 0,
+        "formEnd": 0,
+        "formReleased": 600,
+        "coldCards": [
+          {
+            "cls": "div-block-151 is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 262.078125,
+              "y": 392.84375,
+              "width": 280.078125,
+              "height": 329.765625,
+              "top": 392.84375,
+              "right": 542.15625,
+              "bottom": 722.609375,
+              "left": 262.078125
+            }
+          },
+          {
+            "cls": "home_branch-card is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 262.078125,
+              "y": 392.84375,
+              "width": 280.078125,
+              "height": 329.765625,
+              "top": 392.84375,
+              "right": 542.15625,
+              "bottom": 722.609375,
+              "left": 262.078125
+            }
+          },
+          {
+            "cls": "div-block-151 is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 570.953125,
+              "y": 392.84375,
+              "width": 280.078125,
+              "height": 329.765625,
+              "top": 392.84375,
+              "right": 851.03125,
+              "bottom": 722.609375,
+              "left": 570.953125
+            }
+          },
+          {
+            "cls": "home_branch-card is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 570.953125,
+              "y": 392.84375,
+              "width": 280.078125,
+              "height": 329.765625,
+              "top": 392.84375,
+              "right": 851.03125,
+              "bottom": 722.609375,
+              "left": 570.953125
+            }
+          },
+          {
+            "cls": "home_background_svicc",
+            "opacity": 1,
+            "box": {
+              "x": 879.828125,
+              "y": 326.609375,
+              "width": 560.171875,
+              "height": 453.59375,
+              "top": 326.609375,
+              "right": 1440,
+              "bottom": 780.203125,
+              "left": 879.828125
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "width": 990,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 99,
+                  "y": 0.015625,
+                  "width": 386.09375,
+                  "height": 360.34375,
+                  "top": 0.015625,
+                  "right": 485.09375,
+                  "bottom": 360.359375,
+                  "left": 99
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 504.890625,
+                  "y": 0.015625,
+                  "width": 386.109375,
+                  "height": 344.34375,
+                  "top": 0.015625,
+                  "right": 891,
+                  "bottom": 344.359375,
+                  "left": 504.890625
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 99,
+                  "y": 392.359375,
+                  "width": 891,
+                  "height": 416.875,
+                  "top": 392.359375,
+                  "right": 990,
+                  "bottom": 809.234375,
+                  "left": 99
+                }
+              }
+            ]
+          },
+          {
+            "width": 991,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 99.09375,
+                  "y": 0.03125,
+                  "width": 386.5,
+                  "height": 360.34375,
+                  "top": 0.03125,
+                  "right": 485.59375,
+                  "bottom": 360.375,
+                  "left": 99.09375
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 505.40625,
+                  "y": 0.03125,
+                  "width": 386.5,
+                  "height": 344.34375,
+                  "top": 0.03125,
+                  "right": 891.90625,
+                  "bottom": 344.375,
+                  "left": 505.40625
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 99.09375,
+                  "y": 392.375,
+                  "width": 891.90625,
+                  "height": 417.0625,
+                  "top": 392.375,
+                  "right": 991,
+                  "bottom": 809.4375,
+                  "left": 99.09375
+                }
+              }
+            ]
+          },
+          {
+            "width": 992,
+            "cards": [
+              {
+                "cls": "div-block-151 is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 180.53125,
+                  "y": 549.1875,
+                  "width": 192.953125,
+                  "height": 227.75,
+                  "top": 549.1875,
+                  "right": 373.484375,
+                  "bottom": 776.9375,
+                  "left": 180.53125
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 180.53125,
+                  "y": 549.1875,
+                  "width": 192.953125,
+                  "height": 227.75,
+                  "top": 549.1875,
+                  "right": 373.484375,
+                  "bottom": 776.9375,
+                  "left": 180.53125
+                }
+              },
+              {
+                "cls": "div-block-151 is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 393.3125,
+                  "y": 549.1875,
+                  "width": 192.953125,
+                  "height": 227.75,
+                  "top": 549.1875,
+                  "right": 586.265625,
+                  "bottom": 776.9375,
+                  "left": 393.3125
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 393.3125,
+                  "y": 549.1875,
+                  "width": 192.953125,
+                  "height": 227.75,
+                  "top": 549.1875,
+                  "right": 586.265625,
+                  "bottom": 776.9375,
+                  "left": 393.3125
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 606.09375,
+                  "y": 503.5625,
+                  "width": 385.90625,
+                  "height": 313.046875,
+                  "top": 503.5625,
+                  "right": 992,
+                  "bottom": 816.609375,
+                  "left": 606.09375
+                }
+              }
+            ]
+          },
+          {
+            "width": 766,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 76.59375,
+                  "y": 489.359375,
+                  "width": 294.40625,
+                  "height": 269.40625,
+                  "top": 489.359375,
+                  "right": 371,
+                  "bottom": 758.765625,
+                  "left": 76.59375
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 395,
+                  "y": 489.359375,
+                  "width": 294.40625,
+                  "height": 253.40625,
+                  "top": 489.359375,
+                  "right": 689.40625,
+                  "bottom": 742.765625,
+                  "left": 395
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 76.59375,
+                  "y": 790.765625,
+                  "width": 689.40625,
+                  "height": 178.96875,
+                  "top": 790.765625,
+                  "right": 766,
+                  "bottom": 969.734375,
+                  "left": 76.59375
+                }
+              }
+            ]
+          },
+          {
+            "width": 767,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 76.6875,
+                  "y": 489.359375,
+                  "width": 294.8125,
+                  "height": 269.40625,
+                  "top": 489.359375,
+                  "right": 371.5,
+                  "bottom": 758.765625,
+                  "left": 76.6875
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 395.5,
+                  "y": 489.359375,
+                  "width": 294.8125,
+                  "height": 253.40625,
+                  "top": 489.359375,
+                  "right": 690.3125,
+                  "bottom": 742.765625,
+                  "left": 395.5
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 76.6875,
+                  "y": 790.765625,
+                  "width": 690.3125,
+                  "height": 179.09375,
+                  "top": 790.765625,
+                  "right": 767,
+                  "bottom": 969.859375,
+                  "left": 76.6875
+                }
+              }
+            ]
+          },
+          {
+            "width": 768,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 76.796875,
+                  "y": 463.140625,
+                  "width": 299.515625,
+                  "height": 359,
+                  "top": 463.140625,
+                  "right": 376.3125,
+                  "bottom": 822.140625,
+                  "left": 76.796875
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 391.671875,
+                  "y": 463.140625,
+                  "width": 299.53125,
+                  "height": 343,
+                  "top": 463.140625,
+                  "right": 691.203125,
+                  "bottom": 806.140625,
+                  "left": 391.671875
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 76.796875,
+                  "y": 854.140625,
+                  "width": 691.203125,
+                  "height": 384.0625,
+                  "top": 854.140625,
+                  "right": 768,
+                  "bottom": 1238.203125,
+                  "left": 76.796875
+                }
+              }
+            ]
+          },
+          {
+            "width": 478,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 32,
+                  "y": 229.484375,
+                  "width": 414,
+                  "height": 352.796875,
+                  "top": 229.484375,
+                  "right": 446,
+                  "bottom": 582.28125,
+                  "left": 32
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 32,
+                  "y": 612.671875,
+                  "width": 414,
+                  "height": 331.65625,
+                  "top": 612.671875,
+                  "right": 446,
+                  "bottom": 944.328125,
+                  "left": 32
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 32,
+                  "y": 990.65625,
+                  "width": 446,
+                  "height": 288.921875,
+                  "top": 990.65625,
+                  "right": 478,
+                  "bottom": 1279.578125,
+                  "left": 32
+                }
+              }
+            ]
+          },
+          {
+            "width": 479,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 32,
+                  "y": 229.484375,
+                  "width": 415,
+                  "height": 352.796875,
+                  "top": 229.484375,
+                  "right": 447,
+                  "bottom": 582.28125,
+                  "left": 32
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 32,
+                  "y": 612.671875,
+                  "width": 415,
+                  "height": 331.65625,
+                  "top": 612.671875,
+                  "right": 447,
+                  "bottom": 944.328125,
+                  "left": 32
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 32,
+                  "y": 990.6875,
+                  "width": 447,
+                  "height": 289.234375,
+                  "top": 990.6875,
+                  "right": 479,
+                  "bottom": 1279.921875,
+                  "left": 32
+                }
+              }
+            ]
+          },
+          {
+            "width": 480,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 48,
+                  "y": 199.359375,
+                  "width": 180,
+                  "height": 312.484375,
+                  "top": 199.359375,
+                  "right": 228,
+                  "bottom": 511.84375,
+                  "left": 48
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 252,
+                  "y": 199.359375,
+                  "width": 180,
+                  "height": 296.484375,
+                  "top": 199.359375,
+                  "right": 432,
+                  "bottom": 495.84375,
+                  "left": 252
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 48,
+                  "y": 543.84375,
+                  "width": 432,
+                  "height": 136.65625,
+                  "top": 543.84375,
+                  "right": 480,
+                  "bottom": 680.5,
+                  "left": 48
+                }
+              }
+            ]
+          },
+          {
+            "width": 820,
+            "cards": [
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 82,
+                  "y": 644.4375,
+                  "width": 319.796875,
+                  "height": 359.3125,
+                  "top": 644.4375,
+                  "right": 401.796875,
+                  "bottom": 1003.75,
+                  "left": 82
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 418.1875,
+                  "y": 644.4375,
+                  "width": 319.8125,
+                  "height": 343.3125,
+                  "top": 644.4375,
+                  "right": 738,
+                  "bottom": 987.75,
+                  "left": 418.1875
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 82,
+                  "y": 1035.75,
+                  "width": 738,
+                  "height": 391.75,
+                  "top": 1035.75,
+                  "right": 820,
+                  "bottom": 1427.5,
+                  "left": 82
+                }
+              }
+            ]
+          },
+          {
+            "width": 1440,
+            "cards": [
+              {
+                "cls": "div-block-151 is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 262.078125,
+                  "y": 569.84375,
+                  "width": 280.078125,
+                  "height": 329.765625,
+                  "top": 569.84375,
+                  "right": 542.15625,
+                  "bottom": 899.609375,
+                  "left": 262.078125
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 262.078125,
+                  "y": 569.84375,
+                  "width": 280.078125,
+                  "height": 329.765625,
+                  "top": 569.84375,
+                  "right": 542.15625,
+                  "bottom": 899.609375,
+                  "left": 262.078125
+                }
+              },
+              {
+                "cls": "div-block-151 is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 570.953125,
+                  "y": 569.84375,
+                  "width": 280.078125,
+                  "height": 329.765625,
+                  "top": 569.84375,
+                  "right": 851.03125,
+                  "bottom": 899.609375,
+                  "left": 570.953125
+                }
+              },
+              {
+                "cls": "home_branch-card is-shadowed",
+                "opacity": 1,
+                "box": {
+                  "x": 570.953125,
+                  "y": 569.84375,
+                  "width": 280.078125,
+                  "height": 329.765625,
+                  "top": 569.84375,
+                  "right": 851.03125,
+                  "bottom": 899.609375,
+                  "left": 570.953125
+                }
+              },
+              {
+                "cls": "home_background_svicc",
+                "opacity": 1,
+                "box": {
+                  "x": 879.828125,
+                  "y": 503.609375,
+                  "width": 560.171875,
+                  "height": 453.59375,
+                  "top": 503.609375,
+                  "right": 1440,
+                  "bottom": 957.203125,
+                  "left": 879.828125
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "pathname": "/",
+        "width": 820,
+        "checks": {
+          "scrollControlAvailable": true,
+          "menuBackgroundLocked": true,
+          "menuFocusRestored": true,
+          "menuScrollRestored": true,
+          "formBackgroundLocked": true,
+          "formScrollRestored": true,
+          "formFocusRestored": true,
+          "overlapRetains-menu": true,
+          "overlapReleases-menu": true,
+          "overlapRetains-form": true,
+          "overlapReleases-form": true,
+          "coldCardsVisible": true,
+          "networkErrors": true,
+          "pageErrors": true,
+          "zeroExternalRequests": true
+        },
+        "failures": [],
+        "menuStart": 0,
+        "menuEnd": 0,
+        "menuReleased": 600,
+        "formStart": 0,
+        "formEnd": 0,
+        "formReleased": 600,
+        "coldCards": [
+          {
+            "cls": "home_branch-card is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 82,
+              "y": 396.4375,
+              "width": 319.796875,
+              "height": 359.3125,
+              "top": 396.4375,
+              "right": 401.796875,
+              "bottom": 755.75,
+              "left": 82
+            }
+          },
+          {
+            "cls": "home_branch-card is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 418.1875,
+              "y": 396.4375,
+              "width": 319.8125,
+              "height": 343.3125,
+              "top": 396.4375,
+              "right": 738,
+              "bottom": 739.75,
+              "left": 418.1875
+            }
+          },
+          {
+            "cls": "home_background_svicc",
+            "opacity": 1,
+            "box": {
+              "x": 82,
+              "y": 787.75,
+              "width": 738,
+              "height": 391.75,
+              "top": 787.75,
+              "right": 820,
+              "bottom": 1179.5,
+              "left": 82
+            }
+          }
+        ]
+      },
+      {
+        "pathname": "/",
+        "width": 390,
+        "checks": {
+          "scrollControlAvailable": true,
+          "menuBackgroundLocked": true,
+          "menuFocusRestored": true,
+          "menuScrollRestored": true,
+          "formBackgroundLocked": true,
+          "formScrollRestored": true,
+          "formFocusRestored": true,
+          "overlapRetains-menu": true,
+          "overlapReleases-menu": true,
+          "overlapRetains-form": true,
+          "overlapReleases-form": true,
+          "coldCardsVisible": true,
+          "networkErrors": true,
+          "pageErrors": true,
+          "zeroExternalRequests": true
+        },
+        "failures": [],
+        "menuStart": 0,
+        "menuEnd": 0,
+        "menuReleased": 600,
+        "formStart": 0,
+        "formEnd": 0,
+        "formReleased": 600,
+        "coldCards": [
+          {
+            "cls": "home_branch-card is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 32,
+              "y": 200.96875,
+              "width": 326,
+              "height": 352.796875,
+              "top": 200.96875,
+              "right": 358,
+              "bottom": 553.765625,
+              "left": 32
+            }
+          },
+          {
+            "cls": "home_branch-card is-shadowed",
+            "opacity": 1,
+            "box": {
+              "x": 32,
+              "y": 584.15625,
+              "width": 326,
+              "height": 331.125,
+              "top": 584.15625,
+              "right": 358,
+              "bottom": 915.28125,
+              "left": 32
+            }
+          },
+          {
+            "cls": "home_background_svicc",
+            "opacity": 1,
+            "box": {
+              "x": 32,
+              "y": 958.96875,
+              "width": 358,
+              "height": 260.796875,
+              "top": 958.96875,
+              "right": 390,
+              "bottom": 1219.765625,
+              "left": 32
+            }
+          }
+        ]
+      }
+    ],
+    "closedStatePairs": [
+      {
+        "width": 1440,
+        "pass": true
+      },
+      {
+        "width": 820,
+        "pass": true
+      },
+      {
+        "width": 390,
+        "pass": true
+      }
+    ],
+    "nonHomeFrozenSuite": {
+      "startTime": "2026-11-16T08:54:26.107Z",
+      "duration": 143408.875,
+      "expected": 15,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "footerSuite": {
+      "startTime": "2026-11-16T08:58:33.311Z",
+      "duration": 18525.852000000003,
+      "expected": 0,
+      "skipped": 1,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "footerDiffPixels": 282
+  },
+  "candidateFullSuite": {
+    "stats": {
+      "startTime": "2026-11-16T08:43:54.896Z",
+      "duration": 85554.846,
+      "expected": 7,
+      "skipped": 13,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "footerDiffPixels": 310,
+    "notRun": 13,
+    "conclusion": "not full green; split suites never aggregated into one successful full run"
+  },
+  "negativeControl": {
+    "changedOnly": "temporary external overlay: reservation button background",
+    "pixels": 4548,
+    "exitCode": 1,
+    "removedFromSource": true
+  },
+  "mobile480OriginalRepeat": [
+    {
+      "run": 0,
+      "pixelsVsFirst": 0,
+      "networkErrors": [],
+      "forwarded": 0
+    },
+    {
+      "run": 1,
+      "pixelsVsFirst": 0,
+      "networkErrors": [],
+      "forwarded": 0
+    },
+    {
+      "run": 2,
+      "pixelsVsFirst": 0,
+      "networkErrors": [],
+      "forwarded": 0
+    }
+  ],
+  "footerExperiments": {
+    "diagnosis": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 1206,
+        "sha256": "a4f6a1dc752e2c75e7470801895b6fa94047bb3a895ffb093a701209273f4cc0",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 1206,
+        "sha256": "5a31bb6764d2e3427e627fdd02731a65a0812ba34dfbfe24d68b1ce35e6d0f36",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 1097,
+        "sha256": "61be1c2a7fbe0d46fb1a63501ecde29af4e52f4aa2c551383522b8d29dd548ef",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 3,
+        "pixels": 708,
+        "sha256": "ed0dcc5249ecd58bb7ea6ab6a9ac71a29860e235f9e4869b9f00ab7994180bd5",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 4,
+        "pixels": 0,
+        "sha256": "53b15a47e50583fd1f42ac7b0eaa0aa5da8209f704d53f4510540c773539b141",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 1440,
+        "run": 0,
+        "pixels": 6,
+        "sha256": "20b00934f516c3df68c81e5170f43f2c760f5ef5df0a13d942324930831db082",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 1440,
+        "run": 1,
+        "pixels": 0,
+        "sha256": "07cd58fa87b180c4ce953a17b0b896d8cba7cfb02282b44a1258f3317dfa38f8",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 1440,
+        "run": 2,
+        "pixels": 0,
+        "sha256": "07cd58fa87b180c4ce953a17b0b896d8cba7cfb02282b44a1258f3317dfa38f8",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 1440,
+        "run": 3,
+        "pixels": 0,
+        "sha256": "07cd58fa87b180c4ce953a17b0b896d8cba7cfb02282b44a1258f3317dfa38f8",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 1440,
+        "run": 4,
+        "pixels": 6,
+        "sha256": "5ff11f466af73ee2bae4c076d3aa6431d94205ec3268c96ecb6fcba36091fcf2",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "repaint": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 902,
+        "sha256": "68315e393c9a31978b3142797b81fc547dab60345fe6bd7ec059ea20e0c1afe6",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 441,
+        "sha256": "92f24293ff38e49f4ab9b4856612a5b52ea59067da335d5f3ba48e165d91dcc2",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 2087,
+        "sha256": "c42f573121dbb6f3c9b76f56e5bb362f1df058dc50d8032257536e0b3fecfac8",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "compositor": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 835,
+        "sha256": "dfbb7fcfeb6f1ca60f6bae00ff207c439b465eea92138a4b979d82ebd39ac6e7",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 814,
+        "sha256": "500cb6be7392ddb91fd301df09c6c11bed8bc301205e612540f2f6dd061b7ccc",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 0,
+        "sha256": "c325f000882ad154cc46ff16d162a50da5e6ddb96602c3514306dc3e49e66f1a",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "font-default": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 0,
+        "sha256": "b225e0c48d2c942e2998eaaf3f312504360ef508fb311b8115448103b60717e4",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 21,
+        "sha256": "fcc4d6161d957239b21f1edf735c6f39cfd411bf7f6b783736b1eda731b3ffdb",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 1096,
+        "sha256": "4a04e0a6c910c0ec455ed4a01f72db7fc385313fd43c4f6037db9021d347bda6",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 3,
+        "pixels": 0,
+        "sha256": "f2e2192d640b98b7a3b5696e20864f7f942119d6808cfe063c8bea48568660f8",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 4,
+        "pixels": 854,
+        "sha256": "88b4bbb80b2a51715ccb85ed35b030965b94819ff774ba4436bdf2d227608533",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "path": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 902,
+        "sha256": "68315e393c9a31978b3142797b81fc547dab60345fe6bd7ec059ea20e0c1afe6",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 1096,
+        "sha256": "4a04e0a6c910c0ec455ed4a01f72db7fc385313fd43c4f6037db9021d347bda6",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 881,
+        "sha256": "49ab5947788db74471ac6a45ec94bb309d4fe4dc9314407943008da5e240e259",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 3,
+        "pixels": 2087,
+        "sha256": "c42f573121dbb6f3c9b76f56e5bb362f1df058dc50d8032257536e0b3fecfac8",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "software": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 21,
+        "sha256": "fcc4d6161d957239b21f1edf735c6f39cfd411bf7f6b783736b1eda731b3ffdb",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 1264,
+        "sha256": "fa921ae05796f03ae329affc5ce2c61cf8c312c8518de88a13d5aa624abef11e",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 0,
+        "sha256": "f5c320ceebf83eec4f1d2c0eaa3a5d810df2bffc69189121be55820fd9b3171c",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "paint": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 561,
+        "sha256": "096d711cd362b756a5eac016a6aadb2eab0117c5ffef004b1b873cf5a6d147bb",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 881,
+        "sha256": "49ab5947788db74471ac6a45ec94bb309d4fe4dc9314407943008da5e240e259",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 881,
+        "sha256": "2ac71d8c4e8a4cfae956bb49b1a49c2bb158c3fe35b8a7af484ff4e2ebb1c4d4",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "hold": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 441,
+        "sha256": "aa147012d3ddebd2954c5189574c41de7f6a9e1ed27c729099a98c812b2acbcd",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 0,
+        "sha256": "b225e0c48d2c942e2998eaaf3f312504360ef508fb311b8115448103b60717e4",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 902,
+        "sha256": "68315e393c9a31978b3142797b81fc547dab60345fe6bd7ec059ea20e0c1afe6",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "clock": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 326712,
+        "sha256": "950ca896b4ec86f255b2a292b55476185c058d7f996521eabd128bd84b1cb2aa",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 331747,
+        "sha256": "b5650a4b4141bf57a699a087e8745160274bb1eb11ca32390459a42b588d25d2",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 326565,
+        "sha256": "e608824d9ef05649d0ac52202af2072dbba3303a5ec9506809d922408d88d833",
+        "errors": [],
+        "networkErrors": []
+      }
+    ],
+    "layer": [
+      {
+        "width": 820,
+        "run": 0,
+        "pixels": 2517,
+        "sha256": "bdacbc233ede404ad276ca29934eadce675c77bcc984e53c676fcfedde1ab085",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 1,
+        "pixels": 2517,
+        "sha256": "b5f174841febf8e8661e20a860dd05d819e0aaacc55370136e35ec9e527c7c81",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 2,
+        "pixels": 2517,
+        "sha256": "b5f174841febf8e8661e20a860dd05d819e0aaacc55370136e35ec9e527c7c81",
+        "errors": [],
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "run": 3,
+        "pixels": 2517,
+        "sha256": "b5f174841febf8e8661e20a860dd05d819e0aaacc55370136e35ec9e527c7c81",
+        "errors": [],
+        "networkErrors": []
+      }
+    ]
+  },
+  "remaining": [
+    "V0 compositor/raster/readiness cause not fully established; fixed-input footer still fails",
+    "U01/D01 candidate retained, not applied/promoted",
+    "D02 known wrapping conflict still unresolved (3 expected failures)",
+    "D03 duplicate control and D05 CTA declarations unresolved",
+    "D04/D06/D07 and iOS/touch/rotation/public candidate delivery remain unverified"
+  ],
+  "approvalReview": {
+    "rejected": "whole-file upload of floating-cta.js, twice, for existing Firebase payload",
+    "resolution": "discarded two JS statements; submission JS restored byte-for-byte; final change is CSS deriving existing modal state"
+  },
+  "deployment": {
+    "mainMerge": false,
+    "stagingMerge": false,
+    "publish": false,
+    "fixedHomeChanged": false,
+    "productionChanged": false
+  },
+  "latestIntegration": {
+    "branch": "fix/helix-followup-current-20261116",
+    "base": "ac87f91b91469311ddf627041504f52e35bcfceb",
+    "main": "5b8827e9a7b0430683354f1f1b3dcff45626e68d",
+    "reviewedHead": "48fe888269cc4c8ac705a41900963557df30e059",
+    "functionalPass": 3,
+    "closedStatePairsPass": 3,
+    "details": "followup-latest.json",
+    "verdictStillIncomplete": true
+  }
+}

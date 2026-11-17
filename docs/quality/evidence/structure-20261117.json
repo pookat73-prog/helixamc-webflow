@@ -1,0 +1,589 @@
+{
+  "start": "dffc7405c96bfcf0549600aa5045c2e6dc82536f",
+  "branch": "fix/helix-structure-20261117",
+  "v0": {
+    "hypothesis": "First affected card paint-command variation vs raster/compositor variation",
+    "input": "original frozen 286, no overlay, no browser/CSS change",
+    "width": 820,
+    "threshold": 0.2,
+    "maxDiffPixels": 100,
+    "runs": [
+      {
+        "run": 0,
+        "pixels": 0,
+        "sha256": "9aa04a7a6a4a74d68b6a854e7123a9b8a626821dee17fe2c41208e2c075cbae8",
+        "pageErrors": [],
+        "networkErrors": [],
+        "paintSHA256": "b683daf25e26a920fd7198b20e04681515b8f9f2481b34b529e1e8e1d3671388"
+      },
+      {
+        "run": 1,
+        "pixels": 1109,
+        "sha256": "33cca4fa665c6b7899d539e9bebb3ebcfa70c7b30a435b07bdd9268812f2c6d0",
+        "pageErrors": [],
+        "networkErrors": [],
+        "paintSHA256": "c054c3d88b09506c45c84180532f79c1b4283e8b928128874e6186730a78ac4b"
+      },
+      {
+        "run": 2,
+        "pixels": 0,
+        "sha256": "b225e0c48d2c942e2998eaaf3f312504360ef508fb311b8115448103b60717e4",
+        "pageErrors": [],
+        "networkErrors": [],
+        "paintSHA256": "352f7922784960bc575a54f87f988e00298389bb370e66d81d66af18a563705a"
+      }
+    ],
+    "paintCommands": 29,
+    "equalAfterExcludingProcessLocalImageUniqueIDs": true,
+    "limitation": "Only first card command log; same paint description is not proof of identical image raster content or whole footer compositing. No causal repair identified.",
+    "verdict": "FAIL, bounded investigation stopped; original thresholds/baselines preserved; U01 held"
+  },
+  "d05": {
+    "status": "isolated candidate PASS for form min-height only; remaining CTA properties unresolved",
+    "removedDeclarations": 7,
+    "ownersBefore": 9,
+    "ownersAfter": 2,
+    "variantOwner": "mobile-bar44px unchanged, overlap28px unchanged, legacy unchanged",
+    "pairedCases": 108,
+    "widths": [
+      320,
+      359,
+      360,
+      361,
+      390,
+      479,
+      480,
+      766,
+      767,
+      768,
+      820,
+      990,
+      991,
+      992,
+      1279,
+      1280,
+      1440,
+      1920
+    ],
+    "modes": [
+      "floating",
+      "hx-fcta-mobile-bar",
+      "hx-fcta-overlap-fix",
+      "hx-fcta-overlap-fix hx-fcta-page-home",
+      "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "legacy"
+    ],
+    "assertions": "Every element/pseudo computed declaration, geometry and component PNG byte-identical; explicit 38/28/44 values and CSSOM base/mobile owner count. No baseline relaxation.",
+    "cssSHA256": "aab5f31e84ff56eccfe8b4af494f98f3b77fb3706a0b38fb28534f300407fb11",
+    "checks": [
+      "focus15 PASS",
+      "mock-submit6 PASS",
+      "combined home interactions1440/820/390 PASS (also includes D03 candidate; not isolated D03 proof)"
+    ],
+    "replay": "current-main immutable input + final immutable extras; external forwarding0, JS/network errors0",
+    "restore": "revert D05 commit only",
+    "controlledEdits": {
+      "cases": 36,
+      "description": "Canonical base min-height38->40 is ineffective in original, effective in candidate desktop only; all compact/legacy modes and adjacent flow preserved"
+    },
+    "decoration": {
+      "status": "PASS isolated disabled-decoration visibility ownership",
+      "contentOwnersBefore": 3,
+      "contentOwnersAfter": 1,
+      "displayOwnersBefore": 2,
+      "displayOwnersAfter": 1,
+      "owners": [
+        [
+          "none",
+          "none"
+        ]
+      ],
+      "unchangedPairedStates": 108,
+      "controlledEditCases": 36,
+      "meaning": "Actual decoration remains disabled. In a CSSOM-only test, enabling the canonical decoration is ignored in original but effective in candidate; adjacent flow and legacy preserved.",
+      "scope": "content/display only; retain other pseudo geometry/variant declarations",
+      "runtimeSHA256": "a4d5f56505c2fa4b093b1d52f9fa7c732e37460d1c2dcbcf0caf25c24219d0f6"
+    }
+  },
+  "d03": {
+    "status": "bt3 single-owner isolated candidate PASS; hero/viewport ownership remains unresolved",
+    "sourceChange": "Remove only bt-box-3 from generic glow selector; retain emergency click tracking and all timing/colors/CSS values",
+    "pairs": [
+      {
+        "width": 1440,
+        "scenario": "normal-warm",
+        "beforeHoldMS": 955.9,
+        "afterHoldMS": 1500.4,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 0,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 1440,
+        "scenario": "fast-reduced-delayed",
+        "beforeHoldMS": 945,
+        "afterHoldMS": 1500.6,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 22,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "scenario": "normal-warm",
+        "beforeHoldMS": 959.9,
+        "afterHoldMS": 1500.5,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 0,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 820,
+        "scenario": "fast-reduced-delayed",
+        "beforeHoldMS": 945.1,
+        "afterHoldMS": 1500.6,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 22,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 390,
+        "scenario": "normal-warm",
+        "beforeHoldMS": 960,
+        "afterHoldMS": 1500.5,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 0,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      },
+      {
+        "width": 390,
+        "scenario": "fast-reduced-delayed",
+        "beforeHoldMS": 939.7,
+        "afterHoldMS": 1501,
+        "beforeSetRemoveLoop": [
+          2,
+          2,
+          2
+        ],
+        "afterSetRemoveLoop": [
+          1,
+          1,
+          1
+        ],
+        "heroDone": 1,
+        "reentryWrites": 0,
+        "delayedResponses": 22,
+        "unchangedAllVisibleButtonsFinal": true,
+        "networkErrors": []
+      }
+    ],
+    "limitations": [
+      "Warm means same-page reentry, not browser disk-cache validation (offline routing disables HTTP cache).",
+      "Late CSS/font requests were delayed1200ms; no proof for arbitrary loader failure.",
+      "Chromium only, no Safari/iOS device or motion perception review."
+    ],
+    "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+    "restore": "revert D03 commit only"
+  },
+  "d02": {
+    "status": "Narrow mobile process-list exception PASS; global policy and desktop exceptions remain unresolved",
+    "source": "global/global.css existing mobile root exception, no public head/pinned policy edits",
+    "removedDependency": "Component overflow-wrap no longer overridden by pinned body * important, including nested spans/links and late policy insertion",
+    "scope": "Only page69d74a8ea2cac3ea9cfed34d / #hx-im-process / .sj_step_list and descendants / <=767px",
+    "pairs": [
+      {
+        "width": 390,
+        "pathname": "/",
+        "run": "d02-remaining",
+        "nodes": 242,
+        "naturalSHA256": "efc629dc241ce46af8e05c6c318fe530f4a8ba239290be4aace429dcc63c17e2",
+        "originalSHA256": "efc629dc241ce46af8e05c6c318fe530f4a8ba239290be4aace429dcc63c17e2",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7b0430683354f1f1b3dcff45626e68d",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 390,
+        "pathname": "/discover-helix",
+        "run": "d02-remaining",
+        "nodes": 610,
+        "naturalSHA256": "e0abf2e630a0ed5d3ae9bd24ac00d0b5cac96655b0de1c3578d0846bcb6fa7a1",
+        "originalSHA256": "e0abf2e630a0ed5d3ae9bd24ac00d0b5cac96655b0de1c3578d0846bcb6fa7a1",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 390,
+        "pathname": "/faq",
+        "run": "d02-remaining",
+        "nodes": 225,
+        "naturalSHA256": "9dbadcd5d52d00d3e139f34fcb951cb843cf822855be56a92b9ef328399cc20b",
+        "originalSHA256": "9dbadcd5d52d00d3e139f34fcb951cb843cf822855be56a92b9ef328399cc20b",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 390,
+        "pathname": "/internal-medicine",
+        "run": "d02-boundary-final",
+        "nodes": 320,
+        "naturalSHA256": "638fb7d1813665707c513007ced106bc38d375f56f86fcd0b7564abc4be626df",
+        "originalSHA256": "638fb7d1813665707c513007ced106bc38d375f56f86fcd0b7564abc4be626df",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 390,
+        "pathname": "/services",
+        "run": "d02-remaining",
+        "nodes": 144,
+        "naturalSHA256": "3952b77fe6cf6d6088ae1a24aa24e658f7dd90a59edf49984cdcdda7abc806d9",
+        "originalSHA256": "3952b77fe6cf6d6088ae1a24aa24e658f7dd90a59edf49984cdcdda7abc806d9",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 820,
+        "pathname": "/",
+        "run": "d02-remaining",
+        "nodes": 249,
+        "naturalSHA256": "39635bbcd0b8d8c1efc682c8654dfe6f460d7c79fe79346d0b165cddc52be1db",
+        "originalSHA256": "39635bbcd0b8d8c1efc682c8654dfe6f460d7c79fe79346d0b165cddc52be1db",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7b0430683354f1f1b3dcff45626e68d",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 820,
+        "pathname": "/discover-helix",
+        "run": "d02-remaining",
+        "nodes": 646,
+        "naturalSHA256": "a4bbd1f26e5c6eefc77f24165ab61f9c6ba5292c7849a71274e4ea144c737cdb",
+        "originalSHA256": "a4bbd1f26e5c6eefc77f24165ab61f9c6ba5292c7849a71274e4ea144c737cdb",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 820,
+        "pathname": "/faq",
+        "run": "d02-remaining",
+        "nodes": 237,
+        "naturalSHA256": "4e47ce9cd92d6daab6d71e5a22cf72a0d4f8385673b1cbe80571bbcbb4d97b5c",
+        "originalSHA256": "4e47ce9cd92d6daab6d71e5a22cf72a0d4f8385673b1cbe80571bbcbb4d97b5c",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 820,
+        "pathname": "/internal-medicine",
+        "run": "d02-target-v2",
+        "nodes": 391,
+        "naturalSHA256": "d360aa4ff721de75bd091fbd671c4a783eb291c179e0c2142215660e8490380b",
+        "originalSHA256": "d360aa4ff721de75bd091fbd671c4a783eb291c179e0c2142215660e8490380b",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 820,
+        "pathname": "/services",
+        "run": "d02-remaining",
+        "nodes": 160,
+        "naturalSHA256": "bfd9df729bf33c36fc432d616f2b0efc46e7051c7447c74e22d8b4e17b24b2e9",
+        "originalSHA256": "bfd9df729bf33c36fc432d616f2b0efc46e7051c7447c74e22d8b4e17b24b2e9",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 1440,
+        "pathname": "/",
+        "run": "d02-final",
+        "nodes": 251,
+        "naturalSHA256": "ba630e1edf2d45dcdd0bb2b7060e2e4140f1b0ae3293deff2c9c9564b336a7d7",
+        "originalSHA256": "ba630e1edf2d45dcdd0bb2b7060e2e4140f1b0ae3293deff2c9c9564b336a7d7",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7b0430683354f1f1b3dcff45626e68d",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 1440,
+        "pathname": "/discover-helix",
+        "run": "d02-final",
+        "nodes": 646,
+        "naturalSHA256": "b47b03e35e0223872271227ea6ffcde5b53c2cfcf190bffcfc58d158a2a5ca05",
+        "originalSHA256": "b47b03e35e0223872271227ea6ffcde5b53c2cfcf190bffcfc58d158a2a5ca05",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 1440,
+        "pathname": "/faq",
+        "run": "d02-final",
+        "nodes": 237,
+        "naturalSHA256": "c995d1031ea3e8f2d929387e2a1befd9b9313d26fdd85efefa7ef2046e687e52",
+        "originalSHA256": "c995d1031ea3e8f2d929387e2a1befd9b9313d26fdd85efefa7ef2046e687e52",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 1440,
+        "pathname": "/internal-medicine",
+        "run": "d02-target-v2",
+        "nodes": 390,
+        "naturalSHA256": "94e8b4fdb09e668fdedcb09f850af82bcb21ba163c37a8664c061b7dfc37cf9c",
+        "originalSHA256": "94e8b4fdb09e668fdedcb09f850af82bcb21ba163c37a8664c061b7dfc37cf9c",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "5b8827e9a7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      },
+      {
+        "width": 1440,
+        "pathname": "/services",
+        "run": "d02-final",
+        "nodes": 159,
+        "naturalSHA256": "8a3fc5e53f489c92d4b184c26bce0717c095d1dad15f55baa3be7613447b1da3",
+        "originalSHA256": "8a3fc5e53f489c92d4b184c26bce0717c095d1dad15f55baa3be7613447b1da3",
+        "networkErrors": [],
+        "applied": {
+          "path": "global/global.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2"
+        }
+      }
+    ],
+    "mobileStress": [
+      {
+        "kind": "english",
+        "tag": "direct",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3527.171875,
+        "afterWidth": 287.625,
+        "afterLines": 14
+      },
+      {
+        "kind": "english",
+        "tag": "span",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3527.171875,
+        "afterWidth": 287.625,
+        "afterLines": 14
+      },
+      {
+        "kind": "english",
+        "tag": "a",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3527.171875,
+        "afterWidth": 287.625,
+        "afterLines": 14
+      },
+      {
+        "kind": "url",
+        "tag": "direct",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3440.46875,
+        "afterWidth": 287.625,
+        "afterLines": 13
+      },
+      {
+        "kind": "url",
+        "tag": "span",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3440.46875,
+        "afterWidth": 287.625,
+        "afterLines": 13
+      },
+      {
+        "kind": "url",
+        "tag": "a",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3440.46875,
+        "afterWidth": 287.625,
+        "afterLines": 13
+      },
+      {
+        "kind": "number",
+        "tag": "direct",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3267.078125,
+        "afterWidth": 287.625,
+        "afterLines": 13
+      },
+      {
+        "kind": "number",
+        "tag": "span",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3267.078125,
+        "afterWidth": 287.625,
+        "afterLines": 13
+      },
+      {
+        "kind": "number",
+        "tag": "a",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3267.078125,
+        "afterWidth": 287.625,
+        "afterLines": 13
+      },
+      {
+        "kind": "korean",
+        "tag": "direct",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3990.4375,
+        "afterWidth": 287.625,
+        "afterLines": 15
+      },
+      {
+        "kind": "korean",
+        "tag": "span",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3990.4375,
+        "afterWidth": 287.625,
+        "afterLines": 15
+      },
+      {
+        "kind": "korean",
+        "tag": "a",
+        "beforeOverflow": true,
+        "afterOverflow": false,
+        "beforeWidth": 3990.4375,
+        "afterWidth": 287.625,
+        "afterLines": 15
+      }
+    ],
+    "latePolicyAndOutsideClassControls": true,
+    "boundary": [
+      766,
+      767,
+      768
+    ],
+    "baseline": "12 non-home screenshot tests PASS; 3 generic D02 expected failures preserved and not counted as resolution",
+    "failuresPreserved": [
+      "Missing input CSS/JS/video/SEO/responsive PNG fail-closed runs; separate explicit acquisition, no test fallback",
+      "Initial stress assertion measured glyphs against an expanding flex item and missed section overflow. Corrected to additionally check section/viewport; product candidate unchanged."
+    ],
+    "additionalInputs": "structure-inputs-20261117.json (60 new exact captured GET responses, hashes; bodies local only)",
+    "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2",
+    "restore": "Reverse D02 runtime hunk only, retain later handoff history"
+  }
+}
