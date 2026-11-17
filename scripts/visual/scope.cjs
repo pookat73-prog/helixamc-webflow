@@ -10,7 +10,7 @@ const options = {
   ...(process.env.HELIX_INTERACTION_INPUT ? { inputRoot: path.resolve(process.env.HELIX_INTERACTION_INPUT) } : {}),
   extraRoots: (process.env.HELIX_INTERACTION_EXTRAS || '').split(',').filter(Boolean).map(p => path.resolve(p)),
 };
-const candidate = 'home/global/hamburger.css,home/global/hamburger.js,global/floating-cta.css,home/global/sections-animations.js';
+const candidate = process.env.HELIX_SCOPE_OVERLAY || 'home/global/hamburger.css,home/global/hamburger.js,global/floating-cta.css,home/global/sections-animations.js';
 (async () => {
   fs.mkdirSync(output, { recursive: true });
   const browser = await pw.chromium.launch({ executablePath: process.env.HELIX_CHROMIUM_PATH || '/usr/bin/chromium', args: ['--no-sandbox', '--disable-dev-shm-usage'], headless: true });
@@ -44,6 +44,7 @@ const candidate = 'home/global/hamburger.css,home/global/hamburger.js,global/flo
         assert.deepEqual(network.audit.errors, [], version + ' network errors');
         assert.equal(network.audit.forwarded, 0);
         pair[version + 'Overlay'] = [...new Map(network.audit.overlays.map(x => [x.path, x])).values()];
+        if (version === 'candidate') assert.ok(candidate.split(',').every(p => pair[version + 'Overlay'].some(x => x.path === p)), 'Every claimed candidate file must be consumed');
         await context.close();
       }
       try { assert.deepEqual(pair.candidate, pair.original); pair.pass = true; }

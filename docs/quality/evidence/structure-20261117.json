@@ -585,5 +585,177 @@
     "additionalInputs": "structure-inputs-20261117.json (60 new exact captured GET responses, hashes; bodies local only)",
     "sha256": "474e8c0212830a723c7d6d7223c8c2b7baa592729295f22978d58d9efb5cedf2",
     "restore": "Reverse D02 runtime hunk only, retain later handoff history"
+  },
+  "latestTransfer": {
+    "baseStaging": "3d11dd7101887bc1b1bdec2c0c14d7bc81bb39ef",
+    "observedMain": "d337d1a0be1199f93c8b357ded4944c8d38f37b5",
+    "branch": "fix/helix-structure-current-20261117",
+    "oldBranchPreserved": "fix/helix-structure-20261117",
+    "method": "Latest staging tree verified, 74 explicit documentation/test paths imported by existing blob SHA, seven runtime units replayed separately; no merge of audit branch",
+    "externalRuntimeChange": "home/global/coming-soon.css296c682... retained byte-identical",
+    "runtimeChangesBeyondBase": [
+      "global/floating-cta.css",
+      "global/global.css",
+      "home/global/buttons.js",
+      "home/global/hamburger.css",
+      "home/global/hamburger.js",
+      "home/global/sections-animations.js"
+    ],
+    "chain": [
+      {
+        "old": "d072e84b2d04ab2b3f8603353329502a62bed058",
+        "sha": "81c3d238bc089b4fe8d3ab47be5c56b083324c72",
+        "tree": "7ce79cc08df8ecb48c0612abc1b7c813ea0660e3",
+        "message": "Verified audit history and frozen verification tools (selective import)",
+        "files": [
+          ".gitignore",
+          "AGENTS.md",
+          "docs/quality/01-diagnosis.md",
+          "docs/quality/02-architecture.md",
+          "docs/quality/03-rules.md",
+          "docs/quality/04-baseline.md",
+          "docs/quality/05-refactoring.md",
+          "docs/quality/06-audit.md",
+          "docs/quality/07-followup.md",
+          "docs/quality/08-structural-execution.md",
+          "docs/quality/HANDOFF.md",
+          "docs/quality/WORK-REVIEW-STEP04.md",
+          "docs/quality/evidence/followup-assets.json",
+          "docs/quality/evidence/followup-interactions.json",
+          "docs/quality/evidence/followup-latest.json",
+          "docs/quality/evidence/followup-layer-diagnosis.json",
+          "docs/quality/evidence/followup-verdict.json",
+          "docs/quality/evidence/followup/independent-tablet-diff.png",
+          "docs/quality/evidence/followup/original-tablet-diff.png",
+          "docs/quality/evidence/step04-results.json",
+          "docs/quality/evidence/step05-results.json",
+          "docs/quality/evidence/structure-20261117.json",
+          "docs/quality/evidence/structure-inputs-20261117.json",
+          "playwright.config.cjs",
+          "scripts/visual/corpus.cjs",
+          "scripts/visual/cta-height.cjs",
+          "scripts/visual/glow-ownership.cjs",
+          "scripts/visual/interactions.cjs",
+          "scripts/visual/matrix.cjs",
+          "scripts/visual/network.cjs",
+          "scripts/visual/run.cjs",
+          "scripts/visual/runtime.cjs",
+          "scripts/visual/scope.cjs",
+          "scripts/visual/wrap-boundary.cjs",
+          "tests/visual/baseline.spec.cjs",
+          "tests/visual/baselines/production/corpus-index.json",
+          "tests/visual/baselines/production/mobile/about-hero.png",
+          "tests/visual/baselines/production/mobile/about-scrolled.png",
+          "tests/visual/baselines/production/mobile/faq-content.png",
+          "tests/visual/baselines/production/mobile/faq-hero.png",
+          "tests/visual/baselines/production/mobile/home-footer.png",
+          "tests/visual/baselines/production/mobile/home-hero.png",
+          "tests/visual/baselines/production/mobile/home-menu.png",
+          "tests/visual/baselines/production/mobile/home-reservation.png",
+          "tests/visual/baselines/production/mobile/internal-content.png",
+          "tests/visual/baselines/production/mobile/internal-hero.png",
+          "tests/visual/baselines/production/mobile/services-hero.png",
+          "tests/visual/baselines/production/pc/about-hero.png",
+          "tests/visual/baselines/production/pc/about-scrolled.png",
+          "tests/visual/baselines/production/pc/faq-content.png",
+          "tests/visual/baselines/production/pc/faq-hero.png",
+          "tests/visual/baselines/production/pc/home-footer.png",
+          "tests/visual/baselines/production/pc/home-hero.png",
+          "tests/visual/baselines/production/pc/home-menu.png",
+          "tests/visual/baselines/production/pc/home-reservation.png",
+          "tests/visual/baselines/production/pc/internal-content.png",
+          "tests/visual/baselines/production/pc/internal-hero.png",
+          "tests/visual/baselines/production/pc/services-hero.png",
+          "tests/visual/baselines/production/provenance.json",
+          "tests/visual/baselines/production/review.json",
+          "tests/visual/baselines/production/run-summary.json",
+          "tests/visual/baselines/production/tablet/about-hero.png",
+          "tests/visual/baselines/production/tablet/about-scrolled.png",
+          "tests/visual/baselines/production/tablet/faq-content.png",
+          "tests/visual/baselines/production/tablet/faq-hero.png",
+          "tests/visual/baselines/production/tablet/home-footer.png",
+          "tests/visual/baselines/production/tablet/home-hero.png",
+          "tests/visual/baselines/production/tablet/home-menu.png",
+          "tests/visual/baselines/production/tablet/home-reservation.png",
+          "tests/visual/baselines/production/tablet/internal-content.png",
+          "tests/visual/baselines/production/tablet/internal-hero.png",
+          "tests/visual/baselines/production/tablet/services-hero.png",
+          "tests/visual/contracts.spec.cjs",
+          "tests/visual/package.json"
+        ]
+      },
+      {
+        "old": "b1e74dc589592afe9a4af26ba6e0e94df7c343d6",
+        "sha": "04c160e3637f209cf4f769ce2a4cb3f554c5dec9",
+        "tree": "8ed81a4b1b23e0d7aa0ffb052d76f664c6902060",
+        "message": "fix(menu): lock the viewport scroll owner while the menu is open",
+        "files": [
+          "home/global/hamburger.css",
+          "home/global/hamburger.js"
+        ]
+      },
+      {
+        "old": "a115b0338353fb936ca0f44d1db3249cc6d5168d",
+        "sha": "33c024fe254d4b92ee973f0bffa694be7c6fda8c",
+        "tree": "833cb83383b417b470ae7469011f22a0df7cee86",
+        "message": "fix(home): initialize newly exposed card sections once after viewport changes",
+        "files": [
+          "home/global/sections-animations.js"
+        ]
+      },
+      {
+        "old": "fabc7c0eaa2a5e596aafed626fd44e3b0f1c5557",
+        "sha": "9eef3c3f2535803f01f73afd8b66abbc719fc863",
+        "tree": "ab03ac5c245d6c3a61db04bd695d2e5a39a73a5a",
+        "message": "fix(reservation): derive viewport scroll lock from existing modal state",
+        "files": [
+          "global/floating-cta.css"
+        ]
+      },
+      {
+        "old": "756b11b8484df94fd8dbaabfb629beaedd35393e",
+        "sha": "340f70343c6184ef376efb262c93a1c18ccfcd84",
+        "tree": "efa0b085d6b2892ae11cf2abee7cf34cd0751d3b",
+        "message": "fix(cta): give form height one owner per layout state",
+        "files": [
+          "global/floating-cta.css"
+        ]
+      },
+      {
+        "old": "deeb3a482b874fbeea0085c7e9a155ad440c8e26",
+        "sha": "2a09eb7b609f247389b96d48da2d167dcde0f0c1",
+        "tree": "995e09fd24c2f635c54a693246d1904d8222e09e",
+        "message": "fix(home): keep emergency button glow under its section owner",
+        "files": [
+          "home/global/buttons.js"
+        ]
+      },
+      {
+        "old": "57c95b696e653ad08ff47dbd9ffc1e21467f99e7",
+        "sha": "8cee4295aa9f42e611bf1d780fdc282b7f4a1c99",
+        "tree": "735c4ecabfa23895a0f5f10e61017024f108c8c4",
+        "message": "fix(internal): protect the mobile process list wrapping boundary",
+        "files": [
+          "global/global.css"
+        ]
+      },
+      {
+        "old": "d072e84b2d04ab2b3f8603353329502a62bed058",
+        "sha": "70ff271727b904b97e320442d8041673df84da57",
+        "tree": "17a664f0c1a184f95592285ecb6f672d1f75932f",
+        "message": "fix(cta): centralize disabled form decoration visibility",
+        "files": [
+          "global/floating-cta.css"
+        ]
+      }
+    ],
+    "publicCapture": {
+      "at": "2026-11-17T01:17:56.584Z",
+      "productionRef": "d337d1a0be1199f93c8b357ded4944c8d38f37b5",
+      "stagingHomeRef": "454dacce5824252adadcae779785402d7a8dee77",
+      "generatedCSS": "46f7fbd5d",
+      "limitation": "Read-only live probe blocks measurements and external requests; Network request failed on both live captures is not counted as a clean replay. Captured inputs must pass strict offline guards."
+    },
+    "finalReplay": "pending"
   }
 }
