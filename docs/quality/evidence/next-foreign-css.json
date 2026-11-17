@@ -1,0 +1,77 @@
+{
+  "status": "component candidate PASS for observed foreign menu CSS errors only",
+  "product": "db92c09f505607790063c135553ec73bc5b77d80",
+  "beforeGlobalBlobFrom": "42d432705def71d5486472b4f94aa099ad8d8c31",
+  "consumer": "Actual public/services with pinnedba91d70d93f8a1b54ca499b0ca942c0710d025e7 page bootstrap; shared latest global entry overlaid",
+  "cause": "present() treated two failed tags left by page loader as already provided styles, so shared completion never rescued menu CSS",
+  "after": "WeakSet remembers only native menu CSS errors observed after shared entry starts and before window load; present ignores exactly these tags; listener removed on boot; other loader tags untouched",
+  "singleRun": "foreign-css-full",
+  "conditions": 16,
+  "matrix": {
+    "widths": [
+      1440,
+      390
+    ],
+    "assets": [
+      "CSS"
+    ],
+    "scenarios": [
+      "normal",
+      "fallback-wins",
+      "foreign-fails",
+      "permanent"
+    ],
+    "versions": [
+      "original",
+      "candidate"
+    ]
+  },
+  "requests": {
+    "normal": [
+      1,
+      1
+    ],
+    "fallbackWins": [
+      2,
+      2
+    ],
+    "foreignFails": [
+      2,
+      3
+    ],
+    "permanent": [
+      2,
+      4
+    ]
+  },
+  "foreignFailsMenuPosition": [
+    "static",
+    "fixed"
+  ],
+  "foreignTagsRetained": 2,
+  "duplicateEntryExtraRequests": 0,
+  "permanentAvailabilityRecovered": false,
+  "permanentOwnRetryLimit": 2,
+  "immutableOwnRetryUnchanged": true,
+  "unexpectedNetworkErrors": 0,
+  "pageErrors": 0,
+  "forwarded": 0,
+  "oldOwnCSSAndJSRetryPolicy": "Unchanged original one-retry policy; no viewport/nonmenu expansion",
+  "failedLargerRun": "foreign-full32-condition attempt stopped after10 completed cases at a route callback wait/TargetClosed in JS failure. Not counted as32pass or combined with final16.",
+  "jsPhaseDiagnosis": {
+    "localTrace": "foreign-js-phase/js-phase.jsonl",
+    "firstErrorSharedEntryPresent": false,
+    "secondErrorSharedEntryPresent": true,
+    "afterTwoFailuresMenu": "absent",
+    "conclusion": "Cannot safely ignore an unobserved earlier JS tag; new product error tracking restricted to CSS. Foreign JS failure remains unresolved."
+  },
+  "remaining": [
+    "CSS error before shared entry exists or after load/boot not covered",
+    "Foreign JS error state",
+    "Pending or hung requests with no error event",
+    "Pinned mixed-revision policy unchanged"
+  ],
+  "localResultsSHA256": "240598dc288d247a4388f0dfa2432381ed0cc935befadb7a2508886da221e267",
+  "rawLocalOnly": "/workspace/artifacts/helix-next-20261117",
+  "recovery": "Reverse only productdb92c09; retains earlier bounded own menu retry65227e4"
+}

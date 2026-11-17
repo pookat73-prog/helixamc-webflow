@@ -1,0 +1,10 @@
+{
+  "status": "environment-unverified; product unchanged",
+  "webkitExecutable": "/home/agent/.cache/ms-playwright/webkit-2227/pw_run.sh",
+  "webkitBinaryPresent": false,
+  "toolDiscovery": "No tool advertised Safari/WebKit/physical iOS or iPad testing capability",
+  "actualSafariIOSIPadRotationPerformed": false,
+  "sourceOwnershipTrace": "Prior residual-viewport.json retained; no repeated VM trace or Chromium-width substitution",
+  "changedFiles": [],
+  "resume": "Acquire actual Safari/iPad/WebKit engine and trace cold meta original/correction/two writers and portrait-landscape roundtrip before a one-owner change. Chromium responsive checks do not pass this gate."
+}

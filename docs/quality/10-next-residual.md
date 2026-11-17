@@ -49,3 +49,15 @@ D03단위검증/제품커밋뒤실제services소비자를재생한다. 페이지
 D04첫원본은다른loader menuCSS2요청실패/잔존tag2/menu static과unexpected오류0을확인했다. 의도적으로실패시킨CSS도overlay성공을요구한신규assert오류로중단됐다. 실패대상미소비는실패증거로유지하고나머지성공자산모두의실제소비를assert하도록고쳤다. 정상/복구시에는대상포함전체소비를요구한다.
 
 D04첫32조건실행은CSS8조건과JS정상2조건뒤JS실패경로의대기중TargetClosed로중단됐다. JS오류를sharedentry관측뒤로미루는시험선행조건이확립되지않았고제품복구성공으로세지않는다. 실행을보존하고JS위상만별도5초상한계측한다. 제품후보의새실패관측대상은 **다른loader의메뉴CSS 한경로**로축소한다. 기존공통loader자신의CSS/JS1회재시도는변경없다. 새검사의최종범위도CSS16조건을새단일실행으로판정하며, 중단32실행의통과를합산하지않는다. 다른loader JS실패tag는미해결로남긴다.
+
+## D04-P2 결과 — 관측된 다른loader 메뉴CSS 실패
+
+제품db92c09는 **메뉴CSS 한경로**의load전오류tag만WeakSet으로기억하고공통present판정에서구분한다. document error관측은boot에서즉시해제한다. 다른loader의tag를삭제/수정하지않으며성공/pending은기존소유권을존중한다. `foreign-css-full` 단일16조건(2폭×4상황×원본/후보)에서정상1/1·페이지fallback성공2/2·다른loader실패2/3·영구실패2/4요청을확인했다. 다른loader실패는원본static→후보fixed·메뉴click/Escape정상,tag2개보존·중복entry추가요청0·자기immutable URL재시도상한2를검사했다. **영구실패는가용성복구성공이아니다.** [판정](evidence/next-foreign-css.json).
+
+JS별도위상계측은첫오류때sharedentry가아직없고두번째부터존재함을확인했다. 이미놓친첫tag를실패로단정할근거가없으므로새제품실패관측을JS로확대하지않았다. 기존공통loader자신의메뉴CSS/JS1회복구는그대로다. 다른loader JS/관측시점밖CSS/무응답/혼합pin은미해결이다. 중단32실행의10개완료결과를16조건성공에합산하지않는다.
+
+## D06 및 소스 동결
+
+로더단위를마친뒤viewport진행조건을판정한다. WebKit2227실행파일없음과실제Safari/iOS/iPad검증도구부재를확인했다. 기존소유권VM기록만보존하고같은실험이나Chromium폭변경으로실기기정상판정을대신하지않는다. viewport제품변경없음·회전미검증, [재개조건](evidence/next-viewport.json). V0새판별근거없어재실험없음/U01보류유지.
+
+현재제품4단위동결db92c09: CTA gap21bccd6, form introfe86354, 지그34f093c, 관측외부menuCSSdb92c09. 실제수정runtime는floating-cta.css/sections-animations.js/global bootstrap.js3파일이며기존6단위와global.css·buttons·menu·hero/coming-soon·viewport원문은보존했다. 최종검사도구커밋뒤같은runtime의별도작업본에서8단계선택통합(corpus→5페이지15쌍→home3cold/1440시작11전환→heading모션→CTA108/36→home폼3쌍→품질→로딩)을한번연속실행한다. form15/지그12/외부CSS16개별단위검사는각각의독립전체결과이며이선택통합을전체V0suite로승격하지않는다. 과거인계의‘각11전환’표현은정정한다:도구는1440시작에서11전환,820/390은cold대조다.
