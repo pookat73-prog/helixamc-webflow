@@ -91,7 +91,8 @@ assert.ok(widths.every(w => [1440, 820, 390].includes(w)), 'Unknown representati
           });
           assert.deepEqual(outside, ['normal', 'normal']);
           const markers = await page.locator('#hx-im-process .div-block-358 > .text-span-3').evaluateAll(els => els.map(e => [getComputedStyle(e).whiteSpace,getComputedStyle(e).overflowWrap]));
-          assert.ok(markers.length > 0 && markers.every(x => x[0] === 'nowrap' && x[1] === 'normal'), 'Step markers retain their own no-wrap contract');
+          pair[version].markers = markers;
+          assert.ok(markers.length > 0 && markers.every(x => x[1] === 'normal' && (width > 767 || x[0] === 'nowrap')), 'Mobile Step markers retain their explicit no-wrap contract');
           // Include exact b-1/b/b+1 checks in the actual DOM (no emulated mobile UA claim).
           if (width === 390) for (const boundary of [766, 767, 768]) {
             await page.setViewportSize({ width: boundary, height: 844 });
@@ -116,6 +117,7 @@ assert.ok(widths.every(w => [1440, 820, 390].includes(w)), 'Unknown representati
         await context.close();
       }
       assert.equal(pair.candidate.naturalSHA256, pair.original.naturalSHA256, 'Published content/layout/type outside the explicit wrap property must remain exact');
+      assert.deepEqual(pair.candidate.markers, pair.original.markers, 'All Step marker wrapping stays identical to the original at each width');
       results.push(pair);
       fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ base, selected, widths, results }, null, 2));
       console.log(width, pathname, 'PASS exact natural content/layout/type; long-token boundary checked when applicable');
