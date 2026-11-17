@@ -716,10 +716,7 @@
   /* Loaded before section1 / divider / sections-animations by home/bootstrap.
      Keep Webflow's visual classes and restore only their animation hooks. */
   function prepareHomeViewport() {
-    var hero = document.querySelector('.blackframe_image-hero');
-    var specialty = document.querySelector('.home_background_2');
-    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
-    hero.setAttribute('data-hx-home-viewport', '');
+    /* Section animation hooks do not depend on the Hero viewport layout. */
     [
       '.home_background_2 h2.home_title',
       '.home_background_3 h2.home_title',
@@ -728,6 +725,10 @@
       var heading = document.querySelector(selector);
       if (heading) heading.classList.add('section2-heading');
     });
+    var hero = document.querySelector('.blackframe_image-hero');
+    var specialty = document.querySelector('.home_background_2');
+    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
+    hero.setAttribute('data-hx-home-viewport', '');
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', prepareHomeViewport, { once: true });
