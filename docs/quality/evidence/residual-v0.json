@@ -1,0 +1,33 @@
+{
+  "hypothesis": "Compare independently replayed Skia picture raster with visible compositor screenshot, beyond previous equal paint-command records",
+  "width": 820,
+  "visiblePixels": [
+    625,
+    0,
+    881
+  ],
+  "pictureRasterSHA256": [
+    "bf906142d9b8dd7785e616e2f9c3f20ccd84fdcc5280b017d3a0cbbf24ca9c8d",
+    "bf906142d9b8dd7785e616e2f9c3f20ccd84fdcc5280b017d3a0cbbf24ca9c8d",
+    "bf906142d9b8dd7785e616e2f9c3f20ccd84fdcc5280b017d3a0cbbf24ca9c8d"
+  ],
+  "pictureRasterEqual": true,
+  "pictureSize": [
+    400,
+    440
+  ],
+  "limitations": "Only first card picture; CDP replay raster is not a dump of actual compositor tiles. Equal replay images do not identify or fix final compositor/capture nondeterminism.",
+  "verdict": "FAIL retained; bounded3 runs stopped; U01 held",
+  "maxDiffPixels": 100,
+  "threshold": 0.2,
+  "networkErrors": [
+    [],
+    [],
+    []
+  ],
+  "pageErrors": [
+    [],
+    [],
+    []
+  ]
+}

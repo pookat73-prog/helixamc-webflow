@@ -2,6 +2,10 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
+## 현재 실행 — 잔여 구조 개선 프로젝트
+
+사용자 추가 지시에 따라4798317 결과를 보존한 별도 branch `fix/helix-residual-structure-20261117`에서 이어간다. 최신 GitHub main3c4f78d4/staginga074f455 및 실제 자산을 먼저 확인한다. [09-residual-execution.md](09-residual-execution.md)가 이번 실행 기록이다. 기존 완료 항목 재작성·검사 기준 완화·분할 성공 합산·공개 설정 변경·배포는 하지 않는다. 아래4798317 최종 판정은 이전 실행 이력으로 유지한다.
+
 ## 최종 판정 — 2026-11-17 구조 개선 실행
 
 **격리된 구조 개선4단위 통과, 전체 구조 안정화는 미완료.** 최종 작업 브랜치 [`fix/helix-structure-current-20261117`](https://github.com/pookat73-prog/helixamc-webflow/tree/fix/helix-structure-current-20261117). 원본 dffc740에서 시작했고 작업 중 최신 staginga074f45/main7395b95의 외부CSS2개와 CTA 정렬 원문858바이트를 보존해 필요한 변경만 선별 이관했다. 1차 동결b13e96e의 별도 clone 재실행 후, 마지막 외부 CTA 정렬858바이트를 그대로 결합해 최신a074f45 기준108쌍/36통제/3화면쌍/3크기 기능도 추가 통과했다. 최종 runtime hash는 대장에 고정했으며 별도 사람 리뷰는 아니다.
