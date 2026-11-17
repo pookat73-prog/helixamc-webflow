@@ -19,4 +19,14 @@
 4. 두 번 실패하면 덮어쓰기를 중단하고 증거·원인을 재진단한다. 검증된 제품 단위마다 역커밋을 별도 보존하며 원본 PNG/mask/100px/threshold0.2/expected failure는 유지한다.
 5. D04 해결 또는 안전한 수정의 선행조건 부족을 확인한 뒤 무응답→다른 초기화/firstpaint→D02→D05→실제 엔진 D06의 독립 단위를 조사한다. 미재현/고위험/환경 부족은 해당 항목만 보류한다.
 
-현재는 진단 단계다. runtime 변경은 아직 없다. 새 raw 증거는 `/workspace/artifacts/helix-loader-consistency-20261117`에 로컬 전용으로 보존하며 GitHub에는 소스/검사/판정/해시/복구를 전달한다.
+새 raw 증거는 `/workspace/artifacts/helix-loader-consistency-20261117`에 로컬 전용으로 보존하며 GitHub에는 소스/검사/판정/해시/복구를 전달한다.
+
+## 단위 P1 — 생산자의 native 실패 소유권 철회
+
+제품 `90ee4a2`는 services 메뉴JS가 native error를 받은 뒤 **그 생산자 자신의 실패 script만** 제거한다. 기존 정확한 URL 오류 기록은 detached node에 남고 기존 fallback/공통 retry 상한은 그대로다. 공통 로더가 다른 생산자의 태그를 삭제하지 않는다. pending·성공·다른 모듈·CSS는 손대지 않았다.
+
+원본 producer-only는 두 실패 뒤2요청/메뉴0이었고, 후보는 구공통로더에서도3요청/메뉴1로 회복했다. 2폭×producer-only/matched×정상/현재 실제fallback/두실패/영구실패의 **단일16조건**에서 정상1/폴백2/복구3/영구4요청 상한을 확인했다. 영구 실패는 메뉴 복구가 아니다. 실제 메뉴 열기/Escape·닫기/애니메이션 완료 뒤 초점 복원, 초기화1회·중복 진입 뒤 추가 요청/리스너0도 확인했다. 검사5d75156와 제품을 분리했고 [결과·별도 역커밋](evidence/consistency-native-owner.json)을 남겼다.
+
+진단16조건은 HTTP200 실행 전 예외와 guard 기록 직후 예외를 구분했다. 후자는 guard=true/menu0이며 guard도 성공 증거가 아니다. Resource Timing responseStatus는 성공 CSS/실패 JS 모두0이라 과거 상태 추측에 사용할 수 없었다. shared-only가 시작되기 전 구생산자 오류는 현재 소비자만으로 복원할 신뢰할 상태가 없다. 타이머/재요청을 더하지 않는다.
+
+검사 전제 실패도 보존했다. 첫 새 검사에 Node 변수를 브라우저 predicate로 전달하지 않은 오류를 수정했고, focus는 기존 closeMenu의0.28초 onComplete 뒤 복원됨을 확인해 동일 복원 assertion을 완료 시점에 검사했다. after-entry를 만들려고 실제 ordered JS를 잡아 둔 새 검사와 기존 도구의JS 프로브는 진입 의존성으로 정지했다. 제품 보정/async 전환으로 우회하지 않고 그 입력을 실제 services 지원 경로에서 제외했다. **기존 정상 경로의 실패를 통과 처리한 것이 아니다.**

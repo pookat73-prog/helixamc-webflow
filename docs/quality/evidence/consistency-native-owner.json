@@ -1,0 +1,24 @@
+{
+  "product": "90ee4a2e69d8db33beb5f24e38701e30b674d619",
+  "recovery": "458207fb10496c1ad22f31f79f38a089972f4766",
+  "testCommit": "5d751567953133c613228a795506f45e92bd7473",
+  "conditions": 16,
+  "scope": "Only services-owned menu JS tag is removed after its native error, preserving URL/error evidence on detached node. Failed tag cannot block legacy consumer; successful/pending tags stay.",
+  "original": "Producer-only native twice failed:2requests/0menus",
+  "candidate": "Producer-only and matched normal1/successful current fallback2/recovery3/permanent4; permanent does not recover.1menu/1initializer in recovered cases; Escape/close/async focus restoration and duplicate entry/listeners verified.",
+  "currentFallback": "Actual separately timestamped @main JS response, no historical replacement/alias. See13 and current-assets-verified.json.",
+  "unresolved": "Shared-only old-producer failures before shared entry still have no trustworthy state history. No retrospective status guessed.",
+  "rawStorage": "Local only",
+  "evidence": {
+    "diagnosis/results.json": "ada027684a6a65595253c5168067425d09f9755857969ac25820cad6e6119410",
+    "diagnosis.log": "375f051cd2b1657f864fed9ef7c28bdcf64cbbed812363f9afe831b1f67ca076",
+    "producer-original-red.log": "240081a885b2dedae9c3b783a63a53d229bd868b3ce9d832115cc9c444741a22",
+    "producer-original-red-v2.log": "22bf72f552f3a1d827cc56eb6a17322983702b9298b5ae168bd04a821f78d09b",
+    "producer-full.log": "7480b02029310e5b25dc7f7813e887a57362fc4175799a9bf5fd53ad638c46d1",
+    "producer-full-focus/results.json": "ed93184c757756a1202b5ebbd7f8f738e19cb6d6d222451a4ec333b72f6afa27",
+    "producer-full-focus.log": "e18eec05c7c2c3c65d7da739e223bc5131a913fab202d64c0dda1e46064d556b",
+    "shared-original-red.log": "be14b8a66c55334c53ff2635d0f23e1635d6f1734af7fab990f0cc19dd720c59",
+    "after-entry-existing-probe.log": "c26fe473897723f5609b4fcdbd56d3c9113a0d92661fb57df21b33a29963c4b4",
+    "current-assets-verified.json": "68b986a2382ae6753d4a92a05420869ee250bdfe4e8da05904b493adba071db7"
+  }
+}
