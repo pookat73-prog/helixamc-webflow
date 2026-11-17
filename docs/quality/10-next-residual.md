@@ -33,3 +33,7 @@ D02첫 full 실행: home1440은 게시표현/긴입력을통과했지만 소개1
 D05/D02제품커밋과각양성검사를마친뒤착수한다. 지그는전역 `.section2-heading` NodeList의두번째와부모display:none을놓치는isVisible에의존한다. 실제숨은section을hero앞에놓되hero→section2인접·실제coming-soon의3heading마킹·hero완료event를보존해재현한다. visiblegeometry가같고원본선만없어지는경우에만section3안의실제렌더된heading선택으로한정한다. Draw/Hold/Erase기하학·모션·버튼/카드·hero준비로직은변경하지않는다.3크기normal/adversarial원본·후보및hot왕복으로동등성/원본실패/후보복구를검사한다.
 
 지그 새 검사 첫진단은 desktop선굵기도1px라는잘못된가정으로중단됐다. 실제원문은desktop1.3/mobile1이며그대로검사하도록고쳤다. 기존제품값을문서가정에맞추려고바꾸지않았고첫로그를보존한다.
+
+지그원본6실행에서normal3폭은선1개, hidden-first1440/820은선0개,390은선1개로재현했다. section3선택만고친첫후보는선이돌아왔지만1440 hidden-first의시작X가319.148→0이어서정확한기하학검사에서거절됐다. 같은전역첫요소문제로btn1도숨은section3의 `.discover-helix_button`을잡고있었다. 실제DOM의4개해당anchor가각각bt1/2/3/3안에있음을확인하고기존btn1탐색원문을 `.bt-box-1 .discover-helix_button`으로한정한다. selector두끝의책임만고치고선알고리즘/타이밍은그대로다. 첫후보실패를보존하고새단일12실행으로다시판정한다.
+
+두번째후보실행은hot390선0에서멈춰추가제품패치를중단하고, 같은후보의600/1500/3000ms좌표를계측했다. 이동한mobile복제가390에서실제노출돼titleY350/btn2Y1685로H가음수였다. 대기부족이나hero복구실패증거가아니고새fixture가보이는섹션순서를바꾼검사오류였다. cold숨은순서대조는유지하고, 아직숨겨진동안원래DOM위치로복구해visiblegeometry동일을assert한뒤hot390/820/1440을검사하도록도구만정정한다. 기존기준/선경로exact대조는완화하지않는다. 제품후보는같은scoped selector그대로새단일full을수행한다.
