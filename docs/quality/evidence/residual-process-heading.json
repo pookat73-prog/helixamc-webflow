@@ -1,0 +1,330 @@
+{
+  "status": "isolated candidate PASS",
+  "actualPublishedContent": "Five published English headings fit in3widths before and after; change hardens synthetic long-input behavior",
+  "singleFullRun": "header-full-final, 15 paired conditions in one uninterrupted command",
+  "conditions": [
+    {
+      "width": 1440,
+      "page": "/",
+      "original": "f0f3a9da071551386d57ffe5747693855f90ec9aea3774adcd1cd526852828f7",
+      "candidate": "f0f3a9da071551386d57ffe5747693855f90ec9aea3774adcd1cd526852828f7",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 1440,
+      "page": "/discover-helix",
+      "original": "5e358764ee180d3f49e4c0f5ec246c898c5bc2d0d34c9b8b6f91bb3dfeff684c",
+      "candidate": "5e358764ee180d3f49e4c0f5ec246c898c5bc2d0d34c9b8b6f91bb3dfeff684c",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 1440,
+      "page": "/services",
+      "original": "8a3fc5e53f489c92d4b184c26bce0717c095d1dad15f55baa3be7613447b1da3",
+      "candidate": "8a3fc5e53f489c92d4b184c26bce0717c095d1dad15f55baa3be7613447b1da3",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 1440,
+      "page": "/faq",
+      "original": "77fb98cf30b1d4ebd3d25fef43855c5132d418827d4adf1f29160c22e33819e2",
+      "candidate": "77fb98cf30b1d4ebd3d25fef43855c5132d418827d4adf1f29160c22e33819e2",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 1440,
+      "page": "/internal-medicine",
+      "original": "d5b1da460ac28b0bafdac90d303dfc8c98aab12698cae0c71ee2fcf87492bb35",
+      "candidate": "d5b1da460ac28b0bafdac90d303dfc8c98aab12698cae0c71ee2fcf87492bb35",
+      "markersBefore": [
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ]
+      ],
+      "markersAfter": [
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ]
+      ]
+    },
+    {
+      "width": 820,
+      "page": "/",
+      "original": "14beaa1470258847674bf1ace8f4a291da7f8f0bb0eba91ed3ee8a661cee6913",
+      "candidate": "14beaa1470258847674bf1ace8f4a291da7f8f0bb0eba91ed3ee8a661cee6913",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 820,
+      "page": "/discover-helix",
+      "original": "2ba2774bfe34c02a1385ebdf587e81432c8b8c8680495a9b30a740b232c52ced",
+      "candidate": "2ba2774bfe34c02a1385ebdf587e81432c8b8c8680495a9b30a740b232c52ced",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 820,
+      "page": "/services",
+      "original": "bfd9df729bf33c36fc432d616f2b0efc46e7051c7447c74e22d8b4e17b24b2e9",
+      "candidate": "bfd9df729bf33c36fc432d616f2b0efc46e7051c7447c74e22d8b4e17b24b2e9",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 820,
+      "page": "/faq",
+      "original": "e6cfdc534d1683ff54310f90dc343320387a1fac53d8e9b255b2fb7f77286e79",
+      "candidate": "e6cfdc534d1683ff54310f90dc343320387a1fac53d8e9b255b2fb7f77286e79",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 820,
+      "page": "/internal-medicine",
+      "original": "30bc6afd927cc4cb6d28eaad9b18886cf75fabc166e3d7ce03414bb353eb0b71",
+      "candidate": "30bc6afd927cc4cb6d28eaad9b18886cf75fabc166e3d7ce03414bb353eb0b71",
+      "markersBefore": [
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ]
+      ],
+      "markersAfter": [
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ],
+        [
+          "normal",
+          "normal"
+        ]
+      ]
+    },
+    {
+      "width": 390,
+      "page": "/",
+      "original": "30c53eef739491a9bd9196245c673c88ac79c318b94bce15bccd1bc12a6046b5",
+      "candidate": "30c53eef739491a9bd9196245c673c88ac79c318b94bce15bccd1bc12a6046b5",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 390,
+      "page": "/discover-helix",
+      "original": "ce1cb0031fe4c8f3593151f83431599c8ef0d204a80bdfb8762d43ae32142e7e",
+      "candidate": "ce1cb0031fe4c8f3593151f83431599c8ef0d204a80bdfb8762d43ae32142e7e",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 390,
+      "page": "/services",
+      "original": "3952b77fe6cf6d6088ae1a24aa24e658f7dd90a59edf49984cdcdda7abc806d9",
+      "candidate": "3952b77fe6cf6d6088ae1a24aa24e658f7dd90a59edf49984cdcdda7abc806d9",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 390,
+      "page": "/faq",
+      "original": "33bb1c95ec4458db0f1c208269a8a733c36c2f1b0eca3c54a494dfd0b367d869",
+      "candidate": "33bb1c95ec4458db0f1c208269a8a733c36c2f1b0eca3c54a494dfd0b367d869",
+      "markersBefore": null,
+      "markersAfter": null
+    },
+    {
+      "width": 390,
+      "page": "/internal-medicine",
+      "original": "9796c9ecc98af18bc815d57ef9ee28e88eb2d2a06b510e7071ecce5f715010a9",
+      "candidate": "9796c9ecc98af18bc815d57ef9ee28e88eb2d2a06b510e7071ecce5f715010a9",
+      "markersBefore": [
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ]
+      ],
+      "markersAfter": [
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ],
+        [
+          "nowrap",
+          "normal"
+        ]
+      ]
+    }
+  ],
+  "syntheticMobileCases": [
+    {
+      "kind": "english",
+      "tag": "direct",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "english",
+      "tag": "span",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "english",
+      "tag": "a",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "url",
+      "tag": "direct",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "url",
+      "tag": "span",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "url",
+      "tag": "a",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "number",
+      "tag": "direct",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "number",
+      "tag": "span",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "number",
+      "tag": "a",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "korean",
+      "tag": "direct",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "korean",
+      "tag": "span",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    },
+    {
+      "kind": "korean",
+      "tag": "a",
+      "beforeOverflow": true,
+      "afterOverflow": false
+    }
+  ],
+  "scope": "Exact mobile page-ID/process/title-content root and descendants, excluding Step markers; list exception unchanged",
+  "controls": "Late pinned policy, external same-class control,766/767/768, PC/820 unchanged",
+  "failuresPreserved": "Missing FAQ responses were acquired separately. A newly added PC-nowrap assumption failed even on original; corrected to exact original/candidate marker equality, mobile-nowrap still required. No product adjustment or existing threshold relaxation."
+}

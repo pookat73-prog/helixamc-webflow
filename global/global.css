@@ -520,8 +520,14 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
     grid-column: 2;
     min-width: 0;
     max-width: 100%;
-    overflow-wrap: anywhere;
     text-align: center;
+  }
+
+  /* This title root owns emergency token wrapping, including nested text.
+     Keep the numbered marker and the pinned global Korean policy outside it. */
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > :not(.text-span-3),
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > :not(.text-span-3) * {
+    overflow-wrap: anywhere !important;
   }
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .div-block-358 > :is(.div-4, .div-5) {

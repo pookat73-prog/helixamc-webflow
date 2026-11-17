@@ -33,3 +33,5 @@ D05-P1 결과: 한 실행108쌍의 모든 요소/가상요소 계산 CSS·geomet
 숨은 기기 복제 section만 section2 앞으로 이동한 fixture에서 보이는 section geometry는 그대로였지만, 원본4798317의 bt2는3크기 모두opacity0/loopfalse/shadow쓰기0으로 남았다. 원인은 전역 heading NodeList의 idx0만bt2로 묶는 선택이었다. 각 heading의 같은section 안에bt2가 있는지를 기준으로 기존bt2/bt3 선택만 고쳤다. 타이밍·색·shadow·loop·카드·hero는 변경하지 않았다.
 
 별도 도구282421f 이후 제품 hunk를 분리한다. 원본/후보6실행에서 원본은위실패, 후보는opacity1/looptrue/쓰기1이며 비대상 초기geometry동일, JS/네트워크오류·외부전달0. 숨은DOM의 조기초기화는 별도 문제로 남긴다. Typekit 추가 subset은검사밖획득7응답으로고정했고, 두 누락실패를정상으로세지않았다. [판정](evidence/residual-heading-order.json).
+
+D02-P2 결과: `header-full-final` 단일 명령의5페이지×3크기15쌍이 모두 통과했다. 게시 내용/배치/타이포와 Step마커의 원본 계산값을 보존했고, 모바일 긴영문/URL/숫자/한글×직접/span/a12조건은 넘침→내부줄바꿈으로 개선됐다. 고정정책후행삽입/외부root/766·767·768 대조도 통과했다. 이전실패는 FAQ입력3개누락과 PC에도nowrap라고가정한신규검사오류였다. 원본PC에서도실패한가정을원본동등성검사로고쳤으며 모바일nowrap/기존기준은유지했다. 분할성공을합산하지않고 새단일15쌍만최종근거로쓴다. [판정](evidence/residual-process-heading.json).
