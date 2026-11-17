@@ -679,18 +679,14 @@
     if (zigInitialized) return;
     if (!window.gsap || !window.ScrollTrigger) return;
 
-    /* The line ends in sec3, independently of other sections' heading order.
-       Layout rects exclude headings inside a hidden device-specific copy. */
-    var btn1     = document.querySelector('.bt-box-1 .discover-helix_button');
+    /* 필요 요소 탐색 — 보이는 sec3 헤딩 중 첫 번째 픽업
+       (데스크/모바일 듀얼 구조에서 인덱스 의존 제거) */
+    var btn1     = document.querySelector('.discover-helix_button');
     var btn2     = document.querySelector('.bt-box-2');
-    var headings = document.querySelectorAll(
-      '.home_background_3 .section2-heading, .home_background_3-mobile .section2-heading'
-    );
+    var headings = document.querySelectorAll('.section2-heading');
     var sec3Head = null;
-    for (var i = 0; i < headings.length; i++) {
-      if (headings[i].getClientRects().length && isVisible(headings[i])) {
-        sec3Head = headings[i]; break;
-      }
+    for (var i = 1; i < headings.length; i++) {
+      if (isVisible(headings[i])) { sec3Head = headings[i]; break; }
     }
 
     /* 모바일은 btn1(hero) 의존 없이 btn2 + sec3Head 만 있으면 됨 */
@@ -722,16 +718,17 @@
         if (isRenderedMobile(allBtn2[bi])) { mBtn2 = allBtn2[bi]; break; }
       }
 
-      var mSec3 = null;
+      var mSec3 = null, visCount = 0;
       for (var hi = 0; hi < headings.length; hi++) {
         if (isRenderedMobile(headings[hi])) {
-          mSec3 = headings[hi]; break;
+          visCount++;
+          if (visCount === 2) { mSec3 = headings[hi]; break; }
         }
       }
 
       if (!mBtn2 || !mSec3) {
         log('mZig: visible pick failed mBtn2=' + !!mBtn2 +
-            ' mSec3=' + !!mSec3 + ' sec3Candidates=' + headings.length + ' → skip');
+            ' mSec3=' + !!mSec3 + ' visCount=' + visCount + ' → skip');
         return;
       }
       initSimpleVerticalLine(mBtn2, mSec3);
