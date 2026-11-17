@@ -1,0 +1,783 @@
+{
+  "dateKST": "2026-11-17",
+  "status": "WORK SOURCE CANDIDATE VERIFIED; MIXED LEGACY EARLY HISTORY AND EXECUTION FAILURES REMAIN",
+  "startingHandoff": "37521891d3d967e899db18c33b3c29cdc37d9822",
+  "previousVerifiedSource": "b2277bfad32db10ded5cb5372759b906b1ac1d98",
+  "frozenSourceAndTests": "f44264e1d9296071c2bde2a43db963c530447895",
+  "branch": "fix/helix-residual-structure-20261117",
+  "products": {
+    "nativeOwner": "90ee4a2e69d8db33beb5f24e38701e30b674d619",
+    "claimedAdoption": "7bea97cf3a08bce76e5f9c1abd2f0ccea7924c12"
+  },
+  "singleContinuousIntegration": {
+    "source": "f44264e1d9296071c2bde2a43db963c530447895",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected18-stage integration: previous15 stages retained, plus24 mixed native ownership conditions,4 late producer adoption conditions and6 execution/pending classifications. Current fallback response is a separately captured input, not a historical replacement. Mixed legacy early errors and HTTP200 execution failures remain explicitly unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "pass": true
+  },
+  "coverage": {
+    "scopePairs": 15,
+    "homeColdWidths": 3,
+    "hotTransitions": "11 from1440; other widths cold only, plus hero3 hot transitions",
+    "headingMotionExecutions": 6,
+    "ctaGap": {
+      "pairs": 108,
+      "controlledEdits": 36
+    },
+    "ctaBorder": {
+      "pairs": 108,
+      "controlledEdits": 36
+    },
+    "introPairs": 3,
+    "consentPairs": 15,
+    "consentCandidateSynthetic": 72,
+    "heroExecutions": 12,
+    "CSSOwnerExecutions": 8,
+    "JSOwnerExecutions": 32,
+    "mixedPriorGates": 4,
+    "newMixedNativeConditions": 24,
+    "producerAdoptionConditions": 4,
+    "executionStateConditions": 6,
+    "expectedInjectedExecutionErrors": 4,
+    "qualityGroups": 9,
+    "homeLoadingGroups": 6
+  },
+  "coreFallbackEvidence": {
+    "kind": "actual CURRENT branch capture; not historical response reconstruction",
+    "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/home/global/hamburger.js",
+    "SHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+    "capturedAt": "2026-11-17T08:00:11.496709+00:00",
+    "syntheticAlias": false
+  },
+  "mixedBoundary": {
+    "producerOnly": "Both widths recover after two native failures with3requests; producer owns withdrawal of failed tags",
+    "sharedOnlyWithLegacyProducer": "Both widths still absent menu when errors predate shared entry; not mislabeled as recovered",
+    "permanentFailures": "Bounded failure oracle, never availability pass"
+  },
+  "executionBoundary": {
+    "HTTP200BeforeInit": "Native load fires; no initializer/menu; execution error remains",
+    "HTTP200PartialInit": "Claim true/menu0; not a success marker",
+    "pending": "500ms TEST deadline is not resource timeout or failure; no invented retries, late original response recovers"
+  },
+  "runtimeChangedPaths": [
+    "services/bootstrap.js"
+  ],
+  "runtimeSHA256": {
+    "services/bootstrap.js": "01ed8da93adc9120f66e425a14e930a1c4aaba8f6765306acf96bea868a3ee94",
+    "global/bootstrap.js": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+    "global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "home/global/coming-soon.js": "5250aedf20ca6b165e627cf76cb896ba96c74fb4ce134f9e7b7925224c667f5d",
+    "home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+  },
+  "currentInputRoots": [
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/home",
+      "manifestSHA256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/discover-helix",
+      "manifestSHA256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/services",
+      "manifestSHA256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/faq",
+      "manifestSHA256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/internal-medicine",
+      "manifestSHA256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/imaging-v2",
+      "manifestSHA256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9",
+      "responses": 777,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/resource-extra",
+      "manifestSHA256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34",
+      "responses": 3,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/order-fonts-v2",
+      "manifestSHA256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568",
+      "responses": 7,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    }
+  ],
+  "bodyFilesVerified": 2130,
+  "currentRealBranchCapture": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "scope": "Current read-only capture only. Not substituted for missing historical responses. Original input roots unchanged.",
+    "assets": [
+      {
+        "path": "home/global/hamburger.js",
+        "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+        "URL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/home/global/hamburger.js",
+        "SHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+        "capturedAt": "2026-11-17T08:00:11.496709+00:00",
+        "blobMatchesMain": true
+      },
+      {
+        "path": "home/global/hamburger.css",
+        "gitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+        "URL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/home/global/hamburger.css",
+        "SHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+        "capturedAt": "2026-11-17T08:00:11.107933+00:00",
+        "blobMatchesMain": true
+      }
+    ]
+  },
+  "package": {
+    "proof": {
+      "base": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+      "branch": "candidate/helix-services-owner-adoption-20261117",
+      "commits": [
+        {
+          "stage": "p1",
+          "commit": "5f9e55fcbd773e1c01f9b9402f92386ea418e66a",
+          "tree": "e3da32b2deec3b7c793cc44e15a9d61bd9312d4d",
+          "blob": "c6f0bd69bfc5927ba3583957f03bcbc38caf9137"
+        },
+        {
+          "stage": "p2",
+          "commit": "719546330ce1413b2e68b6c3da45dd2d3798e7eb",
+          "tree": "12eee2c553021d48d4a705de1607bd206849c713",
+          "blob": "58f2c046e4987311544d79f2bb575899f7df0aa9"
+        }
+      ],
+      "changedPaths": [
+        "services/bootstrap.js"
+      ],
+      "allOtherAssetBlobsEqual": true,
+      "baseEntries": 254,
+      "candidateEntries": 254,
+      "publicPinChanged": false
+    },
+    "candidateAssets": {
+      "schema": 1,
+      "target": "production",
+      "requests": {
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/bootstrap.js": {
+          "sha256": "3fbf77621adc78be33679decb8665e49de6a4caa30b76c0d4495e8d965c63f84",
+          "bytes": 9472,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:43:01.273415+00:00",
+          "gitBlob": "58f2c046e4987311544d79f2bb575899f7df0aa9",
+          "repositoryPath": "services/bootstrap.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/hamburger.js": {
+          "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "bytes": 17566,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:43:01.151694+00:00",
+          "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+          "repositoryPath": "home/global/hamburger.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/hamburger.css": {
+          "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "bytes": 6150,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-17T08:43:00.828648+00:00",
+          "gitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+          "repositoryPath": "home/global/hamburger.css"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/accessibility.js": {
+          "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+          "bytes": 2766,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:50.486381+00:00",
+          "gitBlob": "c949be9275f5132ff7f3c76bddbbba08940800be",
+          "repositoryPath": "global/accessibility.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/floating-cta.css": {
+          "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+          "bytes": 32381,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:50.527998+00:00",
+          "gitBlob": "6b0d8186e5ec2b5b8e111224127f06e87b5f864e",
+          "repositoryPath": "global/floating-cta.css"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/ga4-base.js": {
+          "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+          "bytes": 10322,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:51.200965+00:00",
+          "gitBlob": "8ddcc180a2c49b621f28f43f859f1d0efa3a44cb",
+          "repositoryPath": "global/ga4-base.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/global.css": {
+          "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+          "bytes": 25435,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:51.020609+00:00",
+          "gitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+          "repositoryPath": "global/global.css"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/measure-gate.js": {
+          "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+          "bytes": 10986,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:51.570870+00:00",
+          "gitBlob": "ea949e7ee740511bd49bc05a36484e4b161eea6c",
+          "repositoryPath": "global/measure-gate.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/page-time.js": {
+          "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+          "bytes": 13879,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:51.657315+00:00",
+          "gitBlob": "7e967543f45750cdaf23c3b9955e57569d68f95d",
+          "repositoryPath": "global/page-time.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/scroll-depth.js": {
+          "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+          "bytes": 9587,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:52.577635+00:00",
+          "gitBlob": "5bc1efee585ec4af7ce33164a84609c858ef8915",
+          "repositoryPath": "global/scroll-depth.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/section-reach.js": {
+          "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+          "bytes": 25990,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:52.557806+00:00",
+          "gitBlob": "e3f887cdc1f3341a9f8b0caae581eed7af862956",
+          "repositoryPath": "global/section-reach.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/session.js": {
+          "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+          "bytes": 19836,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:53.863939+00:00",
+          "gitBlob": "2883424b7b044dff4ee9b84292005fe27e8a198e",
+          "repositoryPath": "global/session.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/sheet-log.js": {
+          "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+          "bytes": 8372,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:53.831894+00:00",
+          "gitBlob": "5f29d93e99fce5d24338f5396d1b0427efd1ff5d",
+          "repositoryPath": "global/sheet-log.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/viewport.js": {
+          "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+          "bytes": 7222,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:54.480157+00:00",
+          "gitBlob": "e78e469ea1dd5c92960a470e3b76419286f15d21",
+          "repositoryPath": "global/viewport.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/coming-soon.css": {
+          "sha256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf",
+          "bytes": 11376,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:54.899143+00:00",
+          "gitBlob": "532401d127df54bd5d319f795e60884b395ad2a6",
+          "repositoryPath": "home/global/coming-soon.css"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/home/global/coming-soon.js": {
+          "sha256": "f66d26b7a67be609590a95a2a8105f7ba10b9612c8ea330a9b717e9cea950076",
+          "bytes": 47092,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:55.670456+00:00",
+          "gitBlob": "36a6b333dd5dd244142f978cd7cecdd3cdf8c26d",
+          "repositoryPath": "home/global/coming-soon.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/dept-border.js": {
+          "sha256": "a162b309be91d539561491aa14f3e7d963626563d61ef10172eaefbdf34fe1fb",
+          "bytes": 14870,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:56.306484+00:00",
+          "gitBlob": "b1b91aaa06ccac5a2b1960fc45922be96d8c8aec",
+          "repositoryPath": "services/dept-border.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/dept-nav.js": {
+          "sha256": "6e4188c65ffe5b89409e7ee455af51b6300d7968687a5085ada1bef3810ef5e7",
+          "bytes": 9621,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:56.482571+00:00",
+          "gitBlob": "2d81af7fbe8d0d54bba2fbb17b6c1cab397f918f",
+          "repositoryPath": "services/dept-nav.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/seo-loader.js": {
+          "sha256": "430b57d4c9487d117f02a76512ed2dfcafbbf715237e03366ad9ad1244e37844",
+          "bytes": 1749,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:57.021925+00:00",
+          "gitBlob": "19e0fd3234d332b3fed99184259b73702b0f2cac",
+          "repositoryPath": "services/seo-loader.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/services-ga.js": {
+          "sha256": "e5c080d14c3f9f5904ece38b9139fd3dfd8f985aa1729de52fb53f7336739bb3",
+          "bytes": 3762,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:57.201837+00:00",
+          "gitBlob": "48cf550071f08912cbe401da4b63c51555b6a600",
+          "repositoryPath": "services/services-ga.js"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/services/services.css": {
+          "sha256": "5c4541c344115bfd50051a6e85b1091299be306307e8281ff3d51dd1441f7076",
+          "bytes": 2307,
+          "status": 200,
+          "contentType": "text/css; charset=utf-8",
+          "capturedAt": "2026-11-17T08:53:56.953716+00:00",
+          "gitBlob": "973a48dd770e10b0077f44d814e2ff14aee2fe9f",
+          "repositoryPath": "services/services.css"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/floating-cta.js": {
+          "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+          "bytes": 37747,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:55:40.749648+00:00",
+          "gitBlob": "d0d0969fc77064a20eda33bf68f6dab15329668b",
+          "repositoryPath": "global/floating-cta.js",
+          "deduplicatedIdenticalPayloadFrom": "/workspace/artifacts/helix-residual-20261117/inputs/services/bodies/c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+          "provenance": "Actual NEW immutable URL returned200 with this exact SHA256 in diagnostic observation; identical content-addressed payload reused, not a historical response substitution"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/global/viewport-fix.js": {
+          "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+          "bytes": 5970,
+          "status": 200,
+          "contentType": "application/javascript; charset=utf-8",
+          "capturedAt": "2026-11-17T08:55:40.749648+00:00",
+          "gitBlob": "cab59c9a81d82cd30078da7608bcd48e8b7677f4",
+          "repositoryPath": "global/viewport-fix.js",
+          "deduplicatedIdenticalPayloadFrom": "/workspace/artifacts/helix-residual-20261117/inputs/services/bodies/1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+          "provenance": "Actual NEW immutable URL returned200 with this exact SHA256 in diagnostic observation; identical content-addressed payload reused, not a historical response substitution"
+        },
+        "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@719546330ce1413b2e68b6c3da45dd2d3798e7eb/seo-snippets/services.html": {
+          "sha256": "61f91d61220c8aaa633abd927583c0f13f5639913e87d5685e09e1383307d9a3",
+          "bytes": 4358,
+          "status": 200,
+          "contentType": "text/plain; charset=utf-8",
+          "capturedAt": "2026-11-17T08:55:40.749648+00:00",
+          "gitBlob": "87516d11f052b96e518c007e1a7c2793d7cd5005",
+          "repositoryPath": "seo-snippets/services.html",
+          "deduplicatedIdenticalPayloadFrom": "/workspace/artifacts/helix-residual-20261117/inputs/services/bodies/61f91d61220c8aaa633abd927583c0f13f5639913e87d5685e09e1383307d9a3",
+          "provenance": "Actual NEW immutable URL returned200 with this exact SHA256 in diagnostic observation; identical content-addressed payload reused, not a historical response substitution"
+        }
+      }
+    },
+    "sourceScope": "Only services/bootstrap.js changes versus actual published ba91 tree; all other asset blobs equal",
+    "browserConditions": 12,
+    "browserSourceScope": "Separate prospective package7195463 and actual published CSS/JS, not the work-source18-stage run",
+    "actualCandidateAssetURLsConsumed": 20,
+    "earlierClaimedMetricOwnersRespected": [
+      "global/ga4-base.js",
+      "global/measure-gate.js",
+      "global/session.js",
+      "global/sheet-log.js"
+    ],
+    "metricsFunctionalCompletion": "Not claimed; measurement disabled and a guard is only an initialization claim",
+    "publicSharedRequestCap": 3,
+    "workSharedRequestCap": 4,
+    "pinProposal": "consistency-proposed-services-head.patch; not applied; separate approval required",
+    "deliveryFailures": "First DNS and incomplete21/24+HTTP403 input retained. Diagnosis later observed actual same URLs200 and matching commit/body. New complete24-input used for a fresh full12. No combining failed/partial runs.403 origin not established.",
+    "recoversSharedOnlyOperatingCase": false,
+    "publicPinStillLegacy": true
+  },
+  "recovery": [
+    {
+      "unit": "work-native",
+      "recoveryCommit": "458207fb10496c1ad22f31f79f38a089972f4766",
+      "actualRemoteDiffApplyAndReverse": "PASS; other unit retained; exact initial file SHA restored",
+      "fileSHA256": "01ed8da93adc9120f66e425a14e930a1c4aaba8f6765306acf96bea868a3ee94",
+      "patchSHA256": "0a18e22b3a0732e033de604875f377d1ca64448a0eb20eda19481d3401905670"
+    },
+    {
+      "unit": "work-claim",
+      "recoveryCommit": "28937260e99acca60e35a66c3f2d2fad9eeed63b",
+      "actualRemoteDiffApplyAndReverse": "PASS; other unit retained; exact initial file SHA restored",
+      "fileSHA256": "01ed8da93adc9120f66e425a14e930a1c4aaba8f6765306acf96bea868a3ee94",
+      "patchSHA256": "35b5f70e31c456bedcc6d4f57889b26b30468ae038168103361e19ee84c86940"
+    },
+    {
+      "unit": "package-native",
+      "recoveryCommit": "2b48adc8b6c53b0ce0a0330eae9f4f27298f4c79",
+      "actualRemoteDiffApplyAndReverse": "PASS; other unit retained; exact initial file SHA restored",
+      "fileSHA256": "3fbf77621adc78be33679decb8665e49de6a4caa30b76c0d4495e8d965c63f84",
+      "patchSHA256": "f32c2a645f676e0060fc9d2cda2c94acfcad9cd847045a62220f680c1dd2e34c"
+    },
+    {
+      "unit": "package-claim",
+      "recoveryCommit": "f702659d50cb18e02be4e3170c9848a2f16a6c3a",
+      "actualRemoteDiffApplyAndReverse": "PASS; other unit retained; exact initial file SHA restored",
+      "fileSHA256": "3fbf77621adc78be33679decb8665e49de6a4caa30b76c0d4495e8d965c63f84",
+      "patchSHA256": "35b5f70e31c456bedcc6d4f57889b26b30468ae038168103361e19ee84c86940"
+    }
+  ],
+  "negativeControls": {
+    "gap1px": {
+      "exit": 1,
+      "detected": "320px computed CSS/geometry comparison"
+    },
+    "nativeUnitInverse": {
+      "exit": 1,
+      "detected": "2requests != required3"
+    },
+    "claimUnitInverse": {
+      "exit": 1,
+      "detected": "Extra1request != required0"
+    },
+    "restored": "Only own one-line mutation and exact inverse diffs reversed; all three frozen worktrees clean and SHA equal"
+  },
+  "refsAfterValidation": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "fix/helix-residual-structure-20261117": "3f4536934c031ad8cf061e3699747af10fc39e1e",
+    "candidate/helix-services-owner-adoption-20261117": "719546330ce1413b2e68b6c3da45dd2d3798e7eb"
+  },
+  "baseline": {
+    "PNG33": true,
+    "responses286": true,
+    "maxDiffPixels": 100,
+    "threshold": 0.2,
+    "maskChanged": false,
+    "expectedFailureChanged": false,
+    "V0Reopened": false,
+    "U01Applied": false
+  },
+  "remaining": {
+    "unresolved": [
+      "Legacy producer errors before shared entry have no authoritative state history; adoption of prepared producer requires separate public pin approval",
+      "HTTP200 execution exceptions/partial initializer need transactional lifecycle/cleanup before retry",
+      "No-error pending has no approved product timeout; only deadline/release observation completed",
+      "Other producers, other CSS state histories and broader same-URL/different-URL adoption paths not globally proven",
+      "D03/D07 other firstpaint, D02 other roots, D05 other active properties remain independent follow-up work"
+    ],
+    "environmentUnverified": [
+      "Actual Safari/iOS/iPad/WebKit viewport/rotation; no executable/device",
+      "Public candidate pin adoption/staging reach; never published",
+      "Independent human audit"
+    ]
+  },
+  "rawStorage": "LOCAL ONLY. GitHub contains source/tests/verdict/input SHA/recovery and proposal. Raw bodies/PNG/full logs plus inventory local only; no remote archive claim.",
+  "rawInventory": {
+    "path": "/workspace/artifacts/helix-loader-consistency-20261117/final-raw-inventory.json",
+    "files": 432,
+    "SHA256": "1a17e33544e1ca15109c06fa8c45d71939cfa38484596c8a18c6ae9a1888904a"
+  },
+  "keyEvidenceSHA256": {
+    "final-f442/results.json": "cd6856fa719b465ae5e54e920dea21639df1c259042321614b236f4bad6ce060",
+    "final-f442.log": "51d193971db8a462762c3954407a3bf50ee676b8ce29254da3d7bcb3227c9103",
+    "producer-original-red-v2.log": "22bf72f552f3a1d827cc56eb6a17322983702b9298b5ae168bd04a821f78d09b",
+    "producer-full-focus/results.json": "ed93184c757756a1202b5ebbd7f8f738e19cb6d6d222451a4ec333b72f6afa27",
+    "adoption-original-red.log": "e6609965412968d55dd645394418bad1270151dcd83f4add86da5a1275843a10",
+    "adoption-full/results.json": "065f8bcb853b95e4f32e1e3ee5121d3cc1e75652d55a66ace7b0555db1f86a9c",
+    "execution-states/results.json": "f19fef8573b085de0eedb7de71601398c966a6f1a31514b16f06c0092d9d88dc",
+    "package/browser-complete/results.json": "70630cf92433319048fa13e51f449f2b606779d72367fa2c4497e258d73416f9",
+    "package/complete-input/manifest.json": "23ac082bdb525d3a9d1a1ee2c322c39a9336becd3aa5a06cbfaeee5727b73c98",
+    "package/live-input/prefetch-observation.json": "b9f4029889d258c11a33513cc202b34c70340518bb328e5741745f500cc2f612",
+    "package/live-input/blocked-response-diagnosis.json": "953a98cc098cca35dd8a305f9820f4e4ea7dec60cc867af412f23afa2a9841d0",
+    "negative-gap.log": "4fe8131da6de31a38b92e3b0e445fb7890fee184c9084f05cdcd4e940554968d",
+    "negative-native.log": "c043cf776dbd2046fed7570d49f2ce2020573ea47603b731dbf677efde6a9058",
+    "negative-claim.log": "b9f46227211affa93d261e00f7222e1dab14ee0429d7c7c462396fa76e2604ac",
+    "recovery-apply-results.json": "e9b370b56ecf9ea4cb7abbd75c74a4e64a22f0c004f64260d00cdb8fce5e3e1f"
+  },
+  "actualStability": "Narrower producer ownership and initializer adoption remove cross-version error-flag dependency for updated producers and avoid duplicate menu requests; not whole-site/global loader independence or live operational completion.",
+  "mainStagingMerged": false,
+  "publicPinOrSettingsChanged": false,
+  "WebflowPublished": false,
+  "operatingDeployment": false,
+  "closingEvidence": {
+    "publicHTML10Unchanged": true,
+    "publicHTML": [
+      {
+        "url": "https://www.helix-amc.com/",
+        "status": 200,
+        "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+        "bytes": 46693,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+          "ccb68a7c4523d83539afc5de20e309ff145547dd"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://www.helix-amc.com/discover-helix",
+        "status": 200,
+        "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+        "bytes": 87173,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://www.helix-amc.com/services",
+        "status": 200,
+        "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+        "bytes": 27823,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://www.helix-amc.com/faq",
+        "status": 200,
+        "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+        "bytes": 137809,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://www.helix-amc.com/internal-medicine",
+        "status": 200,
+        "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+        "bytes": 53286,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+          "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://helixanimalmedicalcenter.webflow.io/",
+        "status": 200,
+        "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+        "bytes": 46618,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+          "ccb68a7c4523d83539afc5de20e309ff145547dd"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+        "status": 200,
+        "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+        "bytes": 87098,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://helixanimalmedicalcenter.webflow.io/services",
+        "status": 200,
+        "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+        "bytes": 27748,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+        "status": 200,
+        "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+        "bytes": 137734,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      },
+      {
+        "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+        "status": 200,
+        "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+        "bytes": 53211,
+        "assetPins": [
+          "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+          "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+          "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+        ],
+        "generatedCSS": [
+          "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+        ]
+      }
+    ],
+    "engine": {
+      "webkitExecutable": "/home/agent/.cache/ms-playwright/webkit-2227/pw_run.sh",
+      "exists": false,
+      "realSafariIOSIPadAvailable": false,
+      "productViewportChanged": false
+    },
+    "rawSHA256": {
+      "public-final/live-html-scan.json": "c7a260b8810a54ca61df30a7402581c538fa3b0e2d20d82e456505f28991ddf8",
+      "public-final/live/html-11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a.html": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "public-final/live/html-b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a.html": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "public-final/live/html-7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0.html": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "public-final/live/html-c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0.html": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "public-final/live/html-ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57.html": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "public-final/live/html-39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e.html": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "public-final/live/html-a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a.html": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "public-final/live/html-cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20.html": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "public-final/live/html-b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499.html": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "public-final/live/html-604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239.html": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "engine-availability.json": "5b2318fad03fb8cc21199ac4cd2d3fb0a52590c9949bcd84d39f9744d4c7502a",
+      "public-final-scan.log": "28ff0cfe5289201445b30fb31bea3cd719114640856245998235a6b0926cb3e3",
+      "public-final-scan.py": "0a629e05ccbfa160c619c1e5a7942d4e4bb463725e4afa9b9e5967088357e692"
+    }
+  }
+}

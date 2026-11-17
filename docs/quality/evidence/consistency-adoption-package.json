@@ -282,5 +282,33 @@
     "package-complete-observe.cjs": "19cc5754b5d37357e05a1d0e9bcf5c7045db5a66e783548e61c7719893a1b427",
     "package/proposed-services-head.patch": "82a2c59e8aa9b5cb499bc3b9e9e75e2116d9bcdfbbf7a727091dfed00885c6c8"
   },
-  "rawStorage": "Local only; GitHub records source commits, manifests/verdict/hashes and proposed patch; not a remote binary archive"
+  "rawStorage": "Local only; GitHub records source commits, manifests/verdict/hashes and proposed patch; not a remote binary archive",
+  "actualCandidateURLsConsumed": 20,
+  "earlierInitializationClaimsRespected": {
+    "global/measure-gate.js": {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js",
+      "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+      "repoPath": "global/measure-gate.js",
+      "ref": "4aeeb4a85469796c69ae46b54ecfed88bf00e54e"
+    },
+    "global/ga4-base.js": {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js",
+      "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+      "repoPath": "global/ga4-base.js",
+      "ref": "4aeeb4a85469796c69ae46b54ecfed88bf00e54e"
+    },
+    "global/session.js": {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js",
+      "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+      "repoPath": "global/session.js",
+      "ref": "4aeeb4a85469796c69ae46b54ecfed88bf00e54e"
+    },
+    "global/sheet-log.js": {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js",
+      "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+      "repoPath": "global/sheet-log.js",
+      "ref": "4aeeb4a85469796c69ae46b54ecfed88bf00e54e"
+    }
+  },
+  "metricsFunctionalCompletion": "Not verified; measurement explicitly disabled. Existing initializer claims are not a generic execution-success marker."
 }
