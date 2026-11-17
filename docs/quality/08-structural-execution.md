@@ -40,3 +40,19 @@ U01·D02·D03·D04/D06/D07과 D05 나머지 속성은 아직 해결 완료가 �
 `scripts/visual/glow-ownership.cjs`: 보존한 기존 기능 패치를 양쪽에 동일 적용한 뒤 buttons.js만 전후 비교했다. **3크기×2시나리오=6쌍** 모두 원본 set/remove/loop 각2회→후보 각1회, fade 후hold 약940–960ms→1500–1501ms. 실제 CSSStyleDeclaration 쓰기/제거 call stack·GSAP fade 완료·loop 전환을 기록했다. cold 일반 진입, warm 왕복(추가 쓰기0), 빠른 이탈/재진입, reduced-motion+CSS/font1200ms 지연을 포함했다. 모든 보이는 bt1/2/3/4의 최종 크기·텍스트·opacity·shadow·곡률·loop가 동일하고 hero 완료 이벤트 유지, JS/네트워크 오류·외부 전달0. 소비 로더는 home/bootstrap(.v2)이며 소개는 about.js의 별도 클래스/제어를 쓴다.
 
 warm은 동일 문서 재진입이며 디스크 cache 검증은 아니다. 지연 검사는 임의 로더 실패나 Safari/실기기 모션 판정을 대신하지 않는다. D03의 bt3 중복 제어만 격리 후보 통과이며 hero 준비/viewport 연동 등은 미완료다. 복구는 이 D03 커밋만 revert. 원시 계측 `/workspace/artifacts/helix-structure-20261117/d03/results.json`.
+
+## D02-U02a 실제 결과
+
+실제 고정 `@63812a31…/global/word-wrap.css`의 모든 자손 `overflow-wrap:normal!important`가 내과 목록의 기존 anywhere를 무력화했다. 공백 없는 긴 문자열로 목록 flex item 자체가3,527–3,990px까지 늘어 섹션/화면 밖으로 벗어나는 실패를 재현했다. 글자와 자기 요소만 비교하면 이 실패를 놓치므로 **섹션/viewport 경계도 검사**한다. 재현은 합성 긴 문자열이며 현재 게시 문구 자체의 넘침 장애를 확정한 것은 아니다.
+
+공개 head의 고정 참조를 바꿀 수 없으므로 전역 정책의 일괄 철회·정책 파일만 바꾼 미도달 후보를 피했다. **기존 모바일 page-ID/#hx-im-process/.sj_step_list 규칙의 anywhere만 명시적인 important 예외로 복원하고 그 자손을 같은 경계에 포함**했다. max-width는 원래 목록 요소에만 남긴다. 새 후행 override를 쌓지 않았고 word-break/hyphens/글꼴/767 경계/desktop은 그대로다. 이는 한 컴포넌트의 예외 소유권 복구이며 전역 important 구조를 없앤 것은 아니다.
+
+`scripts/visual/wrap-boundary.cjs`: 실제 현재 입력5페이지×3크기 **15쌍**에서 게시 문구·링크·요소 geometry·글꼴/줄높이·word-break/hyphens와 비대상 overflow-wrap가 동일했다. 모바일의 의도한 overflow-wrap 속성만 자연 화면 hash에서 제외하고, 별도 정방향 검사로 anywhere와 실제 넘침 해소를 확인했다. 긴 영문/URL/숫자/한글×직접텍스트/span/a **12조건**이 원본 overflow→후보 내부 줄바꿈으로 바뀌었다(후보 목록287.625px). 1440/820에서는 원본 정책과 실패가 그대로이며 이번 해결 범위가 아니다. 766/767/768, 같은 클래스의 root 밖 대조, 실제 고정 정책의 늦은 재삽입도 확인했다. 원래 고정 정책과 실제 global.css overlay 도달을 매번 확인하고 JS/네트워크 오류·외부 전달0을 요구했다.
+
+입력 누락은 정상으로 세지 않았다. 최신10/40자SHA의 CSS/JS·동영상·SEO·반응형 PNG 등60응답을 검사 밖에서 실제 GET200/본문 hash로 고정했고, 원본URL 덮어쓰기·묵시적 최신 대체 없이 재실행했다. 단축 floating JS의 첫GET403도 보존했고 표준 browser User-Agent GET200은 알려진 기존 동일본문이었다. 파일을 수정하거나 업로드하지 않았다. [추가 입력목록](evidence/structure-inputs-20261117.json)의 본문은 로컬뿐이다. 이전 current 입력 복구 ZIP의 미업로드 한계도 그대로다.
+
+원본286/PNG33 기반 비홈 검사도 **정상 시각12개 PASS + 기존 일반 D02 예상 실패3개**다. 일반 전역 정책 문제의 예상 실패를 새 root 개선의 통과로 세지 않는다. 전체15쌍은 완료된 폭/소비자를 반복하지 않도록 여러 실행 결과를 조합했으며 각 실행명과 hash를 기계 판정에 남겼다. 복구는 이 D02 source hunk만 역적용하고 최신 인계 이력은 유지한다.
+
+### 변경 영향 예측 검사 보강
+
+D05는 기존108쌍 보존뿐 아니라 **36개 통제 수정**을 추가했다. canonical base38→40px 수정은 원본에서 뒤 선언에 가려 무효였고, 후보에서는 PC 폼에만 도달한다. 모바일 변형/legacy/인접 본문은 유지된다. 같은 화면이 우연히 같다는 것보다 수정 위치와 영향 범위를 예측할 수 있다는 증거다.
