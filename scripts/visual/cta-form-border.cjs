@@ -47,7 +47,7 @@ const modes = ['', 'hx-fcta-mobile-bar', 'hx-fcta-overlap-fix', 'hx-fcta-overlap
           });
           fs.writeFileSync(path.join(output,'last-edit.json'),JSON.stringify({width,mode,version,...edit},null,2));await page.screenshot({path:path.join(output,'last-edit.png'),animations:'disabled'});
           for(const key of ['adjacent','phone','copyGap'])assert.deepEqual(edit.after[key],edit.before[key],key+' must stay independent');
-          if(edit.before.form){for(const key of ['box','width','style'])assert.deepEqual(edit.after.form[key],edit.before.form[key],key+' stays independent of border color');const owns=version==='candidate'&&!(width<=767&&mode.includes('hx-fcta-mobile-bar'));assert.equal(edit.after.form.color,owns?'rgb(214, 0, 25)':edit.before.form.color,'Form color edit reaches only its action; mobile-bar owns its variant');}
+          if(edit.before.form){for(const key of ['box','width','style'])assert.deepEqual(edit.after.form[key],edit.before.form[key],key+' stays independent of border color');const owns=version==='candidate';assert.equal(edit.after.form.color,owns?'rgb(214, 0, 25)':edit.before.form.color,'Form border-color belongs to the action across its variants; geometry and phone stay independent');}
           edits.push({width,mode:mode||'floating',version,...edit});
         }
       }

@@ -21,3 +21,7 @@ D05 regular subtext font-size는 현재8선언(10/9/8 반복), 실제소유값10
 현재단계: 공개자산확인 및D05 원본실패검사. main/staging병합·공개설정변경·WebflowPublish·운영배포없음. 원시body/PNG/로그는이번artifact경로 `/workspace/artifacts/helix-remaining-20261117`와기존immutable입력에로컬보존하며원격archive완료라고보고하지않는다.
 
 D05 최초font후보는실제DOM/현constructor에서 `.hx-fcta-phone-btn__subtext`가없어신규prototype의소비자전제에서멈췄다.8선언은남아있지만현재영향을입증하지못했으므로제품변경하지않는다. prototype/로그는로컬에보존한다. 다음실제소비자는form 버튼 border-color로정한다. 초기폼전용색상과뒤의border shorthand가같은색상을제어하는지통제한다. width/style·모바일bar의전용border·legacy·기완료높이/폭/장식/copy gap는변경하지않는다.
+
+D05 원본은form border-color를통제색으로바꿔도최종blue에가려져exit1로재현했다. 초기후보의첫양성실행은mobile-bar가별도border-color를갖는다는새검사가정때문에중단됐다. 실제소스확인결과bar는폭/높이만소유하고border-color는기본form스킨을공유한다. 제품보정을추가하지않고검사의소유자정의를정정했다:모든존재하는form variant에만색편집이도달하고phone·width/style·geometry·legacy는보존해야한다. 기본디자인exact108쌍기준은완화하지않는다.
+
+검사 간 소유권도 분리한다. 기존intro 검사는before를오래된21bccd6 전체CSS로두고consent를영구normal로가정해, 다른root의정당한수정도intro회귀로오인할결합이있다. 현재CSS에서 **intro제품fe863의정확한hunk만역적용**한대조군을생성하도록도구를분리한다(독립baseline경로,patch fuzz0,원본파일불변,현재/before/patch SHA기록). intro의원본긴입력실패→후보복구/게시PNG exact/전체비대상glyph·geometry·wrap동등성은유지하며, consent는제외하지않고현재값을양쪽에서엄격비교한다. 실제다른input/label normal정책도명시적으로assert한다. 옛실행복원을위한historical mode0는남긴다. 기준PNG/mask/허용오차/expected failure 변경이아니다.
