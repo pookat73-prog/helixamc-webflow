@@ -1,0 +1,29 @@
+{
+  "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+  "product": "21bccd670b1a8d4692f38777abbb4804fbaaf6a5",
+  "status": "component candidate PASS; public application not performed",
+  "property": "gap",
+  "target": ".hx-fcta-shell .hx-fcta-phone-btn__copy",
+  "before": "Canonical flex gap6px edit remained4px due later regular declarations",
+  "after": "Regular gap declarations5 to2: base4/compact4; mobile-bar retains8px; overlap retains compact4; legacy unchanged",
+  "originalFailure": "gap-before-corrected exit1, 820/floating candidate4 vs expected6",
+  "newToolError": "First prototype read absent enumerated CSSOM shorthand gap; changed to row-gap, initial log retained. No existing criterion change.",
+  "pairedStates": 108,
+  "controlledEdits": 36,
+  "owners": [
+    [
+      "",
+      "4px"
+    ],
+    [
+      "(max-width: 767px)",
+      "4px"
+    ]
+  ],
+  "protected": "Phone/form heights, form width and disabled decoration unchanged; other worker alignment tail858 bytes unchanged",
+  "actualScope": "Desktop controlled edit only changes phone copy gap, whole form style+geometry/phone box/adjacent geometry preserved; compact/bar/overlap/legacy unchanged",
+  "localResultsSHA256": "90e670ffc59276f7ebd40492bd66816972cf07c4f4011cb7b81b69df67ec43c3",
+  "localEvidenceRoot": "/workspace/artifacts/helix-next-20261117",
+  "recovery": "Reverse only product21bccd6 or use its inverse hunk; retain all other CTA properties and newer units",
+  "newInputs": "Fresh live same home refs/CSS46f7fbd5d/HTML hash. Strict candidate validation replays immutable earlier inputs; unexpected errors/forwarding0; live Network request failed remains distinct."
+}
