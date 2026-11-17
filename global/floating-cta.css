@@ -423,6 +423,13 @@ html:has(#hxFctaModal.is-open) {
 
 .hx-fcta-form__intro { min-width: 0; flex: 1; }
 
+/* The form intro owns emergency token wrapping, including nested text.
+   Ordinary Korean words keep the shared keep-all policy; other roots stay out. */
+.hx-fcta-form .hx-fcta-form__intro,
+.hx-fcta-form .hx-fcta-form__intro * {
+  overflow-wrap: anywhere !important;
+}
+
 .hx-fcta-form__mascot {
   display: block;
   width: 78px;
