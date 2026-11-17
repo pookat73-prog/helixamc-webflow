@@ -2,6 +2,14 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
+## 복구 후 현재 상태 — D02 개별 검증 회수 완료
+
+기존 `/workspace/helix-residual`과 미커밋 consent 후보를 보존했다. HEAD69d1c24에서 원격54da5f8 문서/증거4파일만 exact Git object로 가져와 `merge --ff-only`했으며 CSS 바이트는 불변이다. reset/clean/restore/후보 중복적용은 하지 않았다.
+
+중단 중 기존 consent-full 단일 실행은 **15/15 완료**했다. 소스391a0297·검사fa5aea11·patch dd80ad71·기준46200491과 일치하며 모든30 network audit/게시 JSON/PNG와 입력 manifest8개·body2130파일을 해시 검증했다. 게시 문구/배치/타이포/PNG exact, 합성72조건 원본 넘침→후보 정상, privacy toggle/late pinned policy/9경계를 확인했다. intro-composed home390도 통과했다. [회수 결과](evidence/remaining-consent-recovered.json). 부분 성공 합산이나 최신 응답 대체 없이 기존 완전한 실행을 재사용했다.
+
+D02 제품 [db1c034](https://github.com/pookat73-prog/helixamc-webflow/commit/db1c0344387440a93d4c7a740b65809e0a29eac6)은 consent body/자손7줄만 추가했다. D05/기존 intro·내과 예외·전역정책은 보존한다. 새 소스의 최종 연속 통합/오류주입·복구는 아직 미실행이다. 후속 hero/지그→다른 loader→실기기 조건 순서로 이어간다. raw응답/PNG/전체로그는 복구 확인된 로컬 전용이며 전체 구조·운영 안정화 완료가 아니다. 아래 중단 상태는 당시 이력이다.
+
 ## 현재 인계 — D05 개별 검증 완료 / D02 검증 중 환경 중단
 
 **이번 요청 범위는 미완료다.** [11 실행·중단 인계](11-remaining-execution.md), [상태·SHA·재개 조건](evidence/remaining-interrupted.json)이 최신 기준이다. 검증된 기존 b0fa548 및 이전완료작업은보존했다.

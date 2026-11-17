@@ -1,5 +1,13 @@
 # HELIX 다음 잔여 개선 실행 — 18541d2 이후
 
+## 환경 복구 및 D02 결과 회수 (2026-11-17)
+
+기존 작업장 HEAD69d1c24/CSS 미커밋7줄이 그대로 복구됐다. shell 실제 실행을 확인했다. Git CLI network403/remote origin 없음은 GitHub connector의 exact blob/tree/commit hash 검증으로 우회해 docs-only54da5f8에 fast-forward했으며 기존 CSS는 byte 동일하다. 원본·후보·patch·checker4 SHA가 기록과 일치하고 후보 중복적용/reset/clean/restore는 없었다.
+
+기존 consent-full 결과는 실제로 단일15/15 완료다. 5페이지×3크기의30개 network audit/게시 JSON/모달 PNG를 대조했고 게시 배치·타이포·비대상 wrap은 exact다. home3크기의72 합성입력은 원본 전부 overflow/후보 전부 contain, 직접텍스트·기존label·span/a 및4문자종류를 확인했다. 동의 상세 토글/늦은 pinned policy/9경계도 각 assert 뒤 기록된 성공이다. intro-composed390도 현재 CSS391a0297에서 통과했다. 이전 입력 manifest8개와 body2130파일의 길이/SHA를 확인했으며 최신응답으로 대체하지 않았다. raw/log/PNG는 로컬에만 보존한다. [전수 회수 대장](evidence/remaining-consent-recovered.json).
+
+검증된 consent root 소유권만 제품db1c034로 분리했다. 전역 keep-all/word-wrap, 기존 intro/내과, checkbox/다른 폼은 불변이다. 최종 새소스 통합·의도오류주입/복구는 다음 단계이며 이전b0fa548 결과로 대체하지 않는다. 아래 중단 판정은 당시 이력이다.
+
 **현재 판정: 실행환경 중단으로 이번 작업은 미완료다.** D05 폼 border-color 제품 b890736은 단일108쌍/36통제수정 검증을 통과했다. D02 consent 후보는 로컬 미커밋 상태이고 전체15쌍 결과를 회수하지 못해 승격하지 않았다. [중단 판정·SHA·재개 조건](evidence/remaining-interrupted.json), [미검증 후보 패치](evidence/remaining-consent-candidate.patch)를 따른다. 아래는 진행 이력이며 이전 b0fa548의10단계 통과를 이번 소스의 통과로 사용하지 않는다.
 
 2026-11-17 KST. 작업 브랜치 `fix/helix-residual-structure-20261117`, 시작 HEAD18541d233ede4e7b57a3ecfcf2ad503d827a3d99 및 검증 runtime b0fa548 보존. root AGENTS/HANDOFF/10 실행기록과 관련 CLAUDE LOCKED를 읽었다. 작업 전 clean, 원격HEAD 일치. main3c4f78d4/staginga074f455는 직전과 동일하다. 기존 작업 공간·원본 PNG/corpus·다른 작업자 코드를 보존한다.
