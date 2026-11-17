@@ -79,6 +79,105 @@
     return s.display !== 'none' && s.visibility !== 'hidden';
   }
 
+  /* Cards have a separate lifecycle: a hidden device-specific section is
+     initialized on first exposure, without replaying headings/glow/listeners. */
+  var initializedCardSections = new WeakSet();
+  function initCardSections() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    var cardSections = new Set();
+    document.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151').forEach(function (card) {
+      var sec = card.closest('section');
+      if (sec) cardSections.add(sec);
+    });
+
+    var sec4Count = 0;
+    cardSections.forEach(function (section) {
+      if (!section.getClientRects().length || !isVisible(section)) {
+        log('card section hidden, skip');
+        return;
+      }
+      if (initializedCardSections.has(section)) return;
+      sec4Count++;
+
+      var cards = section.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151');
+      if (!cards.length) return;
+      initializedCardSections.add(section);
+
+      var cardContainer = section.querySelector('.flex-block-22') ||
+                          section.querySelector('.flex-block-23') ||
+                          cards[0].parentElement;
+      var svicc = section.querySelector('.home_background_svicc');
+      var isMobileCard = window.innerWidth <= 767;
+
+      /* ── 모바일: 그림자만 스크롤 트리거. 페이드인·슬라이드인 모두 제거 ─
+         · 카드/SVICC : 시작부터 opacity:1, transform:none (즉시 visible)
+         · 그림자 시퀀스:
+             1번 카드: section 'top 80%'
+             2번 이후: 직전 카드 'top 50%'
+         · SVICC 스크롤 인터랙션 없음 — 시작부터 visible. */
+      if (isMobileCard) {
+        cards.forEach(function (c) { gsap.set(c, { opacity: 1, y: 0 }); });
+        if (svicc) gsap.set(svicc, { opacity: 1, x: 0 });
+
+        ScrollTrigger.create({
+          trigger: section,
+          start: 'top 80%',
+          once: true,
+          onEnter: function () { cards[0].classList.add('is-shadowed'); }
+        });
+
+        for (var ci = 1; ci < cards.length; ci++) {
+          (function (idx) {
+            ScrollTrigger.create({
+              trigger: cards[idx - 1],
+              start: 'top 50%',
+              once: true,
+              onEnter: function () { cards[idx].classList.add('is-shadowed'); }
+            });
+          })(ci);
+        }
+        log('mobile sec4 shadow-only: cards=' + cards.length + ' svicc=' + !!svicc);
+        return;
+      }
+
+      /* ── 데스크: 기존 cardContainer 'top 70%' 단일 timeline ─────
+         once: true — helix-s1-done 이후 ScrollTrigger.refresh() 가 트리거를
+         재평가할 때 카드가 깜빡 사라졌다 다시 페이드인되는 현상 방지. */
+      var cardTL = gsap.timeline({
+        scrollTrigger: {
+          trigger: cardContainer,
+          start: 'top 70%',
+          toggleActions: 'play none none none',
+          once: true
+        }
+      });
+
+      var cardStagger = 0.08;
+      cardTL.to(cards, {
+        opacity: 1,
+        y: 0,
+        stagger: cardStagger,
+        duration: 0.5,
+        ease: 'power2.out'
+      }, 0);
+
+      cards.forEach(function (card, i) {
+        cardTL.call(function () { card.classList.add('is-shadowed'); }, [], 0.15 + i * cardStagger);
+      });
+
+      if (svicc) {
+        cardTL.to(svicc, {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          ease: 'power2.out'
+        }, '-=0.3');
+      }
+      log('desktop sec4 timeline: cards=' + cards.length + ' svicc=' + !!svicc);
+    });
+    log('total visible card sections: ' + sec4Count);
+  }
+
   /* ============================================================
      initSectionsOnce: 섹션 2-4 공통 초기화 (1회만 실행)
 
@@ -183,96 +282,7 @@
        - 각 섹션 내부 카드 + 그 섹션의 .home_background_svicc 페어
        - 데스크용·모바일용 섹션 각자 자기 트리거로 발동, 숨겨진 쪽 스킵
     ────────────────────────────────────────────────────────── */
-    var cardSections = new Set();
-    document.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151').forEach(function (card) {
-      var sec = card.closest('section');
-      if (sec) cardSections.add(sec);
-    });
-
-    var sec4Count = 0;
-    cardSections.forEach(function (section) {
-      if (!isVisible(section)) {
-        log('card section hidden, skip');
-        return;
-      }
-      sec4Count++;
-
-      var cards = section.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151');
-      if (!cards.length) return;
-
-      var cardContainer = section.querySelector('.flex-block-22') ||
-                          section.querySelector('.flex-block-23') ||
-                          cards[0].parentElement;
-      var svicc = section.querySelector('.home_background_svicc');
-      var isMobileCard = window.innerWidth <= 767;
-
-      /* ── 모바일: 그림자만 스크롤 트리거. 페이드인·슬라이드인 모두 제거 ─
-         · 카드/SVICC : 시작부터 opacity:1, transform:none (즉시 visible)
-         · 그림자 시퀀스:
-             1번 카드: section 'top 80%'
-             2번 이후: 직전 카드 'top 50%'
-         · SVICC 스크롤 인터랙션 없음 — 시작부터 visible. */
-      if (isMobileCard) {
-        cards.forEach(function (c) { gsap.set(c, { opacity: 1, y: 0 }); });
-        if (svicc) gsap.set(svicc, { opacity: 1, x: 0 });
-
-        ScrollTrigger.create({
-          trigger: section,
-          start: 'top 80%',
-          once: true,
-          onEnter: function () { cards[0].classList.add('is-shadowed'); }
-        });
-
-        for (var ci = 1; ci < cards.length; ci++) {
-          (function (idx) {
-            ScrollTrigger.create({
-              trigger: cards[idx - 1],
-              start: 'top 50%',
-              once: true,
-              onEnter: function () { cards[idx].classList.add('is-shadowed'); }
-            });
-          })(ci);
-        }
-        log('mobile sec4 shadow-only: cards=' + cards.length + ' svicc=' + !!svicc);
-        return;
-      }
-
-      /* ── 데스크: 기존 cardContainer 'top 70%' 단일 timeline ─────
-         once: true — helix-s1-done 이후 ScrollTrigger.refresh() 가 트리거를
-         재평가할 때 카드가 깜빡 사라졌다 다시 페이드인되는 현상 방지. */
-      var cardTL = gsap.timeline({
-        scrollTrigger: {
-          trigger: cardContainer,
-          start: 'top 70%',
-          toggleActions: 'play none none none',
-          once: true
-        }
-      });
-
-      var cardStagger = 0.08;
-      cardTL.to(cards, {
-        opacity: 1,
-        y: 0,
-        stagger: cardStagger,
-        duration: 0.5,
-        ease: 'power2.out'
-      }, 0);
-
-      cards.forEach(function (card, i) {
-        cardTL.call(function () { card.classList.add('is-shadowed'); }, [], 0.15 + i * cardStagger);
-      });
-
-      if (svicc) {
-        cardTL.to(svicc, {
-          opacity: 1,
-          x: 0,
-          duration: 0.6,
-          ease: 'power2.out'
-        }, '-=0.3');
-      }
-      log('desktop sec4 timeline: cards=' + cards.length + ' svicc=' + !!svicc);
-    });
-    log('total visible card sections: ' + sec4Count);
+    initCardSections();
 
     /* ──────────────────────────────────────────────────────────
        5. 복사 버튼 (.copy-text-button)
@@ -994,6 +1004,7 @@
     if (zigResizeT) clearTimeout(zigResizeT);
     zigResizeT = setTimeout(function () {
       log('resize → zig relayout');
+      initCardSections();
       cleanupZig();
       initZigLine();
       if (window.ScrollTrigger && ScrollTrigger.refresh) ScrollTrigger.refresh();
