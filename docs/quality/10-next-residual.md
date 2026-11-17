@@ -47,3 +47,5 @@ D05/D02제품커밋과각양성검사를마친뒤착수한다. 지그는전역 `
 D03단위검증/제품커밋뒤실제services소비자를재생한다. 페이지loader가메뉴CSS/JS의immutable/branch fallback모두실패했을때남는tag때문에공통present가복구를막는지관측한다. 오류는실제route실패로주고sharedentry준비후load전발생을명시한다. 관측된실패와성공/pending소유자를구분하는근거가확보돼야만공통메뉴2자산의경계만고친다. 타loader tag삭제/pin교체/viewport복구범위확대는금지한다. 원본실패가없으면제품수정하지않는다.
 
 D04첫원본은다른loader menuCSS2요청실패/잔존tag2/menu static과unexpected오류0을확인했다. 의도적으로실패시킨CSS도overlay성공을요구한신규assert오류로중단됐다. 실패대상미소비는실패증거로유지하고나머지성공자산모두의실제소비를assert하도록고쳤다. 정상/복구시에는대상포함전체소비를요구한다.
+
+D04첫32조건실행은CSS8조건과JS정상2조건뒤JS실패경로의대기중TargetClosed로중단됐다. JS오류를sharedentry관측뒤로미루는시험선행조건이확립되지않았고제품복구성공으로세지않는다. 실행을보존하고JS위상만별도5초상한계측한다. 제품후보의새실패관측대상은 **다른loader의메뉴CSS 한경로**로축소한다. 기존공통loader자신의CSS/JS1회재시도는변경없다. 새검사의최종범위도CSS16조건을새단일실행으로판정하며, 중단32실행의통과를합산하지않는다. 다른loader JS실패tag는미해결로남긴다.

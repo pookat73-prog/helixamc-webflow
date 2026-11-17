@@ -1,0 +1,372 @@
+{
+  "refs": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "workAtStart": "42d432705def71d5486472b4f94aa099ad8d8c31"
+  },
+  "readOnlyBrowser": {
+    "at": "2026-11-17T04:12:45.666Z",
+    "browser": "151.0.7922.173",
+    "result": [
+      {
+        "origin": "https://www.helix-amc.com",
+        "status": 200,
+        "htmlSha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+        "state": {
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "sha": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "viewport": "width=device-width, initial-scale=1",
+          "assets": [
+            "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css",
+            "https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D9EMN6BC77UD5IE52MB0&lib=ttq",
+            "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js",
+            "https://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic%7CGreat+Vibes:400%7CPT+Serif:400,400italic,700,700italic%7CNewsreader:400%7CNoto+Sans+KR:300,400,500,600,700&subset=korean,latin",
+            "https://use.typekit.net/yun6zxv.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js",
+            "https://www.googletagmanager.com/gtag/js?id=G-PWCB5MVC32",
+            "https://connect.facebook.net/en_US/fbevents.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap-v3.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/ga4-base.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/global.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/coming-soon.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/buttons.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta-mobile-fix.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/popup.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/top-button.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/hamburger.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section-divider/divider.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/footer.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/card-stack.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/scroll-hint.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/session.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/viewport-fix.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/viewport.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/coming-soon.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/sheet-log.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/accessibility.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta-mobile-fix.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/scroll-depth.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/page-time.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/section-reach.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/popup.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/top-button.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/hamburger.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section-divider/divider.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/buttons.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/footer.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/card-stack.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/scroll-hint.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/equipment/equipment.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/scroll-depth.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/page-time.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+            "https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69d090ea69d828e27d16ea29",
+            "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.schunk.80b2e6a92cba2801.js",
+            "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.751e0867.6551f58fa950fc60.js"
+          ],
+          "overflow": [
+            {
+              "tag": "HTML",
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "tag": "BODY",
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "counts": {
+            "menus": 1,
+            "forms": 1
+          },
+          "width": 1440,
+          "height": 3019
+        },
+        "blocked": [
+          {
+            "url": "https://p.typekit.net/p.gif?s=1&k=yun6zxv&ht=tk&h=www.helix-amc.com&f=10954.13454.29282.29298.45393.45988.45989.50116.51105.53151.53842.54486.54487.54489&a=316089148&js=1.14.0&app=typekit&e=js&_=1794888751387",
+            "method": "GET"
+          },
+          {
+            "url": "https://www.googletagmanager.com/gtag/js?id=G-PWCB5MVC32",
+            "method": "GET"
+          },
+          {
+            "url": "https://connect.facebook.net/en_US/fbevents.js",
+            "method": "GET"
+          },
+          {
+            "url": "https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D9EMN6BC77UD5IE52MB0&lib=ttq",
+            "method": "GET"
+          },
+          {
+            "url": "https://api.ipify.org/?format=json",
+            "method": "GET"
+          },
+          {
+            "url": "https://script.google.com/macros/s/AKfycbw4_teiXT692qgXtvKn9XfPuevpGGj6GxVodB-qvTZdLHMMhpaeP3UwHTtRVajoY-PB/exec",
+            "method": "POST"
+          },
+          {
+            "url": "https://script.google.com/macros/s/AKfycbw4_teiXT692qgXtvKn9XfPuevpGGj6GxVodB-qvTZdLHMMhpaeP3UwHTtRVajoY-PB/exec",
+            "method": "POST"
+          },
+          {
+            "url": "https://script.google.com/macros/s/AKfycbw4_teiXT692qgXtvKn9XfPuevpGGj6GxVodB-qvTZdLHMMhpaeP3UwHTtRVajoY-PB/exec",
+            "method": "POST"
+          }
+        ],
+        "errors": [
+          "Network request failed"
+        ]
+      },
+      {
+        "origin": "https://helixanimalmedicalcenter.webflow.io",
+        "status": 200,
+        "htmlSha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+        "state": {
+          "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "sha": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "viewport": "width=device-width, initial-scale=1",
+          "assets": [
+            "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css",
+            "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js",
+            "https://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic%7CGreat+Vibes:400%7CPT+Serif:400,400italic,700,700italic%7CNewsreader:400%7CNoto+Sans+KR:300,400,500,600,700&subset=korean,latin",
+            "https://use.typekit.net/yun6zxv.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/measure-gate.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/ga4-base.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/session.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4aeeb4a85469796c69ae46b54ecfed88bf00e54e/global/sheet-log.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/bootstrap.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/viewport-fix.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/viewport.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/accessibility.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/global.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/floating-cta.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/floating-cta.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/floating-cta-mobile-fix.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/floating-cta-mobile-fix.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/scroll-depth.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/page-time.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/section-reach.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/hamburger.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/hamburger.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/coming-soon.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/coming-soon.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/section1/section1.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/section1/section1.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/section-divider/divider.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/section-divider/divider.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/buttons.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/buttons.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/sections-animations.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/sections-animations.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/footer.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/footer.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/card-stack.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/card-stack.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/scroll-hint.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/scroll-hint.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/equipment/equipment.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/popup.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/popup.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/top-button.css",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/top-button.js",
+            "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+            "https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=69d090ea69d828e27d16ea29",
+            "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.schunk.80b2e6a92cba2801.js",
+            "https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/js/webflow.751e0867.6551f58fa950fc60.js"
+          ],
+          "overflow": [
+            {
+              "tag": "HTML",
+              "x": "hidden",
+              "y": "auto"
+            },
+            {
+              "tag": "BODY",
+              "x": "hidden",
+              "y": "auto"
+            }
+          ],
+          "counts": {
+            "menus": 1,
+            "forms": 1
+          },
+          "width": 1440,
+          "height": 3019
+        },
+        "blocked": [
+          {
+            "url": "https://p.typekit.net/p.gif?s=1&k=yun6zxv&ht=tk&h=helixanimalmedicalcenter.webflow.io&f=10954.13454.29282.29298.45393.45988.45989.50116.51105.53151.53842.54486.54487.54489&a=316089148&js=1.14.0&app=typekit&e=js&_=1794888758950",
+            "method": "GET"
+          }
+        ],
+        "errors": [
+          "Network request failed"
+        ]
+      }
+    ]
+  },
+  "readOnlyHTML": [
+    {
+      "url": "https://www.helix-amc.com/",
+      "status": 200,
+      "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "bytes": 46693,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ],
+      "sameAsImmutableValidationInputHTML": true
+    },
+    {
+      "url": "https://www.helix-amc.com/discover-helix",
+      "status": 200,
+      "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "bytes": 87173,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ],
+      "sameAsImmutableValidationInputHTML": true
+    },
+    {
+      "url": "https://www.helix-amc.com/services",
+      "status": 200,
+      "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "bytes": 27823,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ],
+      "sameAsImmutableValidationInputHTML": true
+    },
+    {
+      "url": "https://www.helix-amc.com/faq",
+      "status": 200,
+      "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "bytes": 137809,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ],
+      "sameAsImmutableValidationInputHTML": true
+    },
+    {
+      "url": "https://www.helix-amc.com/internal-medicine",
+      "status": 200,
+      "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "bytes": 53286,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ],
+      "sameAsImmutableValidationInputHTML": true
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/",
+      "status": 200,
+      "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "bytes": 46618,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+      "status": 200,
+      "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "bytes": 87098,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/services",
+      "status": 200,
+      "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "bytes": 27748,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+      "status": 200,
+      "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "bytes": 137734,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+      "status": 200,
+      "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "bytes": 53211,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    }
+  ],
+  "actualOtherLoader": "services head injects pinnedba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/bootstrap.js; immutable fail falls back to existing@main. Candidate modifies shared global entry only, does not update that pin.",
+  "publicModification": false,
+  "limitations": "Browser captures had existing Network request failed; no clean live-site claim. HTTP HTML equality and candidate strict offline verification are separate evidence."
+}
