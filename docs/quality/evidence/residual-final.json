@@ -1,0 +1,441 @@
+{
+  "dateKST": "2026-11-17",
+  "source": "65227e4eb9062388e4eb76e0dab8015458508ca3",
+  "foundation": "479831748568009843d72aa5bf4ea70595ccde88",
+  "branch": "fix/helix-residual-structure-20261117",
+  "runtimeSHA256": {
+    "global/bootstrap.js": "de99fb663a836ccee6b69fc3315bc476652467a3e3dd63f3ed395cf350ef7a12",
+    "global/floating-cta.css": "8a8b7466d0b33461822c0025101707ad2963377c0d03b13bb3e12431757f3fd2",
+    "global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "home/global/sections-animations.js": "61be6611be54640a41ca0ee6770456f8691d65b349aa5eefa35407fc4a7059e4"
+  },
+  "freshReviewCloneSameRuntime": true,
+  "restoredNegativeCloneSameRuntime": true,
+  "externalPhoneAlignmentTail858BytesPreserved": true,
+  "lastReadOnlyRefs": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "runtimeEqual": true,
+    "nonruntimeDifferences": [
+      "docs/diagnostic-imaging-measurement.md",
+      "docs/eomharim-restore-2026-11-16.md",
+      "scripts/test-imaging-measurement.cjs"
+    ]
+  },
+  "liveAssets": {
+    "mainHome": "3c4f78d4",
+    "stagingHomePin": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+    "sharedStaging": "a074f455",
+    "generatedCSS": "46f7fbd5d",
+    "publicPinsModified": false,
+    "captureErrors": "Some read-only live captures had Network request failed; strict offline tests have zero unexpected errors. No clean live-site result claimed."
+  },
+  "integration": {
+    "source": "65227e4eb9062388e4eb76e0dab8015458508ca3",
+    "base": "479831748568009843d72aa5bf4ea70595ccde88",
+    "coverage": "Selected structural integration; original V0 visual suite remains failing and is not promoted by this run",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "pass": true,
+    "isolatedWorktree": "/workspace/helix-residual-review",
+    "independentHumanReview": false,
+    "scopePairs": [
+      {
+        "path": "/",
+        "width": 1440,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "home/global/buttons.js",
+          "home/global/sections-animations.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/",
+        "width": 820,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "home/global/buttons.js",
+          "home/global/sections-animations.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/",
+        "width": 390,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "home/global/buttons.js",
+          "home/global/sections-animations.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/discover-helix",
+        "width": 1440,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/discover-helix",
+        "width": 820,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/discover-helix",
+        "width": 390,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/services",
+        "width": 1440,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/services",
+        "width": 820,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/services",
+        "width": 390,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/faq",
+        "width": 1440,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/faq",
+        "width": 820,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/faq",
+        "width": 390,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/internal-medicine",
+        "width": 1440,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js",
+          "global/floating-cta.css"
+        ]
+      },
+      {
+        "path": "/internal-medicine",
+        "width": 820,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js",
+          "global/floating-cta.css"
+        ]
+      },
+      {
+        "path": "/internal-medicine",
+        "width": 390,
+        "pass": true,
+        "actualCandidatePaths": [
+          "global/global.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js",
+          "global/floating-cta.css"
+        ]
+      }
+    ],
+    "originalCorpus": {
+      "PNGs": 33,
+      "responses": 286,
+      "hashVerification": "PASS",
+      "maxDiffPixels": 100,
+      "threshold": 0.2,
+      "masksChanged": false,
+      "expectedFailureChanged": false,
+      "fullVisualSuitePass": false
+    },
+    "logs": {
+      "integrity": "da5b7eec5b4f138380288854a67782713a973a70bff61c7e18c1cdf7f34c2f8b",
+      "scope": "eb8bf38d07672ae00407dfcd50c6e3e410e591cea0cf57a616a6d705c2dfc0ed",
+      "interactions": "5db16212a01335df5c53c08dc2bcc947d3613fc298c02c54080460c7a4e21af3",
+      "heading-motion": "87743285854fd2aa71931d51d8eb6e3b232e94ef4ac7d4a7fb273ff4f5429704",
+      "quality": "e2b8f1363ee1116fe5cea17e501342f3174d0de53480c43da7ff4699d1fe4ed8",
+      "home-loading": "7c41471a725820fbcf1ff61d76c7c399b4cf70f206711db3da3570303d4de63a"
+    }
+  },
+  "individualRuns": [
+    {
+      "unit": "D05 phone min-height",
+      "commit": "67c3c75310edcdd3960c795dd59f86180379db54",
+      "run": "phone-after",
+      "pairedStates": 108,
+      "controlledEdits": 36,
+      "pass": true,
+      "finalCombinationRun": "final-phone-combination",
+      "finalCombinationPairedStates": 108,
+      "finalCombinationControlledEdits": 36
+    },
+    {
+      "unit": "D02 process-title root",
+      "commit": "aaad43253a3ffeb8a8805d13688b4e21357fcf73",
+      "run": "header-full-final",
+      "pageWidthPairs": 15,
+      "syntheticInputCombinations": 12,
+      "boundaries": [
+        766,
+        767,
+        768
+      ],
+      "pass": true,
+      "actualPublishedTitleDefect": false
+    },
+    {
+      "unit": "D07 same-section pairing",
+      "commit": "7f4cb178d8b37bbef927f2cd49ea0d5b9e1eab8b",
+      "run": "order-fixed",
+      "originalCandidateExecutions": 6,
+      "pass": true
+    },
+    {
+      "unit": "D03 first-exposure heading lifecycle",
+      "commit": "34ecaa9628e10ac189ad96f76f5bf54f915cfb4f",
+      "run": "lifecycle-final",
+      "originalCandidateExecutions": 6,
+      "pass": true
+    },
+    {
+      "unit": "D05 form width",
+      "commit": "fccbcf6302be092fe81b937bbb0b5e5ec2f286c7",
+      "run": "form-width-fixed",
+      "pairedStates": 108,
+      "controlledEdits": 36,
+      "pass": true
+    },
+    {
+      "unit": "D04 shared-menu bounded retry",
+      "commit": "65227e4eb9062388e4eb76e0dab8015458508ca3",
+      "run": "shared-final",
+      "conditions": 48,
+      "pass": true,
+      "nonTarget": "viewport-control keeps existing request behavior; permanent failure is bounded, not reported recovered"
+    }
+  ],
+  "negativeControl": {
+    "source": "65227e4eb9062388e4eb76e0dab8015458508ca3",
+    "privateClone": "/workspace/helix-residual-negative",
+    "mutation": "One canonical compact phone min-height54 to55px",
+    "expectedExit": 1,
+    "observed": "Assertion rejects first320px pair; component height103 to104px and top781 to780px",
+    "logSHA256": "7245765f41caf89fb99a2256d39c6fee58e33ccf69b1f6710f231825c68cb782",
+    "restoration": "Only private mutated CSS restored from its own HEAD, clean and all four source hashes match final"
+  },
+  "optionalMixedClassHypothesis": {
+    "status": "NOT_REPRODUCED; no product change",
+    "source": "65227e4eb9062388e4eb76e0dab8015458508ca3",
+    "width": 1440,
+    "fixture": "Add section2-heading to hidden home_title without changing visible geometry",
+    "observed": {
+      "loop": true,
+      "opacity": "1",
+      "visibleBt2Writes": 1,
+      "pageErrors": 0,
+      "networkErrors": 0,
+      "forwarded": 0
+    },
+    "diagnosticExit": 1,
+    "reason": "New prototype expected a broken original but observed working control, so original-failure assertion rejected the hypothesis. Not a failed product regression or validated candidate. No global selector union applied. Timing before initialization was not established.",
+    "localPrototype": "/workspace/artifacts/helix-residual-20261117/heading-class-boundary-prototype.cjs",
+    "localAttempt": "/workspace/artifacts/helix-residual-20261117/class-before/attempt-1440-original.json"
+  },
+  "inputs": [
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/inputs/home",
+      "manifestSHA256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5",
+      "responses": 763,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    },
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/inputs/discover-helix",
+      "manifestSHA256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972",
+      "responses": 763,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    },
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/inputs/services",
+      "manifestSHA256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be",
+      "responses": 763,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    },
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/inputs/faq",
+      "manifestSHA256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05",
+      "responses": 763,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    },
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/inputs/internal-medicine",
+      "manifestSHA256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb",
+      "responses": 763,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    },
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/inputs/imaging-v2",
+      "manifestSHA256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9",
+      "responses": 777,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    },
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/resource-extra",
+      "manifestSHA256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34",
+      "responses": 3,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    },
+    {
+      "localRoot": "/workspace/artifacts/helix-residual-20261117/order-fonts-v2",
+      "manifestSHA256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568",
+      "responses": 7,
+      "bodiesVerified": true,
+      "remoteBodiesPreserved": false
+    }
+  ],
+  "statuses": {
+    "actualSourceImprovements": "Six minimal product units committed on work branch only",
+    "candidateValidation": "Each unit passes its recorded run; one continuous selected integration passes all six stages on frozen source",
+    "investigation": "V0 bounded new hypothesis closed without causal fix; D06 source/VM investigation only; optional mixed-class hypothesis not reproduced",
+    "unresolved": [
+      "V0 original visual nondeterminism",
+      "U01 prerequisite not satisfied",
+      "D02 other roots/forms and global pinned policy",
+      "D05 other properties/variant duplication",
+      "D03/D07 firstpaint/hero/zig-line global collections and hidden DOM dependencies",
+      "D04 foreign failed tag/hanging request/mixed pins"
+    ],
+    "environmentUnverified": [
+      "Safari/iOS/iPad/WebKit viewport restoration and rotation",
+      "public staging reachability of this candidate (not deployed)",
+      "separate-human independent review"
+    ]
+  },
+  "preservation": "Original479 worktree, other worker assets and prior menu/reservation/card, form-height/decoration, bt3 single-owner, mobile-list fixes retained. No main/staging update, public setting change or deployment.",
+  "evidenceStorage": "Source, result summaries and hashes in GitHub. Current response bodies, PNGs, full logs and optional diagnostic prototype are local only. This JSON is not a complete replay archive; clean-machine replay needs these recorded bodies or a separately verified reacquisition."
+}

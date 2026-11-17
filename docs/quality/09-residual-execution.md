@@ -16,7 +16,7 @@
 
 ## 현재 상태
 
-V0 새판별3회: 최종 화면625/0/881px, 첫 카드 replay raster400×440의 PNG SHA256은3회 동일했다. 중간 replay가 같아도 실제compositor tile이 같다는 증거가 아니어서 최종 원인/처방은 미확정이다. V0실패/U01보류를 유지하고 이번 조사는 닫는다. [판정](evidence/residual-v0.json). 최신 공개 home main3c4f78d4/staging고정ccb68a7c, 생성CSS46f7fbd5d를 실제 읽었다. 제품 수정은 아직 없다. 통과/실패/미실행은 실행별로 기록한다.
+V0 새판별3회: 최종 화면625/0/881px, 첫 카드 replay raster400×440의 PNG SHA256은3회 동일했다. 중간 replay가 같아도 실제compositor tile이 같다는 증거가 아니어서 최종 원인/처방은 미확정이다. V0실패/U01보류를 유지하고 이번 조사는 닫는다. [판정](evidence/residual-v0.json). 최신 공개 home main3c4f78d4/staging고정ccb68a7c, 생성CSS46f7fbd5d를 실제 읽었다. 이는 제품 수정 전 V0 판정이다. 이후 제품6단위와 최종 판정은 아래에 기록한다. 통과/실패/미실행은 실행별로 구분한다.
 
 ## D05-P1 phone min-height
 
@@ -59,3 +59,81 @@ D03-P2 결과: `lifecycle-final` 단일6실행에서 원본은숨은복제loop=t
 D04-P1 최종 결과: `shared-final` 단일48조건에서 메뉴CSS/JS의 일시 실패는 원본static/absent→후보fixed로 복구되고click/Escape도 동작했다. 영구 실패는 복구 성공이 아니라2요청에서 멈추는 계약이며, 다른loader가 먼저 제공하면 추가retry가 없고 중복entry도 재초기화하지 않았다. 대상은**메뉴2자산만**이다. viewport-control은 기존대로1요청이며 미검증인 다른module/viewport 복구정책을 넓히지 않았다. 같은immutable URL만 사용하고API재조회/공개pin변경은 없다. [대장](evidence/residual-shared-recovery.json)· [실제 자산 연결](evidence/residual-assets.json)
 
 D04의 잔여: 다른loader가남긴실패tag를present로간주하는경로·error없이정지한요청·기존mixedpin정책은미해결이다. 이한정복구로전체로더구조완료라하지않는다.
+
+
+## 최종 판정 — 소스 동결과 연속 재검수
+
+**제품6단위 구현·격리 검증 완료, 전체 구조 안정화는 미완료다.** 동결 소스는 `65227e4eb9062388e4eb76e0dab8015458508ca3`이며 이후 최종 인계 커밋은 문서/증거만 추가한다. [최종 대장](evidence/residual-final.json)에 runtime4파일 SHA256, 입력 manifest 해시, 현재 자산, 오류대조와 범위별 판정을 고정했다. 기존4798317 작업장과 다른 작업자 코드는 보존했다.
+
+| 실제 제거한 간섭 | 제품 커밋 / 개별 복구점 | 개선을 입증한 대조 | 남은 경계 |
+| --- | --- | --- | --- |
+| phone 높이 후행 덮어쓰기8→2소유자 | `67c3c75` | 108쌍 계산CSS·geometry·PNG 동일 +36통제 수정에서 phone만 도달 | 다른 속성 전체를 정리한 것은 아님 |
+| 내과 모바일 process 제목의 전역 줄바꿈 간섭 | `aaad432` | 게시 내용 보존, 긴 입력12조건 넘침→내부 줄바꿈, 단일15쌍 및766/767/768 | 실제 게시 제목은 원래 정상; desktop·다른root·폼은 미개선 |
+| 숨은 복제 순번이 다른section 버튼을 결정 | `7f4cb17` | 숨은section 위치 변경 전후 보이는geometry동일, 원본bt2누락→후보1회동작, 6실행 | 지그 등 다른전역collection은 별도 |
+| 숨은 heading을 조기에 시작해 첫 노출을 소비 | `34ecaa9` | 6실행과 최종연속실행에서 hidden미시작/첫visible1회/왕복0추가/hold1500ms/4버튼보존 | firstpaint/hero전체 수명주기 교체는 안 함 |
+| form폭을 phone공용규칙이 강제 | `fccbcf6` | 108쌍 동일 +36통제 수정에서 form만 도달 | 완료된 높이·장식은 그대로 |
+| 공통메뉴 실패 후 entryguard 때문에 복구 없음 | `65227e4` | 실제영상의학과 소비자48조건, 일시실패복구·영구실패2요청종료·다른loader존중 | 타loader실패tag/무응답/혼합pin 미해결 |
+
+각 제품 커밋에는 검사 도구를 섞지 않았다. 복구가 필요하면 허용된 작업 브랜치에서 **그 제품 커밋의 hunk만** 역적용하고 해당 단위·이웃·연속선택검사를 수행한다. 같은 파일의 나머지 변경은 보존한다. heading 두 단위를 함께 되돌릴 때는 수명주기 `34ecaa9` 다음 순번 `7f4cb17` 역순으로 처리한다. main/staging에는 적용·복구 작업 모두 하지 않았다.
+
+### 독립 작업본 단일 연속 실행
+
+`/workspace/helix-residual-review`에 같은SHA와 검사 코드를 고정하고 `scripts/visual/residual-integration.cjs`를 **한 번 연속 실행**했다. 첫 실패에 중단하는 도구이며 이번 실행은6단계 모두 exit0이다. 과거 분할 통과를 합친 결과가 아니다. 별도 작업본 재실행이며 독립된 사람의 감사는 아니다.
+
+1. 원본 PNG33·응답286 해시 검증.
+2. home/소개/서비스/FAQ/내과 ×1440/820/390의15쌍: 콘텐츠·문서높이·타이포·주요geometry·문서정책·UI중복수 동등. 실제 overlay 소비를 전부 확인.
+3. home3크기 메뉴/예약 배경휠잠금·닫은뒤 대조·카드노출, 각11경계전환(990/991/992/766/767/768/478/479/480/820/1440).
+4. 제목모션 원본/후보3쌍: 첫 노출·숨김/복원·왕복·최종표현 보존.
+5. 저장소 품질9그룹.
+6. 기존 home-loading6그룹.
+
+재생 중 예상하지 않은 JS/네트워크오류와 외부전달은0이다. 이 결과는 **선택한 구조 영향·기능 통합 검사 통과**다. V0 원본 스크린샷 전체suite 통과나 사이트전체·Safari정상으로 확대하지 않는다. 기존100px/threshold0.2/mask/expected failure는 그대로이며 V0는여전히실패다.
+
+최종 조합에서 phone108쌍/36통제 수정도 한 실행으로 통과한 뒤, 별도 음성대조 작업본에서 compact min-height54→55px만 바꿨다.320px 첫쌍에서 component높이103→104px/top781→780px를 잡아 exit1로 거절했다. 이후 **그 작업본 CSS 한 파일만 자기HEAD로 복구**했고 clean 및 실제runtime4해시가 source/review와동일함을확인했다. 이것은선택검사탐지증거이며 V0의3회전체실행완료조건을대신하지않는다.
+
+추가로 숨은heading에전용class를붙이면다른fallback을중단할것이라는가설을1440에서시험했다. 실제bt2는opacity1/looptrue/visible쓰기1로정상이었고, 원본실패를예상한신규prototype assert가실패했다. 초기화전타이밍을입증하지못했으므로재현된결함으로세지않고제품변경/전체selector합집합을채택하지않았다. prototype·실패로그는로컬증거에보존했다. 이실험을후보실패나해결로섞지않는다.
+
+### 다섯 상태의 구분
+
+- **실제 개선 완료:** 작업 브랜치 소스의 위6단위. 통제 편집이 자기범위만 바꾸고 숨은복제변경이 다른section을 결정하지 않게 된 사실을 검사했다. 공개 운영에서의 효과를 주장하지 않는다.
+- **개선 후보 검증 완료:** 각 단위의 기재된검사와 동결소스의 단일 연속 선택통합. staging공개도달 검증은 실행하지 않았다.
+- **조사 상태:** V0의새raster판별은인과관계미확정으로제한조사종료. D06은소유권VM추적만확보. mixed-class추가가설은미재현.
+- **미해결:** V0/U01, 전역줄바꿈다른root·폼, CTA다른속성/variant결합, firstpaint/hero/지그의다른collection의존, 타loader실패tag·무응답·혼합pin. 목록의D02/D03/D05전체를완료로표시하지않는다.
+- **환경 부족 미검증:** 실제Safari/iOS/iPad/WebKit의회전·meta복원. Chromium폭변경은대체증거가아니다. 독립된사람검토도미실시다.
+
+## 확정 후속 실행 단위와 통과·중단 조건
+
+아래는 무조건적인 재작성 계획이 아니다. 각 줄의 원본실패와책임경계가확정된때에만 **그 한 단위**를 구현한다. 새 문제의 재현이 없으면 조사결과만 남기고 다음 독립단위로 이동한다. 작업량은 검증환경확보시간을제외한상대치다.
+
+| 순서 / 위험 / 작업량 | 다음 독립 단위 | 구현 선행 조건 | 통과 및 중단 조건 |
+| --- | --- | --- | --- |
+| A / 중 / 중 | D05 남은 한 속성의 소유권 | base/desktop/floating-mobile/bar/overlap/legacy에서 후행선언이 통제편집을 무효화하는 속성1개를 먼저 특정 | 최소108쌍 최종계산값·PNG동등 +36통제편집에서 목표만변경. 무효화가없으면제품변경하지않음. phone/form높이·장식·이번width를재작성하지않음 |
+| B / 중 / 중 | D02 폼 또는 제목의 **한 root** | 최신폼/제목의실제DOM·게시문구와긴입력영문/URL/숫자/한글/자손을각각재현. 현재15쌍에서게시화면회귀는없음 | 원본넘침→후보내부wrap 및다른root/5페이지높이보존. 실제/합성구분, 전역정책철회금지. 제목예외를모든폼에복제하지않음 |
+| C / 높음 / 중~대 | D03/D07 지그의 heading collection 또는 hero복구 **한 경로** | 실제初期化순서·DOM복원·observer/timer를계측해원본실패확인. class혼재는이번prototype으로재현되지않았으므로초기화전fixture·section내중복heading우선순위증명이먼저 | 숨은/보이는복제위치·노출변화에도해당section만반응. bt1~4 .7/.4/.15/1500ms/loop·heroevent보존, 최소3크기모션전후대조. 전역union이나숨은DOM제거를선처방하지않음 |
+| D / 높음 / 중 | D04 **타loader가남긴실패tag** | 실패tag소유자·success/failed/pending구분및경합을실제소비자에서재현 | 한module의필요자산만복구, 요청상한/중복listener0/다른loader성공존중. 무응답timeout과혼합pin은별도단위. viewport재시도범위확대금지 |
+| E / 높음 / 중~대 | D06 원본meta보관책임 | 실제Safari/iPad/WebKit환경확보, cold·세로↔가로·브레이크포인트왕복에서두writer와meta복원실패재현 | 한writer소유권만변경후실기기와PC/태블릿/모바일의fixed/sticky/스크롤/복제노출보존. 환경부재면제품수정계속보류 |
+| V / 높음 / 별도제한조사 | V0 실제compositor결과와capture차이의원인 | 이번equal replay와구별되는새판별근거·관측수단, 실험상한부터기록 | 기존기준그대로독립전체3회무실패+의도오류거절전완료금지. 같은폰트/GPU/좌표/스크롤실험반복금지. 막히면증거보존후닫기 |
+| U / 높음 / 중 | U01 기존hunk최소이관 | 오직V완료후, 최신자산/소비자재확인 | 문서overflow·주변geometry·fixed/sticky·실제휠·전체관련페이지보존. 현재는착수하지않음 |
+
+A/B는root/속성이겹치지않을때독립적으로진행할수있고, C/D는실제공유파일변경을동시에하지않는다. V/E의부족한조건이안전한A/B/D조사를대기시키지않는다. 각완료후소스동결·선택범위단일연속검사를다시판정하고실패시그단위만복구한다. 대규모일괄리팩터링·새라이브러리/레이어·공개pin교체는이계획에포함하지않는다.
+
+## 실제 자산·보존·재현 입력
+
+마지막 읽기전용조회에서도 main `3c4f78d4e75a06524b16a32e05e3185c48fbe800`, staging `a074f455a4adc3dd8515255f6d779dea0afeeb10`은그대로다. 두tip의runtime은같고비실행문서2/측정검사1만다르다. 공개home main3c4f78d4, staginghome고정ccb68a7c…/shareda074f455, generatedCSS46f7fbd5d 및기존word-wrap/measurement고정을보존했다. 공개capture의일부Network request failed는보존하며live오류0으로보고하지않는다.
+
+4798317→최종 제품변경은 `global/bootstrap.js`, `global/floating-cta.css`, `global/global.css`, `home/global/sections-animations.js` **4파일의6단위**뿐이다. 외부phone정렬마지막858바이트는원문동일하고다른진행자의coming-soon/scroll-hint등은건드리지않았다. 기존메뉴/예약창배경잠금·카드노출·form높이/장식·bt3단일제어·모바일목록예외는보존했다. 기준PNG/corpus/수치/expected failure/workflow/공개설정불변, main/staging병합·WebflowPublish·운영배포없음.
+
+GitHub에는소스·검사·판정JSON·입력manifest해시를보존한다. 현재응답body/PNG/전체실행로그는 `/workspace/artifacts/helix-residual-20261117`에만있으며원격archive보존완료가아니다. 원본corpus는기존04/08의복원자료를따른다. 이번current입력763응답×5root,imaging777,FAQ보충3,Typekit7은manifest/bodySHA256검증했지만별도클린환경에는이body들이필요하다. 자동재획득/기준갱신을정상검사에섞지않는다.
+
+현재환경재실행예(응답body가보존된경우):
+
+```bash
+export HELIX_PLAYWRIGHT_MODULE=/opt/codex/cua_node/lib/node_modules/playwright
+export HELIX_INTERACTION_INPUT=/workspace/artifacts/helix-residual-20261117/inputs/home
+export HELIX_STRUCTURE_PAGE_INPUTS=/workspace/artifacts/helix-residual-20261117/inputs
+export HELIX_INTERACTION_EXTRAS=/workspace/artifacts/helix-residual-20261117/resource-extra,/workspace/artifacts/helix-residual-20261117/order-fonts-v2
+export HELIX_INTEGRATION_OUTPUT=/tmp/helix-residual-review-new
+node scripts/visual/residual-integration.cjs
+```
+
+이는현재체크아웃SHA를기록한다. 이번실측65227e4와비교할때runtime4해시와입력을함께대조한다. 다음작업전공개자산과main/staging을다시읽되기존실패와완료작업을되풀이하지않는다.

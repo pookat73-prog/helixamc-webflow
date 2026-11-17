@@ -2,9 +2,17 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
-## 현재 실행 — 잔여 구조 개선 프로젝트
+## 최신 최종 인계 — 잔여 구조 개선 프로젝트 (2026-11-17)
 
-사용자 추가 지시에 따라4798317 결과를 보존한 별도 branch `fix/helix-residual-structure-20261117`에서 이어간다. 최신 GitHub main3c4f78d4/staginga074f455 및 실제 자산을 먼저 확인한다. [09-residual-execution.md](09-residual-execution.md)가 이번 실행 기록이다. 기존 완료 항목 재작성·검사 기준 완화·분할 성공 합산·공개 설정 변경·배포는 하지 않는다. V0는625/0/881px 실패·중간raster동일로 제한 조사를 닫았고U01보류다. D05 phone높이는8→2소유자로 줄여108쌍/36통제 수정 통과(통합 기능검증 대기). D07 순번 결합은 보이지 않는복제의위치만 바꿔bt2가사라지는원본실패→section-local선택후정상으로6실행검증했다. D02 제목root는 게시문구를보존하며 긴입력12조건을복구했고 단일15쌍검사를통과했다. 숨은heading 초기화도 실제첫노출에만발동하도록분리해6실행·왕복·모션값/hero보존을검증했다. D05의공용width강제도분리해form편집이phone에영향없이도달하고108쌍/36조건을보존했다. 공통loader는메뉴CSS/JS의동일버전1회복구로한정해48조건에서일시실패복구/영구실패제한/타loader존중/viewport미변경을검증했다. D06은실제엔진없음으로조사만했다. 최종동결후단일연속통합실행을진행한다. 아래4798317 최종 판정은 이전 실행 이력으로 유지한다.
+**작업 브랜치 소스6단위 개선·선택 통합검증 통과, 전체 구조 안정화는 미완료다.** 전달 브랜치 [`fix/helix-residual-structure-20261117`](https://github.com/pookat73-prog/helixamc-webflow/tree/fix/helix-residual-structure-20261117), 검증한 동결 소스 `65227e4eb9062388e4eb76e0dab8015458508ca3`. 이후 인계 커밋은 문서/결과만 추가한다. [09 실행·최종판정·후속실행계획](09-residual-execution.md)과 [최종 증거](evidence/residual-final.json)를 현재 재개 기준으로 사용한다. 아래4798317 및 이전 “현재” 절은 당시 이력이다.
+
+1. **작업 개요:** 시작점4798317을 보존한 별도 worktree에서 진행했다. 최신 main3c4f78d4/staginga074f455와 실제공개자산을 구현전·마감에 읽었으며 runtime동일/비실행3파일차이를확인했다. 다른진행자의CTA정렬858바이트·CSS/JS/자산과 기존완료수정을보존했다.
+2. **기술적 결정:** D05 phone min-height8→2소유자(`67c3c75`), D02내과모바일제목root의전역wrap간섭(`aaad432`), D07전역순번→section내버튼짝(`7f4cb17`), D03숨은heading→첫실제노출초기화(`34ecaa9`), D05 form폭/phone폭분리(`fccbcf6`), D04공통메뉴2자산만동일버전1회복구(`65227e4`). 한원인제품커밋과검사도구커밋을분리했다. 같은파일다른수정을보존하며각제품hunk만역적용가능하다.
+3. **현재 상태:** phone·form각108쌍/36통제편집, 제목단일15쌍/긴입력12조건, 순번6실행, 수명주기6실행, loader단일48조건통과. 정확한동결SHA의별도작업본에서 **corpus해시→5페이지×3크기영향15쌍→home3크기기능/각11전환→제목모션→품질9→로딩6의단일연속실행6단계모두exit0**. 분할통과를합산하지않았다. 재생unexpected JS/네트워크/외부전달0. 별도1px높이오류는320px에서103→104px를검출해exit1; 그private변경만복구후source/review/negative runtime해시일치를확인했다. 독립사람검토는아니다.
+4. **미완료/다음 단계:** V0새raster가설3회도최종625/0/881px로실패해제한조사종료, U01미적용. D02다른root/폼·D05다른속성·D03/D07firstpaint/hero/지그의의존·D04타loader실패tag/무응답/혼합pin은남는다. mixed-class추가prototype은원본실패미재현이므로수정안채택안함. D06은VM조사만, 실제Safari/iOS/iPad/WebKit부재로제품미변경/기기검증보류. 다음독립단위의위험·작업량·실제원본실패요건·비대상검사·중단조건은09의확정계획을따른다. 이선택통합통과를V0전체suite/전체구조/운영정상으로승격하지않는다.
+5. **참고/보존:** [자산그래프](evidence/residual-assets.json), [V0](evidence/residual-v0.json), [최종runtime/입력해시·범위별판정](evidence/residual-final.json). GitHub에는소스/검사/결과대장보존, 응답body·PNG·전체로그는 `/workspace/artifacts/helix-residual-20261117` 로컬뿐이며원격archive완료가아니다. rootAGENTS의오래된고정SHA안내를최신HANDOFF참조로고치고도구/제품분리·단일연속판정을상시수칙에명시했다. **main/staging병합·공개pin/설정변경·WebflowPublish·운영배포없음.** 공개staging에후보를도달시킨것도아니다.
+
+---
 
 ## 최종 판정 — 2026-11-17 구조 개선 실행
 
