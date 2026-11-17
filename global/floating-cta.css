@@ -908,7 +908,6 @@ html:has(#hxFctaModal.is-open) {
 @media (max-width: 767px) {
   .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
   .hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 5px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 34px; }
 }
 
 
@@ -924,12 +923,10 @@ html:has(#hxFctaModal.is-open) {
   font-weight: 600;
   letter-spacing: 0;
 }
-.hx-fcta-shell .hx-fcta-form-btn { min-height: 44px; }
 
 @media (max-width: 767px) {
   .hx-fcta-shell { gap: 8px; }
   .hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
   .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
 }
@@ -971,6 +968,7 @@ html:has(#hxFctaModal.is-open) {
 .hx-fcta-shell .hx-fcta-form-btn {
   position: relative;
   width: 100%;
+  /* Height ownership: base here; compact floating row below; mobile-bar owns its variant. */
   min-height: 38px;
   padding: 0 10px;
   border: 1px solid #0075D6;
@@ -1020,7 +1018,7 @@ html:has(#hxFctaModal.is-open) {
   .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
   .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 9px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; padding: 0 7px; gap: 7px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 28px; padding: 0 7px; gap: 7px; }
   .hx-fcta-shell .hx-fcta-form-btn::after { right: 7px; font-size: 12px; }
 }
 @media (max-width: 360px) {
@@ -1042,18 +1040,12 @@ html:has(#hxFctaModal.is-open) {
   box-sizing: border-box;
 }
 .hx-fcta-shell .hx-fcta-phone-btn { min-height: 56px; }
-.hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon { display: inline-flex !important; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon svg { stroke: currentColor; }
 .hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
 @media (max-width: 767px) {
   .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; }
 }
-
-
-/* Keep the secondary action distinct while retaining a usable button area. */
-.hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
 
 
 /* Match the two CTA labels; keep the phone helper line subordinate. */
@@ -1080,11 +1072,6 @@ html:has(#hxFctaModal.is-open) {
   .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 8px; }
 }
 
-
-/* On mobile, reserve a shorter row for the secondary request action. */
-@media (max-width: 767px) {
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 28px; }
-}
 
 /* Keep the floating CTA compact on wide screens. */
 @media (min-width: 1280px) {
