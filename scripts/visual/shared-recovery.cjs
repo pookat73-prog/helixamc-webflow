@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+// D04: actual shared-loader consumer; one failed immutable CSS request must recover,
+// while a competing page loader owns its own successful tag and permanent failure stays bounded.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{execFileSync}=require('node:child_process');
+const {pw,repo,assertBrowser}=require('./runtime.cjs'),{install}=require('./network.cjs');
+const base=process.env.HELIX_STRUCTURE_BASE||'479831748568009843d72aa5bf4ea70595ccde88';
+const output=process.env.HELIX_STRUCTURE_OUTPUT||path.join(repo,'.visual-results/shared-recovery');
+const files=['global/bootstrap.js','global/global.css','global/floating-cta.css','home/global/hamburger.css','home/global/hamburger.js'];
+(async()=>{fs.mkdirSync(output,{recursive:true});for(const f of files){const p=path.join(output,'baseline',f);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,f==='global/bootstrap.js'?execFileSync('git',['show',base+':'+f],{cwd:repo}):fs.readFileSync(path.join(repo,f)));}
+ const browser=await pw.chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});const results=[];
+ try{assertBrowser(browser);for(const width of [1440,390])for(const scenario of ['normal','transient','competing-loader','permanent'])for(const version of (process.env.HELIX_RECOVERY_VERSIONS||'original,candidate').split(',')){
+  process.env.HELIX_VISUAL_OVERLAY=files.join(',');process.env.HELIX_VISUAL_OVERLAY_ROOT=version==='original'?path.join(output,'baseline'):repo;
+  const context=await browser.newContext({viewport:{width,height:900},locale:'ko-KR',timezoneId:'Asia/Seoul',serviceWorkers:'block'});const network=await install(context,{inputRoot:path.resolve(process.env.HELIX_INTERACTION_INPUT)});const page=await context.newPage(),errors=[],requests=[],failures=[];page.on('pageerror',e=>errors.push(e.message));let competing=null;
+  await context.route(/\/home\/global\/hamburger\.css(?:\?|$)/,async route=>{const url=route.request().url();requests.push(url);const fail=scenario!=='normal'&&(scenario==='permanent'||requests.length===1);if(fail){failures.push(url);if(scenario==='competing-loader')competing=setTimeout(()=>page.evaluate(url=>{const l=document.createElement('link');l.rel='stylesheet';l.href=url;l.dataset.testCompetingLoader='';document.head.appendChild(l);},url),100);return route.abort('failed');}return route.fallback();});
+  await page.goto(network.origin+'/diagnostic-imaging',{waitUntil:'domcontentloaded'});await page.locator('.hx-menu-overlay').waitFor({state:'attached'});await page.waitForTimeout(7500);await page.evaluate(()=>document.fonts.ready);
+  const state=await page.evaluate(()=>({position:getComputedStyle(document.querySelector('.hx-menu-overlay')).position,counts:['.hx-menu-overlay','.hx-fcta-shell','.helix-top-btn'].map(s=>document.querySelectorAll(s).length),cssTags:[...document.querySelectorAll('link[rel=stylesheet]')].filter(e=>e.href.includes('/home/global/hamburger.css')).length}));
+  const functional=scenario!=='permanent'&&(version==='candidate'||scenario!=='transient');
+  assert.equal(state.position,functional?'fixed':'static','Actual menu CSS recovers without another visit');
+  const expected=scenario==='normal'?1:scenario==='competing-loader'?2:version==='candidate'?2:1;
+  assert.equal(requests.length,expected,'Retry is bounded and does not duplicate a competing loader');assert.ok(requests.every(x=>x===requests[0]),'Immutable URL/version must remain identical');
+  if(functional){const trigger=page.getByRole('button',{name:'메뉴 열기',exact:true}).filter({visible:true}).first();await trigger.click();await page.waitForTimeout(500);assert.equal(await trigger.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await trigger.getAttribute('aria-expanded'),'false');}
+  const before=await page.locator('.hx-menu-overlay').count();await page.addScriptTag({content:fs.readFileSync(path.join(repo,'global/bootstrap.js'),'utf8')});await page.waitForTimeout(600);assert.equal(await page.locator('.hx-menu-overlay').count(),before);assert.equal(requests.length,expected,'Duplicate shared entry does not install more handlers or retry again');
+  assert.deepEqual(errors,[]);assert.deepEqual(network.audit.errors,[]);assert.equal(network.audit.forwarded,0);assert.ok(network.audit.overlays.some(x=>x.path==='global/bootstrap.js'));
+  results.push({width,scenario,version,state,requests,failures,duplicateEntryPreserved:true,errors,networkErrors:network.audit.errors});fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({base,results},null,2));console.log(width,scenario,version,'PASS requests',requests.length,'menu',state.position);if(competing)clearTimeout(competing);await context.close();
+ }}finally{delete process.env.HELIX_VISUAL_OVERLAY_ROOT;await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
