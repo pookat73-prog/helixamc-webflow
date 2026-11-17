@@ -1,0 +1,44 @@
+{
+  "start": "dffc7405c96bfcf0549600aa5045c2e6dc82536f",
+  "branch": "fix/helix-structure-20261117",
+  "v0": {
+    "hypothesis": "First affected card paint-command variation vs raster/compositor variation",
+    "input": "original frozen 286, no overlay, no browser/CSS change",
+    "width": 820,
+    "threshold": 0.2,
+    "maxDiffPixels": 100,
+    "runs": [
+      {
+        "run": 0,
+        "pixels": 0,
+        "sha256": "9aa04a7a6a4a74d68b6a854e7123a9b8a626821dee17fe2c41208e2c075cbae8",
+        "pageErrors": [],
+        "networkErrors": [],
+        "paintSHA256": "b683daf25e26a920fd7198b20e04681515b8f9f2481b34b529e1e8e1d3671388"
+      },
+      {
+        "run": 1,
+        "pixels": 1109,
+        "sha256": "33cca4fa665c6b7899d539e9bebb3ebcfa70c7b30a435b07bdd9268812f2c6d0",
+        "pageErrors": [],
+        "networkErrors": [],
+        "paintSHA256": "c054c3d88b09506c45c84180532f79c1b4283e8b928128874e6186730a78ac4b"
+      },
+      {
+        "run": 2,
+        "pixels": 0,
+        "sha256": "b225e0c48d2c942e2998eaaf3f312504360ef508fb311b8115448103b60717e4",
+        "pageErrors": [],
+        "networkErrors": [],
+        "paintSHA256": "352f7922784960bc575a54f87f988e00298389bb370e66d81d66af18a563705a"
+      }
+    ],
+    "paintCommands": 29,
+    "equalAfterExcludingProcessLocalImageUniqueIDs": true,
+    "limitation": "Only first card command log; same paint description is not proof of identical image raster content or whole footer compositing. No causal repair identified.",
+    "verdict": "FAIL, bounded investigation stopped; original thresholds/baselines preserved; U01 held"
+  },
+  "d05": "pending",
+  "d03": "pending",
+  "d02": "pending"
+}
