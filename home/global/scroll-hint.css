@@ -5,14 +5,14 @@
    · 아주 살짝 위아래로 움직이고(bob), 은은하게 밝아졌다 어두워짐(shimmer)
    · 스크롤을 시작하면 그 정도에 맞춰 서서히 사라짐
    · 클릭 대상이 아님 (pointer-events:none) — 아래 콘텐츠를 절대 안 막음
-   · 자리: 데스크톱 112px·모바일 184px 지점 바 위. Hero와 함께 올라가며 스크롤에 따라 사라짐
+   · 자리: 데스크톱 136px·모바일 184px 지점 바 위. Hero와 함께 올라가며 스크롤에 따라 사라짐
    ================================================================ */
 
 .hx-scroll-hint {
   position: absolute;
   left: 50%;
-  top: calc(100vh - 112px - 20px);
-  top: calc(100dvh - 112px - 20px);
+  top: calc(100vh - 136px - 20px);
+  top: calc(100dvh - 136px - 20px);
   transform: translate(-50%, -100%);
   display: flex;
   flex-direction: column;
