@@ -21,3 +21,5 @@ D05 신규 검사 첫 실행은 CSSOM 열거에 gap shorthand가 있다고 가�
 원본42d4327의 canonical flex rule gap을6px로 바꿔도 최종4px가 남았다. 올바른 새 검사에서820/floating의4≠6으로 실패를 보존했다. 제품21bccd6은 gap 한속성만 regular5선언→base/compact2소유자(4/4px)로 정리한다. bar는8px, overlap은compact4, legacy는원래대로다. `gap-fixed` 단일108쌍 전체계산CSS/geometry/PNG동일,36통제편집에서desktop copy에만6px도달·form전체계산값/geometry·phonebox·인접배치보존을확인했다. 높이/폼폭/장식/외부858바이트는변경없다. [판정](evidence/next-cta-gap.json). 각제품커밋의역hunk는최종복구자료로분리한다.
 
 D02 사전조사:3폭의실제내과 div-block-358 게시제목5개와폼문구를확인했다. 긴합성입력은폼title/sub/label/consent에넘침을재현했다. 이번수정은이미min-width0/flex1인 **form intro 한root**로한정하고, 다른label/consent와desktop내과등은잔여로구분한다. 폼게시문구와긴테스트입력은다르다. 새도구첫실행의잘못된modal panel selector는현재DOM의modal__box로고쳤고, 무한대기를막는15초기본timeout을추가했다. 제품문제를고친것으로세지않는다.
+
+D02첫 full 실행: home1440은 게시표현/긴입력을통과했지만 소개1440 modalPNG가212px달랐다. 자연계산값/배치hash는같았고 x0..519/y0..19의차이는둥근위모서리뒤의배경영상뿐이었다. 제품CSS를추가하지않고 새paired도구에서원본영상을pause/시각0seek한뒤촬영한다. 실패로그/두PNG/좌표를보존하고새단일full로판정한다. 기존PNG/mask/100px/threshold/expected failure불변.
