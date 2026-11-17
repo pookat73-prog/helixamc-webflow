@@ -17,3 +17,13 @@
 ## 현재 상태
 
 V0 새판별3회: 최종 화면625/0/881px, 첫 카드 replay raster400×440의 PNG SHA256은3회 동일했다. 중간 replay가 같아도 실제compositor tile이 같다는 증거가 아니어서 최종 원인/처방은 미확정이다. V0실패/U01보류를 유지하고 이번 조사는 닫는다. [판정](evidence/residual-v0.json). 최신 공개 home main3c4f78d4/staging고정ccb68a7c, 생성CSS46f7fbd5d를 실제 읽었다. 제품 수정은 아직 없다. 통과/실패/미실행은 실행별로 기록한다.
+
+## D05-P1 phone min-height
+
+원본4798317에서 canonical phone 높이를58px로 바꿔도 후행56px가 이겨 편집이 무효였다(검사 exit1 보존). 실제 최종값은 desktop56 / floating-mobile54 / mobile-bar48 / overlap54이며 form 높이·장식은 이전 완료 계약 그대로다. 선택자 `.hx-fcta-shell .hx-fcta-phone-btn`의 min-height만8선언→base/compact2선언으로 정리한다. 별도 bar/overlap/legacy와 외부 phone 정렬858바이트는 보존한다. 도구692f1d1과 제품 변경은 별도 커밋이다.
+
+## D02-P2 mobile process heading
+
+최신 실제 게시 영어 제목5개는3크기에서 정상이다. 합성 긴 ClinicalReference는390px에서 제목이약2456px로 넓어져 allocated column175px 밖으로 벗어난다. 기존 anywhere가 body* important에 막히는 책임 간섭이며 직접텍스트/자손으로 재현했다. 기존 `.div-block-358 > :not(.text-span-3)` 예외만 important/자손 경계로 복구하고 grid/크기 규칙·Step번호nowrap·기존목록 예외는 보존한다. 전역정책/desktop은 바꾸지 않는다. 새 검사와 제품은 별도 커밋, full15쌍은 한 실행으로 판정한다.
+
+D05-P1 결과: 한 실행108쌍의 모든 요소/가상요소 계산 CSS·geometry·PNG가 동일했고, 통제 수정36조건에서 base58px 편집이 desktop phone에만 적용됐다. form·인접 본문·mobile/bar/overlap/legacy는 유지됐다. 일반 selector의8높이 선언을2소유자로 줄였다. 기존 phone 정렬/크기/간격·완료된 form 계약은 그대로다. [대장](evidence/residual-phone.json). 통합 기능 검사는 최종 실행에서 수행한다.

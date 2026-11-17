@@ -870,7 +870,6 @@ html:has(#hxFctaModal.is-open) {
     padding: 0 8px;
     gap: 6px;
   }
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 44px; }
   .hx-fcta-shell .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
   .hx-fcta-shell .hx-fcta-call-btn__icon {
@@ -906,7 +905,6 @@ html:has(#hxFctaModal.is-open) {
 
 /* Clarify the phone-first hierarchy on compact screens. */
 @media (max-width: 767px) {
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
   .hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 5px; }
 }
 
@@ -916,7 +914,6 @@ html:has(#hxFctaModal.is-open) {
 .hx-fcta-shell .hx-fcta-call-btn::after { content: none !important; }
 .hx-fcta-shell .hx-fcta-call-btn { justify-content: center; }
 .hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: center; gap: 5px; }
-.hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
 .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
 .hx-fcta-shell .hx-fcta-form-btn {
   font-size: 13px;
@@ -926,7 +923,6 @@ html:has(#hxFctaModal.is-open) {
 
 @media (max-width: 767px) {
   .hx-fcta-shell { gap: 8px; }
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
   .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
 }
@@ -948,7 +944,8 @@ html:has(#hxFctaModal.is-open) {
 }
 .hx-fcta-shell::before { content: none !important; }
 .hx-fcta-shell .hx-fcta-phone-btn {
-  min-height: 52px;
+  /* Phone height: base here, compact below; bar/overlap own their variants. */
+  min-height: 56px;
   padding: 0 12px;
   border: 1px solid #0075D6;
   border-radius: 10px;
@@ -1009,7 +1006,7 @@ html:has(#hxFctaModal.is-open) {
     border-radius: 13px;
   }
   .hx-fcta-shell .hx-fcta-phone-btn {
-    min-height: 50px;
+    min-height: 54px;
     padding: 0 8px;
     gap: 7px;
     border-radius: 9px;
@@ -1037,12 +1034,8 @@ html:has(#hxFctaModal.is-open) {
   width: 100%;
   box-sizing: border-box;
 }
-.hx-fcta-shell .hx-fcta-phone-btn { min-height: 56px; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon { display: inline-flex !important; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon svg { stroke: currentColor; }
-@media (max-width: 767px) {
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
-}
 
 
 /* Match the two CTA labels; keep the phone helper line subordinate. */

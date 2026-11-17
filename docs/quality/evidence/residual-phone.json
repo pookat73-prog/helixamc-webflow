@@ -1,0 +1,671 @@
+{
+  "base": "479831748568009843d72aa5bf4ea70595ccde88",
+  "status": "component candidate PASS; integrated validation pending",
+  "before": "Canonical height58px edit masked by later56px declaration; red failure preserved",
+  "ownersBefore": 8,
+  "ownersAfter": [
+    [
+      "",
+      "56px"
+    ],
+    [
+      "(max-width: 767px)",
+      "54px"
+    ]
+  ],
+  "pairedStates": 108,
+  "controlledEdits": 36,
+  "cases": [
+    {
+      "width": 320,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 320,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 320,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 320,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 320,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 320,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 359,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 359,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 359,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 359,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 359,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 359,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 360,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 360,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 360,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 360,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 360,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 360,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 361,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 361,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 361,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 361,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 361,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 361,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 390,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 390,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 390,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 390,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 390,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 390,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 479,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 479,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 479,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 479,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 479,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 479,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 480,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 480,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 480,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 480,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 480,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 480,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 766,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 766,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 766,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 766,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 766,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 766,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 767,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 767,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 767,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 767,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "54px"
+    },
+    {
+      "width": 767,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "48px"
+    },
+    {
+      "width": 767,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 768,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 768,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 768,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 768,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 768,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 768,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 820,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 820,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 820,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 820,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 820,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 820,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 990,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 990,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 990,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 990,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 990,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 990,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 991,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 991,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 991,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 991,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 991,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 991,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 992,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 992,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 992,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 992,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 992,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 992,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 1279,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1279,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1279,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1279,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1279,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1279,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 1280,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1280,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1280,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1280,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1280,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1280,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 1440,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1440,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1440,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1440,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1440,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1440,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    },
+    {
+      "width": 1920,
+      "mode": "floating",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1920,
+      "mode": "hx-fcta-mobile-bar",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1920,
+      "mode": "hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1920,
+      "mode": "hx-fcta-overlap-fix hx-fcta-page-home",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1920,
+      "mode": "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "equal": true,
+      "phoneMinHeight": "56px"
+    },
+    {
+      "width": 1920,
+      "mode": "legacy",
+      "equal": true,
+      "phoneMinHeight": null
+    }
+  ],
+  "runtimeScope": "Phone min-height only; form height/decoration and latest external alignment untouched",
+  "nonTargets": "All element/pseudo computed CSS, geometry and PNG equal; legacy,bar,overlap and form/adjacent controls preserved",
+  "recovery": "Reverse this product hunk only, leaving tests/history/external alignment in place"
+}
