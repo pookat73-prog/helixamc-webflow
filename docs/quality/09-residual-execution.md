@@ -49,3 +49,9 @@ D02-P2 결과: `header-full-final` 단일 명령의5페이지×3크기15쌍이 �
 현재WebKit binary/실기기가없다. 단순화한VM소유권추적에서home교정값width991이후globalfix의ORIGINAL로보관돼가로복원때그교정값을되돌리는경로를확인했다. 이는실제Safari회전실패검증이아니다. [추적](evidence/residual-viewport.json). 첫진단snippet종료구분자오류로home writer가실행되지않은산출물은폐기하고,실제writer호출assertion으로검사도구를고쳤다. meta/breakpoint/측정767/기기DOM은수정하지않는다. 재개조건은실제엔진에서원래meta/두writer/회전왕복을계측해같은복원실패를확인하는것이다.
 
 D03-P2 결과: `lifecycle-final` 단일6실행에서 원본은숨은복제loop=true/첫visible쓰기0, 후보는숨은복제loop=false/첫visible쓰기1이었다. 두복제의첫노출·미진입후숨김/복원·왕복추가쓰기0, fade완료후1.5초hold, 최종4버튼표현/geometry동일과hero완료를검증했다. pending hidden trigger와onEnter경합도kill해퇴역시킨다. JS/네트워크오류·외부전달0. 모션감소표본은820시작에포함했다. 실기기회전/Safari 검증을대신하지않는다. [대장](evidence/residual-heading-lifecycle.json).
+
+## D05-P3 form/phone width 소유권 분리
+
+추가 조사에서 form canonical width90% 편집도 뒤의 phone/form 공용width100%에가려무효였다. 높이/장식은재수정하지않고 width 한속성만 분리했다. phone은기존위치에서자기width100%를유지하고 form은기존canonical width100%를단독소유한다. 공용box-sizing과모든variant는그대로다. 도구47418bd와제품커밋을분리한다.
+
+`form-width-fixed` 한실행108쌍의전체계산CSS/geometry/PNG가동일했고36통제수정에서form만폭을바꿀수있으며phone/인접본문/높이/장식/bar/overlap/legacy는보존됐다. 외부phone정렬858바이트는원문그대로다. [대장](evidence/residual-form-width.json). 신규라이브러리·파일구조재편없이두action사이width강제결합을제거했다.

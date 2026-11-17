@@ -1,0 +1,17 @@
+{
+  "status": "component candidate PASS",
+  "base": "67c3c75310edcdd3960c795dd59f86180379db54",
+  "before": "Canonical form width90% edit was overridden by the later shared phone/form width100% declaration",
+  "after": "Form width has one canonical owner, phone keeps its independent full-width rule; no other property moved",
+  "ownersAfter": [
+    [
+      "",
+      "100%"
+    ]
+  ],
+  "singleRunPairedStates": 108,
+  "singleRunControlledEdits": 36,
+  "nonTargets": "All computed CSS/geometry/PNG equal; phone width,adjacent flow,bar/overlap/legacy controls preserved",
+  "protectedPreviousWork": "Existing form height and disabled decoration unchanged; external phone alignment block retained verbatim",
+  "recovery": "Reverse only this width product hunk, retain phone-height and other independent fixes"
+}

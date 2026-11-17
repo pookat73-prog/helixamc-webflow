@@ -1028,10 +1028,10 @@ html:has(#hxFctaModal.is-open) {
 }
 
 
-/* Keep both actions aligned in width; show hierarchy through height only. */
+/* Form width belongs to its canonical rule; phone width is independent. */
+.hx-fcta-shell .hx-fcta-phone-btn { width: 100%; }
 .hx-fcta-shell .hx-fcta-phone-btn,
 .hx-fcta-shell .hx-fcta-form-btn {
-  width: 100%;
   box-sizing: border-box;
 }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon { display: inline-flex !important; }
