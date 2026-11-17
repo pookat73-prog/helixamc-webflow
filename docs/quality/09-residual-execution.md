@@ -27,3 +27,9 @@ V0 새판별3회: 최종 화면625/0/881px, 첫 카드 replay raster400×440의 
 최신 실제 게시 영어 제목5개는3크기에서 정상이다. 합성 긴 ClinicalReference는390px에서 제목이약2456px로 넓어져 allocated column175px 밖으로 벗어난다. 기존 anywhere가 body* important에 막히는 책임 간섭이며 직접텍스트/자손으로 재현했다. 기존 `.div-block-358 > :not(.text-span-3)` 예외만 important/자손 경계로 복구하고 grid/크기 규칙·Step번호nowrap·기존목록 예외는 보존한다. 전역정책/desktop은 바꾸지 않는다. 새 검사와 제품은 별도 커밋, full15쌍은 한 실행으로 판정한다.
 
 D05-P1 결과: 한 실행108쌍의 모든 요소/가상요소 계산 CSS·geometry·PNG가 동일했고, 통제 수정36조건에서 base58px 편집이 desktop phone에만 적용됐다. form·인접 본문·mobile/bar/overlap/legacy는 유지됐다. 일반 selector의8높이 선언을2소유자로 줄였다. 기존 phone 정렬/크기/간격·완료된 form 계약은 그대로다. [대장](evidence/residual-phone.json). 통합 기능 검사는 최종 실행에서 수행한다.
+
+## D07-P1 section-local pairing
+
+숨은 기기 복제 section만 section2 앞으로 이동한 fixture에서 보이는 section geometry는 그대로였지만, 원본4798317의 bt2는3크기 모두opacity0/loopfalse/shadow쓰기0으로 남았다. 원인은 전역 heading NodeList의 idx0만bt2로 묶는 선택이었다. 각 heading의 같은section 안에bt2가 있는지를 기준으로 기존bt2/bt3 선택만 고쳤다. 타이밍·색·shadow·loop·카드·hero는 변경하지 않았다.
+
+별도 도구282421f 이후 제품 hunk를 분리한다. 원본/후보6실행에서 원본은위실패, 후보는opacity1/looptrue/쓰기1이며 비대상 초기geometry동일, JS/네트워크오류·외부전달0. 숨은DOM의 조기초기화는 별도 문제로 남긴다. Typekit 추가 subset은검사밖획득7응답으로고정했고, 두 누락실패를정상으로세지않았다. [판정](evidence/residual-heading-order.json).

@@ -1,0 +1,77 @@
+{
+  "status": "isolated candidate PASS",
+  "base": "dffc7405c96bfcf0549600aa5045c2e6dc82536f",
+  "scenario": "Move an invisible device-specific section before section2; all visible section geometry remains unchanged",
+  "runs": [
+    {
+      "width": 1440,
+      "version": "original",
+      "button": {
+        "loop": false,
+        "opacity": "0"
+      },
+      "visibleBt2Writes": 0,
+      "pageErrors": [],
+      "networkErrors": []
+    },
+    {
+      "width": 1440,
+      "version": "candidate",
+      "button": {
+        "loop": true,
+        "opacity": "1"
+      },
+      "visibleBt2Writes": 1,
+      "pageErrors": [],
+      "networkErrors": []
+    },
+    {
+      "width": 820,
+      "version": "original",
+      "button": {
+        "loop": false,
+        "opacity": "0"
+      },
+      "visibleBt2Writes": 0,
+      "pageErrors": [],
+      "networkErrors": []
+    },
+    {
+      "width": 820,
+      "version": "candidate",
+      "button": {
+        "loop": true,
+        "opacity": "1"
+      },
+      "visibleBt2Writes": 1,
+      "pageErrors": [],
+      "networkErrors": []
+    },
+    {
+      "width": 390,
+      "version": "original",
+      "button": {
+        "loop": false,
+        "opacity": "0"
+      },
+      "visibleBt2Writes": 0,
+      "pageErrors": [],
+      "networkErrors": []
+    },
+    {
+      "width": 390,
+      "version": "candidate",
+      "button": {
+        "loop": true,
+        "opacity": "1"
+      },
+      "visibleBt2Writes": 1,
+      "pageErrors": [],
+      "networkErrors": []
+    }
+  ],
+  "removedDependency": "Global heading NodeList index no longer picks another section button; local section owns pairing",
+  "unchanged": "No timing/shadow/loop/hero/card changes",
+  "remaining": "Hidden DOM lifecycle still requires an independent unit",
+  "inputs": "Acquisition-only exact Typekit response pack7; no live fallback in verification"
+}

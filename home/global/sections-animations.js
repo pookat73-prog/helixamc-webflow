@@ -211,9 +211,8 @@
 
     /* ──────────────────────────────────────────────────────────
        헤딩 + 짝꿍 버튼 페어링 (엇박 0.15s)
-       - 첫 번째 .section2-heading 은 섹션 2 → .bt-box-2 와 페어
-       - 그 외(.section2-heading × N) 는 섹션 3 변주 → 각자 같은 section
-         조상 안의 .bt-box-3 와 페어
+       - 각 heading은 자기 section의 .bt-box-2 또는 .bt-box-3 와 페어
+       - 숨은 복제 section의 DOM 순번은 다른 section의 버튼을 결정하지 않음
        - display:none 섹션은 스킵
     ────────────────────────────────────────────────────────── */
     headings.forEach(function (heading, idx) {
@@ -223,7 +222,7 @@
       }
 
       var section = heading.closest('section') || heading.parentElement;
-      var btnSelector = (idx === 0) ? '.bt-box-2' : '.bt-box-3';
+      var btnSelector = section && section.querySelector('.bt-box-2') ? '.bt-box-2' : '.bt-box-3';
       var btn = section ? section.querySelector(btnSelector) : null;
       if (btn && !isVisible(btn)) btn = null;
 
