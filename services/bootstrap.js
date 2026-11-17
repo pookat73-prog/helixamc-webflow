@@ -93,15 +93,7 @@
     var s = document.createElement('script');
     s.src   = url;
     s.async = false;
-    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
-      /* Preserve a native failure even when the shared loader starts later. */
-      s.onload = function () { s.removeAttribute('data-helix-menu-js-error'); };
-      s.onerror = function () {
-        s.setAttribute('data-helix-menu-js-error', url);
-        s.remove(); // A native-failed script cannot own the module for older consumers.
-        if (onerr) onerr();
-      };
-    } else if (onerr) s.onerror = onerr;
+    if (onerr) s.onerror = onerr;
     document.head.appendChild(s);
   }
 
