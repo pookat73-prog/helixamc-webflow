@@ -1,0 +1,37 @@
+{
+  "base": "21bccd670b1a8d4692f38777abbb4804fbaaf6a5",
+  "product": "fe86354a8d86aca3df9921c67c37e482cfb4857d",
+  "status": "component candidate PASS; no public application",
+  "root": ".hx-fcta-form .hx-fcta-form__intro",
+  "before": "Pinned body* important overflow-wrap normal defeats emergency token wrapping in the real form intro; synthetic English/URL/numeric/Korean and direct/span/a overflow",
+  "actualPublishedDefect": false,
+  "after": "Only the form intro and descendants own overflow-wrap anywhere important, keep-all remains; labels,consent,inputs and external roots untouched",
+  "singleFullRun": "form-wrap-full-media-fixed",
+  "pageWidthPairs": 15,
+  "candidateSyntheticConditions": 72,
+  "originalSyntheticConditions": 72,
+  "boundaries": [
+    478,
+    479,
+    480,
+    766,
+    767,
+    768
+  ],
+  "publishedContentGeometryTypographyGlyphsAndModalPNG": "exact equal across all15",
+  "latePinnedPolicyAndOutsideRoot": "PASS",
+  "unexpectedPageErrors": 0,
+  "unexpectedNetworkErrors": 0,
+  "forwarded": 0,
+  "priorFailure": {
+    "run": "form-wrap-full",
+    "passedBeforeFailure": 1,
+    "cause": "About1440 rounded top corners expose moving background video, 212 differing pixels x0..519/y0..19; natural contract hashes equal",
+    "resolution": "New test pauses same source video and seeks0 before snapshots; no baseline/mask/tolerance/expected failure altered, no product CSS piled on",
+    "earlierNewToolIssue": "Wrong modal panel selector corrected to actual modal__box and15sec timeout; not a product fix"
+  },
+  "localResultsSHA256": "eebffda760c46d60180908a5e982ab9fcf9dd908e09358b168e36710100db08f",
+  "localOnlyRawEvidence": "/workspace/artifacts/helix-next-20261117",
+  "recovery": "Reverse only productfe86354; preserve gap21bccd6 and all earlier six fixes",
+  "remaining": "Other form roots incl.label/consent and desktop div-block-358 still require independent root diagnosis, not global reversal"
+}
