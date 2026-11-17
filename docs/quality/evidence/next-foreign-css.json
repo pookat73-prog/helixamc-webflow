@@ -1,5 +1,5 @@
 {
-  "status": "component candidate PASS for observed foreign menu CSS errors only",
+  "status": "SUPERSEDED D04 draft: selected CSS16 passed, but FAQ reused-tag regression was subsequently found",
   "product": "db92c09f505607790063c135553ec73bc5b77d80",
   "beforeGlobalBlobFrom": "42d432705def71d5486472b4f94aa099ad8d8c31",
   "consumer": "Actual public/services with pinnedba91d70d93f8a1b54ca499b0ca942c0710d025e7 page bootstrap; shared latest global entry overlaid",
@@ -73,5 +73,7 @@
   ],
   "localResultsSHA256": "240598dc288d247a4388f0dfa2432381ed0cc935befadb7a2508886da221e267",
   "rawLocalOnly": "/workspace/artifacts/helix-next-20261117",
-  "recovery": "Reverse only productdb92c09; retains earlier bounded own menu retry65227e4"
+  "recovery": "Reverse only productdb92c09; retains earlier bounded own menu retry65227e4",
+  "currentVerdict": "next-css-owner-reuse.json",
+  "doNotPromote166Selected8": "Its normal selected integration did not cover reused-owner failure recovery"
 }

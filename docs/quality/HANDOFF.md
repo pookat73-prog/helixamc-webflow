@@ -2,9 +2,17 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
-## 현재 실행 — 다음 잔여 구조 개선
+## 최신 최종 인계 — 다음 잔여 구조 개선 (2026-11-17)
 
-D05 phone copy gap 개선21bccd6은108쌍/36통제편집통과이며높이/폼폭/장식은보존했다. [D05 결과](evidence/next-cta-gap.json). D02 form intro 한root의긴입력72조건을복구한fe86354도단일15쌍(게시계산값/글자배치/모달PNG동일)과경계/late정책/비대상대조를통과했다. [D02 결과](evidence/next-form-wrap.json). 지그34f093c도단일12실행에서숨은복제순서와무관한두끝선택/정상경로exact보존/hot왕복을통과했다. [지그 결과](evidence/next-zig-boundary.json). D04 관측된다른loader 메뉴CSS실패를db92c09로분리했고단일16조건에서태그보존/일시복구/요청상한을통과했다. [로더 결과](evidence/next-foreign-css.json). 다른loader JS는관측시점선행조건이없어미해결, D06실제엔진없어제품변경없이미검증이다. 이후FAQ의CSS태그재사용회귀(2→3요청)를추가검출해b0fa548로보완했다. 실제소비자32조건과동일URL native경계4조건을각각단일실행으로통과했다. [D04최종](evidence/next-css-owner-reuse.json). 166의정상8단계는이회귀를놓친이전선택결과이며최종승격근거가아니다. 최종runtime b0fa548의별도작업본10단계통합을진행하고 [복구4커밋](evidence/next-recovery.json)을작업브랜치와분리해보존했다. 기준42d4327과 원격 최신HEAD 일치를 확인하고 같은 작업 브랜치에서 D05 한속성 → D02 한root → D03/D07 → D04 → D06 순서로 이어간다. [10 실행 기록](10-next-residual.md)이 이번 단계의 최신 기록이다. 기존6단위와09의최종증거는보존한다. 원본실패·통제수정·비대상보존이입증된경우에만제품을수정하며검사와제품커밋을분리한다. V0제한종료/U01보류, main/staging병합·공개설정변경·배포금지유지.
+**추가 구조 개선4단위의 소스 구현·격리 후보 검증 완료, 전체 구조 안정화는 미완료다.** 전달 브랜치 [`fix/helix-residual-structure-20261117`](https://github.com/pookat73-prog/helixamc-webflow/tree/fix/helix-residual-structure-20261117). 최종 검증한 소스와 검사 SHA는 **`b0fa5486116282fd623579362312912754d662e3`**, 이후 전달커밋은 문서/증거만 변경한다. [10 실행·최종판정·다음실행](10-next-residual.md), [최종 대장](evidence/next-final.json)이 현재 재개 기준이다. 아래42d4327/4798317 및 이전 “현재” 절은 당시 이력이다.
+
+1. **작업 개요:** 기준42d4327과원격HEAD일치를확인한뒤기존6단위를보존해이어갔다. 시작·마감main3c4f78d4/staginga074f455와실제공개자산을조회했다. 정식5페이지HTML은고정검증입력과해시가같고스테이징홈고정ccb68a7c·생성CSS46f7fbd5d·외부자산/정렬858바이트를유지했다.
+2. **기술적 결정:** D05copy gap5→2소유자21bccd6, D02form intro 한root 긴입력wrap fe86354, D03/D07지그시작bt1/도착rendered sec3한정34f093c, D04관측된타loader 메뉴CSS오류소유권db92c09+b0fa548. D04초안은실제FAQ의재사용tag성공뒤3요청회귀를추가발견해URL별실패/성공해제로보완했다. 제품5커밋과검사커밋을분리했고runtime는3파일만변경했다. [D04최종](evidence/next-css-owner-reuse.json).
+3. **현재 상태:** 개별CTA108쌍/36통제·폼15쌍/72입력·지그12실행·실제services/FAQ owner32조건·동일URL native합성경계4조건을각전체실행으로검증했다. **최종소스의별도clone에서10단계선택통합이한번연속실행으로모두exit0**: corpus해시→5페이지15쌍→home cold3/1440시작11전환→제목모션→CTA108/36→home폼3쌍→FAQ성공소유권4→동일URL소유권4→품질9→로딩6. 재생unexpected JS/네트워크/외부전달0. 1px gap오류는320px에서exit1로검출했고private CSS한파일만복구한뒤source/review/negative해시일치를확인했다. 독립된사람감사는아니다. 이전166정상8단계는FAQ회귀를놓친과거선택결과이며최종10단계에합산하지않았다. [검증·해시](evidence/next-final.json).
+4. **미해결·다음 단계:** 다른D05속성, 다른D02폼/desktop root, hero인접성/class writer/firstpaint, 관측창밖CSS·다른loader JS·무응답·혼합pin은남는다. 실제Safari/iOS/iPad/WebKit부재로D06제품변경/회전검증없음. V0조사재개없음/U01미적용. 위험·실제재현·작업량·검증·중단조건은10마지막실행표를따른다. 검증된소유경계에서영향예측성을개선한후보이며전체구조·실기기·운영개선완료가아니다.
+5. **참고·복구·보존:** [복구4커밋](evidence/next-recovery.json): D05a79b52c/D027eaf567/지그85a46dc/D04최종d5db1fa. 작업/main/staging에적용하지않고각recovery브랜치에분리했다. 최신격리작업본에해당역커밋diff만적용하며전체recovery스냅샷으로대체하지않는다. 옛D04e840은초안용으로최종복구에사용하지않는다. GitHub는소스/검사/판정/해시/복구이력, raw응답·PNG·전체로그는로컬뿐이다. 원본기준PNG·100px·threshold0.2·mask·expected failure는불변. **main/staging병합·공개설정/pin변경·WebflowPublish·운영배포없음.**
+
+---
 
 ## 최신 최종 인계 — 잔여 구조 개선 프로젝트 (2026-11-17)
 

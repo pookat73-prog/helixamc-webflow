@@ -1,0 +1,487 @@
+{
+  "dateKST": "2026-11-17",
+  "branch": "fix/helix-residual-structure-20261117",
+  "foundation": "42d432705def71d5486472b4f94aa099ad8d8c31",
+  "frozenSourceAndTests": "b0fa5486116282fd623579362312912754d662e3",
+  "runtimeSHA256": {
+    "global/bootstrap.js": "fa056239b84694e86a44db131eacbe53ee8fd23f3021a695e313ee63f3f8290b",
+    "global/floating-cta.css": "25d333d2a0630644cf8432d5e57169b69684dcecf88dd06348075b63dde6735c",
+    "home/global/sections-animations.js": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632"
+  },
+  "runtimeFilesChanged": [
+    "global/bootstrap.js",
+    "global/floating-cta.css",
+    "home/global/sections-animations.js"
+  ],
+  "sourceAndRestoredNegativeClonesMatch": true,
+  "protectedPathsUnchanged": [
+    "global/global.css",
+    "global/word-wrap.css",
+    "global/floating-cta.js",
+    "global/floating-cta-mobile-fix.css",
+    "global/floating-cta-mobile-fix.js",
+    "home/global/buttons.js",
+    "home/global/hamburger.css",
+    "home/global/hamburger.js",
+    "home/global/coming-soon.css",
+    "home/global/coming-soon.js",
+    "home/section1/section1.js",
+    "home/bootstrap.js",
+    "global/viewport-fix.js",
+    "global/viewport.js",
+    ".github/workflows/webflow-deploy.yml",
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "externalPhoneTail858BytesUnchanged": true,
+  "newUnits": [
+    {
+      "unit": "D05 phone-copy gap",
+      "products": [
+        "21bccd670b1a8d4692f38777abbb4804fbaaf6a5"
+      ],
+      "status": "source improved, component candidate validated",
+      "impact": "Base/compact owners5 to2; controlled edits reach desktop copy only; bar/overlap/legacy/form preserved",
+      "evidence": "next-cta-gap.json"
+    },
+    {
+      "unit": "D02 form intro wrapping",
+      "products": [
+        "fe86354a8d86aca3df9921c67c37e482cfb4857d"
+      ],
+      "status": "source improved, candidate validated; published copy was already normal",
+      "impact": "One root contains synthetic long Korean/English/URL/numeric direct/span/a tokens; other roots unchanged",
+      "evidence": "next-form-wrap.json"
+    },
+    {
+      "unit": "D03/D07 zig endpoints",
+      "products": [
+        "34f093c274fb180b26ac8d2574359fd3acac4adc"
+      ],
+      "status": "source improved, candidate validated",
+      "impact": "Hidden device-copy order no longer selects either endpoint; normal paths/styles/geometry/hero event preserved",
+      "evidence": "next-zig-boundary.json"
+    },
+    {
+      "unit": "D04 foreign menu CSS owner state",
+      "products": [
+        "db92c09f505607790063c135553ec73bc5b77d80",
+        "b0fa5486116282fd623579362312912754d662e3"
+      ],
+      "status": "corrected final source improved and candidate validated; db92-only draft superseded",
+      "impact": "Observed preboot failures keyed by node+URL, successful native load clears state. Preserve other-loader success/pending, tags, immutable own retry and nonmenu policies.",
+      "evidence": "next-css-owner-reuse.json"
+    }
+  ],
+  "singleContinuousSelectedIntegration": {
+    "source": "b0fa5486116282fd623579362312912754d662e3",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected integration: five-page closed contracts, home interactions/motion, CTA108/36, home form intro3 pairs, FAQ successful fallback ownership and controlled same-URL ownership, quality/loading. Individual form15/zig12/owner32/native4 are separate unit runs. Original V0 suite remains failing.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "pass": true,
+    "isolatedClone": "/workspace/helix-next-review-final",
+    "independentHumanReview": false,
+    "scopePairs": 15,
+    "scopeActualOverlays": [
+      {
+        "path": "/",
+        "width": 1440,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "home/global/buttons.js",
+          "home/global/sections-animations.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/",
+        "width": 820,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "home/global/buttons.js",
+          "home/global/sections-animations.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/",
+        "width": 390,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "home/global/buttons.js",
+          "home/global/sections-animations.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/discover-helix",
+        "width": 1440,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/discover-helix",
+        "width": 820,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/discover-helix",
+        "width": 390,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/services",
+        "width": 1440,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/services",
+        "width": 820,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/services",
+        "width": 390,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/faq",
+        "width": 1440,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/faq",
+        "width": 820,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/faq",
+        "width": 390,
+        "candidatePaths": [
+          "global/global.css",
+          "global/floating-cta.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js"
+        ]
+      },
+      {
+        "path": "/internal-medicine",
+        "width": 1440,
+        "candidatePaths": [
+          "global/global.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js",
+          "global/floating-cta.css"
+        ]
+      },
+      {
+        "path": "/internal-medicine",
+        "width": 820,
+        "candidatePaths": [
+          "global/global.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js",
+          "global/floating-cta.css"
+        ]
+      },
+      {
+        "path": "/internal-medicine",
+        "width": 390,
+        "candidatePaths": [
+          "global/global.css",
+          "home/global/hamburger.css",
+          "home/global/hamburger.js",
+          "global/bootstrap.js",
+          "global/floating-cta.css"
+        ]
+      }
+    ],
+    "homeColdWidths": [
+      1440,
+      820,
+      390
+    ],
+    "transitionsByStartWidth": {
+      "1440": 11,
+      "820": 0,
+      "390": 0
+    },
+    "headingMotionPairs": 3,
+    "ctaPairs": 108,
+    "ctaControlledEdits": 36,
+    "formHomePairs": 3,
+    "formSyntheticCandidateCases": 72,
+    "FAQOwnershipCases": 4,
+    "sameURLOwnershipCases": 4,
+    "qualityGroups": 9,
+    "homeLoadingGroups": 6,
+    "logsSHA256": {
+      "integrity": "da5b7eec5b4f138380288854a67782713a973a70bff61c7e18c1cdf7f34c2f8b",
+      "scope": "eb8bf38d07672ae00407dfcd50c6e3e410e591cea0cf57a616a6d705c2dfc0ed",
+      "interactions": "5db16212a01335df5c53c08dc2bcc947d3613fc298c02c54080460c7a4e21af3",
+      "heading-motion": "87743285854fd2aa71931d51d8eb6e3b232e94ef4ac7d4a7fb273ff4f5429704",
+      "cta-gap": "6e095f1b9b6249a6ff9343205449ca41afa64288a58c4d5088411620104a84d8",
+      "form-intro": "cdcef28c07f4840594d1896fe5319da0f77759ad967442d86c1eb46960b4fab4",
+      "foreign-css-owner": "c3a7eedf66bb7a9f92f99bd02dab90a8d923d306763b20418fd788375b42efe5",
+      "same-url-css-owner": "b4a44c610b639894cf206340b3e3191bd442b541572dd08fa9e61065804e8201",
+      "quality": "d494e93752a1263f45b206909c38b3d63fdd68310968e75e96dd6ca06cf172e4",
+      "home-loading": "7c41471a725820fbcf1ff61d76c7c399b4cf70f206711db3da3570303d4de63a"
+    },
+    "unexpectedJSAndNetworkErrors": 0,
+    "externalForwarding": 0
+  },
+  "individualUnitRunsNotAggregated": {
+    "gapFixed": {
+      "pairs": 108,
+      "controlledEdits": 36
+    },
+    "formFullMediaFixed": {
+      "pagePairs": 15,
+      "syntheticCandidateCases": 72
+    },
+    "zigFullPreservedOrder": {
+      "executions": 12,
+      "hotWidths": [
+        390,
+        820,
+        1440
+      ]
+    },
+    "CSSOwnerFull": {
+      "conditions": 32,
+      "consumers": [
+        "services",
+        "faq"
+      ]
+    },
+    "sameURLOwnerEarly": {
+      "conditions": 4,
+      "controlledDerivedHTML": true
+    }
+  },
+  "priorRun": {
+    "source": "166e9d8d47a1884aaf8773017516e86c5ad01637",
+    "selected8Passed": true,
+    "superseded": true,
+    "counterexample": "Actual FAQ successful reused-link fallback produced3 requests instead of2. Detected after the normal8 run and fixed inb0fa548. No combining older successes into final10."
+  },
+  "negativeControl": {
+    "source": "b0fa5486116282fd623579362312912754d662e3",
+    "mutation": "Private compact phone-copy gap4 to5px",
+    "observedExit": 1,
+    "detectedAtWidth": 320,
+    "failure": "Exact whole-component styles/geometry comparison",
+    "logSHA256": "6294a1d915e6ca2af53b2fac468c70c995f1106fd52be807f3f0a073647fbbc9",
+    "restored": "Only private CSS restored from its own HEAD; clean and all3 runtime hashes match frozen source"
+  },
+  "baselineIntegrity": {
+    "reviewedPNGs": 33,
+    "corpusResponses": 286,
+    "hashes": "PASS",
+    "maxDiffPixels": 100,
+    "threshold": 0.2,
+    "masksChanged": false,
+    "expectedFailuresChanged": false,
+    "fullV0SuitePass": false,
+    "V0Reopened": false,
+    "U01Applied": false
+  },
+  "inputs": [
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/home",
+      "manifestSHA256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/discover-helix",
+      "manifestSHA256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/services",
+      "manifestSHA256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/faq",
+      "manifestSHA256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/internal-medicine",
+      "manifestSHA256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/imaging-v2",
+      "manifestSHA256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9",
+      "responses": 777,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/resource-extra",
+      "manifestSHA256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34",
+      "responses": 3,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/order-fonts-v2",
+      "manifestSHA256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568",
+      "responses": 7,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    }
+  ],
+  "refsBeforeFinalDocumentationCommit": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "fix/helix-residual-structure-20261117": "7d8403d9e448f73083d63ae308b6b4f6d0d16d4b",
+    "recovery/helix-next-d05-gap-20261117": "a79b52c76fcea365771018c09cd8f7fd4b2d9ba9",
+    "recovery/helix-next-d02-intro-20261117": "7eaf567586675ef30e8a29dbee3ff2d7e39eb98c",
+    "recovery/helix-next-d07-zig-20261117": "85a46dcd003f57969d0cb0b3232f6c0bad4327e1",
+    "recovery/helix-next-final-d04-css-20261117": "d5db1fa0258f67cb576193920546ea4af947289f"
+  },
+  "statusCategories": {
+    "actualSourceImprovement": "Four additional independent units, five product commits including the D04 correction, work branch only; previous six retained",
+    "candidateVerified": "Recorded separate unit runs plus final continuous selected10 on exact frozen source",
+    "investigation": "Hero/firstpaint adjacency and class-writer dependency inspected; normal hooks/events preserved, no proven safe broader initialization change",
+    "unresolved": [
+      "D05 other style properties/variants",
+      "D02 other form roots incl.labels/consent and other desktop/process consumers",
+      "D03/D07 hero adjacency/class hooks/other firstpaint coupling",
+      "D04 foreign JS, errors outside observed preboot window, no-error hangs, mixed public pins",
+      "V0 nondeterminism; U01 prerequisite unmet"
+    ],
+    "environmentUnverified": [
+      "Actual Safari/iOS/iPad/WebKit viewport and rotation",
+      "Public staging candidate reach (not deployed)",
+      "Separate-human independent audit"
+    ]
+  },
+  "recovery": "next-recovery.json contains four individual inverse commits; final D04 composite supersedes earlier e840 draft; none applied",
+  "preservation": "No main/staging merge, public setting/pin change, Webflow Publish or operating deployment. Existing source/workspaces/worker assets retained.",
+  "rawEvidenceStorage": "Source/tests/verdicts/hashes/recovery commits in GitHub. Current immutable response bodies, full logs and PNGs local only under/workspace/artifacts; no remote archive or clean-machine replay completion claim.",
+  "actualStabilizationLevel": "Within tested ownership boundaries, controlled edits and adversarial hidden DOM/resource failures have predictable effects while unrelated normal rendering remains equal. Not complete global structural stability, whole-site coverage, live operational improvement or physical-device validation."
+}

@@ -1,5 +1,7 @@
 # HELIX 다음 잔여 구조 개선 실행
 
+**최신 판정: 추가 구조 개선4단위의 소스 구현·격리 검증 완료, 전체 구조 안정화는 미완료.** 최종 검증 소스/검사 `b0fa5486116282fd623579362312912754d662e3`. 별도 작업본의 10단계 단일 연속 실행이 모두 통과했고, 개별 복구4커밋을 분리했다. [최종 판정·해시](evidence/next-final.json), [D04 최종 보완](evidence/next-css-owner-reuse.json), [복구](evidence/next-recovery.json)를 현재 기준으로 삼는다. 아래의 진행 중·초안·8단계 표기는 당시 이력이며 최신 판정은 마지막 절을 따른다.
+
 2026-11-17 KST. 기준/원격 작업 HEAD `42d432705def71d5486472b4f94aa099ad8d8c31`, 작업 브랜치 `fix/helix-residual-structure-20261117`. 작업 전 clean이며 기존6단위·다른 작업자 소스 보존. main `3c4f78d4e75a06524b16a32e05e3185c48fbe800`, staging `a074f455a4adc3dd8515255f6d779dea0afeeb10`을 GitHub에서 다시 조회했고 직전과 동일하다. 루트AGENTS·관련CLAUDE LOCKED·09/HANDOFF·성능 전용 표준/최신 인계 본문을 확인했다. 오래된 Drive 우선순위보다 이번 사용자 실행 지시를 따른다. 기록은 GitHub에 이어 남기고 공개 설정/게시/병합은 하지 않는다.
 
 ## 실행 및 선행 조건
@@ -83,3 +85,58 @@ D04 보완단위: 실패기록을node+URL로구분하고같은node의native load
 ## 개별 복구 커밋
 
 [복구대장](evidence/next-recovery.json)의D05 a79b52c, D02 7eaf567, 지그85a46dc, D04최종d5db1fa를각recovery브랜치에분리했다. 정상작업/main/staging에는적용하지않았다. 각각대상파일1개만바꾸며역/정방향roundtrip과GitHub tree SHA일치를검증했다. 복구는최신격리작업본에 **선택한역커밋의diff만** cherry-pick/적용하며recovery브랜치전체스냅샷으로프로젝트를대체하지않는다. 앞세커밋은166부모지만해당파일bytes는최종과같고후속D04를건드리지않는다. D04역커밋은초기db92와보완b0fa를함께되돌리고기존65227ownretry를보존한다. 오래된e840c46은첫초안용으로이력보존만하며최종복구로사용하지않는다.
+
+
+## 최종 재검수와 실제 안정화 수준
+
+별도 clone `/workspace/helix-next-review-final`의 정확한 `b0fa548`과 같은 SHA의 검사로 `next-integration.cjs`를 처음부터 끝까지 **한 번 연속 실행**했다. 10단계 모두 exit0이다. 앞선166의8단계 성공·분할 실행·초안 CSS16조건을 합산하지 않았다. 별도 작업본 재실행이며 독립된 사람의 감사는 아니다. 이후 전달 커밋은 문서/증거만 변경하고 runtime는 그대로다.
+
+| 연속 단계 | 실제 범위와 결과 |
+| --- | --- |
+| integrity | 원본 PNG33·corpus286 해시 불변 |
+| scope | 홈/소개/서비스/FAQ/내과×1440/820/390의15쌍 콘텐츠·타이포·주요geometry·문서정책 동등, 주장한 overlay 소비 전부 확인 |
+| interactions | cold3크기 메뉴·예약창 배경휠잠금/닫은 뒤 대조/카드 노출; **1440시작** 11경계 전환.820/390에서 각11번을 수행한 것은 아님 |
+| heading-motion | 원본/후보3쌍, 실제 첫 노출·왕복·최종4버튼 표현/hero event 보존 |
+| CTA gap | 108쌍 전체계산CSS·geometry·PNG 동일 +36조건 통제 편집의 한정 영향 |
+| form intro | 홈3쌍 게시표현/PNG 동일 +긴 입력72조건 원본 넘침→후보 내부wrap |
+| foreign CSS owner | 실제 FAQ의 성공한 재사용tag fallback4조건; 원본 추가요청3→후보2 |
+| same URL owner | 원본해시를 검증한 영상의학과 HTML의 **별도 파생fixture**에 controlled owner를 둔4조건; native error/load 이전·이후의 중복shared tag1→0, 소유자1개·후보요청2. 공개페이지loader라고 주장하지 않음 |
+| quality | 기존 저장소 품질9그룹 |
+| home-loading | 기존 로딩6그룹 |
+
+예상하지 않은 JS/네트워크오류와 외부 전달은0이다. 의도한 자산 실패·원본 결함 재현은 따로 기록했다. 이 결과는 명시한 **선택 통합** 통과다. V0 원본 전체 시각 suite, 모든 페이지/실패/기기, 공개 staging 도달 또는 운영 개선으로 확대하지 않는다. 100px/threshold0.2/기존mask/expected failure·PNG/corpus index는 그대로다.
+
+최종소스의 별도 음성대조 clone에서 compact copy gap4→5px 하나만 바꿔 첫320px 전체계산/배치 비교의 exit1 거절을 확인했다. 그 clone의 CSS 한 파일만 자기HEAD로 복구했고 clean 및 source/review/negative 세 runtime 해시 일치를 확인했다. 이전166의 오류주입 결과를 최종소스 결과로 대신하지 않았다.
+
+최신 main3c4f78d4/staginga074f455는 마감 읽기전용 조회에서도 그대로다. 현재 공개5페이지의정식HTML은 검증입력과 SHA256이 같고, 정식홈3c4f78d4/스테이징홈고정ccb68a7c/공통staginga074/생성CSS46f7fbd5d 및 기존고정을 보존했다. 공개브라우저capture의 Network request failed는 여전히 별도 기록이며 live오류0을 주장하지 않는다. [현재 자산](evidence/next-assets.json).
+
+42d4327 이후 runtime 변경은 CTA CSS·sections-animations.js·global bootstrap.js **3파일,4작업단위**다. D04는 최종검토에서 발견한 회귀 보완 때문에 제품커밋2개이며, 전체 제품커밋은5개다. 이전6개 개선, phone/form높이·form폭·장식 표시, 내과목록/제목 예외, bt3 단일제어, 메뉴/예약창/카드, hero/coming-soon/viewport 및 다른작업자의정렬858바이트·외부자산을 보존했다. rootAGENTS/CLAUDE와 배포workflow도 변경하지 않았다. main/staging병합·공개설정/pin변경·WebflowPublish·운영배포없음.
+
+### 상태 구분
+
+| 상태 | 현재 판정 |
+| --- | --- |
+| 실제 개선 완료 | 작업 브랜치 소스의 CTA gap 소유권, form intro wrap 경계, 지그 양끝 소유권, 관측된 타loader 메뉴CSS 실패/성공 상태4단위 |
+| 개선 후보 검증 완료 | 개별 CTA108/36·폼15쌍/72입력·지그12실행·실제owner32조건·native합성경계4조건 및 최종10단계 선택 통합. 공개 적용 완료가 아님 |
+| 조사 결과 확보·추가 재현 대기 | hero 준비함수의 인접성/heading class writer 결합. 정상3크기 마킹·hero완료는 보존했고 넓은 초기화 교체는 하지 않음 |
+| 미해결 | D05 다른속성, D02 다른폼/제목/desktop root, D03/D07 다른hero/firstpaint 의존, D04 관측창밖CSS/다른loader JS/무응답/혼합pin, V0 및 U01 선행조건 |
+| 환경 부족 미검증 | 실제 Safari/iOS/iPad/WebKit의 viewport 복원·회전. Chromium폭변경으로 대체하지 않음. 별도사람감사·공개후보 도달도 미실시 |
+
+검증한 경계에서는 한속성 통제편집이 자기요소만 바꾸고, 숨은복제의 순서가 다른섹션 선을 결정하지 않으며, 타loader의 성공한 소유권을 보존하도록 개선됐다. 정상8단계를 통과하고도 FAQ 회귀를 추가로 검출·수정한 사례를 남겼다. 실제 운영의 연쇄오류 감소율이나 전체코드의 독립성을 수치로 입증한 것은 아니다.
+
+### 다음 독립 실행 단위
+
+| 순서 / 위험 / 작업량 | 실제 다음 단위와 선행 조건 | 검증·중단·복구 기준 |
+| --- | --- | --- |
+| D05 / 중 / 중 | 다음 **한 속성**의 통제편집이 후행선언 때문에 무효인지 먼저 재현. 최신 외부정렬858바이트를 단순 중복으로 취급하지 않음 |18폭×6variant108쌍/36통제편집 수준 유지. 의도한variant/요소만 변하고 다른계산/PNG동일. 재현 없으면 제품변경 안 함. 한제품역커밋만 복구 |
+| D02 / 중 / 중 | 사전probe에서 합성넘침이 있던 **consent body 등 한 root**를 선택. 현재게시문구와 합성입력 구분, 기존intro/내과예외 보존 |4종입력×직접/자손,5페이지×3크기 실제타이포/높이/normalKorean 보존. 전역정책철회·일괄예외 금지. 한root역커밋 |
+| D03/D07 / 높음 / 중~대 | `prepareHomeViewport`의 hero→specialty 인접성 guard와 heading class 마킹의 책임을 분리할 필요가 있는지, 실제초기화/DOM복원/폰트준비 사건으로 원본실패와guard의기존보호목적을 확정 | 실패 없는 정상hero를 재작성하지 않음. 새마킹/복구 한경로만 다루고bt1~4/.7/.4/.15/1500ms/5s loop·hero완료·처음열기/폭왕복·준비실패를 대조. 인과근거 없으면 보류 |
+| D04 / 높음 / 중~대 | 첫오류가sharedentry보다 앞선JS·관측창밖CSS는 소유page-loader의 사실성 있는 failed/pending/success 기록과 **실제고정자산 도달경로**가 먼저 필요 | 태그 존재/stylesheet null만으로 실패를 추측하지 않음. 동일node/URL·경합·영구실패·중복listener/요청상한까지 검사. 공개pin교체는 별도범위이며 자동변경 금지 |
+| D06 / 높음 / 환경확보 뒤 중~대 | 실제 Safari/iPad/WebKit에서 초기meta·두writer·세로↔가로 및복제노출을 계측해 복원실패 재현 | 원본meta 책임 하나만 수정하고fixed/sticky/휠/전체관련반응형 보존. 환경부재면 제품수정 보류 |
+| V0/U01 / 높음 / 제한조사 | 기존raster·paint·폰트·GPU·좌표·스크롤과 구별되는 **새 판별근거**가 있을 때만 V0재개 | 기존기준 그대로 독립전체3회무실패+오류주입거절 전V0완료/U01이관 금지 |
+
+두번 실패하면 추가덮어쓰기를 멈추고 원인·관측조건을 다시 확인한다. 원본실패·책임범위·비대상보존이 충족된 단위만 구현하고, 각제품/도구 커밋을 분리한다. 이미 승인된 독립범위의 중간승인은 반복하지 않는다. 위험도는 검증 강도와 미충족 선행조건을 관리하기 위한 것이며 일괄 재작성이나 불필요한 대기의 근거가 아니다.
+
+### 증거와 재실행
+
+GitHub에는 소스/검사/판정JSON/입력manifest·로그SHA/복구커밋을 보존한다. 응답body·전체로그·PNG는 `/workspace/artifacts/helix-next-20261117` 및 이전immutable입력경로에 **로컬만** 있다. 원격archive/다른클린환경에서완전복원 완료가 아니다. 최종대장의8개입력root bodySHA를 다시 검증했고 원본286/PNG33 해시도 불변이다. 같은환경의재실행은09의입력변수를사용하되 `HELIX_INTEGRATION_OUTPUT`을새경로로정하고 `node scripts/visual/next-integration.cjs`를실행한다. 파생동일URLfixture는검사자체가별도생성하고원본응답을덮어쓰지않는다.
