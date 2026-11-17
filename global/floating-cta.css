@@ -1169,3 +1169,39 @@
     height: calc(100dvh - 69px - env(safe-area-inset-bottom));
   }
 }
+
+
+/* Keep the phone icon and label centered as one balanced action. */
+.hx-fcta-shell .hx-fcta-phone-btn {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+.hx-fcta-shell .hx-fcta-phone-btn > .hx-fcta-call-btn__icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  transform: none;
+}
+.hx-fcta-shell .hx-fcta-phone-btn > .hx-fcta-call-btn__icon svg {
+  display: block;
+  stroke-width: 1.8;
+}
+.hx-fcta-shell .hx-fcta-phone-btn__copy {
+  align-items: center;
+  text-align: center;
+}
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text {
+  line-height: 1.2;
+}
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn { gap: 6px; }
+  .hx-fcta-shell .hx-fcta-phone-btn > .hx-fcta-call-btn__icon {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+  }
+}
