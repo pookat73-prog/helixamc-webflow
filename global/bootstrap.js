@@ -44,18 +44,20 @@
     'home/global/footer.js': '__HELIX_FOOTER_INIT__'
   };
 
-  // Page loaders own their tags. Remember only menu CSS errors observed before
-  // load, so a failed tag is not mistaken for a successful or pending owner.
-  var failedMenuTags = new WeakSet();
-  function rememberMenuError(event) {
+  // Page loaders own their tags. Remember only failed menu CSS URLs before
+  // load; a reused link owns its new URL and successful loads clear the failure.
+  var failedMenuUrls = new WeakMap();
+  function rememberMenuResult(event) {
     var el = event.target;
     var url = el && (el.src || el.href) || '';
     if (typeof url === 'string' && url.indexOf('/helixamc-webflow@') !== -1 &&
         /\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
-      failedMenuTags.add(el);
+      if (event.type === 'load') failedMenuUrls.delete(el);
+      else failedMenuUrls.set(el, url);
     }
   }
-  document.addEventListener('error', rememberMenuError, true);
+  document.addEventListener('error', rememberMenuResult, true);
+  document.addEventListener('load', rememberMenuResult, true);
 
   /* Imaging click coverage lives in the already-loaded shared entry, independent
      of motion preferences. One page-specific record per action; the existing
@@ -147,8 +149,8 @@
     if (guards[path] && window[guards[path]]) return true;
     // Match the repository path across revisions, including in-flight page loads.
     return Array.prototype.some.call(document.querySelectorAll('script[src],link[rel="stylesheet"][href]'), function (el) {
-      if (failedMenuTags.has(el)) return false;
       var url = el.src || el.href;
+      if (failedMenuUrls.get(el) === url) return false;
       return url.indexOf('/helixamc-webflow@') !== -1 && url.split(/[?#]/)[0].endsWith('/' + path);
     });
   }
@@ -276,7 +278,8 @@
   }
 
   function boot() {
-    document.removeEventListener('error', rememberMenuError, true);
+    document.removeEventListener('error', rememberMenuResult, true);
+    document.removeEventListener('load', rememberMenuResult, true);
     if (match) { inject(match[1]); return; }
     fetch('https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/' + BRANCH,
       { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
