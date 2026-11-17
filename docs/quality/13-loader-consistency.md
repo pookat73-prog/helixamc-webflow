@@ -79,6 +79,18 @@
 
 ## 남은 문제와 후속 실행 조건
 
+동일18단계를 재현할 때는 새 격리 작업본을 `f44264e`로 고정하고 원본 `.visual-corpus/production`, 기존8개 root, 이번 실제 branch 캡처 `current-js`의 **같은 manifest/body**를 복원한다. raw가 없으면 미검증으로 남기며 최신 응답이나 합성 alias로 채우지 않는다. Playwright/Chromium/OS 버전 검사는 유지한다. 새 출력 경로에서 실행한다.
+
+```bash
+export HELIX_PLAYWRIGHT_MODULE=/opt/codex/cua_node/lib/node_modules/playwright
+export HELIX_INTERACTION_INPUT=/workspace/artifacts/helix-residual-20261117/inputs/home
+export HELIX_STRUCTURE_PAGE_INPUTS=/workspace/artifacts/helix-residual-20261117/inputs
+export HELIX_INTERACTION_EXTRAS=/workspace/artifacts/helix-residual-20261117/resource-extra,/workspace/artifacts/helix-residual-20261117/order-fonts-v2
+export HELIX_CURRENT_FALLBACK_INPUT=/workspace/artifacts/helix-loader-consistency-20261117/current-js
+export HELIX_INTEGRATION_OUTPUT=/workspace/artifacts/helix-loader-replay-001
+test ! -e "$HELIX_INTEGRATION_OUTPUT" && node scripts/visual/next-integration.cjs
+```
+
 | 순서 | 다음 독립 단위 | 현재 판정·선행 조건 | 최소 검증 / 중단 조건 | 작업량 |
 |---|---|---|---|---|
 | 1 | 구생산자/새 shared의 과거 실패 | 아직 미해결. 이미 사라진 이벤트를 tag/guard/Resource Timing만으로 안전하게 복원하지 않는다. services는 검증된 한 파일 채택 후보가 있으나 공개 pin 변경은 별도 승인 대상 | 새 승인 전 공개 변경 금지. 승인 대상은 후보7195463 head 제안이며 audit 브랜치 전체 이관이 아님. 새 공용 자산은 실제 도달/SHA와 정상·실패·동일URL·기존 성공 소유권을 확인 | 중 |
