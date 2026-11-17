@@ -25,3 +25,7 @@ D05 최초font후보는실제DOM/현constructor에서 `.hx-fcta-phone-btn__subte
 D05 원본은form border-color를통제색으로바꿔도최종blue에가려져exit1로재현했다. 초기후보의첫양성실행은mobile-bar가별도border-color를갖는다는새검사가정때문에중단됐다. 실제소스확인결과bar는폭/높이만소유하고border-color는기본form스킨을공유한다. 제품보정을추가하지않고검사의소유자정의를정정했다:모든존재하는form variant에만색편집이도달하고phone·width/style·geometry·legacy는보존해야한다. 기본디자인exact108쌍기준은완화하지않는다.
 
 검사 간 소유권도 분리한다. 기존intro 검사는before를오래된21bccd6 전체CSS로두고consent를영구normal로가정해, 다른root의정당한수정도intro회귀로오인할결합이있다. 현재CSS에서 **intro제품fe863의정확한hunk만역적용**한대조군을생성하도록도구를분리한다(독립baseline경로,patch fuzz0,원본파일불변,현재/before/patch SHA기록). intro의원본긴입력실패→후보복구/게시PNG exact/전체비대상glyph·geometry·wrap동등성은유지하며, consent는제외하지않고현재값을양쪽에서엄격비교한다. 실제다른input/label normal정책도명시적으로assert한다. 옛실행복원을위한historical mode0는남긴다. 기준PNG/mask/허용오차/expected failure 변경이아니다.
+
+## D05 최종 결과 — 폼 border-color
+
+제품b890736은폼전용border-color의2중소유(색상선언+후행shorthand)를1개로줄였다. 뒤geometry규칙은width1px/style solid만소유하며기본색blue는그대로다. `border-full` 단일108쌍의전체계산CSS/geometry/PNG가동일하고36통제편집에서form색만바뀌고phone전체CSS·배치/기존copy gap/폼테두리폭·스타일·배치/인접흐름을보존했다. form스킨은base/desktop/floating-mobile/bar/overlap에서같은색소유자를공유하는의도며legacy는대상없음이다. 높이/폼폭/장식/copy gap/외부정렬은원문보존. [판정](evidence/remaining-cta-border.json). 보조문구font는현재소비자없음으로미수정이다.

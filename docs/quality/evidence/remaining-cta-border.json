@@ -1,0 +1,24 @@
+{
+  "base": "18541d233ede4e7b57a3ecfcf2ad503d827a3d99",
+  "product": "b890736ea397720288eab369d1a784f90be4cb89",
+  "status": "component candidate PASS, not publicly applied",
+  "property": "form border-color",
+  "consumer": ".hx-fcta-shell .hx-fcta-form-btn",
+  "before": "Initial form border-color edit masked by later border shorthand; controlled red stayed blue",
+  "after": "One regular form border-color owner, later geometry rule only owns border width/style; form skin color is intentionally shared across active variants",
+  "regularColorOwners": [
+    [
+      "",
+      "rgb(0, 117, 214)"
+    ]
+  ],
+  "singleRunPairs": 108,
+  "singleRunEdits": 36,
+  "nonTargets": "All default computed CSS/geometry/PNG equal. Controlled form color changes while phone full CSS+geometry,copy gap,form geometry/border width/style and adjacent flow stay equal. Legacy has no target form action.",
+  "protected": "Previous heights,form width,disabled decoration,copy gap and external858-byte alignment untouched",
+  "rejectedCandidate": "Helper font-size declarations had no actual consumer in current DOM/constructor; no product cleanup",
+  "newTestCorrection": "Mobile-bar had no separate color rule; corrected ownership assumption from actual CSS without a product patch. First positive run kept, final single108/36 run is used.",
+  "rawLocalOnly": "/workspace/artifacts/helix-remaining-20261117",
+  "resultsSHA256": "bbb8a78130e2e313ff26bc4266f0ee56d56daebf9b24015cc340391bc660f516",
+  "recovery": "Reverse only productb890736 on current isolated branch; preserve other units"
+}

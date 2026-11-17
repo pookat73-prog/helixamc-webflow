@@ -4,7 +4,7 @@
 
 ## 현재 실행 — 18541d2 이후 잔여 개선
 
-최신 HEAD18541d2 및 runtime b0fa548을 보존하고 [11 실행기록](11-remaining-execution.md)에 이어간다. D05 보조문구 한속성 → D02 consent 한root → hero/지그 → 다른loader JS → 실제기기 조건 순서로 재현된 단위만 구현한다. 이전 완료항목/검사기준·다른진행자코드·공개자산을 보존하며 제품/검사커밋을 분리한다. main/staging병합·공개설정변경·배포없음. 아래10은 이전최종판정이다.
+최신 HEAD18541d2 및 runtime b0fa548을 보존하고 [11 실행기록](11-remaining-execution.md)에 이어간다. D05 보조문구는실소비자없음으로기각했고폼border-color b890736을108쌍/36통제편집으로검증했다([결과](evidence/remaining-cta-border.json)). 다음D02 consent 한root → hero/지그 → 다른loader JS → 실제기기 조건 순서로 재현된 단위만 구현한다. 이전 완료항목/검사기준·다른진행자코드·공개자산을 보존하며 제품/검사커밋을 분리한다. main/staging병합·공개설정변경·배포없음. 아래10은 이전최종판정이다.
 
 ## 최신 최종 인계 — 다음 잔여 구조 개선 (2026-11-17)
 
