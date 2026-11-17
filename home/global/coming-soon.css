@@ -49,7 +49,7 @@
 
 /* 차단된 버튼 자체에 시각적 hint는 추가하지 않음 — 디자인에 영향 X */
 
-/* One viewport for the Hero including its overlapping 112px quick access bar.
+/* One viewport for the Hero including its overlapping 136px quick access bar.
    Normal document scrolling: no sticky/fixed bar or scroll-position controller.
    The user approved changing Hero height on 2026-09-16. */
 .blackframe_image-hero[data-hx-home-viewport] {
@@ -134,8 +134,8 @@
   position: relative;
   z-index: 1000;
   width: 100%;
-  height: 112px;
-  margin-top: -112px;
+  height: 136px;
+  margin-top: -136px;
   color: #F4F7FB;
   background: #0D1117;
   border-top: 1px solid rgba(154,171,187,.18);
