@@ -849,7 +849,8 @@ html:has(#hxFctaModal.is-open) {
 .hx-fcta-shell .hx-fcta-form-btn {
   color: #11202C;
   background: #fff;
-  border-color: #8FA1B4;
+  /* Form border color has one owner; width/style stay with its geometry. */
+  border-color: #0075D6;
   font-size: 13px;
   font-weight: 600;
 }
@@ -970,7 +971,8 @@ html:has(#hxFctaModal.is-open) {
   /* Height ownership: base here; compact floating row below; mobile-bar owns its variant. */
   min-height: 38px;
   padding: 0 10px;
-  border: 1px solid #0075D6;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 7px;
   background: #fff;
   color: #0075D6;
