@@ -38,7 +38,51 @@
     "limitation": "Only first card command log; same paint description is not proof of identical image raster content or whole footer compositing. No causal repair identified.",
     "verdict": "FAIL, bounded investigation stopped; original thresholds/baselines preserved; U01 held"
   },
-  "d05": "pending",
+  "d05": {
+    "status": "isolated candidate PASS for form min-height only; remaining CTA properties unresolved",
+    "removedDeclarations": 7,
+    "ownersBefore": 9,
+    "ownersAfter": 2,
+    "variantOwner": "mobile-bar44px unchanged, overlap28px unchanged, legacy unchanged",
+    "pairedCases": 108,
+    "widths": [
+      320,
+      359,
+      360,
+      361,
+      390,
+      479,
+      480,
+      766,
+      767,
+      768,
+      820,
+      990,
+      991,
+      992,
+      1279,
+      1280,
+      1440,
+      1920
+    ],
+    "modes": [
+      "floating",
+      "hx-fcta-mobile-bar",
+      "hx-fcta-overlap-fix",
+      "hx-fcta-overlap-fix hx-fcta-page-home",
+      "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+      "legacy"
+    ],
+    "assertions": "Every element/pseudo computed declaration, geometry and component PNG byte-identical; explicit 38/28/44 values and CSSOM base/mobile owner count. No baseline relaxation.",
+    "cssSHA256": "aab5f31e84ff56eccfe8b4af494f98f3b77fb3706a0b38fb28534f300407fb11",
+    "checks": [
+      "focus15 PASS",
+      "mock-submit6 PASS",
+      "combined home interactions1440/820/390 PASS (also includes D03 candidate; not isolated D03 proof)"
+    ],
+    "replay": "current-main immutable input + final immutable extras; external forwarding0, JS/network errors0",
+    "restore": "revert D05 commit only"
+  },
   "d03": "pending",
   "d02": "pending"
 }
