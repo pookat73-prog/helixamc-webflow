@@ -151,10 +151,6 @@
     return Array.prototype.some.call(document.querySelectorAll('script[src],link[rel="stylesheet"][href]'), function (el) {
       var url = el.src || el.href;
       if (failedMenuUrls.get(el) === url) return false;
-      // The services producer records its own native error before this entry
-      // can observe it. Pending/successful tags and other modules still own them.
-      if (path === 'home/global/hamburger.js' &&
-          el.getAttribute('data-helix-menu-js-error') === url) return false;
       return url.indexOf('/helixamc-webflow@') !== -1 && url.split(/[?#]/)[0].endsWith('/' + path);
     });
   }
