@@ -67,3 +67,7 @@ JS별도위상계측은첫오류때sharedentry가아직없고두번째부터존�
 동결166e9d8의별도작업본8단계선택통합은모두통과했다. 그러나실제FAQ loader는CSS fallback때새태그대신같은link의href를재사용한다는소스대조에서추가경계가발견됐다. `faq-reuse-before`에서이전42원본은2요청으로정상종료, db92후보는성공한같은tag에도실패WeakSet이남아3요청/중복CSS를만들어새원인대조검사가exit1로거절했다. **정적정상8단계성공을전체구조안정화로승격하지않는다.** 앞8단계는이전소스의선택결과로보존하고최종판정은다시동결한소스에서한다.
 
 D04 보완단위: 실패기록을node+URL로구분하고같은node의native load성공때해제한다. 다른loader의성공/pending을존중하는동일책임경계이며메뉴CSS한경로만해당한다. 서비스새tag/FAQ재사용tag×2폭×4상황×원본166/후보32조건의새단일검사를요구한다. 기존ownretry/JS/viewport/공개pin은건드리지않는다. 보완은별도제품커밋으로남기고D04전체역변경복구커밋을새버전으로추가한다. 앞recovery브랜치는강제로바꾸지않는다.
+
+보완후검증은실제services(새tag)·FAQ(재사용tag)32조건과,실제영상의학과페이지에분명히표시한controlled owner가동일tag/동일URL을native error→재시도→load성공하는4조건을각단일실행으로분리한다. 후자는게시된페이지loader라고주장하지않고브라우저native자원lifecycle의합성경계로명시한다. URL변경만아니라동일URL성공표식해제를검증한다. 최종별도작업본선택통합은기존8단계에FAQ성공소유권4조건/동일URL소유권4조건을추가한 **10단계**로고정한다. 이전8단계성공은166소스의과거결과이며최종10단계로합산하지않는다.
+
+동일URL첫fixture는DCL에서늦게생성돼원본요청2/foreign tag1/shared tag1이었고,3요청을가정한새assert는실패했다. native요청은같은URL로합류할수있어태그중복과요청횟수는동일하지않다. 이결과를회귀재현으로세지않는다. 판별조건을원본해시검증한영상의학과HTML의head에명시적인controlled owner하나를추가하는독립파생fixture로정확히한다. 원본corpus/PNG는불변이며파생SHA를따로기록한다. 생성loading/error·load가complete이전이라는전제를assert한다. 성공소유자가있는데원본의shared tag1이추가되고후보는0인지를주계약으로검사하고후보요청은정확히2를요구한다. 기존검사기준/이미지허용오차는바꾸지않는다.
