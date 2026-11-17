@@ -2,7 +2,17 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
-## 최종 통합 전 동결 준비 — D02 / hero / JS 소유 경계
+## 최종 재개 결과 — 복구·세 단위 개선 완료 / 전체 안정화 미완료
+
+**동결 소스·검사 `b2277bf`의 별도 clone 단일 연속15단계가 모두 통과했다.** 이후 전달 커밋은 문서·증거만 바꾼다. [12 복구·검증 결과와 후속 실행표](12-recovered-verification.md), [최종 소스·입력·원시 증거 SHA 대장](evidence/remaining-final.json)이 최신 판정이다. 아래 준비·중단 절은 당시 이력이다.
+
+1. **복구:** 기존 HEAD69d1c24/미커밋 consent7줄을 보존하고 docs-only54da5f8을 fast-forward했다. 기준/후보/patch/checker SHA가 일치했고 기존 consent-full의 완전한15/15를 회수했다. 후보 재적용·reset/clean/restore·파일 통째 대체는 하지 않았다.
+2. **실제 소스 개선:** consent root의 전역 wrap 간섭 `db1c034`, Hero viewport guard와 heading hook 분리 `a9626dd`, services 메뉴 JS의 조기 native 실패 기록/공통 소비자 판정 `b2277bf`. D05 `b890736`과 이전 완료 단위는 보존했다. b0fa548 이후 runtime diff는4파일 +28/-7줄이며 다른 runtime blob/외부 정렬858바이트는 같다.
+3. **격리 검증:** 기존10단계에 border108/36·consent15쌍·hero12실행·JS32조건·혼합4조건을 더한15단계를 연속 실행했다. 비대상5페이지×3크기, 실제 휠/초점/겹친 잠금/카드 전환/기존 intro·내과 예외를 보존했다. 동의 label/checkbox/상세 버튼은 별도 동일 소스15조건에서도 통과했다. 1px 오류 검출 후 자기 한 줄만 복구했고 실제 원격 역커밋4개의 diff도 각각 적용/역적용해 clean/해시 일치를 확인했다. 독립 사람 감사는 아니다.
+4. **미해결/미검증:** 무응답10초와 producer-only/shared-only 혼합4조건은 메뉴를 막는다. 이를 기능 성공으로 세지 않았다. 다른 JS 생산자/HTTP200 뒤 실행 예외·다른 firstpaint/초기화 결합·다른 D02/D05 root/속성도 남는다. 실제 WebKit/Safari/iOS/iPad 부재로 D06은 제품 미변경/기기 미검증이다. V0/U01은 보류다. 우선순위·작업량·검증·중단 조건은12의 실행표를 따른다.
+5. **보존/전달:** PNG33/response286, mask·100px·threshold0.2·expected failure는 불변이다. 입력8manifest/2130body와 raw 증거304파일 SHA를 기록했다. 역사적 branch JS 성공 응답은 없어 해당 성공 경로만 보관 immutable body의 명시적 합성 alias로 검사했다. 원시 body/PNG/전체로그는 로컬 전용이다. main3c4f78d4/staginga074f455 및 공개10HTML/생성CSS를 재확인했다. **main/staging 병합·공개 설정/pin 변경·Webflow Publish·운영 배포는 하지 않았다.**
+
+## 통합 전 이력 — D02 / hero / JS 소유 경계
 
 D02 db1c034·hero a9626dd·D04 [b2277bf](https://github.com/pookat73-prog/helixamc-webflow/commit/b2277bfad32db10ded5cb5372759b906b1ac1d98)을 개별 제품 커밋으로 분리했다. D05 b890736과 이전 개선은 보존한다. D04는 services 생산자가 실제native JS 오류의 URL만 자기tag에 기록하고, 공통 소비자가 그실패tag만 무시해 재시도한다. 실제 pinned 생산자 최소hunk/현재생산자×2폭×4경로×원본/후보32회 통과: 정상1요청/첫오류후성공2요청 유지, 두오류후원본메뉴없음→후보3요청1메뉴, 영구실패는4요청제한. [근거·복구](evidence/remaining-js-owner.json).
 
@@ -10,7 +20,7 @@ D02 db1c034·hero a9626dd·D04 [b2277bf](https://github.com/pookat73-prog/helixa
 
 이문서뒤소스/검사를동결한별도clone에서기존10단계+border108/36·consent15쌍·hero12회·JS32회·mixed4조건의 **15단계 단일 연속 검증**을시작한다. 아직전체통합통과아니다. 원본PNG/corpus33/286해시확인,mask/허용오차/expected failure불변. 최신main3c4f78d4/staginga074f455및정식/스테이징10HTML SHA는중단전과동일,generatedCSS46f7fbd5d다. 운영/공개자산은미변경이며아래중단판정은이력이다.
 
-## 복구 후 현재 상태 — D02 개별 검증 회수 완료
+## 복구 직후 이력 — D02 개별 검증 회수 완료
 
 D03/D07 추가 단위: [a9626dd](https://github.com/pookat73-prog/helixamc-webflow/commit/a9626dd955d838a6cbe7be259ae3a92118223a14)은 heading hook 마킹만 Hero viewport 인접성 guard 앞으로 이동했다. 3폭×정상/숨은인접요소×원본/후보12회에서 실제 원본hook0/line0→후보hook3/line1을 입증했고, 정상PNG·모든section/button배치·타이포 exact 및실제hero event/heading fade/loop/폭전환을 보존했다. viewport 속성/guard·지그알고리즘·폰트/glow는 고치지 않았다. [결과·별도복구](evidence/remaining-hero.json). D04다른loader JS는 별도 검증 중, 최종통합 미완료다.
 
@@ -20,7 +30,7 @@ D03/D07 추가 단위: [a9626dd](https://github.com/pookat73-prog/helixamc-webfl
 
 D02 제품 [db1c034](https://github.com/pookat73-prog/helixamc-webflow/commit/db1c0344387440a93d4c7a740b65809e0a29eac6)은 consent body/자손7줄만 추가했다. D05/기존 intro·내과 예외·전역정책은 보존한다. 새 소스의 최종 연속 통합/오류주입·복구는 아직 미실행이다. 후속 hero/지그→다른 loader→실기기 조건 순서로 이어간다. raw응답/PNG/전체로그는 복구 확인된 로컬 전용이며 전체 구조·운영 안정화 완료가 아니다. 아래 중단 상태는 당시 이력이다.
 
-## 현재 인계 — D05 개별 검증 완료 / D02 검증 중 환경 중단
+## 중단 당시 인계 — D05 개별 검증 완료 / D02 검증 중 환경 중단
 
 **이번 요청 범위는 미완료다.** [11 실행·중단 인계](11-remaining-execution.md), [상태·SHA·재개 조건](evidence/remaining-interrupted.json)이 최신 기준이다. 검증된 기존 b0fa548 및 이전완료작업은보존했다.
 

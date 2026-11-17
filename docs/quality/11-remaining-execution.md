@@ -1,6 +1,14 @@
 # HELIX 다음 잔여 개선 실행 — 18541d2 이후
 
-## D04 단위 완료 / 최종 동결 준비
+## 최종 재개 판정 (2026-11-17)
+
+환경과 미커밋 후보를 보존해 복구했고 D02 db1c034, Hero hook a9626dd, services native JS 소유권 b2277bf를 개별 구현했다. **동결 소스/검사 b2277bf의 별도 clone 단일 연속15단계가 전부 exit0이다.** 기존10단계에 border108/36·consent15쌍·hero12실행·JS32조건·mixed4조건을 추가했다. 같은 소스의 동의 label/checkbox/상세 버튼 실제 조작15조건은 별도 보조 검증이며 연속 결과에 합산하지 않았다.
+
+1px gap 오류를320px에서 검출하고 해당 한 줄만 복구했다. 실제 GitHub 역커밋83a1f46/a799b62/f3a9f72/16d85dc의 diff를 동결 clone에 각각 적용/역적용해 다른 단위 보존과 clean/해시 일치를 확인했다. main/staging/운영에는 적용하지 않았다. 입력8manifest/2130body 파일과304raw 증거 SHA를 기록했고 원본PNG/mask/허용오차/expected failure는 바꾸지 않았다.
+
+미해결: 무응답, 혼합 자산, 다른 JS 생산자/실행 예외, 다른 firstpaint/초기화 결합과 다른 D02/D05 단위. 혼합4조건의 메뉴 부재는 기능 통과가 아니라 경계 확인이다. 실제 WebKit/실기기 부재로 D06은 미변경/미검증, V0/U01은 보류다. [12 최종 검증·복구·후속 실행표](12-recovered-verification.md), [최종 대장](evidence/remaining-final.json)을 최신 판정으로 사용한다. 이후 문서 커밋으로 동결 제품 소스를 바꾸지 않는다. 아래는 실행 이력이며 전체 구조 안정화 완료를 의미하지 않는다.
+
+## 통합 전 이력 — D04 단위 완료 / 동결 준비
 
 제품b2277bf는services `injectJs`의메뉴JS native오류URL기록과shared `present()`의해당실패tag판정만추가했다. 새모듈/전역timer/다른loader태그교체없음. 32조건에서실제첫native오류가shared진입보다앞서는것을assert하고원본2실패/메뉴0→후보3요청/메뉴1,영구4요청상한,정상1/폴백성공2/중복진입무추가/메뉴열기닫기를확인했다. 실제pinned ba91의injectJs정확한hunk와현재tip생산자를분리했다. [판정·역커밋](evidence/remaining-js-owner.json).
 
@@ -18,7 +26,7 @@
 
 검증된 consent root 소유권만 제품db1c034로 분리했다. 전역 keep-all/word-wrap, 기존 intro/내과, checkbox/다른 폼은 불변이다. 최종 새소스 통합·의도오류주입/복구는 다음 단계이며 이전b0fa548 결과로 대체하지 않는다. 아래 중단 판정은 당시 이력이다.
 
-**현재 판정: 실행환경 중단으로 이번 작업은 미완료다.** D05 폼 border-color 제품 b890736은 단일108쌍/36통제수정 검증을 통과했다. D02 consent 후보는 로컬 미커밋 상태이고 전체15쌍 결과를 회수하지 못해 승격하지 않았다. [중단 판정·SHA·재개 조건](evidence/remaining-interrupted.json), [미검증 후보 패치](evidence/remaining-consent-candidate.patch)를 따른다. 아래는 진행 이력이며 이전 b0fa548의10단계 통과를 이번 소스의 통과로 사용하지 않는다.
+**중단 당시 판정(복구 전 이력): 실행환경 중단으로 이번 작업은 미완료다.** D05 폼 border-color 제품 b890736은 단일108쌍/36통제수정 검증을 통과했다. D02 consent 후보는 로컬 미커밋 상태이고 전체15쌍 결과를 회수하지 못해 승격하지 않았다. [중단 판정·SHA·재개 조건](evidence/remaining-interrupted.json), [미검증 후보 패치](evidence/remaining-consent-candidate.patch)를 따른다. 아래는 진행 이력이며 이전 b0fa548의10단계 통과를 이번 소스의 통과로 사용하지 않는다.
 
 2026-11-17 KST. 작업 브랜치 `fix/helix-residual-structure-20261117`, 시작 HEAD18541d233ede4e7b57a3ecfcf2ad503d827a3d99 및 검증 runtime b0fa548 보존. root AGENTS/HANDOFF/10 실행기록과 관련 CLAUDE LOCKED를 읽었다. 작업 전 clean, 원격HEAD 일치. main3c4f78d4/staginga074f455는 직전과 동일하다. 기존 작업 공간·원본 PNG/corpus·다른 작업자 코드를 보존한다.
 

@@ -1,0 +1,833 @@
+{
+  "dateKST": "2026-11-17",
+  "status": "ISOLATED SOURCE CANDIDATE VERIFIED; GLOBAL STRUCTURAL STABILIZATION INCOMPLETE",
+  "branch": "fix/helix-residual-structure-20261117",
+  "frozenSourceAndTests": "b2277bfad32db10ded5cb5372759b906b1ac1d98",
+  "rootHeadBeforeFinalDocumentation": "76d2a4e7fc653d2cde8b1ae2587b1d7cee434108",
+  "productUnits": {
+    "D05Preserved": "b890736ea397720288eab369d1a784f90be4cb89",
+    "D02Consent": "db1c0344387440a93d4c7a740b65809e0a29eac6",
+    "D03D07Hooks": "a9626dd955d838a6cbe7be259ae3a92118223a14",
+    "D04NativeJS": "b2277bfad32db10ded5cb5372759b906b1ac1d98"
+  },
+  "recovery": [
+    {
+      "unit": "D05",
+      "recoveryCommit": "83a1f464eeeeb65fef6da9220d65a0c4caae9f23",
+      "actualRemoteInverseThenReverse": "PASS on frozen b227 clone; exact original hashes/clean",
+      "paths": [
+        "global/floating-cta.css"
+      ],
+      "patchSHA256": "b8fda805a7e1ee2f88506002c664c24e7ee2d1f2067b921a08f2e5f89ea8d81c"
+    },
+    {
+      "unit": "D02",
+      "recoveryCommit": "a799b62ace158eb616b75d77f8defefcf57eaffd",
+      "actualRemoteInverseThenReverse": "PASS on frozen b227 clone; exact original hashes/clean",
+      "paths": [
+        "global/floating-cta.css"
+      ],
+      "patchSHA256": "b70e2c1097e89a147fe6fea6db7203f5e3922248b666a3266a4f723a498a9e0a"
+    },
+    {
+      "unit": "D03",
+      "recoveryCommit": "f3a9f72b14c7dfdbe9ca4cb118079ea66b697280",
+      "actualRemoteInverseThenReverse": "PASS on frozen b227 clone; exact original hashes/clean",
+      "paths": [
+        "home/global/coming-soon.js"
+      ],
+      "patchSHA256": "466f2ec9ed89a196750646b56285abc7bb1f89da6b9c2ec54db66dcf053f5cb5"
+    },
+    {
+      "unit": "D04",
+      "recoveryCommit": "16d85dc2b29a7ff2907b496330097e2374d6c3b5",
+      "actualRemoteInverseThenReverse": "PASS on frozen b227 clone; exact original hashes/clean",
+      "paths": [
+        "global/bootstrap.js",
+        "services/bootstrap.js"
+      ],
+      "patchSHA256": "945a1c1448adc889a942d2783dbfd44a59f8849b99a745f5b4ab4ce791d62b16"
+    }
+  ],
+  "singleContinuousIntegration": {
+    "source": "b2277bfad32db10ded5cb5372759b906b1ac1d98",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected15-stage integration: previous10 stages retained, plus CTA border108/36, consent15 pairs, hero12 runs, JS-owner32 runs and4 mixed-owner gates. Original V0 suite remains failing. Public reach and physical-device validation are not claimed.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "pass": true
+  },
+  "coverage": {
+    "scopePairs": 15,
+    "homeColdWidths": 3,
+    "homeHotTransitions": "11 from1440 only, plus3 hero hidden-spacer transitions",
+    "headingLifecycleExecutions": 6,
+    "ctaCopyGap": {
+      "pairs": 108,
+      "controlledEdits": 36
+    },
+    "ctaBorder": {
+      "pairs": 108,
+      "controlledEdits": 36
+    },
+    "introPairs": 3,
+    "introCandidateStress": 72,
+    "consentPairs": 15,
+    "consentCandidateStress": 72,
+    "heroExecutions": 12,
+    "foreignCSSOwnerExecutions": 4,
+    "sameURLCSSOwnerExecutions": 4,
+    "JSOwnerExecutions": 32,
+    "mixedJSGates": 4,
+    "qualityGroups": 9,
+    "homeLoadingGroups": 6
+  },
+  "negativeAndRecovery": {
+    "source": "b2277bfad32db10ded5cb5372759b906b1ac1d98",
+    "units": [
+      {
+        "unit": "D05",
+        "product": "b890736",
+        "changedPaths": [
+          "global/floating-cta.css"
+        ],
+        "inverseThenForward": "PASS exact frozen hashes and clean worktree",
+        "patchSHA256": "f0ca5a3dabd36d25c8784660c439b59f969ecd6fbb1ac3ede36c5d3c22a28538"
+      },
+      {
+        "unit": "D02",
+        "product": "db1c034",
+        "changedPaths": [
+          "global/floating-cta.css"
+        ],
+        "inverseThenForward": "PASS exact frozen hashes and clean worktree",
+        "patchSHA256": "7e8b39e0253ac03e2815c58f4b03c58c7b6efb4aa19b75baf33a8a210f9cfc1c"
+      },
+      {
+        "unit": "D03",
+        "product": "a9626dd",
+        "changedPaths": [
+          "home/global/coming-soon.js"
+        ],
+        "inverseThenForward": "PASS exact frozen hashes and clean worktree",
+        "patchSHA256": "52baa7bfa142bd253d1207265d1fbc31c40e3a0cecbae4ffc8008523c90787f7"
+      },
+      {
+        "unit": "D04",
+        "product": "b2277bf",
+        "changedPaths": [
+          "global/bootstrap.js",
+          "services/bootstrap.js"
+        ],
+        "inverseThenForward": "PASS exact frozen hashes and clean worktree",
+        "patchSHA256": "053dbb7f6ea5d06663a17cdde6a491ad8fd7cb4a40c552b89fed1680876a64b7"
+      }
+    ],
+    "runtimeSHA256": {
+      "global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+      "global/bootstrap.js": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+      "services/bootstrap.js": "e1652818bc653f87ae3d73104f06f8c18e468703b5d272e0f36c09f2286eefa6",
+      "home/global/coming-soon.js": "5250aedf20ca6b165e627cf76cb896ba96c74fb4ce134f9e7b7925224c667f5d"
+    },
+    "negativeControl": {
+      "mutation": "private compact gap4->5px only",
+      "exit": 1,
+      "detected": "320/floating whole component computed CSS/geometry comparison",
+      "recovered": "only own one-line mutation reversed with apply_patch; all runtime hashes match frozen clone",
+      "logSHA256": "c7a44491edb0a23a49104e4f39f4614f76604503ad941c89457d2c412e5cee10"
+    },
+    "notUsed": [
+      "reset",
+      "clean",
+      "restore",
+      "whole file replacement"
+    ]
+  },
+  "preservation": {
+    "source": "b2277bfad32db10ded5cb5372759b906b1ac1d98",
+    "relativeToVerifiedB0faRuntimeChangedPaths": [
+      "global/bootstrap.js",
+      "global/floating-cta.css",
+      "home/global/coming-soon.js",
+      "services/bootstrap.js"
+    ],
+    "allOtherTrackedRuntimeAssets": "unchanged Git blobs",
+    "externalAlignmentTail858Bytes": "byte-identical",
+    "externalAlignmentTailSHA256": "c9eca9ac4261dc33712b88ea08097aef7e23801dc2b834ebc4143ebd7cb1e83a",
+    "wordWrapSHA256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+    "frozenRuntime": {
+      "global/bootstrap.js": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+      "global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+      "home/global/coming-soon.js": "5250aedf20ca6b165e627cf76cb896ba96c74fb4ce134f9e7b7925224c667f5d",
+      "services/bootstrap.js": "e1652818bc653f87ae3d73104f06f8c18e468703b5d272e0f36c09f2286eefa6"
+    },
+    "rawEvidence": "local only"
+  },
+  "inputs": [
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/home",
+      "manifestSHA256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/discover-helix",
+      "manifestSHA256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/services",
+      "manifestSHA256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/faq",
+      "manifestSHA256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/internal-medicine",
+      "manifestSHA256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb",
+      "responses": 763,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/imaging-v2",
+      "manifestSHA256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9",
+      "responses": 777,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/resource-extra",
+      "manifestSHA256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34",
+      "responses": 3,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/order-fonts-v2",
+      "manifestSHA256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568",
+      "responses": 7,
+      "bodyHashesVerified": true,
+      "remoteBodyArchive": false
+    }
+  ],
+  "inputBodyFilesVerifiedAgain": 2130,
+  "baselineIntegrity": {
+    "reviewedPNGHashes": 33,
+    "responseHashes": 286,
+    "maxDiffPixels": 100,
+    "threshold": 0.2,
+    "maskChanged": false,
+    "expectedFailureChanged": false,
+    "fullV0Pass": false,
+    "V0Reopened": false,
+    "U01Applied": false
+  },
+  "assets": {
+    "dateKST": "2026-11-17",
+    "main": {
+      "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+      "tree": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+      "entries": 313
+    },
+    "staging": {
+      "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+      "tree": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+      "entries": 313
+    },
+    "directTipDiff": [
+      {
+        "path": "docs/diagnostic-imaging-measurement.md",
+        "main": "83f925615118af6e1c676add7356488e1dc47f14",
+        "staging": "9c6235169e81775c0883decc397f461fe53f81f0"
+      },
+      {
+        "path": "docs/eomharim-restore-2026-11-16.md",
+        "main": "19a4aeef17790fb52ddff1c5332db10f1a69dc46",
+        "staging": "a3f4d3283f5553d7d9e3400b010cedc1f2f4a9ed"
+      },
+      {
+        "path": "scripts/test-imaging-measurement.cjs",
+        "main": "277f548f169c2a7752cb597d0e9c540daa8fd692",
+        "staging": "41ef3a5ed26702959d17639ff5f4f90bff3d2eb5"
+      }
+    ],
+    "runtimeEqual": true,
+    "note": "Direct tip blob comparison. Three-dot compare uses merge base and is not the runtime-equality evidence."
+  },
+  "freshPublicHTML": [
+    {
+      "url": "https://www.helix-amc.com/",
+      "status": 200,
+      "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "bytes": 46693,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/discover-helix",
+      "status": 200,
+      "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "bytes": 87173,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/services",
+      "status": 200,
+      "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "bytes": 27823,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/faq",
+      "status": 200,
+      "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "bytes": 137809,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/internal-medicine",
+      "status": 200,
+      "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "bytes": 53286,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/",
+      "status": 200,
+      "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "bytes": 46618,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+      "status": 200,
+      "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "bytes": 87098,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/services",
+      "status": 200,
+      "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "bytes": 27748,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+      "status": 200,
+      "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "bytes": 137734,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+      "status": 200,
+      "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "bytes": 53211,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    }
+  ],
+  "syntheticJSFallback": {
+    "kind": "synthetic URL alias to archived immutable response; not historical branch-response evidence",
+    "fromURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.js",
+    "fromSHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+    "toURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/home/global/hamburger.js",
+    "latestNetworkResponseUsed": false
+  },
+  "consentStressScope": "Home3 widths, body and existing label x4 kinds x3 child forms =72; other4 pages have natural published-text/geometry/PNG checks",
+  "supplementalNativeConsent": {
+    "source": "b2277bfad32db10ded5cb5372759b906b1ac1d98",
+    "conditions": 15,
+    "scope": "All5 pages x3 widths: actual label pointer, checkbox Space, independent detail button, pointer after late global policy",
+    "relationship": "Separate supplemental current-source run, not aggregated into15 continuous stages",
+    "checkerSHA256": "ef35da7967989c538ef268a3a3fe49dccb5d7210da53223847d733f3fa7f17cd",
+    "remoteCheckerText": "remaining-consent-native-check.cjs.txt"
+  },
+  "knownFailureOraclesNotAvailabilityPass": {
+    "originalConsent": "72 original synthetic overflows must reproduce",
+    "JS": "Of32 fault conditions,20 have menus; original twice-fail4 and permanent8 deliberately lack menus. Candidate permanent failures stop at4 requests.",
+    "mixed": "All4 mixed-owner conditions intentionally expose unresolved absence of menu. Exit0 is confirmation of this boundary, not recovered availability."
+  },
+  "remaining": {
+    "unresolved": [
+      "D04 no-error hangs; pending10s prevents shared entry/menu until archived response release",
+      "D04 mixed producer/shared revisions; both source assets required, public pinned owner unchanged",
+      "D04 other producers including FAQ JS; native early-error protocol currently services menuJS only",
+      "D04 HTTP200 with JS execution/partial-initialization exceptions not covered by the native resource-error fix",
+      "D03/D07 other firstpaint/class-writer and initialization coupling",
+      "D02 other form/heading roots and D05 other actual consumed style properties",
+      "V0 footer/mobile nondeterminism; U01 promotion gate unmet"
+    ],
+    "environmentUnverified": [
+      "Actual Safari/iOS/iPad/WebKit viewport and rotation; webkit2227 executable absent",
+      "Candidate reach on public staging/production; no deployment",
+      "Separate human independent audit"
+    ]
+  },
+  "rawEvidenceSHA256": {
+    "final-b227/home-loading.log": "7c41471a725820fbcf1ff61d76c7c399b4cf70f206711db3da3570303d4de63a",
+    "final-b227/integrity.log": "da5b7eec5b4f138380288854a67782713a973a70bff61c7e18c1cdf7f34c2f8b",
+    "final-b227/consent.log": "dd34d6093536ed4e14e3bfb44b336d73d8e3a63a3db9f5ac5421ca1fc2c52c41",
+    "final-b227/scope.log": "eb8bf38d07672ae00407dfcd50c6e3e410e591cea0cf57a616a6d705c2dfc0ed",
+    "final-b227/hero-hooks.log": "be3631d9a5984b44ad6d2efa040ecac2abec8067e048ca23adfd0822445c6036",
+    "final-b227/quality.log": "0dad9a62f5a4b5e5a3409b2688fba6a14af293263c7ab2da1187efb83753d534",
+    "final-b227/mixed-js-owner.log": "b95fe08630dcf83ccb35e715d7c0cb7c5e72ce7a414a8bf5b2ca65aa54afde10",
+    "final-b227/cta-border.log": "6e095f1b9b6249a6ff9343205449ca41afa64288a58c4d5088411620104a84d8",
+    "final-b227/interactions.log": "5db16212a01335df5c53c08dc2bcc947d3613fc298c02c54080460c7a4e21af3",
+    "final-b227/cta-gap.log": "6e095f1b9b6249a6ff9343205449ca41afa64288a58c4d5088411620104a84d8",
+    "final-b227/heading-motion.log": "87743285854fd2aa71931d51d8eb6e3b232e94ef4ac7d4a7fb273ff4f5429704",
+    "final-b227/form-intro.log": "cdcef28c07f4840594d1896fe5319da0f77759ad967442d86c1eb46960b4fab4",
+    "final-b227/foreign-css-owner.log": "c3a7eedf66bb7a9f92f99bd02dab90a8d923d306763b20418fd788375b42efe5",
+    "final-b227/same-url-css-owner.log": "b4a44c610b639894cf206340b3e3191bd442b541572dd08fa9e61065804e8201",
+    "final-b227/foreign-js-owner.log": "f5302d45209f350b6a860cb814ad7a58d86cbfd27340517348a3b3eb1e8cad4d",
+    "final-b227/results.json": "409fe4a7bf67ff5af39777a46d438aad6116a11424554455e688e2793249ee14",
+    "final-b227/foreign-css-owner/last-attempt.json": "522d28e61e6e0ea6c67634e043cee28b19de94a99cb3cc45159f89eceb6ec7d4",
+    "final-b227/foreign-css-owner/results.json": "7cd6038088f0e1d900d52abf04b7c245c0e105d35c6d56308c5198e4d326926f",
+    "final-b227/motion/attempt-390-original.json": "7c76a0c5c809d433ab36affbd4307645e69fff01679e074f93f68a203667b121",
+    "final-b227/motion/attempt-820-candidate.json": "3f8d03122cc4bf1f204a4e654837eef45fa8e973f5a79a0ba2104b6caef3ae5f",
+    "final-b227/motion/attempt-1440-original.json": "a293c1de4e82b2fe64a246972811535ca2fbc1e8cec3e35f0b3bfc00b34f16ab",
+    "final-b227/motion/attempt-820-original.json": "6b28c5c7a7cf263b07daae7e86efc8436f11515a209b63e3cc9608f1494c8c9e",
+    "final-b227/motion/attempt-1440-candidate.json": "c27f1a369af6ecf19594772ffb6e00a68002fb9859e7046dd45e5199d797a643",
+    "final-b227/motion/attempt-390-candidate.json": "d6103cd40e0f992577aaba4231ee2cd9b885cb0a22987574cf2850f2e2b49614",
+    "final-b227/motion/results.json": "6268a210ec6e4be9d137fafafe47fbc22a53b71921f7a8876e8507c5ab76e268",
+    "final-b227/hero-hooks/820-normal-original.png": "72d9e54362c83d145e3b1c315394b7605d4c23aeaabd318c63f942a8818a57f7",
+    "final-b227/hero-hooks/390-hidden-spacer-candidate.png": "247a08774ee9427c14e289432688e30af9a7a1013e4461283df80adfb6aa13f5",
+    "final-b227/hero-hooks/390-normal-original.png": "dff730e29c2d0b7a9bcdb3e73fcf72c8230e3ef114da68ba8bca824f5fa54ad2",
+    "final-b227/hero-hooks/1440-normal-candidate.png": "fb8a8835315f45ea076d2346b898eabb1c6d654ee7fd31203b84a059eaad5ab9",
+    "final-b227/hero-hooks/1440-hidden-spacer-original.png": "c24d40221ff477d55d2d3da93f52d4d49cecf2403a96962f6ad062a1aa598299",
+    "final-b227/hero-hooks/820-normal-candidate.png": "72d9e54362c83d145e3b1c315394b7605d4c23aeaabd318c63f942a8818a57f7",
+    "final-b227/hero-hooks/1440-normal-original.png": "fb8a8835315f45ea076d2346b898eabb1c6d654ee7fd31203b84a059eaad5ab9",
+    "final-b227/hero-hooks/390-normal-candidate.png": "dff730e29c2d0b7a9bcdb3e73fcf72c8230e3ef114da68ba8bca824f5fa54ad2",
+    "final-b227/hero-hooks/last-attempt.json": "090dbb837be1c30321ad3472b018b6df4afd1ff58f8a53d6271faf1c95c3aadc",
+    "final-b227/hero-hooks/390-hidden-spacer-original.png": "247a08774ee9427c14e289432688e30af9a7a1013e4461283df80adfb6aa13f5",
+    "final-b227/hero-hooks/820-hidden-spacer-candidate.png": "f06adcc250a7bac0f8ff96d21469962bc0d9285a1d705e933059d3c57430e860",
+    "final-b227/hero-hooks/820-hidden-spacer-original.png": "f06adcc250a7bac0f8ff96d21469962bc0d9285a1d705e933059d3c57430e860",
+    "final-b227/hero-hooks/results.json": "a2aece0fd641a2afc03a206aeec6245db28f082148632d3316ff66ecf66308be",
+    "final-b227/hero-hooks/1440-hidden-spacer-candidate.png": "c24d40221ff477d55d2d3da93f52d4d49cecf2403a96962f6ad062a1aa598299",
+    "final-b227/cta-gap/state-820-1-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-820-1-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-1440-4-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-1440-3-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-820-3-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-390-1-original.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-gap/state-1440-0-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-390-5-candidate.png": "804672e9300bb698bac900beea04bb2a4734467d8e5e6f29108c6217fa98d84e",
+    "final-b227/cta-gap/state-820-5-candidate.png": "574b5af30ebf0272d668fd4cdb1432e9022477cfbd2b0acd8f017496c870137f",
+    "final-b227/cta-gap/state-820-4-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-820-0-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-390-0-original.png": "e9188b81c8df2cd3a292a121e029eaf97166e2bf22b7282ae246b9d39e524e20",
+    "final-b227/cta-gap/state-820-5-original.png": "574b5af30ebf0272d668fd4cdb1432e9022477cfbd2b0acd8f017496c870137f",
+    "final-b227/cta-gap/source.json": "7b987dac8b0a6eaabd42bd3dbb5e02b903cede3a40fb1fc9f8e6da21361a4554",
+    "final-b227/cta-gap/last-edit.json": "bae387706662c2a9b5bd912ea98e61416ab4e1041d47f7d477a548c037313f6b",
+    "final-b227/cta-gap/state-390-3-candidate.png": "5da8c1cf7f649e69daa3a43ac739aa218bf8051a609b71ba125902d6833b0e3a",
+    "final-b227/cta-gap/state-820-3-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/last-edit.png": "fe1b63941dc52626f3ba48e6a6555e45e6f4d473cf7756b5dc9de087b17dacb9",
+    "final-b227/cta-gap/state-390-2-original.png": "9c98d193c6cfbb6b10d34059341529ac1a3c8aa892ecf1b18621941a0d634ff2",
+    "final-b227/cta-gap/state-1440-5-candidate.png": "fe1b63941dc52626f3ba48e6a6555e45e6f4d473cf7756b5dc9de087b17dacb9",
+    "final-b227/cta-gap/state-1440-4-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-390-2-candidate.png": "9c98d193c6cfbb6b10d34059341529ac1a3c8aa892ecf1b18621941a0d634ff2",
+    "final-b227/cta-gap/state-820-0-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-390-0-candidate.png": "e9188b81c8df2cd3a292a121e029eaf97166e2bf22b7282ae246b9d39e524e20",
+    "final-b227/cta-gap/state-390-5-original.png": "804672e9300bb698bac900beea04bb2a4734467d8e5e6f29108c6217fa98d84e",
+    "final-b227/cta-gap/state-820-2-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-390-3-original.png": "5da8c1cf7f649e69daa3a43ac739aa218bf8051a609b71ba125902d6833b0e3a",
+    "final-b227/cta-gap/state-820-4-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-1440-1-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-1440-2-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-820-2-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-gap/state-390-4-candidate.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-gap/state-1440-1-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-390-1-candidate.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-gap/state-1440-2-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-1440-0-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/results.json": "90e670ffc59276f7ebd40492bd66816972cf07c4f4011cb7b81b69df67ec43c3",
+    "final-b227/cta-gap/state-1440-3-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-gap/state-390-4-original.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-gap/state-1440-5-original.png": "fe1b63941dc52626f3ba48e6a6555e45e6f4d473cf7756b5dc9de087b17dacb9",
+    "final-b227/scope/results.json": "5221c5e60f8fb1095c50976c1504308dd16721c501650c9ea4d9a2ff4794a3ed",
+    "final-b227/foreign-js-owner/last-attempt.json": "ba17d73e30385470536d12866e2201009defaaf39e7cff587c986e6b0e9a7648",
+    "final-b227/foreign-js-owner/results.json": "11e7f49d40853a2f258439b2a51cc46574242461d680113344af48d36a4bfb33",
+    "final-b227/cta-border/state-820-1-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-820-1-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-1440-4-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-1440-3-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-820-3-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-390-1-original.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-border/state-1440-0-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-390-5-candidate.png": "804672e9300bb698bac900beea04bb2a4734467d8e5e6f29108c6217fa98d84e",
+    "final-b227/cta-border/state-820-5-candidate.png": "574b5af30ebf0272d668fd4cdb1432e9022477cfbd2b0acd8f017496c870137f",
+    "final-b227/cta-border/state-820-4-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-820-0-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-390-0-original.png": "e9188b81c8df2cd3a292a121e029eaf97166e2bf22b7282ae246b9d39e524e20",
+    "final-b227/cta-border/state-820-5-original.png": "574b5af30ebf0272d668fd4cdb1432e9022477cfbd2b0acd8f017496c870137f",
+    "final-b227/cta-border/source.json": "357ff78d54aa60e9d70b1654749d0dd1e4f7ba06fa2dcd3a92c75a55902bf149",
+    "final-b227/cta-border/last-edit.json": "967b47852b9c8d112b87952f29e5db2753e8ead7a15533ba93280b5e5a01a4eb",
+    "final-b227/cta-border/state-390-3-candidate.png": "5da8c1cf7f649e69daa3a43ac739aa218bf8051a609b71ba125902d6833b0e3a",
+    "final-b227/cta-border/state-820-3-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/last-edit.png": "fe1b63941dc52626f3ba48e6a6555e45e6f4d473cf7756b5dc9de087b17dacb9",
+    "final-b227/cta-border/state-390-2-original.png": "9c98d193c6cfbb6b10d34059341529ac1a3c8aa892ecf1b18621941a0d634ff2",
+    "final-b227/cta-border/state-1440-5-candidate.png": "fe1b63941dc52626f3ba48e6a6555e45e6f4d473cf7756b5dc9de087b17dacb9",
+    "final-b227/cta-border/state-1440-4-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-390-2-candidate.png": "9c98d193c6cfbb6b10d34059341529ac1a3c8aa892ecf1b18621941a0d634ff2",
+    "final-b227/cta-border/state-820-0-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-390-0-candidate.png": "e9188b81c8df2cd3a292a121e029eaf97166e2bf22b7282ae246b9d39e524e20",
+    "final-b227/cta-border/state-390-5-original.png": "804672e9300bb698bac900beea04bb2a4734467d8e5e6f29108c6217fa98d84e",
+    "final-b227/cta-border/state-820-2-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-390-3-original.png": "5da8c1cf7f649e69daa3a43ac739aa218bf8051a609b71ba125902d6833b0e3a",
+    "final-b227/cta-border/state-820-4-candidate.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-1440-1-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-1440-2-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-820-2-original.png": "621868b12eba132f873a298c20fbe5fc9e0499d08fc9847c19a8e0722e0733cd",
+    "final-b227/cta-border/state-390-4-candidate.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-border/state-1440-1-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-390-1-candidate.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-border/state-1440-2-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-1440-0-original.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/results.json": "bbb8a78130e2e313ff26bc4266f0ee56d56daebf9b24015cc340391bc660f516",
+    "final-b227/cta-border/state-1440-3-candidate.png": "3db6530e0ba6846ec8622697858f2fbf651a12810d002b0bdb698991a368a1f6",
+    "final-b227/cta-border/state-390-4-original.png": "870a90803adf9314720c5bceeb9096b56cfd87878521f7986a1f31a1e52d91c9",
+    "final-b227/cta-border/state-1440-5-original.png": "fe1b63941dc52626f3ba48e6a6555e45e6f4d473cf7756b5dc9de087b17dacb9",
+    "final-b227/mixed-js-owner/last-attempt.json": "d786c26add6af3f2668f7042831e789c5f559773f8abdd6192d307d70a9afcc4",
+    "final-b227/mixed-js-owner/results.json": "83056e8953f510c017b2ca792ed2b45c30eef1436777342401309ba4f38c3c7f",
+    "final-b227/form-intro/home-1440-candidate.json": "b0f08abd0c1f149d2bd2146134ea4fc0ade09231da75b112fd07a5845aa5c504",
+    "final-b227/form-intro/home-1440-original-network.json": "cd3f908fbe62184138348b62efe0014553d6d82441e9ef6fb7f3a309e5369366",
+    "final-b227/form-intro/last-stress.json": "150d83559ce516ef192288c8e09e94269ebd0e7f262f87fa52e6a5cad4747a46",
+    "final-b227/form-intro/home-390-candidate-network.json": "ed9ee03b6ad3426f6e2a88edbeff99d09ddada41a27e6c86795da41c94e65e5d",
+    "final-b227/form-intro/home-1440-original.png": "703bbe6a2371ab1f0af4be1d0f3e96a6e1952030c0254667ed7ca9e37686ced1",
+    "final-b227/form-intro/home-390-original.json": "e25faa14cc17333b4989f94dbbae44fed0473f18aebe4f8702ec99a96adcf347",
+    "final-b227/form-intro/home-1440-original.json": "b0f08abd0c1f149d2bd2146134ea4fc0ade09231da75b112fd07a5845aa5c504",
+    "final-b227/form-intro/home-820-candidate.png": "819edbd325a1128723a0ba3f2e0fc5767cc8e2ded4c585b90b0d0a5654a9c3d5",
+    "final-b227/form-intro/home-820-candidate-network.json": "238076b378efbd2fdaa1ab45fbd59436204456b841e5a81849d9e091ff155dd1",
+    "final-b227/form-intro/home-820-original-network.json": "a8e405d48bdb5c93663b78a98d43bf86e3fed41e751c4ee1e5ebddb3cdd694f1",
+    "final-b227/form-intro/home-390-candidate.json": "e25faa14cc17333b4989f94dbbae44fed0473f18aebe4f8702ec99a96adcf347",
+    "final-b227/form-intro/home-820-original.png": "819edbd325a1128723a0ba3f2e0fc5767cc8e2ded4c585b90b0d0a5654a9c3d5",
+    "final-b227/form-intro/home-820-candidate.json": "d2c1e50a07aeabfe65d18b9449e571a957669c7cc1265bc6ab45116e8a2d6de8",
+    "final-b227/form-intro/home-1440-candidate-network.json": "4d7f51695dab2ebea9db5513d1646680a8dae5271dc4be29bf067ebd8dc69a75",
+    "final-b227/form-intro/home-390-original-network.json": "bc1ef01e3fe256aabaf5f7bfe9384ee899d2f812054e47c83cff533b41cecccb",
+    "final-b227/form-intro/home-390-candidate.png": "76b08dc816ba761fbed561df1f01f8601cae2c95557ec39c18b55449196708da",
+    "final-b227/form-intro/home-390-original.png": "76b08dc816ba761fbed561df1f01f8601cae2c95557ec39c18b55449196708da",
+    "final-b227/form-intro/home-1440-candidate.png": "703bbe6a2371ab1f0af4be1d0f3e96a6e1952030c0254667ed7ca9e37686ced1",
+    "final-b227/form-intro/results.json": "af2398438158e02f78a607d1bb238b621ab3c0d647bdc5acbbe38d21b6000bee",
+    "final-b227/form-intro/home-820-original.json": "d2c1e50a07aeabfe65d18b9449e571a957669c7cc1265bc6ab45116e8a2d6de8",
+    "final-b227/consent/internal-medicine-820-candidate.png": "b91e5be4aa3c858aae518f44f3737dc2ab3c2b39bbb91747d217c32883d9af30",
+    "final-b227/consent/discover-helix-820-candidate.json": "285b1280c57fb7ec64c9172d3c18387075457aab0e579a93aa8c83861a2dbefa",
+    "final-b227/consent/internal-medicine-1440-candidate.png": "be3242c9c259920344f78049bec9e63f1ad05152005f392e8cc8a3dd6051208b",
+    "final-b227/consent/home-1440-candidate.json": "4c9c686e0f353495a257e3954a1c31898723d7b831ac776245458418bb5a3db8",
+    "final-b227/consent/faq-1440-candidate.png": "e6b4ad59a651043404be7a4a0d6d6c852cc6717e4f9e4a49eeadf5d00cca46e7",
+    "final-b227/consent/faq-390-original-network.json": "abd58bedac3c66248b2eda82ba6628eb25f28cedf9391465b54004f84afa4457",
+    "final-b227/consent/home-1440-original-network.json": "d69c69b003871aa2ad205c42bb660acdda219030709a88207e631e84d15c454e",
+    "final-b227/consent/discover-helix-820-candidate-network.json": "7f354c21c79f112e9a413a7da320e468bcf9519d9268d8e8f8a3a90a157354d5",
+    "final-b227/consent/internal-medicine-820-candidate.json": "8a736dc0b5ed3e00a850477e42e0ce19b1bb7653262dc1420929ef72a36957c6",
+    "final-b227/consent/services-390-candidate.png": "8f88b232c380e5e718e4afb96f889eed2b1dabf28f2e8a67154f4d037047fb2b",
+    "final-b227/consent/services-820-candidate.png": "fa77434d6ac3e94f8adbc4bcd1337150d15aaf388d5cc44bda30d0951f7d50a0",
+    "final-b227/consent/discover-helix-1440-original.png": "f330e87b579914dd17877a99fbaa0972550a60e3286b5175ed0cbc03b4bd5be9",
+    "final-b227/consent/services-1440-candidate-network.json": "1e0ece3ee7d5dfd53fededb619ef59c1ec32dc154c288332a401ae6d2b0579d8",
+    "final-b227/consent/internal-medicine-390-original.png": "6fb9a14b517d46eaccf7086b68232829dd42ec39f5606c6c794047a8c7e61b55",
+    "final-b227/consent/services-820-candidate.json": "8769c95ce263fdc7ca96e5aec2aff3e137d6fab6c84f879e6ea910ac273f676d",
+    "final-b227/consent/discover-helix-390-candidate.png": "a3b8ad1d6f9a538f3c0a2f8334cbe865767198b24067066bf1dcb8d83707f519",
+    "final-b227/consent/last-stress.json": "940653e1f937077e272b0820e09b5a70d1491e4cbddc70e54f53a14e5345c056",
+    "final-b227/consent/internal-medicine-1440-original.json": "86cdffbde3fffd1f5d487c27e73e3596fdbc0a1b48cc7f5054fc729f6aded189",
+    "final-b227/consent/internal-medicine-1440-original.png": "be3242c9c259920344f78049bec9e63f1ad05152005f392e8cc8a3dd6051208b",
+    "final-b227/consent/discover-helix-1440-original.json": "6905a23acf2a98dce87f731728255c4a336a7018f14f6c5617586d2e4d1369a6",
+    "final-b227/consent/home-390-candidate-network.json": "f987b97c47e055526aa4da1f97aa1044144c8b1a2a55b093a572230468020b5e",
+    "final-b227/consent/discover-helix-390-candidate-network.json": "059810cce0315b82ae414e100f1d13be64273a17fac6b59e58d351b981582260",
+    "final-b227/consent/services-1440-original.json": "9328481fd40c328715b1497be60bd09d93e75a01709ee99e8750077bcce647a2",
+    "final-b227/consent/faq-390-original.json": "5dd6c000c2d01f1e06035e167de46330659da78f2c904e910c2a7053bd68d520",
+    "final-b227/consent/home-1440-original.png": "703bbe6a2371ab1f0af4be1d0f3e96a6e1952030c0254667ed7ca9e37686ced1",
+    "final-b227/consent/faq-1440-candidate-network.json": "d912e88e6535606ef74461dd4374a32a2831538c83006780538dacec759af03c",
+    "final-b227/consent/internal-medicine-390-original.json": "cfc2ae4e4441dacfce9ec5483a1656f9a53353b18d1a1c4a0e3461a31c7a828d",
+    "final-b227/consent/home-390-original.json": "d3fd73a44f62422c69b7fbf6cd29e34886806926a74ea8b962187806f3f329c4",
+    "final-b227/consent/internal-medicine-390-candidate.json": "cfc2ae4e4441dacfce9ec5483a1656f9a53353b18d1a1c4a0e3461a31c7a828d",
+    "final-b227/consent/faq-820-candidate.png": "8f02ebf5d72cd971fd89f4a4adb45be8ead7d424de71c31737bc07b81a177364",
+    "final-b227/consent/services-1440-candidate.json": "9328481fd40c328715b1497be60bd09d93e75a01709ee99e8750077bcce647a2",
+    "final-b227/consent/internal-medicine-820-original.png": "b91e5be4aa3c858aae518f44f3737dc2ab3c2b39bbb91747d217c32883d9af30",
+    "final-b227/consent/internal-medicine-390-original-network.json": "268e111eccb4bc49ab7cadcf9e4242c4eb2be4e8df62efa93804ec0c1370aa48",
+    "final-b227/consent/home-1440-original.json": "4c9c686e0f353495a257e3954a1c31898723d7b831ac776245458418bb5a3db8",
+    "final-b227/consent/home-820-candidate.png": "819edbd325a1128723a0ba3f2e0fc5767cc8e2ded4c585b90b0d0a5654a9c3d5",
+    "final-b227/consent/home-820-candidate-network.json": "506d09a5c75fe4687c3728009695415bcbb8283c7e83367cab17960567ef7cbf",
+    "final-b227/consent/discover-helix-1440-candidate.json": "6905a23acf2a98dce87f731728255c4a336a7018f14f6c5617586d2e4d1369a6",
+    "final-b227/consent/services-390-original.png": "8f88b232c380e5e718e4afb96f889eed2b1dabf28f2e8a67154f4d037047fb2b",
+    "final-b227/consent/internal-medicine-1440-candidate-network.json": "548d5dd3b7dd38b9a2ba6d41fbac4c97f0a969c8bd5afe906beb3468f03264da",
+    "final-b227/consent/faq-820-candidate.json": "952afd8eae2a6bd492b79439920f73f32e910467d703b8e9645ef7ed21d0126c",
+    "final-b227/consent/services-1440-original.png": "34a34f96ebd78acfb5f380ddf799936048c7e8d69303124a2afef182925f4d6c",
+    "final-b227/consent/home-820-original-network.json": "848e06c658b32d4601df35a0e4db6dc644a6d03f3331ab84e9bcac25971c0a4e",
+    "final-b227/consent/faq-1440-original-network.json": "deb3419c46aba6593d18f96424ff9d0660eb1ea863511d75f2b2035513d15c0a",
+    "final-b227/consent/home-390-candidate.json": "d3fd73a44f62422c69b7fbf6cd29e34886806926a74ea8b962187806f3f329c4",
+    "final-b227/consent/faq-1440-original.png": "e6b4ad59a651043404be7a4a0d6d6c852cc6717e4f9e4a49eeadf5d00cca46e7",
+    "final-b227/consent/services-1440-candidate.png": "34a34f96ebd78acfb5f380ddf799936048c7e8d69303124a2afef182925f4d6c",
+    "final-b227/consent/home-820-original.png": "819edbd325a1128723a0ba3f2e0fc5767cc8e2ded4c585b90b0d0a5654a9c3d5",
+    "final-b227/consent/services-1440-original-network.json": "b4f42acacf1569d7c06c07cf84d7549fa909e87f1559d2c260da236f30ee42bf",
+    "final-b227/consent/services-390-candidate.json": "13229e80fb74fff5afc1208307c80c7666c76c90640dcdb8baf927e4aa3256da",
+    "final-b227/consent/internal-medicine-820-original-network.json": "5285635286c7cbaf07b52a5aaa53b7fd2ec658cf727fd4841be6fe06873a5d44",
+    "final-b227/consent/home-820-candidate.json": "83a36da262333305619a52d09d40f96499a0ba78059d3c91ec623af968d6b74d",
+    "final-b227/consent/home-1440-candidate-network.json": "a422ad12851cd3ad676bf746ba0603941373bd09c2e413ae1657fdbfccf12788",
+    "final-b227/consent/services-820-candidate-network.json": "d7622dbe8300f8af0813ec7775c6bb95c53343dccbee99e050376cbbe138b3ea",
+    "final-b227/consent/faq-390-candidate-network.json": "a1c8e275a54f6af46483a2af2582334cf36c4f6a38f12772a6d9eebd91f26057",
+    "final-b227/consent/services-820-original.json": "8769c95ce263fdc7ca96e5aec2aff3e137d6fab6c84f879e6ea910ac273f676d",
+    "final-b227/consent/internal-medicine-820-candidate-network.json": "ff19e5ea84543c3dbef4e71ced5bdead50219549c65adcd01e928ec04341ad0c",
+    "final-b227/consent/internal-medicine-820-original.json": "8a736dc0b5ed3e00a850477e42e0ce19b1bb7653262dc1420929ef72a36957c6",
+    "final-b227/consent/discover-helix-820-candidate.png": "9580d07d1c3c396e82c77ef326becae8acdf9bc3b959fb13817309553256be21",
+    "final-b227/consent/services-390-original-network.json": "d32c683b091fe81710d17c34d7a32b6d2e46d5e271d8264d539a1e2ddbb302f3",
+    "final-b227/consent/discover-helix-1440-candidate.png": "f330e87b579914dd17877a99fbaa0972550a60e3286b5175ed0cbc03b4bd5be9",
+    "final-b227/consent/services-390-candidate-network.json": "1cc96e0e47575fee1552a79c7f6aa12ebe310c752a19e710884344ce7fe980b3",
+    "final-b227/consent/discover-helix-1440-candidate-network.json": "c82dc75997b606d6bad473a31660e0b971bb0af0030d39a2c791fce08095151b",
+    "final-b227/consent/home-390-original-network.json": "f6737b6038625cb34116badf6d3ce51fb004ac716db63fd102fca4bd626453bf",
+    "final-b227/consent/internal-medicine-1440-original-network.json": "86c1d5d1e33195775c6ede5c55eb4cb5115cd6e5a8b7cddae3f767e202a62bfd",
+    "final-b227/consent/discover-helix-390-original.png": "a3b8ad1d6f9a538f3c0a2f8334cbe865767198b24067066bf1dcb8d83707f519",
+    "final-b227/consent/home-390-candidate.png": "76b08dc816ba761fbed561df1f01f8601cae2c95557ec39c18b55449196708da",
+    "final-b227/consent/discover-helix-820-original.png": "9580d07d1c3c396e82c77ef326becae8acdf9bc3b959fb13817309553256be21",
+    "final-b227/consent/home-390-original.png": "76b08dc816ba761fbed561df1f01f8601cae2c95557ec39c18b55449196708da",
+    "final-b227/consent/faq-820-original.json": "952afd8eae2a6bd492b79439920f73f32e910467d703b8e9645ef7ed21d0126c",
+    "final-b227/consent/faq-820-original-network.json": "e9f05f4d24769efaa6e6bf4f06f7de8416e89628d175f79f6dfe5e92a4a54f67",
+    "final-b227/consent/discover-helix-390-original-network.json": "49cfe95c264b6d9d4489cf26b17a48f096bca1b77deeba82d6a7bb9681b256ba",
+    "final-b227/consent/discover-helix-820-original-network.json": "da3add7ed80e76ee5c082bddac152e9e622e9b3b9ebf73eb1bfb1e4f5966e852",
+    "final-b227/consent/discover-helix-1440-original-network.json": "58bf5ff71561536b07cbfe1f4122551c5f8432ae5bacf471aab8fd4237a5466d",
+    "final-b227/consent/internal-medicine-1440-candidate.json": "86cdffbde3fffd1f5d487c27e73e3596fdbc0a1b48cc7f5054fc729f6aded189",
+    "final-b227/consent/services-820-original.png": "fa77434d6ac3e94f8adbc4bcd1337150d15aaf388d5cc44bda30d0951f7d50a0",
+    "final-b227/consent/discover-helix-390-candidate.json": "8af5cfc9c4c3ec466df9315581dfdef2b2c2b6ca18a8433384570df6a8074d0d",
+    "final-b227/consent/faq-820-original.png": "8f02ebf5d72cd971fd89f4a4adb45be8ead7d424de71c31737bc07b81a177364",
+    "final-b227/consent/faq-390-candidate.png": "0de6f6b0e2f888e7e7653bca376636a9dafacad31260876237d4cea657e4ded5",
+    "final-b227/consent/faq-390-candidate.json": "5dd6c000c2d01f1e06035e167de46330659da78f2c904e910c2a7053bd68d520",
+    "final-b227/consent/home-1440-candidate.png": "703bbe6a2371ab1f0af4be1d0f3e96a6e1952030c0254667ed7ca9e37686ced1",
+    "final-b227/consent/results.json": "08e092f5b50a2910a18837bd84831e5ec68e0e9a453e4f4dcb70b4450e24781c",
+    "final-b227/consent/discover-helix-390-original.json": "8af5cfc9c4c3ec466df9315581dfdef2b2c2b6ca18a8433384570df6a8074d0d",
+    "final-b227/consent/faq-390-original.png": "0de6f6b0e2f888e7e7653bca376636a9dafacad31260876237d4cea657e4ded5",
+    "final-b227/consent/internal-medicine-390-candidate-network.json": "80a99ec2aeb639b95827c7f3248b0a29441f913395e466f1fb888f0f8482024b",
+    "final-b227/consent/discover-helix-820-original.json": "285b1280c57fb7ec64c9172d3c18387075457aab0e579a93aa8c83861a2dbefa",
+    "final-b227/consent/services-390-original.json": "13229e80fb74fff5afc1208307c80c7666c76c90640dcdb8baf927e4aa3256da",
+    "final-b227/consent/faq-1440-original.json": "c3dc03878df530bd5942a56a1b1ebe7a152a6b3f1dce40dbd07f348eac74d750",
+    "final-b227/consent/internal-medicine-390-candidate.png": "6fb9a14b517d46eaccf7086b68232829dd42ec39f5606c6c794047a8c7e61b55",
+    "final-b227/consent/faq-820-candidate-network.json": "c41766169ebf6621fe101c537746eaf355c79e769b1e5e0efc884fd1f82fa5dd",
+    "final-b227/consent/services-820-original-network.json": "d287fc5a3cc1d9bda7c1a29fd1297f7cfda22ae5a4aabd7e4de6bbc7a4f19f57",
+    "final-b227/consent/home-820-original.json": "83a36da262333305619a52d09d40f96499a0ba78059d3c91ec623af968d6b74d",
+    "final-b227/consent/faq-1440-candidate.json": "c3dc03878df530bd5942a56a1b1ebe7a152a6b3f1dce40dbd07f348eac74d750",
+    "final-b227/interactions/_390.png": "9f34c6666cea3317485b6b3a4c9ad3903f4a861b431689f9e0220584548fe33c",
+    "final-b227/interactions/_1440.png": "0d80b3b27c194ca2292ab4fa18e98836c1ca93a6a61a7334b552100691df82f8",
+    "final-b227/interactions/results.json": "9390388ffbe5c748edb246ecce39ebcfab123443c57aacc7216ddc6bf4c42260",
+    "final-b227/interactions/_820.png": "4fbd53c4d8d5e733183233ffb265aada0ed3e49731fbc86a6a5560b8a283e911",
+    "final-b227/same-url-css-owner/controlled-imaging.html": "4a77efc958af7afecc55c703b3b62573aeb0c3ee93f66976b05bdc83e23f191e",
+    "final-b227/same-url-css-owner/last-attempt.json": "8dab7d1e75ef2e6a37fe590ab1dd3be215358e5ddbfcb847e0010929d951369c",
+    "final-b227/same-url-css-owner/results.json": "f03567d3604cdf16ea2e431ef6902dac7ab31d7f740d564361a3838185733bc4",
+    "final-b227/foreign-css-owner/baseline/global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "final-b227/foreign-css-owner/baseline/global/bootstrap.js": "6069385d089de095e9639fdaee2bd305386b7ce1b0c769a7c7f7363e7558afda",
+    "final-b227/foreign-css-owner/baseline/global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "final-b227/foreign-css-owner/baseline/home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "final-b227/foreign-css-owner/baseline/home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "final-b227/motion/baseline/global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "final-b227/motion/baseline/global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "final-b227/motion/baseline/home/global/buttons.js": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+    "final-b227/motion/baseline/home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "final-b227/motion/baseline/home/global/sections-animations.js": "803fab525bf30f7656d88f43c5b0442f359f079463b10745fc30a07031499592",
+    "final-b227/motion/baseline/home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "final-b227/hero-hooks/baseline/global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "final-b227/hero-hooks/baseline/global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "final-b227/hero-hooks/baseline/home/global/buttons.js": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+    "final-b227/hero-hooks/baseline/home/global/coming-soon.js": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+    "final-b227/hero-hooks/baseline/home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "final-b227/hero-hooks/baseline/home/global/sections-animations.js": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+    "final-b227/hero-hooks/baseline/home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "final-b227/foreign-js-owner/derived-js-fallback/manifest.json": "d96387adcb0371a5fa80510378eb23458c58e9a5191823de91fd8d8141374b3c",
+    "final-b227/foreign-js-owner/baseline/global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "final-b227/foreign-js-owner/baseline/global/bootstrap.js": "fa056239b84694e86a44db131eacbe53ee8fd23f3021a695e313ee63f3f8290b",
+    "final-b227/foreign-js-owner/baseline/global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "final-b227/foreign-js-owner/baseline/home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "final-b227/foreign-js-owner/baseline/home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "final-b227/foreign-js-owner/derived-js-fallback/bodies/4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+    "final-b227/mixed-js-owner/derived-js-fallback/manifest.json": "d96387adcb0371a5fa80510378eb23458c58e9a5191823de91fd8d8141374b3c",
+    "final-b227/mixed-js-owner/baseline/global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "final-b227/mixed-js-owner/baseline/global/bootstrap.js": "fa056239b84694e86a44db131eacbe53ee8fd23f3021a695e313ee63f3f8290b",
+    "final-b227/mixed-js-owner/baseline/global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "final-b227/mixed-js-owner/baseline/home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "final-b227/mixed-js-owner/baseline/home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "final-b227/mixed-js-owner/derived-js-fallback/bodies/4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+    "final-b227/form-intro/baseline/global/floating-cta.css": "88a3fa312d475e1ecc09d9f54822eb7b9dfd5bfcf258dbba9397ee46c7b7d66d",
+    "final-b227/consent/baseline/global/floating-cta.css": "462004913f99b038e66f1a3c4f864e4f082c6aefc30813f0cb1325b096c8d825",
+    "final-b227/same-url-css-owner/baseline/global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "final-b227/same-url-css-owner/baseline/global/bootstrap.js": "6069385d089de095e9639fdaee2bd305386b7ce1b0c769a7c7f7363e7558afda",
+    "final-b227/same-url-css-owner/baseline/global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "final-b227/same-url-css-owner/baseline/home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "final-b227/same-url-css-owner/baseline/home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "final-b227/foundation/services/bootstrap.js": "dcd2f8e374963cde5796b943b3410dfa9241ecaa89573ebe6fc1dd084826f3d7",
+    "final-b227/foundation/global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "final-b227/foundation/global/bootstrap.js": "de99fb663a836ccee6b69fc3315bc476652467a3e3dd63f3ed395cf350ef7a12",
+    "final-b227/foundation/global/floating-cta.css": "8a8b7466d0b33461822c0025101707ad2963377c0d03b13bb3e12431757f3fd2",
+    "final-b227/foundation/home/global/buttons.js": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+    "final-b227/foundation/home/global/coming-soon.js": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+    "final-b227/foundation/home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "final-b227/foundation/home/global/sections-animations.js": "61be6611be54640a41ca0ee6770456f8691d65b349aa5eefa35407fc4a7059e4",
+    "final-b227/foundation/home/global/hamburger.js": "38a760ff753da8398a60151cc0b4559999945dbc619c71cc59878e806f696b39",
+    "final-b227.log": "815c461d2ab0ed01f97ed118902a9394b776bdf22a984bedfb12781371ae609b",
+    "negative-b227.log": "c7a44491edb0a23a49104e4f39f4614f76604503ad941c89457d2c412e5cee10",
+    "rollback-b227/results.json": "5450a92d0493e6d5292ec8120e947fc6c88a51a753e99b40e81b8c896313e422",
+    "rollback-b227/remote-apply-results.json": "5b9546e6d6bd5182ba4142abb14d5fd82c73ab2dbad4e25cb91742bebfe9ba13",
+    "recovered-live/live-html-scan.json": "c7a260b8810a54ca61df30a7402581c538fa3b0e2d20d82e456505f28991ddf8",
+    "preservation-b227.json": "9a2c997f6ec4d17e89cc99e2a1a6b3ce3be6429ea04a11c5cbc62bb42dbcf7cc",
+    "main-stage-trees.json": "a1437f0071427c45afb17596ec68a5f5d98479dffacb8fc9b3012b940ea6507f",
+    "js-hang-probe.json": "bd537914bfbc37d4ab772eb8f354ecc9607235a5afd400087bf9b6b789763051",
+    "recovered-consent-audit.json": "b38b957705cc051f9e1ccfde553eaf74cb1771c1f9fc959f49c785e3aef9e24c",
+    "consent-native-toggle/results.json": "c6928c3ccff68b6bff4bd80eb93594676b6a149713ce66f7c0090267797f776d",
+    "consent-native-toggle.cjs": "ef35da7967989c538ef268a3a3fe49dccb5d7210da53223847d733f3fa7f17cd",
+    "consent-native-toggle.log": "bdbea9c79f31921590cd956aa08d398c4f2ed945b401b2074ba7fe3b09d49875",
+    "refs-after-validation.json": "da5b6596babde4acf0f712eca0958a01edf5f131cfc7b06a7ee7fe8af9dc0133"
+  },
+  "rawStorage": "Local only at/workspace/artifacts/helix-remaining-20261117 and previous immutable roots. GitHub source/tests/verdict/hash/recovery preserved; no remote body/PNG archive or clean-machine replay claim.",
+  "actualStabilizationLevel": "Tested CSS root/property and initialization/resource ownership boundaries have narrower, observable effects. Not whole-site independence, all failure recovery, real-device validation or live operating improvement.",
+  "mainStagingMerged": false,
+  "publicSettingOrPinChanged": false,
+  "WebflowPublished": false,
+  "operatingDeployment": false,
+  "refsAfterVerification": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "fix/helix-residual-structure-20261117": "76d2a4e7fc653d2cde8b1ae2587b1d7cee434108"
+  }
+}
