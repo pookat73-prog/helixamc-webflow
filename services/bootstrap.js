@@ -98,6 +98,7 @@
       s.onload = function () { s.removeAttribute('data-helix-menu-js-error'); };
       s.onerror = function () {
         s.setAttribute('data-helix-menu-js-error', url);
+        s.remove(); // A native-failed script cannot own the module for older consumers.
         if (onerr) onerr();
       };
     } else if (onerr) s.onerror = onerr;
