@@ -23,6 +23,8 @@
 
 ## 단위 P1 — 생산자의 native 실패 소유권 철회
 
+후속 독립 단위 P2 제품 `7bea97c`: 공통 로더가 메뉴를 실제 복구한 뒤 services 생산자가 재진입하면 메뉴 JS를 다시 요청하던 원본을 재현했다. 기존 initialized map에 메뉴의 초기화 점유 guard 한 항목만 연결해 그 추가 요청을1→0으로 줄였다. 단일4조건(2폭×원본/후보)에서 메뉴/초기화1회와 실제 열기/Escape/초점을 보존했다. P1은 양쪽 대조군에 동일하게 유지했다. **guard=true는 점유 의미이며 실행 성공의 증거로 승격하지 않는다.** [판정·독립 역커밋](evidence/consistency-claimed-adoption.json).
+
 제품 `90ee4a2`는 services 메뉴JS가 native error를 받은 뒤 **그 생산자 자신의 실패 script만** 제거한다. 기존 정확한 URL 오류 기록은 detached node에 남고 기존 fallback/공통 retry 상한은 그대로다. 공통 로더가 다른 생산자의 태그를 삭제하지 않는다. pending·성공·다른 모듈·CSS는 손대지 않았다.
 
 원본 producer-only는 두 실패 뒤2요청/메뉴0이었고, 후보는 구공통로더에서도3요청/메뉴1로 회복했다. 2폭×producer-only/matched×정상/현재 실제fallback/두실패/영구실패의 **단일16조건**에서 정상1/폴백2/복구3/영구4요청 상한을 확인했다. 영구 실패는 메뉴 복구가 아니다. 실제 메뉴 열기/Escape·닫기/애니메이션 완료 뒤 초점 복원, 초기화1회·중복 진입 뒤 추가 요청/리스너0도 확인했다. 검사5d75156와 제품을 분리했고 [결과·별도 역커밋](evidence/consistency-native-owner.json)을 남겼다.

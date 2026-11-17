@@ -1,0 +1,15 @@
+{
+  "product": "7bea97cf3a08bce76e5f9c1abd2f0ccea7924c12",
+  "recovery": "28937260e99acca60e35a66c3f2d2fad9eeed63b",
+  "conditions": 4,
+  "scope": "The services loadFile initialized map respects an existing menu initializer claim. Does not redefine guard as execution success.",
+  "original": "After successful shared native recovery, late producer requests menu once more (3->4), but module guard prevents another initializer",
+  "candidate": "Late producer requests0 more; menu/initializer1; actual opening/Escape/focus preserved at1440/390",
+  "partialExecutionError": "guard=true/menu0 remains an execution error and is not repaired or relabeled as success",
+  "rawStorage": "Local only",
+  "evidence": {
+    "adoption-original-red.log": "e6609965412968d55dd645394418bad1270151dcd83f4add86da5a1275843a10",
+    "adoption-full/results.json": "065f8bcb853b95e4f32e1e3ee5121d3cc1e75652d55a66ace7b0555db1f86a9c",
+    "adoption-full.log": "612581b0080d9dde1671bbe471fcb73050bf291f32617ab49892cbb40af43610"
+  }
+}

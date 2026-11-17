@@ -4,6 +4,8 @@
 
 ## 진행 중 — D04 혼합 자산 및 로더 상태
 
+두 번째 독립 제품 `7bea97c`: 이미 공통 소유자가 초기화를 점유한 메뉴에 생산자가 추가 요청하던 원본을 재현했고, 기존 guard 연결 한 항목으로 추가 요청1→0을 검증했다(2폭 원본/후보4조건, 메뉴/초기화1회·Escape/초점 보존). [결과·역커밋](evidence/consistency-claimed-adoption.json). 실행 중 예외로 guard만 남는 경우는 성공으로 보지 않으며 미해결이다.
+
 첫 제품 단위 `90ee4a2`: services 생산자가 native 실패한 자기 메뉴 script만 철회해 구공통로더도 복구할 수 있게 했다. 원본2요청/menu0→후보3요청/menu1, 단일16조건에서 정상1/현재 실제fallback2/영구상한4 및 Escape·닫기·초점/중복 진입을 확인했다. [결과·역커밋](evidence/consistency-native-owner.json). shared-only의 소비자 이전 오류는 미해결이며 HTTP200 실행 예외·guard=true/menu0도 별도 진단했다. 과거 이벤트가 없는 상태를 tag/Resource Timing만으로 추측하지 않았다. 다음은 이미 다른 소유자가 초기화를 점유한 뒤 생산자가 불필요하게 다시 요청하는지 별도 단위로 검증한다.
 
 3752189와 검증 소스b2277bf를 보존한 채 [13 실행기록](13-loader-consistency.md)을 시작했다. 기존 작업장은 clean이고 main/staging·공개10HTML을 다시 확인했다. 과거 미확보 응답은 불변으로 남기고 이번 시점의 실제 branch JS/CSS는 별도 캡처/immutable blob 비교로 구분했다. native 실패·HTTP200 실행 예외·pending·소유자·메뉴 DOM/기능을 추적 중이다. 제품/검사 분리, 기존 retry 상한/15단계 기준 보존, 공개 변경/배포 금지를 유지한다. 아래12의 완료 판정은 이전 동결 소스에 대한 이력이며 이번 새 소스의 통과로 합산하지 않는다.
