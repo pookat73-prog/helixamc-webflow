@@ -2,9 +2,17 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
-## 현재 실행 — 18541d2 이후 잔여 개선
+## 현재 인계 — D05 개별 검증 완료 / D02 검증 중 환경 중단
 
-최신 HEAD18541d2 및 runtime b0fa548을 보존하고 [11 실행기록](11-remaining-execution.md)에 이어간다. D05 보조문구는실소비자없음으로기각했고폼border-color b890736을108쌍/36통제편집으로검증했다([결과](evidence/remaining-cta-border.json)). 다음D02 consent 한root → hero/지그 → 다른loader JS → 실제기기 조건 순서로 재현된 단위만 구현한다. 이전 완료항목/검사기준·다른진행자코드·공개자산을 보존하며 제품/검사커밋을 분리한다. main/staging병합·공개설정변경·배포없음. 아래10은 이전최종판정이다.
+**이번 요청 범위는 미완료다.** [11 실행·중단 인계](11-remaining-execution.md), [상태·SHA·재개 조건](evidence/remaining-interrupted.json)이 최신 기준이다. 검증된 기존 b0fa548 및 이전완료작업은보존했다.
+
+1. **실제 개선:** D05 폼 border-color b890736의중복소유를1개로줄이고 width/style·기완료높이/폼폭/장식/copy gap·전화/외부정렬858바이트를보존했다. 실제없는보조문구font후보는기각했다.
+2. **검증 후보:** D05 단일108쌍 계산CSS/geometry/PNG exact·36통제수정통과([결과](evidence/remaining-cta-border.json)). 폼스킨색은모든활성variant가공유하는소유자이며색편집이전화/배치/테두리폭·스타일에영향을주지않았다. 역커밋[83a1f46](https://github.com/pookat73-prog/helixamc-webflow/commit/83a1f464eeeeb65fef6da9220d65a0c4caae9f23)은recovery브랜치에분리했고정상브랜치에적용하지않았다.
+3. **미완료/미검증:** D02 consent원본넘침재현후로컬7줄후보로전체15쌍검사중이었다. 마지막회수는1440 홈/소개/서비스/FAQ4쌍통과이며최종결과는모른다. 후보는로컬미커밋,GitHub런타임미적용. [미검증patch](evidence/remaining-consent-candidate.patch)와SHA를보존했다. 새소스의최종10단계통합/의도오류주입·복구,후속hero/지그·다른loader JS/무응답/혼합자산·실기기작업도미완료다. 과거10단계성공을이번성공으로합산하지않는다.
+4. **차단/재개:** 실행환경이unavailable이고shell은exec-server transport disconnected/No usable environment를반환한다. GitHub는사용가능하나대체실행도구가없다. 복구후기존workspace와검사결과부터확인해완료된run은재사용한다. 로컬HEAD69d1c24와후속원격문서commit의차이는문서/증거뿐이다. 같은작업브랜치를fast-forward하되미커밋consenthunk를보존하고reset/clean/전체파일복구하지않는다. 입력/소스/검사SHA검증후남은단계를중간승인반복없이이어간다.
+5. **보존/제한:** main3c4f78d4/staginga074f455는재조회에서도동일,공개정식5HTML은기존입력과동일·생성CSS46f7fbd5d/정식홈3c4f78d4/스테이징홈고정ccb68a7c유지. 일부live Network request failed는별도기록. rawbody/PNG/로그는로컬뿐이며중단후접근/지속성미확인. V0재개/U01적용없음. main/staging병합·공개설정변경·WebflowPublish·운영배포없음.
+
+---
 
 ## 최신 최종 인계 — 다음 잔여 구조 개선 (2026-11-17)
 

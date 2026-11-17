@@ -1,0 +1,136 @@
+{
+  "dateKST": "2026-11-17",
+  "status": "INCOMPLETE: execution environment unavailable during D02 verification",
+  "branch": "fix/helix-residual-structure-20261117",
+  "remoteRuntimeHeadBeforeInterruptionRecord": "69d1c243ac3961580516c7af7a0716d89b533b66",
+  "startingHead": "18541d233ede4e7b57a3ecfcf2ad503d827a3d99",
+  "previousVerifiedRuntime": "b0fa5486116282fd623579362312912754d662e3",
+  "completedD05": {
+    "product": "b890736ea397720288eab369d1a784f90be4cb89",
+    "scope": "Form border-color only. Two regular color owners reduced to one; width/style retained as geometry owners.",
+    "singleRunPairs": 108,
+    "singleRunControlledEdits": 36,
+    "normalComputedCSSGeometryPNG": "exact equal",
+    "controlledEdit": "Only existing form action changes color across active variants; phone full style/geometry,copy gap,form width/style/geometry,adjacent flow and legacy remain preserved",
+    "remoteEvidence": "remaining-cta-border.json",
+    "resultsSHA256": "bbb8a78130e2e313ff26bc4266f0ee56d56daebf9b24015cc340391bc660f516",
+    "currentCSSGitBlob": "0b21ba47ccedce49c14eedc2f4bbd3cd29b67c42",
+    "currentCSSSHA256": "462004913f99b038e66f1a3c4f864e4f082c6aefc30813f0cb1325b096c8d825",
+    "fullCurrentIntegrationRun": false
+  },
+  "rejectedD05": {
+    "candidate": "Phone helper font-size",
+    "reason": "Actual current DOM and constructor have no helper element; stale CSS is not proof of an active consumer. No product rewrite."
+  },
+  "recoveryD05": {
+    "commit": "83a1f464eeeeb65fef6da9220d65a0c4caae9f23",
+    "branch": "recovery/helix-remaining-d05-border-20261117",
+    "changedPaths": [
+      "global/floating-cta.css"
+    ],
+    "exactInverseVerifiedAgainstBeforeBlob": "8cf7116d34028f98f70fd0ae287020fdfeba4af1",
+    "appliedToWorkMainStaging": false,
+    "scope": "Reverts onlyb890736. Apply only this commit diff/hunk to a current isolated branch, never replace the entire project with its recovery snapshot.",
+    "runtimeRollbackExecuted": false
+  },
+  "pendingD02": {
+    "scope": ".hx-fcta-form .hx-fcta-consent__body and descendants",
+    "productCommitted": false,
+    "remoteRuntimeApplied": false,
+    "localWorktree": "/workspace/helix-residual",
+    "lastKnownLocalChange": "One uncommitted7-line consent exception in global/floating-cta.css; do not reset/restore/clean or apply it twice",
+    "baseProduct": "b890736ea397720288eab369d1a784f90be4cb89",
+    "archivedPatch": "remaining-consent-candidate.patch",
+    "patchGitBlob": "ab70403754c6a199889e5bac8c66e976b85df11e",
+    "baseGitBlob": "0b21ba47ccedce49c14eedc2f4bbd3cd29b67c42",
+    "baseSHA256": "462004913f99b038e66f1a3c4f864e4f082c6aefc30813f0cb1325b096c8d825",
+    "candidateSHA256": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "patchSHA256": "dd80ad7170a9a20eef5913c74735fbab4acffab5c881b7dc212b3e627d555779",
+    "checkerGitBlob": "45e2eba6092c4f57690ab5990ba6bf56b870abd2",
+    "checkerSHA256": "fa5aea11500eebb4285f74a6eea3d5169973609c5ca7d598023205bf8bbe5583",
+    "originalReproduction": "consent-before exit1: candidate still overflows English direct text at390 before the product change. Original full synthetic probes overflowed.",
+    "validationTarget": "One full15-pair run,5pages x3widths; Korean/English/URL/numeric,body/direct+existing label/span/a,72 candidate probes,real privacy toggle,late pinned policy and9 boundary widths",
+    "lastRetrievedWholePairs": [
+      {
+        "page": "/",
+        "width": 1440,
+        "pass": true
+      },
+      {
+        "page": "/discover-helix",
+        "width": 1440,
+        "pass": true
+      },
+      {
+        "page": "/services",
+        "width": 1440,
+        "pass": true
+      },
+      {
+        "page": "/faq",
+        "width": 1440,
+        "pass": true
+      }
+    ],
+    "finalRunResult": "UNKNOWN: process output and results file cannot be retrieved after exec-server disconnect. No full15 pass/fail claimed; it may have completed while disconnected.",
+    "runLog": "/workspace/artifacts/helix-remaining-20261117/consent-full.log",
+    "runResults": "/workspace/artifacts/helix-remaining-20261117/consent-full/results.json",
+    "introComposedCheck": "Launched intro-composed-check after consent change; result not retrieved. Pre-consent390 isolated-intro check passed."
+  },
+  "testToolIsolation": {
+    "commit": "12ac9fbe4dc64cce65c4440f350708ef3a7d7c77",
+    "mode": "Current CSS minus exact historical intro unitfe863 hunk, patch fuzz0, private baseline only; non-intro wrap and geometry remain fully compared, input/label normal policy retained.",
+    "weakening": false,
+    "existingPNGMaskThresholdExpectedFailureChanged": false
+  },
+  "blocked": {
+    "environmentId": "ccarenv_b64_Y2NhcmVudl82ZmVmMGMwMmM3MGM4MTkxOGRjMTFkZmNhMDZhMGI3OQ",
+    "taskEnvironmentStatus": "unavailable",
+    "executionErrors": [
+      "Failed to create unified exec process: exec-server transport disconnected",
+      "No usable execution environment is available"
+    ],
+    "controlPlaneObservation": {
+      "observed_phase": "running",
+      "connectivity": "connected",
+      "note": "Does not establish working exec transport; fresh shell retry still reports no usable environment."
+    },
+    "alternativePaths": "No desktop NodeREPL/browser execution tool or cloud-desktop viewer target offered; no app terminal attached. GitHub connector remains usable.",
+    "rootCause": "Not established; no network policy/credential/settings changes attempted.",
+    "notPerformed": [
+      "Final current-source single continuous integration at existing10-stage level",
+      "New-source intentional1px fault/restore verification",
+      "D03/D07 hero/remaining zig implementation",
+      "D04 other-loader JS/hang/mixed-asset implementation",
+      "D06 actual Safari/iOS/iPad/WebKit verification"
+    ]
+  },
+  "assets": {
+    "refs": {
+      "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+      "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+      "work": "69d1c243ac3961580516c7af7a0716d89b533b66"
+    },
+    "productionHomeRuntime": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "stagingHomePin": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+    "generatedCSS": "46f7fbd5d",
+    "freshProductionHTML5PagesMatchPreviousImmutableBodies": true,
+    "liveBrowserErrors": "Existing Network request failed retained; no clean live-site assertion.",
+    "inputManifestReferences": "next-final.json contains prior immutable input root hashes; this turn strict replay verifies requested body hashes but complete current replay/archive was not finished."
+  },
+  "resume": [
+    "Restore execution availability; inspect existing workspace,git status and unfinished logs/results before rerunning. Do not treat control-plane running as verified shell readiness.",
+    "Remote docs-only handoff advances beyond local69d1. Fast-forward the same authorized work branch without reset/clean; preserve local consent hunk. If there are other edits, inspect and retain them.",
+    "Check actual CSS against expected candidate SHA256 and checker against recorded hash. If only the known hunk is present, do not apply archived patch twice.",
+    "If consent-full/results.json is complete15/15 from matching source/checker and audited overlays, reuse that full run; otherwise retain its partial/failed evidence and run a new full15. Do not aggregate4 pairs into a pass.",
+    "Verify intro composed-check and prior root contracts. Commit validated D02 product alone, record its inverse recovery, then continue D03/D07 -> D04 -> D06 gates.",
+    "Freeze source and tests and run the full selected integration continuously at least at the existing10-stage strength, plus new units; perform deliberate fault rejection and restore on that source."
+  ],
+  "V0Reopened": false,
+  "U01Applied": false,
+  "mainStagingMerged": false,
+  "publicPinsOrSettingsChanged": false,
+  "WebflowPublished": false,
+  "operatingDeployment": false,
+  "rawEvidence": "Local only at/workspace/artifacts/helix-remaining-20261117 and existing immutable inputs. Accessibility/persistence after outage unverified. GitHub preserves D05 source+result hash,tests,inverse commit,and D02 candidate patch+hash,not current rawPNG/body archives."
+}

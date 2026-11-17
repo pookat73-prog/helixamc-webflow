@@ -1,5 +1,7 @@
 # HELIX 다음 잔여 개선 실행 — 18541d2 이후
 
+**현재 판정: 실행환경 중단으로 이번 작업은 미완료다.** D05 폼 border-color 제품 b890736은 단일108쌍/36통제수정 검증을 통과했다. D02 consent 후보는 로컬 미커밋 상태이고 전체15쌍 결과를 회수하지 못해 승격하지 않았다. [중단 판정·SHA·재개 조건](evidence/remaining-interrupted.json), [미검증 후보 패치](evidence/remaining-consent-candidate.patch)를 따른다. 아래는 진행 이력이며 이전 b0fa548의10단계 통과를 이번 소스의 통과로 사용하지 않는다.
+
 2026-11-17 KST. 작업 브랜치 `fix/helix-residual-structure-20261117`, 시작 HEAD18541d233ede4e7b57a3ecfcf2ad503d827a3d99 및 검증 runtime b0fa548 보존. root AGENTS/HANDOFF/10 실행기록과 관련 CLAUDE LOCKED를 읽었다. 작업 전 clean, 원격HEAD 일치. main3c4f78d4/staginga074f455는 직전과 동일하다. 기존 작업 공간·원본 PNG/corpus·다른 작업자 코드를 보존한다.
 
 ## 승인 범위와 실행 순서
@@ -29,3 +31,24 @@ D05 원본은form border-color를통제색으로바꿔도최종blue에가려져e
 ## D05 최종 결과 — 폼 border-color
 
 제품b890736은폼전용border-color의2중소유(색상선언+후행shorthand)를1개로줄였다. 뒤geometry규칙은width1px/style solid만소유하며기본색blue는그대로다. `border-full` 단일108쌍의전체계산CSS/geometry/PNG가동일하고36통제편집에서form색만바뀌고phone전체CSS·배치/기존copy gap/폼테두리폭·스타일·배치/인접흐름을보존했다. form스킨은base/desktop/floating-mobile/bar/overlap에서같은색소유자를공유하는의도며legacy는대상없음이다. 높이/폼폭/장식/copy gap/외부정렬은원문보존. [판정](evidence/remaining-cta-border.json). 보조문구font는현재소비자없음으로미수정이다.
+
+
+## 실행환경 중단 인계
+
+D05 실제 개선/개별후보 검증은 완료했지만 이번 전체 범위는 미완료다. D05 별도 역커밋 [83a1f46](https://github.com/pookat73-prog/helixamc-webflow/commit/83a1f464eeeeb65fef6da9220d65a0c4caae9f23)을 recovery/helix-remaining-d05-border-20261117에 남겼다. 서버 commit diff로 대상CSS 한파일/정확한 b890736 역변경을 확인했고 작업/main/staging에는 적용하지 않았다. 실행환경이 없어 실제 복구 적용을 실행한 것은 아니다.
+
+D02는 실제문구를 보존하며 consent root 및 실제label의 직접/span/a 긴입력 원본 넘침을 재현했다. 로컬 CSS에7줄 예외를 적용한 뒤 consent-full을 단일15쌍으로 실행했다. 마지막 회수 로그는1440 홈/소개/서비스/FAQ4쌍의 exact 계산·배치/PNG 통과다. 이후 실행 서버가 연결 해제돼 완료결과는 알 수 없다. **4쌍을전체15성공으로합산하지않으며, 실패했다고도단정하지않는다.** 테스트가백엔드에서계속됐을수있으므로환경복구후결과부터읽는다. intro-composed-check도기동했지만결과미회수다.
+
+D02 런타임 변경은 GitHub 작업브랜치에 넣지 않았다. [후보patch](evidence/remaining-consent-candidate.patch)는 문서/증거 위치에만 보존한다. 기준CSS Git blob 0b21ba47ccedce49c14eedc2f4bbd3cd29b67c42, SHA256 462004913f99b038e66f1a3c4f864e4f082c6aefc30813f0cb1325b096c8d825; 예상후보CSS SHA256 391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8; patch SHA256 dd80ad7170a9a20eef5913c74735fbab4acffab5c881b7dc212b3e627d555779; 검사 Git blob 45e2eba6092c4f57690ab5990ba6bf56b870abd2, SHA256 fa5aea11500eebb4285f74a6eea3d5169973609c5ca7d598023205bf8bbe5583. 이는원격기준에서재구성한예상값이며연결중단후디스크내용을다시읽었다는의미가아니다.
+
+환경은 task context unavailable, shell은 exec-server transport disconnected 뒤 No usable execution environment를 반환했다. 환경상태API의동일ID running/connected는shell재접속성공의증거가아니다. 노출된대체실행/desktop NodeREPL/viewer경로와연결터미널이없고GitHub connector만동작한다. 원인확정이나설정변경은하지않았다. 이중단은프로젝트검사기준이나승인대기로대체하지않는다.
+
+재개순서:
+
+1. 기존작업장과 git status, consent-full/results.json 및로그를먼저확인한다. 환경중단전로컬HEAD는69d1c24이며CSS미커밋hunk를보존한다. 이후원격은문서/증거만전진한다. 같은작업브랜치를fast-forward하되 reset/clean/CTA파일통째복구금지. 차이가있으면내용부터대조한다.
+2. 로컬CSS/검사SHA와기록된입력·overlay를대조한다. 이미후보hunk가있으면patch를중복적용하지않는다. raw증거/입력이없으면로컬보존성공으로간주하지않는다.
+3. 동일소스의기존run이완전한15/15이면그결과를검증해활용한다. 불완전/실패면원시증거를보존하고새단일15쌍검사를한다. 분할성공합산금지. 기존intro/내과예외·privacy toggle·late고정정책·경계도검사한다.
+4. 검증된D02만별도제품커밋/복구자료로남긴뒤hero/지그→다른loader JS/무응답/혼합자산→실제기기조건순서로진행한다. 이후단위의이번제품변경은없다.
+5. 소스/검사동결후기존10단계이상의선택통합을단일연속실행하고새소스의의도오류주입/복구를확인한다. 이전18541d2/b0fa548의통과와음성대조를이번전체완료로대신하지않는다.
+
+V0 재실험/U01 적용, main/staging 병합·공개설정/pin변경·WebflowPublish·운영배포는없다. 원시응답/PNG/전체로그는로컬뿐이며현재접근불가다. GitHub에는확인된소스/검사/결과대장·해시·미검증patch·역커밋을보존한다.
