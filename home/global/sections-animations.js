@@ -178,24 +178,11 @@
     log('total visible card sections: ' + sec4Count);
   }
 
-  /* ============================================================
-     initSectionsOnce: 섹션 2-4 공통 초기화 (1회만 실행)
-
-     데스크/모바일 듀얼 섹션 구조 대응:
-     - 동일 클래스(.section2-heading, .bt-box-3, .home_background_svicc,
-       .home_branch-card)가 데스크용·모바일용 섹션에 각각 존재
-     - 각 헤딩/카드 컨테이너를 순회하며 자기 섹션 안의 짝(버튼/SVICC)을
-       찾아 self-contained 트리거 생성 → 숨겨진 섹션은 스킵
-  ============================================================ */
-  function initSectionsOnce() {
-    if (initialized) return true;
-    if (typeof gsap === 'undefined' || !window.ScrollTrigger) {
-      log('GSAP or ScrollTrigger not ready');
-      return false;
-    }
-
-    try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
-
+  /* Heading pairs initialize on first layout exposure. Pending hidden triggers
+     are retired; pairs that actually started keep the original once-only sequence. */
+  var headingStates = new WeakMap();
+  function initHeadingPairs() {
+    if (!window.gsap || !window.ScrollTrigger) return;
     var headings = document.querySelectorAll('.section2-heading');
     /* Webflow 컴포넌트 재작성 후 전용 클래스가 없어져도
        현재 섹션의 .home_title을 기준으로 버튼 페이드/글로우 시퀀스 유지. */
@@ -216,21 +203,36 @@
        - display:none 섹션은 스킵
     ────────────────────────────────────────────────────────── */
     headings.forEach(function (heading, idx) {
-      if (!isVisible(heading)) {
+      var state = headingStates.get(heading);
+      if (!heading.getClientRects().length || !isVisible(heading)) {
+        if (state && !state.started) {
+          if (state.trigger) state.trigger.kill();
+          headingStates.delete(heading);
+        }
         log('heading[' + idx + '] hidden, skip');
         return;
       }
+
+      if (state) return;
 
       var section = heading.closest('section') || heading.parentElement;
       var btnSelector = section && section.querySelector('.bt-box-2') ? '.bt-box-2' : '.bt-box-3';
       var btn = section ? section.querySelector(btnSelector) : null;
       if (btn && !isVisible(btn)) btn = null;
 
-      ScrollTrigger.create({
+      state = { started: false, trigger: null };
+      headingStates.set(heading, state);
+      state.trigger = ScrollTrigger.create({
         trigger: heading,
         start: 'top 65%',
         once: true,
         onEnter: function () {
+          if (!heading.getClientRects().length) {
+            if (state.trigger) state.trigger.kill();
+            headingStates.delete(heading);
+            return;
+          }
+          state.started = true;
           gsap.to(heading, { opacity: 1, duration: 0.7, ease: 'power2.out' });
 
           if (btn && !btn.classList.contains('is-looping')) {
@@ -252,6 +254,28 @@
         }
       });
     });
+
+  }
+
+  /* ============================================================
+     initSectionsOnce: 섹션 2-4 공통 초기화 (1회만 실행)
+
+     데스크/모바일 듀얼 섹션 구조 대응:
+     - 동일 클래스(.section2-heading, .bt-box-3, .home_background_svicc,
+       .home_branch-card)가 데스크용·모바일용 섹션에 각각 존재
+     - 각 헤딩/카드 컨테이너를 순회하며 자기 섹션 안의 짝(버튼/SVICC)을
+       찾아 self-contained 트리거 생성 → 숨겨진 섹션은 스킵
+  ============================================================ */
+  function initSectionsOnce() {
+    if (initialized) return true;
+    if (typeof gsap === 'undefined' || !window.ScrollTrigger) {
+      log('GSAP or ScrollTrigger not ready');
+      return false;
+    }
+
+    try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
+
+    initHeadingPairs();
 
     /* ──────────────────────────────────────────────────────────
        .official-font_title — 극단적 ease-in 페이드 + 스케일 인
@@ -965,6 +989,7 @@
   /* section1.js DOM 복원 완료 → ScrollTrigger 위치 재측정 + 지그 라인 초기화 */
   window.addEventListener('helix-s1-done', function () {
     setTimeout(function () {
+      initHeadingPairs();
       if (window.ScrollTrigger && ScrollTrigger.refresh) {
         ScrollTrigger.refresh();
         log('ScrollTrigger refreshed after helix-s1-done');
@@ -976,6 +1001,7 @@
   /* 폴백: section1이 없어도 load 후 1.5초 뒤 강제 refresh + 지그 라인 초기화 */
   window.addEventListener('load', function () {
     setTimeout(function () {
+      initHeadingPairs();
       if (window.ScrollTrigger && ScrollTrigger.refresh) {
         ScrollTrigger.refresh();
         log('ScrollTrigger refreshed (fallback)');
@@ -1003,6 +1029,7 @@
     if (zigResizeT) clearTimeout(zigResizeT);
     zigResizeT = setTimeout(function () {
       log('resize → zig relayout');
+      initHeadingPairs();
       initCardSections();
       cleanupZig();
       initZigLine();

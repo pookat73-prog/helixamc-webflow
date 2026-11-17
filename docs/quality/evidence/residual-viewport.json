@@ -1,0 +1,27 @@
+{
+  "kind": "static simplified ownership trace, not a real device/browser validation",
+  "webkitBinaryPresent": false,
+  "initial": "width=device-width, initial-scale=1",
+  "writes": [
+    {
+      "owner": "home bootstrap",
+      "value": "width=991, initial-scale=1.0414"
+    },
+    {
+      "owner": "viewport-fix",
+      "value": "width=991, initial-scale=1.0414"
+    },
+    {
+      "owner": "viewport-fix",
+      "value": "width=991"
+    },
+    {
+      "owner": "viewport-fix",
+      "value": "width=991, initial-scale=1.0414"
+    }
+  ],
+  "afterLandscape": "width=991, initial-scale=1.0414",
+  "finding": "Home meta correction is saved as ORIGINAL by this simulated later global viewport fixer; actual Safari layout/rotation effect remains unverified",
+  "productModified": false,
+  "diagnosticCorrection": "First snippet end delimiter was wrong, initial output discarded; corrected extraction asserts the home writer actually ran."
+}

@@ -1,0 +1,154 @@
+{
+  "status": "isolated candidate PASS",
+  "base": "7f4cb178d8b37bbef927f2cd49ea0d5b9e1eab8b",
+  "singleMatrix": "3 start widths / original and candidate, hidden first exposure + pending hide/restore + warm roundtrip",
+  "results": [
+    {
+      "start": 1440,
+      "target": 390,
+      "version": "original",
+      "cold": {
+        "rendered": false,
+        "loop": true,
+        "opacity": "1"
+      },
+      "warmExtra": 0,
+      "heroDone": 1,
+      "visibleSets": [
+        [
+          "home_background_2",
+          8691.900000000373
+        ]
+      ],
+      "errors": [],
+      "networkErrors": []
+    },
+    {
+      "start": 1440,
+      "target": 390,
+      "version": "candidate",
+      "cold": {
+        "rendered": false,
+        "loop": false,
+        "opacity": "0"
+      },
+      "warmExtra": 0,
+      "heroDone": 1,
+      "visibleSets": [
+        [
+          "home_background_2",
+          8499.300000000745
+        ],
+        [
+          "home_background_3-mobile",
+          8499.800000000745
+        ],
+        [
+          "home_background_3",
+          15732.599999999627
+        ]
+      ],
+      "errors": [],
+      "networkErrors": []
+    },
+    {
+      "start": 820,
+      "target": 390,
+      "version": "original",
+      "cold": {
+        "rendered": false,
+        "loop": true,
+        "opacity": "1"
+      },
+      "warmExtra": 0,
+      "heroDone": 1,
+      "visibleSets": [
+        [
+          "home_background_2",
+          8511
+        ]
+      ],
+      "errors": [],
+      "networkErrors": []
+    },
+    {
+      "start": 820,
+      "target": 390,
+      "version": "candidate",
+      "cold": {
+        "rendered": false,
+        "loop": false,
+        "opacity": "0"
+      },
+      "warmExtra": 0,
+      "heroDone": 1,
+      "visibleSets": [
+        [
+          "home_background_2",
+          8461.599999999627
+        ],
+        [
+          "home_background_3-mobile",
+          8462.099999999627
+        ],
+        [
+          "home_background_3",
+          15693.300000000745
+        ]
+      ],
+      "errors": [],
+      "networkErrors": []
+    },
+    {
+      "start": 390,
+      "target": 1440,
+      "version": "original",
+      "cold": {
+        "rendered": false,
+        "loop": true,
+        "opacity": "1"
+      },
+      "warmExtra": 0,
+      "heroDone": 1,
+      "visibleSets": [
+        [
+          "home_background_2",
+          8545.5
+        ]
+      ],
+      "errors": [],
+      "networkErrors": []
+    },
+    {
+      "start": 390,
+      "target": 1440,
+      "version": "candidate",
+      "cold": {
+        "rendered": false,
+        "loop": false,
+        "opacity": "0"
+      },
+      "warmExtra": 0,
+      "heroDone": 1,
+      "visibleSets": [
+        [
+          "home_background_2",
+          8432
+        ],
+        [
+          "home_background_3",
+          8432.5
+        ],
+        [
+          "home_background_3-mobile",
+          15648.699999999255
+        ]
+      ],
+      "errors": [],
+      "networkErrors": []
+    }
+  ],
+  "unchanged": "All visible buttons final opacity/shadow/animation/text/geometry equal; existing colors/fade/hold/loop/hero/card lifecycles retained",
+  "scope": "One heading-pair initialization path, with idempotent state per DOM heading",
+  "recovery": "Reverse lifecycle product hunk only; retain section-local pairing and existing card WeakSet"
+}

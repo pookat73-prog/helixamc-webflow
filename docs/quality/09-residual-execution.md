@@ -35,3 +35,17 @@ D05-P1 결과: 한 실행108쌍의 모든 요소/가상요소 계산 CSS·geomet
 별도 도구282421f 이후 제품 hunk를 분리한다. 원본/후보6실행에서 원본은위실패, 후보는opacity1/looptrue/쓰기1이며 비대상 초기geometry동일, JS/네트워크오류·외부전달0. 숨은DOM의 조기초기화는 별도 문제로 남긴다. Typekit 추가 subset은검사밖획득7응답으로고정했고, 두 누락실패를정상으로세지않았다. [판정](evidence/residual-heading-order.json).
 
 D02-P2 결과: `header-full-final` 단일 명령의5페이지×3크기15쌍이 모두 통과했다. 게시 내용/배치/타이포와 Step마커의 원본 계산값을 보존했고, 모바일 긴영문/URL/숫자/한글×직접/span/a12조건은 넘침→내부줄바꿈으로 개선됐다. 고정정책후행삽입/외부root/766·767·768 대조도 통과했다. 이전실패는 FAQ입력3개누락과 PC에도nowrap라고가정한신규검사오류였다. 원본PC에서도실패한가정을원본동등성검사로고쳤으며 모바일nowrap/기존기준은유지했다. 분할성공을합산하지않고 새단일15쌍만최종근거로쓴다. [판정](evidence/residual-process-heading.json).
+
+## D03-P2 heading 첫 노출 초기화
+
+원본7f4cb17은3크기 cold에서 숨은복제bt3를미리loop상태로만들었고 hot첫노출때visible shadow쓰기0이었다. headingpair만 별도 초기화경로로 분리해 실제layout rect가있는경우에등록하고, 아직시작하지않은hidden trigger는kill/재등록한다. 시작된pair는once계약을유지한다. 기존hero완료/loadfallback/resize에서같은idempotent경로를호출하며 다른initSectionsOnce·cardWeakSet·전화/복사·색/타이밍은그대로다. 정상값과최종4버튼표현을원본대조하고 최초노출/미진입후숨김/왕복을검사한다.
+
+## D04-P1 shared loader 실패 복구
+
+실제영상의학과소비자에서 공통메뉴CSS를1회실패시키면원본은7500ms뒤에도메뉴position static, JS를실패시키면메뉴DOM absent였다. loader guard가재실행을막고onerror는태그만지워별도재방문전복구하지못했다. 공통loader자신이만든실패요청만같은immutable URL로500ms후1회재시도하는후보를검사한다. 재시도전present/기능guard를다시봐다른loader의성공을존중하고,영구실패는최대2요청으로끝낸다. API재조회/pin변경/측정handler/페이지loader의선택권은건드리지않는다. CSS와JS를각각실패·경합·영구실패·정상으로분리해검사중이다.
+
+## D06 조사 — 제품 변경 없음
+
+현재WebKit binary/실기기가없다. 단순화한VM소유권추적에서home교정값width991이후globalfix의ORIGINAL로보관돼가로복원때그교정값을되돌리는경로를확인했다. 이는실제Safari회전실패검증이아니다. [추적](evidence/residual-viewport.json). 첫진단snippet종료구분자오류로home writer가실행되지않은산출물은폐기하고,실제writer호출assertion으로검사도구를고쳤다. meta/breakpoint/측정767/기기DOM은수정하지않는다. 재개조건은실제엔진에서원래meta/두writer/회전왕복을계측해같은복원실패를확인하는것이다.
+
+D03-P2 결과: `lifecycle-final` 단일6실행에서 원본은숨은복제loop=true/첫visible쓰기0, 후보는숨은복제loop=false/첫visible쓰기1이었다. 두복제의첫노출·미진입후숨김/복원·왕복추가쓰기0, fade완료후1.5초hold, 최종4버튼표현/geometry동일과hero완료를검증했다. pending hidden trigger와onEnter경합도kill해퇴역시킨다. JS/네트워크오류·외부전달0. 모션감소표본은820시작에포함했다. 실기기회전/Safari 검증을대신하지않는다. [대장](evidence/residual-heading-lifecycle.json).
