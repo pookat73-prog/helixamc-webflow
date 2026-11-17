@@ -85,6 +85,24 @@
     "controlledEdits": {
       "cases": 36,
       "description": "Canonical base min-height38->40 is ineffective in original, effective in candidate desktop only; all compact/legacy modes and adjacent flow preserved"
+    },
+    "decoration": {
+      "status": "PASS isolated disabled-decoration visibility ownership",
+      "contentOwnersBefore": 3,
+      "contentOwnersAfter": 1,
+      "displayOwnersBefore": 2,
+      "displayOwnersAfter": 1,
+      "owners": [
+        [
+          "none",
+          "none"
+        ]
+      ],
+      "unchangedPairedStates": 108,
+      "controlledEditCases": 36,
+      "meaning": "Actual decoration remains disabled. In a CSSOM-only test, enabling the canonical decoration is ignored in original but effective in candidate; adjacent flow and legacy preserved.",
+      "scope": "content/display only; retain other pseudo geometry/variant declarations",
+      "runtimeSHA256": "a4d5f56505c2fa4b093b1d52f9fa7c732e37460d1c2dcbcf0caf25c24219d0f6"
     }
   },
   "d03": {

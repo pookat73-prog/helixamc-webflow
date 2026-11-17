@@ -981,7 +981,9 @@ html:has(#hxFctaModal.is-open) {
   text-align: center;
 }
 .hx-fcta-shell .hx-fcta-form-btn::after {
-  content: '↗' !important;
+  /* This decoration is disabled; keep its visibility under one owner. */
+  content: none !important;
+  display: none !important;
   position: absolute;
   top: 50%;
   right: 10px;
@@ -1029,10 +1031,6 @@ html:has(#hxFctaModal.is-open) {
 }
 
 
-/* Keep the consultation row clean; the text label already names the action. */
-.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
-
-
 /* Keep both actions aligned in width; show hierarchy through height only. */
 .hx-fcta-shell .hx-fcta-phone-btn,
 .hx-fcta-shell .hx-fcta-form-btn {
@@ -1042,7 +1040,6 @@ html:has(#hxFctaModal.is-open) {
 .hx-fcta-shell .hx-fcta-phone-btn { min-height: 56px; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon { display: inline-flex !important; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon svg { stroke: currentColor; }
-.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
 @media (max-width: 767px) {
   .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
 }

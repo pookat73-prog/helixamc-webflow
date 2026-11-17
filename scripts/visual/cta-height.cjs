@@ -82,8 +82,45 @@ const modes = ['', 'hx-fcta-mobile-bar', 'hx-fcta-overlap-fix', 'hx-fcta-overlap
       return rules;
     });
     assert.deepEqual(owners, [['', '38px'], ['(max-width: 767px)', '28px']], 'One base/mobile owner; variant ownership stays separate');
+    const decorationOwners = await page.evaluate(() => [...document.styleSheets[0].cssRules].filter(r => r.selectorText === '.hx-fcta-shell .hx-fcta-form-btn::after' && (r.style.content || r.style.display)).map(r => [r.style.content, r.style.display]));
+    assert.deepEqual(decorationOwners, [['none', 'none']], 'One owner disables the form decoration');
+    // Predict a future edit, not just identical output today: the canonical base
+    // declaration used to be dead beneath later overrides. A 38 -> 40 edit must
+    // now reach desktop only, leaving compact variants, legacy and adjacent flow alone.
+    const prediction = [];
+    for (const width of [1440, 820, 390]) for (const mode of modes) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const [version, css] of [['original', before], ['candidate', after]]) {
+        const legacy = mode === 'legacy';
+        const markup = legacy ? '<div class="hx-fcta-shell"><button class="hx-fcta-btn">상담 신청</button></div>' : html;
+        await page.setContent('<!doctype html><html class="' + (legacy ? '' : mode) + '"><head><meta charset="utf-8"><style>' + css + '</style><style>' + mobileFix + '</style></head><body><main id="adjacent">Unrelated normal content</main>' + markup + '</body></html>');
+        const edit = await page.evaluate(() => {
+          const sample = () => {
+            const e = document.querySelector('#adjacent'), s = getComputedStyle(e);
+            return { box: e.getBoundingClientRect().toJSON(), css: Object.fromEntries([...s].map(p => [p, s.getPropertyValue(p)])) };
+          };
+          const adjacentBefore = sample();
+          const form = document.querySelector('.hx-fcta-form-btn');
+          const minBefore = form && getComputedStyle(form).minHeight;
+          const rule = [...document.styleSheets[0].cssRules].find(r => r.selectorText === '.hx-fcta-shell .hx-fcta-form-btn' && r.style.position === 'relative');
+          if (!rule) throw new Error('Canonical form rule missing');
+          rule.style.minHeight = '40px';
+          const minAfter = form && getComputedStyle(form).minHeight;
+          const decoration = [...document.styleSheets[0].cssRules].find(r => r.selectorText === '.hx-fcta-shell .hx-fcta-form-btn::after' && r.style.position === 'absolute');
+          if (!decoration) throw new Error('Canonical decoration rule missing');
+          decoration.style.setProperty('content', '"↗"', 'important');
+          decoration.style.setProperty('display', 'block', 'important');
+          const pseudo = form && getComputedStyle(form, '::after');
+          return { adjacentBefore, adjacentAfter: sample(), minBefore, minAfter, decoration: pseudo && [pseudo.content, pseudo.display] };
+        });
+        assert.deepEqual(edit.adjacentAfter, edit.adjacentBefore, 'Base height edit must not affect adjacent document flow');
+        assert.equal(edit.minAfter, !legacy && width > 767 && version === 'candidate' ? '40px' : edit.minBefore, 'Only candidate desktop form accepts the canonical base edit');
+        assert.deepEqual(edit.decoration, legacy ? null : version === 'candidate' ? ['"↗"', 'block'] : ['none', 'none'], 'A deliberate decoration edit has one effective owner, without a hidden later override');
+        prediction.push({ width, mode: mode || 'floating', version, before: edit.minBefore, after: edit.minAfter, decoration: edit.decoration, adjacentPreserved: true });
+      }
+    }
     await context.close();
-    fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ base, cases: results.length, owners, results }, null, 2));
-    console.log('PASS', results.length, 'paired component states: exact CSS/geometry/pixels, base/mobile single owner');
+    fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ base, cases: results.length, owners, decorationOwners, results, prediction }, null, 2));
+    console.log('PASS', results.length, 'paired component states: exact CSS/geometry/pixels;', prediction.length, 'controlled edit cases: predictable scope and adjacent flow preserved');
   } finally { await browser.close(); }
 })().catch(e => { console.error(e); process.exitCode = 1; });
