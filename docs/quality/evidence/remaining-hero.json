@@ -1,0 +1,17 @@
+{
+  "product": "a9626dd955d838a6cbe7be259ae3a92118223a14",
+  "scope": "Move existing heading-hook marking ahead of viewport adjacency guard; preserve guard, published attr, hero event, fonts, glow and SVG algorithms",
+  "runs": 12,
+  "pairs": 6,
+  "normalPixelsTypographyGeometry": "exact equal",
+  "adversarialFixture": "Hidden spacer between hero and specialty; visible section rectangles unchanged at insertion",
+  "original": "No heading hooks/no zig line on all3 widths",
+  "candidate": "3 hooks and1 line on all3 widths; actual section fade/loop and1440->390->820->1440 triggers retained",
+  "failedTestAssumptions": "First2 prototypes incorrectly expected published viewport attr to be absent; immutable HTML proves attribute exists. Re-diagnosed without product changes; preserved original attr in final contracts. Original-red then candidate-green confirmed.",
+  "rawEvidence": "Local only",
+  "resultsSHA256": "8f40ba6cd44d7bad37ec1c3b6b1288db1a8e2a6d2bda8be96c500859fc93620c",
+  "testSHA256": "c1d7c67b05da4002e3d3f3be5df463712c2b100507316b474f1a7011adf0044d",
+  "fullIntegration": "pending",
+  "recoveryCommit": "f3a9f72b14c7dfdbe9ca4cb118079ea66b697280",
+  "recoveryApplied": false
+}

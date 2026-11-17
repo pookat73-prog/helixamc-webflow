@@ -2,6 +2,8 @@
 
 ## 환경 복구 및 D02 결과 회수 (2026-11-17)
 
+후속 D03/D07 제품a9626dd: 무관한 invisible sibling이끼면 Hero adjacency guard가 제목3개hook까지생략해지그가없어지는원본을재현했다. 기존마킹순서만 guard앞으로이동해12회단일검사통과. 정상6실행의PNG/geometry/type exact, fixture삽입자체 visible geometry불변, 후보3폭모두hooks3/line1/실제hero event·fade/1.5s뒤loop·PC→mobile→tablet→PC타깃을보존했다. 최초검사2회는공개HTML기존viewport속성존재를잘못가정한검사실패라원시증거를보존하고재진단했다. 제품보정은쌓지않았다. 정확한공개속성보존계약으로원본red→후보green을확인했다. [단위결과·복구](evidence/remaining-hero.json). 모든hero/firstpaint문제가해결된것은아니다.
+
 기존 작업장 HEAD69d1c24/CSS 미커밋7줄이 그대로 복구됐다. shell 실제 실행을 확인했다. Git CLI network403/remote origin 없음은 GitHub connector의 exact blob/tree/commit hash 검증으로 우회해 docs-only54da5f8에 fast-forward했으며 기존 CSS는 byte 동일하다. 원본·후보·patch·checker4 SHA가 기록과 일치하고 후보 중복적용/reset/clean/restore는 없었다.
 
 기존 consent-full 결과는 실제로 단일15/15 완료다. 5페이지×3크기의30개 network audit/게시 JSON/모달 PNG를 대조했고 게시 배치·타이포·비대상 wrap은 exact다. home3크기의72 합성입력은 원본 전부 overflow/후보 전부 contain, 직접텍스트·기존label·span/a 및4문자종류를 확인했다. 동의 상세 토글/늦은 pinned policy/9경계도 각 assert 뒤 기록된 성공이다. intro-composed390도 현재 CSS391a0297에서 통과했다. 이전 입력 manifest8개와 body2130파일의 길이/SHA를 확인했으며 최신응답으로 대체하지 않았다. raw/log/PNG는 로컬에만 보존한다. [전수 회수 대장](evidence/remaining-consent-recovered.json).

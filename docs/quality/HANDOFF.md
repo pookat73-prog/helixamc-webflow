@@ -4,6 +4,8 @@
 
 ## 복구 후 현재 상태 — D02 개별 검증 회수 완료
 
+D03/D07 추가 단위: [a9626dd](https://github.com/pookat73-prog/helixamc-webflow/commit/a9626dd955d838a6cbe7be259ae3a92118223a14)은 heading hook 마킹만 Hero viewport 인접성 guard 앞으로 이동했다. 3폭×정상/숨은인접요소×원본/후보12회에서 실제 원본hook0/line0→후보hook3/line1을 입증했고, 정상PNG·모든section/button배치·타이포 exact 및실제hero event/heading fade/loop/폭전환을 보존했다. viewport 속성/guard·지그알고리즘·폰트/glow는 고치지 않았다. [결과·별도복구](evidence/remaining-hero.json). D04다른loader JS는 별도 검증 중, 최종통합 미완료다.
+
 기존 `/workspace/helix-residual`과 미커밋 consent 후보를 보존했다. HEAD69d1c24에서 원격54da5f8 문서/증거4파일만 exact Git object로 가져와 `merge --ff-only`했으며 CSS 바이트는 불변이다. reset/clean/restore/후보 중복적용은 하지 않았다.
 
 중단 중 기존 consent-full 단일 실행은 **15/15 완료**했다. 소스391a0297·검사fa5aea11·patch dd80ad71·기준46200491과 일치하며 모든30 network audit/게시 JSON/PNG와 입력 manifest8개·body2130파일을 해시 검증했다. 게시 문구/배치/타이포/PNG exact, 합성72조건 원본 넘침→후보 정상, privacy toggle/late pinned policy/9경계를 확인했다. intro-composed home390도 통과했다. [회수 결과](evidence/remaining-consent-recovered.json). 부분 성공 합산이나 최신 응답 대체 없이 기존 완전한 실행을 재사용했다.
