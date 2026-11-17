@@ -9,7 +9,7 @@
 1. **실제 소스 개선:** `90ee4a2`는 생산자가 자기 native 실패 script만 철회해 구소비자의 새 오류 속성 의존성을 없앴다. `7bea97c`는 기존 메뉴 초기화 점유를 존중해 늦은 생산자 추가 요청1→0을 입증했다. 제품 diff는 services/bootstrap.js 한 파일 +3/-1줄이며 CSS·공통로더·메뉴모듈·기존 개선은 보존했다.
 2. **검증:** 기존15단계를 보존한18단계에서 비대상5페이지×3크기, CTA 각108/36, 실제 FAQ 성공 fallback·같은URL CSS, 메뉴/Escape/초점/요청 상한을 확인했다. 새 혼합24·점유4·실행/pending6조건을 추가했다. producer-only는 복구하지만 구생산자의 shared-only 조기 실패2조건은 미해결이다. HTTP200 실행 예외4개와 검사 deadline은 성공/자산 실패로 오인하지 않았다. 1px/제품별 역변경은 각각 회귀 검출 후 자기 diff만 복구했다.
 3. **실제 채택 준비:** 공개 ba91 자산 집합에서 생산자 한 파일만 이관한 [별도 후보7195463](https://github.com/pookat73-prog/helixamc-webflow/tree/candidate/helix-services-owner-adoption-20261117)은 실제 URL24개200/바이트를 확보한 별도 단일12조건을 통과했다. 20개는 후보 URL에서 실제 채택했고4개 측정 모듈은 기존 소유자의 다른 URL을 존중했다. 공통 구로더의 총3회/작업소스 총4회 요청 상한을 구분한다. [공개head 제안](evidence/consistency-proposed-services-head.patch)은 미적용이며 별도 승인 대상이다. 이12조건을18단계에 합산하지 않았다. 최초 DNS/403/불완전 입력 실패도 보존했다.
-4. **미해결/미검증:** 구생산자의 과거 실패, 다른 생산자/부분 실행 예외, 무응답 timeout·더 넓은 초기화/firstpaint·D02/D05 잔여 범위가 남는다. 실제 WebKit/Safari/iOS/iPad 부재로 D06은 미검증·제품 미변경이다. V0/U01 보류 유지. 13의 위험·선행조건·검증·중단 기준으로 다음 단위를 진행한다. 전체 구조 안정화 완료가 아니다.
+4. **미해결/미검증:** 구생산자의 과거 실패, 기존 가변 branch fallback의 장기 버전 일관성, 다른 생산자/부분 실행 예외, 무응답 timeout·더 넓은 초기화/firstpaint·D02/D05 잔여 범위가 남는다. 실제 WebKit/Safari/iOS/iPad 부재로 D06은 미검증·제품 미변경이다. V0/U01 보류 유지. 13의 위험·선행조건·검증·중단 기준으로 다음 단위를 진행한다. 전체 구조 안정화 완료가 아니다.
 5. **보존·전달:** 원본PNG33/response286·mask·100px·threshold0.2·expected failure 불변. 입력8manifest/2130body와 raw432파일·마감 공개10HTML/엔진 SHA를 기록했다. 원시 body/PNG/전체로그/원시 대장은 로컬 전용이다. main3c4f78d4/staginga074f455 및 마감 공개10HTML도 이전과 같았다. 작업/채택 후보별 독립 복구4개를 실제 diff로 적용/역적용했다. **main/staging 병합·공개 설정/pin 변경·Webflow Publish·운영 배포는 하지 않았다.**
 
 ## 진행 이력 — D04 혼합 자산 및 로더 상태

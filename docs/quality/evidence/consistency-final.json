@@ -583,7 +583,8 @@
       "HTTP200 execution exceptions/partial initializer need transactional lifecycle/cleanup before retry",
       "No-error pending has no approved product timeout; only deadline/release observation completed",
       "Other producers, other CSS state histories and broader same-URL/different-URL adoption paths not globally proven",
-      "D03/D07 other firstpaint, D02 other roots, D05 other active properties remain independent follow-up work"
+      "D03/D07 other firstpaint, D02 other roots, D05 other active properties remain independent follow-up work",
+      "Pre-existing mutable @main resource fallback retained; observed current payload equality does not guarantee future version consistency. Producer remains responsible for that version choice."
     ],
     "environmentUnverified": [
       "Actual Safari/iOS/iPad/WebKit viewport/rotation; no executable/device",
