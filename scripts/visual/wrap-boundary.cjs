@@ -30,8 +30,9 @@ assert.ok(widths.every(w => [1440, 820, 390].includes(w)), 'Unknown representati
         process.env.HELIX_VISUAL_OVERLAY = 'global/global.css';
         process.env.HELIX_VISUAL_OVERLAY_ROOT = version === 'original' ? path.join(output, 'baseline') : repo;
         const context = await browser.newContext({ viewport: { width, height: width === 820 ? 1180 : width === 390 ? 844 : 900 }, locale: 'ko-KR', timezoneId: 'Asia/Seoul', serviceWorkers: 'block' });
+        const pageInput = process.env.HELIX_STRUCTURE_PAGE_INPUTS && pathname !== '/' ? path.join(process.env.HELIX_STRUCTURE_PAGE_INPUTS, pathname.slice(1)) : process.env.HELIX_INTERACTION_INPUT;
         const network = await install(context, {
-          inputRoot: path.resolve(process.env.HELIX_INTERACTION_INPUT),
+          inputRoot: path.resolve(pageInput),
           extraRoots: (process.env.HELIX_INTERACTION_EXTRAS || '').split(',').filter(Boolean).map(p => path.resolve(p)),
         });
         const page = await context.newPage(), errors = [];

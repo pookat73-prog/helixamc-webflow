@@ -4,7 +4,7 @@
 
 ## 최신 전달 기준 — 2026-11-17 후속 실행
 
-최종 작업 브랜치는 **`fix/helix-structure-current-20261117`**, 기준 staging3d11dd7/main d337d1a다. 작업 중 외부 변경을 확인해 원문 coming-soon.css를 보존하고 필요한 문서/검사와 runtime7단위만 새 기준으로 선별 이관했다. 아래 `fix/helix-structure-20261117`은 이번 작업의 최초 기준 이력이다. V0실패/U01미적용, D05높이·장식과 D03단일제어·D02모바일목록은 격리 검증 통과 상태이며 최신 입력의 동결 소스 재검수를 진행한다. 잔여 구조 문제의 위험/선행조건/작업량/실제 수정·복구 계약은 [08 마지막 절](08-structural-execution.md)에 확정했다. main/staging 병합·공개pin변경·운영배포 없음.
+최종 작업 브랜치는 **`fix/helix-structure-current-20261117`**, 이관 분기 기준은 staging3d11dd7/main d337d1a이며, 마감 중 추가된 최신 staging06306d4/main7395b95의 외부CSS2개도 원문 보존 동기화한다. 작업 중 외부 변경을 확인해 원문 coming-soon.css를 보존하고 필요한 문서/검사와 runtime7단위만 새 기준으로 선별 이관했다. 아래 `fix/helix-structure-20261117`은 이번 작업의 최초 기준 이력이다. V0실패/U01미적용, D05높이·장식과 D03단일제어·D02모바일목록은 격리 검증 통과 상태이며 최신 입력의 동결 소스 재검수를 진행한다. 잔여 구조 문제의 위험/선행조건/작업량/실제 수정·복구 계약은 [08 마지막 절](08-structural-execution.md)에 확정했다. main/staging 병합·공개pin변경·운영배포 없음.
 
 ## 현재 실행 — 2026-11-17 구조 개선
 
