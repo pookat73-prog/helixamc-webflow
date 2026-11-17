@@ -238,18 +238,26 @@
     document.documentElement.classList.add('hx-fcta-mobile-bar');
     document.documentElement.classList.remove('hx-fcta-mobile-only');
     FILES.forEach(function (path) {
-      if (present(path)) return;
-      var css = /\.css$/.test(path);
-      var el = document.createElement(css ? 'link' : 'script');
-      if (css) { el.rel = 'stylesheet'; el.href = ROOT + ref + '/' + path; }
-      else { el.src = ROOT + ref + '/' + path; el.async = false; }
-      el.setAttribute('data-helix-shared-ui', '');
-      el.onerror = function () {
-        // A failed request must not block a later retry or replace page modules.
-        el.remove();
-        console.warn('[shared-ui] load failed:', path);
-      };
-      document.head.appendChild(el);
+      var failures = 0;
+      var retryMenu = path === 'home/global/hamburger.css' || path === 'home/global/hamburger.js';
+      function loadMissing() {
+        // A page loader may have supplied this path while our request failed.
+        if (present(path)) return;
+        var css = /\.css$/.test(path);
+        var el = document.createElement(css ? 'link' : 'script');
+        if (css) { el.rel = 'stylesheet'; el.href = ROOT + ref + '/' + path; }
+        else { el.src = ROOT + ref + '/' + path; el.async = false; }
+        el.setAttribute('data-helix-shared-ui', '');
+        el.onerror = function () {
+          el.remove();
+          console.warn('[shared-ui] load failed:', path);
+          // Only this verified menu pair retries. Other module recovery policies
+          // (especially viewport correction) keep their existing behavior.
+          if (++failures === 1 && retryMenu) setTimeout(loadMissing, 500);
+        };
+        document.head.appendChild(el);
+      }
+      loadMissing();
     });
   }
 

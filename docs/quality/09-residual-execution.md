@@ -55,3 +55,7 @@ D03-P2 결과: `lifecycle-final` 단일6실행에서 원본은숨은복제loop=t
 추가 조사에서 form canonical width90% 편집도 뒤의 phone/form 공용width100%에가려무효였다. 높이/장식은재수정하지않고 width 한속성만 분리했다. phone은기존위치에서자기width100%를유지하고 form은기존canonical width100%를단독소유한다. 공용box-sizing과모든variant는그대로다. 도구47418bd와제품커밋을분리한다.
 
 `form-width-fixed` 한실행108쌍의전체계산CSS/geometry/PNG가동일했고36통제수정에서form만폭을바꿀수있으며phone/인접본문/높이/장식/bar/overlap/legacy는보존됐다. 외부phone정렬858바이트는원문그대로다. [대장](evidence/residual-form-width.json). 신규라이브러리·파일구조재편없이두action사이width강제결합을제거했다.
+
+D04-P1 최종 결과: `shared-final` 단일48조건에서 메뉴CSS/JS의 일시 실패는 원본static/absent→후보fixed로 복구되고click/Escape도 동작했다. 영구 실패는 복구 성공이 아니라2요청에서 멈추는 계약이며, 다른loader가 먼저 제공하면 추가retry가 없고 중복entry도 재초기화하지 않았다. 대상은**메뉴2자산만**이다. viewport-control은 기존대로1요청이며 미검증인 다른module/viewport 복구정책을 넓히지 않았다. 같은immutable URL만 사용하고API재조회/공개pin변경은 없다. [대장](evidence/residual-shared-recovery.json)· [실제 자산 연결](evidence/residual-assets.json)
+
+D04의 잔여: 다른loader가남긴실패tag를present로간주하는경로·error없이정지한요청·기존mixedpin정책은미해결이다. 이한정복구로전체로더구조완료라하지않는다.
