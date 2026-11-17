@@ -61,3 +61,9 @@ JS별도위상계측은첫오류때sharedentry가아직없고두번째부터존�
 로더단위를마친뒤viewport진행조건을판정한다. WebKit2227실행파일없음과실제Safari/iOS/iPad검증도구부재를확인했다. 기존소유권VM기록만보존하고같은실험이나Chromium폭변경으로실기기정상판정을대신하지않는다. viewport제품변경없음·회전미검증, [재개조건](evidence/next-viewport.json). V0새판별근거없어재실험없음/U01보류유지.
 
 현재제품4단위동결db92c09: CTA gap21bccd6, form introfe86354, 지그34f093c, 관측외부menuCSSdb92c09. 실제수정runtime는floating-cta.css/sections-animations.js/global bootstrap.js3파일이며기존6단위와global.css·buttons·menu·hero/coming-soon·viewport원문은보존했다. 최종검사도구커밋뒤같은runtime의별도작업본에서8단계선택통합(corpus→5페이지15쌍→home3cold/1440시작11전환→heading모션→CTA108/36→home폼3쌍→품질→로딩)을한번연속실행한다. form15/지그12/외부CSS16개별단위검사는각각의독립전체결과이며이선택통합을전체V0suite로승격하지않는다. 과거인계의‘각11전환’표현은정정한다:도구는1440시작에서11전환,820/390은cold대조다.
+
+## 최종검토에서 발견한 D04 추가 회귀 — 판정 보류
+
+동결166e9d8의별도작업본8단계선택통합은모두통과했다. 그러나실제FAQ loader는CSS fallback때새태그대신같은link의href를재사용한다는소스대조에서추가경계가발견됐다. `faq-reuse-before`에서이전42원본은2요청으로정상종료, db92후보는성공한같은tag에도실패WeakSet이남아3요청/중복CSS를만들어새원인대조검사가exit1로거절했다. **정적정상8단계성공을전체구조안정화로승격하지않는다.** 앞8단계는이전소스의선택결과로보존하고최종판정은다시동결한소스에서한다.
+
+D04 보완단위: 실패기록을node+URL로구분하고같은node의native load성공때해제한다. 다른loader의성공/pending을존중하는동일책임경계이며메뉴CSS한경로만해당한다. 서비스새tag/FAQ재사용tag×2폭×4상황×원본166/후보32조건의새단일검사를요구한다. 기존ownretry/JS/viewport/공개pin은건드리지않는다. 보완은별도제품커밋으로남기고D04전체역변경복구커밋을새버전으로추가한다. 앞recovery브랜치는강제로바꾸지않는다.
