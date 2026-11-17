@@ -2,6 +2,10 @@
 
 갱신일: 2026-11-17 (Asia/Seoul)
 
+## 현재 실행 — 18541d2 이후 잔여 개선
+
+최신 HEAD18541d2 및 runtime b0fa548을 보존하고 [11 실행기록](11-remaining-execution.md)에 이어간다. D05 보조문구 한속성 → D02 consent 한root → hero/지그 → 다른loader JS → 실제기기 조건 순서로 재현된 단위만 구현한다. 이전 완료항목/검사기준·다른진행자코드·공개자산을 보존하며 제품/검사커밋을 분리한다. main/staging병합·공개설정변경·배포없음. 아래10은 이전최종판정이다.
+
 ## 최신 최종 인계 — 다음 잔여 구조 개선 (2026-11-17)
 
 **추가 구조 개선4단위의 소스 구현·격리 후보 검증 완료, 전체 구조 안정화는 미완료다.** 전달 브랜치 [`fix/helix-residual-structure-20261117`](https://github.com/pookat73-prog/helixamc-webflow/tree/fix/helix-residual-structure-20261117). 최종 검증한 소스와 검사 SHA는 **`b0fa5486116282fd623579362312912754d662e3`**, 이후 전달커밋은 문서/증거만 변경한다. [10 실행·최종판정·다음실행](10-next-residual.md), [최종 대장](evidence/next-final.json)이 현재 재개 기준이다. 아래42d4327/4798317 및 이전 “현재” 절은 당시 이력이다.
