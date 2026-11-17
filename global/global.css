@@ -563,7 +563,14 @@ html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] body > :where(.white-frame_mini.im
 
   html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_list {
     max-width: 100%;
-    overflow-wrap: anywhere;
+  }
+
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_list,
+  html[data-wf-page="69d74a8ea2cac3ea9cfed34d"] #hx-im-process .sj_step_list * {
+    /* Explicit component exception to the pinned body * !important policy.
+       Keep ordinary Korean words intact; permit emergency breaks for long tokens,
+       including links/spans. Only this page/root and the existing mobile range. */
+    overflow-wrap: anywhere !important;
   }
 }
 
