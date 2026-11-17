@@ -836,8 +836,7 @@ html:has(#hxFctaModal.is-open) {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* Copy spacing: base here, compact below; mobile-bar owns its row. */
-  gap: 4px;
+  gap: 2px;
 }
 .hx-fcta-shell .hx-fcta-phone-btn__subtext {
   color: rgba(255, 255, 255, 0.82);
@@ -911,11 +910,17 @@ html:has(#hxFctaModal.is-open) {
 }
 
 
+/* Clarify the phone-first hierarchy on compact screens. */
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 5px; }
+}
+
+
 /* HELIX CTA polish: remove decorative overlap effects and align both actions. */
 .hx-fcta-shell .hx-fcta-call-btn__icon { display: none !important; }
 .hx-fcta-shell .hx-fcta-call-btn::after { content: none !important; }
 .hx-fcta-shell .hx-fcta-call-btn { justify-content: center; }
-.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: center; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: center; gap: 5px; }
 .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
 .hx-fcta-shell .hx-fcta-form-btn {
   font-size: 13px;
@@ -956,7 +961,7 @@ html:has(#hxFctaModal.is-open) {
 }
 .hx-fcta-shell .hx-fcta-call-btn__icon { display: inline-flex !important; }
 .hx-fcta-shell .hx-fcta-call-btn__icon svg { stroke: currentColor; }
-.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: flex-start; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: flex-start; gap: 4px; }
 .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
 .hx-fcta-shell .hx-fcta-form-btn {
   font-size: 13px;
