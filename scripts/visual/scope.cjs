@@ -13,7 +13,7 @@ const options = {
 const candidate = process.env.HELIX_SCOPE_OVERLAY || 'home/global/hamburger.css,home/global/hamburger.js,global/floating-cta.css,home/global/sections-animations.js';
 const paths = (process.env.HELIX_SCOPE_PATHS || '/').split(',');
 assert.ok(paths.every(p => ['/', '/discover-helix', '/services', '/faq', '/internal-medicine'].includes(p)), 'Unknown scope consumer');
-const consumedPaths = (files, pathname) => files.split(',').filter(p => p && (pathname === '/' || !['home/global/buttons.js', 'home/global/sections-animations.js'].includes(p)) && (pathname === '/services' || p !== 'services/bootstrap.js'));
+const consumedPaths = (files, pathname) => files.split(',').filter(p => p && (pathname === '/' || !['home/global/buttons.js', 'home/global/sections-animations.js', 'home/section1/section1.js'].includes(p)) && (pathname === '/services' || p !== 'services/bootstrap.js'));
 (async () => {
   fs.mkdirSync(output, { recursive: true });
   const browser = await pw.chromium.launch({ executablePath: process.env.HELIX_CHROMIUM_PATH || '/usr/bin/chromium', args: ['--no-sandbox', '--disable-dev-shm-usage'], headless: true });
