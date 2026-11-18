@@ -1,0 +1,11 @@
+--- external-Webflow-services-head/current-loader
++++ external-Webflow-services-head/restored-loader
+@@ -3,7 +3,7 @@
+ <script>
+ (function(){
+   var s=document.createElement('script');
+-  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+(/\.webflow\.io$/i.test(location.hostname)?'719546330ce1413b2e68b6c3da45dd2d3798e7eb':'ba91d70d93f8a1b54ca499b0ca942c0710d025e7')+'/services/bootstrap.js';
++  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+(/\.webflow\.io$/i.test(location.hostname)?'ba91d70d93f8a1b54ca499b0ca942c0710d025e7':'ba91d70d93f8a1b54ca499b0ca942c0710d025e7')+'/services/bootstrap.js';
+   s.async=false;document.head.appendChild(s);
+ })();
+ </script>

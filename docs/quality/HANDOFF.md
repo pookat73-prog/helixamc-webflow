@@ -4,7 +4,7 @@
 
 ## 진행 중 — 실행 오류와 pending 후속
 
-a6eaff7/f44264e 및 기존 두 D04 제품/18단계 결과를 보존하고 [14 실행기록](14-execution-residual.md)을 시작했다. 기존 HTTP200 임의 throw와 무응답 결과를 재사용하며 실제 GSAP 의존성 실패·생산자 재진입·초기화 완료를 좁혀 확인한다. main/staging/7195463은 동일하며 공개 변경/배포는 하지 않는다. 아래13은 이전 동결 소스의 판정이다.
+기존 f44264e/두 제품/18단계를 보존했다. [14 실행기록](14-execution-residual.md)의 실제 GSAP 실패→복원 E1(06d07a3,8쌍)과 생산자 exact-URL pending P3(be8f38a,8실행+foreign4)를 개별 검증했다. 제품/검사와 독립 역커밋을 분리했다. 새21단계 동결 통합 검증 전이며 임의 실행·구문 오류/향후 @main drift는 미해결이다. [719 staging-only 별도 승인안](15-services-adoption-approval.md)은 정확한 head/inverse를 준비했으나 미적용이며 새 E1/P3를 포함하지 않는다. main/staging/공개 설정/배포는 변경하지 않았다. 아래13은 이전 동결 소스의 판정이다.
 
 ## 최신 최종 판정 — D04 생산자 소유권 개선 / 혼합 전체는 미완료
 
