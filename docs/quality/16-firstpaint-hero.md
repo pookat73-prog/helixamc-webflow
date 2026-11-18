@@ -27,6 +27,12 @@ flowchart TD
   Cleanup --> Done[helix-s1-done]
   Event --> Coming
   Done --> Coming
+  Hero --> LegacyFire[기존2초 fire 안전망]
+  LegacyFire --> Event
+  Coming --> LegacyAfter[기존6.5초 afterHero 안전망]
+  LegacyAfter --> Milestone
+  Coming -. head helper가 없는 legacy 경로 .-> Ready
+  Head --> Recovery[기존10초 recovery 진입]
   Coming --> Milestone[연혁·quickbar 준비]
   Milestone --> Head
   Hooks --> Sections
@@ -37,6 +43,18 @@ flowchart TD
 ```
 
 정상 여러 진입은 guard/WeakMap/WeakSet이 구분하며 호출 수만으로 결함으로 보지 않는다. 공개 head의 함수와 최종 ready class 소유권은 이동하지 않는다. prepareHomeViewport의 인접성 guard 전에 hook을 등록한 기존a9626dd는 보존한다. 초기화 claim과 completion, hidden 복제 노드와 실제 노출을 검사에서 분리한다. CSS/폰트 준비나 글로우·divider 알고리즘은 변경 대상이 아니다.
+
+## 상태 소유자와 실제 의미
+
+| 소유자 | 신호·소비자 | 실제 의미 / 보존 경계 |
+| --- | --- | --- |
+| 공개head | `__hxHomeFirstpaintReveal`·`hx-home-ready` / 첫 화면 공개 | 현재정상 경로의 최종소유자. link stylesheet 전체·실제텍스트폰트·이미지decode·geometry settle를 확인한다.10초는복구진입이지완료약속이아님. 소유권/공개head는미변경 |
+| coming-soon | `prepareHomeViewport` / section heading lifecycle | 각root의제목hook writer.마킹≠노출/초기화완료. Hero/specialty 인접성 guard는 별도 viewport/layout 조건으로 유지 |
+| coming-soon | local `heroReady` / 연혁·quickbar 후head호출 | ready/done뿐아니라기존6.5초안전망도true를만든다. 실제Hero완료증거로쓰지않음. head함수가없는legacy 분기에서는직접ready class를쓰지만현재공개head함수는존재함 |
+| section1 | `__HELIX_SECTION1_LOADED__`·private `started` | 각각module점유/초기시작이고완료가아님. GSAP실패시private시작실패후40회창이끝나도module점유는남음 |
+| section1 | `helix-s1-ready` / coming-soon | 정상폰트/probe/배치뒤fire,기존2초안전망도fire가능. head가별도로실제폰트를검증하며이벤트만으로font성공을판정하지않음 |
+| section1 | `helix-s1-done` / 지그refresh·coming-soon | 배경/콘텐츠fade뒤ghost복원후신호. 실제실패복원검사에서는이신호0이남음 |
+| sections | WeakMap/WeakSet·visible rect / heading·card·지그 | 정상다중진입은단일상태를재사용.실제노출DOM만시작하고숨은복제는보류.기존fade·1.5초hold·loop/resize를보존 |
 
 ## 선택한 새 원인과 수정 전 계약
 
@@ -63,3 +81,7 @@ D04 범용실행예외/구생산자/무응답/미래main 위험, D02/D05잔여, 
 조사 중 검사 문제도 보존했다. 초기 GSAP 실패 조건은 미수록 Typekit order URL을 만들었다. 해당 신규 정확한 URL의 실제200응답을 별도 입력으로 확보했으며 역사적 응답을 최신 bytes/합성 alias로 대체하지 않았다. 또 초기 검사는6초 뒤 Hero와 모든 section이 미복구일 것으로 잘못 예상했다. 실제 관찰과 소스를 재진단하니 각 owner의 재시도 창과 정상 재진입 시점이 달랐다. 제품 보정을 추가하지 않고, **실제 Section1의 `init failed after 40 retries` console 신호**로 실패 지점을 확정한 뒤 같은 실제GSAP URL을 복원하도록 재현을 바꿨다. PC/모바일×원본/후보4실행에서 section은 복구했지만 Hero claim=true·ready/done0은 남았다. firstpaint fallback 공개를 Hero 초기화 완료로 보지 않으며 이 Hero 문제는 미해결이다. 입력 부족·잘못된 초기 검사 예상·6초 관찰은 별도로 보존한다.
 
 새 검사 단위는 실패 전attempt/source SHA, rAF 노출·폰트·ghost/class writer 궤적, 실제 이벤트·원본 PNG, fade/1.5초hold/loop를 기록한다. 기존21단계는 모두 유지하고 이 단위를 추가한 단일22단계로 검증한다. 새 단위는24쌍/48실행: 정상/숨은 복제의PC·모바일 각3회 쌍비교와tablet 각1회, 폰트/CSS/Hero/writer 지연 및 실제 의존성 복원이다.3시작 폭에서 각각 역전환을 확인하고 기존1440 시작11경계 검사도 유지한다. 실제Safari/iOS·물리 고속영상·방문자LCP는 Chromium 검증 완료 범위가 아니다.
+
+## 동결·복구 검증 체크포인트
+
+소스·검사를 **711ee35093d74680bf144982cfceda3070401bab**로 동결한 새clone에서22단계 단일연속 실행을 시작했다. 이전21단계와개별성공을합산하지않는다. 다른새clone에서는실제역커밋05a3032의diff→제목검사0≠3검출→자기hunk복구,1px gap4→5오류검출→복구를통과했고원본byte/clean상태를확인했다. 아직전체통과로판정하지않는다. [체크포인트](evidence/firstpaint-progress.json)는 이시점기록이다.

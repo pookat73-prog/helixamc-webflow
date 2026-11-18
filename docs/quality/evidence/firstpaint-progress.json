@@ -1,0 +1,79 @@
+{
+  "dateKST": "2026-11-18",
+  "status": "Frozen22-stage integration running; not a full pass",
+  "startingHead": "74bf6b2785a13ad11c3f8b20c01d3701d3b6a206",
+  "frozenSourceAndTests": "711ee35093d74680bf144982cfceda3070401bab",
+  "product": "d443254924df3374e8647fadd83d13ba7f2df79c",
+  "recoveryCommit": "05a303290aebd6b8d3993ceb77086f377b69744e",
+  "negativeControls": {
+    "source": "711ee35093d74680bf144982cfceda3070401bab",
+    "cases": [
+      {
+        "fault": "actual remote own inverse",
+        "inverseCommit": "05a303290aebd6b8d3993ceb77086f377b69744e",
+        "goodSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+        "faultSHA256": "5250aedf20ca6b165e627cf76cb896ba96c74fb4ce134f9e7b7925224c667f5d",
+        "detectedExit": 1,
+        "ownHunkRestored": true
+      },
+      {
+        "fault": "compact copy gap4→5px",
+        "detectedExit": 1,
+        "ownHunkRestored": true
+      }
+    ],
+    "pass": true
+  },
+  "newInputRoots": [
+    {
+      "root": "/workspace/artifacts/helix-firstpaint-20261118/writer-font-input",
+      "manifestSHA256": "6a866c67ef629ed26201df9a7928e81214ea98c733df01b6a1bd32574444234b",
+      "responses": 5
+    },
+    {
+      "root": "/workspace/artifacts/helix-firstpaint-20261118/late-font-input",
+      "manifestSHA256": "7555feba2c7caf5d8a3cd630cb83b89a68f306519d61846c850a992b5f922dca",
+      "responses": 5
+    }
+  ],
+  "currentProgress": {
+    "source": "711ee35093d74680bf144982cfceda3070401bab",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected22-stage integration: previous21 stages retained, plus24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; actual Hero failure-marker recovery keeps Hero completion explicitly unresolved; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 1,
+        "error": null
+      }
+    ],
+    "pass": false
+  },
+  "publicHTMLObservationSHA256": "c7a260b8810a54ca61df30a7402581c538fa3b0e2d20d82e456505f28991ddf8",
+  "actualCDNAssetsSHA256": "3534219164b0bbbdd9b7f0613a263e6c948644c1c4e4d9dc0c48b34bdb58c005",
+  "headOwnerBlocksSHA256": "17bf672561f39ef0c76eed7b71facd193e30c65c1b392575abf6bf826a035e5e",
+  "rawRoot": "/workspace/artifacts/helix-firstpaint-20261118",
+  "rawBodyRemoteArchive": false,
+  "publicHeadPinPublishOrDeployChanged": false,
+  "remainingHeroRecovery": "Actual Section1 failure marker then native GSAP restore: sections recover; module claimtrue but Hero ready/done0 in both old/new. Not promoted as recovery success."
+}
