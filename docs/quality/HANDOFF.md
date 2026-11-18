@@ -4,6 +4,8 @@
 
 ## 진행 중 — D03/S1 실제 GSAP 복구
 
+**최신 재개: 제품b8c1e4e는불변이다. `bcfe51e`의23단계중22개는통과했지만마지막VM fixture가표준document.removeEventListener를제공하지않아실패했다. 기대값을바꾸지않은검사모형보완 `c4b2e5a`를새source/tests동결로삼아새clone의 `final-continuous-v4`에서23단계를처음부터재실행한다. 빠른loading6/quality9검사는통과했다. 이전22성공+수정VM성공을합산하지않는다. 원격raw는미완료다.**
+
 `3f73eca`/동결 `c2a0b34`와 이전 runtime·검사 SHA를 대조하고 [17 실행 기록](17-section1-recovery.md)을 이어간다. 실제 원본 40회 소진 실패를 재현했고 Section1 내부 상태·native load 재진입의 최소 후보를 검사했다. PC 정상3쌍과 모바일6조건 짝비교에서 실제 ready/done·ghost/hold/loop·정상 배치/타이포를 확인했다. head-ready 복구의 재숨김·detach 문맥 변동과 검사 ghost 오인을 분리해 원시 실패도 보존했다. 동결 `bcfe51e`의 첫23단계 실행은 기존5단계 통과 뒤 새 복구검사의tablet820 GSAP 지연 원본에서 미수록Typekit 정확URL5개로 중단했다. 제품/기준은 유지했고tablet/PC각5개literal응답을분리확보했다. 두번째정적검사에서도청크배치차이를확인해병행23단계는중단했으며fontkit/수집route타이밍을재진단했다. 전체26쌍및route중립9쌍진단은passfalse로보존했다. 수집기없는정식지연9쌍/18실행이오프라인오류0으로통과했고같은동결소스의세번째23단계(`final-continuous-v3`, `env-v3.sh`)를단독browser로처음부터검사중이다. 세번째연속실행안에서복구26쌍(원본실패→후보실제완료10쌍/영구실패3쌍분리),기존firstpaint24쌍·CTA각108/36까지확인했다. 아직23단계전체는미완료다. 부분성공을 전체통과로 계산하지 않고 정적입력 검증 뒤23단계를 처음부터 다시 실행한다. 별도 실제 역패치/1px 검출·복구와 새 입력 경로2쌍도 확인했으나 전체통합에는 합산하지 않는다. 전체 통합은 아직 미완료다. 원격 raw 업로드는 자동 승인 검토 거절로 **미완료·별도 승인 필요**이며 로컬 성공을 원격 보존 완료로 올리지 않는다. 기존22단계·다른 완료 코드·다른 작업자를 보존하고 공개 head/pin·main/staging·Publish·운영은 변경하지 않는다. [체크포인트](evidence/section1-recovery-progress.json). 아래16은 이전 단위의 검증 이력이다.
 
 ## 최신 최종 판정 — D03 제목 소비자 개선 / Hero 복구는 미해결

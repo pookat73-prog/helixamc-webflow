@@ -85,3 +85,11 @@
 동결 `bcfe51e`의 `final-continuous-v3` 안에서새복구26쌍/52실행을모두완료했다. 소진후복원7쌍·head gate뒤복원3쌍의총10쌍은원본Hero이벤트0→후보실제ready/done각1·정상콘텐츠/글꼴/배치/loop다. 영구실패3쌍은미완료로유지했다. 실제원본빈Hero와후보복구PNG도확인했으며정상/실패/복구이미지의기존헤더RGB영역도동일했다. 기준PNG나mask를수정한것이아닌추가분석이다.
 
 같은연속실행에서기존firstpaint24쌍·CTA gap/border각108쌍/36통제·form intro까지통과했다. 전체23단계는아직진행중이며새Hero단위나앞선성공만으로전체통합/구조안정화/원격raw완료를선언하지않는다. source/tests/기준과추가입력은동결상태다.
+
+## 마지막 VM 검사 모형 보완과 재동결
+
+`final-continuous-v3`는23단계중앞선22개를모두통과하고마지막home-loading의VM테스트에서실패했다. 실제브라우저26쌍/52실행을포함한제품동작오류가아니라가짜document에표준 `removeEventListener`가없어TypeError가난것이다. 제품b8c1e4e는그대로이며가드/폰트/배치/정책/기준도바꾸지않는다.
+
+검사전용 **c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf**는fixture의기존event-list모형에표준listener제거만추가한다. 기존assert/기대값/허용조건은한줄도바꾸지않았다. Home loading6그룹과품질9그룹의빠른전체검사가통과했다. 빠른VM검사를초기에먼저확인하지못해재실행이늘어난실행순서오류도기록한다. 앞으로새runtime API를추가하면이빠른검사를먼저실행한다.
+
+소스·검사는이 **c4b2e5a**로다시동결한다. 새clone `/workspace/helix-s1-recovery-final-v4-20261118`에서 `final-continuous-v4`23단계를처음부터연속실행한다. 이전22단계성공과새VM성공을합산하지않는다. 기존BCFE의정적지연9쌍은동일한browser검사/제품바이트의입력완전성근거로만보존한다. 최종통합판정은새동결의실제23단계한실행으로만한다. 제품/검사와원시입력/실패는모두보존한다.

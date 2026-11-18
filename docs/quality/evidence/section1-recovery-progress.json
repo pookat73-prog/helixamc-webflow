@@ -1,5 +1,5 @@
 {
-  "status": "Frozen single23 v3 completed new26-pair Hero unit and prior firstpaint24,CTA108/36 units; overall integration still running, no final promotion",
+  "status": "Prior v3 ran23 with22 pass and final VM fixture API error; product unchanged. Fixture-only c4b2e5a adds standard removeEventListener without changing assertions; fast checks pass. Freeze c4b2e5a and restart entire23.",
   "base": "3f73eca33bf11791b918f671f3af7a6e7b02179d",
   "candidatePath": "home/section1/section1.js",
   "candidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
@@ -36,7 +36,7 @@
     "bodyBytes": 58833869
   },
   "rawRemotePreservation": "Blocked by automatic approval rejection; not complete",
-  "frozenSource": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+  "frozenSource": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
   "negativeControls": {
     "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
     "cases": [
@@ -226,7 +226,7 @@
     "resultsSHA256": "b35f144daa965f9fb13b21ed69a296715b7aa13a3d1a86a62cc285225e62a4d8",
     "notSummedIntoFinalIntegration": true
   },
-  "activeContinuousRun": "final-continuous-v3",
+  "activeContinuousRun": "final-continuous-v4",
   "activeEnvironment": "env-v3.sh",
   "newHeroUnitInContinuousRun": {
     "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
@@ -236,5 +236,136 @@
     "permanentFailurePairsNotAvailabilitySuccess": 3,
     "resultsSHA256": "4c17291975c3e6d0bb56339d239c11eca4eabf6b3a449a324314ed91c42932ff",
     "headerPixelEvidenceSHA256": "9592ff2a4b126609d3e8abb30a5163ee6945b09c23d438259e504fea1fb25bd4"
-  }
+  },
+  "priorV3RunPreserved": {
+    "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected23-stage integration: previous22 stages retained, plus26 Section1 recovery pairs and24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; original Hero failure-marker recovery stays failed while candidate must actually complete ready/done, restore ghosts and preserve motion/typography; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 1,
+        "error": null
+      }
+    ],
+    "pass": false
+  },
+  "fixtureOnlyFix": {
+    "commit": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+    "path": "scripts/test-home-loading.mjs",
+    "expectedAssertionsChanged": false,
+    "productionRuntimeChanged": false,
+    "method": "standard document.removeEventListener matched to existing fixture event lists"
+  },
+  "runtimeSHA256Unchanged": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
 }
