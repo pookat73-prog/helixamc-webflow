@@ -76,7 +76,7 @@
   "rawBodyRemoteArchive": false,
   "publicHeadPinPublishOrDeployChanged": false,
   "remainingHeroRecovery": "Actual Section1 failure marker then native GSAP restore: sections recover; module claimtrue but Hero ready/done0 in both old/new. Not promoted as recovery success.",
-  "latestStatus": "F1 frozen22 stopped at missing dynamic Typekit input; new corpus20 sealed; stricter font offline preflight running",
+  "latestStatus": "Strict offline24-pair input preflight completed; full new frozen22 rerun required",
   "firstContinuousFailure": {
     "source": "711ee35093d74680bf144982cfceda3070401bab",
     "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
@@ -122,5 +122,89 @@
     "fullMatrixPairs": 24,
     "primaryFontHoldExecutions": 4,
     "resultsPass": false
-  }
+  },
+  "offlinePreflight": {
+    "sourceAndTests": "5d5247c879d9d4b078be8e61c2ef5927ab5c56ca",
+    "pairs": 24,
+    "executions": 48,
+    "forwarded": 0,
+    "errors": 0,
+    "notSummedWithIntegration": true,
+    "resultsSHA256": "0b20342a3f3d3ae806e97ea86db59cc8dca3ed56b36d4f20e9a01f01f99c1906"
+  },
+  "publicVsWorkAssetRoles": [
+    {
+      "role": "global/word-wrap.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+      "actualSHA256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+      "actualGitBlob": "4ff58409d683883f0865cbc89040612d80aefe05",
+      "workSHA256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+      "sameBytes": true
+    },
+    {
+      "role": "home/bootstrap-v3.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap-v3.js",
+      "actualSHA256": "080e20d7ee64118e2e7ea424e301ff6642fdf6e4567c9099dc781a5a8c2ead59",
+      "actualGitBlob": "5a16ed1418a6fa38e1e302cedc09f99f0645c7b0",
+      "workSHA256": "080e20d7ee64118e2e7ea424e301ff6642fdf6e4567c9099dc781a5a8c2ead59",
+      "sameBytes": true
+    },
+    {
+      "role": "home/section1/section1.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.css",
+      "actualSHA256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+      "actualGitBlob": "f3f71f33ac3268b6e1b668fe5df85beaf8344aa2",
+      "workSHA256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/buttons.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/buttons.css",
+      "actualSHA256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+      "actualGitBlob": "c94555effcb9b0faad8fcfefdc54d7216ed4333f",
+      "workSHA256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+      "sameBytes": true
+    },
+    {
+      "role": "home/bootstrap.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap.js",
+      "actualSHA256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+      "actualGitBlob": "de43d8948289b66246ed9a14f7ad6b118db3edb5",
+      "workSHA256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/sections-animations.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.css",
+      "actualSHA256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+      "actualGitBlob": "fbb842d905940617e6f9d184fc248296b606e59c",
+      "workSHA256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/coming-soon.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/coming-soon.js",
+      "actualSHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+      "actualGitBlob": "fe5426ce5b5e102897e393b487514163ed9c4db1",
+      "workSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+      "sameBytes": false
+    },
+    {
+      "role": "home/section1/section1.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.js",
+      "actualSHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+      "actualGitBlob": "25af1ef173118d02d283de422ed1b1aef9051b27",
+      "workSHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/sections-animations.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.js",
+      "actualSHA256": "8f2dfda1aec1a107f18315f074df469969c2e6a13ae4328c6db9b45dfcbf2d79",
+      "actualGitBlob": "85720a1641f6039c385ca0eda1d51cbc258f1389",
+      "workSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+      "sameBytes": false
+    }
+  ],
+  "publicStandaloneAdoptionVerified": false
 }
