@@ -1,0 +1,915 @@
+{
+  "dateKST": "2026-11-18",
+  "branch": "fix/helix-residual-structure-20261117",
+  "startingHead": "74bf6b2785a13ad11c3f8b20c01d3701d3b6a206",
+  "previousVerifiedSource": "52a31c860e146f765a5b8885d3874292c87b614f",
+  "frozenSourceAndTests": "c2a0b3492dbc998fe88acf4d071f270ec88cfe75",
+  "status": "Heading-consumer unit verified in isolation; D03/D07 and full-site structure incomplete",
+  "product": {
+    "commit": "d443254924df3374e8647fadd83d13ba7f2df79c",
+    "path": "home/global/coming-soon.js",
+    "cause": "First-match hidden heading consumes the only hook; nonempty global marker list also prevents fallback for the actual heading",
+    "after": "Mark each matching component heading; existing lifecycle independently owns visibility, fade,hold and loop",
+    "runtimeDiff": "+5/-2, only one cause/file; no new timer,observer,retry layer or runtime asset"
+  },
+  "recovery": {
+    "branch": "recovery/helix-heading-consumers-20261118",
+    "commit": "05a303290aebd6b8d3993ceb77086f377b69744e",
+    "actualRemoteDiffTested": true
+  },
+  "singleContinuousIntegration": {
+    "source": "c2a0b3492dbc998fe88acf4d071f270ec88cfe75",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected22-stage integration: previous21 stages retained, plus24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; actual Hero failure-marker recovery keeps Hero completion explicitly unresolved; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "pass": true
+  },
+  "newUnit": {
+    "pairs": 24,
+    "executions": 48,
+    "normalAndHiddenPairsPerPCMobile": 3,
+    "tabletPairsPerCondition": 1,
+    "initialWidths": [
+      1440,
+      820,
+      390
+    ],
+    "reverseTransitionsPerOriginalCandidate": 3,
+    "conditions": [
+      "normal",
+      "hidden-heading",
+      "font-delay including Typekit fetch",
+      "critical CSS delay",
+      "Hero script delay",
+      "heading writer delay",
+      "native GSAP failure then actual40-retry failure marker before restoration"
+    ],
+    "firstscreen": "In healthy normal/delay conditions, recorded post-reveal frames preserve Hero/slogan opacity, registered loaded font and stable slogan dimensions. Retry-exhausted Hero is excluded and remains unresolved. PNGs are post-ready screenshots, not physical high-speed film.",
+    "effects": "Actual headings/buttons exposed; fade completion followed by>=1490ms hold and loop; normal warm transitions keep Hero events singular",
+    "unresolvedClassifications": "Late native GSAP restoration: sections recover but Hero claimtrue and ready/done0 remains. Classification pass is not Hero availability success."
+  },
+  "negativeControls": {
+    "source": "c2a0b3492dbc998fe88acf4d071f270ec88cfe75",
+    "cases": [
+      {
+        "fault": "actual remote own inverse",
+        "inverseCommit": "05a303290aebd6b8d3993ceb77086f377b69744e",
+        "goodSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+        "faultSHA256": "5250aedf20ca6b165e627cf76cb896ba96c74fb4ce134f9e7b7925224c667f5d",
+        "detectedExit": 1,
+        "ownHunkRestored": true
+      },
+      {
+        "fault": "compact copy gap4→5px",
+        "detectedExit": 1,
+        "ownHunkRestored": true
+      }
+    ],
+    "pass": true
+  },
+  "runtimeChangedPaths": [
+    "home/global/coming-soon.js"
+  ],
+  "runtimeSHA256": {
+    "home/global/hamburger.js": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+    "services/bootstrap.js": "1847a59089eabcb319ae67c17933695c71f151ee8413ca3cc6b6c4ea52ceaf45",
+    "global/bootstrap.js": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+    "global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "home/global/sections-animations.js": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+    "home/global/coming-soon.js": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+    "home/section1/section1.js": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1"
+  },
+  "preservedD04": [
+    "06d07a3d157e2fdc30bc00ac04430daceb36e5fe",
+    "be8f38abe692d9beb8d5d24269efb752d206a1ff"
+  ],
+  "firstFailedContinuousRunPreserved": {
+    "source": "711ee35093d74680bf144982cfceda3070401bab",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected22-stage integration: previous21 stages retained, plus24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; actual Hero failure-marker recovery keeps Hero completion explicitly unresolved; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 1,
+        "error": null
+      }
+    ],
+    "pass": false
+  },
+  "fontInput": {
+    "root": "/workspace/artifacts/helix-firstpaint-20261118/font-complete-v2-input",
+    "manifestSHA256": "50f6c679f9ff7df579df45ee0a68d60f1762b399ca0fa8d9d9c03d7065ea402b",
+    "uniqueNewExactURLs": 20,
+    "sameURLDivergentBodies": 0,
+    "oldInputURLIntersections": 0,
+    "syntheticAliases": false,
+    "discoveryIsNotValidation": true,
+    "sameURLSameSHADuplicateObservationsRetained": true
+  },
+  "inputRoots": [
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/home",
+      "manifestSHA256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/discover-helix",
+      "manifestSHA256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/services",
+      "manifestSHA256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/faq",
+      "manifestSHA256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/internal-medicine",
+      "manifestSHA256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/imaging-v2",
+      "manifestSHA256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9",
+      "filesRehashed": 365
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/resource-extra",
+      "manifestSHA256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34",
+      "filesRehashed": 3
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/order-fonts-v2",
+      "manifestSHA256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568",
+      "filesRehashed": 7
+    }
+  ],
+  "originalBodyFilesRehashed": 2130,
+  "baseline": {
+    "PNGs": 33,
+    "responses": 286,
+    "pixelBudget": 100,
+    "threshold": 0.2,
+    "maskAndExpectedFailuresChanged": false
+  },
+  "actualAssets": [
+    {
+      "role": "global/word-wrap.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@63812a31fe5c985de32e8c88b885a19de00f8f3e/global/word-wrap.css",
+      "actualSHA256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+      "actualGitBlob": "4ff58409d683883f0865cbc89040612d80aefe05",
+      "workSHA256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+      "sameBytes": true
+    },
+    {
+      "role": "home/bootstrap-v3.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap-v3.js",
+      "actualSHA256": "080e20d7ee64118e2e7ea424e301ff6642fdf6e4567c9099dc781a5a8c2ead59",
+      "actualGitBlob": "5a16ed1418a6fa38e1e302cedc09f99f0645c7b0",
+      "workSHA256": "080e20d7ee64118e2e7ea424e301ff6642fdf6e4567c9099dc781a5a8c2ead59",
+      "sameBytes": true
+    },
+    {
+      "role": "home/section1/section1.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.css",
+      "actualSHA256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+      "actualGitBlob": "f3f71f33ac3268b6e1b668fe5df85beaf8344aa2",
+      "workSHA256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/buttons.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/buttons.css",
+      "actualSHA256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+      "actualGitBlob": "c94555effcb9b0faad8fcfefdc54d7216ed4333f",
+      "workSHA256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+      "sameBytes": true
+    },
+    {
+      "role": "home/bootstrap.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap.js",
+      "actualSHA256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+      "actualGitBlob": "de43d8948289b66246ed9a14f7ad6b118db3edb5",
+      "workSHA256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/sections-animations.css",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.css",
+      "actualSHA256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+      "actualGitBlob": "fbb842d905940617e6f9d184fc248296b606e59c",
+      "workSHA256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/coming-soon.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/coming-soon.js",
+      "actualSHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+      "actualGitBlob": "fe5426ce5b5e102897e393b487514163ed9c4db1",
+      "workSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+      "sameBytes": false
+    },
+    {
+      "role": "home/section1/section1.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.js",
+      "actualSHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+      "actualGitBlob": "25af1ef173118d02d283de422ed1b1aef9051b27",
+      "workSHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+      "sameBytes": true
+    },
+    {
+      "role": "home/global/sections-animations.js",
+      "actualImmutableURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.js",
+      "actualSHA256": "8f2dfda1aec1a107f18315f074df469969c2e6a13ae4328c6db9b45dfcbf2d79",
+      "actualGitBlob": "85720a1641f6039c385ca0eda1d51cbc258f1389",
+      "workSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+      "sameBytes": false
+    }
+  ],
+  "headOwnership": {
+    "HTMLURL": "https://www.helix-amc.com/",
+    "HTMLSHA256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+    "ownedBlocks": [
+      {
+        "tag": "style",
+        "attrs": " id=\"hx-home-recovery\"",
+        "sha256": "6c16f20df7a4059380a8a75488e1cb43f4ec94765986e43635bb0574a76a306a",
+        "bytes": 1949,
+        "markers": [
+          "hx-home-ready"
+        ]
+      },
+      {
+        "tag": "script",
+        "attrs": "",
+        "sha256": "c76be11070d6e9bcba0d58bd0e266bd7140145abc02e970d2327b3c68394466b",
+        "bytes": 4476,
+        "markers": [
+          "hx-home-ready"
+        ]
+      },
+      {
+        "tag": "script",
+        "attrs": "",
+        "sha256": "c3c5bc8c145792218008577049927b4aaaf3b9d04930c7c71794920e59a7be2b",
+        "bytes": 4789,
+        "markers": [
+          "__hxHomeFirstpaintReveal",
+          "hx-home-ready"
+        ]
+      },
+      {
+        "tag": "style",
+        "attrs": " id=\"hx-home-firstpaint\"",
+        "sha256": "ac1fded4a7270f0af1cdfb3aec205e9dcf007883a3b3eb0765d38ed24671ab65",
+        "bytes": 181,
+        "markers": [
+          "hx-home-ready"
+        ]
+      },
+      {
+        "tag": "script",
+        "attrs": "",
+        "sha256": "9f96d91a7f82aef6b3f19257c4445a4b421af30bd4808b3eb770ff8976e39e53",
+        "bytes": 168,
+        "markers": [
+          "hx-home-ready"
+        ]
+      }
+    ],
+    "headChanged": false
+  },
+  "publicHTML": [
+    {
+      "url": "https://www.helix-amc.com/",
+      "status": 200,
+      "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "bytes": 46693,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/discover-helix",
+      "status": 200,
+      "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "bytes": 87173,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/services",
+      "status": 200,
+      "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "bytes": 27823,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/faq",
+      "status": 200,
+      "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "bytes": 137809,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/internal-medicine",
+      "status": 200,
+      "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "bytes": 53286,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/",
+      "status": 200,
+      "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "bytes": 46618,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+      "status": 200,
+      "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "bytes": 87098,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/services",
+      "status": 200,
+      "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "bytes": 27748,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+      "status": 200,
+      "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "bytes": 137734,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+      "status": 200,
+      "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "bytes": 53211,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    }
+  ],
+  "publicHTMLClosingCheck": [
+    {
+      "url": "https://www.helix-amc.com/",
+      "status": 200,
+      "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "bytes": 46693,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/discover-helix",
+      "status": 200,
+      "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "bytes": 87173,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/services",
+      "status": 200,
+      "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "bytes": 27823,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/faq",
+      "status": 200,
+      "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "bytes": 137809,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/internal-medicine",
+      "status": 200,
+      "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "bytes": 53286,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/",
+      "status": 200,
+      "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "bytes": 46618,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+      "status": 200,
+      "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "bytes": 87098,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/services",
+      "status": 200,
+      "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "bytes": 27748,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+      "status": 200,
+      "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "bytes": 137734,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+      "status": 200,
+      "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "bytes": 53211,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    }
+  ],
+  "publicStandaloneAdoptionVerified": false,
+  "publicConsumerBoundary": "Published main consumer still uses idx-based button pairing; current work consumer has prior per-heading lifecycle and hidden-DOM filtering. The new marker unit alone is not a validated public package.",
+  "referenceCandidate719Applied": false,
+  "newPublicPackageCreated": false,
+  "metrics": {
+    "metric": "rAF-observed hx-home-ready exposure time in milliseconds from navigation; not visitor LCP or claimed speed improvement",
+    "rows": [
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "version": "original",
+        "samples": [
+          647,
+          609.5,
+          572.7999999970198
+        ],
+        "median": 609.5,
+        "range": [
+          572.7999999970198,
+          647
+        ]
+      },
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "version": "candidate",
+        "samples": [
+          647.4000000059605,
+          533.9000000059605,
+          625.7000000029802
+        ],
+        "median": 625.7000000029802,
+        "range": [
+          533.9000000059605,
+          647.4000000059605
+        ]
+      },
+      {
+        "width": 1440,
+        "scenario": "hidden-heading",
+        "version": "original",
+        "samples": [
+          555.5999999940395,
+          613.7000000029802,
+          546.6000000089407
+        ],
+        "median": 555.5999999940395,
+        "range": [
+          546.6000000089407,
+          613.7000000029802
+        ]
+      },
+      {
+        "width": 1440,
+        "scenario": "hidden-heading",
+        "version": "candidate",
+        "samples": [
+          548.2999999970198,
+          572,
+          568.1000000089407
+        ],
+        "median": 568.1000000089407,
+        "range": [
+          548.2999999970198,
+          572
+        ]
+      },
+      {
+        "width": 820,
+        "scenario": "normal",
+        "version": "original",
+        "samples": [
+          598.3999999910593
+        ],
+        "median": 598.3999999910593,
+        "range": [
+          598.3999999910593,
+          598.3999999910593
+        ]
+      },
+      {
+        "width": 820,
+        "scenario": "normal",
+        "version": "candidate",
+        "samples": [
+          573.2999999970198
+        ],
+        "median": 573.2999999970198,
+        "range": [
+          573.2999999970198,
+          573.2999999970198
+        ]
+      },
+      {
+        "width": 820,
+        "scenario": "hidden-heading",
+        "version": "original",
+        "samples": [
+          547.4000000059605
+        ],
+        "median": 547.4000000059605,
+        "range": [
+          547.4000000059605,
+          547.4000000059605
+        ]
+      },
+      {
+        "width": 820,
+        "scenario": "hidden-heading",
+        "version": "candidate",
+        "samples": [
+          511.90000000596046
+        ],
+        "median": 511.90000000596046,
+        "range": [
+          511.90000000596046,
+          511.90000000596046
+        ]
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "version": "original",
+        "samples": [
+          558.1999999880791,
+          534.1000000089407,
+          514.5999999940395
+        ],
+        "median": 534.1000000089407,
+        "range": [
+          514.5999999940395,
+          558.1999999880791
+        ]
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "version": "candidate",
+        "samples": [
+          558.2999999970198,
+          515.8999999910593,
+          529.8999999910593
+        ],
+        "median": 529.8999999910593,
+        "range": [
+          515.8999999910593,
+          558.2999999970198
+        ]
+      },
+      {
+        "width": 390,
+        "scenario": "hidden-heading",
+        "version": "original",
+        "samples": [
+          550.5999999940395,
+          587.1000000089407,
+          575.5
+        ],
+        "median": 575.5,
+        "range": [
+          550.5999999940395,
+          587.1000000089407
+        ]
+      },
+      {
+        "width": 390,
+        "scenario": "hidden-heading",
+        "version": "candidate",
+        "samples": [
+          495,
+          524.3999999910593,
+          550.4000000059605
+        ],
+        "median": 524.3999999910593,
+        "range": [
+          495,
+          550.4000000059605
+        ]
+      }
+    ]
+  },
+  "refsAfterValidation": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "fix/helix-residual-structure-20261117": "c2a0b3492dbc998fe88acf4d071f270ec88cfe75",
+    "candidate/helix-services-owner-adoption-20261117": "719546330ce1413b2e68b6c3da45dd2d3798e7eb"
+  },
+  "remaining": {
+    "D03_D07": "Hero native dependency recovery after bounded retry exhaustion remains unresolved. Ready/done/head ready are distinct signals; no generic recovery added. Whole-section-copy/other firstpaint dependencies are not fully audited.",
+    "D02": "Other form labels/titles unchanged; next after the remaining D03 ownership unit is bounded or fixed",
+    "D05": "Other consumed properties unchanged; preserve completed CTA units",
+    "D06": {
+      "expectedWebKit": "/home/agent/.cache/ms-playwright/webkit-2227/pw_run.sh",
+      "binaryExists": false,
+      "physicalDeviceAvailable": false
+    },
+    "D04": "HTTP200 generic execution faults, legacy producer history, silent pending and future @main compatibility remain",
+    "V0_U01": "No new discriminator; not reopened/promoted",
+    "wholeStructureIndependentAudit": "Incomplete; this is separate-clone automated regression, not an independent human full-structure audit"
+  },
+  "rawStorage": {
+    "root": "/workspace/artifacts/helix-firstpaint-20261118",
+    "remoteBodyArchive": false,
+    "scope": "Raw bodies,PNGs,full logs and traces local only; source/tests,verdict,keySHA,raw-inventorySHA,recovery and owner graph in GitHub",
+    "cleanMachineReplayWithoutRawProven": false
+  },
+  "rawInventory": {
+    "path": "/workspace/artifacts/helix-firstpaint-20261118/raw-inventory.json",
+    "files": 1173,
+    "sha256": "05a5d7b7164ec269c9856c0f6cdc3d689287767a6b2ecef2b97d6167f7e30571"
+  },
+  "keyEvidenceSHA256": {
+    "final-continuous-v2/results.json": "0c53b00cb13f6b5ea2dd765be064d3067145e8bc4e14a1702cfbb5fa4c780500",
+    "final-continuous-v2/firstpaint-heading/results.json": "cb4009419e0a25c568b8684267a4e21130656661ad1656dbe9d3418c020b8103",
+    "negative-v2/results.json": "7a92e27331feb6c486ae3806efbf32f36d10e86e76a14568b8e9e0aef75abf2b",
+    "offline-preflight/results.json": "0b20342a3f3d3ae806e97ea86db59cc8dca3ed56b36d4f20e9a01f01f99c1906",
+    "actual-assets/results.json": "3534219164b0bbbdd9b7f0613a263e6c948644c1c4e4d9dc0c48b34bdb58c005",
+    "head-ownership.json": "17bf672561f39ef0c76eed7b71facd193e30c65c1b392575abf6bf826a035e5e",
+    "ready-time-summary.json": "d3ac334ce8aa667648599f3ff3b9f6b019e2113e92f59d2c6586d8e056105324"
+  },
+  "actualStability": "Hidden title order no longer suppresses the actual heading/button in the tested work-source component contract; non-target screens preserved. No claim of deployed or complete structure stability.",
+  "mainStagingMerged": false,
+  "publicHeadPinSettingsChanged": false,
+  "WebflowPublished": false,
+  "operatingDeployment": false
+}
