@@ -4,7 +4,7 @@
 
 ## 진행 중 — D03/S1 실제 GSAP 복구
 
-`3f73eca`와 동결 `c2a0b34`를 대조하고 [17 실행 기록](17-section1-recovery.md)을 시작했다. 기존 22단계·제품·다른 작업자 변경을 보존한다. GSAP 미로딩 때 private started는 false이며, 실제 원인은 40회 종료 후 의존성 복구와 Section1 재진입 연결의 부재다. 원본 입력을 재현 중이고 아직 새 제품·복구 통과 판정은 없다. 공개 head/pin·main/staging·게시·운영은 변경하지 않는다. 아래16은 이전 단위의 검증 이력이다.
+`3f73eca`/동결 `c2a0b34`와 이전 runtime·검사 SHA를 대조하고 [17 실행 기록](17-section1-recovery.md)을 이어간다. 실제 원본 40회 소진 실패를 재현했고 Section1 내부 상태·native load 재진입의 최소 후보를 검사했다. PC 정상3쌍과 모바일6조건 짝비교에서 실제 ready/done·ghost/hold/loop·정상 배치/타이포를 확인했다. head-ready 복구의 재숨김·detach 문맥 변동과 검사 ghost 오인을 분리해 원시 실패도 보존했다. 아직 새 동결23단계 통합은 미완료다. 원격 raw 업로드는 자동 승인 검토 거절로 **미완료·별도 승인 필요**이며 로컬 성공을 원격 보존 완료로 올리지 않는다. 기존22단계·다른 완료 코드·다른 작업자를 보존하고 공개 head/pin·main/staging·Publish·운영은 변경하지 않는다. [체크포인트](evidence/section1-recovery-progress.json). 아래16은 이전 단위의 검증 이력이다.
 
 ## 최신 최종 판정 — D03 제목 소비자 개선 / Hero 복구는 미해결
 

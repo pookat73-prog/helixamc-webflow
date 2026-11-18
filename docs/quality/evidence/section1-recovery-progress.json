@@ -1,0 +1,39 @@
+{
+  "status": "Candidate preflight passed mobile6 pairs and PC normal3 pairs; frozen23-stage integration pending; raw remote preservation incomplete",
+  "base": "3f73eca33bf11791b918f671f3af7a6e7b02179d",
+  "candidatePath": "home/section1/section1.js",
+  "candidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+  "patchSHA256": "70525dad656d86338591984fc8eda4b5103a3177d8aba525a6d54e11997332d8",
+  "testSHA256": {
+    "scripts/visual/section1-recovery.cjs": "5005a330fcec4492fb7ec548e30758aa0f1148161af4d166cb43fd3982c40376",
+    "scripts/visual/firstpaint-heading-boundary.cjs": "259ee55b65b93f3ce363f47a22cedec792c6dad10d86e6afe462cde42682da80",
+    "scripts/visual/next-integration.cjs": "b14466a0cd0aeb2ccef25a6ceac78c84b09f6fbb5789b530d165b13413f32dcb",
+    "scripts/visual/scope.cjs": "8a379dad13f5fd257fda883ce0c7db21c1c36b2654d8af0aedc256a75e3f921a"
+  },
+  "productChanges": [
+    "Section1 owns pending/running/failed/complete independently of module claim",
+    "Bounded40 poll preserved; failed GSAP wait wakes only on a native script load, listener removed on start",
+    "Head-ready failure recovery preserves opacity and original typography context without unnecessary detach"
+  ],
+  "remoteRaw": false,
+  "remoteUploadRejected": true,
+  "productCommit": "b8c1e4e95a263604c597efa906af3c6cb0e59647",
+  "testCommit": "52e85047ab24a57b4910fdf111a8b3666472fc12",
+  "recovery": {
+    "product": "b8c1e4e95a263604c597efa906af3c6cb0e59647",
+    "commit": "b12377cb6825557838f951dcad284dd6754cdc40",
+    "branch": "recovery/helix-section1-recovery-20261118",
+    "path": "home/section1/section1.js",
+    "oldGitBlob": "25af1ef173118d02d283de422ed1b1aef9051b27"
+  },
+  "replayArchiveV2": {
+    "path": "/workspace/artifacts/HELIX-S1-Recovery-Replay-Inputs-v2-20261118.tar.gz",
+    "bytes": 41216698,
+    "sha256": "b489c73e54e7b8267aa1f00847c7b68464d28dceff795d0fc57a505eba34eb13",
+    "md5": "8387297c454fba3d830d2df2472327f1",
+    "roots": 11,
+    "uniqueBodies": 398,
+    "bodyBytes": 58833869
+  },
+  "rawRemotePreservation": "Blocked by automatic approval rejection; not complete"
+}
