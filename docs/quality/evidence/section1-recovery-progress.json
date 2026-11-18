@@ -1,5 +1,5 @@
 {
-  "status": "Strict collector-free delay9 passed; frozen bcfe51e single23 v3 running with one validation browser. No overall promotion yet.",
+  "status": "Frozen single23 v3 completed new26-pair Hero unit and prior firstpaint24,CTA108/36 units; overall integration still running, no final promotion",
   "base": "3f73eca33bf11791b918f671f3af7a6e7b02179d",
   "candidatePath": "home/section1/section1.js",
   "candidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
@@ -227,5 +227,14 @@
     "notSummedIntoFinalIntegration": true
   },
   "activeContinuousRun": "final-continuous-v3",
-  "activeEnvironment": "env-v3.sh"
+  "activeEnvironment": "env-v3.sh",
+  "newHeroUnitInContinuousRun": {
+    "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+    "pairs": 26,
+    "executions": 52,
+    "originalFailedCandidateCompletedPairs": 10,
+    "permanentFailurePairsNotAvailabilitySuccess": 3,
+    "resultsSHA256": "4c17291975c3e6d0bb56339d239c11eca4eabf6b3a449a324314ed91c42932ff",
+    "headerPixelEvidenceSHA256": "9592ff2a4b126609d3e8abb30a5163ee6945b09c23d438259e504fea1fb25bd4"
+  }
 }

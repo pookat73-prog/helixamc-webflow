@@ -79,3 +79,9 @@
 수집기를뺀frozen `bcfe51e` 정식검사로1440/820/390의GSAP지연각3회,총9쌍/18실행을통과했다. 모든실행오프라인forwarded0·network/JS오류0,실제Hero완료와글꼴/배치/hold/loop를확인했다. source/tests·기존입력은그대로이고추가한정확URI는tablet5/PC5다. 이사전성공을전체23단계에합산하지않는다.
 
 동일소스의 `final-continuous-v3`를새출력경로에서처음부터단독browser로시작했다. 환경은 `env-v3.sh`이고추가입력은기존20개+tablet5개+PC5개다. CSS/브라우저설정/기준PNG/mask/허용값/expected failure의변경은없다. 원격raw보존은여전히미완료이며승인없는업로드재시도는없다. 이후도문서/증거만갱신하고새제품/검사소스를섞지않는다.
+
+## 세 번째 연속 실행의 Hero26쌍 완료 체크포인트
+
+동결 `bcfe51e`의 `final-continuous-v3` 안에서새복구26쌍/52실행을모두완료했다. 소진후복원7쌍·head gate뒤복원3쌍의총10쌍은원본Hero이벤트0→후보실제ready/done각1·정상콘텐츠/글꼴/배치/loop다. 영구실패3쌍은미완료로유지했다. 실제원본빈Hero와후보복구PNG도확인했으며정상/실패/복구이미지의기존헤더RGB영역도동일했다. 기준PNG나mask를수정한것이아닌추가분석이다.
+
+같은연속실행에서기존firstpaint24쌍·CTA gap/border각108쌍/36통제·form intro까지통과했다. 전체23단계는아직진행중이며새Hero단위나앞선성공만으로전체통합/구조안정화/원격raw완료를선언하지않는다. source/tests/기준과추가입력은동결상태다.
