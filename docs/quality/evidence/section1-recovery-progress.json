@@ -1,5 +1,5 @@
 {
-  "status": "Candidate preflight passed mobile6 pairs and PC normal3 pairs; frozen23-stage integration pending; raw remote preservation incomplete",
+  "status": "Product/tests committed; bcfe51e separate clone single23 integration running, previous4 stages passed; no full integration promotion",
   "base": "3f73eca33bf11791b918f671f3af7a6e7b02179d",
   "candidatePath": "home/section1/section1.js",
   "candidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
@@ -35,5 +35,54 @@
     "uniqueBodies": 398,
     "bodyBytes": 58833869
   },
-  "rawRemotePreservation": "Blocked by automatic approval rejection; not complete"
+  "rawRemotePreservation": "Blocked by automatic approval rejection; not complete",
+  "frozenSource": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+  "negativeControls": {
+    "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+    "cases": [
+      {
+        "fault": "actual remote own Hero inverse",
+        "inverseCommit": "b12377cb6825557838f951dcad284dd6754cdc40",
+        "goodSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+        "faultSHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+        "detectedExit": 1,
+        "failure": "Actual native GSAP restored but required Hero completion was absent at observation deadline; no unrelated JS/network error",
+        "ownHunkRestored": true
+      },
+      {
+        "fault": "compact copy gap4\u21925px",
+        "detectedExit": 1,
+        "ownHunkRestored": true
+      }
+    ],
+    "pass": true
+  },
+  "actualGSAP": {
+    "url": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+    "status": 200,
+    "sha256": "efc85c7eb141819717cda0033484a84b1c890d13b02e355a2fec79d424b20e7a",
+    "bytes": 71520,
+    "archivedSHA256": "efc85c7eb141819717cda0033484a84b1c890d13b02e355a2fec79d424b20e7a",
+    "sameBytes": true,
+    "observedAt": "2026-11-18T05:07:57.041364+00:00"
+  },
+  "replayArchiveV3": {
+    "path": "/workspace/artifacts/HELIX-S1-Recovery-Replay-Inputs-v3-20261118.tar.gz",
+    "bytes": 41215086,
+    "sha256": "07688babf7b8ecb1b60c7864440da978a94b719866989e244c88598a81384dad",
+    "md5": "d0a8b3ee90a23b36d06a04f62f3cb2af",
+    "roots": 11,
+    "uniqueBodies": 398,
+    "bodyBytes": 58833869
+  },
+  "portableReplay": {
+    "pairs": 2,
+    "executions": 4,
+    "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+    "testSHA256": "5005a330fcec4492fb7ec548e30758aa0f1148161af4d166cb43fd3982c40376",
+    "resultsSHA256": "0f5053e632b45e8f800e854d870f7b3fb0cef12ad5b70832619f3a23c0ed3c07",
+    "status": "Local new-root replay only; not remote archive preservation or full23 result"
+  },
+  "archiveV2IncompleteBindings": true,
+  "remoteUploaded": false
 }
