@@ -1,5 +1,5 @@
 {
-  "status": "Two unknown Typekit batch failures preserved; second continuous run stopped. Product/tests remain bcfe51e; complete26 and route-neutral9 diagnostics preserved with passfalse; strict delay9 checking before final single23 retry.",
+  "status": "Strict collector-free delay9 passed; frozen bcfe51e single23 v3 running with one validation browser. No overall promotion yet.",
   "base": "3f73eca33bf11791b918f671f3af7a6e7b02179d",
   "candidatePath": "home/section1/section1.js",
   "candidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
@@ -218,5 +218,14 @@
         }
       }
     }
-  }
+  },
+  "strictDelayPreflight": {
+    "pairs": 9,
+    "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+    "testSHA256": "5005a330fcec4492fb7ec548e30758aa0f1148161af4d166cb43fd3982c40376",
+    "resultsSHA256": "b35f144daa965f9fb13b21ed69a296715b7aa13a3d1a86a62cc285225e62a4d8",
+    "notSummedIntoFinalIntegration": true
+  },
+  "activeContinuousRun": "final-continuous-v3",
+  "activeEnvironment": "env-v3.sh"
 }
