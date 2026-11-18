@@ -24,7 +24,8 @@ function fixture({ cachedAge, fresh = false, blockedStorage = false, hostname = 
     querySelector: () => null,
     querySelectorAll: () => [],
     getElementById: id => added.find(el => el.id === id),
-    addEventListener(name, fn) { (events[name] ||= []).push(fn); }
+    addEventListener(name, fn) { (events[name] ||= []).push(fn); },
+    removeEventListener(name, fn) { events[name] = (events[name] || []).filter(listener => listener !== fn); }
   };
   const context = {
     document, location: { hostname, search: fresh ? '?fresh=1' : '' },
