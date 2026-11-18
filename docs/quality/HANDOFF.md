@@ -2,14 +2,14 @@
 
 갱신일: 2026-11-18 (Asia/Seoul)
 
-## 최신 판정 — Hero 복구 제품 검증 통과 / 원격 raw 보존 미완료
+## 최신 판정 — Hero 복구 제품 검증 통과 / 원격 업로드 완료·재해시 미검증
 
-동결 소스·검사 **c4b2e5a**의 새 clone에서 기존22단계+복구26쌍을 포함한 **23단계가 단일 연속 실행으로 모두 통과**했다. 이후 전달은 문서·증거만 변경한다. [17 최종 판정·상태 소유자·미완료](17-section1-recovery.md), [최종 대장](evidence/section1-recovery-final.json)이 최신 인계다. 아래16·c2a0b34는 이전 단위의 검증 이력이다.
+동결 소스·검사 **c4b2e5a**의 새 clone에서 기존22단계+복구26쌍을 포함한 **23단계가 단일 연속 실행으로 모두 통과**했다. 이후 전달은 문서·증거만 변경한다. [17 최종 판정·상태 소유자·미완료](17-section1-recovery.md), [최종 대장](evidence/section1-recovery-final.json)이 최신 인계다. 원격 전달의 최신 상태는 [원격 전달 대장](evidence/section1-recovery-remote.json)을 따른다. 검증 대장 section1-recovery-final.json의 원격 미완료 표기는 3c1e1cd 당시의 보존된 스냅샷이다. 아래16·c2a0b34는 이전 단위의 검증 이력이다.
 
 1. **실제 원인과 개선:** GSAP 미로딩 실패에서 private started는 false였다. 제품 `b8c1e4e`는 모듈 점유와 초기화 완료를 구분하고, Section1 내부의 pending/running/failed/complete 및 native script load 복구를 소유한다. 시작하면 listener를 제거하고 실행 중·완료 상태는 재생하지 않는다. head gate가 열린 뒤의 복구에서는 새로운 opacity 대기와 불필요한 detach를 피한다. 정상 폰트·배치·효과, 40회 제한, 공개 head 소유권, E1/P3/d443254와 다른 완료 코드는 보존했다.
 2. **검증 범위:** 소진 후 복원 7쌍과 head-ready 뒤 복원 3쌍, 총 10쌍에서 원본 ready/done 0 → 후보 각 1회 및 정상 동작을 확인했다. 새 26쌍/52실행은 정상·소진 후 PC/모바일 각 3회·tablet 1회, 세 크기의 지연·일시·영구 실패, 반복 진입·역전환을 포함한다. 영구 실패 3쌍은 기능 성공이 아니다. 기존 5×3, firstpaint 24쌍, CTA 각 108/36, 메뉴·폼·로더·모션을 새 23단계에 유지했고 부분 성공을 합산하지 않았다. 별도 보완 6실행에서는 첫 divider의 실제 draw·erase·역스크롤도 확인했다. 다른 지그 전체 모션까지 해결했다고 하지 않는다.
 3. **복구와 보존:** 실제 역커밋 `b12377c`(`recovery/helix-section1-recovery-20261118`)의 해당 diff만 적용해 회귀를 검출한 뒤 자기 hunk를 복구했다. 1px도 개별 검출·복구해 동결 clone의 clean 상태를 확인했다. 원본 8 manifest/2,130 body, 기준 PNG 33/응답 286, mask/100px/.2/다른 expected failure는 불변이다. 초기 후보·검사 가정·입력 아카이브 실패도 보존했다. 마지막 VM API 모형 보완은 검사 전용 `c4b2e5a`이며 제품·기대값은 변경하지 않았다.
-4. **원격 증거 미완료:** 자동 승인 검토가 구체적인 payload 외부 전송 승인 부재로 Drive 업로드를 거절했다. 업로드·우회 재시도는 없다. 입력 v5와 raw 결과 두 아카이브를 로컬 읽기·복원 검증했으며 정확한 파일·크기·목적지는 17과 최종 대장에 있다. source/tests·판정·핵심 SHA·복구는 GitHub에 있지만 본문·PNG·전체 로그는 로컬 전용이다. 원격 보존 및 전체 작업 완료로 표시하지 않는다.
+4. **원격 업로드 완료 / 원격 재해시 미검증:** 사용자가 정확한 두 아카이브 전송을 승인한 뒤 기존 비공개 성능 폴더에 [재생 입력 v5](https://drive.google.com/file/d/198e8oxtu_R4aLEWS8jTC5pJ6X2Or_n2t/view?usp=drivesdk)와 [원시 증거 v2](https://drive.google.com/file/d/1Zp12L23wG5UqbQV2jA2ENMe_EX-9rHOd/view?usp=drivesdk)를 각각 업로드했다. 승인된 로컬 SHA를 전송 전후 재확인했고 원격 이름·크기·부모 폴더·owner-only 권한 및 전체 크기의 raw-file 참조 반환을 확인했다. 폴더 권한은 그대로다. 다만 실행환경의 다운로드 도메인 제한으로 원격 bytes의 SHA256 재계산은 미검증이다. 업로드·조회 확인과 전체 바이트 무결성 검증을 구분한다. 기존 자동 검토 거절 이력은 보존하며 성공 파일을 중복 업로드하지 않는다. [전달 대장](evidence/section1-recovery-remote.json)에 URL·크기·SHA와 남은 검증을 기록했다.
 5. **남은 작업:** D02의 다른 label/제목 → D05의 실제 소비 속성 → 실제 환경 D06 → 전체 독립 감사 순서다. 임의 S1 실행 예외·DOM 누락 복구·다른 firstpaint 경계, D04 잔여 위험, V0/U01 보류도 남는다. WebKit/Safari/iOS/iPad, 물리 고속 영상, 방문자 효과, 공개 이관은 미검증이다. 719는 현재 전체 개선 배포본이 아닌 참고용이다. main/staging, 공개 head/pin/설정, Publish, 운영 배포는 변경하지 않았다. **전체 구조 안정화 완료가 아니다.**
 
 ## 최신 최종 판정 — D03 제목 소비자 개선 / Hero 복구는 미해결

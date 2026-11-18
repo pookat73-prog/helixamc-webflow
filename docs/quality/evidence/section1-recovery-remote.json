@@ -1,0 +1,113 @@
+{
+  "dateKST": "2026-11-18T17:16:31.269190+09:00",
+  "branch": "fix/helix-residual-structure-20261117",
+  "previousHandoff": "3c1e1cd5f119caec7ecd66b6186b68198412d919",
+  "frozenSourceAndTests": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+  "status": "Both approved archives uploaded; metadata and full-size provider raw-file references verified. Local rehash of remotely fetched bytes remains unverified.",
+  "authorization": {
+    "scope": "The exact V5 replay input and V2 raw evidence archives listed in the preceding approval request, into the existing private performance folder; no sharing or deployment changes",
+    "explicitUserApprovalReceived": true,
+    "priorAutomaticRejectionPreserved": true
+  },
+  "remoteUploadComplete": true,
+  "providerFullFileRetrievalConfirmed": true,
+  "remoteSHA256ReadbackVerified": false,
+  "completeRemoteByteIntegrityVerificationClaimed": false,
+  "folder": {
+    "id": "1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV",
+    "url": "https://drive.google.com/drive/folders/1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV",
+    "name": "성능최적화 작업",
+    "permissionsUnchanged": true
+  },
+  "files": [
+    {
+      "name": "HELIX-S1-Recovery-Replay-Inputs-v5-20261118.tar.gz",
+      "bytes": 41712972,
+      "sha256LocalApprovedAndPreUpload": "18aae6719ac337390a148dba310aa5b0dd81a6f4178453424f6fb963c4853457",
+      "md5Local": "8ebbf07ccb43e19ddd4776ee45f3f9e0",
+      "driveId": "198e8oxtu_R4aLEWS8jTC5pJ6X2Or_n2t",
+      "url": "https://drive.google.com/file/d/198e8oxtu_R4aLEWS8jTC5pJ6X2Or_n2t/view?usp=drivesdk",
+      "parentId": "1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV",
+      "mimeType": "application/gzip",
+      "uploadSucceeded": true,
+      "metadataNameSizeParentVerified": true,
+      "permissionRoles": [
+        {
+          "type": "user",
+          "role": "owner"
+        }
+      ],
+      "providerRawFetchSucceeded": true,
+      "providerRawFetchBytes": 41712972,
+      "providerFullFileReferenceReturned": true,
+      "remoteSHA256ReadbackVerified": false,
+      "revisionId": "0B7N_UpV1nTn7VVBmd2svUTc3eTVvNWlKWERITThjVS9iUnJZPQ"
+    },
+    {
+      "name": "HELIX-S1-Recovery-Raw-Evidence-v2-20261118.tar.gz",
+      "bytes": 99078328,
+      "sha256LocalApprovedAndPreUpload": "912af0dd39e874e6eef33b69ff9d9f5e3d6908e2a95252574de4eef91c2c63dd",
+      "md5Local": "aa232ce94d9cbca8c32e809faa3eb800",
+      "driveId": "1Zp12L23wG5UqbQV2jA2ENMe_EX-9rHOd",
+      "url": "https://drive.google.com/file/d/1Zp12L23wG5UqbQV2jA2ENMe_EX-9rHOd/view?usp=drivesdk",
+      "parentId": "1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV",
+      "mimeType": "application/gzip",
+      "uploadSucceeded": true,
+      "metadataNameSizeParentVerified": true,
+      "permissionRoles": [
+        {
+          "type": "user",
+          "role": "owner"
+        }
+      ],
+      "providerRawFetchSucceeded": true,
+      "providerRawFetchBytes": 99078328,
+      "providerFullFileReferenceReturned": true,
+      "remoteSHA256ReadbackVerified": false,
+      "revisionId": "0B7N_UpV1nTn7aGtjdGJyazc5TXh1ei9sZmdydjRPMEpVRU5rPQ"
+    }
+  ],
+  "verificationBoundary": {
+    "localApprovedPayloadSHA256VerifiedBeforeUpload": true,
+    "localApprovedPayloadSHA256VerifiedAfterUpload": true,
+    "remoteNameSizeParentAndOwnerOnlyPermissionMetadataVerified": true,
+    "providerRawFileFetchReturnedFullSizeReferences": true,
+    "providerChecksumExposedByConnector": false,
+    "downloadedBytesRehashedLocally": false,
+    "limitation": "Managed cloud HTTP proxy denied the authenticated file-reference download host with CONNECT403; both archives exceed the native helper32MiB limit. No bypass, re-upload or network-policy change was attempted.",
+    "failedMaterializationHost": "sdmntprindiasocentral.oaiusercontent.com",
+    "publicSharingChanged": false
+  },
+  "sourceValidationUnchanged": {
+    "singleContinuousStages": 23,
+    "pass": true,
+    "newHeroPairs": 26,
+    "actualOriginalFailureToCandidateCompletePairs": 10,
+    "permanentFailurePairsStillIncomplete": 3,
+    "priorFrozenEvidencePath": "section1-recovery-final.json",
+    "priorFrozenEvidenceSHA256": "22a2135b24ff3de39eb426fd3a95700db29d229d240db6db10e7c6f0a9dcc232",
+    "priorSnapshotPreserved": true
+  },
+  "protectedRefsBefore": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "fix/helix-residual-structure-20261117": "3c1e1cd5f119caec7ecd66b6186b68198412d919",
+    "candidate/helix-services-owner-adoption-20261117": "719546330ce1413b2e68b6c3da45dd2d3798e7eb",
+    "recovery/helix-section1-recovery-20261118": "b12377cb6825557838f951dcad284dd6754cdc40"
+  },
+  "remaining": [
+    "Remote fetched-byte SHA256 comparison",
+    "D02 other form labels/titles",
+    "D05 other consumed properties",
+    "D03 other firstpaint/zig-motion boundaries and arbitrary initialization exceptions",
+    "D04 generic execution, pending and future mixed-version paths",
+    "D06 actual Safari/iOS/iPad environment",
+    "Whole structure independent audit; V0/U01 still held"
+  ],
+  "overallStructureComplete": false,
+  "runtimeAndOfficialTestsChanged": false,
+  "mainStagingMerged": false,
+  "publicHeadPinSettingsChanged": false,
+  "WebflowPublished": false,
+  "operatingDeployment": false
+}

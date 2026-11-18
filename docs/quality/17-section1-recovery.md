@@ -2,7 +2,22 @@
 
 2026-11-18 KST. 시작 HEAD `3f73eca`, 이전 검증 소스·검사 `c2a0b34`. AGENTS·관련 CLAUDE의 firstpaint/폰트/글로우/지그 보호 규칙과 최신 HANDOFF·16·firstpaint-final을 읽었다. 전용 Drive 표준과 최신 인계(수정일 11/16)도 읽었지만 현재 실행 범위와 기록은 사용자 지정 최신 GitHub 인계를 우선한다. 기존 완료 제품·검사·다른 작업자는 보존한다.
 
-## 최종 판정 — Hero 복구 제품 검증 통과 / 원격 raw 보존 미완료
+## 원격 전달 업데이트 — 업로드 완료 / 원격 재해시 미검증
+
+사용자의 두 아카이브 전송 승인 이후 기존 비공개 성능 폴더에 아래 파일을 업로드했다. [원격 전달 대장](evidence/section1-recovery-remote.json)이 최신 보존 상태다. 검증 소스 `c4b2e5a`, 제품 `b8c1e4e`, 역커밋 `b12377c`와 단일23단계 결과는 그대로이며 제품·공식 검사 코드를 바꾸거나 재검증 성공을 합산하지 않았다.
+
+| 원격 파일 | bytes | 승인된 로컬 SHA256 — 전송 전후 일치 |
+| --- | ---: | --- |
+| [HELIX-S1-Recovery-Replay-Inputs-v5-20261118.tar.gz](https://drive.google.com/file/d/198e8oxtu_R4aLEWS8jTC5pJ6X2Or_n2t/view?usp=drivesdk) | 41712972 | `18aae6719ac337390a148dba310aa5b0dd81a6f4178453424f6fb963c4853457` |
+| [HELIX-S1-Recovery-Raw-Evidence-v2-20261118.tar.gz](https://drive.google.com/file/d/1Zp12L23wG5UqbQV2jA2ENMe_EX-9rHOd/view?usp=drivesdk) | 99078328 | `912af0dd39e874e6eef33b69ff9d9f5e3d6908e2a95252574de4eef91c2c63dd` |
+
+두 파일의 원격 이름·크기·부모 폴더·owner-only 권한을 읽어 확인했고, Drive raw-file fetch도 각각 전체 크기의 인증된 파일 참조를 반환했다. 폴더 권한은 전송 전후 동일하다. 원격 업로드와 전체 크기의 provider 조회는 확인됐지만 **원격 bytes를 로컬에서 다시 SHA256 계산한 검증은 미완료**다. 실행환경의 관리형 HTTP proxy가 인증된 다운로드 참조 도메인에 CONNECT403을 반환했고 두 파일은 native 다운로드 helper의32MiB 한도보다 크다. 도메인 제한이나 공유 권한을 우회·변경하지 않았고 업로드를 중복 실행하지 않았다.
+
+필요한 후속 검증은 기존 두 Drive 파일을 다시 받아 위 SHA와 비교하는 것이다. 파일 ID를 유지하며 새 업로드나 원본 입력 응답 대체는 하지 않는다. 이 확인 전 원격 byte 무결성 검증 완료나 전체 구조 안정화 완료로 기록하지 않는다. main/staging 병합·공개 head/pin/설정·Webflow Publish·운영 배포는 하지 않았다.
+
+아래 판정과 자동 승인 거절·로컬 전용 표기는 사용자 승인 전 `3c1e1cd` 시점의 이력이다. 당시 검증 대장과 원시 아카이브 자체를 변경하지 않고 현재 전달 상태를 이 절과 별도 대장으로 구분한다.
+
+## 검증 동결 당시 판정 — Hero 복구 제품 검증 통과 / 원격 raw 보존 미완료
 
 동결 소스·검사 **c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf**의 별도 clone에서 **23단계 단일 연속 실행을 모두 통과**했다. 기존22단계를 유지하고 새26쌍/52실행을 같은 실행에 포함했다. 이전22단계 성공·부분성공·별도 smoke/portable 결과를 합산하지 않았다. 이후 전달은 문서·증거만 변경한다. [최종 대장](evidence/section1-recovery-final.json)이 판정/URL·SHA/복구/원격 보존 차단의 기준이다.
 
