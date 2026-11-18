@@ -95,13 +95,8 @@
     s.async = false;
     if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
       /* Preserve a native failure even when the shared loader starts later. */
-      s.setAttribute('data-helix-menu-js-pending', url);
-      s.onload = function () {
-        s.removeAttribute('data-helix-menu-js-pending');
-        s.removeAttribute('data-helix-menu-js-error');
-      };
+      s.onload = function () { s.removeAttribute('data-helix-menu-js-error'); };
       s.onerror = function () {
-        s.removeAttribute('data-helix-menu-js-pending');
         s.setAttribute('data-helix-menu-js-error', url);
         s.remove(); // A native-failed script cannot own the module for older consumers.
         if (onerr) onerr();
@@ -111,7 +106,7 @@
   }
 
   function loadFile(path, ref) {
-    /* Respect module ownership claims; guards alone do not prove completion. */
+    /* Match the modules' own guards; retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',
@@ -124,15 +119,6 @@
     if (path === 'global/ga-inspector.js' &&
         !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
     var url = cdn(ref, path);
-    if (path === 'home/global/hamburger.js') {
-      /* A concurrent producer may still own this exact request. Presence alone
-         cannot identify unknown/failed scripts or a different asset version. */
-      var scripts = document.querySelectorAll('script[data-helix-menu-js-pending]');
-      for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].src === url &&
-            scripts[i].getAttribute('data-helix-menu-js-pending') === url) return;
-      }
-    }
     var ext = path.split('.').pop();
     var fallback = function () {
       if (ref === BRANCH) {
