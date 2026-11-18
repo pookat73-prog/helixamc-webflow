@@ -1,5 +1,5 @@
 {
-  "status": "First frozen23 run stopped at new Hero tablet-delay original due5 unrecorded exact Typekit URLs; no full integration pass; product unchanged",
+  "status": "Two unknown Typekit batch failures preserved; second continuous run stopped. Product/tests remain bcfe51e; complete26 and route-neutral9 diagnostics preserved with passfalse; strict delay9 checking before final single23 retry.",
   "base": "3f73eca33bf11791b918f671f3af7a6e7b02179d",
   "candidatePath": "home/section1/section1.js",
   "candidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
@@ -124,5 +124,99 @@
     "pass": false
   },
   "inputRecovery": "Diagnostic-only acquisition of exact new Typekit URLs; original roots and source/tests unchanged",
-  "finalReplayInputArchiveReady": false
+  "finalReplayInputArchiveReady": false,
+  "secondContinuousRunStopped": {
+    "reason": "Repeated unknown Typekit batch; stop only identified task integration and re-diagnose complete26 inputs",
+    "rootPIDs": [
+      181759
+    ],
+    "taskProcessTreePIDs": [
+      181759,
+      183833,
+      183847,
+      183864,
+      183865,
+      183885,
+      183900,
+      183901,
+      184724,
+      184733,
+      184734
+    ],
+    "pass": false,
+    "partialResultsNotSummed": true
+  },
+  "kitOwnerAnalysisSHA256": "ae2ec2119739d13ac297ca51a35ae060d9e9b08f462a1eb91bf9fb2093fe813c",
+  "observedNewFontInputs": {
+    "tablet-font-discovery-input": {
+      "manifestSHA256": "55f6cab4d49dc619f05f857c2678edb03cb8d201b12d28f3397971db149b8a44",
+      "requests": {
+        "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=529&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.605.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0": {
+          "sha256": "8f92ea50fea8c12dc48423beb3447076c870b96de312f6ac22ce96c16154ac8b",
+          "bytes": 70490,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:25:28.017972+00:00"
+        },
+        "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=529&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.605.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0": {
+          "sha256": "ba511cb3cfb4de2d5f93f9d96e07e2a02d1c32f479ce63cfb134c77f6710b15b",
+          "bytes": 70499,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:25:30.381435+00:00"
+        },
+        "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=263&state=4.16.36.47.109.127.151.200.201.215.258.260.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+          "sha256": "eeda7168b729e87bafbdc72571a605fb805b1a8d356d9c3d2eaf6367f2d0d6c7",
+          "bytes": 48878,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:25:33.004364+00:00"
+        },
+        "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=263&state=4.16.36.47.109.127.151.200.201.215.258.260.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+          "sha256": "581db11837076efb5a67e67da6d5b7cb5ea4f995b23bd24aef2d6a9e5873b419",
+          "bytes": 48875,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:25:34.671936+00:00"
+        },
+        "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=263&state=4.16.36.47.109.127.151.200.201.215.258.260.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+          "sha256": "109242e1aa9b0f36f33a2576f32e153268ef1bb78214516ef78c2ff78efd9c3b",
+          "bytes": 48743,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:25:35.992657+00:00"
+        }
+      }
+    },
+    "pc-delay-input": {
+      "manifestSHA256": "c5151869fe64607cd9b2097ff43d4481d80de4d1fd4ec5205eeda1288b8a0bf3",
+      "requests": {
+        "https://use.typekit.net/af/b3b1fd/00000000000000007735e080/31/m?features=ALL&v=4&chunks=513.529.743&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.605.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0": {
+          "sha256": "a5f5d500bbfb68314b5799af93979773ccd2028a280882a8d885554fb2abb772",
+          "bytes": 95757,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:47:51.109034+00:00"
+        },
+        "https://use.typekit.net/af/9f973a/00000000000000007735e081/31/m?features=ALL&v=4&chunks=513.529.743&state=21.75.78.81.85.95.173.183.255.319.326.331.334.382.517.525.605.624.626.641.651.666.672.673.675.678.739.742.745.752.754.760.761.776.779&order=0": {
+          "sha256": "b349d2767047f61dc7b46663e3a0810a125b755782b56ea5ad3d654378b5edbf",
+          "bytes": 95694,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:47:51.754190+00:00"
+        },
+        "https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=257.263.400.409.435&state=4.16.36.47.109.127.151.200.201.215.258.260.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+          "sha256": "e87cf934a3ce97000f365afb6729eed51924482e296425c4db32c42db349f034",
+          "bytes": 65975,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:47:53.061895+00:00"
+        },
+        "https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=257.263.400.409.435&state=4.16.36.47.109.127.151.200.201.215.258.260.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+          "sha256": "e944ec6e1972a6c573e3560c8acee461dcef68c03816782f48d9be452a877fc7",
+          "bytes": 65445,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:47:54.696242+00:00"
+        },
+        "https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=257.263.400.409.435&state=4.16.36.47.109.127.151.200.201.215.258.260.290.292.306.307.317.405.408.411.418.420.426.427.436.437.445&order=0": {
+          "sha256": "70aef61b0f0f6c76572bc7e21e2c9fb48a9620012b4d4d8313f263d9d628336b",
+          "bytes": 65731,
+          "contentType": "application/x-typekit-augmentation",
+          "capturedAt": "2026-11-18T05:47:55.220250+00:00"
+        }
+      }
+    }
+  }
 }

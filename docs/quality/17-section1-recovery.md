@@ -65,3 +65,11 @@
 첫 `final-continuous`는 integrity/scope/interactions/heading/firstpaint24쌍까지5단계를통과하고,new Hero 단위11쌍뒤tablet820 GSAP 지연의원본에서중단했다. 새조건이정확한미수록TypekitURL5개를요청했고 strict network/JS오류0계약이거절했다. 실제Hero완료/loop가있어도자산오류를무시해통과시키지않았다. source/tests `bcfe51e`·제품b8c1e4e·기준PNG/허용값은유지한다.
 
 새tablet6조건의수집진단은명시적diagnosticOnly/passfalse이며기능assert는유지한다. 미수록literalTypekit GET만실제Chrome요청헤더로확보하고수집시각/URL/응답SHA를남긴다. 기존URL/본문을대체하거나state/chunks/order를alias로정규화하지않는다. 새입력정적검증후다른출력경로에서23단계를처음부터재실행하며이전5단계/11쌍성공을합산하지않는다. v3재현아카이브는이새tablet입력을포함하지않으므로최종승인payload로아직확정하지않는다. 거절후어떤원시파일도재업로드하지않았다.
+
+## 두 번째 입력 실패와 전체 범위 재진단
+
+정적사전검사의PC1440 GSAP지연 원본에서도다른literal청크URL5개가미수록으로거절됐다. 같은종류실패2회뒤추가제품보정을중단했고,진행중이던두번째23단계는해당격리검사process tree만식별해중단했다. 일부단계나정상완료신호가있어도전체통과로올리지않았다. 원인재진단의실제fontkit은 `yun6zxv.js`,SHA `16b3016a8509e8f5bb1326e2fa568aeff4ef04cc597c69f3ef1040cee620fa54`이며timer/DOM관찰·문자코드/청크요청생성이있다. URI의state/chunks/order는parser/font스캔배치에따라달라질수있다. 병행실행이유일한원인이라고단정하지않는다.
+
+초기수집기가알려진font에도추가route.fallback을거쳐시점을바꿀수있는점을확인했다. 제품/브라우저/CSS/검사기준은유지하고,수집기는미수록URI에만일하도록별도진단판을만들었다. 전체26쌍진단및세크기지연각3회인9쌍진단은기능assert를유지한diagnosticOnly/passfalse로보존했다. 새로운실제GET은추가발생하지않았으며,앞서실패에서관측한PC literalURL5개는실제응답/SHA를별도로확보했다. 이전URL/본문의교체·정규화alias는없다.
+
+이제수집기없는정식검사로지연9쌍을확인한뒤단독browser로23단계를처음부터다시실행한다. 기존부분성공은합산하지않는다. 이재진단뒤에도새미수록실패가반복되면새임시보정을쌓지않고검증후보/검증체계미완료로남긴다. 원격raw는여전히미완료이고,추가입력까지포함하는최종승인아카이브는검증후확정한다.
