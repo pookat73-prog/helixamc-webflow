@@ -53,3 +53,13 @@ flowchart TD
 한 원인당 제품/검사 커밋을 분리하고 실제 역커밋을 별도 브랜치에 보존한다.1px 및 자기 원인 역변경을 새 격리 작업본에 주입→검출→자기 hunk 복구하며 기존 원본·다른 작업자는 보존한다. 예기치 않은 실패2회면 덮어쓰기를 멈추고 source/입력/실제소유자부터 재진단한다.
 
 D04 범용실행예외/구생산자/무응답/미래main 위험, D02/D05잔여, D06실엔진 부재 및 V0/U01 보류는 그대로다.719는 E1/P3도 빠진 참고 후보이며 이번 staging 적용안도 실행하지 않는다. 제품 검증 후 D02→D05→실제엔진D06→전체감사의 조건을 재평가하고, 미완료/미검증을 분리한다.
+
+## 개별 결과와 새 증거 — 최종 동결 검사가 우선
+
+제품 **d443254**는 first-match 제목 마킹을 자기 제목 소비자 전체 순회로 바꾼다. 수정 전 red(미수정 후보0≠3) 후3크기3쌍에서 원본 숨은 복제 조건의 버튼0/loop없음→후보 버튼1/loop를 입증했고 첫 화면 geometry/타이포는 exact였다. head·Hero 인접성 guard·폰트·section 애니메이션·기존 완료 소스는 그대로다. 검사 **d4b74d2/a8b7c39**와 제품을 분리했다. 독립 역커밋 **05a303290aebd6b8d3993ceb77086f377b69744e** (`recovery/helix-heading-consumers-20261118`)는 이 hunk만 되돌린다.
+
+공개10HTML은 지난 관측과 모두 같은 bytes이며, 실제 고정CSS/JS 진입 URL9개는200이었다. 실제 응답 SHA와 격리 후보 overlay SHA를 각각actual-assets/head-ownership에 기록했다. 새 코드가 공개 웹사이트에서 전달됐다는 의미가 아니다.
+
+조사 중 검사 문제도 보존했다. 초기 GSAP 실패 조건은 미수록 Typekit order URL을 만들었다. 해당 신규 정확한 URL의 실제200응답을 별도 입력으로 확보했으며 역사적 응답을 최신 bytes/합성 alias로 대체하지 않았다. 또 초기 검사는6초 뒤 Hero와 모든 section이 미복구일 것으로 잘못 예상했다. 실제 관찰과 소스를 재진단하니 각 owner의 재시도 창과 정상 재진입 시점이 달랐다. 제품 보정을 추가하지 않고, **실제 Section1의 `init failed after 40 retries` console 신호**로 실패 지점을 확정한 뒤 같은 실제GSAP URL을 복원하도록 재현을 바꿨다. PC/모바일×원본/후보4실행에서 section은 복구했지만 Hero claim=true·ready/done0은 남았다. firstpaint fallback 공개를 Hero 초기화 완료로 보지 않으며 이 Hero 문제는 미해결이다. 입력 부족·잘못된 초기 검사 예상·6초 관찰은 별도로 보존한다.
+
+새 검사 단위는 실패 전attempt/source SHA, rAF 노출·폰트·ghost/class writer 궤적, 실제 이벤트·원본 PNG, fade/1.5초hold/loop를 기록한다. 기존21단계는 모두 유지하고 이 단위를 추가한 단일22단계로 검증한다. 새 단위는24쌍/48실행: 정상/숨은 복제의PC·모바일 각3회 쌍비교와tablet 각1회, 폰트/CSS/Hero/writer 지연 및 실제 의존성 복원이다.3시작 폭에서 각각 역전환을 확인하고 기존1440 시작11경계 검사도 유지한다. 실제Safari/iOS·물리 고속영상·방문자LCP는 Chromium 검증 완료 범위가 아니다.
