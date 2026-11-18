@@ -2,6 +2,50 @@
 
 2026-11-18 (Asia/Seoul). 시작 a6eaff7, 기존 검증 소스 f44264e 및 제품90ee4a2/7bea97c를 보존한다. 기존 작업장은 clean이고 원격 HEAD가 일치한다. main3c4f78d4/staginga074f455 및 채택 후보7195463도 그대로다. 루트 AGENTS/관련 CLAUDE와 HANDOFF/13을 읽었다.
 
+## 최종 판정 — 동결52a31c8, 단일21단계 통과 / 전체 구조 미완료
+
+제품과 검사 소스를 `52a31c860e146f765a5b8885d3874292c87b614f`로 동결한 **새 clone의 단일 연속21단계가 전부 통과**했다. 이전18단계 결과나 개별 실행 성공을 합산하지 않았다. 이후 마감 전달은 문서·증거만 바꾼다. [최종 대장](evidence/execution-final.json)에 source/tests SHA, 단계별 exit, 실제 응답 SHA, 복구/음성 대조와 한계를 기록했다. 이는 별도 clone의 자동 재실행이며 별도 사람의 최종 감사는 아니다.
+
+| 구분 | 실제 판정 |
+| --- | --- |
+| 실제 개선 완료 | E1 `06d07a3`: 실제 GSAP native 실패가 partial DOM/영구 guard 중단을 만들던 경로를 의존성 대기→원래 초기화 완료로 분리. P3 `be8f38a`: 동일 생산자의 exact URL pending태그를3→1로 줄임. 전송 요청은 브라우저가 이미 합쳤으므로 measured wire 절감으로 보고하지 않음 |
+| 결합 영향 보존 | 5페이지×3크기15쌍, 홈3크기·11 hot경계, motion6, CTA gap/border 각각108쌍·36통제, intro/consent·hero12·기존 CSS/JS소유권 검사를 보존. 새 dependency8쌍16실행/pending8실행/foreign4조건도 같은 연속 검사 안에서 통과 |
+| 오류를 남긴 검증 통과 | HTTP200 early/partial/syntax6조건은 오류가 남는다는 분류 결과다. native load/guard를 기능 성공으로 처리하지 않음. shared-only 구생산자의 조기 native실패 경계도 해결로 승격하지 않음. 요청 cap과 영구 실패 경계 통과는 메뉴 가용성 성공이 아님 |
+| 복구 검증 | 실제 원격 E1 역커밋15be74b/P3 역커밋ceeac82를 다른 새 clone에서 각각 적용→회귀 검출→자기 diff만 역적용. 별도1px4→5px 오류도 검출/복구. 세 경우 모두 원래 바이트·clean 상태로 돌아옴 |
+| 실제 적용 준비 완료 |719 전체 tree254파일의 차이1개, 실제 고정 URL24개 모두200·이전 SHA일치, 기존 production12는 같은 패키지 이력으로 보존하고 실제 staging 분기는 새 단일12조건 리허설로 별도 통과(21단계와 합산하지 않음). [15의 staging-only head/inverse](15-services-adoption-approval.md)는 **미적용·별도 승인 대상**이며 E1/P3는719에 없음 |
+| 환경 부족·미검증 | WebKit2227 실행파일/실제Safari·iOS·iPad 없음. 측정은 차단해 측정 기능 미검증. 공개 운영에 새 코드가 적용되지 않았으므로 운영 오류 감소율·실제 효과도 미검증 |
+
+### 자산과 증거를 해석하는 범위
+
+- 기존 고정 raw8개 manifest와 body2,130개를 다시 해시 검증했다. 초기 기록을 최신 응답으로 교체하지 않았다. 기준 PNG33/286응답·mask·100px·threshold0.2·expected failure는 변경하지 않았다.
+- 새21단계는 이전과 같은 원시 입력을 재생하고 **현재 후보 bytes를 지정 경로에 overlay**한 격리 검증이다. 이 URL이 실제 운영에서 새 코드를 전달했다는 의미가 아니다. 각 요청/overlay SHA는 로컬 raw에 있다.
+- Nov18의 공개10HTML은 Nov17 마감 HTML과 모두 동일했다. 실제 현재 `@main`3자산 응답은 현재 main Git blob과 일치했다. services가 쓰는 분 단위 query 형태의 **동일 URL을 실제2회 조회**해200/같은 메뉴 SHA도 확인했다. 이것은 한 시점의 실제 관측이며 미래 edge/browser cache 호환성 보증이나 실브라우저 cache 시험은 아니다. 원시 `branch-query/results.json`은 새 시점 기록으로 따로 보존한다.
+- syntax/throw는 명시적 오류 fixture, foreign pending JSON태그는 명시적 메타데이터 fixture다. 실제 존재했던 응답이나 실제 실행으로 취급하지 않았다. GSAP 복원은 테스트가 같은 실제 archived URL로 수행한 외부 복원이다. 제품은 새 재시도·타이머를 추가하지 않았다.
+- pending 통제 진입에서 메뉴 외 자원의 관측 요청 집계도 원본/후보4쌍 모두 같았다. 측정 차단 입력에서의 집계이며 다른 모듈의 초기화·측정 전체 정상/중복 제거를 입증한 것은 아니다.
+
+### staging 적용안의 추가 검증 경계
+
+production12 이력을 staging으로 승격하지 않았다. 실제 staging 공통entry490 및 @staging fallback을 확인하고, 정상·생산자2회실패·영구실패×2폭×원본/후보의 새12조건을 별도 연속 실행했다. 초기9URL 누락과 복구 단계490 메뉴JS 누락의2실패는 보존했으며, 실제 공통16 FILES를 대조해 의존 closure를 완성했다. 추가19응답은 실제 URL200·Git blob과 일치한다. 원래 source/기준/기존 raw를 바꾸지 않았다. 정상 geometry·타이포 exact, 메뉴1·Escape/초점, 실패 후3회 cap을 확인했다. 이는 공개 적용 검증이 아닌 hostname별 로컬 리허설이며 이전production12/core21과 합산하지 않는다. [15의 보완 절](15-services-adoption-approval.md)에 입력과 한계를 기록했다.
+
+### 남은 문제와 확정된 다음 독립 실행
+
+| 순서 / 위험 | 남은 단위와 상태 | 다음 실행·승격 조건 / 중단 조건 |
+| --- | --- | --- |
+| D04 / 높음 | 임의 HTTP200 구문·실행 예외와 과거 partial guard, 구생산자/shared-only 조기실패는 미해결 | 오류 생산자의 실제 side effect/DOM/이벤트 소유자를 먼저 특정한다. 임의 guard reset/범용 재시도는 중복 초기화 위험이 있어 적용하지 않음. native 오류 채택 개선은 검증된719의 제한된 적용안으로 분리 |
+| D04 / 중~높음 | 조용한 pending의 영구 무응답 여부, 구생산자가 표시하지 않은 pending, 두 실제 다른 버전의 동시 pending 전체는 미해결/미검증 | finite10초를 실패로 오판하지 않는다. 새 실제 소유자 신호가 있으면 그 자산만 검사. pending 표시가 없는 태그를 추정 채택하거나 timeout/요청 cap을 늘리지 않음 |
+| D04 / 높음 | 미래 `@main` drift/cache 호환성은 미해결 | 다음 실제 main 갱신 때 원래 고정 응답과 새 mutable 응답을 별도 보존해 producer-only/shared-only/matched/실패를 재현한다. 공개 pin/일괄 immutable화는 이번 변경에 포함하지 않음 |
+| D03/D07 / 높음·중작업 | hero/firstpaint의 나머지 책임은 미완료 | 공개 head가 `__hxHomeFirstpaintReveal`와 최종 ready class를 소유하고 coming-soon이 호출, section1이 ready/done을 생산한다. 이 source/공개HTML SHA를 기록했다. 기존 guarded 다중 진입 자체를 오류로 보지 않으며 새 원본 실패·critical CSS/폰트/노출 순서를 먼저 입증. 공개 head 책임 이동은 별도 승인 범위 |
+| D02 / 중·중작업 | 다른 폼 label/제목 및 desktop 소비자 미완료 | 기존 내과/intro/consent는 그대로 두고 다음 실제 label root 하나에서 게시 문구와 합성 한글/영문/URL/숫자·직접/자손을 분리한다. 원본 넘침→후보 containment/비대상5×3 exact가 있어야 제품 커밋. 전역 wrap 철회·일괄 예외 금지 |
+| D05 / 중·소~중작업 | 나머지 실제 소비 속성은 미완료 | 완료 높이/폭/장식/간격/색상은 반복하지 않는다. 살아 있는 소비자와 실제 후행 무효화 하나를 찾고108쌍/36통제로 입증. 소비자 없음·미재현이면 미수정 |
+| D06 / 높음·조건부 | 환경 부족 미검증 | 실제WebKit/실기기 확보 후 cold·회전·fixed/sticky/메뉴·폼·카드 노출 검사. Chromium 폭 전환을 대신 쓰지 않으며 viewport 제품 변경 없음 |
+| 전체 최종 감사 | 미완료 | 위 미해결과 실제 채택 효과를 해결/한정한 뒤 새 동결 소스의 독립 검수. 이번 단위 통과로 전체 구조 안정화 완료를 선언하지 않음 |
+
+V0는 새 판별 근거 없이 재개하지 않았고 U01도 보류한다. 다른 진행자의 코드, 기존 정상 디자인/기능과 source 개선을 보존했다. main/staging 병합, 공개 head/pin/설정 변경, Webflow Publish, 운영 배포는 **없다**.
+
+새 raw의 본문·PNG·전체로그·대장 상세는 `/workspace/artifacts/helix-execution-residual-20261118` **로컬 전용**이다. GitHub에는 source/tests·판정/핵심 SHA·대장 SHA·개별 복구·미적용 적용안을 보존한다. 원격 body archive가 없으므로 이 머신 없이 완전 재생 가능한 인계라고 주장하지 않는다.
+
+아래는 시작 및 개별 검증 당시의 진행 이력이다. 현재 판정은 위 최종 절과 대장을 따른다.
+
 작업량 대, 현재 모델 유지·높은 추론 강도 권장·예상 사용량 높음. 이미 승인된 조사/격리 수정/검증/복구/문서/작업 브랜치 전달을 연속 수행한다. 공개 head/pin/설정, main/staging 병합, Publish/운영 배포는 금지하며 실행하지 않는다.
 
 ## 실제 원인부터 좁히는 순서

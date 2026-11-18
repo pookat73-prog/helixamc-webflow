@@ -13,6 +13,14 @@ Git tree 전체254파일 대조에서 공개 ba91과 후보719의 유일한 차�
 
 24개 고정 URL의 이번 재조회 모두200·이전 SHA와 일치했다. 기존 단일12조건 검증(기존 공통 구로더, 2폭×정상/생산자2회 실패/영구실패×원본/후보)은 **동일한 패키지 검증 이력으로 보존**한다. 오늘 새 브라우저12회 통과라고 바꾸거나 작업 소스의 새 통합 검사에 합산하지 않는다. 실제20개 후보 URL 채택/4개 선행 측정 소유자 존중·측정 기능 미검증을 그대로 유지한다.
 
+## staging 분기 보완 리허설 — 별도12조건 통과
+
+기존 production12는 `@main` fallback과 공통 entry4aeeb4a…를 사용했다. 실제 staging head는 공통 entry490a313…와 `@staging` fallback을 선택하므로 기존 성공을 그대로 staging 성공으로 계산하지 않았다. Nov18 실제 staging HTML, 실제 `@staging` 메뉴 응답(SHA256 `4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5`), 원래 exact-URL 고정 응답과 후보719의 실제 자산을 조합해 **새 디렉터리에서 단일12조건(2폭×정상/2회native실패/영구실패×원본/후보)**을 별도로 통과했다. core21과 합산하지 않았다.
+
+초기2실행은 입력 누락으로 중단했고 그대로 보존했다. 첫 실패의9URL과 두번째에 드러난490 메뉴JS를 확인한 뒤, 실제490 공통 loader의 **16개 FILES 경로 전체**를 대조해 아직 없는10URL을 추가 확보했다. 새19개 고정/분기 의존 응답은 모두 실제 요청200·Git blob과 일치하며 합성 alias는 없다. 제품·assert·기준을 바꾸지 않았다. 복구 시719→staging→490 메뉴 요청3회와 메뉴1/Escape/초점, 정상 원본/후보 배치·타이포 exact를 확인했다. 영구 실패는 메뉴0·기존 총3회 cap으로 남는 경계 검증이다.
+
+이 검사는 실제 staging hostname에서의 **로컬 응답 재생 및 미적용 head 리허설**이다. Webflow draft 수정/Publish나 공개 staging 적용 검증이 아니다. 현재 branch/SVG 응답도 미래 동일성을 보증하지 않는다. 초기 실패, 같은 source의 완전12결과, 각 manifest/SHA/검사 원문을 보존했다. [최종 대장](evidence/execution-final.json), [검사 원문 archive](evidence/execution-staging-rehearsal.cjs.txt)를 따른다.
+
 ## 적용 전 코드 (복구 코드와 동일)
 
 ```html

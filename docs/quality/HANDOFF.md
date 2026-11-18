@@ -2,9 +2,15 @@
 
 갱신일: 2026-11-18 (Asia/Seoul)
 
-## 진행 중 — 실행 오류와 pending 후속
+## 최신 최종 판정 — 실행 완료·pending 책임 개선 / 전체 구조는 미완료
 
-기존 f44264e/두 제품/18단계를 보존했다. [14 실행기록](14-execution-residual.md)의 실제 GSAP 실패→복원 E1(06d07a3,8쌍)과 생산자 exact-URL pending P3(be8f38a,8실행+foreign4)를 개별 검증했다. 제품/검사와 독립 역커밋을 분리했다. 새21단계 동결 통합 검증 전이며 임의 실행·구문 오류/향후 @main drift는 미해결이다. [719 staging-only 별도 승인안](15-services-adoption-approval.md)은 정확한 head/inverse를 준비했으나 미적용이며 새 E1/P3를 포함하지 않는다. main/staging/공개 설정/배포는 변경하지 않았다. 아래13은 이전 동결 소스의 판정이다.
+**동결 소스·검사 `52a31c8`의 새 clone 단일21단계가 모두 통과했다.** 기존 f44264e/두 D04 제품/18단계를 보존했고 이후 마감은 문서·증거만 바꾼다. [14 최종 결과·한계·다음 실행](14-execution-residual.md), [최종 대장](evidence/execution-final.json)이 최신 인계다. 아래13은 이전 소스의 검증 이력이다.
+
+1. **실제 개선:** E1 `06d07a3`은 services/FAQ의 실제 GSAP 실패 뒤 partial DOM·guard 중단을 예방하고 실제 의존성 복원 후 메뉴 재요청 없이 초기화를 완료한다. 점유와 완료를 분리했다. P3 `be8f38a`는 동일 생산자의 exact URL pending태그3→1을 입증했다. 브라우저 전송은 이미 합쳐졌으므로 wire 절감으로 확대 보고하지 않는다. 수정은 메뉴 module/services 생산자 두 파일에 한정한다.
+2. **검증·복구:** 5페이지×3크기/기존 CTA 각108쌍·36통제·모션·줄바꿈·hero·기존 로더를 보존한21단계 안에 새 dependency8쌍/pending8실행/foreign4조건과 syntax 분류를 포함했다.1px와 실제 E1/P3 역커밋15be74b/ceeac82를 별도 clone에서 각각 검출·자기 diff 복구했다. 기준 PNG/mask/100px/.2/expected failure는 유지했다. 분할 통과 합산이나 별도 사람 감사는 아니다.
+3. **별도 승인 적용안:** [719 staging-only head 및 정확한 원복 코드](15-services-adoption-approval.md)를 준비했다. 공개 기준과 다른 파일은 services/bootstrap.js 하나, 실제24URL200/이전 SHA일치다. 기존 production12는 같은 패키지 이력으로 보존하고, 다른 공통entry490/@staging을 사용하는 staging 분기는 실제 응답을 확보한 새 단일12조건 리허설로 별도 통과했다. 입력 누락2실패도 보존했고 core21과 합산하지 않았다.719에는 새 E1/P3가 없다. head/pin/Publish는 미적용·별도 승인 대상이다.
+4. **미해결·미검증:** 임의 HTTP200 구문/실행 오류6조건, 구생산자/shared-only 조기 실패, 조용한 영구pending 판별, 미래 @main/cache 일관성과 다른 모듈 전체는 남는다. D03/D07→D02 다른root→D05 실제속성→실제엔진 D06→전체독립감사의 조건/최소단위를14에 확정했다. 실제Safari/iOS/iPad·측정·새 코드의 운영 효과는 미검증이며 전체 구조 안정화 완료가 아니다. V0/U01은 보류한다.
+5. **보존·전달:** 원시8manifest/2,130body와 공개10HTML 동일성을 확인했다. source/tests/해시/복구/적용안은 GitHub에, raw본문·PNG·전체로그는 새 artifact root의 **로컬 전용**으로 보존한다. main/staging/다른 작업자/공개 설정·pin·Publish·운영 배포는 변경하지 않았다.
 
 ## 최신 최종 판정 — D04 생산자 소유권 개선 / 혼합 전체는 미완료
 
