@@ -2,6 +2,62 @@
 
 2026-11-18 KST. 시작 HEAD `3f73eca`, 이전 검증 소스·검사 `c2a0b34`. AGENTS·관련 CLAUDE의 firstpaint/폰트/글로우/지그 보호 규칙과 최신 HANDOFF·16·firstpaint-final을 읽었다. 전용 Drive 표준과 최신 인계(수정일 11/16)도 읽었지만 현재 실행 범위와 기록은 사용자 지정 최신 GitHub 인계를 우선한다. 기존 완료 제품·검사·다른 작업자는 보존한다.
 
+## 최종 판정 — Hero 복구 제품 검증 통과 / 원격 raw 보존 미완료
+
+동결 소스·검사 **c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf**의 별도 clone에서 **23단계 단일 연속 실행을 모두 통과**했다. 기존22단계를 유지하고 새26쌍/52실행을 같은 실행에 포함했다. 이전22단계 성공·부분성공·별도 smoke/portable 결과를 합산하지 않았다. 이후 전달은 문서·증거만 변경한다. [최종 대장](evidence/section1-recovery-final.json)이 판정/URL·SHA/복구/원격 보존 차단의 기준이다.
+
+**이번에 제거한 의존성은 ‘실제 GSAP가 최초40회 재시도 창 안에 도착해야만 Hero가 시작되는 관계’다.** private started가 true로 붙잡힌 문제가 아니었다. module claim은 정상 중복 방지를 계속 소유하고, Section1 내부 pending/running/failed/complete가 실제 초기화 상태를 구분한다. 실패한 GSAP 대기는 native script load에만 연결되고 시작할 때 listener가 제거된다. 완료한 초기화는 다시 실행하지 않는다. 공개 head의 함수/ready class나 기존 이벤트 소비자 소유권은 이동하지 않았다.
+
+제품 **b8c1e4e**는 Section1 한 파일만 변경했다. 이미 head gate가 열린 복구는 opacity를 다시0으로 내리지 않고, 불필요한 detach를 생략해 원래 반응형 타이포 문맥을 유지한다. 정상 최초 로드의 폰트 확인·detach·fade·1.5초hold·loop·ghost 복원과100ms/40회 제한은 보존했다. 새 runtime timer/observer/retry 계층·자산 요청·공개 파일 경로는 추가하지 않았다. 기존 E1/P3·제목 마킹d443254 및 다른 완료 코드도 그대로다.
+
+GSAP 미로딩 경로의 상태는 다음과 같다. module claim은 아래 상태와 별개이며 head의 준비 완료도 Hero 완료와 별개다.
+
+```mermaid
+stateDiagram-v2
+  [*] --> pending: 모듈 단일 소유
+  pending --> running: 실제 GSAP와 대상 DOM 확인
+  pending --> failed: 기존 40회 창 종료
+  failed --> running: GSAP 부재로 연결한 native load와 실제 의존성 복원
+  failed --> failed: 의존성 없음 · 완료 신호 없음
+  running --> complete: fade와 DOM 복원 뒤 done
+  running --> running: 모듈 중복 진입은 무시
+  complete --> complete: 완료한 초기화 재생 금지
+```
+
+| 판정 | 근거 |
+| --- | --- |
+| 원본 실패→후보 실제 완료 | 소진 후 복원7쌍·head gate 뒤 복원3쌍,총10쌍에서 원본 claimtrue·ready/done0→후보 실제 ready/done 각1회·정상 화면/버튼/loop를 확인했다. 영구 실패3쌍은 미완료로 남는다 |
+| 새 복구26쌍 | 1440/820/390,정상·소진 후 복구는PC/모바일 각3회/tablet1회. 지연·일시실패·head-ready 뒤 복원·영구실패는3크기 각각1회. 실제 GSAP 고정URL/본문·native 실패 및 실제40회 console 신호를 사용한다 |
+| 반복 진입과 모션 | 시작 중 exact module bytes 통제 재평가와 완료 후 같은 실제URL 재진입을 구분했다. Hero 이벤트·loop1회,ghost0/원래부모 복원,실제fade완료→1490ms이상hold→loop,세시작폭의역전환·제목/버튼·line존재를 확인했다. 영구 실패를 성공으로 판정하지 않았다 |
+| 정상·비대상 보존 | 후보S1을 실제 overlay한 Home을 포함해5페이지×3크기,기존1440 시작11경계,이전 firstpaint24쌍,CTA gap/border 각각108쌍·36통제,폼/메뉴/로더/품질을 같은23단계에 유지했다. 건강한 조건의 첫 화면 배치/타이포와 신규 복구 후 배치는 원본 정상 계약과 exact였다 |
+| 첫 divider 보완 검사 | 동일 동결 소스의 별도6실행(3크기×정상/늦은복구)에서 실제 ScrollTrigger와 스크롤로 draw→erase→역스크롤 redraw·단일경로를 확인했다. 공식23단계 수에 더하지 않는다. 다른지그 전체모션으로 확대하지 않는다 |
+| 실패 주입·개별 복구 | 같은 동결의 다른 clone에서 실제 원격 역패치b12377c를 적용하자 GSAP 복원 후 필요한 Hero 완료가 없어 검출됐다. 관련 JS/네트워크오류0,자기hunk복구 후 원래SHA/clean.1px도 별도 검출·복구했다 |
+| 입력/실제 자산 | 원본8manifest·2,130body와 추가 입력의SHA를 다시 확인했다. 기존PNG33/응답286·mask·100px·threshold0.2·다른expected failure는 불변이다. 현재 실제Section1 CSS/JS와 GSAP3.12.2의 응답은 보관본문과 같고 공개10HTML·보호refs도 그대로다 |
+
+### 보존한 실패와 검증 한계
+
+첫23단계의tablet미수록폰트입력,마지막VM의표준Document API누락과그모형보완,초기후보의재숨김,검사의ghost오인,모바일detach문맥높이변화,parser지연중DOM없는snapshot,입력v1/v2의휴대성문제를 원시 상태로 보존했다. 같은 실패2회 뒤 제품 보정을 멈추고 실제 노드/공개 상태/본문 연결을 재진단했다. 다른 노드 덮어쓰기·허용값 완화·과거 응답을 최신bytes로 대체하는 보정은 없다.
+
+새 입력v5는 원본의 공유 body 디렉터리까지 명시적으로 순회해13root·408고유본문을 보존한다. 새 경로에 독립 복원한 뒤 기준 해시와2쌍/4실행으로 실제 실패→복구를 확인했다. 이 결과는 로컬 휴대성 검사이고,새 환경의전체23단계·원격보존·물리실기기·운영 검증은 아니다. PNG와rAF/DOM 추적은 물리 고속영상이나 방문자 LCP/CWV가 아니다. 별도clone 자동 재실행을 독립된 사람의 전체구조 감사로 표현하지 않는다.
+
+### 원격 원시 자료 — 미완료·별도 승인 필요
+
+자동 승인 검토가 입력 아카이브의 Google Drive 외부 전송을 구체적인 payload 승인 부재 사유로 거절했다. **업로드는 수행되지 않았고 거절 후 다른 경로나 분할로 우회하지 않았다.** GitHub에는 source/tests·소유권·판정/핵심SHA·복구만 전달한다. 본문·PNG·전체로그는 로컬 전용이며 원격 보존을 완료로 표시하지 않는다. 전체 작업 완료 판정도 보류한다.
+
+다음 두 파일은 업로드 승인용으로 구체화·로컬 읽기 검증한 자료다. 원시 결과 v2는 동일 SHA 내용만 아카이브 내부 hardlink로 중복을 줄였으며, 외부 symlink 없이 모든 원래 경로의 읽기 SHA를 확인했다. 목적지는 기존 성능 폴더 `1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV`이며 공유 설정을 변경하지 않는다. 크기는 41712972B / 99078328B다.
+
+- 입력: `HELIX-S1-Recovery-Replay-Inputs-v5-20261118.tar.gz` — SHA256 `18aae6719ac337390a148dba310aa5b0dd81a6f4178453424f6fb963c4853457`
+- 원시 결과: `HELIX-S1-Recovery-Raw-Evidence-v2-20261118.tar.gz` — SHA256 `912af0dd39e874e6eef33b69ff9d9f5e3d6908e2a95252574de4eef91c2c63dd`
+
+### 남은 위험과 다음 실행
+
+1. **D03/S1 범위:** 실제 native GSAP 복원 경로의 격리 후보 통과다. 임의 구문/실행 예외,GSAP가 native script load 없이 전역에 삽입되는 경로,DOM 자체 누락 후 복구,다른firstpaint/전체section복제 경계는 해결했다고 하지 않는다. 첫 divider 외 다른 지그의 모든 모션 완료 경계도 이번 보완으로 대체하지 않는다. 영구 의존성 실패는 기능 복구가 아니며 failed 상태로 남는다.
+2. **D02→D05:** 다음 독립 단위는 다른폼label/제목root의 실제 넘침과 CSS소유자다. 게시문구/합성입력 구분·원본실패·국소 후보·5×3보존을 먼저 확인한다. 다음 D05는 실제 소비 속성만 통제하며 기존 CTA 완료 속성은 반복하지 않는다. 미진단을 완료나 수정불필요로 바꾸지 않는다.
+3. **D06:** 실제WebKit2227 실행파일·Safari/iOS/iPad 실기기가 없어 미검증이다. viewport제품을 바꾸지 않았다. 실제환경에서 회전/fixed/sticky/폼/카드를 확인해야 한다.
+4. **전체/공개:** D04 일반HTTP200실행예외·구생산자·조용한pending·미래@main/cache 위험과 전체독립감사는 남는다. V0의 새 판별 근거가 없어 재개하지 않았고 U01도 보류했다.719는 E1/P3/현재D03없는 참고용이다. 현재공개소비자는작업소비자와 달라 단독공개이관/혼합호환성·운영 효과는 미검증이다.
+
+복구는 **b12377c의 제품 diff만** 적용한다. main/staging 병합,공개head/pin/설정·Webflow Publish·운영 배포는 하지 않았다. 운영 사이트와 다른 작업자의 코드는 보존했다. 아래는 당시 계획·실패·체크포인트 이력이며 최신 판정은 이 절과 최종 대장을 따른다.
+
 ## 작업 개요와 범위
 
 작업량 대. 현재 모델을 유지하고 높은 추론 강도·높은 예상 사용량으로 진행한다. 산출물은 원본 실제 실패 재현, 상태/소유자 추적, Section1의 최소 제품 변경, 별도 검사·역커밋, 새 동결 소스의 기존 22단계+복구 계약 단일 연속 실행과 인계다. 기존 승인 범위이며 중간 승인을 반복하지 않는다. main/staging 병합, 공개 head/pin/설정 및 Publish·운영 배포는 금지다.

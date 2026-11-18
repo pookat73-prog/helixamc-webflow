@@ -1,0 +1,1937 @@
+{
+  "dateKST": "2026-11-18",
+  "branch": "fix/helix-residual-structure-20261117",
+  "startingHead": "3f73eca33bf11791b918f671f3af7a6e7b02179d",
+  "frozenSourceAndTests": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+  "status": "Hero GSAP recovery product and isolated continuous23 validation verified; raw remote preservation incomplete",
+  "taskComplete": false,
+  "product": {
+    "commit": "b8c1e4e95a263604c597efa906af3c6cb0e59647",
+    "path": "home/section1/section1.js",
+    "onlyRuntimePathChanged": [
+      "home/section1/section1.js"
+    ],
+    "beforeSHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+    "afterSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+    "cause": "Module claim persisted while bounded GSAP wait ended without a recovery entry; private started was false, not stuck true",
+    "ownership": "Existing module guard stays boolean; private pending/running/failed/complete belongs to Section1. Failed GSAP wait listens to native script load; on start listener is removed. Head ready ownership and all event consumers remain unchanged.",
+    "lateExposure": "If the head gate is already ready, recovery preserves opacity and skips unnecessary detach to retain responsive typography context. Initial normal font/detach/fade/hold/loop is preserved.",
+    "noNewRuntimeTimerObserverRetryLayer": true,
+    "retryBudgetUnchanged": "100ms/40; no runtime-added GSAP request"
+  },
+  "testsCommits": [
+    "52e85047ab24a57b4910fdf111a8b3666472fc12",
+    "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf"
+  ],
+  "recovery": {
+    "product": "b8c1e4e95a263604c597efa906af3c6cb0e59647",
+    "commit": "b12377cb6825557838f951dcad284dd6754cdc40",
+    "branch": "recovery/helix-section1-recovery-20261118",
+    "path": "home/section1/section1.js",
+    "oldGitBlob": "25af1ef173118d02d283de422ed1b1aef9051b27"
+  },
+  "singleContinuousIntegration": {
+    "source": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected23-stage integration: previous22 stages retained, plus26 Section1 recovery pairs and24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; original Hero failure-marker recovery stays failed while candidate must actually complete ready/done, restore ghosts and preserve motion/typography; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "pass": true
+  },
+  "newUnit": {
+    "pairs": 26,
+    "executions": 52,
+    "fixedFailurePairs": 10,
+    "originalWorkingPairs": 13,
+    "candidateWorkingPairs": 23,
+    "permanentFailurePairs": 3,
+    "coverage": [
+      "normal PC/mobile3 repetitions and tablet1",
+      "GSAP native delay",
+      "transient native failure/restoration",
+      "actual40-retry failure marker before restoration",
+      "restoration after head gate ready",
+      "permanent failure remains incomplete",
+      "exact module byte re-evaluation while starting; native sameURL re-entry after completion",
+      "three starting widths and reverse transitions; actual heading/button effects and line-presence consumer checks"
+    ],
+    "caseSummary": [
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 411.5,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 335.20000000298023,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "repeat": 1,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 365.20000000298023,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "repeat": 1,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 290.5,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "repeat": 2,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 347.1000000089407,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "normal",
+        "repeat": 2,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 375,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "delay",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 3208.1000000089407,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "delay",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 3283.8999999910593,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "transient",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 923,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "transient",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 913.7999999970198,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "exhausted",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "d44d8bde3131b67a7a29b31dcd1b0b2464d52b22dbacfefc8afb88913178f1d6"
+      },
+      {
+        "width": 1440,
+        "scenario": "exhausted",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 4533.899999991059,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "exhausted",
+        "repeat": 1,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "d44d8bde3131b67a7a29b31dcd1b0b2464d52b22dbacfefc8afb88913178f1d6"
+      },
+      {
+        "width": 1440,
+        "scenario": "exhausted",
+        "repeat": 1,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 4498.4000000059605,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "exhausted",
+        "repeat": 2,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "d44d8bde3131b67a7a29b31dcd1b0b2464d52b22dbacfefc8afb88913178f1d6"
+      },
+      {
+        "width": 1440,
+        "scenario": "exhausted",
+        "repeat": 2,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 4533.5,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "after-head",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "d44d8bde3131b67a7a29b31dcd1b0b2464d52b22dbacfefc8afb88913178f1d6"
+      },
+      {
+        "width": 1440,
+        "scenario": "after-head",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 0,
+        "reentries": [
+          {
+            "t": 7181.29999999702,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "602d106e8594a9228ac2550d137e2e8c6786efecc245a5e17a54859127acc7cf"
+      },
+      {
+        "width": 1440,
+        "scenario": "permanent",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "d44d8bde3131b67a7a29b31dcd1b0b2464d52b22dbacfefc8afb88913178f1d6"
+      },
+      {
+        "width": 1440,
+        "scenario": "permanent",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 1,
+        "listenerAdds": 1,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "d44d8bde3131b67a7a29b31dcd1b0b2464d52b22dbacfefc8afb88913178f1d6"
+      },
+      {
+        "width": 820,
+        "scenario": "normal",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 319.29999999701977,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "normal",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 319.70000000298023,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "delay",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 3247,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "delay",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 3413.9000000059605,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "transient",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 940.5,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "transient",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 896.7000000029802,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "exhausted",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "f6e365d50cd98e1e615eaab4469cc383fcfdd9857e133b49383d1807f101950a"
+      },
+      {
+        "width": 820,
+        "scenario": "exhausted",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 4482.70000000298,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "after-head",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "f6e365d50cd98e1e615eaab4469cc383fcfdd9857e133b49383d1807f101950a"
+      },
+      {
+        "width": 820,
+        "scenario": "after-head",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 0,
+        "reentries": [
+          {
+            "t": 7070.9000000059605,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "d9f4f08a4fbb0e44c1a1333f3519762e07af0e581e925208221fe36b8ef7efe9"
+      },
+      {
+        "width": 820,
+        "scenario": "permanent",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "f6e365d50cd98e1e615eaab4469cc383fcfdd9857e133b49383d1807f101950a"
+      },
+      {
+        "width": 820,
+        "scenario": "permanent",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 1,
+        "listenerAdds": 1,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "f6e365d50cd98e1e615eaab4469cc383fcfdd9857e133b49383d1807f101950a"
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 301.20000000298023,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 297.5,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "repeat": 1,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 313.20000000298023,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "repeat": 1,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 291.79999999701977,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "repeat": 2,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 313.29999999701977,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "normal",
+        "repeat": 2,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 296.79999999701977,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "delay",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 3271,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "delay",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 3360,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "transient",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 882,
+            "guard": true,
+            "at": "[Section1] selectors found: slogan=true bg=true box1=true",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "transient",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 888.3000000119209,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "exhausted",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "9a603b72ca335576e2c5481a092e5f7be9b574f659aff6adfb393acae7967988"
+      },
+      {
+        "width": 390,
+        "scenario": "exhausted",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 4511.20000000298,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "exhausted",
+        "repeat": 1,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "9a603b72ca335576e2c5481a092e5f7be9b574f659aff6adfb393acae7967988"
+      },
+      {
+        "width": 390,
+        "scenario": "exhausted",
+        "repeat": 1,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 4483.0999999940395,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "exhausted",
+        "repeat": 2,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "9a603b72ca335576e2c5481a092e5f7be9b574f659aff6adfb393acae7967988"
+      },
+      {
+        "width": 390,
+        "scenario": "exhausted",
+        "repeat": 2,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 2,
+        "reentries": [
+          {
+            "t": 4553.20000000298,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "after-head",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 2,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "9a603b72ca335576e2c5481a092e5f7be9b574f659aff6adfb393acae7967988"
+      },
+      {
+        "width": 390,
+        "scenario": "after-head",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": true,
+        "events": [
+          "helix-s1-ready",
+          "helix-s1-done"
+        ],
+        "GSAPAttempts": 2,
+        "listenerAdds": 1,
+        "listenerRemoves": 1,
+        "ghostBirths": 0,
+        "reentries": [
+          {
+            "t": 7069.100000008941,
+            "guard": true,
+            "at": "[Section1] state: running",
+            "kind": "Controlled re-evaluation of exact module bytes while initialization starts"
+          }
+        ],
+        "naturalSHA256": "bc7281a282b19e02d2a09aca6d70902f4b208bba00006d9e7de464159ad05949"
+      },
+      {
+        "width": 390,
+        "scenario": "permanent",
+        "repeat": 0,
+        "version": "original",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 1,
+        "listenerAdds": 0,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "9a603b72ca335576e2c5481a092e5f7be9b574f659aff6adfb393acae7967988"
+      },
+      {
+        "width": 390,
+        "scenario": "permanent",
+        "repeat": 0,
+        "version": "candidate",
+        "actualHeroComplete": false,
+        "events": [],
+        "GSAPAttempts": 1,
+        "listenerAdds": 1,
+        "listenerRemoves": 0,
+        "ghostBirths": 0,
+        "reentries": [],
+        "naturalSHA256": "9a603b72ca335576e2c5481a092e5f7be9b574f659aff6adfb393acae7967988"
+      }
+    ],
+    "motion": "Actual ready/done once, ghost restoration/original nesting, fade then >=1490ms hold then single loop. Late head-ready recovery has no unnecessary ghost relocation.",
+    "scopeLimit": "Chromium rAF/node/PNG observations; not physical high-speed film, actual Safari/iOS/iPad or visitor CWV."
+  },
+  "previousFirstpaintUnit": {
+    "pairs": 24,
+    "executions": 48,
+    "preservedOriginalFailures": true,
+    "candidateHeroRecoveryPromotedToActualCompletionContract": true
+  },
+  "negativeControls": {
+    "source": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+    "cases": [
+      {
+        "fault": "actual remote own Hero inverse",
+        "inverseCommit": "b12377cb6825557838f951dcad284dd6754cdc40",
+        "goodSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+        "faultSHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+        "detectedExit": 1,
+        "failure": "Actual native GSAP restored but required Hero completion was absent at observation deadline; no unrelated JS/network error",
+        "ownHunkRestored": true
+      },
+      {
+        "fault": "compact copy gap4→5px",
+        "detectedExit": 1,
+        "ownHunkRestored": true
+      }
+    ],
+    "pass": true
+  },
+  "localPortableReplay": {
+    "source": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+    "pairs": 2,
+    "executions": 4,
+    "full23UnderRestoredInputsExecuted": false,
+    "resultSHA256": "32e87b729c154da2a51a564083c2fa005f33d675f88bf52abd0f023162de3483"
+  },
+  "baseline": {
+    "PNGs": 33,
+    "responses": 286,
+    "pixelBudget": 100,
+    "threshold": 0.2,
+    "maskAndOtherExpectedFailuresChanged": false
+  },
+  "runtimeSHA256": {
+    "home/global/hamburger.js": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+    "services/bootstrap.js": "1847a59089eabcb319ae67c17933695c71f151ee8413ca3cc6b6c4ea52ceaf45",
+    "global/bootstrap.js": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+    "global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "home/global/sections-animations.js": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+    "home/global/coming-soon.js": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+    "home/section1/section1.js": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
+  },
+  "inputs": [
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/home",
+      "manifestSHA256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/discover-helix",
+      "manifestSHA256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/services",
+      "manifestSHA256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/faq",
+      "manifestSHA256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/internal-medicine",
+      "manifestSHA256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/imaging-v2",
+      "manifestSHA256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9",
+      "filesRehashed": 365
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/resource-extra",
+      "manifestSHA256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34",
+      "filesRehashed": 3
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/order-fonts-v2",
+      "manifestSHA256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568",
+      "filesRehashed": 7
+    },
+    {
+      "root": "/workspace/artifacts/helix-firstpaint-20261118/font-complete-v2-input",
+      "manifestSHA256": "50f6c679f9ff7df579df45ee0a68d60f1762b399ca0fa8d9d9c03d7065ea402b",
+      "filesRehashed": 20
+    },
+    {
+      "root": "/workspace/artifacts/helix-s1-recovery-20261118/tablet-font-discovery-input",
+      "manifestSHA256": "55f6cab4d49dc619f05f857c2678edb03cb8d201b12d28f3397971db149b8a44",
+      "filesRehashed": 5
+    },
+    {
+      "root": "/workspace/artifacts/helix-s1-recovery-20261118/pc-delay-input",
+      "manifestSHA256": "c5151869fe64607cd9b2097ff43d4481d80de4d1fd4ec5205eeda1288b8a0bf3",
+      "filesRehashed": 5
+    },
+    {
+      "root": "/workspace/artifacts/helix-loader-consistency-20261117/current-js",
+      "manifestSHA256": "7fdcb23c70e30dabe51f38ce9963070edacb25c42aba47450319339ce9edaba2",
+      "filesRehashed": 1
+    }
+  ],
+  "originalBodyFilesRehashed": 2130,
+  "actualGSAP": {
+    "url": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js",
+    "status": 200,
+    "sha256": "efc85c7eb141819717cda0033484a84b1c890d13b02e355a2fec79d424b20e7a",
+    "bytes": 71520,
+    "archivedSHA256": "efc85c7eb141819717cda0033484a84b1c890d13b02e355a2fec79d424b20e7a",
+    "sameBytes": true,
+    "observedAt": "2026-11-18T05:07:57.041364+00:00"
+  },
+  "actualSection1Assets": [
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.css",
+      "sha256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+      "bytes": 2817,
+      "status": 200,
+      "observedAt": "2026-11-18T04:39:41.967990+00:00"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.js",
+      "sha256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+      "bytes": 18817,
+      "status": 200,
+      "observedAt": "2026-11-18T04:39:42.428658+00:00"
+    }
+  ],
+  "publicHTMLClosingCheck": [
+    {
+      "url": "https://www.helix-amc.com/",
+      "status": 200,
+      "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "bytes": 46693,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/discover-helix",
+      "status": 200,
+      "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "bytes": 87173,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/services",
+      "status": 200,
+      "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "bytes": 27823,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/faq",
+      "status": 200,
+      "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "bytes": 137809,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/internal-medicine",
+      "status": 200,
+      "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "bytes": 53286,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/",
+      "status": 200,
+      "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "bytes": 46618,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+      "status": 200,
+      "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "bytes": 87098,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/services",
+      "status": 200,
+      "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "bytes": 27748,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+      "status": 200,
+      "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "bytes": 137734,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+      "status": 200,
+      "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "bytes": 53211,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    }
+  ],
+  "closingRefs": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "fix/helix-residual-structure-20261117": "021a506a85ddaccd6508e0d64d97a768dfed466f",
+    "candidate/helix-services-owner-adoption-20261117": "719546330ce1413b2e68b6c3da45dd2d3798e7eb",
+    "recovery/helix-section1-recovery-20261118": "b12377cb6825557838f951dcad284dd6754cdc40"
+  },
+  "normalCompletionObservations": [
+    {
+      "width": 1440,
+      "version": "original",
+      "normalDoneFromNavigationMs": [
+        720.7999999970198,
+        610.4000000059605,
+        591.2000000029802
+      ],
+      "median": 610.4000000059605,
+      "range": [
+        591.2000000029802,
+        720.7999999970198
+      ],
+      "meaning": "Controlled init completion observation; not LCP or a claimed speed improvement"
+    },
+    {
+      "width": 1440,
+      "version": "candidate",
+      "normalDoneFromNavigationMs": [
+        574.6000000089407,
+        517.6000000089407,
+        655.8000000119209
+      ],
+      "median": 574.6000000089407,
+      "range": [
+        517.6000000089407,
+        655.8000000119209
+      ],
+      "meaning": "Controlled init completion observation; not LCP or a claimed speed improvement"
+    },
+    {
+      "width": 820,
+      "version": "original",
+      "normalDoneFromNavigationMs": [
+        539.6999999880791
+      ],
+      "median": 539.6999999880791,
+      "range": [
+        539.6999999880791,
+        539.6999999880791
+      ],
+      "meaning": "Controlled init completion observation; not LCP or a claimed speed improvement"
+    },
+    {
+      "width": 820,
+      "version": "candidate",
+      "normalDoneFromNavigationMs": [
+        561.2999999970198
+      ],
+      "median": 561.2999999970198,
+      "range": [
+        561.2999999970198,
+        561.2999999970198
+      ],
+      "meaning": "Controlled init completion observation; not LCP or a claimed speed improvement"
+    },
+    {
+      "width": 390,
+      "version": "original",
+      "normalDoneFromNavigationMs": [
+        530.1000000089407,
+        552,
+        521.0999999940395
+      ],
+      "median": 530.1000000089407,
+      "range": [
+        521.0999999940395,
+        552
+      ],
+      "meaning": "Controlled init completion observation; not LCP or a claimed speed improvement"
+    },
+    {
+      "width": 390,
+      "version": "candidate",
+      "normalDoneFromNavigationMs": [
+        550,
+        500.79999999701977,
+        532
+      ],
+      "median": 532,
+      "range": [
+        500.79999999701977,
+        550
+      ],
+      "meaning": "Controlled init completion observation; not LCP or a claimed speed improvement"
+    }
+  ],
+  "secondContinuousRunStopped": {
+    "reason": "Repeated unknown Typekit batch; stop only identified task integration and re-diagnose complete26 inputs",
+    "rootPIDs": [
+      181759
+    ],
+    "taskProcessTreePIDs": [
+      181759,
+      183833,
+      183847,
+      183864,
+      183865,
+      183885,
+      183900,
+      183901,
+      184724,
+      184733,
+      184734
+    ],
+    "pass": false,
+    "partialResultsNotSummed": true
+  },
+  "secondStrictPreflightFailurePreserved": true,
+  "fontBatchingOwnerAnalysisSHA256": "ae2ec2119739d13ac297ca51a35ae060d9e9b08f462a1eb91bf9fb2093fe813c",
+  "newPCFontInput": {
+    "root": "/workspace/artifacts/helix-s1-recovery-20261118/pc-delay-input",
+    "manifestSHA256": "c5151869fe64607cd9b2097ff43d4481d80de4d1fd4ec5205eeda1288b8a0bf3",
+    "exactNewURLs": 5,
+    "historicalResponseReplacement": false
+  },
+  "thirdContinuousRunPreserved": {
+    "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected23-stage integration: previous22 stages retained, plus26 Section1 recovery pairs and24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; original Hero failure-marker recovery stays failed while candidate must actually complete ready/done, restore ghosts and preserve motion/typography; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 1,
+        "error": null
+      }
+    ],
+    "pass": false
+  },
+  "fixtureAPIModelFix": {
+    "commit": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+    "productionChanged": false,
+    "assertionsChanged": false,
+    "methodAdded": "document.removeEventListener"
+  },
+  "firstFailedContinuousRunPreserved": {
+    "source": "bcfe51e4bc430b83964a893175a106c64b8cde47",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected23-stage integration: previous22 stages retained, plus26 Section1 recovery pairs and24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; original Hero failure-marker recovery stays failed while candidate must actually complete ready/done, restore ghosts and preserve motion/typography; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 1,
+        "error": null
+      }
+    ],
+    "pass": false
+  },
+  "offlinePreflightSHA256": "b35f144daa965f9fb13b21ed69a296715b7aa13a3d1a86a62cc285225e62a4d8",
+  "newTabletFontInput": {
+    "root": "/workspace/artifacts/helix-s1-recovery-20261118/tablet-font-discovery-input",
+    "manifestSHA256": "55f6cab4d49dc619f05f857c2678edb03cb8d201b12d28f3397971db149b8a44",
+    "exactNewURLs": 5,
+    "historicalResponseReplacement": false
+  },
+  "failedExperimentsPreserved": [
+    "Prior bcfe51e v3 ran23 with22 pass and final VM missing standard Document API, preserved without promotion",
+    "First bcfe51e continuous23 stopped at tablet GSAP delay original due5 unrecorded Typekit URLs; partial successes not summed",
+    "Original unmodified4-execution reproduction",
+    "after-head wrong section expectation, ghost selection confusion and mobile detach typography change",
+    "unit-full pending snapshot before DOM parse",
+    "input archive v1 external symlinks and v2 missing root body bindings; v3 locally restored successfully"
+  ],
+  "remaining": {
+    "D03_D07": "This native GSAP load recovery unit is verified. Arbitrary Section1 execution faults, inline/global injection without a native script load, missing DOM recovery, head-helper-absent legacy/mixed module ownership, other firstpaint/head/whole-section-copy boundaries are not claimed solved.",
+    "D02": "Other form labels/titles remain independent follow-up; no global wrap policy changed",
+    "D05": "Other consumed style ownership remains follow-up; completed CTA properties unchanged",
+    "D06": {
+      "expectedWebKit": "/home/agent/.cache/ms-playwright/webkit-2227/pw_run.sh",
+      "binaryExists": false,
+      "physicalDeviceAvailable": false,
+      "actualSafariIOSIPadVerified": false
+    },
+    "D04": "HTTP200 generic execution faults, legacy producer early failures, silent pending and future @main/cache compatibility remain",
+    "V0_U01": "Not reopened/promoted",
+    "independentWholeStructureAudit": "Incomplete; separate clone automation is not an independent human full-site audit",
+    "publicAdoption": "No public package validation/deployment.719 remains reference only and does not represent latest E1/P3/D03 work."
+  },
+  "rawStorage": {
+    "localRoot": "/workspace/artifacts/helix-s1-recovery-20261118",
+    "remotePreservationComplete": false,
+    "remoteUploadAttempt": {
+      "status": "Rejected by automatic approval review; not uploaded",
+      "reason": "Specific payload external transfer approval absent",
+      "destinationFolder": "1tKIoee51xS8Pbe5BDbGdhAwfXhsqtkzV",
+      "retryAfterRejection": false
+    },
+    "preparedApprovalPayloads": [
+      {
+        "path": "/workspace/artifacts/HELIX-S1-Recovery-Replay-Inputs-v5-20261118.tar.gz",
+        "bytes": 41712972,
+        "sha256": "18aae6719ac337390a148dba310aa5b0dd81a6f4178453424f6fb963c4853457",
+        "md5": "8ebbf07ccb43e19ddd4776ee45f3f9e0",
+        "roots": 13,
+        "uniqueBodies": 408,
+        "bodyBytes": 59509956
+      },
+      {
+        "path": "/workspace/artifacts/HELIX-S1-Recovery-Raw-Evidence-v2-20261118.tar.gz",
+        "bytes": 99078328,
+        "sha256": "912af0dd39e874e6eef33b69ff9d9f5e3d6908e2a95252574de4eef91c2c63dd",
+        "md5": "aa232ce94d9cbca8c32e809faa3eb800",
+        "archiveLocalReadback": true,
+        "contentDeduplicatedBySHA256": true,
+        "uniqueContentFiles": 1482,
+        "hardlinks": "Internal archive paths only; no external symlinks; all original file paths preserved",
+        "inventorySHA256": "f7d233f5c91af00b6a6dd137dd8d70457b3e3eba6856901ca70d9feabf23172b",
+        "files": 2481,
+        "remoteUploaded": false
+      }
+    ],
+    "githubScope": "Source/tests,ownership/verdict/keySHA/recovery only; not the raw body archive",
+    "rawInventory": {
+      "path": "/workspace/artifacts/helix-s1-recovery-20261118/raw-inventory-v2.json",
+      "files": 2480,
+      "sha256": "f7d233f5c91af00b6a6dd137dd8d70457b3e3eba6856901ca70d9feabf23172b"
+    }
+  },
+  "keyEvidenceSHA256": {
+    "final-continuous-v4/results.json": "402882629389852c15f2aae83c5ac0391243eeb266e3ba23f8e90846d4820d9d",
+    "final-continuous-v4/section1-recovery/results.json": "88f24ad3b9dbdb0074404b8376af604de3d412333bbeea6cc8e9d550e415e4c5",
+    "final-continuous-v4/firstpaint-heading/results.json": "8bdf7176b092185d9939b3cfd3ce2af2fa87936edbd69122ff37b0e637111c6d",
+    "negative-v4/results.json": "3c75b424fda1e79e5def216c183ec0a82de2fb087c794e771a69c0453faa9e61",
+    "portable-replay-v5/results.json": "32e87b729c154da2a51a564083c2fa005f33d675f88bf52abd0f023162de3483",
+    "verification-summary.json": "3b0f37786c588b16e98a0a79a222fa04cb49861269d6b6ba4b8b8dfb85ec192e",
+    "header-pixel-check-v4.json": "8b19c65bb9cca32de83e9fc869b2687f7e397ea1b8f1bf57371afa527edfeac5",
+    "typekit-owner-analysis.json": "ae2ec2119739d13ac297ca51a35ae060d9e9b08f462a1eb91bf9fb2093fe813c",
+    "divider-scroll-v4-v2/results.json": "d872686d1fe0e4d85a48bf0035cbdaabf2f59baad998492d4af60ddc9014f1f8",
+    "divider-probe-v2-provenance.json": "144c60400285f24e26d9f2f9630182b6439770e331124802bc8298dcf8252f23"
+  },
+  "actualStability": "Hero no longer requires GSAP to arrive during the first40 polls in the tested work-source contract; recovery produces actual completion and preserves unrelated screens. Overall structure and remote evidence delivery are incomplete.",
+  "mainStagingMerged": false,
+  "publicHeadPinSettingsChanged": false,
+  "WebflowPublished": false,
+  "operatingDeployment": false,
+  "supplementalDivider": {
+    "frozenSource": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+    "executions": 6,
+    "scenarios": [
+      "normal",
+      "after-head"
+    ],
+    "widths": [
+      1440,
+      820,
+      390
+    ],
+    "pass": true,
+    "contract": "Actual unchanged first divider ScrollTriggers drive positive draw, full erase and reverse redraw; exactly one first-divider path; native restored GSAP and Hero completion retained. Other zig-path animations are not promoted to this contract.",
+    "notAddedToContinuous23Count": true,
+    "probeSourceSHA256": "54346485e5ab43d8aeb6f4973f06c82fd27896976ed84cfe3ff96f9620cce921",
+    "firstProbeFailurePreserved": "Initial test used shared line class and wrapper trigger instead of actual divider-owned SVG and discover button; product and official tests unchanged.",
+    "resultSHA256": "d872686d1fe0e4d85a48bf0035cbdaabf2f59baad998492d4af60ddc9014f1f8"
+  }
+}
