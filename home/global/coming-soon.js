@@ -722,8 +722,11 @@
       '.home_background_3 h2.home_title',
       '.home_background_3-mobile h2.home_title'
     ].forEach(function (selector) {
-      var heading = document.querySelector(selector);
-      if (heading) heading.classList.add('section2-heading');
+      /* Mark every consumer; a hidden copy must not take the visible one's hook.
+         Sections owns visibility and first-exposure initialization. */
+      document.querySelectorAll(selector).forEach(function (heading) {
+        heading.classList.add('section2-heading');
+      });
     });
     var hero = document.querySelector('.blackframe_image-hero');
     var specialty = document.querySelector('.home_background_2');
