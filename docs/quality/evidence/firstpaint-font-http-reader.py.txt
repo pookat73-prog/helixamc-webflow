@@ -1,0 +1,11 @@
+import sys,json,pathlib,urllib.request,hashlib,datetime,gzip,zlib
+url,folder,headers=sys.argv[1:];root=pathlib.Path(folder);used=json.loads(headers);used={k:v for k,v in used.items() if k.lower() in ['user-agent','accept','origin','referer']}
+with urllib.request.urlopen(urllib.request.Request(url,headers=used),timeout=25) as r:
+ b=r.read();wire=hashlib.sha256(b).hexdigest();enc=r.headers.get('Content-Encoding','').lower()
+ if enc=='gzip':b=gzip.decompress(b)
+ elif enc=='deflate':b=zlib.decompress(b)
+ elif enc:raise RuntimeError('Unsupported response encoding '+enc)
+ sha=hashlib.sha256(b).hexdigest();p=root/'bodies'/sha
+ if p.exists():assert p.read_bytes()==b
+ else:p.write_bytes(b)
+ print(json.dumps({'url':url,'status':r.status,'sha256':sha,'wireBodySHA256':wire,'contentEncoding':enc,'bytes':len(b),'contentType':r.headers.get('Content-Type'),'capturedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'requestHeaders':used,'responseHeaders':dict(r.headers)}))
