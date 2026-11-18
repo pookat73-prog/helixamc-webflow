@@ -75,5 +75,52 @@
   "rawRoot": "/workspace/artifacts/helix-firstpaint-20261118",
   "rawBodyRemoteArchive": false,
   "publicHeadPinPublishOrDeployChanged": false,
-  "remainingHeroRecovery": "Actual Section1 failure marker then native GSAP restore: sections recover; module claimtrue but Hero ready/done0 in both old/new. Not promoted as recovery success."
+  "remainingHeroRecovery": "Actual Section1 failure marker then native GSAP restore: sections recover; module claimtrue but Hero ready/done0 in both old/new. Not promoted as recovery success.",
+  "latestStatus": "F1 frozen22 stopped at missing dynamic Typekit input; new corpus20 sealed; stricter font offline preflight running",
+  "firstContinuousFailure": {
+    "source": "711ee35093d74680bf144982cfceda3070401bab",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected22-stage integration: previous21 stages retained, plus24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; actual Hero failure-marker recovery keeps Hero completion explicitly unresolved; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 1,
+        "error": null
+      }
+    ],
+    "pass": false
+  },
+  "currentTestCommit": "5d5247c879d9d4b078be8e61c2ef5927ab5c56ca",
+  "sealedNewFontInput": {
+    "root": "/workspace/artifacts/helix-firstpaint-20261118/font-complete-v2-input",
+    "manifestSHA256": "50f6c679f9ff7df579df45ee0a68d60f1762b399ca0fa8d9d9c03d7065ea402b",
+    "uniqueExactURLs": 20,
+    "sameURLDivergentBodies": 0,
+    "oldInputOverwritten": false
+  },
+  "diagnosticNotReleasePass": {
+    "fullMatrixPairs": 24,
+    "primaryFontHoldExecutions": 4,
+    "resultsPass": false
+  }
 }
