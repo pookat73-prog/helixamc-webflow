@@ -59,3 +59,9 @@
 최종 승인 검토 대상 입력은 `HELIX-S1-Recovery-Replay-Inputs-v3-20261118.tar.gz`,41,215,086B,SHA256 `07688babf7b8ecb1b60c7864440da978a94b719866989e244c88598a81384dad`다. 기존 거절 뒤 업로드 재시도는 없다. 결과 raw 묶음도 최종 검사 후 구체화하며 원격 보존은 미완료다.
 
 소비자 전체 검색에서 coming-soon,sections 외 실제 `home/global/scroll-hint.js`와 `home/section-divider/divider.js`도 done을 소비한다. 각자의 기존 다중 호출 guard·fallback·지연 재측정은 유지한다. 이번에 소유권을 이동하거나 그 파일을 수정하지 않는다.
+
+## 첫 동결23단계 중단 — 신규 tablet 입력
+
+첫 `final-continuous`는 integrity/scope/interactions/heading/firstpaint24쌍까지5단계를통과하고,new Hero 단위11쌍뒤tablet820 GSAP 지연의원본에서중단했다. 새조건이정확한미수록TypekitURL5개를요청했고 strict network/JS오류0계약이거절했다. 실제Hero완료/loop가있어도자산오류를무시해통과시키지않았다. source/tests `bcfe51e`·제품b8c1e4e·기준PNG/허용값은유지한다.
+
+새tablet6조건의수집진단은명시적diagnosticOnly/passfalse이며기능assert는유지한다. 미수록literalTypekit GET만실제Chrome요청헤더로확보하고수집시각/URL/응답SHA를남긴다. 기존URL/본문을대체하거나state/chunks/order를alias로정규화하지않는다. 새입력정적검증후다른출력경로에서23단계를처음부터재실행하며이전5단계/11쌍성공을합산하지않는다. v3재현아카이브는이새tablet입력을포함하지않으므로최종승인payload로아직확정하지않는다. 거절후어떤원시파일도재업로드하지않았다.
