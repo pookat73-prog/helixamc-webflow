@@ -1,0 +1,491 @@
+{
+  "dateKST": "2026-11-18",
+  "branch": "fix/helix-residual-structure-20261117",
+  "startingHead": "6cf78e7477d57db9bc38ebb3548078e5905ff1b2",
+  "preservedFrozenSourceAndTests": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+  "status": "Source inspection and closure gates recorded; D02/D05 dynamic reproduction and implementation blocked by failed execution environment",
+  "decision": {
+    "code": 3,
+    "label": "환경·자산 접근 문제로 실행 검증 범위 보류",
+    "fullIndependentFinalAuditReady": false,
+    "wholeStructureComplete": false,
+    "closureGateDefinitionPrepared": true,
+    "closureGateExecutionComplete": false,
+    "unboundedRefactorAuthorizedOrStarted": false
+  },
+  "environment": {
+    "id": "ccarenv_b64_Y2NhcmVudl82ZmVmMGMwMmM3MGM4MTkxOGRjMTFkZmNhMDZhMGI3OQ",
+    "waitOutcome": "failed",
+    "waitError": "exec-server protocol error: failed to read executor configuration",
+    "execProbeOutcome": "No usable execution environment is available",
+    "statusAPIReportedRunning": true,
+    "statusAPIRunningDidNotEstablishExecutableWorkspace": true,
+    "usableBrowserToolAvailable": false,
+    "localGitStatusAndUncommittedStateVerified": false,
+    "localRawSHARechecked": false,
+    "workspaceResetCleanRestoreOrOverwrite": false
+  },
+  "scope": {
+    "productChanged": false,
+    "officialTestsChanged": false,
+    "newProductCommits": [],
+    "newRecoveryCommits": [],
+    "newDynamicTestsExecuted": 0,
+    "docsOnly": true,
+    "reasonNoProductChange": "Original runtime failure and safe candidate recovery cannot be demonstrated without executable browser/raw access; static duplicate rules alone are insufficient"
+  },
+  "sourceIdentity": {
+    "refs": {
+      "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+      "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+      "fix/helix-residual-structure-20261117": "6cf78e7477d57db9bc38ebb3548078e5905ff1b2",
+      "candidate/helix-services-owner-adoption-20261117": "719546330ce1413b2e68b6c3da45dd2d3798e7eb"
+    },
+    "trees": {
+      "work": "83ea4abcee96fa12e4de42b0883e81f931c70abc",
+      "frozen": "271c766ae1869673057190c13b724187663c21af",
+      "main": "6f8c6094cca3d1f3d5e79958821f861058b63943",
+      "staging": "e819de186329dae27dc6107c4f9514d218584f63"
+    },
+    "frozenToStartingHead": [
+      "docs/quality/17-section1-recovery.md",
+      "docs/quality/HANDOFF.md",
+      "docs/quality/evidence/section1-recovery-progress.json",
+      "docs/quality/evidence/section1-recovery-final.json",
+      "docs/quality/evidence/section1-recovery-remote.json"
+    ],
+    "mainToStaging": [
+      "docs/diagnostic-imaging-measurement.md",
+      "docs/eomharim-restore-2026-11-16.md",
+      "scripts/test-imaging-measurement.cjs"
+    ],
+    "allRuntimeAndOfficialTestsAtWorkMatchFrozen": true,
+    "sources": [
+      {
+        "path": "global/floating-cta.css",
+        "gitBlob": "58fc358ece567a52457a88c8bdba471e3331d0f9",
+        "url": "https://github.com/pookat73-prog/helixamc-webflow/blob/6cf78e7477d57db9bc38ebb3548078e5905ff1b2/global/floating-cta.css"
+      },
+      {
+        "path": "global/floating-cta.js",
+        "gitBlob": "d0d0969fc77064a20eda33bf68f6dab15329668b",
+        "url": "https://github.com/pookat73-prog/helixamc-webflow/blob/6cf78e7477d57db9bc38ebb3548078e5905ff1b2/global/floating-cta.js"
+      },
+      {
+        "path": "global/word-wrap.css",
+        "gitBlob": "4ff58409d683883f0865cbc89040612d80aefe05",
+        "url": "https://github.com/pookat73-prog/helixamc-webflow/blob/6cf78e7477d57db9bc38ebb3548078e5905ff1b2/global/word-wrap.css"
+      },
+      {
+        "path": "global/floating-cta-mobile-fix.css",
+        "gitBlob": "5e53d332e9c235013b57594b052f47b8cf4b7717",
+        "url": "https://github.com/pookat73-prog/helixamc-webflow/blob/6cf78e7477d57db9bc38ebb3548078e5905ff1b2/global/floating-cta-mobile-fix.css"
+      },
+      {
+        "path": "global/global.css",
+        "gitBlob": "fb291a851c4be8d89a321dceb518163d4a76c8c1",
+        "url": "https://github.com/pookat73-prog/helixamc-webflow/blob/6cf78e7477d57db9bc38ebb3548078e5905ff1b2/global/global.css"
+      },
+      {
+        "path": "global/bootstrap.js",
+        "gitBlob": "07f0368542a20b1eaa433509cc7bac5507dce8fd",
+        "url": "https://github.com/pookat73-prog/helixamc-webflow/blob/6cf78e7477d57db9bc38ebb3548078e5905ff1b2/global/bootstrap.js"
+      }
+    ],
+    "priorFrozenCTACSS_SHA256": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+    "priorFrozenHeroSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+    "freshPublicHTMLCDNResponseOrRuntimeLoadedSHARechecked": false,
+    "publicHTTPBoundary": "Current Git refs/blobs were read, not live browser/CDN responses; prior live URL/SHA observations remain dated evidence"
+  },
+  "D02": {
+    "status": "source_candidate_only_dynamic_reproduction_blocked",
+    "rootCandidate": ".hx-fcta-form .hx-fcta-form__label",
+    "producer": "global/floating-cta.js",
+    "sourceMarkupInstances": [
+      {
+        "line": 115,
+        "for": "hxFcta_owner",
+        "publishedText": "이름 *"
+      },
+      {
+        "line": 122,
+        "for": "hxFcta_phone",
+        "publishedText": "연락처 *"
+      },
+      {
+        "line": 133,
+        "for": "hxFcta_memo",
+        "publishedText": "메모 (선택 · 최대 20자)"
+      }
+    ],
+    "actualRenderedDOMThisRunVerified": false,
+    "policy": "global/word-wrap.css body/body* sets keep-all and overflow-wrap:normal !important",
+    "componentRule": "floating-cta.css label rule currently sets font and color, not an emergency-wrap exception",
+    "collisionProven": false,
+    "originalOverflowProven": false,
+    "publishedCopyOverflowObserved": null,
+    "syntheticStressExecuted": false,
+    "sourceOnlyExcludedCandidate": {
+      "selector": ".hx-fcta-form__guide / .hx-fcta-form__labelrow",
+      "reason": "No match in the selected current producer; not proof of absence in every page or historical DOM"
+    },
+    "preservedRoots": [
+      "internal-medicine mobile list/title",
+      "form intro",
+      "consent body"
+    ],
+    "nextGate": "Confirm actual DOM and original overflow first. Four languages with direct text/span/a at3 sizes; select only one root, preserve published5page×3size text/font/heights/layout/functions and late global-policy boundaries. No whole-form/global-policy rewrite."
+  },
+  "D05": {
+    "status": "source_candidate_only_controlled_edit_blocked",
+    "propertyCandidate": "font-weight",
+    "consumerCandidate": ".hx-fcta-phone-btn .hx-fcta-call-btn__text",
+    "producerSourcePresent": true,
+    "actualRenderedDOMThisRunVerified": false,
+    "sourceObservation": "Phone label rules near836,926,967,1049 contain700/600 declarations; final shared nested-label rule may mask earlier edits. This may be intentional typography and is not a reproduced ownership defect.",
+    "computedOwnerAndEditMaskingVerified": false,
+    "excludedSourceOnlyCandidate": {
+      "selector": ".hx-fcta-phone-btn__subtext",
+      "reason": "Absent in selected current producer; compatibility/historical consumers not ruled out. No deletion or cleanup."
+    },
+    "otherWorkersAlignmentTailPreserved": true,
+    "protectedProperties": [
+      "height",
+      "width",
+      "decoration",
+      "copy gap",
+      "border color"
+    ],
+    "requiredMatrix": {
+      "widths": [
+        320,
+        359,
+        360,
+        361,
+        390,
+        479,
+        480,
+        766,
+        767,
+        768,
+        820,
+        990,
+        991,
+        992,
+        1279,
+        1280,
+        1440,
+        1920
+      ],
+      "variants": [
+        "",
+        "hx-fcta-mobile-bar",
+        "hx-fcta-overlap-fix",
+        "hx-fcta-overlap-fix hx-fcta-page-home",
+        "hx-fcta-mobile-bar hx-fcta-overlap-fix",
+        "legacy"
+      ],
+      "pairedComparisons": 108,
+      "controlledEdits": 36,
+      "requireUnchangedCSSGeometryPNG": true
+    },
+    "nextGate": "Run actual original controlled edit before cleanup. One property only; expected final owner per variant must be explicit, and no unrelated form/button/neighbor change. If no invalidation, preserve product."
+  },
+  "previousEvidence": {
+    "frozen": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+    "continuous23Pass": true,
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "newHeroPairs": 26,
+    "actualOriginalFailureToCandidateCompletePairs": 10,
+    "permanentFailurePairsStillIncomplete": 3,
+    "existingResultReexecutedThisRun": false,
+    "reuseBoundary": "Preserved same-source evidence only; cannot certify a new modified source. Future actual product changes require new frozen continuous23+new units."
+  },
+  "classification": {
+    "solvedWithPriorRegressionEvidence": [
+      {
+        "id": "D02-completed-roots",
+        "scope": "Internal-medicine mobile list/title, form intro and consent body",
+        "evidence": [
+          "09-residual-execution.md",
+          "10-next-residual.md",
+          "12-recovered-verification.md",
+          "section1-recovery-final.json"
+        ]
+      },
+      {
+        "id": "D05-completed-properties",
+        "scope": "CTA height/width/decoration/copy spacing/border color",
+        "evidence": [
+          "09-residual-execution.md",
+          "10-next-residual.md",
+          "12-recovered-verification.md"
+        ]
+      },
+      {
+        "id": "D03-D07-completed-units",
+        "scope": "Section-local pairing/first-exposure hooks/heading writers and native GSAP Hero recovery",
+        "evidence": [
+          "09-residual-execution.md",
+          "12-recovered-verification.md",
+          "16-firstpaint-hero.md",
+          "17-section1-recovery.md"
+        ]
+      },
+      {
+        "id": "D04-completed-units",
+        "scope": "Specified native-resource/owner adoption and GSAP dependency/pending-tag units; not generic execution recovery",
+        "evidence": [
+          "13-loader-consistency.md",
+          "14-execution-residual.md"
+        ]
+      }
+    ],
+    "investigatedButNotReproduced": [
+      {
+        "id": "historical-mixed-class-prototype",
+        "scope": "09 records an earlier unreproduced hypothesis, no product adoption",
+        "basis": "Historical only; not a new same-source execution"
+      }
+    ],
+    "notReproducedThisRun": [],
+    "reproducedButUnresolved": [
+      {
+        "id": "D04-http200-execution",
+        "inputType": "Explicit early/partial/syntax fault fixtures; not a claim current public JS contains syntax errors",
+        "failure": "Menu initialization/availability absent although HTTP200/native load/guard may be present",
+        "severity": "Core functionality blocker under the documented affected condition",
+        "basis": "13/14 historical recorded failures, no new execution",
+        "disposition": "Retain as blocking for an adoption package that promises or can reach the same condition; resolve locally or prove actual route excluded. Do not rename classification pass as recovery."
+      },
+      {
+        "id": "D04-legacy-shared-only",
+        "inputType": "Documented old-producer/shared-only early failure",
+        "failure": "Missing menu under the recorded boundary",
+        "severity": "Conditional core functionality blocker",
+        "basis": "14 and17; current public reach not reverified",
+        "disposition": "Establish actual URL/version reach before package and minimize owner-specific fix or demonstrate bounded exclusion."
+      },
+      {
+        "id": "V0-U01",
+        "inputType": "Original visual comparisons",
+        "failure": "V0 comparison instability unresolved; U01 promotion conditions unmet",
+        "severity": "Blocks U01 promotion/full visual pass claim",
+        "basis": "09/06; limited investigation closed",
+        "disposition": "No repeat experiments absent new discriminator; do not weaken thresholds or apply U01."
+      }
+    ],
+    "unverified": [
+      {
+        "id": "D02-label",
+        "reason": "No executable browser/raw access; source candidate not reproduction"
+      },
+      {
+        "id": "D05-font-weight",
+        "reason": "No computed-style/control-edit108/36 execution"
+      },
+      {
+        "id": "D03-other-boundaries",
+        "reason": "Other firstpaint, native-load-absent, arbitrary execution/missing-DOM/zig-motion boundaries not solved by prior Hero unit"
+      },
+      {
+        "id": "D04-pending-and-future-mixed",
+        "reason": "Known finite10s delay recovery is not proof of permanent silence, all producer combinations or future@main/cache behavior"
+      },
+      {
+        "id": "D06",
+        "reason": "Prior WebKit2227/device absence; current environment unusable. Actual Safari/iOS/iPad rotation unverified"
+      },
+      {
+        "id": "raw-remote-SHA",
+        "reason": "Existing2 archives uploaded and previously full-size references checked; remote bytes SHA remains unverified; no duplicate upload or regeneration"
+      },
+      {
+        "id": "current-public-assets",
+        "reason": "Live HTML/CDN/actual loaded SHA not freshly retrievable with present tools"
+      },
+      {
+        "id": "local-workspace",
+        "reason": "Local HEAD/status/uncommitted CSS and raw integrity cannot be checked until executor recovery"
+      }
+    ],
+    "publicAdoptionBlockers": [
+      {
+        "id": "asset-package",
+        "gate": "Fresh live HTML/pins/URLs/bytes SHA and selected minimal diff, including E1/P3/Hero where needed;719 is historical reference only"
+      },
+      {
+        "id": "functional-failure",
+        "gate": "No outstanding reproducible core menu/Hero/form failure in supported reachable package conditions; fixture-only/future conditions need explicit reach classification, not a blanket all-errors rewrite"
+      },
+      {
+        "id": "verification",
+        "gate": "Exact package-source regression and relevant visual/functional checks; new source requires fresh continuous23+new units and own inverse/1px detection. Preserve PNG/mask/100px/.2/expected failures"
+      },
+      {
+        "id": "environment",
+        "gate": "Executable browser/raw and relevant actual WebKit/device scope; missing evidence cannot become pass"
+      },
+      {
+        "id": "authorization",
+        "gate": "Public head/pin/settings, main/staging, Publish and production remain separately unauthorized"
+      }
+    ]
+  },
+  "backup": {
+    "duplicateUploadPerformed": false,
+    "newRawGenerated": false,
+    "remoteSHA256ReadbackVerified": false,
+    "files": [
+      {
+        "id": "198e8oxtu_R4aLEWS8jTC5pJ6X2Or_n2t",
+        "url": "https://drive.google.com/file/d/198e8oxtu_R4aLEWS8jTC5pJ6X2Or_n2t/view?usp=drivesdk",
+        "name": "HELIX-S1-Recovery-Replay-Inputs-v5-20261118.tar.gz",
+        "bytes": 41712972,
+        "expectedSHA256": "18aae6719ac337390a148dba310aa5b0dd81a6f4178453424f6fb963c4853457"
+      },
+      {
+        "id": "1Zp12L23wG5UqbQV2jA2ENMe_EX-9rHOd",
+        "url": "https://drive.google.com/file/d/1Zp12L23wG5UqbQV2jA2ENMe_EX-9rHOd/view?usp=drivesdk",
+        "name": "HELIX-S1-Recovery-Raw-Evidence-v2-20261118.tar.gz",
+        "bytes": 99078328,
+        "expectedSHA256": "912af0dd39e874e6eef33b69ff9d9f5e3d6908e2a95252574de4eef91c2c63dd"
+      }
+    ],
+    "thisRunByteDownloadOrSHAComparison": false
+  },
+  "boundedNextExecution": {
+    "order": [
+      "Recover executor and inspect existing workspace read-only",
+      "D02 one root only if reproduced",
+      "D05 one property only if original edit masked; sameCSS file sequential",
+      "Freeze selected source/tests and run previous23 plus new units continuously if product changed",
+      "Inject1px and exact own inverse, restore only own hunks",
+      "Evaluate audit gates once and stop micro-improvement search"
+    ],
+    "twoRepeatedFailures": "Stop added overrides; diagnose input/owner/version; preserve failures",
+    "ifNoReproduction": "Record tested source/input coverage as no reproduced defect and do not alter product",
+    "ifEnvironmentStillMissing": "Keep only blocked scopes pending; source/docs review does not substitute dynamic evidence"
+  },
+  "operatingDeployment": false,
+  "mainStagingMerged": false,
+  "publicHeadPinSettingsChanged": false,
+  "WebflowPublished": false,
+  "observedAtKST": "2026-11-18T17:52:20.000+09:00"
+}
