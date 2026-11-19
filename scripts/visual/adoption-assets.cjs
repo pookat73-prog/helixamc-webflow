@@ -27,9 +27,10 @@ async function menu(page) {
   await page.locator('.hx-menu-close').click(); await page.waitForTimeout(400);
   assert.equal(await button.getAttribute('aria-expanded'), 'false');
 }
-async function form(page) {
+async function form(page, checkPreserved) {
   await page.evaluate(() => scrollTo(0, 0)); await page.locator('.hx-fcta-form-btn').click(); await page.waitForTimeout(400);
   const start = await page.evaluate(() => scrollY); assert.equal(await wheel(page), start, 'form background wheel lock');
+  if (checkPreserved) await checkPreserved();
   await page.locator('#hxFcta_owner').fill('검증용 입력');
   await page.locator('#hxFctaPrivacyMore').click(); assert.equal(await page.locator('#hxFctaPrivacyDetail').getAttribute('hidden'), null);
   await page.locator('#hxFctaPrivacyMore').click(); assert.notEqual(await page.locator('#hxFctaPrivacyDetail').getAttribute('hidden'), null);
@@ -50,6 +51,30 @@ async function contract(page) {
 }
 // Same static-image precondition as form-label-wrap: rounded corners include the page video.
 async function freezeMedia(page){return page.evaluate(async()=>{await document.fonts.ready;for(const a of document.getAnimations())if(a.effect.getTiming().iterations===Infinity){a.pause();a.currentTime=0;}for(const v of document.querySelectorAll('video')){v.pause();if(v.readyState>=2&&v.currentTime>.001)await new Promise((ok,no)=>{const t=setTimeout(()=>no(Error('Video seek did not settle')),5000);v.addEventListener('seeked',()=>{clearTimeout(t);ok();},{once:true});v.currentTime=0;});}await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));return [...document.querySelectorAll('video')].map(v=>({time:v.currentTime,paused:v.paused,ready:v.readyState}));});}
+
+async function staticMedia(page, check) {
+  const prior = await page.evaluateHandle(() => ({
+    animations: document.getAnimations().filter(a=>a.effect.getTiming().iterations===Infinity).map(a=>({a,time:a.currentTime,state:a.playState})),
+    videos: [...document.querySelectorAll('video')].map(v=>({v,time:v.currentTime,paused:v.paused})),
+  }));
+  try {
+    const media=await freezeMedia(page);
+    assert.ok(media.every(v=>v.paused&&v.time<=.001),'Static PNG must use the same paused first media frame');
+    return await check(media);
+  } finally {
+    await page.evaluate(async prior=>{
+      for(const s of prior.animations){s.a.currentTime=s.time;if(s.state==='running')s.a.play();else if(s.state==='idle')s.a.cancel();else s.a.pause();}
+      for(const s of prior.videos){s.v.currentTime=s.time;if(!s.paused)await s.v.play();}
+    },prior);
+    await prior.dispose();
+  }
+}
+async function modalContract(page) {
+  return page.evaluate(()=>[...document.querySelectorAll('.hx-fcta-modal__box,.hx-fcta-modal__box *')].map(e=>({
+    tag:e.tagName,cls:e.className,rect:e.getBoundingClientRect().toJSON(),
+    css:Object.fromEntries([...getComputedStyle(e)].map(p=>[p,getComputedStyle(e).getPropertyValue(p)])),
+  })));
+}
 
 async function open(browser, slug, width, version) {
   const ctx = await browser.newContext({ viewport: { width, height: width === 820 ? 1180 : width === 390 ? 844 : 900 }, locale: 'ko-KR', timezoneId: 'Asia/Seoul', serviceWorkers: 'block' });
@@ -129,6 +154,17 @@ async function fault(browser, slug, asset, scenario) {
         const t=await open(b,slug,width,version);
         try{
           await navigate(t,slug);row[version]=await contract(t.page);
+          // Compare the same initial interaction history in both versions.
+          // Menu/wheel/viewport tests run afterwards and retain a separate
+          // whole-form CSS/geometry invariant, rather than compare moving page
+          // pixels just outside a fractional modal screenshot boundary.
+          await t.page.evaluate(()=>scrollTo(0,0));await t.page.locator('.hx-fcta-form-btn').click();await t.page.waitForTimeout(450);
+          let beforeForm;
+          shots.push(await staticMedia(t.page,async media=>{
+            row[version+'MediaAtPNG']=media;beforeForm=await modalContract(t.page);
+            return t.page.locator('.hx-fcta-modal__box').screenshot({path:path.join(output,slug+'-'+width+'-'+version+'.png'),animations:'disabled',caret:'hide',scale:'css'});
+          }));
+          await t.page.keyboard.press('Escape');await t.page.waitForTimeout(400);
           if(version==='candidate') {
             await menu(t.page);
             if (slug === 'home') {
@@ -141,14 +177,12 @@ async function fault(browser, slug, asset, scenario) {
                 assert.ok(await t.page.locator('svg .helix-line-path').count());
               }
             }
-          }
-          await t.page.evaluate(()=>scrollTo(0,0));await t.page.locator('.hx-fcta-form-btn').click();await t.page.waitForTimeout(450);
-          row[version+'MediaAtPNG']=await freezeMedia(t.page);
-          assert.ok(row[version+'MediaAtPNG'].every(v=>v.paused&&v.time<=.001),'Static PNG must use the same paused first media frame');
-          shots.push(await t.page.locator('.hx-fcta-modal__box').screenshot({path:path.join(output,slug+'-'+width+'-'+version+'.png'),animations:'disabled',caret:'hide',scale:'css'}));
-          await t.page.keyboard.press('Escape');await t.page.waitForTimeout(400);
-          if(version==='candidate'){
-            await form(t.page);
+            await form(t.page,async()=>staticMedia(t.page,async()=>{
+              const afterForm=await modalContract(t.page);
+              fs.writeFileSync(path.join(output,slug+'-'+width+'-form-isolation.json'),JSON.stringify({beforeForm,afterForm},null,2));
+              assert.deepEqual(afterForm,beforeForm,'Menu and reverse viewport transitions must preserve every form-node computed style and geometry');
+              row.formIsolation=true;
+            }));
             // A repeated actual common entry must respect initialized owners.
             const before=await t.page.locator('.hx-menu-overlay').count();
             await t.page.evaluate(src=>{const s=document.createElement('script');s.src=src;document.head.appendChild(s);},'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+refFor(slug)+'/global/bootstrap.js');
