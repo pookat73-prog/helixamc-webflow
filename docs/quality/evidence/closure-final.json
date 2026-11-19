@@ -1,0 +1,1062 @@
+{
+  "dateKST": "2026-11-19",
+  "startingHead": "4517b5d839d1cc145ce7717d2e880f5861432e7c",
+  "previousFrozen": "c4b2e5aa1344239b128b4ed6e6a27bcdbcdb3adf",
+  "frozenSourceAndTests": "06f8bbaee3a5c7865362af501966933dac951f37",
+  "productCommit": "46af33742bcc43b3b5df78149f9ca4120f37721a",
+  "recoveryCommit": "19455fd41fd07d554eaa8c9308bf7941a5b2671b",
+  "rejectedRecovery": "5c96a640091f69153b0a168bef616fae98dbcac5 (also undoes docs; do not use)",
+  "executionRecovery": {
+    "sourceAndOfficialTestsMatchC4": true,
+    "inputRoots": 12,
+    "originalRootBodyBindings": 2130,
+    "rawEvidenceFilesRehashed": 2480,
+    "priorContinuous23ResultRetained": true,
+    "runtimeSHA256": {
+      "home/global/hamburger.js": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "services/bootstrap.js": "1847a59089eabcb319ae67c17933695c71f151ee8413ca3cc6b6c4ea52ceaf45",
+      "global/bootstrap.js": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+      "global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+      "global/floating-cta.css": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+      "home/global/sections-animations.js": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+      "home/global/coming-soon.js": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+      "home/section1/section1.js": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
+    },
+    "testSHA256": {
+      "scripts/visual/section1-recovery.cjs": "5005a330fcec4492fb7ec548e30758aa0f1148161af4d166cb43fd3982c40376",
+      "scripts/visual/next-integration.cjs": "b14466a0cd0aeb2ccef25a6ceac78c84b09f6fbb5789b530d165b13413f32dcb",
+      "scripts/visual/form-intro-wrap.cjs": "cea84164ad5a0b8e0ffcb528f059d52e36ba993910b12a429795dcfb9bc50f98",
+      "scripts/visual/cta-form-border.cjs": "28318adcace8eff0481c1825b52733f5330ba3180dad5a6a33c0bac097eb8960"
+    },
+    "browserProcessStates": {
+      "Z": 689
+    },
+    "workspaceClean": true
+  },
+  "runtimeSHA256": {
+    "global/bootstrap.js": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+    "global/global.css": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+    "global/floating-cta.css": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+    "home/global/sections-animations.js": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+    "home/global/buttons.js": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+    "home/global/coming-soon.js": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+    "home/global/hamburger.css": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+    "home/global/hamburger.js": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+    "services/bootstrap.js": "1847a59089eabcb319ae67c17933695c71f151ee8413ca3cc6b6c4ea52ceaf45",
+    "home/section1/section1.js": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
+  },
+  "testSHA256": {
+    "scripts/visual/form-label-wrap.cjs": "c68daa652e5317d8d2137f7955fa604b0edd6f46a9cb9955d91783037dc04399",
+    "scripts/visual/cta-phone-weight.cjs": "30743186c7de09339fac6bd3a8db41dbf3fafd26357fd972d4ae57d1e8a593e7",
+    "scripts/visual/form-intro-wrap.cjs": "4911d98b1927297e73a4dbd16fbd17001040e3f319c4f8762628dea1b5af9e99",
+    "scripts/visual/consent-body-wrap.cjs": "fb48818178dfd34d5d39376422e760be423ed2e073df1e049ef9d0b28b3b8e4d",
+    "scripts/visual/next-integration.cjs": "60e6f2cae8f1edfd77f2be37ddc5caf3ca2e43cd2dc693ce15384da1e29b7c2e"
+  },
+  "inputs": [
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/home",
+      "manifestSHA256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/discover-helix",
+      "manifestSHA256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/services",
+      "manifestSHA256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/faq",
+      "manifestSHA256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/internal-medicine",
+      "manifestSHA256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb",
+      "filesRehashed": 351
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/inputs/imaging-v2",
+      "manifestSHA256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9",
+      "filesRehashed": 365
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/resource-extra",
+      "manifestSHA256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34",
+      "filesRehashed": 3
+    },
+    {
+      "root": "/workspace/artifacts/helix-residual-20261117/order-fonts-v2",
+      "manifestSHA256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568",
+      "filesRehashed": 7
+    },
+    {
+      "root": "/workspace/artifacts/helix-firstpaint-20261118/font-complete-v2-input",
+      "manifestSHA256": "50f6c679f9ff7df579df45ee0a68d60f1762b399ca0fa8d9d9c03d7065ea402b",
+      "filesRehashed": 20
+    },
+    {
+      "root": "/workspace/artifacts/helix-s1-recovery-20261118/tablet-font-discovery-input",
+      "manifestSHA256": "55f6cab4d49dc619f05f857c2678edb03cb8d201b12d28f3397971db149b8a44",
+      "filesRehashed": 5
+    },
+    {
+      "root": "/workspace/artifacts/helix-s1-recovery-20261118/pc-delay-input",
+      "manifestSHA256": "c5151869fe64607cd9b2097ff43d4481d80de4d1fd4ec5205eeda1288b8a0bf3",
+      "filesRehashed": 5
+    },
+    {
+      "root": "/workspace/artifacts/helix-loader-consistency-20261117/current-js",
+      "manifestSHA256": "7fdcb23c70e30dabe51f38ce9963070edacb25c42aba47450319339ce9edaba2",
+      "filesRehashed": 1
+    }
+  ],
+  "originalBodyBindingsRetained": 2130,
+  "oldRawFilesRehashed": 2480,
+  "D02": {
+    "root": ".hx-fcta-form .hx-fcta-form__label",
+    "actualConsumers": [
+      "hxFcta_owner",
+      "hxFcta_phone",
+      "hxFcta_memo"
+    ],
+    "change": "7 CSS lines: root and descendants own overflow-wrap:anywhere only",
+    "normalPublishedTextUnchanged": true,
+    "stressIsSynthetic": true,
+    "fontSubstitution": false,
+    "pairs": 15,
+    "stressMeasurementsOriginalAndCandidate": 216,
+    "originalOverflowsCandidateContains": true,
+    "publishedPNGExact": true,
+    "nonTargetGlyphTypographyGeometryExact": true,
+    "lateGlobalPolicyAndFormFeaturesPreserved": true
+  },
+  "D05": {
+    "selector": ".hx-fcta-phone-btn .hx-fcta-call-btn__text",
+    "property": "font-weight",
+    "pairs": 108,
+    "controlledEdits": 36,
+    "applicableEdits": 30,
+    "legacyNonConsumers": 6,
+    "old700EditMaskedByAuthored600Policy": true,
+    "actualFinal600OwnerEditEffective": true,
+    "actualSourceDOMInspected": true,
+    "sameByteInspectionCopyPreservesCSSAndGeometry": true,
+    "productChange": false,
+    "verdict": "No unintended final-owner masking reproduced for this property; do not generalize to every CTA rule."
+  },
+  "continuousIntegration": {
+    "source": "06f8bbaee3a5c7865362af501966933dac951f37",
+    "base": "42d432705def71d5486472b4f94aa099ad8d8c31",
+    "coverage": "One continuous selected25-stage integration: previous23 stages retained, plus15 form-label pairs and108/36 matched-label weight policy checks; preserves26 Section1 recovery pairs and24 firstpaint/heading pairs with normal PC/mobile3 repeats and mobile/tablet reverse transitions; original Hero failure-marker recovery stays failed while candidate must actually complete ready/done, restore ghosts and preserve motion/typography; execution classifications expanded6 to8 with explicit syntax faults. Adds8 actual dependency failure/normal pairs,8 concurrent pending producer executions and4 foreign ownership boundary conditions. Current fallback is a separately captured2026-11-17 response, not historical replacement. Mixed legacy early errors and arbitrary HTTP200 execution failures remain unresolved. V0/public reach/physical devices are not promoted.",
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-label",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "phone-weight-policy",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "pass": true
+  },
+  "executionMonitoringCorrection": {
+    "originalRunWasContinuous": true,
+    "controlSessionLostButProcessContinued": true,
+    "processNameWasMainThread": true,
+    "duplicateStopped": true,
+    "sourceAndTestsNeverChanged": true,
+    "noResultsSummed": true,
+    "mainExitCodeNotDirectlyRecoverable": true,
+    "all25ChildExitCodesAndFinalCompletionMarkerRequired": true
+  },
+  "negativeControls": {
+    "source": "06f8bbaee3a5c7865362af501966933dac951f37",
+    "labelInverseCommit": "19455fd41fd07d554eaa8c9308bf7941a5b2671b",
+    "inversePatchSHA256": "8c3097fb6b2fb44be0b3f98dbcd559b393706b1e215c99f2ab209c3bded34cc0",
+    "labelInverseExpectedFailureDetected": true,
+    "labelFailure": "390/candidate/hxFcta_owner/korean/direct: original overflow, candidate contains actual-font glyphs\n\ntrue !== false\n",
+    "noUnexpectedNetworkOrJSErrors": true,
+    "onePixelExpectedFailureDetected": true,
+    "ownHunksRestored": true,
+    "restoredLabelPairPass": true,
+    "finalCSS_SHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+    "clean": true
+  },
+  "partialRunsNotSummed": [
+    "duplicate v2 execution stopped after discovery that original continued; never summed",
+    "targeted label15 and weight108/36 preflight successes"
+  ],
+  "publicAssetsStart": [
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.css",
+      "status": 200,
+      "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+      "gitBlobSHA1": "143c269c78874ff69ec6ddabf142631b55c465d5",
+      "bytes": 33239,
+      "atUTC": "2026-11-19T00:15:40.147871+00:00"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.js",
+      "status": 200,
+      "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+      "gitBlobSHA1": "d0d0969fc77064a20eda33bf68f6dab15329668b",
+      "bytes": 37747,
+      "atUTC": "2026-11-19T00:15:40.476082+00:00"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta-mobile-fix.css",
+      "status": 200,
+      "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+      "gitBlobSHA1": "5e53d332e9c235013b57594b052f47b8cf4b7717",
+      "bytes": 2829,
+      "atUTC": "2026-11-19T00:15:41.342454+00:00"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/word-wrap.css",
+      "status": 200,
+      "sha256": "782c163e71a39b6106beb5d9c7c7bf296668a70e681fe7b936528a7a3e795fd6",
+      "gitBlobSHA1": "4ff58409d683883f0865cbc89040612d80aefe05",
+      "bytes": 406,
+      "atUTC": "2026-11-19T00:15:41.598718+00:00"
+    }
+  ],
+  "actualLoaderResponseTrace": [
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4517b5d839d1cc145ce7717d2e880f5861432e7c/services/bootstrap.js",
+      "path": "services/bootstrap.js",
+      "ref": "4517b5d839d1cc145ce7717d2e880f5861432e7c",
+      "status": 200,
+      "sha256": "1847a59089eabcb319ae67c17933695c71f151ee8413ca3cc6b6c4ea52ceaf45",
+      "bytes": 9653,
+      "gitBlob": "55fc744428c8d788a90254c5dd7b57ae000f1788",
+      "workingBytesSame": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@4517b5d839d1cc145ce7717d2e880f5861432e7c/home/global/hamburger.js",
+      "path": "home/global/hamburger.js",
+      "ref": "4517b5d839d1cc145ce7717d2e880f5861432e7c",
+      "status": 200,
+      "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "bytes": 18283,
+      "gitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+      "workingBytesSame": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@main/home/global/hamburger.js",
+      "path": "home/global/hamburger.js",
+      "ref": "main",
+      "status": 200,
+      "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+      "bytes": 17566,
+      "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+      "workingBytesSame": false
+    }
+  ],
+  "partialActualImmutableAssetRecords": [
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/bootstrap.js",
+      "path": "services/bootstrap.js",
+      "sha256": "1847a59089eabcb319ae67c17933695c71f151ee8413ca3cc6b6c4ea52ceaf45",
+      "bytes": 9653,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:29:56.435212+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/bootstrap.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/bootstrap.js",
+      "path": "global/bootstrap.js",
+      "sha256": "57d81dcb0cf2127b312ee7b1fdaba9a2279e879c18020e099e63fa7fe08384ec",
+      "bytes": 15559,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:29:57.377394+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/bootstrap.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/hamburger.js",
+      "path": "home/global/hamburger.js",
+      "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "bytes": 18283,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:29:58.421825+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/hamburger.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/viewport-fix.js",
+      "path": "global/viewport-fix.js",
+      "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+      "bytes": 5970,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:29:59.407774+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/viewport-fix.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/viewport.js",
+      "path": "global/viewport.js",
+      "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+      "bytes": 7222,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:00.210293+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/viewport.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/dept-border.js",
+      "path": "services/dept-border.js",
+      "sha256": "a162b309be91d539561491aa14f3e7d963626563d61ef10172eaefbdf34fe1fb",
+      "bytes": 14870,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:00.894070+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/dept-border.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/dept-nav.js",
+      "path": "services/dept-nav.js",
+      "sha256": "a9ecd5ddad6523161da1925decaa8ad8f5ced7857fb472152693f8b6d9e9be0c",
+      "bytes": 10463,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:01.915969+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/dept-nav.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/accessibility.js",
+      "path": "global/accessibility.js",
+      "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+      "bytes": 2766,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:03.139727+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/accessibility.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/measure-gate.js",
+      "path": "global/measure-gate.js",
+      "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+      "bytes": 10986,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:04.156877+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/measure-gate.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/ga4-base.js",
+      "path": "global/ga4-base.js",
+      "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+      "bytes": 10322,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:06.715184+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/ga4-base.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/session.js",
+      "path": "global/session.js",
+      "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+      "bytes": 19836,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:08.104576+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/session.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/sheet-log.js",
+      "path": "global/sheet-log.js",
+      "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+      "bytes": 8372,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:09.089770+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/sheet-log.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/ga-inspector.js",
+      "path": "global/ga-inspector.js",
+      "sha256": "14cf8f045549b8b0565ee17336ccb62389743fbd94bad8de5069d0a94fdb2335",
+      "bytes": 43437,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:09.795481+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/ga-inspector.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/scroll-depth.js",
+      "path": "global/scroll-depth.js",
+      "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+      "bytes": 9587,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:30:10.538866+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/scroll-depth.js",
+      "reusedVerifiedCapture": true
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/page-time.js",
+      "path": "global/page-time.js",
+      "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+      "bytes": 13879,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:49.541772+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/page-time.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/section-reach.js",
+      "path": "global/section-reach.js",
+      "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+      "bytes": 25990,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:50.628987+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/section-reach.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/services-ga.js",
+      "path": "services/services-ga.js",
+      "sha256": "e5c080d14c3f9f5904ece38b9139fd3dfd8f985aa1729de52fb53f7336739bb3",
+      "bytes": 3762,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:51.389691+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/services-ga.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/global.css",
+      "path": "global/global.css",
+      "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+      "bytes": 37537,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:52.704514+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/global.css"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta.css",
+      "path": "global/floating-cta.css",
+      "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+      "bytes": 33328,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:53.370261+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta.css"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta.js",
+      "path": "global/floating-cta.js",
+      "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+      "bytes": 37747,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:54.474483+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/hamburger.css",
+      "path": "home/global/hamburger.css",
+      "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+      "bytes": 6169,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:55.439891+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/hamburger.css"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/coming-soon.css",
+      "path": "home/global/coming-soon.css",
+      "sha256": "7508cc7b630e8456e9e8a896658ce22d283ecf537af7ff391b2c6227d9433a8c",
+      "bytes": 11374,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:56.598750+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/coming-soon.css"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/coming-soon.js",
+      "path": "home/global/coming-soon.js",
+      "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+      "bytes": 47770,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:57.425533+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/coming-soon.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/services.css",
+      "path": "services/services.css",
+      "sha256": "e09d5d1ad3b21670e749efad2323dbf6afe02a91aec9d66308a11e3a27d6511d",
+      "bytes": 2145,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:58.182838+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/services.css"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/seo-loader.js",
+      "path": "services/seo-loader.js",
+      "sha256": "430b57d4c9487d117f02a76512ed2dfcafbbf715237e03366ad9ad1244e37844",
+      "bytes": 1749,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:34:59.200301+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/services/seo-loader.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta-mobile-fix.css",
+      "path": "global/floating-cta-mobile-fix.css",
+      "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+      "bytes": 2829,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:35:00.199808+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta-mobile-fix.css"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta-mobile-fix.js",
+      "path": "global/floating-cta-mobile-fix.js",
+      "sha256": "c0a4047f21eda63d1dd1a9515e8e61e9f26f5aad44bfb59b6e367e41bb14b6f2",
+      "bytes": 708,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:35:01.334713+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/floating-cta-mobile-fix.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/top-button.css",
+      "path": "global/top-button.css",
+      "sha256": "4814c4b5bbdf7bdecc137e946230626a5daace3c7373e8d5c6a4e1a3860a4917",
+      "bytes": 2123,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:35:02.115982+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/top-button.css"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/top-button.js",
+      "path": "global/top-button.js",
+      "sha256": "6e15de8e59a72fb710b64710853894dc1ed41ff30a3afb864faa3f7a518cd995",
+      "bytes": 6157,
+      "contentType": "application/javascript; charset=utf-8",
+      "capturedAt": "2026-11-19T00:35:02.630194+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/global/top-button.js"
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/footer.css",
+      "path": "home/global/footer.css",
+      "sha256": "07d55be895e65677451897f1ee18c46b7fe3c816181b346e3dac80f26a427ed2",
+      "bytes": 4569,
+      "contentType": "text/css; charset=utf-8",
+      "capturedAt": "2026-11-19T00:35:03.449032+00:00",
+      "status": 200,
+      "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@46af33742bcc43b3b5df78149f9ca4120f37721a/home/global/footer.css"
+    }
+  ],
+  "publicHTMLStart": [
+    {
+      "url": "https://www.helix-amc.com/",
+      "status": 200,
+      "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "bytes": 46693,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/discover-helix",
+      "status": 200,
+      "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "bytes": 87173,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/services",
+      "status": 200,
+      "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "bytes": 27823,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/faq",
+      "status": 200,
+      "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "bytes": 137809,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/internal-medicine",
+      "status": 200,
+      "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "bytes": 53286,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/",
+      "status": 200,
+      "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "bytes": 46618,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+      "status": 200,
+      "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "bytes": 87098,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/services",
+      "status": 200,
+      "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "bytes": 27748,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+      "status": 200,
+      "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "bytes": 137734,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+      "status": 200,
+      "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "bytes": 53211,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    }
+  ],
+  "publicHTMLEnd": [
+    {
+      "url": "https://www.helix-amc.com/",
+      "status": 200,
+      "sha256": "ead5b31716825059bb1058eca05ba25d387409fecfecd44792bc2d589bb2ad57",
+      "bytes": 46693,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/discover-helix",
+      "status": 200,
+      "sha256": "604b822b80feb3aabb130bfb880f635b84c47a60b596f5c184563e7e36eeb239",
+      "bytes": 87173,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/services",
+      "status": 200,
+      "sha256": "7535186f07053cb308d34e78cc3e63b2118c285ce97b10e20b89c7a2e17506d0",
+      "bytes": 27823,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/faq",
+      "status": 200,
+      "sha256": "a6d2b829ca294ccfa3c1c27349de04145fddd78059a29dfe4dfa789314c90c9a",
+      "bytes": 137809,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://www.helix-amc.com/internal-medicine",
+      "status": 200,
+      "sha256": "b34f276cbc66440e0065cc3a79681e5b3e48d970b94476dc88ae62f4945e6d7a",
+      "bytes": 53286,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/",
+      "status": 200,
+      "sha256": "cc252c2c0e2718a2f945f774f5a4447a4886a329718b54820877200a46a8be20",
+      "bytes": 46618,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "ccb68a7c4523d83539afc5de20e309ff145547dd"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/discover-helix",
+      "status": 200,
+      "sha256": "c2c8fe0c3cde0b06c4e919b9e69bc0a6d83ac0e497f0dbccfe11952ec35956d0",
+      "bytes": 87098,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/services",
+      "status": 200,
+      "sha256": "11742616c5f412d3ba3de81de8d78efd3b202a5551259d0444b58dc0b0618a7a",
+      "bytes": 27748,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/faq",
+      "status": 200,
+      "sha256": "b1500e0ab148d0a0e6c36cd266e50f0b249ab9f4a64f6b2f4d7757004e38c499",
+      "bytes": 137734,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    },
+    {
+      "url": "https://helixanimalmedicalcenter.webflow.io/internal-medicine",
+      "status": 200,
+      "sha256": "39a00d7202716b2c5ea4812d4ca1af92c11fbc34faf14aea5d9524fc37f39b4e",
+      "bytes": 53211,
+      "assetPins": [
+        "4aeeb4a85469796c69ae46b54ecfed88bf00e54e",
+        "63812a31fe5c985de32e8c88b885a19de00f8f3e",
+        "6e64a396af818ff7531044c4fc7e40c5b463ad03"
+      ],
+      "generatedCSS": [
+        "helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"
+      ]
+    }
+  ],
+  "protectedRefsEnd": [
+    {
+      "ref": "main",
+      "sha": "3c4f78d4e75a06524b16a32e05e3185c48fbe800"
+    },
+    {
+      "ref": "staging",
+      "sha": "a074f455a4adc3dd8515255f6d779dea0afeeb10"
+    },
+    {
+      "ref": "fix/helix-residual-structure-20261117",
+      "sha": "769829b15a19a6e2e9a0cffe98fe0c69cef832bf"
+    }
+  ],
+  "D04ActualAdoption": {
+    "browserTests": 0,
+    "status": "blocked asset acquisition, not reproduced current public syntax failure",
+    "firstAttemptVerifiedAssets": 14,
+    "secondAttemptVerifiedAssets": 30,
+    "firstError": "HTTP403 global/page-time.js; separate diagnostic200",
+    "secondError": "HTTP403 home/global/footer.js; stopped after2 capture failures",
+    "fullClosure": false,
+    "originalInputsReplaced": false,
+    "syntheticAliasUsedAsActualAsset": false,
+    "actualMainHamburgerSHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+    "sourceMainDiffers": true,
+    "menuErrorClassificationPassIsNotRecovery": true,
+    "publicAdoptionBlockedUntilSupportedReachAndMenuContractVerified": true
+  },
+  "closure": {
+    "verdict": 3,
+    "label": "Specific asset/environment verification held; bounded D02/D05 work complete, whole stabilization and final public audit not complete",
+    "additionalMicroRefactoringStarted": false,
+    "sourceScopedReviewPossible": true,
+    "wholeFinalIndependentAuditReady": false,
+    "publicAdoptionReady": false,
+    "gates": {
+      "D02D05BoundedDecision": "passed",
+      "newFrozenRegressionAndOwnRollback": "passed25continuous plus separate negatives",
+      "supportedActualAdoptionMenuReach": "unverified; adoption gate closed",
+      "otherFirstpaintAndZigExceptions": "unverified outside completed units",
+      "D04ArbitraryExecutionErrorsQuietPendingFutureMixedCache": "unresolved or unverified, keep exact fixture boundaries",
+      "V0": "prior instability unresolved; new-cause evidence required to reopen",
+      "U01": "promotion held",
+      "D06": "actual WebKit binary/device unavailable; no product change",
+      "remoteArchives": "two prior uploads retained; remote download SHA unverified",
+      "newRawRemote": "not uploaded; local only"
+    }
+  },
+  "rawStorage": {
+    "newRawStatus": "local-only",
+    "root": "/workspace/artifacts/helix-final-closure-20261119",
+    "fileCount": 2418,
+    "bytes": 507539219,
+    "inventorySHA256": "9c7825d0a0b3ca0f26237e051ab098eb8e87eb61f03d522abecc363dad50644b",
+    "priorDriveArchivesReuploaded": false,
+    "priorDriveDownloadSHA256Verified": false
+  },
+  "keyEvidenceSHA256": {
+    "recovery-verification.json": "a2fc7d88ff8ce11b2a715b2be6c2f8782ea5af88e0664689bf5bc5c55aa31747",
+    "label-original/results.json": "6c1736e229bd906298ab8673721de57990dbfde5cb51a53498daa2af69c2baa1",
+    "label-full/results.json": "fd53b35e1c38db6d5fdd12b7a01ca8fb586af7cca094bc378d03a148232e6acd",
+    "phone-weight-v2/results.json": "5d57f793065e123db234d28114576204c0fd2a3443bc51b3ef4ce569e19ce6c6",
+    "label-candidate.patch": "c911c057d9054b59a9a623fe63c2c2145e752586298d2a6c597abff25f41d133",
+    "label-inverse.patch": "8c3097fb6b2fb44be0b3f98dbcd559b393706b1e215c99f2ab209c3bded34cc0",
+    "label-recovery-commit.json": "65e02ee581e73aa506e7c893a21ff568a6ae5ea9236a5e98321837d5a78f6313",
+    "final-continuous/results.json": "324cc7eb5715c08221a38369f835773932a9671cd4b6b6b6894452ae8c6a43c2",
+    "final-continuous.log": "abde6e0cb9778c02f6d1e2a73a7f5b871d704330208bc9479335c7a73cf4c192",
+    "final-continuous/interruption.json": "a4902207a52cf8ef33e64ecaa3336b145159647c7fc31e1e3698a25b9af64f13",
+    "duplicate-execution-correction.json": "756861bf14fab7ae61b9a97b61bef19367207143ead9c6336040bd9e7b88f304",
+    "cloud-status-after-transient.json": "1d992fe3ba819d04daacabbdcc2048d4dfa70dcf01ed2065d60f11f8af7ed721",
+    "negative/results.json": "3b56c23cb2cbd5f5f8e1678953d2a59f32fe27ebc2b50045bf572c0af91733c8",
+    "public-start/live-html-scan.json": "c7a260b8810a54ca61df30a7402581c538fa3b0e2d20d82e456505f28991ddf8",
+    "actual-assets/results.json": "50cc1631065ab100461480093409d8fcb23f3105ff1fc0b0ed520a5bad84bbdc",
+    "adoption-reach/initial.json": "199577559264ba6226f898e577e3a320fafddb321dceaaeca4ff61446e5033c6",
+    "adoption-input/capture-failure.json": "67530daf4fa1adc956c070614ff69d9bd4ce3d822a0cdc8829bac52d05e177d2",
+    "adoption-input-v2/capture-failure.json": "d6a8babe9b912a3278e49f4a14c7f82910a3b3faaba905505f53f71930a78a84",
+    "adoption-input-v2/failed-request.json": "738d34066559bde6afbf2d901e9a8eed4696cadb0d9d9015c736b72bd0f3ad71",
+    "public-end/live-html-scan.json": "c7a260b8810a54ca61df30a7402581c538fa3b0e2d20d82e456505f28991ddf8",
+    "protected-refs-end.json": "b9b5584d55bc96f8aae6f53174d0a9a108116b03dbeca5e9346355c556acee8e",
+    "webkit-availability.json": "5a6e3fdc59d91d1582bcd8fb61024c98337bd1509922696decefdaeb8d0467cd",
+    "raw-inventory.json": "9c7825d0a0b3ca0f26237e051ab098eb8e87eb61f03d522abecc363dad50644b"
+  },
+  "unchangedValidation": {
+    "PNG": 33,
+    "responses": 286,
+    "maskUnchanged": true,
+    "100pxUnchanged": true,
+    "threshold": 0.2,
+    "expectedFailureUnchanged": true
+  },
+  "protectedOperations": {
+    "mainStagingMerge": false,
+    "publicHeadPinSettingsChanged": false,
+    "WebflowPublish": false,
+    "deployment": false
+  }
+}
