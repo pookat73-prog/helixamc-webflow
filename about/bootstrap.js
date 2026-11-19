@@ -201,10 +201,6 @@
     link.href = url;
     if (onerr) link.onerror = onerr;
     if (onload) link.onload = onload;
-    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
-      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
-      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
-    }
     document.head.appendChild(link);
     return link;
   }
@@ -215,12 +211,6 @@
     s.async = !!independent;
     if (onload) s.onload = onload;
     if (onerr)  s.onerror = onerr;
-    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
-      s.addEventListener('error', function () {
-        s.setAttribute('data-helix-menu-js-error', s.src);
-        s.remove();
-      }, true);
-    }
     document.head.appendChild(s);
     return s;
   }

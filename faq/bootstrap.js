@@ -131,13 +131,6 @@
     // Reuse the failed link so retries keep the original CSS cascade order.
     var link = existingLink || document.createElement('link');
     link.rel  = 'stylesheet';
-    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
-      link.removeAttribute('data-helix-menu-css-error');
-      if (!existingLink) {
-        link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
-        link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
-      }
-    }
     link.onerror = onerr || null;
     link.href = url;
     if (!existingLink) document.head.appendChild(link);
