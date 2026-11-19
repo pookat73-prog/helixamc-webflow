@@ -48,6 +48,9 @@ async function contract(page) {
     counts: ['.hx-menu-overlay','.hx-fcta-modal','.helix-top-btn'].map(s => document.querySelectorAll(s).length),
   }));
 }
+// Same static-image precondition as form-label-wrap: rounded corners include the page video.
+async function freezeMedia(page){return page.evaluate(async()=>{await document.fonts.ready;for(const a of document.getAnimations())if(a.effect.getTiming().iterations===Infinity){a.pause();a.currentTime=0;}for(const v of document.querySelectorAll('video')){v.pause();if(v.readyState>=2&&v.currentTime>.001)await new Promise((ok,no)=>{const t=setTimeout(()=>no(Error('Video seek did not settle')),5000);v.addEventListener('seeked',()=>{clearTimeout(t);ok();},{once:true});v.currentTime=0;});}await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));return [...document.querySelectorAll('video')].map(v=>({time:v.currentTime,paused:v.paused,ready:v.readyState}));});}
+
 async function open(browser, slug, width, version) {
   const ctx = await browser.newContext({ viewport: { width, height: width === 820 ? 1180 : width === 390 ? 844 : 900 }, locale: 'ko-KR', timezoneId: 'Asia/Seoul', serviceWorkers: 'block' });
   const net = await install(ctx, { inputRoot: path.join(root, environment, version, slug), extraRoots: [] }), page = await ctx.newPage(), errors = [];
@@ -140,6 +143,8 @@ async function fault(browser, slug, asset, scenario) {
             }
           }
           await t.page.evaluate(()=>scrollTo(0,0));await t.page.locator('.hx-fcta-form-btn').click();await t.page.waitForTimeout(450);
+          row[version+'MediaAtPNG']=await freezeMedia(t.page);
+          assert.ok(row[version+'MediaAtPNG'].every(v=>v.paused&&v.time<=.001),'Static PNG must use the same paused first media frame');
           shots.push(await t.page.locator('.hx-fcta-modal__box').screenshot({path:path.join(output,slug+'-'+width+'-'+version+'.png'),animations:'disabled',caret:'hide',scale:'css'}));
           await t.page.keyboard.press('Escape');await t.page.waitForTimeout(400);
           if(version==='candidate'){
@@ -161,6 +166,6 @@ async function fault(browser, slug, asset, scenario) {
     for(const slug of pages)for(const asset of ['js','css'])for(const scenario of ['once','twice'])await fault(b,slug,asset,scenario);
     for(const asset of ['js','css'])for(const scenario of ['pending','permanent'])await fault(b,'faq',asset,scenario);
     if(environment==='staging')for(const asset of ['js','css'])await fault(b,'faq',asset,'late-api');
-    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({environment,profile,rows,pass:unavailableOriginal.length===0,verifiedContractsPass:true,unavailableOriginal,coverage:'All 15 candidate viewports; original comparison and exact modal PNG only where original assets are available (explicit blockers otherwise); real immutable asset bindings; menu/form wheel, Escape/focus; actual Home ready/done and reverse transitions; five producer CSS/JS native bounded failures; ten-second pending; permanent failure explicitly unavailable; duplicate entry. No runtime overlays or historical-response substitution.'},null,2));
+    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({environment,profile,rows,pass:unavailableOriginal.length===0,verifiedContractsPass:true,unavailableOriginal,coverage:'All 15 candidate viewports; original comparison and exact modal PNG only where original assets are available (explicit blockers otherwise); real immutable asset bindings; menu/form wheel, Escape/focus; actual Home ready/done and reverse transitions; five producer CSS/JS native bounded failures; ten-second pending; permanent failure explicitly unavailable; duplicate entry. Static modal PNG uses the existing paused first media frame; no mask/tolerance change. No runtime overlays or historical-response substitution.'},null,2));
   }finally{await b.close();}
 })().catch(e=>{save();console.error(e);process.exitCode=1;});
