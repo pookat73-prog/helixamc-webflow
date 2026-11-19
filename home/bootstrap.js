@@ -264,7 +264,7 @@
     return s;
   }
 
-  function loadFile(path, ref, done, menuRetry) {
+  function loadFile(path, ref, done) {
     /* Match the modules' own guards; retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
@@ -279,15 +279,13 @@
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH || menuRetry) {
-        console.warn('[helix-bootstrap] failed even from @' + ref + ':', path);
+      if (ref === BRANCH) {
+        console.warn('[helix-bootstrap] failed even from @' + BRANCH + ':', path);
         if (done) done();
         return;
       }
-      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
-      var nextRef = menuAsset ? ref : BRANCH;
-      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + nextRef);
-      loadFile(path, nextRef, done, menuAsset);
+      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
+      loadFile(path, BRANCH, done);
     };
     if (ext === 'css') {
       injectCss(url, fallback, done);
