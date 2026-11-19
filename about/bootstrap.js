@@ -225,7 +225,7 @@
     return s;
   }
 
-  function loadFile(path, ref, ready) {
+  function loadFile(path, ref, ready, menuRetry) {
     /* Ordinary visits never execute the inspector; avoid requesting it. */
     if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
       if (ready) ready();
@@ -243,8 +243,8 @@
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH) {
-        console.warn('[about-bootstrap] failed even from @' + BRANCH + ':', path);
+      if (ref === BRANCH || menuRetry) {
+        console.warn('[about-bootstrap] failed even from @' + ref + ':', path);
         if (path === 'home/global/card-stack.js') {
           var recovery = document.createElement('style');
           recovery.textContent = '.just-box_card{visibility:visible!important}';
@@ -253,8 +253,10 @@
         if (ready) ready();
         return;
       }
-      console.warn('[about-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
-      loadFile(path, BRANCH, ready);
+      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
+      var nextRef = menuAsset ? ref : BRANCH;
+      console.warn('[about-bootstrap] SHA load failed for ' + path + ', retrying @' + nextRef);
+      loadFile(path, nextRef, ready, menuAsset);
     };
     if (ext === 'css') injectCss(url, fallback, ready);
     else if (ext === 'js') injectJs(url, ready, fallback);
