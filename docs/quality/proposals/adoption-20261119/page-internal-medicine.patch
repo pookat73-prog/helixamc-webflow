@@ -1,0 +1,10 @@
+--- a/page-internal-medicine.html
++++ b/page-internal-medicine.html
+@@ -95,6 +95,7 @@
+   var cached = null;
+   try { cached = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+   function load(ref) {
++    ref="d63ed35ca19c6f2f830c3dc28f74cc15d9f70870"; /* PRIVATE selected package. */
+     var script = document.createElement('script');
+     script.src = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref +
+       '/internal-medicine/bootstrap.js' +

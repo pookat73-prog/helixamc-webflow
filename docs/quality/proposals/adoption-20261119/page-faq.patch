@@ -1,0 +1,10 @@
+--- a/page-faq.html
++++ b/page-faq.html
+@@ -17,6 +17,7 @@
+   var O='pookat73-prog',R='helixamc-webflow';
+   var b=/\.webflow\.io$/i.test(location.hostname)?'staging':'main';
+   function load(ref){
++    ref="d63ed35ca19c6f2f830c3dc28f74cc15d9f70870"; /* PRIVATE selected package. */
+     /* Download hints only; bootstrap retains stylesheet order and recovery. */
+     try{['faq/faq.css','faq/faq-responsive.css'].forEach(function(path){
+       var u='https://cdn.jsdelivr.net/gh/'+O+'/'+R+'@'+ref+'/'+path;

@@ -4,6 +4,8 @@
 
 ## 현재 실행 — 실제 CDN 원인 확인 / 최소 전달 패키지 / FAQ 국소 복구 검증 중
 
+**최신 체크포인트:** staging Home 전달조립의firstpaint 선행코드 누락을 실제ready신호 실패로 검출해823c797로 대체했다. 현재 미적용 후보는d63ed35(정식/비Home4페이지)/823c797(staging Home 전용)이며 각각 실제74URL200/Git blob 일치다. [6개 저장블록 적용·역변경 패치](proposals/adoption-20261119/manifest.json)와 [파일별자산대장](evidence/adoption-package.json)을 준비했고 Webflow 설정은읽기만했다.4개제품 역커밋 검출/자기hunk복구와1px검출/108·36복구도 통과했다.09291a0의clean별도clone에서25+실제자산 연속검증 진행중이다. **원본staging About 두실제URL도50MB제한403이므로 비Home4원본비교/기존ref운영원복은 미승격이며 전체감사/적용호환성완료가아니다.** 아래 초기 후보·상태는 이력이다.
+
 추가 체크포인트: [20의 추가 재현·제품 기록](20-adoption-verification.md) 참조. native 실패 영수증3f4c76d·동일 revision 메뉴 retry cb0c4d8·load 이후 외부 pending owner handoff8c4aa80을 원인별로 격리했다. 별도 역커밋df54a04/bcc284b/d55ebb8을 보존했다. 최신 미적용 전달 후보는d63ed35(정식 계열)/0a989dd(staging Home 전용), 각각 실제74URL HTTP200/Git blob 일치다. 기존 services E1/P3·Hero·D02/D05와 staging 공개Home의 다른 변경을 보존한다. **아직 새25+실제 후보 연속 검증 전이며, 아래의 초기 후보·부분 성공은 전체 통과가 아니다.**
 
 [20 실제 적용 검증](20-adoption-verification.md)이 이번 작업 기록이다. D02/D05는 종료 범위로 보존한다. 아래19의25단계 통과는06f8bba의 이전 검증이며 새 FAQ 제품의 통과로 합산하지 않는다.

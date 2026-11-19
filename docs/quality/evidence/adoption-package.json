@@ -1,0 +1,1499 @@
+{
+  "source": "09291a03a52402c4ec07a961311c46722bf8a2b0",
+  "noMerge": true,
+  "notDeployed": true,
+  "rawRemotePreservation": false,
+  "retainedOriginalSourceFiles": true,
+  "historical7195463NotUsed": true,
+  "variants": [
+    {
+      "name": "main",
+      "reference": "d63ed35ca19c6f2f830c3dc28f74cc15d9f70870",
+      "changedAgainstPublicMain": [
+        {
+          "path": "about/bootstrap.js",
+          "oldMainGitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
+          "candidateGitBlob": "5d6b31428278d108c614caedfc7b935467c09961",
+          "reason": "Native menu CSS/JS owner receipts and bounded coherent retry; other FILES/callbacks preserved.",
+          "affectedPages": [
+            "/discover-helix"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/about/bootstrap.js",
+          "actualCandidateSHA256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f"
+        },
+        {
+          "path": "faq/bootstrap.js",
+          "oldMainGitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
+          "candidateGitBlob": "12d8ad0f8bafd91569d397d639bc94b7a9d4abd8",
+          "reason": "Withdraw failed menu script ownership, CSS native receipts and same-ref retry; reused CSS link gets one fixed retry query.",
+          "affectedPages": [
+            "/faq"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/bootstrap.js",
+          "actualCandidateSHA256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960"
+        },
+        {
+          "path": "global/bootstrap.js",
+          "oldMainGitBlob": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d",
+          "candidateGitBlob": "3ef6eb89a5ac50d5f578db9d04315f1a98c6e99a",
+          "reason": "Shared menu failed-URL adoption plus native pending-owner handoff; existing general module policy and guard semantics preserved.",
+          "affectedPages": [
+            "/",
+            "/discover-helix",
+            "/services",
+            "/faq",
+            "/internal-medicine"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/bootstrap.js",
+          "actualCandidateSHA256": "e0ac5168a370f7005fc260f537a077307638ca26e8727242b6c2ae3aebb9cc06"
+        },
+        {
+          "path": "global/floating-cta.css",
+          "oldMainGitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+          "candidateGitBlob": "57bb830f496addac9238a1c58e3165165c79d93e",
+          "reason": "Previously verified CTA ownership and D02 intro/consent/label fixes; no new CSS cleanup.",
+          "affectedPages": [
+            "/",
+            "/discover-helix",
+            "/services",
+            "/faq",
+            "/internal-medicine"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/floating-cta.css",
+          "actualCandidateSHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c"
+        },
+        {
+          "path": "global/global.css",
+          "oldMainGitBlob": "7a769acfcbd234d8caa27b69ab409f55c494b2a3",
+          "candidateGitBlob": "fb291a851c4be8d89a321dceb518163d4a76c8c1",
+          "reason": "Previously verified page-scoped typography/wrap ownership; preserved appropriate public cohort.",
+          "affectedPages": [
+            "/",
+            "/discover-helix",
+            "/services",
+            "/faq",
+            "/internal-medicine"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/global.css",
+          "actualCandidateSHA256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631"
+        },
+        {
+          "path": "home/bootstrap.js",
+          "oldMainGitBlob": "de43d8948289b66246ed9a14f7ad6b118db3edb5",
+          "candidateGitBlob": "209bd3cb8ed482ea75250419d67e25d535325dc9",
+          "reason": "Native menu receipt and same-ref one-retry; staging Home retains original callback-free eager order/cache.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/bootstrap.js",
+          "actualCandidateSHA256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434"
+        },
+        {
+          "path": "home/global/buttons.js",
+          "oldMainGitBlob": "c1590ba90c25d95bf8410e417a6fa1224db36b98",
+          "candidateGitBlob": "465994a111cff396ab660d204ec7a0dd9a1f29ab",
+          "reason": "Previously verified local CTA/button ownership.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/buttons.js",
+          "actualCandidateSHA256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113"
+        },
+        {
+          "path": "home/global/coming-soon.js",
+          "oldMainGitBlob": "fe5426ce5b5e102897e393b487514163ed9c4db1",
+          "candidateGitBlob": "599f6439844e9871d8ca87b36c28f50912beaf5f",
+          "reason": "Previously verified heading/quickbar responsibility boundary; ready/done consumer prerequisites included.",
+          "affectedPages": [
+            "/",
+            "/discover-helix",
+            "/services",
+            "/faq",
+            "/internal-medicine"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/coming-soon.js",
+          "actualCandidateSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "oldMainGitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+          "candidateGitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+          "reason": "Previously verified menu scroll-lock protocol; must accompany its JS.",
+          "affectedPages": [
+            "/",
+            "/discover-helix",
+            "/services",
+            "/faq",
+            "/internal-medicine"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/hamburger.css?hx-menu-retry=1",
+          "actualCandidateSHA256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "oldMainGitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+          "candidateGitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+          "reason": "Previously verified menu lock/dependency-ready behavior; must accompany its CSS.",
+          "affectedPages": [
+            "/",
+            "/discover-helix",
+            "/services",
+            "/faq",
+            "/internal-medicine"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/hamburger.js",
+          "actualCandidateSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa"
+        },
+        {
+          "path": "home/global/sections-animations.js",
+          "oldMainGitBlob": "85720a1641f6039c385ca0eda1d51cbc258f1389",
+          "candidateGitBlob": "67bf86f0ec4199f048746eff8dfeddab24e4a39c",
+          "reason": "Previously verified heading/zig guards; excludes CTA-owned phone handling.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/sections-animations.js",
+          "actualCandidateSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632"
+        },
+        {
+          "path": "home/section1/section1.js",
+          "oldMainGitBlob": "25af1ef173118d02d283de422ed1b1aef9051b27",
+          "candidateGitBlob": "123d30c2c72af52aadedf15aa51b666621764330",
+          "reason": "Previously verified failed-init recovery; includes existing ready producer/font prerequisites.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/section1/section1.js",
+          "actualCandidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
+        },
+        {
+          "path": "internal-medicine/bootstrap.js",
+          "oldMainGitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
+          "candidateGitBlob": "7e0b9d27e615b5fd90e13f1d907b572fdf348714",
+          "reason": "Native menu owner receipts and bounded same-ref retry, unrelated department assets retained.",
+          "affectedPages": [
+            "/internal-medicine"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/internal-medicine/bootstrap.js",
+          "actualCandidateSHA256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c"
+        },
+        {
+          "path": "services/bootstrap.js",
+          "oldMainGitBlob": "8141fa675f77564360749837863936103a464a5a",
+          "candidateGitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
+          "reason": "Preserves E1/P3 native owner/re-entry fixes, adds CSS receipts and coherent menu retry.",
+          "affectedPages": [
+            "/services"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/services/bootstrap.js",
+          "actualCandidateSHA256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593"
+        }
+      ],
+      "changedFileCount": 14,
+      "unchangedBlobCountAgainstMain": 254,
+      "deliveryOnlyExclusions": [
+        "시퀀스 01_1.mp4",
+        "헬릭스 작품 (저용량).mp4"
+      ],
+      "treeBytes": 15435112,
+      "allActualURLs": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/footer.js",
+          "sha256": "ef8868bc098ea8400b5c17a5ab92e2b59a310997aa3d99919270d7290d0c0928",
+          "gitBlob": "d8cd2b44c172dd9a377d5efd12c97871aaad52a1",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:35.610777+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/page-time.js",
+          "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+          "gitBlob": "7e967543f45750cdaf23c3b9955e57569d68f95d",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:36.489738+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/bootstrap.js",
+          "sha256": "e0ac5168a370f7005fc260f537a077307638ca26e8727242b6c2ae3aebb9cc06",
+          "gitBlob": "3ef6eb89a5ac50d5f578db9d04315f1a98c6e99a",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:39.122131+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/bootstrap-v3.js",
+          "sha256": "080e20d7ee64118e2e7ea424e301ff6642fdf6e4567c9099dc781a5a8c2ead59",
+          "gitBlob": "5a16ed1418a6fa38e1e302cedc09f99f0645c7b0",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:39.784006+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/bootstrap.js",
+          "sha256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434",
+          "gitBlob": "209bd3cb8ed482ea75250419d67e25d535325dc9",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:42.777330+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/about/bootstrap.js",
+          "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+          "gitBlob": "5d6b31428278d108c614caedfc7b935467c09961",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:43.668034+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/services/bootstrap.js",
+          "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+          "gitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:45.411472+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/bootstrap.js",
+          "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+          "gitBlob": "12d8ad0f8bafd91569d397d639bc94b7a9d4abd8",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:46.135110+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/internal-medicine/bootstrap.js",
+          "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+          "gitBlob": "7e0b9d27e615b5fd90e13f1d907b572fdf348714",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:47.904123+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/viewport-fix.js",
+          "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+          "gitBlob": "cab59c9a81d82cd30078da7608bcd48e8b7677f4",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:49.474371+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/viewport.js",
+          "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+          "gitBlob": "e78e469ea1dd5c92960a470e3b76419286f15d21",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:50.322706+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/accessibility.js",
+          "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+          "gitBlob": "c949be9275f5132ff7f3c76bddbbba08940800be",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:51.390572+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/global.css",
+          "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+          "gitBlob": "fb291a851c4be8d89a321dceb518163d4a76c8c1",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:51.883848+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/floating-cta.css",
+          "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+          "gitBlob": "57bb830f496addac9238a1c58e3165165c79d93e",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:52.862165+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/floating-cta.js",
+          "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+          "gitBlob": "d0d0969fc77064a20eda33bf68f6dab15329668b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:53.810419+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/floating-cta-mobile-fix.css",
+          "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+          "gitBlob": "5e53d332e9c235013b57594b052f47b8cf4b7717",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:54.613465+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/floating-cta-mobile-fix.js",
+          "sha256": "c0a4047f21eda63d1dd1a9515e8e61e9f26f5aad44bfb59b6e367e41bb14b6f2",
+          "gitBlob": "b3c29fa8b87a8c4ad396f19ceeb3fbac07a5ca7b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:55.332592+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/top-button.css",
+          "sha256": "4814c4b5bbdf7bdecc137e946230626a5daace3c7373e8d5c6a4e1a3860a4917",
+          "gitBlob": "ae95662c955325ec08bbc2849e9edf933af6d24e",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:57.034705+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/top-button.js",
+          "sha256": "6e15de8e59a72fb710b64710853894dc1ed41ff30a3afb864faa3f7a518cd995",
+          "gitBlob": "6b7a06cd4ec4c3b9342177f25e1b1ebe9e438ab7",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:57.510710+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/coming-soon.css",
+          "sha256": "7508cc7b630e8456e9e8a896658ce22d283ecf537af7ff391b2c6227d9433a8c",
+          "gitBlob": "838e0ef5a5c05ba1be10ca1810061d1943f9767b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:56:59.372904+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/coming-soon.js",
+          "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+          "gitBlob": "599f6439844e9871d8ca87b36c28f50912beaf5f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:00.074975+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/hamburger.css",
+          "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+          "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:00.794203+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/hamburger.js",
+          "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+          "gitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:01.467576+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/footer.css",
+          "sha256": "07d55be895e65677451897f1ee18c46b7fe3c816181b346e3dac80f26a427ed2",
+          "gitBlob": "848e9a29bf8192bb41057b3ecf4a5eb156416427",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:02.131050+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/measure-gate.js",
+          "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+          "gitBlob": "ea949e7ee740511bd49bc05a36484e4b161eea6c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:02.844382+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/ga4-base.js",
+          "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+          "gitBlob": "8ddcc180a2c49b621f28f43f859f1d0efa3a44cb",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:03.578085+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/session.js",
+          "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+          "gitBlob": "2883424b7b044dff4ee9b84292005fe27e8a198e",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:04.406296+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/ga-inspector.js",
+          "sha256": "14cf8f045549b8b0565ee17336ccb62389743fbd94bad8de5069d0a94fdb2335",
+          "gitBlob": "65746020446c9e5302dd5b0db3bd04ec7d4d2766",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:06.235418+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/sheet-log.js",
+          "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+          "gitBlob": "5f29d93e99fce5d24338f5396d1b0427efd1ff5d",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:07.404694+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/scroll-depth.js",
+          "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+          "gitBlob": "5bc1efee585ec4af7ce33164a84609c858ef8915",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:08.246760+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/section-reach.js",
+          "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+          "gitBlob": "e3f887cdc1f3341a9f8b0caae581eed7af862956",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:08.944054+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/popup.css",
+          "sha256": "e3b66db802850b637f585166c191b266ff5dadfcc7c93c96b59c43a952407fec",
+          "gitBlob": "0f8873e3077e2b76803fa33513c93d3af3e00acc",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:10.076056+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/popup.js",
+          "sha256": "084203181dbbbb7f5ef59c4dd147c62233bf990019fcacd1282a24cafd5b698a",
+          "gitBlob": "dca3be488cd6ea4e674a305e24544535e6020c1b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:11.925462+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/section1/section1.css",
+          "sha256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+          "gitBlob": "f3f71f33ac3268b6e1b668fe5df85beaf8344aa2",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:12.516055+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/section1/section1.js",
+          "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+          "gitBlob": "123d30c2c72af52aadedf15aa51b666621764330",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:14.300183+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/section-divider/divider.css",
+          "sha256": "e44b794d46188d27baeb392efef2ab760b73c814eb3bfc225a0e36e4942a2e38",
+          "gitBlob": "28ef3fdaf3bb6186a91394d8a6b49914cd0c78ab",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:14.992812+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/section-divider/divider.js",
+          "sha256": "be4e75046c098ebe31def5bf605a5f34264a3ac0a7cb55ddcc8c2ffe9a4f1f83",
+          "gitBlob": "d11e2027c77911f8e288a76a9f4d4d14407181c5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:15.501312+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/buttons.css",
+          "sha256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+          "gitBlob": "c94555effcb9b0faad8fcfefdc54d7216ed4333f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:16.165503+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/buttons.js",
+          "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+          "gitBlob": "465994a111cff396ab660d204ec7a0dd9a1f29ab",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:17.077670+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/sections-animations.css",
+          "sha256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+          "gitBlob": "fbb842d905940617e6f9d184fc248296b606e59c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:17.587659+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/sections-animations.js",
+          "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+          "gitBlob": "67bf86f0ec4199f048746eff8dfeddab24e4a39c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:19.972218+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/card-stack.css",
+          "sha256": "eb09a7a4b4e814b54a8bdeff06586bbe2e898c24b7a1afca16c8c8254cf87949",
+          "gitBlob": "304265c13a05375e4fed97052a64471eac644fa6",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:21.006835+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/card-stack.js",
+          "sha256": "c1e3179b6439138cdefdf5f334d50ebef3f48ecb0568bd24d0c1d584ebf6888c",
+          "gitBlob": "d0f8f5e1d473a54b35c87542f2d1f6e1cbc29166",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:21.652164+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/scroll-hint.css",
+          "sha256": "794db1224ed8077a30d048a7fafc9981cf48259848ccf81d572d90c96c2ca96c",
+          "gitBlob": "4872ba3dd8f771603d9d05f79965a74b5a900216",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:22.493427+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/scroll-hint.js",
+          "sha256": "0006a7950afb4ade3d2ebb6ccac015e4f9188f6d39c6804363543ec41a839bde",
+          "gitBlob": "8e9d01037cc82f6b69903851b06e2365a1d402fc",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:23.125674+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/equipment/equipment.js",
+          "sha256": "32fff2ffa274b44e9eece631d044467ca87c088d2e84e27c3937c1538e6d078e",
+          "gitBlob": "73f0bf1fb3e4670887cea051be442a6cbe62a36f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:23.569673+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/about/about.css",
+          "sha256": "3e9da95b9832001f19beaba921a82d4dc6845f8ddabe521ef348597b11065216",
+          "gitBlob": "07783041d6b5d93d76b8e1b5572a9609b7f4d479",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:24.283770+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/about/about.js",
+          "sha256": "b53ca21632292dee2b59c524ac4f124e87f3bf92eee745fb49fe614b928f92ff",
+          "gitBlob": "18b3f8869c6ca602e4eb6689ad4e769700aba5fe",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:24.972990+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/about/cert-modal/modal.css",
+          "sha256": "3698f5db08862685ae8c5e3ed65e5ce8f8c940a68ef7b0815b1ea3d8b14c1787",
+          "gitBlob": "9f21516264743bb06e0c5c688e6f531f7a50a56c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:25.723098+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/about/cert-modal/modal.js",
+          "sha256": "53099512cd019e52cf9a73ed92bb04becca3b4920565ff940d6647abac00f364",
+          "gitBlob": "a23408abb67850ce17a61c35d17b0e2b02b0e9e1",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:27.613808+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/services/dept-border.js",
+          "sha256": "a162b309be91d539561491aa14f3e7d963626563d61ef10172eaefbdf34fe1fb",
+          "gitBlob": "b1b91aaa06ccac5a2b1960fc45922be96d8c8aec",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:28.188154+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/services/dept-nav.js",
+          "sha256": "a9ecd5ddad6523161da1925decaa8ad8f5ced7857fb472152693f8b6d9e9be0c",
+          "gitBlob": "89f2ada0edacabbb26809941523643ba9f07c9bb",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:28.873037+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/services/services-ga.js",
+          "sha256": "e5c080d14c3f9f5904ece38b9139fd3dfd8f985aa1729de52fb53f7336739bb3",
+          "gitBlob": "48cf550071f08912cbe401da4b63c51555b6a600",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:29.740269+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/services/services.css",
+          "sha256": "e09d5d1ad3b21670e749efad2323dbf6afe02a91aec9d66308a11e3a27d6511d",
+          "gitBlob": "b86378b0202c32b159d16637c965579a53d7109a",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:30.416414+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/services/seo-loader.js",
+          "sha256": "430b57d4c9487d117f02a76512ed2dfcafbbf715237e03366ad9ad1244e37844",
+          "gitBlob": "19e0fd3234d332b3fed99184259b73702b0f2cac",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:32.339175+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq-ga.js",
+          "sha256": "5373b8a04850eca6dabae726c7fbc61cfd9de7fb7dd4a941a82572b7ca8f5625",
+          "gitBlob": "b2aa7ba1af682b9ee0854375728c5aa4efe3119f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:33.029832+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/cta-call.js",
+          "sha256": "8fed115c5e17ab3913b9f52c867ea189844dcb0518fac3a766062ad595e203fb",
+          "gitBlob": "3f6203f624f41df384f26b678adaf9996748988b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:33.649236+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq-stack.css",
+          "sha256": "fd2d9a778e66cc0f9c708661bb0569ae99e64b82defc6509cd3fd7fbe969cd90",
+          "gitBlob": "b96492444d5c4519407ab4c57edbdbc7c5be2c92",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:34.349771+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq-stack.js",
+          "sha256": "1178792fd66bc167e6517163205fac272fe3f639db664113d84eb6d6f36c965a",
+          "gitBlob": "4b5257a37f2415014b6e5b31c1c52daecfdd7638",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:34.940552+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq.css",
+          "sha256": "30c8349d1f79cb3f9bb775d3f62a6ef06c994ca2cbd90cc21a202b4b5e2c5025",
+          "gitBlob": "caf2dd3e3e387d5740be09fd7cc88f432c6d1df8",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:35.969518+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq.js",
+          "sha256": "f37e775dc02edd7c097a17f2c43bf9f2b6d7f312c3874160beacd1bea27c272e",
+          "gitBlob": "f273ac2585c24e67078ca84f80f795243f5bc782",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:36.679716+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/filter.js",
+          "sha256": "75d6b373b06086bae29ccee21953743041e537ebc34471e37f1f2c8b235bac66",
+          "gitBlob": "89ee988fcd3c79ef11750af357f1639b4352b037",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:37.335169+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq-general.css",
+          "sha256": "65b8b3458202e075ef998e97b23b3b2c3bc424138afe25943d0089f08844d91b",
+          "gitBlob": "1f6e68013f47c8f42893f007780337c880d0d4e5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:38.071622+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq-general.js",
+          "sha256": "ec631c790af45b59295ddbcc605c7abd67273801315b035afb999dafa612b38d",
+          "gitBlob": "55da88f0ea891a66dd3f068ef5f16a3cf68c5ec0",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:38.527857+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/faq-responsive.css",
+          "sha256": "67ce02c2498e0512406d5307ff3e96ff617e2933d48f2236581d42a5b85c5aa6",
+          "gitBlob": "3ac8e247b1ee2c965f9488aee2c9627dbf0d72d2",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:39.577060+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/seo-loader.js",
+          "sha256": "5c19900a6b28acca0456a285161835e5797b875d5fa99bd0a40684287983a33b",
+          "gitBlob": "5c7d0ac79d872473ad2d2c45d5727dcbfecf3593",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:40.036119+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/faq/protect.js",
+          "sha256": "9eaa31d02ef4bbdf21832d8e19300a83ff58122c4c5cf1d5a3dc0fbac0e3abf4",
+          "gitBlob": "ac3a4f7485680f58fb7cc70b71093770bca34027",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:40.532768+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/internal-medicine/headline-highlight.js",
+          "sha256": "c67b5f7498715fcc3f5d3b98fa665da98db741f3657ea60ad381b4a25ef76e42",
+          "gitBlob": "6de5dbf6e887500da236ba160a4e50265143d10b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:41.141024+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/seo-snippets/services.html",
+          "sha256": "f4ae046d934a30b4923cd2ccd04d8da2769f4c0b6f1dcedcadf060777b677756",
+          "gitBlob": "a5babafe382bd180719e38cc789e97a177989ab5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:41.953241+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/seo-snippets/faq.html",
+          "sha256": "114818728699dfa97ee615b1f4786ef0be1b5cba42320cc8d8b7feaab15b7e14",
+          "gitBlob": "b64dfee86becc2eeb7cdedcc7ee4eb553482c107",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:42.539680+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/cta-done.svg",
+          "sha256": "1b2270e23a9b5a1209e53395b96f64d8396ad11df3400efc3b8c8244eafdbf9f",
+          "gitBlob": "4ec59e0029099399bdb30c81f421e5fd540288f5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:43.619130+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/global/cta-mascot.svg",
+          "sha256": "e62e5954bc45480cbaf6f2349193cfdcc2b283f07591aa7315d2cc0be4d6b0e1",
+          "gitBlob": "937577c51da9dab00b26a0e34d1afd1f17e95bd9",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:44.554165+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/home/global/hamburger.css?hx-menu-retry=1",
+          "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+          "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:45.261413+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@d63ed35ca19c6f2f830c3dc28f74cc15d9f70870/about/bg-video.mp4?v=d63ed35ca19c6f2f830c3dc28f74cc15d9f70870",
+          "sha256": "77e8cd409e04ac389a1a33037966fa384e04c2a5356f2176a8aa6f5b02c115d4",
+          "gitBlob": "19067eb3448351484d57a1303c04db36db060b79",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T03:57:45.611616+00:00"
+        }
+      ]
+    },
+    {
+      "name": "stagingHome",
+      "reference": "823c7975504878474f0c9efba332668867f3eb30",
+      "changedAgainstPublicMain": [
+        {
+          "path": "about/bootstrap.js",
+          "oldMainGitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
+          "candidateGitBlob": "5d6b31428278d108c614caedfc7b935467c09961",
+          "reason": "Native menu CSS/JS owner receipts and bounded coherent retry; other FILES/callbacks preserved.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/about/bootstrap.js",
+          "actualCandidateSHA256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f"
+        },
+        {
+          "path": "faq/bootstrap.js",
+          "oldMainGitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
+          "candidateGitBlob": "12d8ad0f8bafd91569d397d639bc94b7a9d4abd8",
+          "reason": "Withdraw failed menu script ownership, CSS native receipts and same-ref retry; reused CSS link gets one fixed retry query.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/bootstrap.js",
+          "actualCandidateSHA256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960"
+        },
+        {
+          "path": "global/bootstrap.js",
+          "oldMainGitBlob": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d",
+          "candidateGitBlob": "3ef6eb89a5ac50d5f578db9d04315f1a98c6e99a",
+          "reason": "Shared menu failed-URL adoption plus native pending-owner handoff; existing general module policy and guard semantics preserved.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "75d08e772c83a593889af06748aea0c2bea808f8",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/bootstrap.js",
+          "actualCandidateSHA256": "e0ac5168a370f7005fc260f537a077307638ca26e8727242b6c2ae3aebb9cc06"
+        },
+        {
+          "path": "global/floating-cta.css",
+          "oldMainGitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+          "candidateGitBlob": "57bb830f496addac9238a1c58e3165165c79d93e",
+          "reason": "Previously verified CTA ownership and D02 intro/consent/label fixes; no new CSS cleanup.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/floating-cta.css",
+          "actualCandidateSHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c"
+        },
+        {
+          "path": "global/ga-inspector.js",
+          "oldMainGitBlob": "65746020446c9e5302dd5b0db3bd04ec7d4d2766",
+          "candidateGitBlob": "3f5c449f509fc0208289513e28daa4772ed4dbd2",
+          "reason": "Retained actual staging Home cohort bytes; no debug feature enabled.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "3f5c449f509fc0208289513e28daa4772ed4dbd2",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/ga-inspector.js",
+          "actualCandidateSHA256": "c2ef3450bf9b1789597d3d6fa0cf5fe0a95df65888aad77cff071ff112278124",
+          "functionalVerification": "Debug-only not enabled; source HTTP200/Git exact only"
+        },
+        {
+          "path": "global/global.css",
+          "oldMainGitBlob": "7a769acfcbd234d8caa27b69ab409f55c494b2a3",
+          "candidateGitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+          "reason": "Previously verified page-scoped typography/wrap ownership; preserved appropriate public cohort.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/global.css",
+          "actualCandidateSHA256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f"
+        },
+        {
+          "path": "global/top-button.js",
+          "oldMainGitBlob": "6b7a06cd4ec4c3b9342177f25e1b1ebe9e438ab7",
+          "candidateGitBlob": "d919904cce2aea0c8cd5533702af6ea686db9413",
+          "reason": "Retained actual staging Home cohort bytes, not a new refactor.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "d919904cce2aea0c8cd5533702af6ea686db9413",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/top-button.js",
+          "actualCandidateSHA256": "2b276a16d59b979c6d41425ceb89ddcab04a78d4d057e3288ccda1760fbbbe8a"
+        },
+        {
+          "path": "home/bootstrap-v3.js",
+          "oldMainGitBlob": "5a16ed1418a6fa38e1e302cedc09f99f0645c7b0",
+          "candidateGitBlob": "d3d35ffbf56441151ff03b713a1dd6fe908eb83a",
+          "reason": "Retained actual staging Home entry compatibility bytes; private proposal enters bootstrap directly.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "d3d35ffbf56441151ff03b713a1dd6fe908eb83a",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/bootstrap-v3.js",
+          "actualCandidateSHA256": "64557acb69b846217fccdd58415a640698ec1dbaf76112f1a57db2e5ea181845"
+        },
+        {
+          "path": "home/bootstrap.js",
+          "oldMainGitBlob": "de43d8948289b66246ed9a14f7ad6b118db3edb5",
+          "candidateGitBlob": "62b389036d42d755c4a161a4bb5a86aa40a14585",
+          "reason": "Native menu receipt and same-ref one-retry; staging Home retains original callback-free eager order/cache.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "ef81e351af65a352690c11664f6069f80ce4f54c",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/bootstrap.js",
+          "actualCandidateSHA256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed"
+        },
+        {
+          "path": "home/global/buttons.js",
+          "oldMainGitBlob": "c1590ba90c25d95bf8410e417a6fa1224db36b98",
+          "candidateGitBlob": "465994a111cff396ab660d204ec7a0dd9a1f29ab",
+          "reason": "Previously verified local CTA/button ownership.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "c1590ba90c25d95bf8410e417a6fa1224db36b98",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/buttons.js",
+          "actualCandidateSHA256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113"
+        },
+        {
+          "path": "home/global/coming-soon.js",
+          "oldMainGitBlob": "fe5426ce5b5e102897e393b487514163ed9c4db1",
+          "candidateGitBlob": "599f6439844e9871d8ca87b36c28f50912beaf5f",
+          "reason": "Previously verified heading/quickbar responsibility boundary; ready/done consumer prerequisites included.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "c5683919690f8d310c7f0b85796409a8f510d3a6",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/coming-soon.js",
+          "actualCandidateSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "oldMainGitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+          "candidateGitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+          "reason": "Previously verified menu scroll-lock protocol; must accompany its JS.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/hamburger.css?hx-menu-retry=1",
+          "actualCandidateSHA256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "oldMainGitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+          "candidateGitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+          "reason": "Previously verified menu lock/dependency-ready behavior; must accompany its CSS.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/hamburger.js",
+          "actualCandidateSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa"
+        },
+        {
+          "path": "home/global/sections-animations.js",
+          "oldMainGitBlob": "85720a1641f6039c385ca0eda1d51cbc258f1389",
+          "candidateGitBlob": "67bf86f0ec4199f048746eff8dfeddab24e4a39c",
+          "reason": "Previously verified heading/zig guards; excludes CTA-owned phone handling.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "67bf44e9217a9e46aa11b724ae841ae218534098",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/sections-animations.js",
+          "actualCandidateSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632"
+        },
+        {
+          "path": "home/section1/section1.js",
+          "oldMainGitBlob": "25af1ef173118d02d283de422ed1b1aef9051b27",
+          "candidateGitBlob": "123d30c2c72af52aadedf15aa51b666621764330",
+          "reason": "Previously verified failed-init recovery; includes existing ready producer/font prerequisites.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "d026f1f25384a042a4654d6004bca5abed6b5ddd",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/section1/section1.js",
+          "actualCandidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
+        },
+        {
+          "path": "internal-medicine/bootstrap.js",
+          "oldMainGitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
+          "candidateGitBlob": "7e0b9d27e615b5fd90e13f1d907b572fdf348714",
+          "reason": "Native menu owner receipts and bounded same-ref retry, unrelated department assets retained.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/internal-medicine/bootstrap.js",
+          "actualCandidateSHA256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c"
+        },
+        {
+          "path": "services/bootstrap.js",
+          "oldMainGitBlob": "8141fa675f77564360749837863936103a464a5a",
+          "candidateGitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
+          "reason": "Preserves E1/P3 native owner/re-entry fixes, adds CSS receipts and coherent menu retry.",
+          "affectedPages": [
+            "/"
+          ],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "oldPublishedStagingHomeGitBlob": "ac790806f17db7eb5277c98816250457c8265bd2",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/services/bootstrap.js",
+          "actualCandidateSHA256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593"
+        }
+      ],
+      "changedFileCount": 17,
+      "unchangedBlobCountAgainstMain": 251,
+      "deliveryOnlyExclusions": [
+        "시퀀스 01_1.mp4",
+        "헬릭스 작품 (저용량).mp4"
+      ],
+      "treeBytes": 15418741,
+      "allActualURLs": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/footer.js",
+          "sha256": "ef8868bc098ea8400b5c17a5ab92e2b59a310997aa3d99919270d7290d0c0928",
+          "gitBlob": "d8cd2b44c172dd9a377d5efd12c97871aaad52a1",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:07.458234+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/page-time.js",
+          "sha256": "6d12b5d81f50d7c0caa5c62e5981c356a0353e292c175207ae9e3124e09e7731",
+          "gitBlob": "7e967543f45750cdaf23c3b9955e57569d68f95d",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:08.227044+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/bootstrap.js",
+          "sha256": "e0ac5168a370f7005fc260f537a077307638ca26e8727242b6c2ae3aebb9cc06",
+          "gitBlob": "3ef6eb89a5ac50d5f578db9d04315f1a98c6e99a",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:09.267619+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/bootstrap-v3.js",
+          "sha256": "64557acb69b846217fccdd58415a640698ec1dbaf76112f1a57db2e5ea181845",
+          "gitBlob": "d3d35ffbf56441151ff03b713a1dd6fe908eb83a",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:10.100131+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/bootstrap.js",
+          "sha256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed",
+          "gitBlob": "62b389036d42d755c4a161a4bb5a86aa40a14585",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:10.630548+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/about/bootstrap.js",
+          "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+          "gitBlob": "5d6b31428278d108c614caedfc7b935467c09961",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:11.235121+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/services/bootstrap.js",
+          "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+          "gitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:12.136422+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/bootstrap.js",
+          "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+          "gitBlob": "12d8ad0f8bafd91569d397d639bc94b7a9d4abd8",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:12.684596+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/internal-medicine/bootstrap.js",
+          "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+          "gitBlob": "7e0b9d27e615b5fd90e13f1d907b572fdf348714",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:13.161183+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/viewport-fix.js",
+          "sha256": "1870daff4e640ed5601d72aa7875c36d097476c9919c56ba1e81b1a92e373002",
+          "gitBlob": "cab59c9a81d82cd30078da7608bcd48e8b7677f4",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:13.934313+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/viewport.js",
+          "sha256": "f1a67565f8bb1f39059d3cd1eb015e62b314b3ece8cbc07098a895bc84aede8f",
+          "gitBlob": "e78e469ea1dd5c92960a470e3b76419286f15d21",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:16.610345+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/accessibility.js",
+          "sha256": "c45d15573e82d5395b8c90bb15f328d9344992348b5f7344c5a8774e6359df66",
+          "gitBlob": "c949be9275f5132ff7f3c76bddbbba08940800be",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:17.185618+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/global.css",
+          "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+          "gitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:18.878557+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/floating-cta.css",
+          "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+          "gitBlob": "57bb830f496addac9238a1c58e3165165c79d93e",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:19.592166+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/floating-cta.js",
+          "sha256": "c3ba5d299d686ad6c4578904651526fb9e868ed8847c158b4fb2c094eb365dce",
+          "gitBlob": "d0d0969fc77064a20eda33bf68f6dab15329668b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:20.129435+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/floating-cta-mobile-fix.css",
+          "sha256": "57979bc5d32942842dfdbf4de338b3227686eca87848132e01a284250014702a",
+          "gitBlob": "5e53d332e9c235013b57594b052f47b8cf4b7717",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:20.982385+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/floating-cta-mobile-fix.js",
+          "sha256": "c0a4047f21eda63d1dd1a9515e8e61e9f26f5aad44bfb59b6e367e41bb14b6f2",
+          "gitBlob": "b3c29fa8b87a8c4ad396f19ceeb3fbac07a5ca7b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:21.726372+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/top-button.css",
+          "sha256": "4814c4b5bbdf7bdecc137e946230626a5daace3c7373e8d5c6a4e1a3860a4917",
+          "gitBlob": "ae95662c955325ec08bbc2849e9edf933af6d24e",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:24.014230+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/top-button.js",
+          "sha256": "2b276a16d59b979c6d41425ceb89ddcab04a78d4d057e3288ccda1760fbbbe8a",
+          "gitBlob": "d919904cce2aea0c8cd5533702af6ea686db9413",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:24.789824+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/coming-soon.css",
+          "sha256": "7508cc7b630e8456e9e8a896658ce22d283ecf537af7ff391b2c6227d9433a8c",
+          "gitBlob": "838e0ef5a5c05ba1be10ca1810061d1943f9767b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:26.024261+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/coming-soon.js",
+          "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+          "gitBlob": "599f6439844e9871d8ca87b36c28f50912beaf5f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:26.893458+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/hamburger.css",
+          "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+          "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:27.610544+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/hamburger.js",
+          "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+          "gitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:29.413463+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/footer.css",
+          "sha256": "07d55be895e65677451897f1ee18c46b7fe3c816181b346e3dac80f26a427ed2",
+          "gitBlob": "848e9a29bf8192bb41057b3ecf4a5eb156416427",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:29.942360+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/measure-gate.js",
+          "sha256": "4f3d18e1689eb0bb4691cf446022668771543b31ae4e1513e1afc69039af4c26",
+          "gitBlob": "ea949e7ee740511bd49bc05a36484e4b161eea6c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:30.619721+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/ga4-base.js",
+          "sha256": "8c62bd1a4e36a74d3f0f2208660ed06224a8cbf798388eab03c0e4f340fb17ad",
+          "gitBlob": "8ddcc180a2c49b621f28f43f859f1d0efa3a44cb",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:31.344441+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/session.js",
+          "sha256": "a354ebbbf2e5fa63a4e07db945612dd4718c94ffd1863966687b80cbdbca30df",
+          "gitBlob": "2883424b7b044dff4ee9b84292005fe27e8a198e",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:32.001813+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/ga-inspector.js",
+          "sha256": "c2ef3450bf9b1789597d3d6fa0cf5fe0a95df65888aad77cff071ff112278124",
+          "gitBlob": "3f5c449f509fc0208289513e28daa4772ed4dbd2",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:32.865089+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/sheet-log.js",
+          "sha256": "bc21ae5ae36b4cd53ab234871ae8b49bee1aefa07b6b46b6d8bb69ad19573396",
+          "gitBlob": "5f29d93e99fce5d24338f5396d1b0427efd1ff5d",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:33.576355+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/scroll-depth.js",
+          "sha256": "d9db600b6dea90c1ce2c05cb0b3a641a81dd08b3355dbc94decbdc6cd7de8a99",
+          "gitBlob": "5bc1efee585ec4af7ce33164a84609c858ef8915",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:34.617001+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/section-reach.js",
+          "sha256": "bea16142eb4d0ab379968606c946cdd9196847f03e9611c9ae34700440e15082",
+          "gitBlob": "e3f887cdc1f3341a9f8b0caae581eed7af862956",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:35.400643+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/popup.css",
+          "sha256": "e3b66db802850b637f585166c191b266ff5dadfcc7c93c96b59c43a952407fec",
+          "gitBlob": "0f8873e3077e2b76803fa33513c93d3af3e00acc",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:36.075950+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/popup.js",
+          "sha256": "084203181dbbbb7f5ef59c4dd147c62233bf990019fcacd1282a24cafd5b698a",
+          "gitBlob": "dca3be488cd6ea4e674a305e24544535e6020c1b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:36.560812+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/section1/section1.css",
+          "sha256": "cc1e5c4ea2f7b99e395e76a1c8f7872b281ac2e4b0ba7746c45759aa7148bd82",
+          "gitBlob": "f3f71f33ac3268b6e1b668fe5df85beaf8344aa2",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:37.222631+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/section1/section1.js",
+          "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+          "gitBlob": "123d30c2c72af52aadedf15aa51b666621764330",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:37.972080+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/section-divider/divider.css",
+          "sha256": "e44b794d46188d27baeb392efef2ab760b73c814eb3bfc225a0e36e4942a2e38",
+          "gitBlob": "28ef3fdaf3bb6186a91394d8a6b49914cd0c78ab",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:40.359428+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/section-divider/divider.js",
+          "sha256": "be4e75046c098ebe31def5bf605a5f34264a3ac0a7cb55ddcc8c2ffe9a4f1f83",
+          "gitBlob": "d11e2027c77911f8e288a76a9f4d4d14407181c5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:40.824639+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/buttons.css",
+          "sha256": "e523e7e9e3edd05610e86f8a789e7db8d5a3ce359fe59e20c013d543852d939f",
+          "gitBlob": "c94555effcb9b0faad8fcfefdc54d7216ed4333f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:41.548195+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/buttons.js",
+          "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+          "gitBlob": "465994a111cff396ab660d204ec7a0dd9a1f29ab",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:43.215162+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/sections-animations.css",
+          "sha256": "491591c55294349e05a3068cc4ffd8032eb75eafbf9fb39b7c5202837ba29d0f",
+          "gitBlob": "fbb842d905940617e6f9d184fc248296b606e59c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:45.145653+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/sections-animations.js",
+          "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+          "gitBlob": "67bf86f0ec4199f048746eff8dfeddab24e4a39c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:45.800950+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/card-stack.css",
+          "sha256": "eb09a7a4b4e814b54a8bdeff06586bbe2e898c24b7a1afca16c8c8254cf87949",
+          "gitBlob": "304265c13a05375e4fed97052a64471eac644fa6",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:46.286430+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/card-stack.js",
+          "sha256": "c1e3179b6439138cdefdf5f334d50ebef3f48ecb0568bd24d0c1d584ebf6888c",
+          "gitBlob": "d0f8f5e1d473a54b35c87542f2d1f6e1cbc29166",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:47.247177+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/scroll-hint.css",
+          "sha256": "794db1224ed8077a30d048a7fafc9981cf48259848ccf81d572d90c96c2ca96c",
+          "gitBlob": "4872ba3dd8f771603d9d05f79965a74b5a900216",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:49.481249+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/scroll-hint.js",
+          "sha256": "0006a7950afb4ade3d2ebb6ccac015e4f9188f6d39c6804363543ec41a839bde",
+          "gitBlob": "8e9d01037cc82f6b69903851b06e2365a1d402fc",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:50.143286+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/equipment/equipment.js",
+          "sha256": "32fff2ffa274b44e9eece631d044467ca87c088d2e84e27c3937c1538e6d078e",
+          "gitBlob": "73f0bf1fb3e4670887cea051be442a6cbe62a36f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:50.592466+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/about/about.css",
+          "sha256": "3e9da95b9832001f19beaba921a82d4dc6845f8ddabe521ef348597b11065216",
+          "gitBlob": "07783041d6b5d93d76b8e1b5572a9609b7f4d479",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:51.176545+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/about/about.js",
+          "sha256": "b53ca21632292dee2b59c524ac4f124e87f3bf92eee745fb49fe614b928f92ff",
+          "gitBlob": "18b3f8869c6ca602e4eb6689ad4e769700aba5fe",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:51.679990+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/about/cert-modal/modal.css",
+          "sha256": "3698f5db08862685ae8c5e3ed65e5ce8f8c940a68ef7b0815b1ea3d8b14c1787",
+          "gitBlob": "9f21516264743bb06e0c5c688e6f531f7a50a56c",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:53.562653+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/about/cert-modal/modal.js",
+          "sha256": "53099512cd019e52cf9a73ed92bb04becca3b4920565ff940d6647abac00f364",
+          "gitBlob": "a23408abb67850ce17a61c35d17b0e2b02b0e9e1",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:54.373469+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/services/dept-border.js",
+          "sha256": "a162b309be91d539561491aa14f3e7d963626563d61ef10172eaefbdf34fe1fb",
+          "gitBlob": "b1b91aaa06ccac5a2b1960fc45922be96d8c8aec",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:55.334026+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/services/dept-nav.js",
+          "sha256": "a9ecd5ddad6523161da1925decaa8ad8f5ced7857fb472152693f8b6d9e9be0c",
+          "gitBlob": "89f2ada0edacabbb26809941523643ba9f07c9bb",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:57.339704+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/services/services-ga.js",
+          "sha256": "e5c080d14c3f9f5904ece38b9139fd3dfd8f985aa1729de52fb53f7336739bb3",
+          "gitBlob": "48cf550071f08912cbe401da4b63c51555b6a600",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:58.325692+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/services/services.css",
+          "sha256": "e09d5d1ad3b21670e749efad2323dbf6afe02a91aec9d66308a11e3a27d6511d",
+          "gitBlob": "b86378b0202c32b159d16637c965579a53d7109a",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:59.014897+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/services/seo-loader.js",
+          "sha256": "430b57d4c9487d117f02a76512ed2dfcafbbf715237e03366ad9ad1244e37844",
+          "gitBlob": "19e0fd3234d332b3fed99184259b73702b0f2cac",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:08:59.923860+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq-ga.js",
+          "sha256": "5373b8a04850eca6dabae726c7fbc61cfd9de7fb7dd4a941a82572b7ca8f5625",
+          "gitBlob": "b2aa7ba1af682b9ee0854375728c5aa4efe3119f",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:00.461469+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/cta-call.js",
+          "sha256": "8fed115c5e17ab3913b9f52c867ea189844dcb0518fac3a766062ad595e203fb",
+          "gitBlob": "3f6203f624f41df384f26b678adaf9996748988b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:01.294453+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq-stack.css",
+          "sha256": "fd2d9a778e66cc0f9c708661bb0569ae99e64b82defc6509cd3fd7fbe969cd90",
+          "gitBlob": "b96492444d5c4519407ab4c57edbdbc7c5be2c92",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:01.909491+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq-stack.js",
+          "sha256": "1178792fd66bc167e6517163205fac272fe3f639db664113d84eb6d6f36c965a",
+          "gitBlob": "4b5257a37f2415014b6e5b31c1c52daecfdd7638",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:02.370004+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq.css",
+          "sha256": "30c8349d1f79cb3f9bb775d3f62a6ef06c994ca2cbd90cc21a202b4b5e2c5025",
+          "gitBlob": "caf2dd3e3e387d5740be09fd7cc88f432c6d1df8",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:02.967719+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq.js",
+          "sha256": "f37e775dc02edd7c097a17f2c43bf9f2b6d7f312c3874160beacd1bea27c272e",
+          "gitBlob": "f273ac2585c24e67078ca84f80f795243f5bc782",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:03.878139+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/filter.js",
+          "sha256": "75d6b373b06086bae29ccee21953743041e537ebc34471e37f1f2c8b235bac66",
+          "gitBlob": "89ee988fcd3c79ef11750af357f1639b4352b037",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:04.700199+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq-general.css",
+          "sha256": "65b8b3458202e075ef998e97b23b3b2c3bc424138afe25943d0089f08844d91b",
+          "gitBlob": "1f6e68013f47c8f42893f007780337c880d0d4e5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:05.374246+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq-general.js",
+          "sha256": "ec631c790af45b59295ddbcc605c7abd67273801315b035afb999dafa612b38d",
+          "gitBlob": "55da88f0ea891a66dd3f068ef5f16a3cf68c5ec0",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:05.859398+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/faq-responsive.css",
+          "sha256": "67ce02c2498e0512406d5307ff3e96ff617e2933d48f2236581d42a5b85c5aa6",
+          "gitBlob": "3ac8e247b1ee2c965f9488aee2c9627dbf0d72d2",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:06.347453+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/seo-loader.js",
+          "sha256": "5c19900a6b28acca0456a285161835e5797b875d5fa99bd0a40684287983a33b",
+          "gitBlob": "5c7d0ac79d872473ad2d2c45d5727dcbfecf3593",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:08.283200+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/faq/protect.js",
+          "sha256": "9eaa31d02ef4bbdf21832d8e19300a83ff58122c4c5cf1d5a3dc0fbac0e3abf4",
+          "gitBlob": "ac3a4f7485680f58fb7cc70b71093770bca34027",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:09.069942+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/internal-medicine/headline-highlight.js",
+          "sha256": "c67b5f7498715fcc3f5d3b98fa665da98db741f3657ea60ad381b4a25ef76e42",
+          "gitBlob": "6de5dbf6e887500da236ba160a4e50265143d10b",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:09.610719+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/seo-snippets/services.html",
+          "sha256": "f4ae046d934a30b4923cd2ccd04d8da2769f4c0b6f1dcedcadf060777b677756",
+          "gitBlob": "a5babafe382bd180719e38cc789e97a177989ab5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:10.246596+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/seo-snippets/faq.html",
+          "sha256": "114818728699dfa97ee615b1f4786ef0be1b5cba42320cc8d8b7feaab15b7e14",
+          "gitBlob": "b64dfee86becc2eeb7cdedcc7ee4eb553482c107",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:12.177899+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/cta-done.svg",
+          "sha256": "1b2270e23a9b5a1209e53395b96f64d8396ad11df3400efc3b8c8244eafdbf9f",
+          "gitBlob": "4ec59e0029099399bdb30c81f421e5fd540288f5",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:12.770098+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/cta-mascot.svg",
+          "sha256": "e62e5954bc45480cbaf6f2349193cfdcc2b283f07591aa7315d2cc0be4d6b0e1",
+          "gitBlob": "937577c51da9dab00b26a0e34d1afd1f17e95bd9",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:13.253762+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/home/global/hamburger.css?hx-menu-retry=1",
+          "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+          "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:13.942995+00:00"
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/about/bg-video.mp4?v=823c7975504878474f0c9efba332668867f3eb30",
+          "sha256": "77e8cd409e04ac389a1a33037966fa384e04c2a5356f2176a8aa6f5b02c115d4",
+          "gitBlob": "19067eb3448351484d57a1303c04db36db060b79",
+          "status": 200,
+          "capturedAtUTC": "2026-11-19T04:09:13.975835+00:00"
+        }
+      ],
+      "optionalSourceReach": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@823c7975504878474f0c9efba332668867f3eb30/global/ga-inspector.js",
+          "sha256": "c2ef3450bf9b1789597d3d6fa0cf5fe0a95df65888aad77cff071ff112278124",
+          "gitBlob": "3f5c449f509fc0208289513e28daa4772ed4dbd2",
+          "status": 200,
+          "kind": "source-only optional debug path, not part of selected74 normal URLs"
+        }
+      ]
+    }
+  ]
+}

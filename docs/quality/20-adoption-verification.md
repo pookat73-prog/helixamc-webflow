@@ -71,3 +71,17 @@ staging Home만을 위한 [619d3d2](https://github.com/pookat73-prog/helixamc-we
 새 판별 근거가 있는 늦은 API 순서도 재현했다. 실제 staging FAQ에서 두 API 응답을 제어해 page producer와 shared boot가 모두 window.load 이후 실행되도록 했다. 기존99f85c8은 실제 shared boot 시 producer script가 pending인 상태에서 두 native 실패를 놓쳐 메뉴0/요청2였다. `__helixSharedUiInit`나 CTA class만으로 consumer 완료를 판정하지 않고 실제 boot와 native 사건 시각을 기록했다. 제품8c4aa80은 이 외부 pending owner의 native 완료/실패만 직접 관찰한다. 성공 자산은 존중하고, 실패 시 기존 loadMissing이 새 producer retry를 다시 찾아 부족한 자산만 채운다. 재시도·전역 타이머·guard reset은 추가하지 않았다. 로컬 후보는 같은 입력에서 메뉴1/요청3이었다. 역커밋d55ebb8은 이 제품만 되돌린다. 원본/후보 HTTP200 JS 본문은 유지하며 fault는 요청 native abort로 명시한다. 일반 HTTP200 실행 예외의 해결과 혼동하지 않는다.
 
 최신 전달 후보는 main 계열 `d63ed35ca19c6f2f830c3dc28f74cc15d9f70870`, 실제 staging Home 계열 `0a989dddfeabcdffdfc4437341637686f229c6d4`다. 각각74개 실제 URL이 HTTP200/Git blob 일치다. staging의 callback-free/eager Home 로더·FILES 순서·cache 정책은 보존하고 확인된 메뉴 소유권 단위만 별도 이관했으며 역패치로 원본 bytes 보존을 확인했다. 모두 미적용 snapshot이고 병합 금지다. **이 체크포인트에서는 새25+실제 후보 통합 검증·최종 감사 진입을 아직 완료로 판정하지 않는다.**
+
+## 적용안·원복 검토 체크포인트 — 이전 staging 후보 대체
+
+staging Home의0a989dd는 과거ccb68→작업 변경분만 이관해 최신 firstpaint 계약의 기존 main 선행 코드를 누락했다. 실제 native 사건에서done만 발생하고ready가 없음을 검출했다. 이는 새 Section1 제품 결함이 아니라 전달 패키지 조립 결함이다. 검증된 coming-soon/sections/Section1 세 파일의 기존 ready·font·consumer·CTA 전화 소유권 선행 코드까지 포함한 **823c7975504878474f0c9efba332668867f3eb30**으로 대체했다. 처음 실패와 수정 후 Home1440 원본 비교·역전환 성공을 보존했다. 해당세 파일 외 staging bootstrap 순서/cache·globalCSS·top-button·inspector는 보존한다. staging Home만 소비하므로 해당 cohort의 page-ID 내과 CSS 차이를 무작정 통일하지 않는다. 다른4페이지는d63ed35를 선택한다. 두 최종 후보의 실제 URL은각74개 모두200/Git blob 일치다.
+
+새 원본 staging About 수집은13:00:38/13:01:12 KST에 `@a074f455a4/global/floating-cta.css`와 `@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/floating-cta-mobile-fix.css`가403이었다. 두 본문 모두같은50MB package-size 제한이고 full SHA·헤더·본문을 로컬 보존했다. 같은 실패GET을 반복하지 않고 원본 staging 비Home4페이지 비교를 미승격 범위로 묶었다.4페이지 모두에서 직접403을 관측했다는 주장은 아니다. 후보 자산이나다른 URL로 원본 응답을 채우지 않는다. 원본 staging Home3크기 입력과 새 후보5페이지3크기 입력은 별도 확보했다.
+
+Webflow2.2의 site identity·site/page freeform code를 **읽기 전용**으로 확인했다. 변경할5개page head와site footer의 producer/shared 구간은 공개10HTML과각각정확히1회 일치하고 저장된전체page head도10HTML에 그대로있다. API에 쓰기/Publish는 하지 않았다. [6개 적용/역변경 패치와 전체블록 SHA](proposals/adoption-20261119/manifest.json), [파일별 이유·실제 URL/SHA·복구 경계](evidence/adoption-package.json)를 준비했다. 패치 forward/reverse가 실제 저장블록 bytes로 정확히 왕복하며 firstpaint head와 site head, 구간밖 코드는 불변이다. 전체before/after head·HTML raw는 로컬에만 둔다.
+
+패치의기계적원복 성공과 운영원복 가능성을 구분한다. 기존큰ref의 cold CDN 경로가403일수있어 기존코드로되돌리는 것만으로 운영복구를 보증하지 않는다. 실제 적용 전에는 도달가능한 원복 cohort와5page producer+scoped shared의동시일치·Publish 범위를 재검증해야 한다. 현재는 적용 승인을 요청할 단계가 아니다. main/staging·공개head/pin·설정·Publish·운영배포는 금지 상태다.
+
+4개제품의 정식 역커밋을 별도동결작업본에 zero-context 단위로 적용해 모두원본기능실패를 검출했다. FAQ/Home native 실패와load후pending은메뉴0, cohort 역변경은 wheel0→600으로 실패했고 각자 hunk 복구후 실제메뉴기능이통과했다. 제품/검사코드는분리하고 baseline PNG·mask·100px·threshold0.2·expected failure를 바꾸지 않았다.1px compact gap4→5도320에서검출하고자기한줄복구후108쌍/36편집이통과했다. 이별도음성대조는통합성공에합산하지않는다.
+
+동결검사소스09291a0의별도clean clone에서 기존25단계+정식/스테이징실제자산검사를 **한 번의연속실행**으로진행중이다. 미확보원본staging비교는명시적coverage blocker이며도구가전체pass=true를줄수없도록했다. 소스/자산소유권·검사누락·실패분류는구현검사와다른관점으로따로검토했고 실제선택코드26조건과148개실제응답의Git일치도검증했다. 동일실행자의소스한정검토이며외부독립감사완료는아니다. 별도stage Hero검사에서동적Adobe폰트5개가누락된실패는입력문제로보존하고, 기존동결통합입력을수정하지않는별도입력에서실제GET만추가수집후엄격재생중이다.

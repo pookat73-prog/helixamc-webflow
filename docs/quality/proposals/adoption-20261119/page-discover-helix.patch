@@ -1,0 +1,10 @@
+--- a/page-discover-helix.html
++++ b/page-discover-helix.html
+@@ -23,6 +23,7 @@
+   var controller=typeof AbortController!=='undefined'?new AbortController():null;
+   function valid(ref){return typeof ref==='string'&&/^[0-9a-f]{7,40}$/i.test(ref);}
+   function load(ref){
++    ref="d63ed35ca19c6f2f830c3dc28f74cc15d9f70870"; /* PRIVATE selected package. */
+     if(settled)return;settled=true;clearTimeout(timer);
+     window.__helixAboutBootstrapRedirected=true;
+     window.__helixAboutEntryRef=ref;

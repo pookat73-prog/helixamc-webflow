@@ -1,0 +1,138 @@
+{
+  "status": "PROPOSAL ONLY — NOT APPLIED; complete compatibility gate still required",
+  "mainCandidate": "d63ed35ca19c6f2f830c3dc28f74cc15d9f70870",
+  "stagingHomeCandidate": "823c7975504878474f0c9efba332668867f3eb30",
+  "protectedMain": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+  "protectedStaging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+  "scope": [
+    "/",
+    "/discover-helix",
+    "/services",
+    "/faq",
+    "/internal-medicine"
+  ],
+  "firstpaintHeadOwnerUnchanged": true,
+  "siteHeadUnchanged": true,
+  "outsideSnippetsPreservedExactly": true,
+  "scriptRegistrationChanges": false,
+  "newTimersOrRetryLayers": false,
+  "partialAdoptionSupported": false,
+  "cohortRule": "Five page producer head selections plus scoped site-footer shared selection are one adoption unit. Do not deploy one owner alone. Outside these paths original branch/cache/seed logic is retained. Re-read all six stored block hashes before any future approved write; a changed hash blocks overwrite. No publishing permission is implied.",
+  "localOnlyFullBeforeAfterDirectory": "/workspace/artifacts/helix-adoption-20261119/config-full-blocks",
+  "blocks": [
+    {
+      "name": "page-home",
+      "targets": [
+        "production",
+        "staging"
+      ],
+      "entity": {
+        "page_id": "69d0bdd30d54f23591313a96"
+      },
+      "location": "head",
+      "beforeStoredBlockSHA256": "e5cd4a2674eef307fe8b2d4a2f9bf69613590688e7608f6ea98d7913fda9add7",
+      "afterStoredBlockSHA256": "46885523fd5be6c0017bc19262d02548dcf629180452bc9a6f93fadbc80f464a",
+      "beforeLoaderSHA256": "2685ac6b697cc937aa58767e9c878da1413c79f1ceeacb584eaabb585d400ada",
+      "afterLoaderSHA256": "89017fc36486b7eda248b2415e3c418c4ddf29dc9d217099abce8d2101502b42",
+      "patch": "page-home.patch",
+      "patchSHA256": "39294019626a8fa854770066081ca641bf9a50b264948a5ec5041897939c074d",
+      "forwardAndReverseExact": true,
+      "rollback": "Re-read current block; require afterStoredBlockSHA256; apply the same patch in reverse in an isolated copy; require beforeStoredBlockSHA256. Write/publish only with separate authorization and both cohort owners coordinated."
+    },
+    {
+      "name": "site-footer",
+      "targets": [
+        "production",
+        "staging"
+      ],
+      "entity": {
+        "site_id": "69d090ea69d828e27d16ea29"
+      },
+      "location": "footer",
+      "beforeStoredBlockSHA256": "c3907aea230153088890db8b5497592a0c14e01b65613b60b23e1a7d8c8c919d",
+      "afterStoredBlockSHA256": "f72000f11d0da24ef8f316bd694e795f623ea6f0f6df5082e8b27c72efd7df03",
+      "beforeLoaderSHA256": "2da68a2b4a643ff82f7941213a4e067e4a54970f6af03dff8eb3d21ce8498144",
+      "afterLoaderSHA256": "7c2ebe9fb18258a9250e375e792a8ac633e392e53aa601bfa6f23f37fdaf24e5",
+      "patch": "site-footer.patch",
+      "patchSHA256": "54e47586f77488d0b9480fd9ce277244fa5c0b8f140f3efa9a37820e7c131053",
+      "forwardAndReverseExact": true,
+      "rollback": "Re-read current block; require afterStoredBlockSHA256; apply the same patch in reverse in an isolated copy; require beforeStoredBlockSHA256. Write/publish only with separate authorization and both cohort owners coordinated."
+    },
+    {
+      "name": "page-discover-helix",
+      "targets": [
+        "production",
+        "staging"
+      ],
+      "entity": {
+        "page_id": "69d1c60d1e37375fe0c16bc5"
+      },
+      "location": "head",
+      "beforeStoredBlockSHA256": "36512c6ca6d4da1a5684ae41b3202433d4a40be8756a24362adb4c043748e99a",
+      "afterStoredBlockSHA256": "a9a94271fb4f7cc916c51bbb07370a8f0c861c6997ff67abfb4ffab20cc9a605",
+      "beforeLoaderSHA256": "4d662d39b15e3db996e76fdf6f4360a31a88758928cd57881485b8b3abb1ee0a",
+      "afterLoaderSHA256": "e703efb99fecac19fb1c7cd9db42dd2234d31faa57bc9eb3c845967485dd158f",
+      "patch": "page-discover-helix.patch",
+      "patchSHA256": "8f03ba797ae8fa809712ea34a7324ce9d4a5d05892d09c9403fbb970487d6d8c",
+      "forwardAndReverseExact": true,
+      "rollback": "Re-read current block; require afterStoredBlockSHA256; apply the same patch in reverse in an isolated copy; require beforeStoredBlockSHA256. Write/publish only with separate authorization and both cohort owners coordinated."
+    },
+    {
+      "name": "page-services",
+      "targets": [
+        "production",
+        "staging"
+      ],
+      "entity": {
+        "page_id": "69d74acaacc7897c537190f1"
+      },
+      "location": "head",
+      "beforeStoredBlockSHA256": "fd87cb03cf6dbb1b4499964ccbec0cd0f17e384426d330c240b9cb04f02a1667",
+      "afterStoredBlockSHA256": "81969ff4957f6edf7a5706deb13c76c058db690228eb7843b6569a85c978dc7e",
+      "beforeLoaderSHA256": "fb24b56cf1d1198cbd997c633a5941705dac9be0282db2427904068143c6f12b",
+      "afterLoaderSHA256": "f7396f620100b9f6958436c9254e6716afb54dac83bf7b71b7fa9ccac43fa5e7",
+      "patch": "page-services.patch",
+      "patchSHA256": "ac273ffbf6e6d792f6d3ddc89fbb70a6986f3784b3fcada98adb4d27cc1ba03e",
+      "forwardAndReverseExact": true,
+      "rollback": "Re-read current block; require afterStoredBlockSHA256; apply the same patch in reverse in an isolated copy; require beforeStoredBlockSHA256. Write/publish only with separate authorization and both cohort owners coordinated."
+    },
+    {
+      "name": "page-faq",
+      "targets": [
+        "production",
+        "staging"
+      ],
+      "entity": {
+        "page_id": "6a4f46aa5c5fd95c7b128df3"
+      },
+      "location": "head",
+      "beforeStoredBlockSHA256": "5dac0a317bb764b52762d5f5f5e1f883f9043166578309d65a3f95016dcae33f",
+      "afterStoredBlockSHA256": "76bc015405a4d7758bac6fce9e399128bb5f40d995de08cf21d2c1a813a0a095",
+      "beforeLoaderSHA256": "915290e30764996a10aaef727424b78abaf45f9e7d8d360c83f1cf332dd2c4e0",
+      "afterLoaderSHA256": "f7cdce6816236c5f39e52a36b784e8e3a7ee02060e19fd05f7a6dcb2a9a59347",
+      "patch": "page-faq.patch",
+      "patchSHA256": "be057b5dadb00c708f58f938fc623cc6541ec7fb5cd31d2d9ee0c479795fbce0",
+      "forwardAndReverseExact": true,
+      "rollback": "Re-read current block; require afterStoredBlockSHA256; apply the same patch in reverse in an isolated copy; require beforeStoredBlockSHA256. Write/publish only with separate authorization and both cohort owners coordinated."
+    },
+    {
+      "name": "page-internal-medicine",
+      "targets": [
+        "production",
+        "staging"
+      ],
+      "entity": {
+        "page_id": "69d74a8ea2cac3ea9cfed34d"
+      },
+      "location": "head",
+      "beforeStoredBlockSHA256": "fa56775776cc82a5c0975e9fdeaff25edcd56859b08728ea588358bfc0d36718",
+      "afterStoredBlockSHA256": "da440bfd266b467be112dd4952ce25c0e03476f3792ba2c4b4110d48d134c08b",
+      "beforeLoaderSHA256": "875394bcb9ab79970c515a7a776c191a7f7b55817787c29682e43e28cac557e7",
+      "afterLoaderSHA256": "4ccfae088ab1409e965d0048a9e604117bcb46ce3f2b600b7e522293d52f5627",
+      "patch": "page-internal-medicine.patch",
+      "patchSHA256": "23d32a93248747aed09c0587e12444b25a0bfb19e17868bdb1a6019bd50b5e61",
+      "forwardAndReverseExact": true,
+      "rollback": "Re-read current block; require afterStoredBlockSHA256; apply the same patch in reverse in an isolated copy; require beforeStoredBlockSHA256. Write/publish only with separate authorization and both cohort owners coordinated."
+    }
+  ]
+}
