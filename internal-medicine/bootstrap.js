@@ -152,7 +152,7 @@
     'internal-medicine/headline-highlight.js'
   ];
 
-  function loadFile(path, ref) {
+  function loadFile(path, ref, menuRetry) {
     /* Ordinary visits never execute the inspector; avoid requesting it. */
     if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
       return;
@@ -171,8 +171,20 @@
       element.async = false;
     }
 
+    if (path === 'home/global/hamburger.css') {
+      element.addEventListener('load', function () { element.removeAttribute('data-helix-menu-css-error'); }, true);
+      element.addEventListener('error', function () { element.setAttribute('data-helix-menu-css-error', element.href); }, true);
+    } else if (path === 'home/global/hamburger.js') {
+      element.addEventListener('error', function () {
+        element.setAttribute('data-helix-menu-js-error', element.src);
+        element.remove();
+      }, true);
+    }
     element.onerror = function () {
-      if (ref !== BRANCH) loadFile(path, BRANCH);
+      if (ref !== BRANCH && !menuRetry) {
+        var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
+        loadFile(path, menuAsset ? ref : BRANCH, menuAsset);
+      }
     };
     document.head.appendChild(element);
   }
