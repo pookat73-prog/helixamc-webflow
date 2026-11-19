@@ -1,0 +1,101 @@
+{
+  "status": "UNQUALIFIED DIAGNOSTIC SOURCE-MIRROR PROPOSAL — MUST NOT APPLY OR PUBLISH",
+  "currentPublicCodeChanged": false,
+  "partialApplicationSupported": false,
+  "functionalRollbackQualified": false,
+  "beforeState": "Un-applied candidate-after configuration",
+  "originalLiteralInverseRemainsSeparate": true,
+  "mainMirror": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+  "stagingHomeMirror": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+  "servicesProducerMirror": "35b12071803646aef2ec93029afea062012711ce",
+  "servicesSharedMirror": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+  "sixBlocks": [
+    {
+      "name": "page-home",
+      "entity": {
+        "page_id": "69d0bdd30d54f23591313a96"
+      },
+      "location": "head",
+      "beforeCandidateBlockSHA256": "ff8b77f8caf592a37a9816dfadb4e5db81a2a169d10b14e65e575eca11c11778",
+      "afterMirrorBlockSHA256": "7fece0db4623329653feb1872acb969d3040d40204f7909b897cef9f18ad84a7",
+      "patch": "page-home.patch",
+      "patchSHA256": "366e5689218f8bc5391ee2ab3fc0eca224bce3a9a3f8994a9c774f8df72cb000",
+      "forwardAndReverseExact": true,
+      "notCurrentStoredBlock": "This before is the un-applied candidate-after, not the current original stored code.",
+      "operationalQualification": false
+    },
+    {
+      "name": "site-footer",
+      "entity": {
+        "site_id": "69d090ea69d828e27d16ea29"
+      },
+      "location": "footer",
+      "beforeCandidateBlockSHA256": "975783c92fd5463aae2c01a75afe674e0e52abc0f88801c488ef42da820bc7fe",
+      "afterMirrorBlockSHA256": "aef94530030c722bbd7865333089a70ad37fa942ebd11c6ecf04f6a8fb1952c3",
+      "patch": "site-footer.patch",
+      "patchSHA256": "2201226ee53535795fefd43286f8a8714624afdf53ef64a8dbb520a6079701b0",
+      "forwardAndReverseExact": true,
+      "notCurrentStoredBlock": "This before is the un-applied candidate-after, not the current original stored code.",
+      "operationalQualification": false
+    },
+    {
+      "name": "page-discover-helix",
+      "entity": {
+        "page_id": "69d1c60d1e37375fe0c16bc5"
+      },
+      "location": "head",
+      "beforeCandidateBlockSHA256": "d86339288ab675187e05a9f22de0fd8c98f418f15f46d6307bb623f154e6f986",
+      "afterMirrorBlockSHA256": "9f119f5da8efff7c6e065ae468b1339a247e0a0c8ed1f2b848216de9f2cb75f4",
+      "patch": "page-discover-helix.patch",
+      "patchSHA256": "5b191b17e154830fd31fbfb2855f7d52565371567bc95b348bc72a0842bf80db",
+      "forwardAndReverseExact": true,
+      "notCurrentStoredBlock": "This before is the un-applied candidate-after, not the current original stored code.",
+      "operationalQualification": false
+    },
+    {
+      "name": "page-services",
+      "entity": {
+        "page_id": "69d74acaacc7897c537190f1"
+      },
+      "location": "head",
+      "beforeCandidateBlockSHA256": "d80a42a0c196146f7c63d9fa1d0a56eddf85757074f3b88c1013912c995a136e",
+      "afterMirrorBlockSHA256": "4dab713637c498c7360cb4ede16406623f7b0358ea7c33a46085ccdccd3a0d51",
+      "patch": "page-services.patch",
+      "patchSHA256": "f3c01df5a277676ff615d234be4b928e150b81fefdb7ccef510e79e76f74ebfc",
+      "forwardAndReverseExact": true,
+      "notCurrentStoredBlock": "This before is the un-applied candidate-after, not the current original stored code.",
+      "operationalQualification": false
+    },
+    {
+      "name": "page-faq",
+      "entity": {
+        "page_id": "6a4f46aa5c5fd95c7b128df3"
+      },
+      "location": "head",
+      "beforeCandidateBlockSHA256": "f1b0fc96bb0b3e262cf9dd614ada5c0652ebe6da55e970e0d3ebcf2caf529daf",
+      "afterMirrorBlockSHA256": "3886371c7ed2f9210c54bfa48f9a0a5a9134847ff585003e93288f018eefdcc5",
+      "patch": "page-faq.patch",
+      "patchSHA256": "2f0de975b5be095a352f9e615d39f809dfbe01fef20d69a141f488e24ffd2de7",
+      "forwardAndReverseExact": true,
+      "notCurrentStoredBlock": "This before is the un-applied candidate-after, not the current original stored code.",
+      "operationalQualification": false
+    },
+    {
+      "name": "page-internal-medicine",
+      "entity": {
+        "page_id": "69d74a8ea2cac3ea9cfed34d"
+      },
+      "location": "head",
+      "beforeCandidateBlockSHA256": "bc3105930be3e2ceeec8d5ca55ade16d3e7b9546af8475d7cef9e32794c2996c",
+      "afterMirrorBlockSHA256": "b95d102b015e483d188389f42eb74d8f5c339b4dad56712b39c5064b7ee16083",
+      "patch": "page-internal-medicine.patch",
+      "patchSHA256": "2432c523cf8cd652b45e853bd49d4034ec10ef69ec4646d755265a34f99d7f2d",
+      "forwardAndReverseExact": true,
+      "notCurrentStoredBlock": "This before is the un-applied candidate-after, not the current original stored code.",
+      "operationalQualification": false
+    }
+  ],
+  "reasonBlocked": "Actual source-mirror normal wheel lock fails; injectedtwo-JS failures do not recover a menu. Site unpublished change scope also remains unknown.",
+  "originalStagingNonHomeRollbackQualified": false,
+  "stagingNonHomeMirrorCaveat": "The six-block proposal selects the main-source mirror for staging nonHome shared/producers (Services producer separately ba91). It does not reproduce every a074 staging original byte. Exact staging original12 comparison uses separate declared Git replay inputs. This unqualified proposal is not a staging restoration contract."
+}

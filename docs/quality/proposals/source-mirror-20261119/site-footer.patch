@@ -1,0 +1,11 @@
+--- a/site-footer.html
++++ b/site-footer.html
+@@ -9,7 +9,7 @@
+   var key = 'helix.shared-ui.sha.' + branch + '.' + seed;
+   var loaded = false;
+   function load(sha) {
+-    if (/^\/(?:discover-helix|services|faq|internal-medicine)?\/?$/.test(location.pathname)) sha = (/\.webflow\.io$/i.test(location.hostname) && location.pathname==="/" ? "62ecac1b6a374ebdf339840093462f1ad5bcd32e" : "669fa762b87c80a425621906543d86bbbf924f9a"); /* PRIVATE selected package. */
++    if (/^\/(?:discover-helix|services|faq|internal-medicine)?\/?$/.test(location.pathname)) sha = (/\.webflow\.io$/i.test(location.hostname) && location.pathname==="/" ? "60e50fe9938055bfb5da5261bbf7f588401aabb0" : "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc"); /* PRIVATE selected package. */
+     if (loaded || !/^[0-9a-f]{40}$/i.test(sha || '')) return;
+     loaded = true;
+     var script = document.createElement('script');

@@ -2,7 +2,25 @@
 
 갱신일: 2026-11-19 (Asia/Seoul)
 
-## 최종 판정 — 3. 자산 부족으로 실제 적용 호환성·전체 감사 승격 보류
+## 최신 판정 — 1. 실제 원복 기능 차단 확인 / 공개 적용·전체 독립 감사 승격 보류
+
+최신 결과는 [21 적용 차단 검증](21-application-blockers.md), [판정·증거 SHA](evidence/application-blockers.json), [스테이징 원본 12화면](evidence/staging-original12.json), [실제 원본 URL·SHA·소비자 대장](evidence/source-restoration-assets.json)이다. 아래20과 이전 결과는 당시 이력이다. 시작 HEAD `742fec2` 이후 **제품 runtime은 `21acccb`와 동일**하며 기존 D04 다섯 제품·D02/D05·Hero와 다른 작업자의 코드를 재수정하지 않았다.
+
+**해소한 공백:** 스테이징 비Home4페이지×390/820/1440의 실제 게시 HTML과 정확한 원본 Git blob을 확보했다. 별도 로컬 재현 `source12-v3`에서 한 번의 연속 12/12 원본/후보 계산값·배치·예약창 PNG 및 후보 기능 검사를 통과했다. 별도 `modal-geometry12`도 모든 예약창 하위 요소의 절대 좌표·크기 12쌍과 실제 1px 오류 검출/단일 속성 복구를 통과했다. 기존 실패 v1/v2는 합산하지 않았다. 원래 실패한 CDN URL은 다시 요청하지 않았고 **Git 로컬 원본 비교 성공을 실제 과거 CDN 도달 성공으로 승격하지 않았다.** 전체 페이지 픽셀 동일성도 주장하지 않는다.
+
+**도달성과 원복 기능을 분리했다:** 전달 snapshot `78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc`(원본 main), `60e50fe9938055bfb5da5261bbf7f588401aabb0`(관측 staging Home 전용), `35b12071803646aef2ec93029afea062012711ce`(실제 Services 생산자 ba91 원본)의 실제 HTTP200/Git blob 일치 응답은 74+74+20=168건이다. 모두 50MB 미만이며 전달 tree에서만 기존 root 영상2개를 제외했다. 원래 main/staging/work 영상은 보존했다. 실제10HTML+관측 runtime 텍스트 총214 binding에서 참조 없음도 재확인했다.
+
+**남은 실제 차단:** 원본 mirror의 정상 About1440에서 메뉴/폼 열린 상태의 배경 wheel이 각각600px 움직였다. 오류를 주입하지 않은 기능 실패다. Escape·초점/닫기·중복1메뉴/1claim은 정상이어도 원복 통과가 아니다. 별도 JS/CSS native 1/2회 주입4조건도 기능 복구 성공으로 세지 않았으며, JS2회 실패는 메뉴0이다. 결과는 `functionalRollbackQualified:false`, `pass:false`, exit2다. 현재 개선 후보의 회귀가 아니라 원본 복원으로 되살아나는 기존 결함이다. 전체5페이지 원복 기능 인증과 나머지 원복 조합은 보류한다. 필요한 원복 목표를 검증된 필수 개선을 보존하는 최소 패키지로 정의해야 하며 이번에는 새 제품 개선을 시작하지 않았다.
+
+기존 후보 `669fa762…`/`62ecac1b…`와 여섯 적용/역patch는 불변이다. 추가 [여섯 원본 mirror 전환 patch](proposals/source-mirror-20261119/manifest.json)는 **미적용 후보 after → 원본 mirror**의 기계적 정확 왕복 자료이며 `UNQUALIFIED — MUST NOT APPLY OR PUBLISH`다. 현재 저장 코드의 역patch와 혼동하지 않는다. 부분 적용은 지원하지 않는다. 실제 Services 원본은 main이 아닌 ba91 생산자 + main/staging shared다. 후보의 위로 버튼 display 정책 차이는 3폭 자연 스크롤에서 실제 노출 차이가 재현되지 않아 다른 진행자의 CSS를 되돌리지 않았고 독립 적용 범위 검토 사항으로 남겼다.
+
+18:52 KST 최종 읽기에서 main/staging·공개10HTML SHA·pin·관련 저장 코드6조회·게시 시각은 시작과 같다. 전체42페이지와178자산 metadata를 읽었지만16:07:52 KST site수정의 작성자/공통스타일·컴포넌트·CMS 전체diff는 현재 읽기 도구로 확인되지 않았다. 게시 이후 timestamp가 바뀐 치과·안과는 draft다. 전체 Publish 잠재 대상 non-draft/non-archived39페이지를 모두 변경 중이라고 해석하지 않는다. 미게시 작업은 보존했고 향후 Publish 전 권한 있는 별도 확인이 필요하다.
+
+**검증 경계:** 기존25단계와80조건은 동일 제품/기존 후보의 결과로 보존하며 신규 원복의 통과가 아니다. 제품 변경0이므로 이를 다시 생성하지 않았고, 별도 성공들을 합친 새 연속검사 성공을 만들지 않았다. 새 QA만 `23e83cc`→`a3ca563`→`ae1d29b`→`f032512`로 격리 커밋했다. QA 변경은 원본의 끝까지 스크롤된 상태와 포인터 hover 상태를 실제 진단해 비교 전제만 맞췄다. 기존 검사 코드·PNG·mask·100px·threshold0.2·expected failure·적용 patch는 변경하지 않았다.
+
+**다음 게이트:** 기능 기준을 만족하는 원복 대상 검증과 미게시 변경 범위 확인 후 최종 최소 패키지의 단일 연속 검증 및 별도 검토자 감사를 진행한다. 현 상태에서 전체 독립 감사 진입 가능/운영 원복 가능/구조 안정화 완료로 판정하지 않는다. D03 다른firstpaint·D04 일반 예외/무응답/미래mutable, V0/U01, 실제Safari/iOS/iPad는 기존 미해결·미검증으로 유지한다. 두Drive 아카이브를 중복 업로드하지 않았으며 원격 다운로드 SHA는 미검증이다. 신규 raw는 `/workspace/artifacts/helix-adoption-blockers-20261119` 로컬 전용이고 GitHub에는 파생 대장·해시·검사 도구·patch만 전달한다. main/staging 병합·공개 head/pin/설정 변경·Publish·운영 배포는 하지 않았다.
+
+## 이전20 최종 판정 — 3. 자산 부족으로 실제 적용 호환성·전체 감사 승격 보류
 
 **동결 소스·검사 `21acccb421aee305aed8941ee5a5da87407f94fa`의 새 clean clone에서 기존25단계 → 실제 정식39조건 → 실제 스테이징41조건을 한 번의 연속 실행으로 완료했다.** 16:49:38 KST 종료이며 이전 부분 실행·예비 성공을 합산하지 않았다. 환경 연결 전환 뒤에도 같은 부모 PID350429가 유지돼 재시작하지 않았다. 이후 전달은 문서·판정 자료만 바꾼다. [20 최종 결과](20-adoption-verification.md), [최종 판정·해시](evidence/adoption-final.json), [소스·소유권 별도 검토](evidence/adoption-source-review.json)가 최신 인계다.
 

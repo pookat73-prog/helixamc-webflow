@@ -1,0 +1,367 @@
+{
+  "runtimeProductSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "frozenQA": "ae1d29b1a18059f03dc11a42e6259b0767ec9ca8",
+  "singleRun": "source12-v3",
+  "rows": [
+    {
+      "page": "/discover-helix",
+      "viewportWidth": 1440,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 2,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "f330e87b579914dd17877a99fbaa0972550a60e3286b5175ed0cbc03b4bd5be9",
+        "candidate": "f330e87b579914dd17877a99fbaa0972550a60e3286b5175ed0cbc03b4bd5be9"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/discover-helix",
+      "viewportWidth": 820,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 2,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "9580d07d1c3c396e82c77ef326becae8acdf9bc3b959fb13817309553256be21",
+        "candidate": "9580d07d1c3c396e82c77ef326becae8acdf9bc3b959fb13817309553256be21"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/discover-helix",
+      "viewportWidth": 390,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 2,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "a3b8ad1d6f9a538f3c0a2f8334cbe865767198b24067066bf1dcb8d83707f519",
+        "candidate": "a3b8ad1d6f9a538f3c0a2f8334cbe865767198b24067066bf1dcb8d83707f519"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": {
+        "detected": true,
+        "deltaX": 1,
+        "onlyInjectedPropertyRestored": true,
+        "exactGeometryRestored": true
+      }
+    },
+    {
+      "page": "/services",
+      "viewportWidth": 1440,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 8,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 120,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 120,
+        "formWheelDelta": 120,
+        "formFocus": true,
+        "closedFormWheelDelta": 120,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "34a34f96ebd78acfb5f380ddf799936048c7e8d69303124a2afef182925f4d6c",
+        "candidate": "34a34f96ebd78acfb5f380ddf799936048c7e8d69303124a2afef182925f4d6c"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/services",
+      "viewportWidth": 820,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 8,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 130,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 130,
+        "formWheelDelta": 130,
+        "formFocus": true,
+        "closedFormWheelDelta": 130,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "fa77434d6ac3e94f8adbc4bcd1337150d15aaf388d5cc44bda30d0951f7d50a0",
+        "candidate": "fa77434d6ac3e94f8adbc4bcd1337150d15aaf388d5cc44bda30d0951f7d50a0"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/services",
+      "viewportWidth": 390,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 8,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 232,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 232,
+        "formWheelDelta": 232,
+        "formFocus": true,
+        "closedFormWheelDelta": 232,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "8f88b232c380e5e718e4afb96f889eed2b1dabf28f2e8a67154f4d037047fb2b",
+        "candidate": "8f88b232c380e5e718e4afb96f889eed2b1dabf28f2e8a67154f4d037047fb2b"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/faq",
+      "viewportWidth": 1440,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 35,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "e6b4ad59a651043404be7a4a0d6d6c852cc6717e4f9e4a49eeadf5d00cca46e7",
+        "candidate": "e6b4ad59a651043404be7a4a0d6d6c852cc6717e4f9e4a49eeadf5d00cca46e7"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/faq",
+      "viewportWidth": 820,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 35,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "8f02ebf5d72cd971fd89f4a4adb45be8ead7d424de71c31737bc07b81a177364",
+        "candidate": "8f02ebf5d72cd971fd89f4a4adb45be8ead7d424de71c31737bc07b81a177364"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/faq",
+      "viewportWidth": 390,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 35,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "0de6f6b0e2f888e7e7653bca376636a9dafacad31260876237d4cea657e4ded5",
+        "candidate": "0de6f6b0e2f888e7e7653bca376636a9dafacad31260876237d4cea657e4ded5"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/internal-medicine",
+      "viewportWidth": 1440,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 19,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "be3242c9c259920344f78049bec9e63f1ad05152005f392e8cc8a3dd6051208b",
+        "candidate": "be3242c9c259920344f78049bec9e63f1ad05152005f392e8cc8a3dd6051208b"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/internal-medicine",
+      "viewportWidth": 820,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 19,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "b91e5be4aa3c858aae518f44f3737dc2ab3c2b39bbb91747d217c32883d9af30",
+        "candidate": "b91e5be4aa3c858aae518f44f3737dc2ab3c2b39bbb91747d217c32883d9af30"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    },
+    {
+      "page": "/internal-medicine",
+      "viewportWidth": 390,
+      "actualPublishedHTML": true,
+      "exactGitOriginalReproductionAvailable": true,
+      "usedGitLocalBodyBindings": 19,
+      "originalCDNReachabilityVerified": false,
+      "closedLayoutTypographyAndFormPNGComparison": "PASS",
+      "candidateMenuAndFormFunctions": "PASS",
+      "originalLegacyFunctionalState": {
+        "menuWheelDelta": 600,
+        "menuFocus": true,
+        "closedMenuWheelDelta": 600,
+        "formWheelDelta": 600,
+        "formFocus": true,
+        "closedFormWheelDelta": 600,
+        "baselineBehaviorOnly": true,
+        "bothBackgroundLocksObserved": false
+      },
+      "formPNG_SHA256": {
+        "original": "6fb9a14b517d46eaccf7086b68232829dd42ec39f5606c6c794047a8c7e61b55",
+        "candidate": "6fb9a14b517d46eaccf7086b68232829dd42ec39f5606c6c794047a8c7e61b55"
+      },
+      "fullPageAndMenuSnapshots": "Captured local only; no full-page pixel identity claim",
+      "candidateFormUnchangedAfterMenuAndViewportActions": true,
+      "crossVersionEveryModalNodeAbsoluteGeometryPass": true,
+      "geometryQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+      "onePixel": null
+    }
+  ],
+  "localOriginalComparisons12Of12Pass": true,
+  "actualOriginalCDN12Of12Pass": false,
+  "partialV1V2NotSummed": true,
+  "rawRemotePreserved": false,
+  "geometryEvidenceIsSeparateUnitNotSummedIntoOld25Or80": true,
+  "fullPagePixelIdentityClaimed": false,
+  "onePixelActualDOMDetectedAndOwnPropertyRestored": true
+}

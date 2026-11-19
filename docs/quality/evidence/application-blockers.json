@@ -1,0 +1,493 @@
+{
+  "schema": 1,
+  "decision": 1,
+  "decisionLabel": "Actual rollback contract blocker confirmed; no new stabilized-product defect asserted",
+  "workBranch": "fix/helix-residual-structure-20261117",
+  "startHEAD": "742fec2b1a872224bc538d905f87c4b73f63155b",
+  "runtimeProductSourceUnchanged": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "newRuntimeProductEdits": 0,
+  "candidateRefsUnchanged": [
+    "669fa762b87c80a425621906543d86bbbf924f9a",
+    "62ecac1b6a374ebdf339840093462f1ad5bcd32e"
+  ],
+  "existing25And80": "Preserved for exactly unchanged products/candidate refs; not used as rollback or new combined-suite success. No new product edit requiring a new25suite occurred.",
+  "stagingOriginal12": {
+    "sourceGitComparisons": 12,
+    "absoluteModalGeometryPairs": 12,
+    "separateUnitsNotCombinedIntoANewIntegratedPass": true,
+    "actualPublishedOriginalCDNReachabilityPromoted": false,
+    "detail": "staging-original12.json"
+  },
+  "newCDNOriginalSourceMirrors": {
+    "refs": [
+      "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+      "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+      "35b12071803646aef2ec93029afea062012711ce"
+    ],
+    "actualHTTP200GitMatchedResponses": 168,
+    "functionalRollbackQualified": false
+  },
+  "rollbackNormal": {
+    "slug": "discover-helix",
+    "width": 1440,
+    "measured": {
+      "menuWheelDelta": 600,
+      "menuFocus": true,
+      "closedMenuWheelDelta": 600,
+      "formWheelDelta": 600,
+      "formFocus": true,
+      "closedFormWheelDelta": 600,
+      "baselineBehaviorOnly": true,
+      "bothBackgroundLocksObserved": false
+    },
+    "duplicate": {
+      "menus": 1,
+      "claims": 1
+    },
+    "pass": false
+  },
+  "rollbackNativeInjection": [
+    {
+      "asset": "js",
+      "scenario": "once",
+      "requests": 2,
+      "menus": 1,
+      "claims": 1,
+      "error": "menu background wheel lock\n\n600 !== 0\n",
+      "functionalRecovery": false
+    },
+    {
+      "asset": "js",
+      "scenario": "twice",
+      "requests": 2,
+      "menus": 0,
+      "claims": 0,
+      "error": "Expected values to be strictly equal:\n\n0 !== 1\n",
+      "functionalRecovery": false
+    },
+    {
+      "asset": "css",
+      "scenario": "once",
+      "requests": 2,
+      "menus": 1,
+      "claims": 1,
+      "error": "menu background wheel lock\n\n600 !== 0\n",
+      "functionalRecovery": false
+    },
+    {
+      "asset": "css",
+      "scenario": "twice",
+      "requests": 2,
+      "menus": 1,
+      "claims": 1,
+      "error": "menu background wheel lock\n\n600 !== 0\n",
+      "functionalRecovery": false
+    }
+  ],
+  "injectionNotAnObservedProductionOutage": true,
+  "normalWheelFailureIsNotInjected": true,
+  "fullFivePageRollbackFunctionsAndRemainingFaultModes": "Not qualified; normal common-asset failure blocks expansion/promotion. Other source bytes/CDN reach are verified, not inferred runtime passes.",
+  "siteScope": {
+    "siteID": "69d090ea69d828e27d16ea29",
+    "lastUpdatedUTC": "2026-11-19T07:07:52.465Z",
+    "lastPublishedSubdomainUTC": "2026-11-17T01:43:30.228Z",
+    "domainPublish": [
+      {
+        "id": "69fe99b7424ba9e393f4f856",
+        "url": "www.helix-amc.com",
+        "lastPublished": "2026-11-17T02:14:47.398Z",
+        "fullSiteCompiledAt": "2026-11-17T02:14:47.398Z"
+      },
+      {
+        "id": "69fe99b6424ba9e393f4f850",
+        "url": "helix-amc.com",
+        "lastPublished": "2026-11-17T02:14:47.398Z",
+        "fullSiteCompiledAt": "2026-11-17T02:14:47.398Z"
+      }
+    ],
+    "pageInventoryTotal": 42,
+    "pageInventoryComplete": true,
+    "editedPagesAfterLatestFullCustomPublish": [
+      {
+        "id": "69d74abc8f22a42b07df1808",
+        "path": "/dentistry",
+        "lastUpdatedUTC": "2026-11-18T01:27:45.836Z",
+        "draft": true,
+        "archived": false
+      },
+      {
+        "id": "69d74ab359bc6e8610726155",
+        "path": "/ophthalmology",
+        "lastUpdatedUTC": "2026-11-19T00:07:50.666Z",
+        "draft": true,
+        "archived": false
+      }
+    ],
+    "sixRelevantFreeformActionsUnchanged": true,
+    "siteUpdateActorAndGlobalStyleComponentCMSDiff": "Not exposed by these read-only APIs; no actor attribution or all-pending-change clearance",
+    "releaseInventoryRead": "Connector schema does not support list_site_branches despite generic guide mentioning beta; no write action was sent",
+    "publicWriteOrPublish": false,
+    "allEligiblePagesPotentiallyAffectedByFullPublish": [
+      {
+        "id": "6afa60e07aaf690f7296bd9d",
+        "path": "/doctors/eomharim"
+      },
+      {
+        "id": "6ad821bc5c02e611ab85a969",
+        "path": "/doctors/gimjonggyeong"
+      },
+      {
+        "id": "6ad821bc805309db99efe36a",
+        "path": "/doctors/hansangjin"
+      },
+      {
+        "id": "6ad821bb97e3f96867fd3a08",
+        "path": "/doctors/gimjaehyeon"
+      },
+      {
+        "id": "6ad821ba6a8847691397f5fd",
+        "path": "/doctors/igyeongsu"
+      },
+      {
+        "id": "6ad821ba7d95470ad3f993ba",
+        "path": "/doctors/baggimseohyeon"
+      },
+      {
+        "id": "6ad821b90949c3636d1599c5",
+        "path": "/doctors/gimyumin"
+      },
+      {
+        "id": "6ad821b8d8b689b4c46f20f4",
+        "path": "/doctors/jeongjeongyun"
+      },
+      {
+        "id": "6ad821b77fcc41083c73983b",
+        "path": "/doctors/gimyujin"
+      },
+      {
+        "id": "6ad821b7dfff94fd56f235f5",
+        "path": "/doctors/gimhyejin"
+      },
+      {
+        "id": "6ad821b6805309db99efdfed",
+        "path": "/doctors/iyeongeun"
+      },
+      {
+        "id": "6ad821b61cd9461669230295",
+        "path": "/doctors/gimyunji"
+      },
+      {
+        "id": "6ad821b5dfff94fd56f23555",
+        "path": "/doctors/gangyurim"
+      },
+      {
+        "id": "6ad821b597e3f96867fd384f",
+        "path": "/doctors/jojuhyi"
+      },
+      {
+        "id": "6ad821b4805309db99efdf3b",
+        "path": "/doctors/isoyun"
+      },
+      {
+        "id": "6ad821b4fd72e61e08f8fcdf",
+        "path": "/doctors/hanjuyeol"
+      },
+      {
+        "id": "6ad821b386ac4dc80f61bd3b",
+        "path": "/doctors/jeongdahong"
+      },
+      {
+        "id": "6ad821b26a8847691397f442",
+        "path": "/doctors/gimhyoju"
+      },
+      {
+        "id": "6ad821b21cd94616692301e5",
+        "path": "/doctors/coejimin"
+      },
+      {
+        "id": "6ad821b163a61822133c9c8e",
+        "path": "/doctors/jangmunseog"
+      },
+      {
+        "id": "6ad821b028f0db34fb5c982b",
+        "path": "/doctors/imjihyeon"
+      },
+      {
+        "id": "6ad821afeda09280d6e3315b",
+        "path": "/doctors/seongcanju"
+      },
+      {
+        "id": "6ad821aeaa127608030235d1",
+        "path": "/doctors/hongyiju"
+      },
+      {
+        "id": "6ad821ae86ac4dc80f61bb34",
+        "path": "/doctors/sonyeongmin"
+      },
+      {
+        "id": "6ad821ab459dfda0bb43ad0f",
+        "path": "/doctors/joseongu"
+      },
+      {
+        "id": "6ad821aa57a4f9536dcfb9f8",
+        "path": "/doctors/jeonjonghyi"
+      },
+      {
+        "id": "6ad8203115c96eed42b1b8b7",
+        "path": "/doctors/gimtaeseong"
+      },
+      {
+        "id": "6a7a89976daa9e7c516a08ee",
+        "path": "/ilsan"
+      },
+      {
+        "id": "6a4f46aa5c5fd95c7b128df3",
+        "path": "/faq"
+      },
+      {
+        "id": "69d8a0d5352dc7b3db241bea",
+        "path": "/ad-landing-test"
+      },
+      {
+        "id": "69d74b10d2c8f0500e226e84",
+        "path": "/symptoms"
+      },
+      {
+        "id": "69d74ad5db41ebe3836c44c0",
+        "path": "/specialty-care"
+      },
+      {
+        "id": "69d74acaacc7897c537190f1",
+        "path": "/services"
+      },
+      {
+        "id": "69d74aa2fe513b8132cd8ffc",
+        "path": "/diagnostic-imaging"
+      },
+      {
+        "id": "69d74a97d853cc5459916465",
+        "path": "/surgery"
+      },
+      {
+        "id": "69d74a8ea2cac3ea9cfed34d",
+        "path": "/internal-medicine"
+      },
+      {
+        "id": "69d4224c0ef3c80daa5212e4",
+        "path": "/seocho"
+      },
+      {
+        "id": "69d1c60d1e37375fe0c16bc5",
+        "path": "/discover-helix"
+      },
+      {
+        "id": "69d0bdd30d54f23591313a96",
+        "path": "/"
+      }
+    ],
+    "assetsMetadataReadComplete": 178,
+    "assetsUpdatedAfterLatestPublishObserved": 0,
+    "cmsAndReleaseReads": "Connector schema does not expose attempted read actions; no service-side writes occurred.",
+    "browserActivityRead": "No connected browser read/control tools in available capability catalog",
+    "ownerQuestionPending": true,
+    "allUnpublishedChangesAndAuthorVerified": false,
+    "ownerQuestionAnswered": false
+  },
+  "currentCandidateScopeReview": {
+    "ServicesOriginalProducerPin": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+    "mainVsActualServicesConsumedDifferences": [
+      {
+        "path": "services/bootstrap.js",
+        "actualOriginalServicesGitBlob": "3425a5e30d0a05b0eef7d6fd18d63ce2ea0c6cc1",
+        "mainTreeGitBlob": "8141fa675f77564360749837863936103a464a5a",
+        "originalHTTP_SHA256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638"
+      },
+      {
+        "path": "global/global.css",
+        "actualOriginalServicesGitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+        "mainTreeGitBlob": "7a769acfcbd234d8caa27b69ab409f55c494b2a3",
+        "originalHTTP_SHA256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f"
+      },
+      {
+        "path": "global/floating-cta.css",
+        "actualOriginalServicesGitBlob": "6b0d8186e5ec2b5b8e111224127f06e87b5f864e",
+        "mainTreeGitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+        "originalHTTP_SHA256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c"
+      },
+      {
+        "path": "home/global/coming-soon.css",
+        "actualOriginalServicesGitBlob": "532401d127df54bd5d319f795e60884b395ad2a6",
+        "mainTreeGitBlob": "838e0ef5a5c05ba1be10ca1810061d1943f9767b",
+        "originalHTTP_SHA256": "e7daeadde57063197fc70752ec3cdc7877696d602a77e3fbff5ad2ae3a737ecf"
+      },
+      {
+        "path": "home/global/coming-soon.js",
+        "actualOriginalServicesGitBlob": "36a6b333dd5dd244142f978cd7cecdd3cdf8c26d",
+        "mainTreeGitBlob": "fe5426ce5b5e102897e393b487514163ed9c4db1",
+        "originalHTTP_SHA256": "f66d26b7a67be609590a95a2a8105f7ba10b9612c8ea330a9b717e9cea950076"
+      },
+      {
+        "path": "services/services.css",
+        "actualOriginalServicesGitBlob": "973a48dd770e10b0077f44d814e2ff14aee2fe9f",
+        "mainTreeGitBlob": "b86378b0202c32b159d16637c965579a53d7109a",
+        "originalHTTP_SHA256": "5c4541c344115bfd50051a6e85b1091299be306307e8281ff3d51dd1441f7076"
+      },
+      {
+        "path": "services/dept-nav.js",
+        "actualOriginalServicesGitBlob": "2d81af7fbe8d0d54bba2fbb17b6c1cab397f918f",
+        "mainTreeGitBlob": "89f2ada0edacabbb26809941523643ba9f07c9bb",
+        "originalHTTP_SHA256": "6e4188c65ffe5b89409e7ee455af51b6300d7968687a5085ada1bef3810ef5e7"
+      },
+      {
+        "path": "seo-snippets/services.html",
+        "actualOriginalServicesGitBlob": "87516d11f052b96e518c007e1a7c2793d7cd5005",
+        "mainTreeGitBlob": "a5babafe382bd180719e38cc789e97a177989ab5",
+        "originalHTTP_SHA256": "61f91d61220c8aaa633abd927583c0f13f5639913e87d5685e09e1383307d9a3"
+      }
+    ],
+    "naturalTopButtonVisibleDifferenceObserved": false,
+    "computedTopButtonDisplayPolicyDiffers": true,
+    "noOtherWorkerCSSReverted": true,
+    "evidence": "service-policy-assessment.json"
+  },
+  "sourceRestorationConfig": "docs/quality/proposals/source-mirror-20261119/manifest.json — unqualified, not applied",
+  "oldFailedCDNURLsReRequested": false,
+  "sameFailedURLResponseReplacedByLatestMainOrSyntheticHTTP": false,
+  "GitLocalFixturesExplicitlyNotHTTPObservations": true,
+  "baselinePNGMask100pxThreshold02ExpectedFailureUnchanged": true,
+  "oldPartialV1V2ResultsSummed": false,
+  "newRawRemotePreserved": false,
+  "existingTwoDriveArchives": "Not uploaded again; remote download SHA remains unverified",
+  "held": [
+    "Literal originalCDN paths previously403 remain unverified, not re-requested",
+    "Actor/globalstyle/component/CMS unpublished change scope",
+    "Actual Safari/iOS/iPad; V0/U01; Drive remoteSHA"
+  ],
+  "nextGate": "Define and validate a rollback target that meets mandatory wheel/recovery criteria before public adoption. Do not restore known-failing original bytes and call it safe. No new product hardening is performed in this verification-only task. Confirm pending Publish scope with an authorized reviewer.",
+  "fullIndependentAuditEntryReady": false,
+  "externalIndependentAuditCompleted": false,
+  "mainStagingMergePublicPinHeadSettingsPublishDeploy": false,
+  "evidence": [
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/source12-v3/results.json",
+      "sha256": "18ad18bad27c908557dc9202749259421080c072a1448dc3c46db4e70c04086b",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/modal-geometry12/results.json",
+      "sha256": "7ae5722de303761b7da487e0c857ade75e7493ee2815b7e8d17806f93060cc01",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/staging12-assessment.json",
+      "sha256": "69f1bd6e6c257e2f6925111bac5553c600a713b92d059dbfe89c502e8e6e0611",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/rollback-diagnostic/results.json",
+      "sha256": "6b0dac161a830864c444f58fccc8b37239bbfaf7cb46ea129e0a4ec58eb9a826",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/original-runtime-git-verification.json",
+      "sha256": "f3d1f541e6f9aacac57e7850c147c640b6473587408d35aa4de087e29caf5724",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/actual-original-owner-index.json",
+      "sha256": "022538e33ab886dbc0952a548ac64a74703b97eb27d94df86d6b19d0bc71d172",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/services-original-vs-main.json",
+      "sha256": "726bcce48210edaa3ec762023f325afc304248f0990fe4aa50b3e9dae4fe3db9",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/service-policy-assessment.json",
+      "sha256": "2c4b9207ce93ffe4e5a8c16290ddb6901e853033d46c9dd399385d900e98296a",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/root-video-reference-recheck.json",
+      "sha256": "6bcae029dd19ed3ef6b1b2235daa5a449377d9ac5a6a9f385d33b79a23f9d00a",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/site-scope-assessment.json",
+      "sha256": "9ef37acf25da8ed72b990f76fa9b81a3d6b1ed05647d4d2816e3dd7b44e2a7a5",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/final-input-index.json",
+      "sha256": "bc15f6f052e2e73f82a1f916521b78846c1a7146547ca09f652b6a0b07da1a32",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/original-services-diagnostic/result.json",
+      "sha256": "4291974cf01626fb2e223b5d5492dcbedb2936084094648d1a8e8d57f067b4fe",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/form-pointer-diagnostic/results.json",
+      "sha256": "1bc4a9c7bc5f46ebeaa6e0639a10c38df1ee0e5d2b66b6815a4b85e0f02a2c1d",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-blockers-20261119/end-preservation.json",
+      "sha256": "12eb22205e9b4f5c21478e29d871fb345d436f173b0ddb51d06163d2b86a1407",
+      "rawLocalOnly": true
+    }
+  ],
+  "finalReadOnlyPreservation": {
+    "capturedAtUTC": "2026-11-19T09:52:50.557382+00:00",
+    "publicHTML10HTTP200AndSHAUnchanged": true,
+    "storedSixFreeformReadResultsExactUnchanged": true,
+    "siteMetadataAndPublishTimestampsExactUnchanged": true,
+    "protectedRefs": {
+      "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+      "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+      "work": "f032512fdb40fb5886abc96055b3b4b5d363d054"
+    },
+    "productRuntimeDiffAgainst21acccb": [],
+    "old25And80HarnessesAndOriginalAdoptionPatchesUnchanged": true,
+    "old20FrozenManifestHashesUnchanged": true,
+    "frozenWorkspaces": [
+      {
+        "path": "/workspace/helix-adoption-final-v4-20261119",
+        "HEAD": "21acccb421aee305aed8941ee5a5da87407f94fa",
+        "clean": true
+      },
+      {
+        "path": "/workspace/helix-adoption-blockers-qa-v3-20261119",
+        "HEAD": "ae1d29b1a18059f03dc11a42e6259b0767ec9ca8",
+        "clean": true
+      },
+      {
+        "path": "/workspace/helix-adoption-blockers-geometry-20261119",
+        "HEAD": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+        "clean": true
+      }
+    ],
+    "pendingSiteAuthorAndFullDesignerDiffCleared": false,
+    "publicWriteOrPublish": false
+  },
+  "stagingNonHomeMirrorIsNotExactA074Restoration": true,
+  "sourceMirrorProposalQualification": "Blocked; mechanical candidate-to-mirror roundtrip only. Main mirror selected on staging nonHome does not establish exact a074 rollback.",
+  "rawInventoryLocalOnly": {
+    "path": "/workspace/artifacts/helix-adoption-blockers-20261119/raw-inventory-final.json",
+    "sha256": "adc8cec59b9c095be439b66d5302610366e76f504ee0c1108596a99fc8b3066c",
+    "frozen60ManifestHashesUnchanged": true,
+    "frozenInputBodyFilesHashVerified": 24965,
+    "regularFiles": 25833,
+    "symlinks": 0,
+    "logicalBytes": 3529792710,
+    "uniqueInodesHashed": 8814,
+    "uniqueRegularBytesHashed": 1276471366,
+    "remotePreserved": false,
+    "seconds": 5.9
+  },
+  "rawInventoryReceiptSHA256": "60455286c1d897a2167911c472a9e25fc3d842bf07276e816d1f036866c3fd18",
+  "latestTaskFrozenQA": "f032512fdb40fb5886abc96055b3b4b5d363d054",
+  "documentationCommitsAfterQAChangeRuntime": false
+}
