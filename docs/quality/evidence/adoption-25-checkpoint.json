@@ -1,0 +1,137 @@
+{
+  "source": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "continuousPrior25Pass": true,
+  "stages": [
+    {
+      "name": "integrity",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "scope",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "interactions",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "heading-motion",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "firstpaint-heading",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "section1-recovery",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "cta-gap",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "cta-border",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "form-intro",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "consent",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "form-label",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "phone-weight-policy",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "hero-hooks",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "foreign-css-owner",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "same-url-css-owner",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "foreign-js-owner",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "mixed-js-owner",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "loader-consistency",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "producer-adoption",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "execution-state",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "menu-dependency",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "producer-pending",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "pending-boundary",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "quality",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "home-loading",
+      "exit": 0,
+      "error": null
+    }
+  ],
+  "localResultSHA256": "ea62caf59d416e0cbaa5f7d0ed26981d83d15669b4170bbc78296842421ea9ad",
+  "actualCandidateStages": "Continuing in the same uninterrupted parent run; not yet complete",
+  "wholeAdoptionCompatibility": false,
+  "originalStagingViewportsHeld": 12,
+  "raw": "LOCAL ONLY; not uploaded",
+  "olderPartialRunsSummed": false
+}
