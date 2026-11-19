@@ -267,7 +267,9 @@
       function pendingOwner(el, url) {
         // A late page/API response can leave a producer request pending after
         // window.load. Its native result, not tag presence, decides handoff.
-        if (el.hasAttribute('data-helix-shared-ui') || el.sheet) return;
+        if (el.hasAttribute('data-helix-shared-ui')) return;
+        // A reused failed link can retain an empty .sheet while its retry is
+        // pending. Watch its native result; .sheet alone is not success.
         function finished(event) {
           el.removeEventListener('load', finished);
           el.removeEventListener('error', finished);
