@@ -7,6 +7,7 @@ const root = process.env.HELIX_ADOPTION_INPUTROOT, output = process.env.HELIX_AD
 const profile = JSON.parse(fs.readFileSync(process.env.HELIX_ADOPTION_PROFILE));
 assert.ok(root && output); assert.notEqual(process.env.HELIX_VISUAL_RECORD, '1');
 const environment = process.env.HELIX_VISUAL_TARGET || 'production';
+const unavailableOriginal = profile.unavailableOriginal?.[environment] || [];
 const pages = ['home', 'discover-helix', 'services', 'faq', 'internal-medicine'];
 const rows = [], save = () => fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ environment, profile, rows, pass: false }, null, 2));
 const pathname = slug => slug === 'home' ? '/' : '/' + slug;
@@ -51,6 +52,10 @@ async function open(browser, slug, width, version) {
   const ctx = await browser.newContext({ viewport: { width, height: width === 820 ? 1180 : width === 390 ? 844 : 900 }, locale: 'ko-KR', timezoneId: 'Asia/Seoul', serviceWorkers: 'block' });
   const net = await install(ctx, { inputRoot: path.join(root, environment, version, slug), extraRoots: [] }), page = await ctx.newPage(), errors = [];
   page.on('pageerror', e => errors.push(e.message));
+  if (slug === 'home') await ctx.addInitScript(() => {
+    window.__adoptionHero = [];
+    for (const name of ['helix-s1-ready','helix-s1-done']) window.addEventListener(name,()=>window.__adoptionHero.push(name));
+  });
   return { ctx, net, page, errors };
 }
 function clean(t, slug, version) {
@@ -113,11 +118,24 @@ async function fault(browser, slug, asset, scenario) {
   try {
     for(const slug of pages)for(const width of [1440,820,390]) {
       const row={kind:'actual-HTML-selected-assets',slug,width}, shots=[];
-      for(const version of ['original','candidate']){
+      const originalAvailable = !unavailableOriginal.some(x => x.slug === slug);
+      for(const version of originalAvailable ? ['original','candidate'] : ['candidate']){
         const t=await open(b,slug,width,version);
         try{
           await navigate(t,slug);row[version]=await contract(t.page);
-          if(version==='candidate')await menu(t.page);
+          if(version==='candidate') {
+            await menu(t.page);
+            if (slug === 'home') {
+              await t.page.waitForFunction(()=>window.__adoptionHero.includes('helix-s1-done'));
+              for (const next of width===1440?[390,820,1440]:width===390?[820,1440,390]:[390,1440,820]) {
+                await t.page.setViewportSize({width:next,height:next===820?1180:next===390?844:900});await t.page.waitForTimeout(700);
+                assert.deepEqual(await t.page.evaluate(()=>window.__adoptionHero),['helix-s1-ready','helix-s1-done']);
+                assert.equal(await t.page.locator('[data-s1-ghost]').count(),0);
+                assert.ok(await t.page.locator('.bt-box-1.is-looping').count());
+                assert.ok(await t.page.locator('svg .helix-line-path').count());
+              }
+            }
+          }
           await t.page.evaluate(()=>scrollTo(0,0));await t.page.locator('.hx-fcta-form-btn').click();await t.page.waitForTimeout(450);
           shots.push(await t.page.locator('.hx-fcta-modal__box').screenshot({path:path.join(output,slug+'-'+width+'-'+version+'.png'),animations:'disabled',caret:'hide',scale:'css'}));
           await t.page.keyboard.press('Escape');await t.page.waitForTimeout(400);
@@ -131,13 +149,15 @@ async function fault(browser, slug, asset, scenario) {
           clean(t,slug,version);row[version+'Network']=t.net.audit;
         }finally{await t.ctx.close();}
       }
-      assert.deepEqual(row.candidate,row.original,'published content/typography/layout policy preserved');
-      assert.ok(shots[0].equals(shots[1]),'Form box PNG must be byte-identical; no baseline or threshold update');
-      row.pass=true;rows.push(row);save();console.log(slug,width,'PASS paired published layout/form PNG + candidate functions');
+      if (originalAvailable) {
+        assert.deepEqual(row.candidate,row.original,'published content/typography/layout policy preserved');
+        assert.ok(shots[0].equals(shots[1]),'Form box PNG must be byte-identical; no baseline or threshold update');
+      } else row.unverified = unavailableOriginal.find(x=>x.slug===slug);
+      row.pass=true;rows.push(row);save();console.log(slug,width,originalAvailable?'PASS paired published layout/form PNG + candidate functions':'PASS candidate functions; original comparison BLOCKED');
     }
     for(const slug of pages)for(const asset of ['js','css'])for(const scenario of ['once','twice'])await fault(b,slug,asset,scenario);
     for(const asset of ['js','css'])for(const scenario of ['pending','permanent'])await fault(b,'faq',asset,scenario);
     if(environment==='staging')await fault(b,'faq','js','late-api');
-    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({environment,profile,rows,pass:true,coverage:'15 current-HTML pairs; published modal PNG identity; real immutable asset bindings; candidate menu/form wheel, Escape/focus; five producer CSS/JS native bounded failures; ten-second pending; permanent failure explicitly unavailable; duplicate entry. No runtime overlays or historical-response substitution.'},null,2));
+    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({environment,profile,rows,pass:unavailableOriginal.length===0,verifiedContractsPass:true,unavailableOriginal,coverage:'All 15 candidate viewports; original comparison and exact modal PNG only where original assets are available (explicit blockers otherwise); real immutable asset bindings; menu/form wheel, Escape/focus; actual Home ready/done and reverse transitions; five producer CSS/JS native bounded failures; ten-second pending; permanent failure explicitly unavailable; duplicate entry. No runtime overlays or historical-response substitution.'},null,2));
   }finally{await b.close();}
 })().catch(e=>{save();console.error(e);process.exitCode=1;});

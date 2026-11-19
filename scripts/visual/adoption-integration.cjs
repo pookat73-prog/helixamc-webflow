@@ -13,7 +13,8 @@ for(const s of stages){
  const p=spawnSync(process.execPath,[path.join(repo,'scripts/visual',s.file)],{cwd:repo,env:{...process.env,...s.env},encoding:'utf8',maxBuffer:16*1024*1024});
  fs.writeFileSync(path.join(out,s.name+'.log'),(p.stdout||'')+(p.stderr||''));
  result.stages.push({name:s.name,exit:p.status,error:p.error?.message||null});
+ if(s.name.startsWith('actual-assets-') && p.status===0){const report=JSON.parse(fs.readFileSync(path.join(out,s.name,'results.json')));result.stages.at(-1).coverageComplete=report.pass;result.stages.at(-1).unavailableOriginal=report.unavailableOriginal||[];}
  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(result,null,2));console.log(s.name,p.status===0?'PASS':'FAIL');
  if(p.status!==0||p.error){process.exitCode=1;break;}
 }
-if(result.stages.length===stages.length&&result.stages.every(s=>s.exit===0)){result.pass=true;result.finishedAt=new Date().toISOString();fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(result,null,2));}
+if(result.stages.length===stages.length&&result.stages.every(s=>s.exit===0)){result.verifiedContractsPass=true;result.pass=result.stages.every(s=>s.coverageComplete!==false);result.finishedAt=new Date().toISOString();fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(result,null,2));}
