@@ -90,7 +90,7 @@ async function fault(browser, slug, asset, scenario) {
     const n=requests.push({url:r.request().url(),at:Date.now()});
     if (scenario==='late-api' && n===1) {
       audit.entered(); await page.waitForFunction(()=>window.__adoptionSharedBoot!==null);
-      audit.precondition=await page.evaluate(()=>({ready:document.readyState,load:window.__adoptionLoad,boot:window.__adoptionSharedBoot,tags:[...document.querySelectorAll('script[src*="/home/global/hamburger.js"]')].map(e=>({shared:e.hasAttribute('data-helix-shared-ui')}))}));
+      audit.precondition=await page.evaluate(kind=>({ready:document.readyState,load:window.__adoptionLoad,boot:window.__adoptionSharedBoot,tags:[...document.querySelectorAll(kind==='css'?'link[rel="stylesheet"][href*="/home/global/hamburger.css"]':'script[src*="/home/global/hamburger.js"]')].map(e=>({url:e.src||e.href,shared:e.hasAttribute('data-helix-shared-ui'),sheet:!!e.sheet}))}),asset);
     }
     if(scenario==='pending'&&n===1){await page.waitForTimeout(10000);audit.pendingRequests=requests.length;}
     const limit=scenario==='once'?1:scenario==='pending'?0:scenario==='permanent'?Infinity:2;
@@ -110,6 +110,9 @@ async function fault(browser, slug, asset, scenario) {
     }
     assert.deepEqual(t.errors,[]);assert.deepEqual(t.net.audit.errors,[]);assert.deepEqual(t.net.audit.overlays,[]);assert.equal(t.net.audit.forwarded,0);
     audit.network=t.net.audit; delete audit.entered;delete audit.pending;audit.pass=true;rows.push(audit);save();console.log(slug,asset,scenario,'PASS',requests.length);
+  } catch(error) {
+    audit.error=error.message;audit.requests=requests;audit.network=t.net.audit;
+    delete audit.entered;delete audit.pending;rows.push(audit);save();throw error;
   } finally {await ctx.unrouteAll({behavior:'ignoreErrors'});await ctx.close();}
 }
 (async()=>{
@@ -157,7 +160,7 @@ async function fault(browser, slug, asset, scenario) {
     }
     for(const slug of pages)for(const asset of ['js','css'])for(const scenario of ['once','twice'])await fault(b,slug,asset,scenario);
     for(const asset of ['js','css'])for(const scenario of ['pending','permanent'])await fault(b,'faq',asset,scenario);
-    if(environment==='staging')await fault(b,'faq','js','late-api');
+    if(environment==='staging')for(const asset of ['js','css'])await fault(b,'faq',asset,'late-api');
     fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({environment,profile,rows,pass:unavailableOriginal.length===0,verifiedContractsPass:true,unavailableOriginal,coverage:'All 15 candidate viewports; original comparison and exact modal PNG only where original assets are available (explicit blockers otherwise); real immutable asset bindings; menu/form wheel, Escape/focus; actual Home ready/done and reverse transitions; five producer CSS/JS native bounded failures; ten-second pending; permanent failure explicitly unavailable; duplicate entry. No runtime overlays or historical-response substitution.'},null,2));
   }finally{await b.close();}
 })().catch(e=>{save();console.error(e);process.exitCode=1;});
