@@ -59,3 +59,15 @@ staging Home만을 위한 [619d3d2](https://github.com/pookat73-prog/helixamc-we
 새 네트워크 조건은 메뉴DOM만으로 판정하면 부족했다. 생산자의 첫 메뉴JS 요청만 native 실패하면@main fallback은 실제200/구형JS4aa23e…로 성공한다. services/FAQ에서 메뉴1/요청2·Escape/초점은 정상이지만 실제 배경 wheel이0→120/600px로 움직였다. 새 CSS와 구JS의root scroll-lock protocol이 일치하지 않는다. 정상 fallback 분류 pass를 기능 보존으로 승격하지 않는다.
 
 다른 소비자의 동적SVG/배경동영상이 초기정적FILES 수집에 없어 불완전 입력 실패를 보존했다. 이를 제품 결함이나 성공으로 합산하지 않고 실제 소비 URL 수집으로 분리했다. Playwright route.fetch의EAI_AGAIN은 상속 proxy를 사용하는urllib 성공 경로와 달랐다. 환경Networking 문서의 기존 proxy/CA를 유지하는 클라이언트로 정확한GET을 수집하며 설정/허용목록/TLS·PNG·기대값을 바꾸지 않는다. 입력이 완성된 원본에서 원인별 재현을 확인하기 전 다른 생산자 코드를 수정하지 않는다.
+
+## 추가 원본 재현과 격리 제품 — 통합 검증 전 체크포인트
+
+완전한 실제 입력에서 Home/About/내과도 JS native 두 실패 뒤 메뉴0이었다. 첫 실패 뒤 mutable branch fallback 성공 시에는 메뉴가 생겨도 배경 wheel 잠금이 깨졌다. CSS는5생산자×첫 실패/두 실패10조건에서 실패한 link가 남아 공통 소비자의 채택을 막았다. 페이지오류·미기록 네트워크 오류는0인 재현만 근거로 삼았다.
+
+제품3f4c76d는 Home/About/Services/FAQ/내과의 메뉴 CSS/JS native 실패 영수증을 보존하고 global 소비자가 실패한 CSS를 정상 owner로 세지 않게 한다. 기존 services JS E1/P3와 다른 자산은 유지한다. 별도 역커밋df54a04는 해당42줄만 되돌린다.
+
+제품cb0c4d8은5생산자의 메뉴 CSS/JS 한 쌍에만 기존1회 retry를 같은 immutable ref로 한정한다. 다른 자산의 fallback·순서·callback은 보존한다. FAQ의 재사용 link에 같은 실패URL을 다시 넣으면 Chromium에서 두 번째 native 요청이 생기지 않아, 이 CSS retry에만 고정 `?hx-menu-retry=1`을 사용한다. 실제 고정 query URL도 같은 Git blob/200으로 확인했다. 역커밋bcc284b를 별도 보존했다. 요청 상한을 늘리거나 전역 timer/observer를 추가하지 않았다.
+
+새 판별 근거가 있는 늦은 API 순서도 재현했다. 실제 staging FAQ에서 두 API 응답을 제어해 page producer와 shared boot가 모두 window.load 이후 실행되도록 했다. 기존99f85c8은 실제 shared boot 시 producer script가 pending인 상태에서 두 native 실패를 놓쳐 메뉴0/요청2였다. `__helixSharedUiInit`나 CTA class만으로 consumer 완료를 판정하지 않고 실제 boot와 native 사건 시각을 기록했다. 제품8c4aa80은 이 외부 pending owner의 native 완료/실패만 직접 관찰한다. 성공 자산은 존중하고, 실패 시 기존 loadMissing이 새 producer retry를 다시 찾아 부족한 자산만 채운다. 재시도·전역 타이머·guard reset은 추가하지 않았다. 로컬 후보는 같은 입력에서 메뉴1/요청3이었다. 역커밋d55ebb8은 이 제품만 되돌린다. 원본/후보 HTTP200 JS 본문은 유지하며 fault는 요청 native abort로 명시한다. 일반 HTTP200 실행 예외의 해결과 혼동하지 않는다.
+
+최신 전달 후보는 main 계열 `d63ed35ca19c6f2f830c3dc28f74cc15d9f70870`, 실제 staging Home 계열 `0a989dddfeabcdffdfc4437341637686f229c6d4`다. 각각74개 실제 URL이 HTTP200/Git blob 일치다. staging의 callback-free/eager Home 로더·FILES 순서·cache 정책은 보존하고 확인된 메뉴 소유권 단위만 별도 이관했으며 역패치로 원본 bytes 보존을 확인했다. 모두 미적용 snapshot이고 병합 금지다. **이 체크포인트에서는 새25+실제 후보 통합 검증·최종 감사 진입을 아직 완료로 판정하지 않는다.**
