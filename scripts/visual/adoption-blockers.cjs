@@ -87,6 +87,15 @@ async function staticMedia(page, check) {
     await prior.dispose();
   }
 }
+async function neutralFormPointer(page) {
+  await page.mouse.move(0,0);
+  await page.evaluate(async()=>{
+    const box=document.querySelector('.hx-fcta-modal__box');
+    await Promise.all(document.getAnimations().filter(a=>a instanceof CSSTransition&&box.contains(a.effect.target)).map(a=>a.finished.catch(()=>{})));
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  });
+  assert.equal(await page.locator('.hx-fcta-form__submit').evaluate(e=>e.matches(':hover')),false,'Compare the same neutral pointer state; hover is tested separately');
+}
 async function modalContract(page) {
   return page.evaluate(()=>[...document.querySelectorAll('.hx-fcta-modal__box,.hx-fcta-modal__box *')].map(e=>({
     tag:e.tagName,cls:e.className,rect:e.getBoundingClientRect().toJSON(),
@@ -180,7 +189,7 @@ async function fault(browser, slug, asset, scenario) {
           await t.page.evaluate(()=>scrollTo(0,0));await t.page.locator('.hx-fcta-form-btn').click();await t.page.waitForTimeout(450);
           let beforeForm;
           shots.push(await staticMedia(t.page,async media=>{
-            row[version+'MediaAtPNG']=media;beforeForm=await modalContract(t.page);
+            row[version+'MediaAtPNG']=media;await neutralFormPointer(t.page);beforeForm=await modalContract(t.page);
             return t.page.locator('.hx-fcta-modal__box').screenshot({path:path.join(output,slug+'-'+width+'-'+version+'.png'),animations:'disabled',caret:'hide',scale:'css'});
           }));
           await t.page.keyboard.press('Escape');await t.page.waitForTimeout(400);
@@ -198,7 +207,7 @@ async function fault(browser, slug, asset, scenario) {
               }
             }
             await form(t.page,async()=>staticMedia(t.page,async()=>{
-              const afterForm=await modalContract(t.page);
+              await neutralFormPointer(t.page);const afterForm=await modalContract(t.page);
               fs.writeFileSync(path.join(output,slug+'-'+width+'-form-isolation.json'),JSON.stringify({beforeForm,afterForm},null,2));
               assert.deepEqual(afterForm,beforeForm,'Menu and reverse viewport transitions must preserve every form-node computed style and geometry');
               row.formIsolation=true;
