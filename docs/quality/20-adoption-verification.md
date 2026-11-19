@@ -85,3 +85,13 @@ Webflow2.2의 site identity·site/page freeform code를 **읽기 전용**으로 
 4개제품의 정식 역커밋을 별도동결작업본에 zero-context 단위로 적용해 모두원본기능실패를 검출했다. FAQ/Home native 실패와load후pending은메뉴0, cohort 역변경은 wheel0→600으로 실패했고 각자 hunk 복구후 실제메뉴기능이통과했다. 제품/검사코드는분리하고 baseline PNG·mask·100px·threshold0.2·expected failure를 바꾸지 않았다.1px compact gap4→5도320에서검출하고자기한줄복구후108쌍/36편집이통과했다. 이별도음성대조는통합성공에합산하지않는다.
 
 동결검사소스09291a0의별도clean clone에서 기존25단계+정식/스테이징실제자산검사를 **한 번의연속실행**으로진행중이다. 미확보원본staging비교는명시적coverage blocker이며도구가전체pass=true를줄수없도록했다. 소스/자산소유권·검사누락·실패분류는구현검사와다른관점으로따로검토했고 실제선택코드26조건과148개실제응답의Git일치도검증했다. 동일실행자의소스한정검토이며외부독립감사완료는아니다. 별도stage Hero검사에서동적Adobe폰트5개가누락된실패는입력문제로보존하고, 기존동결통합입력을수정하지않는별도입력에서실제GET만추가수집후엄격재생중이다.
+
+## 빈 CSSStyleSheet 판별 — 다섯 번째 국소 제품과 새 동결
+
+위 첫 연속 실행 중 별도 관점의 CSS late-API 검사를 추가했다. 실제 후보 d63ed35에서 두 CSS native 실패 후 메뉴DOM/ready는 정상이어도 배경 wheel이0→600으로 움직였다. 두 번 재현한 뒤 원인 판별 기록에서 첫 pending link에는 `.sheet`가 없고, 실패 후 재사용한 link에는 비어 있는 `.sheet`가 남아 두 번째 native 결과 listener 등록이 생략됨을 확인했다. 태그·module guard·메뉴DOM만으로 성공을 선언하지 않았다.
+
+제품 **b3768c43b60ef95b28c7139ca2ef7445bbbd274f**는 `global/bootstrap.js`의 외부 pending-owner 함수에서 `.sheet` 성공 추정 한 줄을 제거하고 이유만 주석으로 남긴다. 이미 성공한 외부 자산도 그대로 존중하며 native 관찰 자체가 재요청을 만들지는 않는다. 전역 timer/observer·retry 수·public head·CSS 선언을 추가하거나 변경하지 않았다. 로컬 후보 후 실제 새 immutable 후보 **669fa762b87c80a425621906543d86bbbf924f9a / 62ecac1b6a374ebdf339840093462f1ad5bcd32e**에서도 같은 JS/CSS late-API 경로가 각각3요청·메뉴/잠금/Escape/초점 정상으로 통과했다. 각 후보74URL은 모두 HTTP200/Git blob 일치이며 stage의 보존된 debug inspector는 별도1URL source-only200/Git 일치, 기능은 활성화하지 않았다.
+
+정식 역커밋 **aa3c39406e60164192bcf6d3a064ba363fabb97f**는 b3768c4만 되돌린다.4번8c4aa80과5번b3768c4는 같은 pending-owner 함수의 선행/후속 수정이다. 따라서 최신 통합 작업본에서4번을 역변경하려면5번 역패치를 먼저 적용하고, 복구는4→5 순서로 한다. 이 의존성을 숨기거나 큰 reset으로 대신하지 않는다. 다른1~3제품은 각각 자기 hunk만 되돌린다. 새608434e 작업본에서5개 원인 모두 canonical 역패치 실패 검출과 자기 단위/명시적 의존순서 복구를 확인했다. 이 음성 대조는 새 연속 통합 성공과 별개다.
+
+첫09291a0 연속 실행은 새 원본 기능 실패 발견에 따라 해당 프로세스 트리만 의도 종료했다. 당시5완료 단계와 부분Hero 원시 결과·PID/시각/이유를 보존하고 새 결과에 합산하지 않는다. 새 검사 커밋 **608434ef77c5167871b88b40912df800ce6777f4**는 실패 시도도 저장하고 JS/CSS late-API 둘 다 실제 기능을 요구한다. 별도 clean clone과 불변 입력v5에서 기존25단계와 전용 검사를 다시 한 번의 연속 실행으로 진행한다. v4 입력20개 manifest 해시는 그대로이며 추가Adobe5응답은 별도 실제GET으로 확보한 현재 입력이다. 기존 역사적 응답·PNG·허용 오차·expected failure를 바꾸지 않았다.

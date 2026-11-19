@@ -4,6 +4,10 @@
 
 ## 현재 실행 — 실제 CDN 원인 확인 / 최소 전달 패키지 / FAQ 국소 복구 검증 중
 
+**후속 실패 재현에 따른 최신 갱신:** 이전 d63ed35/823c797에서 load 이후 FAQ CSS retry의 빈 `.sheet`를 성공으로 오인해 요청2/메뉴DOM1이면서 wheel0→600으로 실패했다. 원본을 두 번 재현한 뒤 native 사건과 listener 등록을 추적해 원인을 확인했다. b3768c4는 공통 소비자의 `.sheet` 성공 추정 한 줄만 제거한다. 최신 실제 후보 **669fa76 / 62ecac1**은 JS·CSS 늦은 실패 모두 요청3에서 실제 메뉴·잠금·Escape·초점을 통과했다. 별도 역커밋aa3c394를 보존했다. 이 수정은8c4aa80의 pending-owner 함수에 의존하므로 최신 소스에서4번 역변경은5번을 먼저 되돌리고 적용한다. 원복순서는 명시하며 다른 제품을 reset하지 않는다.
+
+09291a0의 첫 연속 실행은 이 추가 원본 실패 때문에 **의도 중단**했고5단계/부분Hero 결과를 새 소스에 합산하지 않는다. 새 동결 **608434e**와 별도 입력v5/별도clone에서 기존25+실제 후보 연속검증을 처음부터 진행 중이다. [6개 적용 패치](proposals/adoption-20261119/manifest.json)도 새 후보 ref로 갱신했다. 기존 PNG·mask·100px·threshold0.2·expected failure는 불변이다. 원본 staging 비교·운영 원복 CDN·실기기·V0/U01 차단은 계속 유지하며 전체 감사 완료가 아니다.
+
 **최신 체크포인트:** staging Home 전달조립의firstpaint 선행코드 누락을 실제ready신호 실패로 검출해823c797로 대체했다. 현재 미적용 후보는d63ed35(정식/비Home4페이지)/823c797(staging Home 전용)이며 각각 실제74URL200/Git blob 일치다. [6개 저장블록 적용·역변경 패치](proposals/adoption-20261119/manifest.json)와 [파일별자산대장](evidence/adoption-package.json)을 준비했고 Webflow 설정은읽기만했다.4개제품 역커밋 검출/자기hunk복구와1px검출/108·36복구도 통과했다.09291a0의clean별도clone에서25+실제자산 연속검증 진행중이다. **원본staging About 두실제URL도50MB제한403이므로 비Home4원본비교/기존ref운영원복은 미승격이며 전체감사/적용호환성완료가아니다.** 아래 초기 후보·상태는 이력이다.
 
 추가 체크포인트: [20의 추가 재현·제품 기록](20-adoption-verification.md) 참조. native 실패 영수증3f4c76d·동일 revision 메뉴 retry cb0c4d8·load 이후 외부 pending owner handoff8c4aa80을 원인별로 격리했다. 별도 역커밋df54a04/bcc284b/d55ebb8을 보존했다. 최신 미적용 전달 후보는d63ed35(정식 계열)/0a989dd(staging Home 전용), 각각 실제74URL HTTP200/Git blob 일치다. 기존 services E1/P3·Hero·D02/D05와 staging 공개Home의 다른 변경을 보존한다. **아직 새25+실제 후보 연속 검증 전이며, 아래의 초기 후보·부분 성공은 전체 통과가 아니다.**
