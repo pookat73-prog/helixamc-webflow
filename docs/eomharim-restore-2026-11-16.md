@@ -1,4 +1,4 @@
-# 엄하림 과장 재노출 · 2026-11-16
+# 엄하림 과장 재노출 · 정식 반영 완료 · 2026-11-16
 
 ## 작업 개요
 
@@ -17,15 +17,22 @@
 - staging 카드·사진·상세보기: 실제 1440px/390px 검증 통과. 순서: 강유림 → 엄하림 → 이영은.
 - 전체 27명 정적 본문·공유 메타정보 검사 및 25명 상세 모달 브라우저 회귀 검사 통과. GitHub Site Quality Checks, CDN 배포 성공.
 - Webflow 게시 대상은 `customDomains: []`, `publishToWebflowSubdomain: true`. 최종 publishTaskId `6d8736e3-195d-4200-a692-45ee4e8e3634`.
-- 정식 main 병합·운영 도메인 게시·Search Console 제출은 이번 작업에서 실행하지 않았다.
+- 사용자 정식 반영 승인 후 PR #2071을 main에 병합: `9a05f1e102d947975cf572eac2a71c6755ff6536`. 엄하림 관련 6개 파일만 현재 main에 반영했다.
+- 사용자 "함께 게시" 승인 후 www/비www 운영 도메인에 전체 게시했다. Webflow 단일 페이지 게시가 지원되지 않아, 사전 비교에서 확인한 `.about_contents-title-white.sub`의 모바일 14px/행간 20px 변경 1건도 함께 포함하도록 승인받았다.
+- 운영 publishTaskId `d0650b04-7af5-4fe3-aef2-64d43b58fb17`, 양쪽 운영 도메인 게시 완료 시각 `2026-11-16T02:05:55.313Z` (한국시간 11:05). 스테이징은 이 게시에서 제외했다.
+- 운영 1440px/390px 카드·상세보기 검증 통과. `/doctors/eomharim`은 www/비www HTTP 200, 최초 HTML의 이력 본문 포함, 고유 제목·단일 대표 주소, 사진 로드, 가로 넘침 없음, 새로고침·ESC 복귀 검증 통과. 승인된 부제 CSS의 운영 응답 포함도 확인했다.
+- Search Console 제출은 실행하지 않았다.
 
 ## 다음 단계
 
-정식 반영 요청 시 이번 의료진 데이터 변경만 main으로 옮기고 신규 직접 접속 페이지를 운영 게시한다. staging 전체를 승격해 관련 없는 변경을 함께 내보내지 않는다. 신규 페이지는 `draft:false`이므로 이후 전체 운영 게시에도 포함될 수 있다.
+요청 범위의 정식 반영과 검증 완료. staging 전체 병합은 수행하지 않았다. 별도 후속 작업 없음.
 
 ## 참고 파일 및 링크
 
+- https://github.com/pookat73-prog/helixamc-webflow/pull/2071
 - https://github.com/pookat73-prog/helixamc-webflow/pull/2069
+- https://helix-amc.com/seocho?fresh=1#medical-team
+- https://helix-amc.com/doctors/eomharim
 - https://helixanimalmedicalcenter.webflow.io/seocho?fresh=1#medical-team
 - https://helixanimalmedicalcenter.webflow.io/doctors/eomharim
 - `docs/doctor-staging-deployment.json`: 기존 26명 배포 이력. 이번 엄하림 페이지 식별값·상태는 본 문서가 최신이다.
