@@ -86,6 +86,10 @@
     link.rel  = 'stylesheet';
     link.href = url;
     if (onerr) link.onerror = onerr;
+    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
+      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
+      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
+    }
     document.head.appendChild(link);
   }
 

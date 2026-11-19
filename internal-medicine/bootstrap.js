@@ -171,6 +171,15 @@
       element.async = false;
     }
 
+    if (path === 'home/global/hamburger.css') {
+      element.addEventListener('load', function () { element.removeAttribute('data-helix-menu-css-error'); }, true);
+      element.addEventListener('error', function () { element.setAttribute('data-helix-menu-css-error', element.href); }, true);
+    } else if (path === 'home/global/hamburger.js') {
+      element.addEventListener('error', function () {
+        element.setAttribute('data-helix-menu-js-error', element.src);
+        element.remove();
+      }, true);
+    }
     element.onerror = function () {
       if (ref !== BRANCH) loadFile(path, BRANCH);
     };
