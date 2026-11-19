@@ -20,7 +20,26 @@ function fixture({ cachedAge, fresh = false, blockedStorage = false, hostname = 
     readyState: 'loading',
     head: { appendChild(el) { added.push(el); } },
     documentElement: {},
-    createElement: tag => ({ tag, style: {} }),
+    createElement: tag => {
+      const attributes = new Map(), listeners = new Map();
+      return {
+        tag, style: {},
+        setAttribute(name, value) { attributes.set(name, String(value)); },
+        getAttribute(name) { return attributes.get(name) ?? null; },
+        removeAttribute(name) { attributes.delete(name); },
+        addEventListener(type, fn, capture = false) {
+          const list = listeners.get(type) || []; list.push({ fn, capture }); listeners.set(type, list);
+        },
+        dispatchEvent(event) {
+          const e = { ...event, target: this };
+          for (const l of listeners.get(e.type) || []) if (l.capture) l.fn.call(this, e);
+          this['on' + e.type]?.call(this, e);
+          for (const l of listeners.get(e.type) || []) if (!l.capture) l.fn.call(this, e);
+          return true;
+        },
+        remove() { this.removed = true; }
+      };
+    },
     querySelector: () => null,
     querySelectorAll: () => [],
     getElementById: id => added.find(el => el.id === id),
@@ -111,15 +130,15 @@ console.log('✓ publication cache isolation: legacy warm visits, fresh=1 under 
   assert.equal(scripts().length, 1, 'hero must wait for critical CSS');
   assert.equal(scripts()[0].async, true, 'ScrollTrigger download must not block hero');
   const critical = ['global/global.css', 'home/global/coming-soon.css', 'home/section1/section1.css', 'home/global/buttons.css'];
-  for (const path of critical.slice(0, -1)) f.added.find(e => e.rel === 'stylesheet' && e.href.endsWith(path)).onload();
+  for (const path of critical.slice(0, -1)) f.added.find(e => e.rel === 'stylesheet' && e.href.endsWith(path)).dispatchEvent({ type: 'load' });
   await flush(); assert.equal(scripts().length, 1);
   const glowCss = f.added.find(e => e.rel === 'stylesheet' && e.href.endsWith(critical.at(-1)));
-  glowCss.onerror();
+  glowCss.dispatchEvent({ type: 'error' });
   assert(f.added.some(e => e.href?.includes('@main/home/global/buttons.css')), 'CSS retry retains completion callback');
-  f.added.find(e => e.href?.includes('@main/home/global/buttons.css')).onload(); await flush();
+  f.added.find(e => e.href?.includes('@main/home/global/buttons.css')).dispatchEvent({ type: 'load' }); await flush();
   assert.deepEqual(scripts().slice(1).map(e => e.src.split('@' + sha + '/')[1]),
     ['global/viewport-fix.js', 'global/viewport.js', 'home/global/coming-soon.js', 'home/section1/section1.js']);
-  scripts().at(-1).onload();
+  scripts().at(-1).dispatchEvent({ type: 'load' });
   assert.equal(scripts().length, 5, 'auxiliary downloads must not delay DOMContentLoaded');
   f.context.document.readyState = 'interactive';
   for (const fn of f.events.DOMContentLoaded) fn();
