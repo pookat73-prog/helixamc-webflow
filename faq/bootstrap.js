@@ -142,14 +142,7 @@
     s.src   = url;
     s.async = false;
     if (onload) s.onload = onload;
-    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
-      s.onerror = function () {
-        /* A native-failed menu script cannot own the shared consumer's slot. */
-        s.setAttribute('data-helix-menu-js-error', url);
-        s.remove();
-        if (onerr) onerr();
-      };
-    } else if (onerr) s.onerror = onerr;
+    if (onerr)  s.onerror = onerr;
     document.head.appendChild(s);
     return s;
   }
