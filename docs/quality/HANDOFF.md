@@ -2,6 +2,16 @@
 
 갱신일: 2026-11-19 (Asia/Seoul)
 
+## 현재 실행 — 실제 CDN 원인 확인 / 최소 전달 패키지 / FAQ 국소 복구 검증 중
+
+[20 실제 적용 검증](20-adoption-verification.md)이 이번 작업 기록이다. D02/D05는 종료 범위로 보존한다. 아래19의25단계 통과는06f8bba의 이전 검증이며 새 FAQ 제품의 통과로 합산하지 않는다.
+
+새 동일 URL 재확인에서 footer403 본문은 jsDelivr50MB package-size 제한이었다. page-time은 immutable 캐시HIT200이며 두 경로 모두 Git에 존재한다. 같은 실패 재시도는 중단했다. 공개main63.2MB/감사ref75.3MB와 root 동영상47.8MB를 확인했다. 원본 파일을 삭제하지 않고 main 기반10제품 파일과 두 root 동영상 제외만 담은 **병합 금지** 전달 snapshot9ac23b8(15.4MB)을 만들었다. 실제 새 URL70개가 모두200/Git blob 일치다. 신규 raw는 로컬 전용이다.
+
+해당 실제 코드에서 생산자 두 native 실패 뒤 늦게 시작한 공통 소비자 조건은 services가 복구했지만 FAQ는 실패태그가 슬롯을 점유해 메뉴0이었다. FAQ만8줄 추가/1줄 대체한 제품acda53e는 실패한 메뉴 script만 소유권에서 빼며 CSS/일반JS/fallback 횟수는 보존한다. 전달 후보d3fd524의 실제70URL도200이고 같은4조건에서 FAQ 메뉴1/3요청·Escape/초점 복귀를 확인했다. 독립 역커밋ed38a23은 recovery 브랜치에만 보존했다. **새25+전용 통합/역패치 전체 검증은 아직 미완료**다.
+
+실제 staging Home pinccb68a7c는 현재staging tip과 별도 자산15개가 달라 이 차이를 보존해야 한다. 운영용 패키지의 무조건 대입을 하지 않는다. 공통 소비자 선행 실험2회는 통제 선행 조건이 성립하지 않아 그 결과를 기능 실패/도달 불가 근거로 쓰지 않고 미검증으로 남겼다. main/staging·공개head/pin/설정·Publish·배포는 변경하지 않았고 새raw/Drive 아카이브를 업로드하지 않았다.
+
 ## 이번 최종 판정 — D02 개선·D05 미변경 / 새25단계 통과 / 특정 검증 보류(3)
 
 [19 실행·종료 게이트 단회 판정](19-closure-execution.md), [소스·입력·검증·SHA 대장](evidence/closure-final.json)이 최신 기록이다. 아래18의 환경 차단은 이전 이력이다. 실제 shell/브라우저가 복구됐고 기존 작업공간·12입력 root·원본2,130body binding·raw2,480파일·두 승인 아카이브·C4 소스/검사와23단계 결과를 보존·해시 검증했다.

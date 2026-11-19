@@ -1,0 +1,61 @@
+# HELIX 실제 적용 자산 검증과 독립 감사 준비
+
+2026-11-19 KST. 시작69fff7d, 검증 동결06f8bba, D02 제품46af337/복구19455fd를 보존한다. D02/D05는 종료 범위이며 새 미세 CSS·전면 리팩터링을 하지 않는다. 현재 단계는 실행 중이며 적용 호환성·독립 감사 완료가 아니다.
+
+## 범위와 보존
+
+작업량 중~대. 산출물은403 원인/응답 대장, 운영 기준의 최소 제품 diff와 전달용 스냅샷, 실제 URL 전용 호환성 검사, 누락/실패 분류 재검토, 최종 판정/HANDOFF다. 현재 선택 모델 유지·높은 추론 강도 권장·예상 사용량 높음이다. 승인은 이미 받은 범위를 적용하며 중간 승인을 반복하지 않는다. 로더/초기화 변경은 고위험으로 다룬다. main/staging 병합·공개 head/pin/설정·Publish·배포는 실행하지 않는다. 신규 raw는 로컬 전용이며 외부 업로드하지 않는다.
+
+실제 shell/브라우저 자원이 있는 기존 공간이 복구됐고 clean HEAD69fff7d를 확인했다. 현재 main3c4f78d4/staginga074f455는 이전과 같다. 기존 원시 입력·검사·제품·백업을 그대로 보존한다. 전체 작업 브랜치 병합/기존 파일 전체 덮어쓰기/reset/clean/restore는 하지 않는다.
+
+## 403의 새 판별 근거
+
+이전 page-time 실패 시각은UTC00:30:10.539 마지막 성공~00:30:14.928 실패파일 생성 사이이며 정확한 실패 응답 헤더/본문은 남아 있지 않다. footer도UTC00:35:03.449 마지막 성공~00:35:05.617 실패기록 생성 사이다. 이 자료 공백을 복원한 것처럼 채우지 않는다.
+
+같은 실제 commit46af와 정확한 두 URL을 urllib 기본 요청으로 한 번씩만 재확인했다. page-time은UTC01:57:03.955 요청에서200·13,879byte·immutable 캐시HIT였고 원본 Git blob과 같다. footer는UTC01:57:04.676 요청에서403·183byte, 본문이 **Package size exceeded the configured limit of50MB**였다. CDN 캐시MISS·60초 응답 정책과 원본 헤더/본문을 로컬 보존했다. 두 경로는 Git에 실제 존재한다. 같은 URL 재시도를 중단했다.
+
+현재403은 경로 누락이나 브라우저 실행 실패가 아니라 CDN의 package-size 거절이라는 직접 근거가 있다. 이전 헤더/본문이 없어 모든 과거403의 원인을 소급 확정하지 않는다. 같은 대형 commit의 일부 파일이 기존 immutable 캐시에서200인 것과 uncached 파일403이 공존할 수 있음을 구분한다.
+
+## 최소 제품과 전달 패키지
+
+현재 main과 작업 소스의 관련 runtime 차이는10파일뿐이다. 공개 main의 실제 고정URL10응답을200으로 받아 Git blob과 검증했고 다른 runtime은 같다. main/staging의 관련 runtime tree도 같다. 개별 스타일/초기화 변경은 기존 검증된 단위만 선택한다.7195463은 최신 개선이 없는 과거 참고 후보다.
+
+main의 추적 blob 합계63,220,642byte,46af는75,328,068byte다. 루트의 `시퀀스 01_1.mp4`25,461,752byte와 `헬릭스 작품 (저용량).mp4`22,336,046byte는 현재10HTML/런타임 텍스트와 기존12입력에서 소비가 확인되지 않았다. 모르는 외부 소비까지 없다고 단정하지 않는다. **원본 main/staging/작업 소스에서 두 파일을 삭제하지 않는다.**
+
+전달 전용 [`package/helix-adoption-20261119`](https://github.com/pookat73-prog/helixamc-webflow/tree/package/helix-adoption-20261119)의 초기 commit9ac23b8은 main tree를 기준으로10개 제품 파일만 검증된 source blob으로 바꾸고 이 두 root 동영상을 패키지에서 제외한다. 나머지 공개 파일은 보존한다. 이 branch는 CDN 도달 검증용 전달 snapshot이며 **어느 소스 브랜치에도 병합하면 안 된다.** 원본 파일·이력은 그대로다. 원복은 source main을 바꾸는 것이 아니라 승인 후 바꿀 loader 선택을 기존 값으로 돌리는 방식이다.
+
+이 패키지 URL은 존재하는 실제 CDN 응답과 Git blob을 확인하고 있다. 기존 응답을 새 URL alias로 붙이지 않는다. 모든 자산을 최신@main으로 대체하거나 운영 pin을 바꾸지 않는다. full FILES/SEO 선택 경로 수집과 실제 브라우저 채택·기능 검증은 아직 완료 전이다.
+
+## 검증 계약과 현재 제한
+
+실제10HTML은 별도 새 로컬 입력으로 읽었다. Webflow head의 firstpaint 소유권은 보존한다. 적용 제안은 page producer와 shared consumer가 같은 패키지 자산을 선택하도록 정확한 코드와 inverse를 별도 기록하며 공개 HTML에 쓰지 않는다. 부분 적용·기존 fallback·old/new 혼합·GSAP 지연/실패·pending·중복 진입·요청 상한을 실제 body 기준으로 구분한다.
+
+완전한 입력이 확보돼야 기존25단계와 전용 호환성 검사를 새 동결 소스의 단일 연속 실행으로 판정한다. 예전25/부분 성공을 합산하지 않는다. 운영 응답 자체 오류와 인위적 오류 주입을 구분하고 분류 pass를 기능 회복으로 세지 않는다. 자산이 계속 막히면 소스 한정 검토는 진행하되 실제 호환성·전체 감사 완료로 승격하지 않는다.
+
+Safari/iOS/iPad·V0/U01·두 Drive 원격 다운로드 SHA 미검증은 유지한다. 기존 두 파일 중복 업로드와 신규 raw 외부 업로드는 하지 않는다. 최종 판정은1실제 차단 결함/2적용 호환성 완료·감사 진입 가능/3환경·자산 부족 중 근거에 맞춰 갱신한다.
+
+## 실행 중 추가 기록 — 실제 코드의 FAQ native 실패 슬롯
+
+초기 전달9ac23b8의 실제70URL 전체200/Git blob 일치를 확인했다. 원본 응답을 덮어쓰거나 다른 버전 alias로 대신하지 않았다. 기존 정식HTML을 복제한 private head 선택 fixture에서만 생산자/공통 소비자 ref를9ac으로 선택했고 runtime overlay는0이었다.
+
+services/FAQ의 정상 로드는 각각 메뉴1·JS요청1·실행오류0이었다. 실제 JS 본문은 유지한 채 생산자의 immutable 요청과@main fallback 두 요청만 native abort하고 공통 소비자를 뒤에 시작시켰다. services는 요청3/메뉴1/Escape·초점 복귀지만 FAQ는 요청2/메뉴0이었다. 실패한 두 script가 DOM에 남아 공통 소비자의 path 존재 검사에서 정상 owner로 오인됐다. 이는 실제 코드의 지원 실패 경로 재현이며 현재 운영 정상 요청 자체가 실패했다는 주장은 아니다.
+
+제품[acda53e](https://github.com/pookat73-prog/helixamc-webflow/commit/acda53e6237556c42128e996bebf9e7b60eca922)는 FAQ injectJs의 메뉴 native-error 경로만8줄 추가/1줄 대체한다. 실패URL을 기존 소비자 protocol로 표시하고 해당 script를 제거한 다음 기존 fallback을 호출한다. HTTP200/native load를 실행 성공으로 바꾸지 않는다. 다른 JS, CSS 재사용/cascade와 FAQ 성공 fallback·횟수는 보존하며 timer/observer/retry를 추가하지 않는다.
+
+전달 snapshot의 후속[d3fd524](https://github.com/pookat73-prog/helixamc-webflow/commit/d3fd5243b1edb371a119e9ba2e257ec19f6d0b4b)는FAQ 한blob만 바뀌었다. 실제70URL을 다시 HTTP200/Git blob으로 검증했고 같은4조건에서 정상1요청·실패복구3요청/메뉴1·Escape/초점 복귀를 확인했다. 원본 실패 로그·PNG·입력과 후보 결과를 모두 로컬 보존한다. 전체 새 통합 검증 전에는 검증 완료 제품으로 승격하지 않는다.
+
+원인별 별도 [역커밋ed38a23](https://github.com/pookat73-prog/helixamc-webflow/commit/ed38a23e3bc1b949a9188bb8e0a8948fd113f069)은recovery/helix-faq-native-owner-20261119에만 보존했다. 작업/main/staging에는 적용하지 않는다. 이후 실제 해당 hunk 회귀 검출/복구를 확인한다.
+
+공통 소비자가 먼저 pending owner를 확인한 다음 생산자가 실패하는 순서는 별도 probe2회에서 선행 조건을 만들지 못했다. 첫 probe는 미완료 route를 닫은 도구 오류, 두 번째는 gate/early-consumer 사전조건 timeout이었다. 이를 새 제품 결함이나 ‘실제 경로에서 도달 불가’로 확대하지 않는다. 더 많은 임시 덮어쓰기를 추가하지 않고 이 probe를 중단해 한계를 보존했다.
+
+현재 Git main/staging runtime은 같지만 **실제 staging Home head는ccb68a7c**를 고정한다. 그 tree에는 현재main과 다른 관련runtime15개가 있어 실적용 검토에서 별도로 보존한다. 같은main payload로 staging을 덮어쓴다고 가정하지 않는다.
+
+## staging cohort 보존과 추가 호환성 조사
+
+실제ccb68의 Home bootstrap/globalCSS/coming-soon/sections/Section1/top-button6자산을200/Git blob으로 확보했다. coming-soon/sections/Section1의 검증된 main→작업 hunk만 해당ccb68 원본에fuzz0으로 이관했다. 역패치 결과도 세 파일 모두 정확한 실제ccb68 SHA로 돌아갔다. Home FILES의집합은 main과 같지만 순서가 달라 원래 bootstrap을 보존했다.
+
+staging Home만을 위한 [619d3d2](https://github.com/pookat73-prog/helixamc-webflow/commit/619d3d2e9e78131ace18a519400a6aae75320b21)를 별도package/helix-staging-home-20261119에 만들었다. main용d3fd를 기준으로Home bootstrap/v3·globalCSS·top-button·inspector를ccb68으로 보존하고, 위 세 파일은ccb68+검증 hunk만 담았다. 현재staging의 공통 소비자는tip의global/bootstrap을 쓰므로 이 경로는 최신 검증 공통 소비자를 유지한다. 이 전달 스냅샷도 병합/공개 적용 금지이며 일반staging 페이지 전체의 base로 쓰지 않는다. 실제70URL200/Git blob은 확인했지만 실제 화면/모션 비교 전 호환성 완료가 아니다.
+
+새 네트워크 조건은 메뉴DOM만으로 판정하면 부족했다. 생산자의 첫 메뉴JS 요청만 native 실패하면@main fallback은 실제200/구형JS4aa23e…로 성공한다. services/FAQ에서 메뉴1/요청2·Escape/초점은 정상이지만 실제 배경 wheel이0→120/600px로 움직였다. 새 CSS와 구JS의root scroll-lock protocol이 일치하지 않는다. 정상 fallback 분류 pass를 기능 보존으로 승격하지 않는다.
+
+다른 소비자의 동적SVG/배경동영상이 초기정적FILES 수집에 없어 불완전 입력 실패를 보존했다. 이를 제품 결함이나 성공으로 합산하지 않고 실제 소비 URL 수집으로 분리했다. Playwright route.fetch의EAI_AGAIN은 상속 proxy를 사용하는urllib 성공 경로와 달랐다. 환경Networking 문서의 기존 proxy/CA를 유지하는 클라이언트로 정확한GET을 수집하며 설정/허용목록/TLS·PNG·기대값을 바꾸지 않는다. 입력이 완성된 원본에서 원인별 재현을 확인하기 전 다른 생산자 코드를 수정하지 않는다.
