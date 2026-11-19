@@ -145,7 +145,7 @@
     scrollToTop();
   }, true);
 
-  function present(path, pendingOwner) {
+  function present(path) {
     if (guards[path] && window[guards[path]]) return true;
     // Match the repository path across revisions, including in-flight page loads.
     return Array.prototype.some.call(document.querySelectorAll('script[src],link[rel="stylesheet"][href]'), function (el) {
@@ -157,9 +157,7 @@
       // can observe it. Pending/successful tags and other modules still own them.
       if (path === 'home/global/hamburger.js' &&
           el.getAttribute('data-helix-menu-js-error') === url) return false;
-      var ownsPath = url.indexOf('/helixamc-webflow@') !== -1 && url.split(/[?#]/)[0].endsWith('/' + path);
-      if (ownsPath && pendingOwner) pendingOwner(el, url);
-      return ownsPath;
+      return url.indexOf('/helixamc-webflow@') !== -1 && url.split(/[?#]/)[0].endsWith('/' + path);
     });
   }
 
@@ -264,25 +262,9 @@
     FILES.forEach(function (path) {
       var failures = 0;
       var retryMenu = path === 'home/global/hamburger.css' || path === 'home/global/hamburger.js';
-      function pendingOwner(el, url) {
-        // A late page/API response can leave a producer request pending after
-        // window.load. Its native result, not tag presence, decides handoff.
-        if (el.hasAttribute('data-helix-shared-ui') || el.sheet) return;
-        function finished(event) {
-          el.removeEventListener('load', finished);
-          el.removeEventListener('error', finished);
-          if (event.type === 'load') return;
-          failedMenuUrls.set(el, url);
-          // The producer gets first choice of its bounded retry. Re-discover
-          // that owner before supplying a missing asset from this revision.
-          loadMissing();
-        }
-        el.addEventListener('load', finished);
-        el.addEventListener('error', finished);
-      }
       function loadMissing() {
         // A page loader may have supplied this path while our request failed.
-        if (present(path, retryMenu ? pendingOwner : null)) return;
+        if (present(path)) return;
         var css = /\.css$/.test(path);
         var el = document.createElement(css ? 'link' : 'script');
         if (css) { el.rel = 'stylesheet'; el.href = ROOT + ref + '/' + path; }
