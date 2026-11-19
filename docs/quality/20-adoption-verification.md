@@ -1,12 +1,37 @@
 # HELIX 실제 적용 자산 검증과 독립 감사 준비
 
-2026-11-19 KST. 시작69fff7d, 검증 동결06f8bba, D02 제품46af337/복구19455fd를 보존한다. D02/D05는 종료 범위이며 새 미세 CSS·전면 리팩터링을 하지 않는다. 현재 단계는 실행 중이며 적용 호환성·독립 감사 완료가 아니다.
+2026-11-19 KST. 시작69fff7d, 검증 동결06f8bba, D02 제품46af337/복구19455fd를 보존한다. D02/D05는 종료 범위이며 새 미세 CSS·전면 리팩터링을 하지 않는다. 최종 판정은3(자산 부족으로 특정 검증 보류)이며 전체 적용 호환성·독립 감사 완료가 아니다.
 
-## 최신 실행 상태 — 중간 이력과 구분
+## 최종 실행·판정 — source21의 단일 연속 검사 완료, 전체 승격 보류
 
-최종 소스·검사 **21acccb421aee305aed8941ee5a5da87407f94fa**를 새 clean clone과 불변 입력v5에서 단일 연속 실행 중이다. **기존25단계가 이 동결 소스에서 모두 통과했다**([중간 판정](evidence/adoption-25-checkpoint.json)). 같은 중단 없는 부모 실행이 실제 정식39/스테이징41조건을 계속 검사한다. 실제 후보 전체 판정은 아직 미완료이며 예비 통과·이전 부분 실행은 합산하지 않는다. 제품은b3768c4 이후 변경하지 않았다. 최신 미적용 전달 후보는 **669fa762b87c80a425621906543d86bbbf924f9a / 62ecac1b6a374ebdf339840093462f1ad5bcd32e**이며 아래 다른 SHA는 당시 이력이다.
+최종 소스·검사는 **21acccb421aee305aed8941ee5a5da87407f94fa**다. clean clone `helix-adoption-final-v4-20261119`와 불변 입력v5에서 기존25단계→실제 정식39→실제 스테이징41을 한 번의 중단 없는 부모 실행으로 완료했다(2026-11-19 16:49:38 KST). 환경 연결 전환 때도 같은 PID350429와 실행 파일·입력·source SHA가 유지됐다. 옛v1/v2/v3의 중단/실패·예비 검사를 합산하지 않는다. 제품은b3768c4 이후 불변이며 이후 마감은 문서·판정 자료다.
 
-15:42 KST 읽기 전용 재확인에서10개 공개HTML 전체SHA·선택로더·pin 및 저장된site head/footer·5page head가 시작 상태와 정확히 같았다. main/staging도 불변이다. 후보 정상 동작 검사와 별개로 원본staging12화면 비교·도달가능한 운영원복·실기기/V0/U01은 보류다. 최종 판정은 검사 종료 후 JSON의 명시적 coverage 결과로 하며 CLI exit0/분류성공으로 전체 호환성을 승격하지 않는다.
+| 범위 | 정상 후보 | 원본 비교 완료 | 원본 비교 보류 | 실제 기능 복구 조건 | 영구 실패 분류 |
+|---|---:|---:|---:|---:|---:|
+| 정식 |15|15|0|22|2|
+| 스테이징 |15|3|12|24|2|
+
+80조건의 선택 계약은 모두 통과했다. 정식39조건의 범위는 완료됐지만 스테이징은 원본12비교 부족으로 전체 통과가 아니다. 부모 JSON의 `verifiedContractsPass:true`와 `pass:false`를 분리했고, 별도 승격 판정은 **exit2**를 반환했다. 영구 native 실패4조건은 사용 불가이며46복구에 포함하지 않는다. 정상30화면의 폼 전체 계산값/geometry 불변과 원본이 있는18화면의 같은 상태 예약창PNG byte exact를 확인했다. 현재 계약은 문구·제목타이포·높이·문서정책·링크·고정요소·폼/메뉴 기능이며 전체 페이지 픽셀 동일성을 뜻하지 않는다. footer V0를 해결한 것도 아니다.
+
+추가 기록 판독에서 정상/고장 주입의 모든 실제 메뉴 생산자·공통 소비자는 선택한 동일 immutable ref였다. 1회 실패는2요청(각환경10조건),2회 실패는3요청(각10),10초 지연은1요청(각2),영구 실패는4요청(각2),load후 API 순서 복구는3요청(staging2)이었다. 새 retry 상한·전역timer/observer·초기화 guard reset은 없다. 실제 고장 주입은1440폭이고10초 pending/영구 실패는FAQ 중심이다. 정상 후보는5페이지×3크기이며Home ready/done·ghost·loop·역전환과 메뉴/폼 wheel·Escape·초점을 확인했다. 별도 실제stage Hero6조건은 동일 제품 bytes의GSAP40회 소진·복원을 검증했다. 모든폭·critical CSS·폰트·firstpaint 오류의 전체 조합을 검증했다고 하지 않는다.
+
+### 실제 개선과 이관 경계
+
+메뉴 로더5원인을 실제 원본 실패→최소 수정→기능 복구로 처리했다: FAQ 실패 script 슬롯(acda53e),5생산자의 CSS/JS 실패 기록과 shared 채택(3f4c76d),기존 메뉴 retry의 동일ref 유지(cb0c4d8),load후 외부 pending 결과 인계(8c4aa80),빈sheet 성공 추정 제거(b3768c4). 새 스타일시트 선언 정리나D02/D05 재수정은 없다. 각각 ed38a23/df54a04/bcc284b/d55ebb8/aa3c394의 별도 역커밋을 남겼다. 같은 함수의 선행/후속인4·5는 역변경5→4,복구4→5이고 다른1~3은 자기hunk다. 별도608434e 대조 작업본의 canonical역패치5원인 검출/복구와1px 검출·자기한줄복구후108/36통과는 현재 제품·대조 로직과 같지만 새 통합에 합산하지 않는다. baselinePNG·mask·100px·threshold0.2·expected failure는 보존했다.
+
+최신 미적용 패키지는 **669fa762b87c80a425621906543d86bbbf924f9a**(정식5·staging 비Home4), **62ecac1b6a374ebdf339840093462f1ad5bcd32e**(staging Home 전용)다. 각74실제URL이200/Git blob 일치다. main 기준14제품 파일만 선택했고254blob은 그대로다. staging Home의17개 main대비 차이는 모두 신규수정이라는 뜻이 아니며 기존CCB bootstrap순서/cache·CSS·top-button·inspector/v3 등 보존분을 구분했다. snapshot용 root영상2제외는 원본 삭제가 아니고5페이지소비/입력에 참조가 없음을 확인했다. 두패키지 모두main/staging에 병합하지 않는다.
+
+[파일별 이유·URL/SHA·실제 요청 소비자](evidence/adoption-package.json)는 요청과실행완료를 구분한다. staging Home pin의tree blob을 실제owner로 오인하지 않도록 actual shared a074 baseline을 별도로 기록했고, debug/legacy미사용파일을 live 소비자로 부풀리지 않았다. [6개 적용/역패치](proposals/adoption-20261119/manifest.json)는실제저장블록의 전후SHA와 source patch를 담는다.10개 최종candidate HTML이 실제공개HTML+정확한 제안snippet 교체만으로 일치했다. headfirstpaint와sitehead 및 snippet밖 코드는 불변이다. scopedselector26조건과cache4제어흐름도별도소스검토했지만 WebflowPublish원자성/다른페이지브라우저동작전체검증은 아니다.
+
+### 완료를 막는 실제 조건과 보류 범위
+
+- CDN: @46af337의page-time은같은URL에서200/Git일치/cacheHIT였고footer는403본문이50MB package제한이었다. 이전403원시헤더/본문이없어 과거원인까지소급단정하지않는다. 새stagingAbout의@a074 두CSS도명시적50MB제한403이었다. 같은실패재요청을멈추고다른ref/합성응답으로원본을대체하지않았다. 나머지3staging페이지에서직접403관측했다고하지않으며비Home4페이지12원본비교를보수적으로보류한다.
+- 원복:6설정블록 forward/inverse는기계적으로정확하지만기존큰ref의운영원복도달성은미완료다. 실제도달가능한원복cohort를확보해야한다. 생산자5개+scopedshared는한적용단위이며부분적용은지원하지않는다.7195463과중간후보는최신배포본이아니다.
+- 사이트수정:16:48KST main/staging·공개10HTML전체SHA/loader/pin·관련저장코드·게시시각은불변이다. 사이트lastUpdated만00:08:30.921Z→07:07:52.465Z로변했다. 이번작업Webflow쓰기0이며변경자/범위는미확인이다. 어떤미게시작업도되돌리지않고향후Publish전범위·다른진행자변경을확인해야한다.
+- D04일반실행예외·구생산자혼합·다른mutable fallback/미래@main·native결과없는무한pending과D03다른firstpaint경계는잔여다. 정상실제파일오류와테스트용구문/실행/native오류를구분한다. 이번지원실제조합의정상/복구검사에서새실행오류가관측됐다는주장은아니다.
+- 실제Safari/iOS/iPad회전,V0/U01승격,기존두Drive원격다운로드SHA는미검증/보류다. 기존아카이브중복업로드와신규raw외부업로드는없다. 새raw는로컬전용이며원격보존완료가아니다. 소스한정별도관점검토는같은실행자이고외부독립감사완료가아니다.
+
+판정은 **3:자산부족으로특정검증보류**다. 추가미세리팩터링을시작하지않는다. 원본staging입력·운영원복·사이트수정범위를확보한뒤필요한최소후보와동결입력에서새연속검증및독립감사로이관한다. [최종판정/원시결과해시](evidence/adoption-final.json), [별도소스검토의15판단](evidence/adoption-source-review.json)을참조한다. main/staging병합·공개head/pin/설정·Publish·운영배포는하지않았고실제적용은별도승인대상이다. 아래‘진행중’과다른SHA는당시실행이력이다.
 
 ## 범위와 보존
 

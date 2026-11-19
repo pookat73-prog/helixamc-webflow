@@ -1,0 +1,165 @@
+{
+  "source": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "evidenceType": "Derived source/ownership/coverage review; raw payloads stay local",
+  "externalIndependentAudit": false,
+  "reviewType": "Separate source/asset ownership and test omission review by the same implementer; not an external independent auditor sign-off",
+  "findings": [
+    {
+      "id": "R8",
+      "severity": "actual-core-defect",
+      "state": "Final source21 single continuous suite and actual current immutable late JS/CSS functions verified; no whole coverage approval",
+      "finding": "Late FAQ CSS retry retained an empty sheet after a native failure; using sheet presence skipped observing the next native result. Baseline two requests left menu ready but wheel0->600. Product b3768c4 removes only the sheet-success shortcut; actual new669fa76 candidate CSS and JS late-API checks both recovered in3 requests with functional lock/Escape/focus. Unit5 depends on the pending-owner function introduced by unit4; canonical inverse4 requires inverse5 first at the latest source, then restores4->5. No unrelated unit is reset.",
+      "stateBeforeFinalVerification": "actual current immutable late JS/CSS recovery verified; mandatory final continuous pending"
+    },
+    {
+      "id": "R1",
+      "severity": "blocker",
+      "state": "open",
+      "finding": "Original staging About exact current-tip asset URLs return actual package-size403. Four non-Home original staging comparisons are held rather than substituting source/body responses. Actual candidate and production tests cannot close this baseline gate."
+    },
+    {
+      "id": "R2",
+      "severity": "blocker-before-public-adoption",
+      "state": "open",
+      "finding": "Six stored configuration blocks have exact inverse code, but original large-ref CDN rollback reach is incomplete. Mechanical inverse is not a verified operational rollback. Any future application needs a validated reachable rollback cohort and separate public-change approval."
+    },
+    {
+      "id": "R3",
+      "severity": "conditional-blocker",
+      "state": "managed, not runtime-enforced",
+      "finding": "Only paired page producer + scoped shared consumer adoption is supported. Old/new partial settings can still reach known legacy failures. Current proposed HTML chooses the same immutable menu pair for both owners, including cached/fallback entry paths; actual Webflow publish atomicity has not been exercised. A partial/pin mismatch blocks application.",
+      "observedUnattributedSiteUpdate": {
+        "oldLastUpdatedUTC": "2026-11-19T00:08:30.921Z",
+        "newLastUpdatedUTC": "2026-11-19T07:07:52.465Z",
+        "changedGetSiteFields": [
+          "lastUpdated"
+        ],
+        "publishedHTMLAndPublishTimesUnchanged": true,
+        "relatedFreeformCodeUnchanged": true,
+        "actorAndPendingScopeUnverified": true,
+        "mustPreserveAndInspectBeforeFuturePublish": true
+      }
+    },
+    {
+      "id": "R4",
+      "severity": "residual",
+      "state": "open",
+      "finding": "HTTP200/native load and module guard are not execution completion. General early/partial/syntax execution exceptions remain classified failures; success is checked with ready marker, menu DOM and actual functions. No fabricated real-asset execution fault or universal recovery claim."
+    },
+    {
+      "id": "R5",
+      "severity": "residual",
+      "state": "open",
+      "finding": "Only menu CSS/JS producer retry is same-ref. Other mutable branch fallbacks, future @main changes and foreign initialization/firstpaint boundaries remain outside demonstrated compatibility."
+    },
+    {
+      "id": "R6",
+      "severity": "prerequisite",
+      "state": "Final actual staging Home3normal viewports passed; supplemental6GSAP Hero cases use identical runtime bytes; original non-Home stage coverage remains held",
+      "finding": "Stage Home CCB-to-work delta omitted existing main firstpaint ready/font/consumer and CTA phone-owner prerequisites. Candidate62ecac1 reuses the verified three source files, retaining stage Home bootstrap order/cache, globalCSS, top-button and inspector. Earlier0a989dd is superseded, not a current deployment candidate.",
+      "stateBeforeFinalVerification": "verified for unchanged runtime in6 actual-stage Hero supplemental cases; final continuous pending"
+    },
+    {
+      "id": "R7",
+      "severity": "environment",
+      "state": "held",
+      "finding": "Actual Safari/iOS/iPad rotation, V0/U01 gates and existing Drive remote-download SHA remain unverified. New full raw inputs and logs are local only."
+    },
+    {
+      "id": "R9",
+      "severity": "verification-gate",
+      "state": "Explicit post-run coverage gate returned2: all selected contracts pass, full adoption false; all actual menu owner refs and exact request counts audited",
+      "finding": "The current runner subprocess exit0/PASS means its selected contracts finished, including classified permanent failures. It can still report pass:false because original staging coverage is missing. Final audit/adoption uses JSON pass===true and explicit gate, never CLI exit0 or classified-failure PASS lines as functional recovery.",
+      "stateBeforeFinalVerification": "must use explicit coverage gate"
+    },
+    {
+      "id": "R10",
+      "severity": "scope-limit",
+      "state": "not promoted",
+      "finding": "Same-state current preservation compares published typography/closed policy, height/header/CTA geometry and exact first-frame form-box PNG. Adds every form-node CSS/geometry invariant after menu and reverse viewport. It is not full-page pixel identity. Footer V0 and real WebKit/device coverage stay held."
+    },
+    {
+      "id": "R11",
+      "severity": "asset-owner-metadata",
+      "state": "Current source21 normal request ledgers finalized in adoption-package.json; requests remain distinct from execution completion",
+      "finding": "A staging Home pin-tree blob is not proof that Home loads every file from that pin: actual shared bootstrap comes from staging tip a074... (runtime-identical to public main), while page Home assets use CCB. Rename oldPublishedStagingHomeGitBlob to oldStagingHomePinTreeGitBlob, record actual shared baseline separately, and derive live consumers from the final current-source request ledgers. Unused/debug/legacy files must not be called live owners.",
+      "stateBeforeFinalVerification": "pin-tree label corrected; final current-source requested contexts awaited (requests are not execution proof)"
+    },
+    {
+      "id": "R12",
+      "severity": "verification-model",
+      "state": "corrected without product changes",
+      "finding": "Old exact-URL failure injection produced2 failures after same-ref retry, while its assertion described1. Failed logs preserved; one-transfer failure still asserts exactly2requests and2candidate insertions; original persistentURL input remains additional case with explicit2faults/3requests. No baseline/mask/tolerance/expected-failure change."
+    },
+    {
+      "id": "R13",
+      "severity": "verification-state",
+      "state": "Final source21 continuous actual15production+15stage candidate normal conditions passed;18available original modal PNG pairs exact,30whole-form invariants exact;12originalstageheld",
+      "finding": "About modal210pixel corners differed with video phase; existing form-label freeze restored exact. Mobile27pixels were outside the fractional modal boundary with unequal menu/wheel histories. Identical-action PNG is exact; candidate before/afterMenu allformCSS/geometry exact. Final QA compares identical initial states, restores motion, then retains function checks plus allform isolation. Preflight passed15production/15stage candidate viewports; final continuous run still required.",
+      "stateBeforeFinalVerification": "corrected without masking or product changes"
+    },
+    {
+      "id": "R14",
+      "severity": "adoption-fixture-binding",
+      "state": "verified source21; no public write",
+      "finding": "All10 final candidate fixture HTML bodies equal the actual captured published HTML plus only the exact proposed producer/shared snippet replacements. Each tested after-snippet is exactly present once in its corresponding proposed stored full block. Site head, firstpaint owner and other markup remain exact. This is isolated adoption simulation, not a published deployment test.",
+      "evidence": "proposal-fixture-exactness-final.json"
+    },
+    {
+      "id": "R15",
+      "severity": "coverage-boundary",
+      "state": "explicit audit limit; not a reproduced new product defect",
+      "finding": "Actual candidate native-fault rows exercise menu functions at1440;10-second pending and permanent outcomes useFAQ. Normal actual candidate15viewports perenvironment include menu/form functions andHome ready/done/reverse transitions; separate actual-stage Hero six cases cover GSAP exhaustion/recovery. This is not every page/width/native-error/font/critical-CSS/firstpaint cross-product. Historical selected25 fixtures do not replace missing current actual combinations. Broader firstpaint and non-native execution/pending boundaries remain residual; no new defect is inferred merely from absent coverage."
+    }
+  ],
+  "qualityLimits": "Old selected25 mixes explicit controlled historical owner-function fixtures and a separately captured Nov17 current branch fallback. These are not actual current candidate CDN proof. New real-package tests use actual immutable URL/body captures with no runtime overlay; original/current/synthetic inputs stay separate. Supplemental tests and negative controls are not summed into the continuous result.",
+  "noNewTimerObserverOrRetryLayerInAddedProductLines": true,
+  "baselineOrToleranceModified": false,
+  "finalContinuousVerification": {
+    "source": "21acccb421aee305aed8941ee5a5da87407f94fa",
+    "previous25Continuous": true,
+    "selectedContractsPass": true,
+    "fullAdoptionCompatibility": false,
+    "stages": [
+      {
+        "environment": "production",
+        "contractRows": 39,
+        "normalCandidateViewports": 15,
+        "pairedOriginalViewports": 15,
+        "heldOriginalViewports": 0,
+        "functionalFaultConditions": 22,
+        "permanentUnavailableClassifications": 2,
+        "permanentCountedAsRecovery": false,
+        "fullCoveragePass": true,
+        "allActualNormalAndFaultMenuOwnersSameSelectedImmutableVersion": true,
+        "nativeFaultRequestCounts": {
+          "once:2": 10,
+          "twice:3": 10,
+          "pending:1": 2,
+          "permanent:4": 2
+        }
+      },
+      {
+        "environment": "staging",
+        "contractRows": 41,
+        "normalCandidateViewports": 15,
+        "pairedOriginalViewports": 3,
+        "heldOriginalViewports": 12,
+        "functionalFaultConditions": 24,
+        "permanentUnavailableClassifications": 2,
+        "permanentCountedAsRecovery": false,
+        "fullCoveragePass": false,
+        "allActualNormalAndFaultMenuOwnersSameSelectedImmutableVersion": true,
+        "nativeFaultRequestCounts": {
+          "once:2": 10,
+          "twice:3": 10,
+          "pending:1": 2,
+          "permanent:4": 2,
+          "late-api:3": 2
+        }
+      }
+    ],
+    "classification": "3 asset/environment hold; not full independent audit or public-adoption approval",
+    "publicChangesApproved": false
+  }
+}

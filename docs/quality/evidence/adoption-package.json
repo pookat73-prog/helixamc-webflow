@@ -1,5 +1,5 @@
 {
-  "source": "608434ef77c5167871b88b40912df800ce6777f4",
+  "source": "21acccb421aee305aed8941ee5a5da87407f94fa",
   "noMerge": true,
   "notDeployed": true,
   "rawRemotePreservation": false,
@@ -20,7 +20,54 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/about/bootstrap.js",
-          "actualCandidateSHA256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f"
+          "actualCandidateSHA256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/about/bootstrap.js",
+              "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/about/bootstrap.js",
+              "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/about/bootstrap.js",
+              "sha256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/discover-helix"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "faq/bootstrap.js",
@@ -32,7 +79,54 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/faq/bootstrap.js",
-          "actualCandidateSHA256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960"
+          "actualCandidateSHA256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/faq/bootstrap.js",
+              "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/faq/bootstrap.js",
+              "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/faq/bootstrap.js",
+              "sha256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/faq"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "global/bootstrap.js",
@@ -42,13 +136,196 @@
           "affectedPages": [
             "/",
             "/discover-helix",
-            "/services",
             "/faq",
-            "/internal-medicine"
+            "/internal-medicine",
+            "/services"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
-          "actualCandidateSHA256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa"
+          "actualCandidateSHA256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+              "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+              "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+              "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+              "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+              "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/",
+            "/discover-helix",
+            "/faq",
+            "/internal-medicine",
+            "/services"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "global/floating-cta.css",
@@ -58,13 +335,196 @@
           "affectedPages": [
             "/",
             "/discover-helix",
-            "/services",
             "/faq",
-            "/internal-medicine"
+            "/internal-medicine",
+            "/services"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
-          "actualCandidateSHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c"
+          "actualCandidateSHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.css",
+              "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/floating-cta.css",
+              "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/floating-cta.css",
+              "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.css",
+              "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/floating-cta.css",
+              "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+              "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/",
+            "/discover-helix",
+            "/faq",
+            "/internal-medicine",
+            "/services"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Previously completed CTA variants and explicit intro/consent/label roots; no CSS changes during this task."
         },
         {
           "path": "global/global.css",
@@ -72,15 +532,194 @@
           "candidateGitBlob": "fb291a851c4be8d89a321dceb518163d4a76c8c1",
           "reason": "Previously verified page-scoped typography/wrap ownership; preserved appropriate public cohort.",
           "affectedPages": [
-            "/",
-            "/discover-helix",
-            "/services",
-            "/faq",
             "/internal-medicine"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
-          "actualCandidateSHA256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631"
+          "actualCandidateSHA256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/global/global.css",
+              "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/global.css",
+              "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/global.css",
+              "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/global.css",
+              "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/global.css",
+              "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/global.css",
+              "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+              "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/",
+            "/discover-helix",
+            "/faq",
+            "/internal-medicine",
+            "/services"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Existing D02 internal-medicine mobile roots only in main candidate; stage Home preserves its original CSS and has no consumer of those internal-medicine roots."
         },
         {
           "path": "home/bootstrap.js",
@@ -92,7 +731,42 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/bootstrap.js",
-          "actualCandidateSHA256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434"
+          "actualCandidateSHA256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/bootstrap.js",
+              "sha256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap.js",
+              "sha256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "home/global/buttons.js",
@@ -104,7 +778,41 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/buttons.js",
-          "actualCandidateSHA256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113"
+          "actualCandidateSHA256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/buttons.js",
+              "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/buttons.js",
+              "sha256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/global/coming-soon.js",
@@ -112,15 +820,194 @@
           "candidateGitBlob": "599f6439844e9871d8ca87b36c28f50912beaf5f",
           "reason": "Previously verified heading/quickbar responsibility boundary; ready/done consumer prerequisites included.",
           "affectedPages": [
-            "/",
-            "/discover-helix",
-            "/services",
-            "/faq",
-            "/internal-medicine"
+            "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
-          "actualCandidateSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5"
+          "actualCandidateSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/coming-soon.js",
+              "sha256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/coming-soon.js",
+              "sha256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/coming-soon.js",
+              "sha256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/coming-soon.js",
+              "sha256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/coming-soon.js",
+              "sha256": "f66d26b7a67be609590a95a2a8105f7ba10b9612c8ea330a9b717e9cea950076",
+              "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/",
+            "/discover-helix",
+            "/faq",
+            "/internal-medicine",
+            "/services"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Previously verified Home firstpaint/heading/quickbar boundary; common toast behavior preserved."
         },
         {
           "path": "home/global/hamburger.css",
@@ -130,13 +1017,201 @@
           "affectedPages": [
             "/",
             "/discover-helix",
-            "/services",
             "/faq",
-            "/internal-medicine"
+            "/internal-medicine",
+            "/services"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css?hx-menu-retry=1",
-          "actualCandidateSHA256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+          "actualCandidateSHA256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+          "otherCapturedURLsOfSameGitBlob": [
+            {
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css?hx-menu-retry=1",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+            }
+          ],
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/hamburger.css",
+              "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.css",
+              "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.css",
+              "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.css",
+              "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.css",
+              "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+              "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/",
+            "/discover-helix",
+            "/faq",
+            "/internal-medicine",
+            "/services"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/global/hamburger.js",
@@ -146,13 +1221,195 @@
           "affectedPages": [
             "/",
             "/discover-helix",
-            "/services",
             "/faq",
-            "/internal-medicine"
+            "/internal-medicine",
+            "/services"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
-          "actualCandidateSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa"
+          "actualCandidateSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/hamburger.js",
+              "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/discover-helix",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.js",
+              "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/faq",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.js",
+              "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.js",
+              "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.js",
+              "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+              "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/",
+            "/discover-helix",
+            "/faq",
+            "/internal-medicine",
+            "/services"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/global/sections-animations.js",
@@ -164,7 +1421,41 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/sections-animations.js",
-          "actualCandidateSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632"
+          "actualCandidateSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/global/sections-animations.js",
+              "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.js",
+              "sha256": "8f2dfda1aec1a107f18315f074df469969c2e6a13ae4328c6db9b45dfcbf2d79",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/section1/section1.js",
@@ -176,7 +1467,41 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/section1/section1.js",
-          "actualCandidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
+          "actualCandidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/home/section1/section1.js",
+              "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.js",
+              "sha256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+              "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "internal-medicine/bootstrap.js",
@@ -188,7 +1513,54 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/internal-medicine/bootstrap.js",
-          "actualCandidateSHA256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c"
+          "actualCandidateSHA256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/internal-medicine/bootstrap.js",
+              "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/internal-medicine/bootstrap.js",
+              "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/internal-medicine",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/internal-medicine/bootstrap.js",
+              "sha256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+              "ref": "3c4f78d4e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/internal-medicine"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "services/bootstrap.js",
@@ -200,7 +1572,54 @@
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/services/bootstrap.js",
-          "actualCandidateSHA256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593"
+          "actualCandidateSHA256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/services/bootstrap.js",
+              "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            },
+            {
+              "environment": "staging",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@669fa762b87c80a425621906543d86bbbf924f9a/services/bootstrap.js",
+              "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+              "ref": "669fa762b87c80a425621906543d86bbbf924f9a",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "production",
+              "page": "/services",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/bootstrap.js",
+              "sha256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638",
+              "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/services"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         }
       ],
       "changedFileCount": 14,
@@ -729,7 +2148,9 @@
           "status": 200,
           "capturedAtUTC": "2026-11-19T04:42:04.777118+00:00"
         }
-      ]
+      ],
+      "actualConsumersWillBeDerivedFromFinalSourceRequestLedgers": false,
+      "actualConsumerLedgerSource": "21acccb421aee305aed8941ee5a5da87407f94fa"
     },
     {
       "name": "stagingHome",
@@ -740,26 +2161,40 @@
           "oldMainGitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
           "candidateGitBlob": "5d6b31428278d108c614caedfc7b935467c09961",
           "reason": "Native menu CSS/JS owner receipts and bounded coherent retry; other FILES/callbacks preserved.",
-          "affectedPages": [
-            "/"
-          ],
+          "affectedPages": [],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/about/bootstrap.js",
-          "actualCandidateSHA256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f"
+          "actualCandidateSHA256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+          "oldStagingHomePinTreeGitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "scopeUse": "Not entered by the Home-only adoption path; retained source/compatibility snapshot file, not a live Home consumer",
+          "observedCandidateRequestContexts": [],
+          "observedOriginalRequestContexts": [],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [],
+          "networkBindingVerified": false,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "faq/bootstrap.js",
           "oldMainGitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
           "candidateGitBlob": "12d8ad0f8bafd91569d397d639bc94b7a9d4abd8",
           "reason": "Withdraw failed menu script ownership, CSS native receipts and same-ref retry; reused CSS link gets one fixed retry query.",
-          "affectedPages": [
-            "/"
-          ],
+          "affectedPages": [],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/faq/bootstrap.js",
-          "actualCandidateSHA256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960"
+          "actualCandidateSHA256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+          "oldStagingHomePinTreeGitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "scopeUse": "Not entered by the Home-only adoption path; retained source/compatibility snapshot file, not a live Home consumer",
+          "observedCandidateRequestContexts": [],
+          "observedOriginalRequestContexts": [],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [],
+          "networkBindingVerified": false,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "global/bootstrap.js",
@@ -770,9 +2205,50 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "75d08e772c83a593889af06748aea0c2bea808f8",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/bootstrap.js",
-          "actualCandidateSHA256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa"
+          "actualCandidateSHA256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "oldStagingHomePinTreeGitBlob": "75d08e772c83a593889af06748aea0c2bea808f8",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "actualPublishedSharedBaseline": {
+            "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+            "gitBlob": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d",
+            "owner": "site-footer shared entry (runtime-identical to current public main), not CCB Home pin"
+          },
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/bootstrap.js",
+              "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+              "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+              "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "global/floating-cta.css",
@@ -783,62 +2259,181 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/floating-cta.css",
-          "actualCandidateSHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c"
+          "actualCandidateSHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+          "oldStagingHomePinTreeGitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/floating-cta.css",
+              "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/floating-cta.css",
+              "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Previously completed CTA variants and explicit intro/consent/label roots; no CSS changes during this task."
         },
         {
           "path": "global/ga-inspector.js",
           "oldMainGitBlob": "65746020446c9e5302dd5b0db3bd04ec7d4d2766",
           "candidateGitBlob": "3f5c449f509fc0208289513e28daa4772ed4dbd2",
           "reason": "Retained actual staging Home cohort bytes; no debug feature enabled.",
-          "affectedPages": [
-            "/"
-          ],
+          "affectedPages": [],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "3f5c449f509fc0208289513e28daa4772ed4dbd2",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/ga-inspector.js",
           "actualCandidateSHA256": "c2ef3450bf9b1789597d3d6fa0cf5fe0a95df65888aad77cff071ff112278124",
-          "functionalVerification": "Debug-only not enabled; source HTTP200/Git exact only"
+          "functionalVerification": "Debug-only not enabled; source HTTP200/Git exact only",
+          "oldStagingHomePinTreeGitBlob": "3f5c449f509fc0208289513e28daa4772ed4dbd2",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "scopeUse": "Optional debug source only; not enabled or functionally verified",
+          "observedCandidateRequestContexts": [],
+          "observedOriginalRequestContexts": [],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [],
+          "networkBindingVerified": false,
+          "requestsAloneAreNotExecutionProof": true,
+          "actualStageSourcePreserved": true
         },
         {
           "path": "global/global.css",
           "oldMainGitBlob": "7a769acfcbd234d8caa27b69ab409f55c494b2a3",
           "candidateGitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
           "reason": "Previously verified page-scoped typography/wrap ownership; preserved appropriate public cohort.",
-          "affectedPages": [
+          "affectedPages": [],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/global.css",
+          "actualCandidateSHA256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+          "oldStagingHomePinTreeGitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/global.css",
+              "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/global.css",
+              "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
             "/"
           ],
-          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
-          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/global.css",
-          "actualCandidateSHA256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f"
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "actualStageSourcePreserved": true,
+          "changedBehaviorScope": "Existing D02 internal-medicine mobile roots only in main candidate; stage Home preserves its original CSS and has no consumer of those internal-medicine roots."
         },
         {
           "path": "global/top-button.js",
           "oldMainGitBlob": "6b7a06cd4ec4c3b9342177f25e1b1ebe9e438ab7",
           "candidateGitBlob": "d919904cce2aea0c8cd5533702af6ea686db9413",
           "reason": "Retained actual staging Home cohort bytes, not a new refactor.",
-          "affectedPages": [
+          "affectedPages": [],
+          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/top-button.js",
+          "actualCandidateSHA256": "2b276a16d59b979c6d41425ceb89ddcab04a78d4d057e3288ccda1760fbbbe8a",
+          "oldStagingHomePinTreeGitBlob": "d919904cce2aea0c8cd5533702af6ea686db9413",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/top-button.js",
+              "sha256": "2b276a16d59b979c6d41425ceb89ddcab04a78d4d057e3288ccda1760fbbbe8a",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/top-button.js",
+              "sha256": "2b276a16d59b979c6d41425ceb89ddcab04a78d4d057e3288ccda1760fbbbe8a",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
             "/"
           ],
-          "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "d919904cce2aea0c8cd5533702af6ea686db9413",
-          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/global/top-button.js",
-          "actualCandidateSHA256": "2b276a16d59b979c6d41425ceb89ddcab04a78d4d057e3288ccda1760fbbbe8a"
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "actualStageSourcePreserved": true
         },
         {
           "path": "home/bootstrap-v3.js",
           "oldMainGitBlob": "5a16ed1418a6fa38e1e302cedc09f99f0645c7b0",
           "candidateGitBlob": "d3d35ffbf56441151ff03b713a1dd6fe908eb83a",
           "reason": "Retained actual staging Home entry compatibility bytes; private proposal enters bootstrap directly.",
-          "affectedPages": [
-            "/"
-          ],
+          "affectedPages": [],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "d3d35ffbf56441151ff03b713a1dd6fe908eb83a",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/bootstrap-v3.js",
-          "actualCandidateSHA256": "64557acb69b846217fccdd58415a640698ec1dbaf76112f1a57db2e5ea181845"
+          "actualCandidateSHA256": "64557acb69b846217fccdd58415a640698ec1dbaf76112f1a57db2e5ea181845",
+          "oldStagingHomePinTreeGitBlob": "d3d35ffbf56441151ff03b713a1dd6fe908eb83a",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "scopeUse": "Not entered by the Home-only adoption path; retained source/compatibility snapshot file, not a live Home consumer",
+          "observedCandidateRequestContexts": [],
+          "observedOriginalRequestContexts": [],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [],
+          "networkBindingVerified": false,
+          "requestsAloneAreNotExecutionProof": true,
+          "actualStageSourcePreserved": true
         },
         {
           "path": "home/bootstrap.js",
@@ -849,9 +2444,45 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "ef81e351af65a352690c11664f6069f80ce4f54c",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/bootstrap.js",
-          "actualCandidateSHA256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed"
+          "actualCandidateSHA256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed",
+          "oldStagingHomePinTreeGitBlob": "ef81e351af65a352690c11664f6069f80ce4f54c",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/bootstrap.js",
+              "sha256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/bootstrap.js",
+              "sha256": "b557102e2dd1d17f20ea959ae25ac577ef121c9626d5c687d136ef3da1ff827b",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "home/global/buttons.js",
@@ -862,9 +2493,44 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "c1590ba90c25d95bf8410e417a6fa1224db36b98",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/buttons.js",
-          "actualCandidateSHA256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113"
+          "actualCandidateSHA256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+          "oldStagingHomePinTreeGitBlob": "c1590ba90c25d95bf8410e417a6fa1224db36b98",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/buttons.js",
+              "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/buttons.js",
+              "sha256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/global/coming-soon.js",
@@ -875,9 +2541,45 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "c5683919690f8d310c7f0b85796409a8f510d3a6",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/coming-soon.js",
-          "actualCandidateSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5"
+          "actualCandidateSHA256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+          "oldStagingHomePinTreeGitBlob": "c5683919690f8d310c7f0b85796409a8f510d3a6",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/coming-soon.js",
+              "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/coming-soon.js",
+              "sha256": "728bc9961f2fc29d2e60269634c6d4c752ee5cd54bec4f859fd54955d91c6efb",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Previously verified Home firstpaint/heading/quickbar boundary; common toast behavior preserved."
         },
         {
           "path": "home/global/hamburger.css",
@@ -888,9 +2590,50 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
-          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/hamburger.css?hx-menu-retry=1",
-          "actualCandidateSHA256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+          "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/hamburger.css",
+          "actualCandidateSHA256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+          "oldStagingHomePinTreeGitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+          "otherCapturedURLsOfSameGitBlob": [
+            {
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/hamburger.css?hx-menu-retry=1",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee"
+            }
+          ],
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/hamburger.css",
+              "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/hamburger.css",
+              "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/global/hamburger.js",
@@ -901,9 +2644,44 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/hamburger.js",
-          "actualCandidateSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa"
+          "actualCandidateSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+          "oldStagingHomePinTreeGitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/hamburger.js",
+              "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/hamburger.js",
+              "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/global/sections-animations.js",
@@ -914,9 +2692,44 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "67bf44e9217a9e46aa11b724ae841ae218534098",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/sections-animations.js",
-          "actualCandidateSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632"
+          "actualCandidateSHA256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+          "oldStagingHomePinTreeGitBlob": "67bf44e9217a9e46aa11b724ae841ae218534098",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/global/sections-animations.js",
+              "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/sections-animations.js",
+              "sha256": "c6ca5c364581b9cbe117d9cccf58b4784deac1a83487bf6e4c7364d5c028be2e",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "home/section1/section1.js",
@@ -927,35 +2740,84 @@
             "/"
           ],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "d026f1f25384a042a4654d6004bca5abed6b5ddd",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/section1/section1.js",
-          "actualCandidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9"
+          "actualCandidateSHA256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+          "oldStagingHomePinTreeGitBlob": "d026f1f25384a042a4654d6004bca5abed6b5ddd",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "observedCandidateRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/section1/section1.js",
+              "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+              "ref": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "observedOriginalRequestContexts": [
+            {
+              "environment": "staging",
+              "page": "/",
+              "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/section1/section1.js",
+              "sha256": "fa734c16f84c2c9c908979e7c3258f4199cb47b35cd0fcbacc2e5c07bb3932e9",
+              "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+              "widths": [
+                390,
+                820,
+                1440
+              ]
+            }
+          ],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [
+            "/"
+          ],
+          "networkBindingVerified": true,
+          "requestsAloneAreNotExecutionProof": true
         },
         {
           "path": "internal-medicine/bootstrap.js",
           "oldMainGitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
           "candidateGitBlob": "7e0b9d27e615b5fd90e13f1d907b572fdf348714",
           "reason": "Native menu owner receipts and bounded same-ref retry, unrelated department assets retained.",
-          "affectedPages": [
-            "/"
-          ],
+          "affectedPages": [],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/internal-medicine/bootstrap.js",
-          "actualCandidateSHA256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c"
+          "actualCandidateSHA256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+          "oldStagingHomePinTreeGitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "scopeUse": "Not entered by the Home-only adoption path; retained source/compatibility snapshot file, not a live Home consumer",
+          "observedCandidateRequestContexts": [],
+          "observedOriginalRequestContexts": [],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [],
+          "networkBindingVerified": false,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         },
         {
           "path": "services/bootstrap.js",
           "oldMainGitBlob": "8141fa675f77564360749837863936103a464a5a",
           "candidateGitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
           "reason": "Preserves E1/P3 native owner/re-entry fixes, adds CSS receipts and coherent menu retry.",
-          "affectedPages": [
-            "/"
-          ],
+          "affectedPages": [],
           "fileRollback": "Do not mutate this immutable URL. Use the paired configuration reverse patch for operational rollback. A source-only rollback must select exactly oldMainGitBlob (or preserved staging blob below) in a NEW isolated delivery tree and revalidate the full producer-consumer cohort.",
-          "oldPublishedStagingHomeGitBlob": "ac790806f17db7eb5277c98816250457c8265bd2",
           "actualCandidateURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/services/bootstrap.js",
-          "actualCandidateSHA256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593"
+          "actualCandidateSHA256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+          "oldStagingHomePinTreeGitBlob": "ac790806f17db7eb5277c98816250457c8265bd2",
+          "pinTreeBlobIsNotEvidenceOfRuntimeConsumption": true,
+          "scopeUse": "Not entered by the Home-only adoption path; retained source/compatibility snapshot file, not a live Home consumer",
+          "observedCandidateRequestContexts": [],
+          "observedOriginalRequestContexts": [],
+          "liveConsumerEvidenceSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+          "requestedByPages": [],
+          "networkBindingVerified": false,
+          "requestsAloneAreNotExecutionProof": true,
+          "changedBehaviorScope": "Menu CSS/JS URL ownership, native outcomes, same-ref bounded retry and pending handoff; unrelated asset policies preserved."
         }
       ],
       "changedFileCount": 17,
@@ -1493,7 +3355,20 @@
           "status": 200,
           "kind": "source-only optional debug path, outside selected74 normal URLs"
         }
-      ]
+      ],
+      "actualConsumersWillBeDerivedFromFinalSourceRequestLedgers": false,
+      "permittedAdoptionScope": [
+        "/"
+      ],
+      "doNotSelectThisCohortOnOtherPages": true,
+      "actualConsumerLedgerSource": "21acccb421aee305aed8941ee5a5da87407f94fa"
     }
-  ]
+  ],
+  "baselineResolutionNotes": "Pin-tree snapshots describe available source blobs, not all actual loaded owners. Current staging Home producer uses CCB assets, while its shared bootstrap resolves current staging tip. Normal and retry URL records remain distinct; final runtime ledgers specify consumers.",
+  "finalVerificationSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "latestRuntimeProduct": "b3768c43b60ef95b28c7139ca2ef7445bbbd274f",
+  "runtimeUnchangedSince": "608434ef77c5167871b88b40912df800ce6777f4",
+  "networkAndExecutionAreDistinct": true,
+  "executionQualification": "Menu: native outcomes, module claims/ready, actual DOM and open/close/wheel/Escape/focus. Hero: actual ready/done, ghost restoration, fade/hold/loop and neighbor states. Forms: input/privacy/locks plus separate mock-submit unit. Other files are URL/source bindings and preservation checks, not individually instrumented execution certificates.",
+  "actualBaselineLimits": "Production15 and stagingHome3 original comparisons are verified in this run; other12 staging original comparisons remain unavailable. Pin-tree metadata is not substituted for an observed runtime owner."
 }

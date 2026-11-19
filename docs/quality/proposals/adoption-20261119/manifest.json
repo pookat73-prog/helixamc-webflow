@@ -134,5 +134,26 @@
       "forwardAndReverseExact": true,
       "rollback": "Re-read current block; require afterStoredBlockSHA256; apply the same patch in reverse in an isolated copy; require beforeStoredBlockSHA256. Write/publish only with separate authorization and both cohort owners coordinated."
     }
-  ]
+  ],
+  "finalAssessment": {
+    "source": "21acccb421aee305aed8941ee5a5da87407f94fa",
+    "decision": 3,
+    "selectedContinuousContractsPass": true,
+    "wholeAdoptionCompatibilityVerified": false,
+    "adoptionAllowedNow": false,
+    "missingOriginalStagingComparisons": 12,
+    "operationalRollbackReachVerified": false,
+    "separatePublicApprovalStillRequired": true,
+    "siteLastUpdatedChangedWithoutObservedPublish": {
+      "oldUTC": "2026-11-19T00:08:30.921Z",
+      "newUTC": "2026-11-19T07:07:52.465Z",
+      "actorAndScope": "Unverified; related freeform blocks and10publishedHTML unchanged. Preserve any pending work and inspect Publish scope before future approval."
+    },
+    "beforeAnyFutureApplication": [
+      "Complete exact original staging inputs without substituting other refs or synthetic responses.",
+      "Validate reachable operational rollback assets, beyond mechanical code inverse.",
+      "Re-read all six stored before hashes and inspect all pending/unattributed site changes and Publish scope.",
+      "Revalidate the complete matched producer/shared cohort in a frozen run and obtain independent audit plus separate public-change approval."
+    ]
+  }
 }

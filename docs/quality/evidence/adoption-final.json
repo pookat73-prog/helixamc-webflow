@@ -1,0 +1,426 @@
+{
+  "schema": 1,
+  "assessedAtKST": "2026-11-19T16:54:20.524003+09:00",
+  "decision": 3,
+  "decisionLabel": "환경·자산 부족 — 원본 staging 비교 및 운영 원복 검증 보류",
+  "finalSourceAndQA": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "workBranch": "fix/helix-residual-structure-20261117",
+  "docsOnlyCommitsAfterFreeze": true,
+  "fullAdoptionCompatibilityVerified": false,
+  "fullIndependentAuditComplete": false,
+  "sourceOnlySeparateReviewComplete": true,
+  "reviewIndependenceLimit": "Separate source/ownership/coverage/failure-classification perspective by the same executor; not an external independent audit",
+  "continuousRun": {
+    "localRoot": "/workspace/artifacts/helix-adoption-20261119/continuous-v4",
+    "startedAtUTC": "2026-11-19T06:32:16.846Z",
+    "finishedAtUTC": "2026-11-19T07:49:38.634Z",
+    "previous25": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-label",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "phone-weight-policy",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "actualAssetScopes": [
+      {
+        "environment": "production",
+        "contractRows": 39,
+        "normalCandidateViewports": 15,
+        "pairedOriginalViewports": 15,
+        "heldOriginalViewports": 0,
+        "functionalFaultConditions": 22,
+        "permanentUnavailableClassifications": 2,
+        "permanentCountedAsRecovery": false,
+        "fullCoveragePass": true,
+        "allActualNormalAndFaultMenuOwnersSameSelectedImmutableVersion": true,
+        "nativeFaultRequestCounts": {
+          "once:2": 10,
+          "twice:3": 10,
+          "pending:1": 2,
+          "permanent:4": 2
+        }
+      },
+      {
+        "environment": "staging",
+        "contractRows": 41,
+        "normalCandidateViewports": 15,
+        "pairedOriginalViewports": 3,
+        "heldOriginalViewports": 12,
+        "functionalFaultConditions": 24,
+        "permanentUnavailableClassifications": 2,
+        "permanentCountedAsRecovery": false,
+        "fullCoveragePass": false,
+        "allActualNormalAndFaultMenuOwnersSameSelectedImmutableVersion": true,
+        "nativeFaultRequestCounts": {
+          "once:2": 10,
+          "twice:3": 10,
+          "pending:1": 2,
+          "permanent:4": 2,
+          "late-api:3": 2
+        }
+      }
+    ],
+    "selectedContractsPass": true,
+    "wholeCoveragePass": false,
+    "earlierPartialRunsOrPreflightsSummed": false,
+    "wrapperExit0IsNotCoverageApproval": true
+  },
+  "resolvedInThisTask": [
+    {
+      "productCommit": "acda53e6237556c42128e996bebf9e7b60eca922",
+      "inverseCommit": "ed38a23e3bc1b949a9188bb8e0a8948fd113f069",
+      "scope": "FAQ native-failed script ownership withdrawal",
+      "verification": "Local frozen continuous suite plus actual candidate contracts; raw not uploaded"
+    },
+    {
+      "productCommit": "3f4c76d2b765439749795f8e3ffade2bfe6cab46",
+      "inverseCommit": "df54a04509901f96eaf88f8ea8a126a671305f56",
+      "scope": "Five producer native CSS/JS failure receipts and shared failed-CSS adoption",
+      "verification": "Local frozen continuous suite plus actual candidate contracts; raw not uploaded"
+    },
+    {
+      "productCommit": "cb0c4d87312ff780b7287c34d7d996ff52a49df7",
+      "inverseCommit": "bcc284be70d8ef058ba3e89e2e852ac21a2cfa1e",
+      "scope": "Existing menu retry stays in the selected immutable cohort",
+      "verification": "Local frozen continuous suite plus actual candidate contracts; raw not uploaded"
+    },
+    {
+      "productCommit": "8c4aa80395b304a25b27494ab6c9cc0104f60e93",
+      "inverseCommit": "d55ebb8f86c2bab97362c0f00bf95d24c5a402b8",
+      "scope": "After-load native pending-owner handoff",
+      "verification": "Local frozen continuous suite plus actual candidate contracts; raw not uploaded",
+      "inverseDependencyAtLatestSource": "Apply inverse5 before inverse4; restore4 then5. Other units keep their own hunks."
+    },
+    {
+      "productCommit": "b3768c43b60ef95b28c7139ca2ef7445bbbd274f",
+      "inverseCommit": "aa3c39406e60164192bcf6d3a064ba363fabb97f",
+      "scope": "Empty retained CSS sheet is not a successful native outcome",
+      "verification": "Local frozen continuous suite plus actual candidate contracts; raw not uploaded"
+    }
+  ],
+  "adoptionCandidates": [
+    {
+      "name": "main",
+      "reference": "669fa762b87c80a425621906543d86bbbf924f9a",
+      "changedFilesAgainstPublicMain": 14,
+      "unchangedBlobsAgainstPublicMain": 254,
+      "actualHTTP200GitMatchedURLs": 74,
+      "deliveryOnlyExclusions": [
+        "시퀀스 01_1.mp4",
+        "헬릭스 작품 (저용량).mp4"
+      ]
+    },
+    {
+      "name": "stagingHome",
+      "reference": "62ecac1b6a374ebdf339840093462f1ad5bcd32e",
+      "changedFilesAgainstPublicMain": 17,
+      "unchangedBlobsAgainstPublicMain": 251,
+      "actualHTTP200GitMatchedURLs": 74,
+      "deliveryOnlyExclusions": [
+        "시퀀스 01_1.mp4",
+        "헬릭스 작품 (저용량).mp4"
+      ]
+    }
+  ],
+  "observedSiteUpdate": {
+    "publicationMetadataUnchanged": true,
+    "siteLastUpdatedChanged": true,
+    "priorSiteLastUpdatedUTC": "2026-11-19T00:08:30.921Z",
+    "newSiteLastUpdatedUTC": "2026-11-19T07:07:52.465Z",
+    "changedGetSiteFields": [
+      "lastUpdated"
+    ],
+    "siteUpdateAttribution": "Unknown actor/scope; read-only task made no Webflow writes. Published HTML, publish metadata and six relevant freeform actions are unchanged. Preserve any other work and inspect pending Publish scope before future approval."
+  },
+  "publicConfigurationProposal": {
+    "manifest": "docs/quality/proposals/adoption-20261119/manifest.json",
+    "blocks": 6,
+    "privateFixturesExactlyMatchProposedSnippets": true,
+    "forwardAndInverseCodeExact": true,
+    "operationalRollbackReachVerified": false,
+    "partialAdoptionSupported": false,
+    "actuallyApplied": false
+  },
+  "classificationLimits": {
+    "permanentNativeFailure": "Four unavailable classifications are not functional recovery",
+    "syntheticFailures": "Native abort, delayed responses and injected execution faults are labeled tests; no normal actual immutable response execution error was observed in qualified actual rows",
+    "networkSuccessIsNotExecutionCompletion": true,
+    "actualFaultViewportWidth": 1440,
+    "supplementalControlsRuntimeSource": "608434ef77c5167871b88b40912df800ce6777f4; runtime and relevant control tools unchanged at21acccb, not counted as this continuous run",
+    "normalCandidateViewports": 30,
+    "pairedOriginalViewports": 18,
+    "heldOriginalStagingViewports": 12,
+    "currentPreservationIsNotFullPagePixelIdentity": true
+  },
+  "blockersBeforePublicAdoption": [
+    "Original staging About two current-tip CSS URLs returned explicit CDN50MB-limit403; other three non-Home original page comparisons are conservatively held, not asserted directly observed403. Do not substitute other refs or synthetic responses.",
+    "Existing configuration inverse is exact but old large-ref CDN operational rollback reach remains incomplete. Validate an accessible rollback cohort before any application.",
+    "Five page producer selections plus scoped shared selection must match. Publish consistency and reachable live rollback need separate authorized execution; partial adoption blocks release."
+  ],
+  "residualUnresolved": [
+    "D04 arbitrary HTTP200 syntax/early/partial execution exceptions and legacy owner combinations",
+    "D04 non-menu mutable fallbacks, future @main compatibility and indefinite pending without a native result",
+    "Other D03/firstpaint initialization boundaries; no universal recovery claim"
+  ],
+  "environmentHeld": [
+    "Actual Safari/iOS/iPad viewport and rotation",
+    "Footer V0 and U01 promotion conditions",
+    "Existing two Drive archive remote download SHA256"
+  ],
+  "preservation": {
+    "existingCompletedProductsAndBaselineUnchanged": true,
+    "baselinePNGMask100pxThreshold02ExpectedFailureUnchanged": true,
+    "D02D05ClosedNoNewCSSCleanup": true,
+    "priorRawInputHashesPreserved": true,
+    "newRaw": "LOCAL ONLY; not uploaded and not recorded as remotely preserved",
+    "existingTwoDriveArchives": "No duplicate upload; remote download SHA256 remains unverified",
+    "protectedBranchesAndPublishedHTMLAndStoredBlocksUnchanged": true,
+    "publicWritesPublishDeployment": false
+  },
+  "localRawInventory": {
+    "path": "/workspace/artifacts/helix-adoption-20261119/raw-inventory-final.json",
+    "sha256": "71fd279aba99160964204a63b906b15074d79762456831774ce085fa6a04ccc2",
+    "frozen20ManifestHashesUnchanged": true,
+    "frozenInputBodyFilesHashVerified": 8312,
+    "regularFiles": 92222,
+    "symlinks": 0,
+    "logicalBytes": 12997919876,
+    "uniqueInodesHashed": 75236,
+    "uniqueRegularBytesHashed": 10719133638,
+    "remotePreserved": false,
+    "seconds": 27.7
+  },
+  "evidence": [
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/environment-reconnect-final.json",
+      "sha256": "01e0435b8dd1ef201da6cb4f97596560b28254b695bdebe387e65db1798a0334",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/environment-monitor-handle-loss.json",
+      "sha256": "abe420e0f0d4f604eb830559597198e6142abd7b91347026c4ca0466d188b2a1",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/403-recheck/results.json",
+      "sha256": "c992ffe014d26bfa8ae59bb2ad1b078b9825b02ba66a5b7ee3df9f9771ae536e",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/completion-v3-staging/responses.json",
+      "sha256": "2be6148fd358bd5cf9a439f5a0ec47604d02407b90ac30f2ce6075d6eea7903e",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/continuous-v4/results.json",
+      "sha256": "c2a3d604413998e09e840f82ab89604d03e9dba5626ed37187fc48c9201a5257",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/continuous-v4/previous25/results.json",
+      "sha256": "ea62caf59d416e0cbaa5f7d0ed26981d83d15669b4170bbc78296842421ea9ad",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/continuous-v4/actual-assets-production/results.json",
+      "sha256": "89a40295fa79293ac9319c981fc6b6af0e4a7683657c0ab972fe1f26c1c019db",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/continuous-v4/actual-assets-staging/results.json",
+      "sha256": "ce5e3f622afd03eaabeda0848668d1046570656cdfdfe9e77e66298b0f5a1019",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/coverage-gate.json",
+      "sha256": "d8f6c19e9434fa90cae13cd70f17aff1dd70c137420ae7fbc5123d07c4f8162d",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/source-ownership-review-final.json",
+      "sha256": "def8afeaa8549346c73e7b2bc3ed93870201f6ae5b22cf05608325c74adef6dc",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/proposal-fixture-exactness-final.json",
+      "sha256": "1a510fea57db8c3fd2f8b69c54fc9fa16c4a695bd6a7f2bfadf40ddd4f10a692",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/inverse-controls-v2/results.json",
+      "sha256": "c08421e38ce3f11fa151d9d69ac72f81e075aaefb64bdfbb2d7127c2a7e5a62c",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/one-pixel-final-restored/results.json",
+      "sha256": "90e670ffc59276f7ebd40492bd66816972cf07c4f4011cb7b81b69df67ec43c3",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/actual-stage-hero-final/results.json",
+      "sha256": "571946f324dbf1e39eda3803d6a68ee526ac32013a68ac951fda4a2ffa02c640",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/actual-stage-hero-final-provenance.json",
+      "sha256": "bdf46a9652dfb92aeb61b379a7bd37f1149638b8fa42714f0acf3c6cbb149a6c",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/actual-late-pair-final/results.json",
+      "sha256": "c7aef980ae29bfb9e7a8feddfde09610faa9a3bcb99748d72a32d905a95284e2",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/prior-preservation-final.json",
+      "sha256": "01bc5ff6c8e4003d825dff2e4291aa6624d2dfa43758584231c64a4842138e63",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/frozen-source-adoption-map.json",
+      "sha256": "ed3bd9c8b8e4b6dd4b25cac8cdc11c79bcd2b5c4442f11461fff6d8165cbea0f",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/end-final-read-only-check.json",
+      "sha256": "5c3bece1f6d732bab862871b757423f10a0fc719eed7505e078d834c90a81794",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/end-final-refs-api.json",
+      "sha256": "6e6462562b25863e58ab74cea39f374988aeac3e546eb6ed48bb55184055566e",
+      "remoteRawPreserved": false
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-adoption-20261119/raw-inventory-final-receipt.json",
+      "sha256": "7f5b98c5326768355b670f4c76de70c8059201cbdf701701992317486813e768",
+      "remoteRawPreserved": false
+    }
+  ],
+  "nextActions": [
+    "Hold public adoption and full compatibility/audit completion; no additional micro refactor.",
+    "Obtain complete exact original staging inputs and verified reachable operational rollback assets without replacing historical responses.",
+    "Then validate any revised adoption source/input in its own frozen continuous run and obtain independent audit plus separate approval for public changes."
+  ],
+  "derivedSourceReview": "docs/quality/evidence/adoption-source-review.json"
+}
