@@ -466,13 +466,6 @@ html:has(#hxFctaModal.is-open) {
   color: var(--hx-ink);
 }
 
-/* Labels own emergency token wrapping without changing ordinary Korean words
-   or the input controls and other form roots. */
-.hx-fcta-form .hx-fcta-form__label,
-.hx-fcta-form .hx-fcta-form__label * {
-  overflow-wrap: anywhere !important;
-}
-
 .hx-fcta-form__req { color: var(--hx-red); margin-left: 2px; }
 
 /* 라벨 + 부연을 한 줄에 — 부연이 줄을 따로 먹지 않게 */
