@@ -86,6 +86,10 @@
     link.rel  = 'stylesheet';
     link.href = url;
     if (onerr) link.onerror = onerr;
+    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
+      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
+      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
+    }
     document.head.appendChild(link);
   }
 
@@ -110,7 +114,7 @@
     document.head.appendChild(s);
   }
 
-  function loadFile(path, ref) {
+  function loadFile(path, ref, menuRetry) {
     /* Respect module ownership claims; guards alone do not prove completion. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
@@ -135,11 +139,13 @@
     }
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH) {
-        console.warn('[services-bootstrap] failed even from @' + BRANCH + ':', path);
+      if (ref === BRANCH || menuRetry) {
+        console.warn('[services-bootstrap] failed even from @' + ref + ':', path);
         return;
       }
-      loadFile(path, BRANCH);   /* SHA 로드 실패 시 브랜치 ref 로 폴백 */
+      /* The menu pair shares an immutable protocol; other assets retain branch fallback. */
+      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
+      loadFile(path, menuAsset ? ref : BRANCH, menuAsset);
     };
     if (ext === 'css') injectCss(url, fallback);
     else if (ext === 'js') injectJs(url, fallback);
