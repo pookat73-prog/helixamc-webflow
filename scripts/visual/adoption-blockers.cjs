@@ -12,7 +12,7 @@ const unavailableOriginal = profile.unavailableOriginal?.[environment] || [];
 const pages = profile.pages || ['home', 'discover-helix', 'services', 'faq', 'internal-medicine'];
 const rows = [], save = () => fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({ environment, profile, rows, pass: false }, null, 2));
 const pathname = slug => slug === 'home' ? '/' : '/' + slug;
-const refFor = slug => environment === 'staging' && slug === 'home' ? profile.stagingHome : profile.main;
+const refFor = slug => profile.pageRefs?.[slug] || (environment === 'staging' && slug === 'home' ? profile.stagingHome : profile.main);
 async function wheel(page) { await page.mouse.move(8, 400); await page.mouse.wheel(0, 600); await page.waitForTimeout(400); return page.evaluate(() => scrollY); }
 async function menu(page) {
   assert.equal(await page.locator('.hx-menu-overlay').count(), 1);
@@ -48,13 +48,13 @@ async function originalState(t,slug,width) {
   await staticMedia(page,()=>page.locator('.hx-menu-overlay').screenshot({path:path.join(output,slug+'-'+width+'-original-menu.png'),animations:'disabled'}));
   let start=await page.evaluate(()=>scrollY);state.menuWheelDelta=(await wheel(page))-start;
   await page.keyboard.press('Escape');await page.waitForTimeout(400);assert.equal(await button.getAttribute('aria-expanded'),'false');state.menuFocus=await button.evaluate(e=>document.activeElement===e);assert.ok(state.menuFocus);
-  start=await page.evaluate(()=>scrollY);state.closedMenuWheelDelta=(await wheel(page))-start;assert.ok(state.closedMenuWheelDelta>0);
+  await page.evaluate(()=>scrollTo(0,0));start=await page.evaluate(()=>scrollY);state.closedMenuWheelDelta=(await wheel(page))-start;assert.ok(state.closedMenuWheelDelta>0);
   await page.evaluate(()=>scrollTo(0,0));await page.locator('.hx-fcta-form-btn').click();await page.waitForTimeout(400);
   start=await page.evaluate(()=>scrollY);state.formWheelDelta=(await wheel(page))-start;
   await page.locator('#hxFcta_owner').fill('검증용 입력');await page.locator('#hxFctaPrivacyMore').click();assert.equal(await page.locator('#hxFctaPrivacyDetail').getAttribute('hidden'),null);await page.locator('#hxFctaPrivacyMore').click();assert.notEqual(await page.locator('#hxFctaPrivacyDetail').getAttribute('hidden'),null);
   await page.keyboard.press('Escape');await page.waitForTimeout(400);state.formFocus=await page.locator('.hx-fcta-form-btn').evaluate(e=>document.activeElement===e);assert.ok(state.formFocus);
-  start=await page.evaluate(()=>scrollY);state.closedFormWheelDelta=(await wheel(page))-start;assert.ok(state.closedFormWheelDelta>0);
-  state.baselineBehaviorOnly=true;state.backgroundLockIsNotAssumed=state.menuWheelDelta===0&&state.formWheelDelta===0;return state;
+  await page.evaluate(()=>scrollTo(0,0));start=await page.evaluate(()=>scrollY);state.closedFormWheelDelta=(await wheel(page))-start;assert.ok(state.closedFormWheelDelta>0);
+  state.baselineBehaviorOnly=true;state.bothBackgroundLocksObserved=state.menuWheelDelta===0&&state.formWheelDelta===0;return state;
 }
 async function contract(page) {
   return page.evaluate(() => ({
@@ -165,7 +165,7 @@ async function fault(browser, slug, asset, scenario) {
   fs.mkdirSync(output,{recursive:true});process.env.HELIX_VISUAL_OVERLAY='';
   const b=await pw.chromium.launch({executablePath:process.env.HELIX_CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox','--disable-dev-shm-usage']});assertBrowser(b);
   try {
-    for(const slug of pages)for(const width of [1440,820,390]) {
+    for(const slug of pages)for(const width of (profile.widths||[1440,820,390])) {
       const row={kind:'actual-HTML-selected-assets',slug,width,sourceClassification:profile.sourceClassification}, shots=[];
       const originalAvailable = !unavailableOriginal.some(x => x.slug === slug);
       for(const version of originalAvailable ? ['original','candidate'] : ['candidate']){
@@ -215,11 +215,11 @@ async function fault(browser, slug, asset, scenario) {
         assert.deepEqual(row.candidate,row.original,'published content/typography/layout policy preserved');
         assert.ok(shots[0].equals(shots[1]),'Form box PNG must be byte-identical; no baseline or threshold update');
       } else row.unverified = unavailableOriginal.find(x=>x.slug===slug);
-      row.pass=true;rows.push(row);save();console.log(slug,width,originalAvailable?'PASS paired published layout/form PNG + candidate functions':'PASS candidate functions; original comparison BLOCKED');
+      row.pass=true;rows.push(row);save();console.log(slug,width,originalAvailable?'PASS matched source layout/form PNG + candidate functions; source classification retained':'PASS candidate functions; original comparison BLOCKED');
     }
     if(!profile.normalOnly)for(const slug of pages)for(const asset of ['js','css'])for(const scenario of ['once','twice'])await fault(b,slug,asset,scenario);
     if(!profile.normalOnly)for(const asset of ['js','css'])for(const scenario of ['pending','permanent'])await fault(b,'faq',asset,scenario);
     if(!profile.normalOnly&&environment==='staging')for(const asset of ['js','css'])await fault(b,'faq',asset,'late-api');
-    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({environment,profile,rows,pass:unavailableOriginal.length===0,verifiedContractsPass:true,scopeSource:profile.sourceClassification,actualCDNOriginalCoverage:profile.actualCDNOriginalCoverage===true,unavailableOriginal,coverage:'All 15 candidate viewports; original comparison and exact modal PNG only where original assets are available (explicit blockers otherwise); real immutable asset bindings; menu/form wheel, Escape/focus; actual Home ready/done and reverse transitions; five producer CSS/JS native bounded failures; ten-second pending; permanent failure explicitly unavailable; duplicate entry. Static modal PNG uses the existing paused first media frame; no mask/tolerance change. No runtime overlays or historical-response substitution.'},null,2));
+    fs.writeFileSync(path.join(output,'results.json'),JSON.stringify({environment,profile,rows,pass:unavailableOriginal.length===0,verifiedContractsPass:true,scopeSource:profile.sourceClassification,actualCDNOriginalCoverage:profile.actualCDNOriginalCoverage===true,unavailableOriginal,coverage:'Explicit profile page/width scope; Git-source original comparisons are not public CDN reachability; original comparison and exact modal PNG only where original assets are available (explicit blockers otherwise); real immutable asset bindings; menu/form wheel, Escape/focus; actual Home ready/done and reverse transitions; five producer CSS/JS native bounded failures; ten-second pending; permanent failure explicitly unavailable; duplicate entry. Static modal PNG uses the existing paused first media frame; no mask/tolerance change. No runtime overlays or historical-response substitution.'},null,2));
   }finally{await b.close();}
 })().catch(e=>{save();console.error(e);process.exitCode=1;});
