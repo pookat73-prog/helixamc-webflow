@@ -254,12 +254,6 @@
 }
 
 /* ── 모달 래퍼 ── */
-/* The viewport scrolls through html on home; body-only locking is insufficient.
-   Use the existing modal state; no second JavaScript state owner is needed. */
-html:has(#hxFctaModal.is-open) {
-  overflow: hidden;
-}
-
 .hx-fcta-modal {
   position: fixed;
   inset: 0;
