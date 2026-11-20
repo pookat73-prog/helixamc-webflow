@@ -240,10 +240,6 @@
     link.href = url;
     if (onload) link.onload = onload;
     if (onerr) link.onerror = onerr;
-    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
-      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
-      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
-    }
     document.head.appendChild(link);
     return link;
   }
@@ -254,17 +250,11 @@
     s.async = !!independent;
     if (onload) s.onload = onload;
     if (onerr)  s.onerror = onerr;
-    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
-      s.addEventListener('error', function () {
-        s.setAttribute('data-helix-menu-js-error', s.src);
-        s.remove();
-      }, true);
-    }
     document.head.appendChild(s);
     return s;
   }
 
-  function loadFile(path, ref, done, menuRetry) {
+  function loadFile(path, ref, done) {
     /* Match the modules' own guards; retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
@@ -279,15 +269,13 @@
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH || menuRetry) {
-        console.warn('[helix-bootstrap] failed even from @' + ref + ':', path);
+      if (ref === BRANCH) {
+        console.warn('[helix-bootstrap] failed even from @' + BRANCH + ':', path);
         if (done) done();
         return;
       }
-      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
-      var nextRef = menuAsset ? ref : BRANCH;
-      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + nextRef);
-      loadFile(path, nextRef, done, menuAsset);
+      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
+      loadFile(path, BRANCH, done);
     };
     if (ext === 'css') {
       injectCss(url, fallback, done);

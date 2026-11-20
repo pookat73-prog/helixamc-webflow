@@ -131,13 +131,6 @@
     // Reuse the failed link so retries keep the original CSS cascade order.
     var link = existingLink || document.createElement('link');
     link.rel  = 'stylesheet';
-    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
-      link.removeAttribute('data-helix-menu-css-error');
-      if (!existingLink) {
-        link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
-        link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
-      }
-    }
     link.onerror = onerr || null;
     link.href = url;
     if (!existingLink) document.head.appendChild(link);
@@ -149,14 +142,7 @@
     s.src   = url;
     s.async = false;
     if (onload) s.onload = onload;
-    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
-      s.onerror = function () {
-        /* A native-failed menu script cannot own the shared consumer's slot. */
-        s.setAttribute('data-helix-menu-js-error', url);
-        s.remove();
-        if (onerr) onerr();
-      };
-    } else if (onerr) s.onerror = onerr;
+    if (onerr)  s.onerror = onerr;
     document.head.appendChild(s);
     return s;
   }
@@ -174,16 +160,13 @@
       'global/sheet-log.js': '__helixSheetLogInit'
     };
     if (initialized[path] && window[initialized[path]]) return;
-    var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
     var url = cdn(ref, path);
-    /* A failed link needs a changed URL to start its one native retry. */
-    if (isFallback && menuAsset && path === 'home/global/hamburger.css') url += '?hx-menu-retry=1';
     var ext = path.split('.').pop();
     var node;
     var fallback = function () {
       if (isFallback) { console.warn('[faq-bootstrap] load failed:', path); return; }
-      console.warn('[faq-bootstrap] SHA load failed for ' + path + ', retry @' + (menuAsset ? ref : BRANCH));
-      loadFile(path, menuAsset ? ref : BRANCH, true, ext === 'css' ? node : null);
+      console.warn('[faq-bootstrap] SHA load failed for ' + path + ', retry @' + BRANCH);
+      loadFile(path, BRANCH, true, ext === 'css' ? node : null);
     };
     if (ext === 'css') node = injectCss(url, fallback, cssLink);
     else if (ext === 'js') injectJs(url, null, fallback);

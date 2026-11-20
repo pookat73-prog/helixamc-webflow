@@ -86,10 +86,6 @@
     link.rel  = 'stylesheet';
     link.href = url;
     if (onerr) link.onerror = onerr;
-    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
-      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
-      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
-    }
     document.head.appendChild(link);
   }
 
@@ -97,55 +93,30 @@
     var s = document.createElement('script');
     s.src   = url;
     s.async = false;
-    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
-      /* Preserve a native failure even when the shared loader starts later. */
-      s.setAttribute('data-helix-menu-js-pending', url);
-      s.onload = function () {
-        s.removeAttribute('data-helix-menu-js-pending');
-        s.removeAttribute('data-helix-menu-js-error');
-      };
-      s.onerror = function () {
-        s.removeAttribute('data-helix-menu-js-pending');
-        s.setAttribute('data-helix-menu-js-error', url);
-        s.remove(); // A native-failed script cannot own the module for older consumers.
-        if (onerr) onerr();
-      };
-    } else if (onerr) s.onerror = onerr;
+    if (onerr) s.onerror = onerr;
     document.head.appendChild(s);
   }
 
-  function loadFile(path, ref, menuRetry) {
-    /* Respect module ownership claims; guards alone do not prove completion. */
+  function loadFile(path, ref) {
+    /* Match the modules' own guards; retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',
       'global/session.js': '__helixSessionInit',
-      'global/sheet-log.js': '__helixSheetLogInit',
-      'home/global/hamburger.js': '__helixHamburgerInit'
+      'global/sheet-log.js': '__helixSheetLogInit'
     };
     if (initialized[path] && window[initialized[path]]) return;
     /* 점검 화면은 ga-inspector.js와 같은 URL 조건에서만 내려받는다. */
     if (path === 'global/ga-inspector.js' &&
         !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
     var url = cdn(ref, path);
-    if (path === 'home/global/hamburger.js') {
-      /* A concurrent producer may still own this exact request. Presence alone
-         cannot identify unknown/failed scripts or a different asset version. */
-      var scripts = document.querySelectorAll('script[data-helix-menu-js-pending]');
-      for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].src === url &&
-            scripts[i].getAttribute('data-helix-menu-js-pending') === url) return;
-      }
-    }
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH || menuRetry) {
-        console.warn('[services-bootstrap] failed even from @' + ref + ':', path);
+      if (ref === BRANCH) {
+        console.warn('[services-bootstrap] failed even from @' + BRANCH + ':', path);
         return;
       }
-      /* The menu pair shares an immutable protocol; other assets retain branch fallback. */
-      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
-      loadFile(path, menuAsset ? ref : BRANCH, menuAsset);
+      loadFile(path, BRANCH);   /* SHA 로드 실패 시 브랜치 ref 로 폴백 */
     };
     if (ext === 'css') injectCss(url, fallback);
     else if (ext === 'js') injectJs(url, fallback);

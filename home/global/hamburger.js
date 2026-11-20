@@ -190,23 +190,6 @@
        클릭이 열림→닫힘으로 상쇄돼 "안 열리는" 것처럼 보임. 한 번만 실행. */
     if (window.__helixHamburgerInit) return;
     window.__helixHamburgerInit = true;
-    window.__helixHamburgerReady = false;
-
-    /* Owning initialization is not completion. A failed/pending GSAP resource
-       must not leave partial DOM or permanently poison the existing guard. */
-    if (!window.gsap) {
-      var onDependencyLoad = function () {
-        if (!window.gsap) return;
-        document.removeEventListener('load', onDependencyLoad, true);
-        initializeMenu();
-      };
-      document.addEventListener('load', onDependencyLoad, true);
-      return;
-    }
-    initializeMenu();
-  }
-
-  function initializeMenu() {
 
     /* 백드롭 주입 */
     var backdrop = document.createElement('div');
@@ -228,6 +211,7 @@
        (GSAP transition 중간 차단, page reload 등) 페이지 스크롤이 영영 잠김.
        init 시점에 강제로 클리어. */
     document.body.classList.remove('hx-menu-open');
+      document.documentElement.classList.remove('hx-menu-open');
 
     var overlay  = document.querySelector('.hx-menu-overlay');
     var isOpen   = false;
@@ -401,7 +385,6 @@
     window.addEventListener('resize', function () {
       if (isOpen) positionOverlay(overlay);
     });
-    window.__helixHamburgerReady = true;
   }
 
   if (document.readyState === 'loading') {

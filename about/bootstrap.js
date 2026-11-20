@@ -201,10 +201,6 @@
     link.href = url;
     if (onerr) link.onerror = onerr;
     if (onload) link.onload = onload;
-    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
-      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
-      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
-    }
     document.head.appendChild(link);
     return link;
   }
@@ -215,17 +211,11 @@
     s.async = !!independent;
     if (onload) s.onload = onload;
     if (onerr)  s.onerror = onerr;
-    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
-      s.addEventListener('error', function () {
-        s.setAttribute('data-helix-menu-js-error', s.src);
-        s.remove();
-      }, true);
-    }
     document.head.appendChild(s);
     return s;
   }
 
-  function loadFile(path, ref, ready, menuRetry) {
+  function loadFile(path, ref, ready) {
     /* Ordinary visits never execute the inspector; avoid requesting it. */
     if (path === 'global/ga-inspector.js' && !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) {
       if (ready) ready();
@@ -243,8 +233,8 @@
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH || menuRetry) {
-        console.warn('[about-bootstrap] failed even from @' + ref + ':', path);
+      if (ref === BRANCH) {
+        console.warn('[about-bootstrap] failed even from @' + BRANCH + ':', path);
         if (path === 'home/global/card-stack.js') {
           var recovery = document.createElement('style');
           recovery.textContent = '.just-box_card{visibility:visible!important}';
@@ -253,10 +243,8 @@
         if (ready) ready();
         return;
       }
-      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
-      var nextRef = menuAsset ? ref : BRANCH;
-      console.warn('[about-bootstrap] SHA load failed for ' + path + ', retrying @' + nextRef);
-      loadFile(path, nextRef, ready, menuAsset);
+      console.warn('[about-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
+      loadFile(path, BRANCH, ready);
     };
     if (ext === 'css') injectCss(url, fallback, ready);
     else if (ext === 'js') injectJs(url, ready, fallback);
