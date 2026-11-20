@@ -1,0 +1,65 @@
+--- a/page-home.html
++++ b/page-home.html
+@@ -254,11 +254,14 @@
+   if (/\.webflow\.io$/i.test(location.hostname)) {
+     window.__helixHomeBootstrapRedirected=true;
+-    window.__helixCommitSha='ccb68a7c4523d83539afc5de20e309ff145547dd';
+-    window.__helixHomeBootstrapRef='ccb68a7c4523d83539afc5de20e309ff145547dd';
+-    var candidate=document.createElement('script');candidate.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/bootstrap.js';candidate.async=false;document.head.appendChild(candidate);return;
+-  }
+-  var ref=/\.webflow\.io$/i.test(location.hostname)?'67d9aab365e31dddd6e96eb58a72ce179134042b':'3c4f78d4e75a06524b16a32e05e3185c48fbe800';
+-  var s=document.createElement('script');
+-  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+ref+'/home/bootstrap-v3.js';
++    window.__helixCommitSha='76f9a10c59ecb696dd349fd1f9344939ddafab4a';
++    window.__helixHomeBootstrapRef='76f9a10c59ecb696dd349fd1f9344939ddafab4a';
++    var candidate=document.createElement('script');candidate.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/bootstrap.js';candidate.async=false;document.head.appendChild(candidate);return;
++  }
++  var ref=/\.webflow\.io$/i.test(location.hostname)?'76f9a10c59ecb696dd349fd1f9344939ddafab4a':'61c465152f26c5820ef30e7c8b166ba37829008a';
++  window.__helixHomeBootstrapRedirected=true;
++  window.__helixCommitSha=ref;
++  window.__helixHomeBootstrapRef=ref;
++  var s=document.createElement('script');
++  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+ref+'/home/bootstrap.js';
+   s.async=false;
+   document.head.appendChild(s);
+--- a/site-footer.html
++++ b/site-footer.html
+@@ -10,4 +10,5 @@
+   var loaded = false;
+   function load(sha) {
++    if (/^\/(?:discover-helix|services|faq|internal-medicine)?\/?$/.test(location.pathname)) sha = (/^\/services\/?$/.test(location.pathname) ? "91140bf351dc6afbdfb57bb99e5c17c6bd794c09" : (/\.webflow\.io$/i.test(location.hostname) && location.pathname==="/" ? "76f9a10c59ecb696dd349fd1f9344939ddafab4a" : "61c465152f26c5820ef30e7c8b166ba37829008a")); /* PRIVATE selected package. */
+     if (loaded || !/^[0-9a-f]{40}$/i.test(sha || '')) return;
+     loaded = true;
+--- a/page-discover-helix.html
++++ b/page-discover-helix.html
+@@ -24,4 +24,5 @@
+   function valid(ref){return typeof ref==='string'&&/^[0-9a-f]{7,40}$/i.test(ref);}
+   function load(ref){
++    ref="61c465152f26c5820ef30e7c8b166ba37829008a"; /* PRIVATE selected package. */
+     if(settled)return;settled=true;clearTimeout(timer);
+     window.__helixAboutBootstrapRedirected=true;
+--- a/page-services.html
++++ b/page-services.html
+@@ -35,5 +35,5 @@
+ (function(){
+   var s=document.createElement('script');
+-  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+(/\.webflow\.io$/i.test(location.hostname)?'ba91d70d93f8a1b54ca499b0ca942c0710d025e7':'ba91d70d93f8a1b54ca499b0ca942c0710d025e7')+'/services/bootstrap.js';
++  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+(/\.webflow\.io$/i.test(location.hostname)?'91140bf351dc6afbdfb57bb99e5c17c6bd794c09':'91140bf351dc6afbdfb57bb99e5c17c6bd794c09')+'/services/bootstrap.js';
+   s.async=false;document.head.appendChild(s);
+ })();
+--- a/page-faq.html
++++ b/page-faq.html
+@@ -18,4 +18,5 @@
+   var b=/\.webflow\.io$/i.test(location.hostname)?'staging':'main';
+   function load(ref){
++    ref="61c465152f26c5820ef30e7c8b166ba37829008a"; /* PRIVATE selected package. */
+     /* Download hints only; bootstrap retains stylesheet order and recovery. */
+     try{['faq/faq.css','faq/faq-responsive.css'].forEach(function(path){
+--- a/page-internal-medicine.html
++++ b/page-internal-medicine.html
+@@ -96,4 +96,5 @@
+   try { cached = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+   function load(ref) {
++    ref="61c465152f26c5820ef30e7c8b166ba37829008a"; /* PRIVATE selected package. */
+     var script = document.createElement('script');
+     script.src = 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref +
