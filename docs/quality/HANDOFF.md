@@ -1,8 +1,16 @@
 # HELIX 홈페이지 안정화 — 최종 인계
 
-갱신일: 2026-11-19 (Asia/Seoul)
+갱신일: 2026-11-20 (Asia/Seoul)
 
-## 최신 판정 — 1. 실제 원복 기능 차단 확인 / 공개 적용·전체 독립 감사 승격 보류
+## 최신 진행 — 기능 보존형 복구 후보 구현 / 새 동결 연속 검사 진행 중
+
+[22 기능 보존형 원복](22-functional-rollback.md), [후보 파일·실제 URL·SHA 대장](evidence/functional-rollback-package.json)이 최신 진행이다. 보호 제품은 `21acccb` 그대로다. 원본 mirror 세 개와 기존 현재 후보는 보존했고, 별도 recovery 브랜치에 원인별 선별 커밋을 구성했다. 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`가 새 복구 후보다. 최종 실제 CDN175응답은 HTTP200/Git 일치이며, 이것만으로 원복 기능 완료로 판정하지 않는다.
+
+About3폭의 실제 메뉴/폼 잠금·nonzero scrollY 복원, 두 owner의 해제 순서, Services3폭의 원본 비교, 실제 Home의40회 소진/공개 후 GSAP 복구, 메뉴/폼/로더 개별 역주입·복구 예비 검사를 통과했다. 예비 성공은 합산하지 않는다. QA `a75d818`의 별도 clean clone에서 기존25단계와 새 실제 cohort·엄격2/3요청·30잠금·원본12 geometry/1px·실제36 Hero·개별 역주입을 **단일 연속 실행 중**이다. 결과는 아직 미완료다.
+
+main과 staging Home 복구 runtime은 각각 현재 검증 후보와 같으므로 독립 대체 구현이라고 표현하지 않는다. Services의 다른 고유 파일은 원본을 보존했고 모든 내비게이션/SEO 의미의 동등성을 새로 주장하지 않는다. 초기 staging 구성216은 소스 대조에서 제외하고 기존 staging loader/CSS를 보존한 최종76만 사용한다. 새 raw는 로컬 전용이며 기준/기존 raw/두Drive 백업은 보존한다. 공개 설정·main/staging·Publish·배포 변경 없음. 최종 감사·운영 적용 승격은 새 연속 결과와 남은 게시 범위 게이트 확인 전 보류한다.
+
+## 이전21 판정 — 1. 실제 원복 기능 차단 확인 / 공개 적용·전체 독립 감사 승격 보류
 
 최신 결과는 [21 적용 차단 검증](21-application-blockers.md), [판정·증거 SHA](evidence/application-blockers.json), [스테이징 원본 12화면](evidence/staging-original12.json), [실제 원본 URL·SHA·소비자 대장](evidence/source-restoration-assets.json)이다. 아래20과 이전 결과는 당시 이력이다. 시작 HEAD `742fec2` 이후 **제품 runtime은 `21acccb`와 동일**하며 기존 D04 다섯 제품·D02/D05·Hero와 다른 작업자의 코드를 재수정하지 않았다.
 
