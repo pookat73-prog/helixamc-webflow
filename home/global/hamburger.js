@@ -211,6 +211,7 @@
        (GSAP transition 중간 차단, page reload 등) 페이지 스크롤이 영영 잠김.
        init 시점에 강제로 클리어. */
     document.body.classList.remove('hx-menu-open');
+      document.documentElement.classList.remove('hx-menu-open');
 
     var overlay  = document.querySelector('.hx-menu-overlay');
     var isOpen   = false;
@@ -250,6 +251,7 @@
       backdrop.classList.add('is-open');
       closeBtn.classList.add('is-visible');
       document.body.classList.add('hx-menu-open');
+      document.documentElement.classList.add('hx-menu-open');
 
       /* 이전에 클릭한 링크 활성 복원 */
       if (activeEl) activeEl.classList.add('is-active');
@@ -272,6 +274,7 @@
       setBurgerExpanded(false);
       ga('menu_close', { method: reason || 'unknown' });
       document.body.classList.remove('hx-menu-open');
+      document.documentElement.classList.remove('hx-menu-open');
       closeBtn.classList.remove('is-visible');
       gsap.to(overlay, {
         x: '100%',
