@@ -59,7 +59,15 @@
   /* bg: 순수 이즈 인 (가속만). 끝부분 커브 없음 — 천천히 시작해서 끝까지 가속. */
   var easeBg     = 'power4.in';
 
-  var started = false;
+  /* Module ownership is not initialization completion. A failed dependency
+     wait may resume on a real script load; running/complete work never replays. */
+  var phase = 'pending';
+
+  function resumeAfterDependencyLoad(event) {
+    if (phase !== 'failed' || !event.target || event.target.tagName !== 'SCRIPT' ||
+        typeof gsap === 'undefined') return;
+    startSection1();
+  }
 
   /* Virtual placeholder: clone el as ghost, move el out to targetParent */
   function detachWithGhost(el, targetParent) {
@@ -113,7 +121,7 @@
   }
 
   function startSection1() {
-    if (started) return true;
+    if (phase === 'running' || phase === 'complete') return true;
 
     if (typeof gsap === 'undefined') {
       log('GSAP not loaded yet, retrying...');
@@ -138,13 +146,22 @@
       return false;
     }
 
-    started = true;
+    /* The head may release its cover while Section1 is still waiting.
+       Recovery must not open another opacity wait after that gate is ready. */
+    var initialOpacity = phase === 'failed' &&
+      document.documentElement.classList.contains('hx-home-ready') ? 1 : 0;
+    phase = 'running';
+    document.removeEventListener('load', resumeAfterDependencyLoad, true);
+    log('state:', phase);
 
     /* detach 는 폰트 로드 후에 수행 — fallback 폰트 폭으로 ghost 가 측정되면
        slogan 의 inline width 가 잘못 lock 됨. fade 끝나고 cleanup 에서 width
        제거 시 자연 폭(web 폰트)으로 reflow 되어 '중' 자가 위로 점프. */
     var cleanups = [];
     function performDetach() {
+      /* An already opaque recovery needs no parent-opacity separation.
+         Keep exposed text in its original responsive typography context. */
+      if (initialOpacity === 1) return;
       if (bg && bg.parentElement) {
         var target = bg.parentElement;
         try {
@@ -172,9 +189,9 @@
       el.style.setProperty('visibility', 'visible', 'important');
     }
 
-    forceOpacity(slogan, 0);
-    forceOpacity(bg, 0);
-    forceOpacity(box1, 0);
+    forceOpacity(slogan, initialOpacity);
+    forceOpacity(bg, initialOpacity);
+    forceOpacity(box1, initialOpacity);
 
     /* 인라인 visibility:hidden 적용 완료 → bootstrap의 prepaint 가드 제거.
        이 시점부터는 section1.js가 직접 노출 시점을 통제함.
@@ -197,7 +214,7 @@
 
     function fadeIn(el, name, duration, ease, delay, onStart, onComplete) {
       if (!el) return;
-      var state = { v: 0 };
+      var state = { v: initialOpacity };
       gsap.to(state, {
         v: 1,
         duration: typeof window.__hxHomeFirstpaintReveal === 'function' ? 0 : duration,
@@ -231,6 +248,8 @@
       if (orphans.length) log('removed', orphans.length, 'orphan ghost(s)');
       /* DOM이 최종 위치로 복원된 후 divider.js에 신호 */
       setTimeout(function () {
+        phase = 'complete';
+        log('state:', phase);
         try { window.dispatchEvent(new CustomEvent('helix-s1-done')); } catch (e) {}
         log('helix-s1-done dispatched');
       }, 50);
@@ -300,6 +319,9 @@
     function fire() {
       if (fired) return;
       fired = true;
+      /* The cover may open now: font application and final layout have been
+         checked, and opacity is still controlled by the existing fades. */
+      try { window.dispatchEvent(new CustomEvent('helix-s1-ready')); } catch (e) {}
       startFades();
     }
 
@@ -393,6 +415,7 @@
        3) slogan 레이아웃 안정화 폴링 → 4) fade 시작
        slogan 의 실제 font-weight/style 까지 반영해 로드 (weight 별로 face 다름). */
     var loadPromises = [];
+    var targetedFontLoad = false;
     var sloganFamily = familyFromComputed();
     var sloganWeight = '400';
     var sloganStyle  = 'normal';
@@ -407,9 +430,12 @@
       var text = (slogan.textContent || '').trim() || ' ';
       try {
         loadPromises.push(document.fonts.load(fontSpec, text).catch(function () {}));
+        targetedFontLoad = true;
       } catch (e) {}
     }
-    if (document.fonts && document.fonts.ready) {
+    /* 슬로건 폰트를 직접 요청했으면 하단·메뉴 등 다른 폰트까지 기다리지 않는다.
+       실제 폰트 적용 probe와 4프레임 배치 안정화 검사는 아래에서 그대로 수행한다. */
+    if (!targetedFontLoad && document.fonts && document.fonts.ready) {
       loadPromises.push(document.fonts.ready.catch(function () {}));
     }
 
@@ -439,7 +465,16 @@
     var iv = setInterval(function () {
       if (startSection1() || ++tries >= 40) {
         clearInterval(iv);
-        if (!started) console.warn('[Section1] init failed after ' + tries + ' retries');
+        if (phase === 'pending') {
+          phase = 'failed';
+          /* No new poll/retry budget. The owner waits for a native load only
+             when its actual GSAP dependency is missing. */
+          if (typeof gsap === 'undefined') {
+            document.addEventListener('load', resumeAfterDependencyLoad, true);
+          }
+          log('state:', phase);
+          console.warn('[Section1] init failed after ' + tries + ' retries');
+        }
       }
     }, 100);
   }

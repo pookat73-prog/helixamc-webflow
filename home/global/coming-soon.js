@@ -716,18 +716,22 @@
   /* Loaded before section1 / divider / sections-animations by home/bootstrap.
      Keep Webflow's visual classes and restore only their animation hooks. */
   function prepareHomeViewport() {
-    var hero = document.querySelector('.blackframe_image-hero');
-    var specialty = document.querySelector('.home_background_2');
-    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
-    hero.setAttribute('data-hx-home-viewport', '');
+    /* Section animation hooks do not depend on the Hero viewport layout. */
     [
       '.home_background_2 h2.home_title',
       '.home_background_3 h2.home_title',
       '.home_background_3-mobile h2.home_title'
     ].forEach(function (selector) {
-      var heading = document.querySelector(selector);
-      if (heading) heading.classList.add('section2-heading');
+      /* Mark every consumer; a hidden copy must not take the visible one's hook.
+         Sections owns visibility and first-exposure initialization. */
+      document.querySelectorAll(selector).forEach(function (heading) {
+        heading.classList.add('section2-heading');
+      });
     });
+    var hero = document.querySelector('.blackframe_image-hero');
+    var specialty = document.querySelector('.home_background_2');
+    if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
+    hero.setAttribute('data-hx-home-viewport', '');
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', prepareHomeViewport, { once: true });
@@ -888,7 +892,7 @@
   }
 
   function revealHeroWhenReady() {
-    if (!document.getElementById('hx-hero-milestones') ||
+    if (!heroReady || !document.getElementById('hx-hero-milestones') ||
         !document.getElementById('hx-branch-quickbar')) return;
     if (typeof window.__hxHomeFirstpaintReveal === 'function') {
       window.__hxHomeFirstpaintReveal();
@@ -898,15 +902,18 @@
   }
 
   function mountQuickbar() {
-    if (!heroReady) return;
-    if (document.getElementById('hx-branch-quickbar')) return;
-    var stylesheet = document.querySelector('link[href*="home/global/coming-soon.css"]');
-    if (stylesheet && !stylesheet.sheet) {
-      stylesheet.addEventListener('load', mountQuickbar, { once: true });
+    /* A preload has no .sheet, even after its download completes. Also ignore
+       failed stylesheets when a retry has already supplied a parsed sheet. */
+    var stylesheets = document.querySelectorAll('link[rel="stylesheet"][href*="home/global/coming-soon.css"]');
+    if (!Array.prototype.some.call(stylesheets, function (link) { return !!link.sheet; })) {
+      Array.prototype.forEach.call(stylesheets, function (link) {
+        link.addEventListener('load', mountQuickbar, { once: true });
+      });
       return;
     }
     var hero = document.querySelector('.blackframe_image-hero');
     var specialty = document.querySelector('.home_background_2');
+    if (document.getElementById('hx-branch-quickbar')) return;
     if (!hero || !specialty || hero.nextElementSibling !== specialty) return;
 
     var bar = document.createElement('section');
@@ -950,14 +957,24 @@
     revealHeroWhenReady();
   }
 
-  /* Wait for the Hero's existing font measurement / detach sequence. Adding
-     headings while that sequence runs can change document.fonts.ready timing. */
-  function afterHero() {
-    heroReady = true;
+  /* Build the final layout before section1 measures or detaches its children.
+     Keep the first-paint cover until its font and layout checks have passed;
+     the existing fade should then be visible, rather than play behind a cover. */
+  function prepareHeroLayout() {
     mountHeroMilestones();
     mountQuickbar();
+  }
+  function afterHero() {
+    heroReady = true;
+    prepareHeroLayout();
     revealHeroWhenReady();
   }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', prepareHeroLayout, { once: true });
+  } else {
+    prepareHeroLayout();
+  }
+  window.addEventListener('helix-s1-ready', afterHero, { once: true });
   window.addEventListener('helix-s1-done', afterHero, { once: true });
   if (document.querySelector('.bt-box-1.is-looping') && !document.querySelector('[data-s1-ghost]')) {
     afterHero();
