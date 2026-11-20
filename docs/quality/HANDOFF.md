@@ -2,27 +2,29 @@
 
 갱신일: 2026-11-20 (Asia/Seoul)
 
-## 최신 진행 — 기능 보존형 복구 후보 구현 / 전체 검증 미완료
+## 최신 판정 — 기능 보존형 복구 후보 — 지정 격리 계약 통과 / 공개 운영 원복 미실행
 
-**v3 원본12 geometry/1px 완료:** 정확 Git 로컬 원본의 예약창 하위 요소 절대 좌표·크기12쌍과 실제1px 오류 검출/자기 속성 복구가 같은 부모PID37923에서 통과했다. [이번 결과·SHA](evidence/functional-rollback-v3-geometry-checkpoint.json). 과거 원본CDN 도달성/전체페이지 pixel 동일성은 주장하지 않는다. 실제 두Home Hero36·개별inverse3은 계속 진행 중이며 전체 승격은 보류한다.
+**기능 보존형 복구 후보의 지정 계약을 새 동결 소스의 단일 연속v3에서 통과했다.** QA `b6685f0` / 보호 제품 `21acccb`이며 clean clone에서 기존25부터 추가9개 단위까지 끝까지 실행했다. v1·v2·예비 성공은 합산하지 않았다. 실제 운영 원복·공개 반영·외부 독립 감사 완료와는 다르다.
 
-**v3 두환경 잠금30 완료:** 메뉴·예약창 각각 nonzero scrollY의 실제wheel 잠금, 정확한 닫기 복원, Escape/초점과 해제 뒤wheel 이동이 정식15/staging15에서 통과했다. About1440 두owner 해제 순서도 두환경에서 확인했다. [이번 잠금 결과·SHA](evidence/functional-rollback-v3-locks-checkpoint.json). 나머지 geometry12/1px·실제Hero36·개별inverse3은 같은 연속 실행에서 진행 중이다. 아래 진행 표기는 각 이전 체크포인트 당시 이력이다.
+[22 상세](22-functional-rollback.md), [최종 판정·해시](evidence/functional-rollback-final.json), [원인·원본/후보 URL·SHA](evidence/functional-rollback-causes.json), [세 패키지 파일 대장](evidence/functional-rollback-package.json), [여섯 설정 정·역patch](proposals/functional-rollback-20261120/manifest.json)를 인계한다.
 
-**v3 실제 자산 체크포인트:** 같은 연속 실행에서 정식39/staging41 및 엄격50요청 영수증이 완료됐다. 정상30화면·기능복구46·영구불가분류4이며 전체80을 복구 성공으로 세지 않는다. 선택ref/정확한 요청상한 통과. [이번 실제자산 결과·SHA](evidence/functional-rollback-v3-assets-checkpoint.json). 다음 두환경30잠금·원본12geometry/1px·실제Hero36·자기역패치3은 진행 중이라 전체 승격은 아직 보류한다.
+- 기존25단계 모두 통과. 보호 작업 제품의 변경0이며 기존 D02/D05·Hero·다른 작업자 코드를 보존했다.
+- 실제 자산 본문을 이용한 정식39/staging41조건: 정상30화면 계약, 기능 복구46조건, 영구불가 분류4조건.80조건 전체를 복구 성공으로 세지 않는다.
+- JS/CSS native1회 실패20조건은2요청,2회 실패20조건은3요청. pending4조건1요청, 늦은API2조건3요청, 영구실패4조건4요청. 선택 immutable ref와 상한 유지.
+- 두환경30화면의 메뉴/예약창 각각 실제 wheel 잠금, nonzero scrollY 정확 복원, Escape/초점, 닫은 뒤 wheel 해제 통과. About1440 두 owner의 해제 순서 두 가지도 통과.
+- staging 비Home 원본12는 정확 Git 로컬 재현의 게시 문구·타이포·배치·예약창 PNG 및 하위 geometry 계약 통과. 과거 원본 CDN 도달성과 전체 페이지 픽셀 동일성을 주장하지 않는다.1px 오류 검출과 자기 속성 복구 통과.
+- 실제 두 Home36조건 중30은 ready/done·ghost·fade·1.5초hold/loop 완료. GSAP 영구실패6조건은 미완료로 유지했다. 기존25의26쌍과 합산한 새 사례 수를 만들지 않는다.
+- 메뉴/폼/로더 세 원인의 자기 inverse 실패 검출과 해당 변경만 복원한 기능 회복 통과. 별도 inverse/restore 커밋3쌍 보존.
 
-**v3 새 체크포인트:** QA `b6685f0`의 동일 부모PID37923에서 기존25단계가 모두 통과했다. [이번25 결과·SHA](evidence/functional-rollback-v3-checkpoint.json)를 보존했고 실제 recovery cohort의 추가9개 단위로 이어졌다. 전체 통과는 아직 아니며 v1/v2/예비 결과를 합산하지 않는다.
+**남은 게이트:** 미게시 Designer/CMS·공통 스타일/컴포넌트의 작성자/전체diff는 미확인이다. 과거 실패 원본CDN 도달성을 정확 Git 로컬 비교나 새 recovery URL의200으로 대체하지 않는다. 실 Safari/iOS/iPad·V0/U01·일반 HTTP200 실행 예외/영구무응답/미래mutable 호환성은 별도 미해결·미검증이다. v2의 About820 둥근 모서리421픽셀 차이는 원인 미확정이며 진단/실패 증거를 유지한다. 동일 입력 단독 PNG 진단과 v3 결과를 그 원인 규명으로 승격하지 않는다. 두Drive 백업의 원격 다운로드SHA도 미검증이다.
 
-기능 복구 후보는 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`로 격리했다. 실제 CDN175응답/Git blob 일치, 여섯 설정의 정·역변환, 원인별 inverse/restore3쌍을 확보했다. 보호 제품 `21acccb`와 main/staging·공개 설정·운영은 변경하지 않았다. 원본 mirror는 과거 재현용이며 기능 원복 대상으로 사용하면 안 된다.
+**종료 판정:** 기능 보존형 복구 후보의 지정 격리 검증은 완료했다. 소스·자산·계약에 대한 별도 검토 자료는 준비됐지만 전체 독립 감사와 운영 원복 실행은 완료하지 않았다.
 
-**전체 통과 아님:** v1은 geometry caller target 누락으로 중단됐다. 해당 환경 한 줄만 고친 QA `b6685f0`의 v2도 중단됐다. v2는 기존25 중10단계와 form-label6쌍까지 통과한 뒤 About820의 예약창 PNG exact 비교가 실패했다. 자연 문구·타이포·높이·배치 JSON은 원본/후보 완전히 같고, PNG231,920픽셀 중421픽셀이 둥근 모서리 주변에서 달랐다. 배경 영상은 time0/paused였지만 실제 composited frame 원인은 미확정이다. 제품 실패/환경 실패로 임의 확정하지 않는다. [v2 진단](evidence/functional-rollback-v2-diagnosis.json)을 보존했다.
+실제 공개 적용·운영 원복은 별도 승인과 최신 공개/저장 코드SHA 및 미게시 영향 확인이 필요하다. 원본 mirror는 기능 복구 대상으로 사용하면 안 된다. main/Home recovery tree는 현재 검증 후보와 같아 공유 코드 결함에 대한 독립 대체 구현이 아니다. 세 ref/여섯 설정은 하나의 지원 적용 단위이고 부분 적용은 지원하지 않는다. 이 patch는 미적용 현재 후보의 after에서 recovery로 가는 안이며 현재 저장 원본에 직접 적용하는 patch가 아니다. 여섯 결과SHA/producer/shared 일치 전 Publish를 금지한다.
 
-같은 입력의 About820 단독 진단은 exact PNG와 후속 세 번의 동일 캡처를 통과했다. 이는 최종 통과가 아니다. **제품·QA·입력·PNG·mask·허용 오차를 그대로 둔 새 전체 연속v3를 한 번만 실행 중**이다. 같은 증상이 재발하면 반복을 중단하고 검증 차단을 유지한다. v1/v2/예비 성공은 합산하지 않는다. [실행 이력](evidence/functional-rollback-invocation.json), [22 상세](22-functional-rollback.md), [파일·URL·SHA 대장](evidence/functional-rollback-package.json)이 최신이다.
+최종 후보는 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`다. 최종 실제 CDN175응답/Git blob 일치와 정상참조300URL HTTP200을 확보했다. 두 관측은 중복되므로475고유자산으로 합산하지 않는다. 마지막 요청목록과의 대조 결과는 최종JSON에 기록했다. 신규 raw는 로컬 전용이며 업로드하지 않았다. [로컬 전체SHA 영수증](evidence/functional-rollback-raw-receipt.json)도 인계한다.
 
-현재 개별 증거에는 정상30화면·기능 복구46/영구불가4·엄격50요청영수증·잠금30, staging 원본12 geometry/1px·실제Hero36(30완료/6영구미완료)·개별 역주입3이 있다. 이 결과는 서로 다른 실행의 단위 증거이며 새 전체 연속 통과로 합산하지 않는다. 실제 정상참조300URL은 모두200이며298본문SHA 일치/2GitHub ref는 parsed object 동일이다. 최종175관측과 중복되므로475고유자산으로 세지 않는다.
-
-[여섯 설정 patch](proposals/functional-rollback-20261120/manifest.json)는 미적용 현재 후보의 after 코드에서 복구 cohort로 가는 안이다. 현재 저장 원본에서 직접 적용하는 patch가 아니다. 부분 적용은 지원하지 않으며 여섯 결과SHA/producer/shared 일치 전 Publish를 금지하는 계획이다. 실제 공개 적용·운영 원복은 하지 않았다. main/Home 복구 tree는 현재 검증 후보와 같아 공유 코드 결함에 대한 독립 대체 구현이 아니다.
-
-신규 raw는 로컬 전용이며 외부 업로드하지 않는다. 기존 기준/입력/두Drive백업 보존, Drive 원격SHA 미검증 유지. staging 원본12는 정확 Git 로컬 비교로 과거 CDN 도달성 미검증과 구분한다. Safari/iOS/iPad·V0/U01·일반 실행 예외/무한pending·미게시 Designer/CMS 변경 범위는 별도 게이트다. 전체 검사·공개 범위·별도 검토자 조건이 충족되기 전 최종 독립 감사 완료/운영 적용 가능으로 승격하지 않는다.
+공개10HTML/관련 저장 코드/게시 metadata/main·staging의 마지막 읽기 대조 및 기존입력SHA 보존 결과는 최종JSON에 기록했다. main/staging 병합, 공개 head/pin/설정 수정, Publish·운영 배포 없음.
 
 ## 이전21 판정 — 1. 실제 원복 기능 차단 확인 / 공개 적용·전체 독립 감사 승격 보류
 

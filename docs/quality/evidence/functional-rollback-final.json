@@ -1,0 +1,1596 @@
+{
+  "atUTC": "2026-11-20T04:56:48.097138+00:00",
+  "status": "PASS — specified functional recovery contract in isolated Chromium replay with actual CDN bodies",
+  "integration": {
+    "sourceQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+    "runtimeProductSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+    "recoveryRefs": {
+      "main": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "stagingHome": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+      "services": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09"
+    },
+    "startedAtUTC": "2026-11-20T03:14:21.932Z",
+    "pass": true,
+    "stages": [
+      {
+        "name": "previous25",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "actual-production",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "actual-staging",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "exact-recovery-receipts",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "root-locks-production",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "root-locks-staging",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "original12-geometry-1px",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "actual-Hero-production",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "actual-Hero-staging",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "own-inverses-and-restoration",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "originalCDNStaging12Promoted": false,
+    "permanentFaultsAreNotRecovery": true,
+    "finishedAtUTC": "2026-11-20T04:56:16.237Z",
+    "coverage": "Previous25 unchanged; actual30 viewport comparisons including12 staging Git-original contracts; actual40 once/twice native recoveries and strict2/3 requests; pending/late/permanent classification retained; exact root-lock/nonzero scrollY30; original modal geometry12 and1px own restoration; actual packet Hero36 cases including unsupported permanent dependency failure explicitly incomplete; own menu/modal/loader inverse detection and restoration. No split successes combined."
+  },
+  "previous25Pass": true,
+  "normal30": [
+    {
+      "environment": "production",
+      "page": "home",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "home",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "home",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "discover-helix",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "discover-helix",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "discover-helix",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "services",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "services",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "services",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "faq",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "faq",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "faq",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "internal-medicine",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "internal-medicine",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "production",
+      "page": "internal-medicine",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "home",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "home",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "home",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Preserved captured original HTTP inputs; not a fresh original-path HTTP assertion",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "discover-helix",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "discover-helix",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "discover-helix",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "services",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "services",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "services",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "faq",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "faq",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "faq",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "internal-medicine",
+      "width": 1440,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "internal-medicine",
+      "width": 820,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    },
+    {
+      "environment": "staging",
+      "page": "internal-medicine",
+      "width": 390,
+      "comparison": "PASS published text/typography/layout contract and exact form PNG",
+      "originalClass": "Exact Git local reproduction, not original CDN reach",
+      "menuFormAndIsolation": true
+    }
+  ],
+  "nativeRecovery": {
+    "functional": 46,
+    "permanentClassifiedUnavailable": 4,
+    "once2RequestsCases": 20,
+    "twice3RequestsCases": 20,
+    "pending1RequestsCases": 4,
+    "lateAPI3RequestsCases": 2,
+    "permanent4RequestsCases": 4,
+    "allChosenImmutableRefs": true,
+    "notAll80RowsAreRecoverySuccess": true
+  },
+  "rootLocks30": [
+    {
+      "environment": "production",
+      "page": "home",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "home",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "home",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "discover-helix",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": true
+    },
+    {
+      "environment": "production",
+      "page": "discover-helix",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "discover-helix",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "services",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "services",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "services",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "faq",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "faq",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "faq",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "internal-medicine",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "internal-medicine",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "production",
+      "page": "internal-medicine",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "home",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "home",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "home",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "discover-helix",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": true
+    },
+    {
+      "environment": "staging",
+      "page": "discover-helix",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "discover-helix",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "services",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "services",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "services",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "faq",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "faq",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "faq",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "internal-medicine",
+      "width": 1440,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "internal-medicine",
+      "width": 820,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    },
+    {
+      "environment": "staging",
+      "page": "internal-medicine",
+      "width": 390,
+      "menuStartAndRestoredY": 80,
+      "formStartAndRestoredY": 80,
+      "realWheelLockAndRelease": true,
+      "exactScrollYRestored": true,
+      "overlapBothReleaseOrders": false
+    }
+  ],
+  "stagingOriginal12ExactGitContractPreserved": true,
+  "originalStagingCDN12Promoted": false,
+  "absoluteModalGeometryPairs": 12,
+  "onePixel": {
+    "detected": true,
+    "deltaX": 1,
+    "onlyInjectedPropertyRestored": true,
+    "exactGeometryRestored": true
+  },
+  "actualHero36": [
+    {
+      "environment": "production",
+      "width": 1440,
+      "scenario": "normal",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 613.4000000003725,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 665.2000000011176,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 1440,
+      "scenario": "delay",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 3444.7999999988824,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 3496.0999999996275,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 1440,
+      "scenario": "transient",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 1026,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 1077.300000000745,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 1440,
+      "scenario": "exhausted",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 4596.89999999851,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 4648.299999998882,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 1440,
+      "scenario": "after-head",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 7142.9000000003725,
+          "ghosts": 0
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 7193.9000000003725,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 1440,
+      "scenario": "permanent",
+      "actualHeroReadyAndDoneComplete": false,
+      "events": [],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": true
+    },
+    {
+      "environment": "production",
+      "width": 820,
+      "scenario": "normal",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 491.5,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 543,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 820,
+      "scenario": "delay",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 3447.300000000745,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 3498.60000000149,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 820,
+      "scenario": "transient",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 1001.2000000011176,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 1052.300000000745,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 820,
+      "scenario": "exhausted",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 4622.5,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 4675.4000000003725,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 820,
+      "scenario": "after-head",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 7134.799999998882,
+          "ghosts": 0
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 7185.699999999255,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 820,
+      "scenario": "permanent",
+      "actualHeroReadyAndDoneComplete": false,
+      "events": [],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": true
+    },
+    {
+      "environment": "production",
+      "width": 390,
+      "scenario": "normal",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 489.69999999925494,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 541,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 390,
+      "scenario": "delay",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 3367.5999999996275,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 3441.2999999988824,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 390,
+      "scenario": "transient",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 973.5,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 1024.699999999255,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 390,
+      "scenario": "exhausted",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 4594.199999999255,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 4645.799999998882,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 390,
+      "scenario": "after-head",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 7138.200000001118,
+          "ghosts": 0
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 7189.0999999996275,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "production",
+      "width": 390,
+      "scenario": "permanent",
+      "actualHeroReadyAndDoneComplete": false,
+      "events": [],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": true
+    },
+    {
+      "environment": "staging",
+      "width": 1440,
+      "scenario": "normal",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 674.8999999985099,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 726.0999999996275,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 1440,
+      "scenario": "delay",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 3414.4000000003725,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 3465.5999999996275,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 1440,
+      "scenario": "transient",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 1048.300000000745,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 1099.9000000003725,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 1440,
+      "scenario": "exhausted",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 4719.5999999996275,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 4770.9000000003725,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 1440,
+      "scenario": "after-head",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 7176.799999998882,
+          "ghosts": 0
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 7227.699999999255,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 1440,
+      "scenario": "permanent",
+      "actualHeroReadyAndDoneComplete": false,
+      "events": [],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": true
+    },
+    {
+      "environment": "staging",
+      "width": 820,
+      "scenario": "normal",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 456,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 507,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 820,
+      "scenario": "delay",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 3386.7999999988824,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 3437.89999999851,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 820,
+      "scenario": "transient",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 1023.5999999996275,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 1075.199999999255,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 820,
+      "scenario": "exhausted",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 4637,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 4688.300000000745,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 820,
+      "scenario": "after-head",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 7310.199999999255,
+          "ghosts": 0
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 7361.199999999255,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 820,
+      "scenario": "permanent",
+      "actualHeroReadyAndDoneComplete": false,
+      "events": [],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": true
+    },
+    {
+      "environment": "staging",
+      "width": 390,
+      "scenario": "normal",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 509.2000000011176,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 560.3000000007451,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 390,
+      "scenario": "delay",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 3394.0999999996275,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 3445.300000000745,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 390,
+      "scenario": "transient",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 1002.0999999996275,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 1053.7000000011176,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 390,
+      "scenario": "exhausted",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 4608.4000000003725,
+          "ghosts": 2
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 4659.699999999255,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 390,
+      "scenario": "after-head",
+      "actualHeroReadyAndDoneComplete": true,
+      "events": [
+        {
+          "name": "helix-s1-ready",
+          "t": 7155.5999999996275,
+          "ghosts": 0
+        },
+        {
+          "name": "helix-s1-done",
+          "t": 7206.4000000003725,
+          "ghosts": 0
+        }
+      ],
+      "GSAPRequestCount": 2,
+      "permanentDependencyFailureIsNotRecovery": false
+    },
+    {
+      "environment": "staging",
+      "width": 390,
+      "scenario": "permanent",
+      "actualHeroReadyAndDoneComplete": false,
+      "events": [],
+      "GSAPRequestCount": 1,
+      "permanentDependencyFailureIsNotRecovery": true
+    }
+  ],
+  "actualHeroComplete30PermanentIncomplete6": true,
+  "inverseCauses": [
+    "menu",
+    "modal",
+    "loader"
+  ],
+  "allActualNormalURLsCoveredByFreshHTTP": true,
+  "freshObservedNormalURLsActuallyUsed": 300,
+  "freshReach300": {
+    "capturedAtUTC": "2026-11-20T01:14:42.428182+00:00",
+    "freshOneGETObservations": 300,
+    "allHTTP200": true,
+    "sameRawBodySHA256": 298,
+    "differentRepresentationSameFullJSON": [
+      {
+        "url": "https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/main",
+        "actualSHA256": "cfa74967d2225b67e23c03bfacc4c356342a12cafe37a2222c238f9307c5344c",
+        "frozenSHA256": [
+          "d062087a53ce835ee42c03fe7e75e4f64f773d9c904afc128f3a3f0521b7f70c"
+        ],
+        "classification": "JSON formatting only — full parsed objects identical, no input replacement",
+        "fullParsedObjectEqual": true,
+        "consumedCommitSHA": "3c4f78d4e75a06524b16a32e05e3185c48fbe800"
+      },
+      {
+        "url": "https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/staging",
+        "actualSHA256": "52a20b6aab60c6ad44f4ac76b07fbe30bae5c3633b87b4e1ebc0d81c16c18151",
+        "frozenSHA256": [
+          "e960ce9b03abe192a732a4b3569eab30eda147c5f07668016a95314113a519fd"
+        ],
+        "classification": "JSON formatting only — full parsed objects identical, no input replacement",
+        "fullParsedObjectEqual": true,
+        "consumedCommitSHA": "a074f455a4adc3dd8515255f6d779dea0afeeb10"
+      }
+    ],
+    "frozenInputBodiesReplaced": false,
+    "knownFailedOriginalURLsReRequested": false,
+    "responseResultSHA256": "8a741e0c70a010ff5a75a5b642035a6807f2d8feda2e7e29c96a2a6406f24aa9",
+    "externalFontsStylesScriptsVideosSVGAndObservedIndirectAssetsIncluded": true,
+    "notAllPossibleFutureOrDeviceAssets": true,
+    "actualFinalRunClosureCoveragePending": true,
+    "remoteRawPreserved": false
+  },
+  "protectedRuntimeSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "runtimeProductDiffInWorkBranch": 0,
+  "rawRemotePreserved": false,
+  "publicWritesPublishMergeDeploy": false,
+  "publicRollbackExecuted": false,
+  "sourceAndDesignIndependentExternalAuditComplete": false,
+  "evidence": [
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/results.json",
+      "sha256": "7a908305dcfda2fef105580a42a950f69b36922c5e6f3a336a201aeee077b23b",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/previous25/results.json",
+      "sha256": "b8a1c0b13d51ac1eaad14b0a1cc77fb40f9ff03062925f9469a064152080afdb",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-production/results.json",
+      "sha256": "00614e4da859a522388ca70a3f2c9ade428abe7f3a1ddc610ab813964524a06f",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-staging/results.json",
+      "sha256": "9ad5c71679b423b084f65d308c03742c7836d63460b524d3d400d505947a2217",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/exact-recovery-receipts.json",
+      "sha256": "f9fcaf7248528e39d5e5ccd1860930255457a07ed445c712a6da236cd5a0143e",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/root-locks-production/results.json",
+      "sha256": "a3a7ca2d639a4305e8e2e08fd156596aa76f3af7c50b210aec4f72921a086787",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/root-locks-staging/results.json",
+      "sha256": "5f87846c581202d52cd77622c447d0e3b0bc21ac0834e4c2ecace1acd2c71453",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/original12-geometry-1px/results.json",
+      "sha256": "2fe3b5d575d74d3381ddc5e2da664eca4b0aa86c6d480a4511378e493162c5a1",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-Hero-production/results.json",
+      "sha256": "0c1ede376f389d3aea3c24968327be8159d84b8d1ea0d85a5c443f1d07485893",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-Hero-staging/results.json",
+      "sha256": "7a7fc1e0332e386ea40a552978c4124c1f4b4686b3c9a9e07cb105a6d40bb4cc",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/own-inverses-and-restoration/results.json",
+      "sha256": "e712ee32fac63663a9405f228b1dceebbdc6b8dd30913590f7337e269d5d7897",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/observed-runtime-reach/results.json",
+      "sha256": "8a741e0c70a010ff5a75a5b642035a6807f2d8feda2e7e29c96a2a6406f24aa9",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/observed-runtime-reach-assessment.json",
+      "sha256": "cd1e98ec1cb8f7de49de339e1fbef4f780505025e0eda42500bd7c4494ba7758",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/functional-input-index-v1.json",
+      "sha256": "9438661936bbd9432d0ceb20a18fc95e736e7276be1b0f395ee84426f2221559",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/functional-profile-v1.json",
+      "sha256": "2a73817a2fb25e64094eeb38601d9a5524ec35d1b3b05e3ef824512889e2c078",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/frozen-state-v3.json",
+      "sha256": "2c981fbf880af8e525a19f0cf21527b672ca1cfd0ab162e31b32745f59e640ff",
+      "rawLocalOnly": true
+    }
+  ],
+  "sourceInverseAndExactRestoreCommits": [
+    {
+      "kind": "menu",
+      "inverseReference": "02642863ae83a10b09efa94a14267f658861f99e",
+      "restoredReference": "143ebe6dcde025624d3cd58e489266fe664845c6",
+      "inverseTree": "e40877a335c5a5a2f3e3bd5b84e9e8fee1c39d09",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "home/global/hamburger.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "1c38114bec174ca85e5222917e8716b027645ec9"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "3684f0d20dd51cfed23d70866cd524036e8f77dd"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    },
+    {
+      "kind": "modal",
+      "inverseReference": "26cc50f9b649e1b0776357f5a86322b65f375bc7",
+      "restoredReference": "f39d1219c3ea4373555fd01c136288497a7da2b7",
+      "inverseTree": "42a7bfb395d3ebef13b1b5806209234043aaa50b",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "global/floating-cta.css",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "fe9c224cb901ee6f8da4537ec95e9bbfb71dade5"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    },
+    {
+      "kind": "loader",
+      "inverseReference": "39e075a6b6993ebfed42f361643033b8e5593957",
+      "restoredReference": "9f938b26afdd6474cb458857445bc44566d22077",
+      "inverseTree": "b19aca02c39c3cadbca62b89eef9d2eab395d2af",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "about/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54"
+        },
+        {
+          "path": "faq/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d"
+        },
+        {
+          "path": "global/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d"
+        },
+        {
+          "path": "home/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "de43d8948289b66246ed9a14f7ad6b118db3edb5"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "a0c037ad9347e13c16f45fa266d1ea159811aa2b"
+        },
+        {
+          "path": "internal-medicine/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "7ee6b988019f807ec865f42375a8ad567a8277ea"
+        },
+        {
+          "path": "services/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "8141fa675f77564360749837863936103a464a5a"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    }
+  ],
+  "finalAssessmentAtUTC": "2026-11-20T04:56:58.398521+00:00",
+  "finalReadOnlyPreservation": {
+    "atUTC": "2026-11-20T04:56:58.356932+00:00",
+    "public10HTMLFullSHAAndPinsUnchanged": true,
+    "sixFreeformReadResultsIncludingUntargetedSiteHeadUnchanged": true,
+    "siteMetadataUnchanged": true,
+    "siteLastUpdatedAtUTC": "2026-11-19T07:07:52.465Z",
+    "publishedMetadata": {
+      "subdomain": "2026-11-17T01:43:30.228Z",
+      "customDomains": [
+        {
+          "id": "69fe99b7424ba9e393f4f856",
+          "url": "www.helix-amc.com",
+          "lastPublished": "2026-11-17T02:14:47.398Z",
+          "fullSiteCompiledAt": "2026-11-17T02:14:47.398Z"
+        },
+        {
+          "id": "69fe99b6424ba9e393f4f850",
+          "url": "helix-amc.com",
+          "lastPublished": "2026-11-17T02:14:47.398Z",
+          "fullSiteCompiledAt": "2026-11-17T02:14:47.398Z"
+        }
+      ]
+    },
+    "siteUnpublishedActorDesignerCMSDiffCleared": false,
+    "protectedRefs": {
+      "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+      "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+      "work": "24cbbb59fd7119bda53db8315f864490244bf8e4"
+    },
+    "mainStagingRefsUnchanged": true,
+    "frozenQACloneCleanAndSame": true,
+    "workRuntimeDiffAgainst21acccb": 0,
+    "old25AndBaselineAndAdoptionAndOriginalMirrorPatchesUnchanged": true,
+    "oldA20OldB60NewC20ManifestHashesUnchanged": true,
+    "sixOriginalStoredBlockSHAValuesMatchProposalBase": true,
+    "otherWorkerChangesRevertedOrOverwritten": false,
+    "publicWritesPublishMergeDeploy": false
+  },
+  "wholePassUsesOnlyContinuousV3": true,
+  "originalMirrorsAreReproductionOnly": true,
+  "publicApplicationBlockedUntilUnpublishedScopeAndSeparateApproval": true,
+  "v2IntermittentCornerPNGRootCauseEstablished": false,
+  "backupRemoteSHAStillUnverified": true,
+  "newRawLocalOnly": true,
+  "actualOriginalCDNReachNotInferredFromGitOrNewMirror": true,
+  "allAssetLedger": "functional-rollback-assets.json",
+  "assetConsumerGroupsCount": 33,
+  "assetLedgerSHA256": "8f356217efda6ec17bf69e46bf93418124c7c1ff8a73efda7e2e7729be4c7660",
+  "decision": {
+    "functionalRecoveryPackage": "1. Implemented and specified frozen isolated Chromium contract verified",
+    "actualOperationalRollback": "3. Public application and operational execution held: unpublished Designer/CMS scope and separate approval; original failed CDN and real-device paths are not promoted",
+    "independentAuditEntry": "Source and specified contract evidence ready for separate review; external independent audit not performed",
+    "noUniversalFailureGuarantee": true
+  },
+  "limitations": [
+    "Original mirror is not a functional rollback target",
+    "Main/Home recovery code equals the known-good current candidate; it does not cure shared implementation defects",
+    "About820 v2 corner PNG mismatch root cause remains unestablished despite unchanged-source v3 full pass",
+    "Exact Git staging12 comparison is not original CDN reach",
+    "Permanent native and GSAP failure are not functional recovery",
+    "Physical Safari/iOS/iPad, V0/U01, general HTTP200 execution exceptions/non-menu future mutable compatibility remain held",
+    "New raw remains local only; existing Drive remote-download SHA remains unverified"
+  ],
+  "localRawInventory": {
+    "path": "/workspace/artifacts/helix-functional-rollback-20261120/raw-inventory-final.json",
+    "sha256": "eae0b5b4e10f91458362501a0b86308eebf93ecdb3615e29a3ae9116908e4e51",
+    "frozen20ManifestHashesUnchanged": true,
+    "frozenInputBodyFilesHashVerified": 8322,
+    "regularFiles": 11916,
+    "symlinks": 0,
+    "logicalBytes": 1924194157,
+    "uniqueInodesHashed": 11802,
+    "uniqueRegularBytesHashed": 1915448780,
+    "remotePreserved": false,
+    "seconds": 6.6
+  },
+  "localRawReceiptSHA256": "262eddae57e673e827dd6c4d5575b944ef50e5dcd80c8fbf290b69be0d1c06d3"
+}

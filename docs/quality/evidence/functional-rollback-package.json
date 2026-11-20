@@ -1,5 +1,5 @@
 {
-  "status": "V3 bounded identical-source continuous verification running; V1/V2 incomplete, no final qualification",
+  "status": "PASS specified recovery contract; actual public rollback not executed or approved",
   "atUTC": "2026-11-20T01:00:42.558934+00:00",
   "protectedWorkRuntime": "21acccb421aee305aed8941ee5a5da87407f94fa",
   "frozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
@@ -20,9 +20,15 @@
           "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/about/bootstrap.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/discover-helix",
+            "staging/discover-helix"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/discover-helix",
+            "staging/discover-helix"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "faq/bootstrap.js",
@@ -32,9 +38,15 @@
           "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/faq/bootstrap.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/faq",
+            "staging/faq"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/faq",
+            "staging/faq"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "global/bootstrap.js",
@@ -44,9 +56,25 @@
           "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "global/floating-cta.css",
@@ -56,9 +84,25 @@
           "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/floating-cta.css",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "global/global.css",
@@ -68,9 +112,25 @@
           "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/global.css",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/bootstrap.js",
@@ -80,9 +140,13 @@
           "sha256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/bootstrap.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/buttons.js",
@@ -92,9 +156,13 @@
           "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/buttons.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/coming-soon.js",
@@ -104,9 +172,25 @@
           "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/coming-soon.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/hamburger.css",
@@ -116,9 +200,25 @@
           "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.css",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/hamburger.js",
@@ -128,9 +228,25 @@
           "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/discover-helix",
+            "production/faq",
+            "production/home",
+            "production/internal-medicine",
+            "staging/discover-helix",
+            "staging/faq",
+            "staging/internal-medicine"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/sections-animations.js",
@@ -140,9 +256,13 @@
           "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/sections-animations.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/section1/section1.js",
@@ -152,9 +272,13 @@
           "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/section1/section1.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "internal-medicine/bootstrap.js",
@@ -164,9 +288,15 @@
           "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/internal-medicine/bootstrap.js",
           "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
+            "production/internal-medicine",
+            "staging/internal-medicine"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/internal-medicine",
+            "staging/internal-medicine"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "services/bootstrap.js",
@@ -175,10 +305,10 @@
           "reason": "coherent-menu-owner-protocol",
           "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/services/bootstrap.js",
-          "consumers": [
-            "/,/discover-helix,/faq,/internal-medicine — per-file subset in final network receipts"
-          ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "consumers": [],
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [],
+          "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim"
         }
       ],
       "actualHTTPGitMatches": [
@@ -791,10 +921,10 @@
           "reason": "coherent-menu-owner-protocol",
           "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/about/bootstrap.js",
-          "consumers": [
-            "/"
-          ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "consumers": [],
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [],
+          "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim"
         },
         {
           "path": "faq/bootstrap.js",
@@ -803,10 +933,10 @@
           "reason": "coherent-menu-owner-protocol",
           "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/faq/bootstrap.js",
-          "consumers": [
-            "/"
-          ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "consumers": [],
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [],
+          "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim"
         },
         {
           "path": "global/bootstrap.js",
@@ -816,9 +946,13 @@
           "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/global/bootstrap.js",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "global/floating-cta.css",
@@ -828,9 +962,13 @@
           "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/global/floating-cta.css",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/bootstrap.js",
@@ -840,9 +978,13 @@
           "sha256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/bootstrap.js",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/buttons.js",
@@ -852,9 +994,13 @@
           "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/buttons.js",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/coming-soon.js",
@@ -864,9 +1010,13 @@
           "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/coming-soon.js",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/hamburger.css",
@@ -876,9 +1026,13 @@
           "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/hamburger.css",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/hamburger.js",
@@ -888,9 +1042,13 @@
           "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/hamburger.js",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/sections-animations.js",
@@ -900,9 +1058,13 @@
           "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/sections-animations.js",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/section1/section1.js",
@@ -912,9 +1074,13 @@
           "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/section1/section1.js",
           "consumers": [
-            "/"
+            "staging/home"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "staging/home"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "internal-medicine/bootstrap.js",
@@ -923,10 +1089,10 @@
           "reason": "coherent-menu-owner-protocol",
           "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/internal-medicine/bootstrap.js",
-          "consumers": [
-            "/"
-          ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "consumers": [],
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [],
+          "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim"
         },
         {
           "path": "services/bootstrap.js",
@@ -935,10 +1101,10 @@
           "reason": "coherent-menu-owner-protocol",
           "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/services/bootstrap.js",
-          "consumers": [
-            "/"
-          ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "consumers": [],
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [],
+          "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim"
         }
       ],
       "actualHTTPGitMatches": [
@@ -1552,9 +1718,15 @@
           "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/bootstrap.js",
           "consumers": [
-            "/services"
+            "production/services",
+            "staging/services"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/services",
+            "staging/services"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "global/floating-cta.css",
@@ -1564,9 +1736,15 @@
           "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/floating-cta.css",
           "consumers": [
-            "/services"
+            "production/services",
+            "staging/services"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/services",
+            "staging/services"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "global/global.css",
@@ -1576,9 +1754,15 @@
           "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/global.css",
           "consumers": [
-            "/services"
+            "production/services",
+            "staging/services"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/services",
+            "staging/services"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/hamburger.css",
@@ -1588,9 +1772,15 @@
           "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/home/global/hamburger.css",
           "consumers": [
-            "/services"
+            "production/services",
+            "staging/services"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/services",
+            "staging/services"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "home/global/hamburger.js",
@@ -1600,9 +1790,15 @@
           "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/home/global/hamburger.js",
           "consumers": [
-            "/services"
+            "production/services",
+            "staging/services"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/services",
+            "staging/services"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         },
         {
           "path": "services/bootstrap.js",
@@ -1612,9 +1808,15 @@
           "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
           "actualURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/services/bootstrap.js",
           "consumers": [
-            "/services"
+            "production/services",
+            "staging/services"
           ],
-          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone."
+          "rollback": "Source inverse is diagnostic only. Operational recovery selects all six configuration blocks and the complete producer/shared cohort; never swap this file alone.",
+          "actualNormalConsumers": [
+            "production/services",
+            "staging/services"
+          ],
+          "consumerQualification": "Actually requested in final normal runtime"
         }
       ],
       "actualHTTPGitMatches": [
@@ -1870,7 +2072,6 @@
   "rawRemotePreserved": false,
   "publicWritesPublishMergeDeploy": false,
   "fullIndependentAuditComplete": false,
-  "operationalRollbackQualified": false,
   "freshNormalRuntimeReachAssessment": {
     "capturedAtUTC": "2026-11-20T01:14:42.428182+00:00",
     "freshOneGETObservations": 300,
@@ -1903,8 +2104,10 @@
     "responseResultSHA256": "8a741e0c70a010ff5a75a5b642035a6807f2d8feda2e7e29c96a2a6406f24aa9",
     "externalFontsStylesScriptsVideosSVGAndObservedIndirectAssetsIncluded": true,
     "notAllPossibleFutureOrDeviceAssets": true,
-    "actualFinalRunClosureCoveragePending": true,
-    "remoteRawPreserved": false
+    "actualFinalRunClosureCoveragePending": false,
+    "remoteRawPreserved": false,
+    "actualFinalNormalURLsCovered": 300,
+    "wholeV3ClosurePass": true
   },
   "sourceInverseAndExactRestoreCommits": [
     {
@@ -2008,5 +2211,16 @@
   "invocationFailureEvidence": "functional-rollback-invocation.json",
   "causeEvidence": "functional-rollback-causes.json",
   "v2FailureEvidence": "functional-rollback-v2-diagnosis.json",
-  "continuousOutput": "continuous-v3"
+  "continuousOutput": "continuous-v3",
+  "privateFunctionalCohortQualification": true,
+  "actualCDNRecoveryCandidateContractPass": true,
+  "publicRollbackExecuted": false,
+  "publicApplicationApproved": false,
+  "sitePublishScopeCleared": false,
+  "qualificationScope": "Isolated frozen Chromium contract using actual HTTP200/Git-matched recovery bodies; not a published-site execution or all-client/all-failure guarantee",
+  "continuousResult": "functional-rollback-final.json",
+  "originalStagingCDN12Promoted": false,
+  "freshNormalAssetHTTP300": true,
+  "qualifiedAtUTC": "2026-11-20T04:56:16.237Z",
+  "allAssetLedger": "functional-rollback-assets.json"
 }

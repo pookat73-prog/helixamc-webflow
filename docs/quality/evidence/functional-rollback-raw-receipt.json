@@ -1,0 +1,13 @@
+{
+  "path": "/workspace/artifacts/helix-functional-rollback-20261120/raw-inventory-final.json",
+  "sha256": "eae0b5b4e10f91458362501a0b86308eebf93ecdb3615e29a3ae9116908e4e51",
+  "frozen20ManifestHashesUnchanged": true,
+  "frozenInputBodyFilesHashVerified": 8322,
+  "regularFiles": 11916,
+  "symlinks": 0,
+  "logicalBytes": 1924194157,
+  "uniqueInodesHashed": 11802,
+  "uniqueRegularBytesHashed": 1915448780,
+  "remotePreserved": false,
+  "seconds": 6.6
+}

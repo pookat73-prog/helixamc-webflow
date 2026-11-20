@@ -1,5 +1,5 @@
 {
-  "status": "PREPARED — CONTINUOUS VERIFICATION RUNNING; NO PUBLIC APPLICATION",
+  "status": "QUALIFIED FOR SPECIFIED ISOLATED CHROMIUM RECOVERY CONTRACT — NO PUBLIC APPLICATION",
   "from": "Existing un-applied current candidate669/62 full six blocks",
   "to": {
     "main": "61c465152f26c5820ef30e7c8b166ba37829008a",
@@ -9,7 +9,7 @@
   "currentStoredCodeChanged": false,
   "partialApplicationSupported": false,
   "allSixBlocksRequiredBeforePublish": true,
-  "functionalQualificationPending": true,
+  "functionalQualificationPending": false,
   "fullCodeLocalOnly": "/workspace/artifacts/helix-functional-rollback-20261120/functional-config-full-blocks",
   "sixBlocks": [
     {
@@ -113,5 +113,11 @@
     "Before Publish: if any block fails, apply that operation own inverse to return every saved block to the exact pre-operation state; re-read all six SHA values; keep Publish held",
     "After any future authorized Publish: use the qualified complete functional recovery cohort; never the unqualified original mirror",
     "A future forward return to a candidate also requires all six matched blocks and its own qualification"
-  ]
+  ],
+  "privateFunctionalCohortQualification": true,
+  "publicApplicationApproved": false,
+  "publicRollbackExecuted": false,
+  "independentExternalAuditComplete": false,
+  "originalMirrorIsNotFunctionalRecovery": true,
+  "qualificationEvidence": "../../evidence/functional-rollback-final.json"
 }

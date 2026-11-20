@@ -1,14 +1,20 @@
 # HELIX — 기능 보존형 원복 후보
 
-2026-11-20 KST. 시작 `857356c`, 보호 제품 `21acccb`. 현재 상태는 **후보 구현·개별 재현 완료 / v1·v2 실패 보존 후 동일 소스 전체 연속v3 진행 중**이다. 운영 원복 가능·공개 적용·감사 완료로 승격하지 않는다.
+2026-11-20 KST. 시작 `857356c`, 보호 제품 `21acccb`. **기능 보존형 복구 후보의 지정 계약을 새 동결 소스의 단일 연속v3에서 통과했다.** QA `b6685f0` / 보호 제품 `21acccb`이며 clean clone에서 기존25부터 추가9개 단위까지 끝까지 실행했다. v1·v2·예비 성공은 합산하지 않았다. 실제 운영 원복·공개 반영·외부 독립 감사 완료와는 다르다.
 
-## 최신 검사 상태
+## 최종 검사 판정
 
-동일 부모PID37923의 v3에서 기존25단계가 모두 완료됐다. [새25단계 체크포인트](evidence/functional-rollback-v3-checkpoint.json)는 실제 v3 결과SHA를 기록한다. 추가9개 단위는 같은 연속 실행에서 진행 중이며 전체 통과는 아직 아니다.
+- 기존25단계 모두 통과. 보호 작업 제품의 변경0이며 기존 D02/D05·Hero·다른 작업자 코드를 보존했다.
+- 실제 자산 본문을 이용한 정식39/staging41조건: 정상30화면 계약, 기능 복구46조건, 영구불가 분류4조건.80조건 전체를 복구 성공으로 세지 않는다.
+- JS/CSS native1회 실패20조건은2요청,2회 실패20조건은3요청. pending4조건1요청, 늦은API2조건3요청, 영구실패4조건4요청. 선택 immutable ref와 상한 유지.
+- 두환경30화면의 메뉴/예약창 각각 실제 wheel 잠금, nonzero scrollY 정확 복원, Escape/초점, 닫은 뒤 wheel 해제 통과. About1440 두 owner의 해제 순서 두 가지도 통과.
+- staging 비Home 원본12는 정확 Git 로컬 재현의 게시 문구·타이포·배치·예약창 PNG 및 하위 geometry 계약 통과. 과거 원본 CDN 도달성과 전체 페이지 픽셀 동일성을 주장하지 않는다.1px 오류 검출과 자기 속성 복구 통과.
+- 실제 두 Home36조건 중30은 ready/done·ghost·fade·1.5초hold/loop 완료. GSAP 영구실패6조건은 미완료로 유지했다. 기존25의26쌍과 합산한 새 사례 수를 만들지 않는다.
+- 메뉴/폼/로더 세 원인의 자기 inverse 실패 검출과 해당 변경만 복원한 기능 회복 통과. 별도 inverse/restore 커밋3쌍 보존.
 
-v1은 geometry caller의 target 누락, v2는 About820 예약창 exact PNG에서 중단됐다. [호출 교정 이력](evidence/functional-rollback-invocation.json)과 [v2 진단](evidence/functional-rollback-v2-diagnosis.json)을 보존했다. v2는 문구·폰트·높이·배치 JSON이 완전히 같았고, 둥근 모서리 주변421픽셀만 달랐다. 원인은 확정하지 않았다. 동일 입력 단독 진단에서는 exact PNG와 추가 캡처 세 번이 일치했다. 기준·mask·허용 오차·제품/검사를 수정하지 않았다.
+최종 실행은 `continuous-v3`, QA `b6685f0`, clone `/workspace/helix-functional-verification-v2-20261120`다. 이름v2는 clone명이며 판정은 새 v3 출력만 사용한다. [최종 결과와 원시 SHA](evidence/functional-rollback-final.json).
 
-QA `b6685f0`의 clean clone에서 동일 입력으로 전체 연속v3를 한 번만 재실행 중이다. 같은 PNG 증상이 다시 발생하면 반복을 중단하고 검증 차단을 기록한다. v1 기존25/실제80/잠금30과 tail 예비 검사는 전체 통과에 합산하지 않는다. 새 동결 소스의 처음부터 끝까지 한 번의 연속 통과만 최종 판정 근거다.
+v1은 geometry caller의target 누락으로 중단됐고 QA 한 줄만 교정했다. v2는 About820 예약창PNG exact에서 중단됐으며 문구·타이포·높이·배치 계약JSON은 완전히 같고 둥근 모서리421픽셀만 달랐다. 동일 입력 단독 진단은 exact였지만 원인은 미확정이다. 제품/CSS/브라우저 설정·기준·mask·허용 오차·expected failure를 바꾸지 않았다. 두 실패와 예비 성공은 보존하며 합산하지 않는다.
 
 ## 원인과 선택
 
@@ -32,21 +38,21 @@ main과 staging Home의 최종 runtime tree는 각각 기존 `669fa762…`와 `6
 
 선별 작업을 메뉴 잠금·예약창 잠금·메뉴 소유권 프로토콜·D02/D05 보존·Hero/반응형 보존 커밋으로 나눴다. 보호 작업 브랜치의 제품은 바꾸지 않았다. staging Home에 정식 파일을 그대로 복사한 초기 `216fd92` 구성은 loader 순서/CSS 범위 대조에서 제외했고, 기존 검증된 staging 두 파일을 보존한 최종 ref만 사용한다. 초기 구성의 CDN 성공을 최종 기능 검증으로 합산하지 않는다.
 
-## 현재 확보한 단위 증거 — 전체 통과 아님
+## 판정 경계와 다음 작업
 
-- 실제 세 ref의 최종 HTTP200/Git blob 일치 응답175건.
-- v1에서 기존25, 실제 정식39/staging41조건, 엄격 요청/ref50영수증, 두환경30잠금 단위 완료. geometry 호출 실패로 전체 실패.
-- v2에서 기존25 중10단계와 form-label6쌍 완료. About820 exact PNG 실패로 전체 실패.
-- 독립 예비 실행의 원본12 geometry/1px, 실제 두환경Hero36(30완료/6영구미완료), 개별 inverse 실패 검출/복구3원인 완료.
-- About820 단독 PNG 재현 진단은 통과했지만 간헐적 차이 원인을 입증하지 못했다.
+**남은 게이트:** 미게시 Designer/CMS·공통 스타일/컴포넌트의 작성자/전체diff는 미확인이다. 과거 실패 원본CDN 도달성을 정확 Git 로컬 비교나 새 recovery URL의200으로 대체하지 않는다. 실 Safari/iOS/iPad·V0/U01·일반 HTTP200 실행 예외/영구무응답/미래mutable 호환성은 별도 미해결·미검증이다. v2의 About820 둥근 모서리421픽셀 차이는 원인 미확정이며 진단/실패 증거를 유지한다. 동일 입력 단독 PNG 진단과 v3 결과를 그 원인 규명으로 승격하지 않는다. 두Drive 백업의 원격 다운로드SHA도 미검증이다.
 
-위 단위 결과를 합산하지 않는다. `functional-rollback-integration.cjs`의 전체 연속v3 결과를 기다린다. 기존25 → 실제 정식/staging → 엄격2/3요청 → 두환경30잠금 → 원본12 geometry/1px → 실제Hero36 → 개별 inverse/복구 순서이며 실패하면 즉시 중단한다.
+**종료 판정:** 기능 보존형 복구 후보의 지정 격리 검증은 완료했다. 소스·자산·계약에 대한 별도 검토 자료는 준비됐지만 전체 독립 감사와 운영 원복 실행은 완료하지 않았다.
+
+실제 공개 적용·운영 원복은 별도 승인과 최신 공개/저장 코드SHA 및 미게시 영향 확인이 필요하다. 원본 mirror는 기능 복구 대상으로 사용하면 안 된다. main/Home recovery tree는 현재 검증 후보와 같아 공유 코드 결함에 대한 독립 대체 구현이 아니다. 세 ref/여섯 설정은 하나의 지원 적용 단위이고 부분 적용은 지원하지 않는다. 이 patch는 미적용 현재 후보의 after에서 recovery로 가는 안이며 현재 저장 원본에 직접 적용하는 patch가 아니다. 여섯 결과SHA/producer/shared 일치 전 Publish를 금지한다.
+
+새 미세 리팩터링을 시작하지 않는다. 지정 계약 통과와 실제 운영 원복 가능성은 구분한다. 별도 검토자는 소스/자산 소유권·검사 누락·실패 분류와 위 게이트를 검토해야 하며 구현자의 자동검사만으로 외부 독립 감사를 완료하지 않는다.
 
 ## 적용 및 보존 경계
 
 세 ref는 하나의 지원 cohort이며 부분 적용은 지원하지 않는다. [여섯 설정 블록의 정확한 변경/역변경 자료](proposals/functional-rollback-20261120/manifest.json)를 준비했고 모두 정·역변환 SHA가 일치했다. 출발점은 미적용 현재 후보의 after 코드이며 지금 저장된 원본 코드가 아니다. 이번에는 적용하지 않는다. 원본 mirror의 기계적 역패치와 기능 보존형 복구 후보를 혼동하지 않는다. Webflow 저장은 원자적 트랜잭션이 아니므로 향후 승인된 작업에서도 여섯 결과 SHA와 생산자/shared 조합을 확인하기 전 Publish를 보류해야 한다.
 
-정상 runtime에서 관측된 자산 URL300건을 새로 읽어 모두 HTTP200을 확인했다.298건은 동결 body SHA와 같고 두GitHub ref 응답만 compact/pretty JSON 표현이 달랐다. 파싱한 객체 전체가 같고 main/staging SHA도 그대로임을 확인했다. 동결 입력을 최신 응답으로 교체하지 않았다. 이 관측에는 코드·CSS·폰트·영상·SVG 등 간접 자산이 포함되며 실제 최종 연속 실행의 요청 목록과 대조는 완료 후 판정한다.175 snapshot 응답과300 URL은 겹치므로475개 고유 자산으로 합산하지 않는다.
+정상 runtime에서 관측된 자산 URL300건을 새로 읽어 모두 HTTP200을 확인했다.298건은 동결 body SHA와 같고 두GitHub ref 응답만 compact/pretty JSON 표현이 달랐다. 파싱한 객체 전체가 같고 main/staging SHA도 그대로임을 확인했다. 동결 입력을 최신 응답으로 교체하지 않았다. 이 관측에는 코드·CSS·폰트·영상·SVG 등 간접 자산이 포함되며 실제 최종 연속 실행의 요청 목록과 대조 여부는 최종 판정JSON을 따른다.175 snapshot 응답과300 URL은 겹치므로475개 고유 자산으로 합산하지 않는다.
 
 별도 진단 브랜치의 원인별 inverse/정확한 tree 복구 커밋도 보존했다. 이 inverse들은 적용 대상이 아니다.
 
@@ -58,6 +64,6 @@ main과 staging Home의 최종 runtime tree는 각각 기존 `669fa762…`와 `6
 
 복원 커밋의 tree는 모두 `9cefb4d47bf9517f01cba11569a2f7c328f89dab`와 같다. 메뉴/폼 inverse는 다른 검증된 hunk를 보존하고, loader inverse는 해당7파일의 프로토콜을 되돌리되 D02/D05와 Hero를 보존한다. 실제 runtime의 About 진단은 그 페이지가 요청하는 producer/shared의 실패 인계를 검사한다.
 
-새 raw는 `/workspace/artifacts/helix-functional-rollback-20261120` 로컬 전용이다. 본문·PNG·로그를 외부 업로드하지 않는다. 기존 두Drive 아카이브도 중복 업로드하지 않고 원격 다운로드 SHA 미검증을 유지한다. 새 제품·검사 결과가 이전 성공으로 대체되지 않도록 입력·소스 SHA를 고정했다. 기존 PNG/mask/100px/threshold0.2/expected failure는 바꾸지 않았다.
+새 raw는 `/workspace/artifacts/helix-functional-rollback-20261120` 로컬 전용이다. [전체 파일·입력 본문 SHA 검증 영수증](evidence/functional-rollback-raw-receipt.json)을 인계한다. 본문·PNG·로그를 외부 업로드하지 않는다. 기존 두Drive 아카이브도 중복 업로드하지 않고 원격 다운로드 SHA 미검증을 유지한다. 새 제품·검사 결과가 이전 성공으로 대체되지 않도록 입력·소스 SHA를 고정했다. 기존 PNG/mask/100px/threshold0.2/expected failure는 바꾸지 않았다.
 
 main/staging·작업 제품 소스·공개 head/pin/설정·Publish·운영 배포는 변경하지 않는다. V0/U01, 실 Safari/iOS/iPad, 임의 HTTP200 실행 예외·영구 무응답 등 기존 미해결 경계도 이번 지원 계약으로 승격하지 않는다. 최종 공개 적용은 미게시 Designer/CMS 변경 범위 확인과 별도 승인이 필요하다.
