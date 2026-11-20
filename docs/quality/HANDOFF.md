@@ -2,7 +2,39 @@
 
 갱신일: 2026-11-20 (Asia/Seoul)
 
-## 최신 재확인 — 2026-11-20 15:04:02 KST / Browser 연결 호출 전 중단
+## 최신 MCP 확인 — 2026-11-20 15:07:12 KST / Designer 읽기 연결 성공
+
+### 작업 개요
+사용자가 Webflow MCP를 켰다고 알려 기존 읽기 전용 확인을 재개했다. 보호 제품 `21acccb`, QA `b6685f0`와 기존 증거를 보존했다. 아래 Browser 도구 부재 기록은 당시 사실이며, 이번 MCP 연결 성공과 구분한다.
+
+### 기술적 결정 사항
+Webflow MCP의 Designer 도구로 현재 페이지와 모드만 읽었다. Browser 연결·기기 조회 도구를 통한 기존 PC Chrome 검증과는 별개다. MCP 성공 응답은 기존 Chrome 기기/계정 식별, 활동 기록 권한, 게시 변경 비교 권한을 증명하지 않는다. Data API의 현재 목록을 다시 수집해 변경 이력을 추측하지 않았다.
+
+### 현재 상태
+실제 Designer 도구 호출 1회에서 `get_current_page`와 `get_current_mode` 두 읽기가 모두 success였다. 현재 페이지는 '헬릭스', slug `discover-helix`, page ID `69d1c60d1e37375fe0c16bc5`; 모드는 `design`이다. 새 연결 오류는 없다. 실제 Browser 연결/기기 검증은 미수행이며 새 화면·스크린샷은 없다.
+
+사이트의 기존 agent instruction 검색은 0건이었다. 미게시 이력·마지막 게시본/백업 대비 공통 스타일·컴포넌트 차이·CMS 변경 및 정확한 게시 미리보기에 필요한 추가 읽기 기능을 조회했으나, 추가 도구가 없다는 응답을 받았다. 이 응답은 기능 제공 한계이며 사이트 권한 거부 응답이 아니다.
+
+| 확인 대상 | 상태 | 근거 |
+|---|---|---|
+| 현재 Designer 페이지·모드 읽기 연결 | 확인 완료 | 현재 페이지 및 design 모드 success 응답 |
+| 2026-11-19 실제 변경 계정·활동 | 미확인 | 활동 이력 읽기 도구/실제 화면 미확보 |
+| 마지막 게시 이후 공통 스타일 변경 | 미확인 | 게시본 대비 속성 차이 미확보 |
+| 공통 컴포넌트 변경·인스턴스 영향 | 미확인 | 게시본 대비 정의/영향 이력 미확보 |
+| CMS 변경 여부 | 미확인 | 변경 이력·실제 UI 비교 미확보 |
+| 다음 Publish 정확한 포함 범위 | 미확인 | 게시 대상 미리보기 기능/실제 화면 미확보 |
+
+미게시 5항목 확인 완료 0/5, 권한 부족 확정 0/5. Designer 연결 부재라는 이전 조건은 MCP 읽기 경로에서 해소됐지만 미게시 범위 및 외부 독립 감사 완료로 승격하지 않는다. 제품 코드·기존 검사/감사 자료·Webflow 저장/편집/복원/게시·역할 변경·main/staging 병합·배포는 변경 0이다. 신규 원시 화면/로그 외부 업로드 없이 이 파생 결과 요약만 인계한다.
+
+### 다음 단계
+기존 Chrome 기기 확인 및 활동/백업 비교/게시 대상 미리보기를 실제 읽을 수 있는 Browser 연결이 필요하다. 또는 해당 이력·게시 미리보기를 직접 반환하는 읽기 전용 기능이 제공돼야 한다. 현재 단순 Designer 연결 재시도는 불필요하며, 권한 부족으로 단정하거나 새 인증·편집·게시로 우회하지 않는다.
+
+### 참고 파일 및 링크
+- Webflow 재개 주소: https://helixanimalmedicalcenter.design.webflow.com?app=dc8209c65e3ec02254d15275ca056539c89f6d15741893a0adf29ad6f381eb99
+- [이전 읽기 재개 결과](24-designer-read-retry.md), [기존 증거](evidence/designer-read-retry.json)
+- [미게시 범위의 과거 조회](evidence/unpublished-scope-readonly.json)
+
+## 이전 재확인 — 2026-11-20 15:04:02 KST / Browser 연결 호출 전 중단
 
 ### 작업 개요
 기준 HEAD `b82c639c748fa51fea361313ff295e816c2ac253`, 작업 브랜치 `fix/helix-residual-structure-20261117`, 보호 제품 `21acccb`, QA `b6685f0`. 같은 기준의 HANDOFF와 지정 문서 24·designer-read-retry.json·23·unpublished-scope-readonly.json을 조회했다. 기존 PC Chrome의 Designer 읽기 연결 및 미게시 변경 확인만 대상이다.
