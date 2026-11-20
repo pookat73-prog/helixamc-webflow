@@ -267,7 +267,6 @@
       backdrop.classList.add('is-open');
       closeBtn.classList.add('is-visible');
       document.body.classList.add('hx-menu-open');
-      document.documentElement.classList.add('hx-menu-open');
 
       /* 이전에 클릭한 링크 활성 복원 */
       if (activeEl) activeEl.classList.add('is-active');
@@ -290,7 +289,6 @@
       setBurgerExpanded(false);
       ga('menu_close', { method: reason || 'unknown' });
       document.body.classList.remove('hx-menu-open');
-      document.documentElement.classList.remove('hx-menu-open');
       closeBtn.classList.remove('is-visible');
       gsap.to(overlay, {
         x: '100%',
