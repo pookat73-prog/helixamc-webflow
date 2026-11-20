@@ -1,0 +1,142 @@
+{
+  "observedAtUTC": "2026-11-20T02:02:06.228906+00:00",
+  "frozenQA": "a75d818c66e6c8b09d2063394312ff9bf9af177e",
+  "protectedRuntime": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "sameContinuousParentPID": 2684,
+  "previous25": {
+    "pass": true,
+    "stages": [
+      {
+        "name": "integrity",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "scope",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "interactions",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "heading-motion",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "firstpaint-heading",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "section1-recovery",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-gap",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "cta-border",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-intro",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "consent",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "form-label",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "phone-weight-policy",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "hero-hooks",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "same-url-css-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "foreign-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "mixed-js-owner",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "loader-consistency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-adoption",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "execution-state",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "menu-dependency",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "producer-pending",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "pending-boundary",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "quality",
+        "exit": 0,
+        "error": null
+      },
+      {
+        "name": "home-loading",
+        "exit": 0,
+        "error": null
+      }
+    ],
+    "localResult": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v1/previous25/results.json",
+    "resultSHA256": "34d2a64931ad945157013787328e8a609c0123ccd97bf1f3c38b442e3b15c0a8"
+  },
+  "actualCohortAndAdditionalStages": "RUNNING — not combined with preflights",
+  "overallPass": false,
+  "newRawRemotePreserved": false,
+  "publicWritesPublishMergeDeploy": false
+}

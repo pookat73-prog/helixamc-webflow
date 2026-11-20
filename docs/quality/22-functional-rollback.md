@@ -22,6 +22,8 @@ main과 staging Home의 최종 runtime tree는 각각 기존 `669fa762…`와 `6
 
 ## 현재 확보한 증거
 
+새 연속 실행의 [기존25단계 체크포인트](evidence/functional-rollback-checkpoint.json)가 통과했다. 동일 부모PID가 실제 recovery snapshot의 정식·staging 검증으로 이어졌으며 전체 실행은 아직 진행 중이다. 과거 결과를 재인용한 통과가 아니다.
+
 - 최종 세 ref의 실제 HTTP200/Git blob 일치 응답175건 확보. 과거 원본의 실패 URL을 재요청하거나 최신 응답으로 대체하지 않았다.
 - About3폭 예비 검사: 메뉴·예약창 각각 실제 wheel 잠금, nonzero scrollY의 정확한 복원, Escape/초점·잠금 해제 통과. About1440에서는 두 상태의 해제 순서 두 가지도 확인했다.
 - Services3폭 예비 비교: 기존 원본의 문구·타이포·배치 계약, 예약창 PNG와 후보 기능 통과.

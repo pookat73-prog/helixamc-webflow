@@ -4,6 +4,8 @@
 
 ## 최신 진행 — 기능 보존형 복구 후보 구현 / 새 동결 연속 검사 진행 중
 
+**이번 실행의 기존25단계 통과 체크포인트:** QA `a75d818`의 동일 부모PID2684가 기존25단계를 모두 통과한 뒤 실제 recovery cohort 단계로 이어졌다. [체크포인트](evidence/functional-rollback-checkpoint.json)에 새 결과 SHA를 기록했다. 아래 예비 성공이나 이전21 소스의 결과를 합산한 것이 아니다. 실제 자산을 고정한 격리 재생에서 정식·staging와 나머지 복구 계약은 아직 진행 중이며 전체 통과로 승격하지 않는다.
+
 [22 기능 보존형 원복](22-functional-rollback.md), [후보 파일·실제 URL·SHA 대장](evidence/functional-rollback-package.json)이 최신 진행이다. 보호 제품은 `21acccb` 그대로다. 원본 mirror 세 개와 기존 현재 후보는 보존했고, 별도 recovery 브랜치에 원인별 선별 커밋을 구성했다. 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`가 새 복구 후보다. 최종 실제 CDN175응답은 HTTP200/Git 일치이며, 이것만으로 원복 기능 완료로 판정하지 않는다.
 
 About3폭의 실제 메뉴/폼 잠금·nonzero scrollY 복원, 두 owner의 해제 순서, Services3폭의 원본 비교, 실제 Home의40회 소진/공개 후 GSAP 복구, 메뉴/폼/로더 개별 역주입·복구 예비 검사를 통과했다. 예비 성공은 합산하지 않는다. QA `a75d818`의 별도 clean clone에서 기존25단계와 새 실제 cohort·엄격2/3요청·30잠금·원본12 geometry/1px·실제36 Hero·개별 역주입을 **단일 연속 실행 중**이다. 결과는 아직 미완료다.
