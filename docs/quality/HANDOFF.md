@@ -2,7 +2,23 @@
 
 갱신일: 2026-11-20 (Asia/Seoul)
 
-## 최신 판정 — 기능 보존형 복구 후보 — 지정 격리 계약 통과 / 공개 운영 원복 미실행
+## 최신23 판정 — 3. 읽기 전용 감사 자료 준비 / 권한·실환경 때문에 일부 보류
+
+기준81da752·보호제품21acccb·QAb6685f0와 복구ref61c46515/76f9a10c/91140bf3를 보존했다. **이번 작업은 동일 구현자의 자료 준비와 증거 조사이며 외부 독립 감사가 아니다.** 외부 검토자/독립성/서명은 미기록이다. 전체 구조 안정화 완료·운영 적용 가능으로 승격하지 않는다.
+
+[23 상세](23-independent-audit-preparation.md), [검토자 시작점](review/independent-20261120/README.md), [미기입 외부 검토표](review/independent-20261120/checklist.md), [최종 판정·해시](evidence/independent-audit-preparation.json)가 최신 인계다. 고정34검사코드·기존입력·전체v3·실패v1/v2·inverse/restore를 연결했다. 기본14/Home13/Services6의 전후 Git blob/SHA 및 [파일별 비교](review/independent-20261120/file-differences.json), [10페이지/환경 소비 관계](review/independent-20261120/producer-consumers.json), [여섯 설정 계약](proposals/functional-rollback-20261120/manifest.json)을 읽기 전용으로 제공한다. Services의 mirror tree shared와 실제 원본 main3c shared를 혼동하지 않도록 별도 표기했다. 같은 shared URL의 두 번째 영수증은 QA217줄의 의도적 재진입이므로 운영 중복 장애로 세지 않는다.
+
+**About820:** [421픽셀 추가 조사](evidence/about820-readonly-investigation.json)에서 네20px모서리104/106/106/105, 중앙/흰배경 변경0과 동일 배치JSON을 확인했다. 고유104URL 중103본문이 같고 label CSS 한 개는 의도적 D02 비교라 전체입력 SHA동일이라고 말하지 않는다. 같은 영상의244순수배경 픽셀 대조는 원본frame0/후보약7.674초 위상차이를 강하게 지지했다. 관찰3쌍 exact와 폰트·화면내이미지·표시frame0을 새로 기록했지만 과거 실패쌍의 trace는 없으므로 당시 seek/합성 순서 원인은 미해결이다. 기준/mask/허용오차 변경·문제종료·V0재개·U01승격 없이 보존한다. 이3쌍은 기존 전체v3통과에 합산하지 않는다.
+
+**미게시 확인:** [읽기 범위와 권한 있는 재개 경로](evidence/unpublished-scope-readonly.json). 공개10HTML 전체SHA/pin·관련 저장코드6조회/7블록·사이트metadata는 이전 최종 관측과 같다. API현재목록42페이지/2737스타일 이름·선택자/27컴포넌트/0CMS컬렉션을 확인했지만 실제변경자·게시본대비스타일/컴포넌트diff·정확한다음Publish포함범위는 알 수 없다. shouldPublish42는42변경이라는 뜻이 아니며 non-draft39는잠재전체게시집합이다. 활동기록/Designer/게시대상 미리보기 읽기 권한 있는 담당자의 확인이 필요하다. 새 권한 초대·역할 변경·사이트 편집은 하지 않았다. 실제 Designer의 mode/page 읽기도 시도했으나 MCP 앱 세션에 연결할 수 없다는 응답으로 중단됐다. 이는 데이터 API 조회 성공과 별개이며, 권한 있는 Designer/활동기록 읽기 연결이 재개 조건이다.
+
+**남은 기술 범위:** HTTP200합성실행오류6조건은 메뉴0으로 미해결이며 pending응답해제2조건만복구다. 실제정상80조건의원본파일장애관측과구분한다. 무한pending·미래mutable·다른firstpaint경계·Services전체nav/SEO·V0/U01·실제Safari/iOS/iPad는별도보류다. 현Linux에는실제WebKit실행파일이없다. 새정상지원경로의핵심기능실패를발견했다는주장은없으며, 지원실제경로에서재현되면반드시적용차단한다.
+
+**실제 적용 전 필수:** 권한 있는 실제 actor/actions와 공통미게시diff·CMS상태·게시포함범위를 확인하고, 최신 소비자산SHA 및 여섯 설정/producer/shared 전체조합·필요한실기기범위를 대조한다. 다른작업자변경을 보존하고 별도 사용자 승인이 있어야 한다. 현재 저장 원본에 기존 후보→복구 patch를 직접 적용하면 안 된다. 부분적용/원본mirror 기능원복도 금지 상태다.
+
+기존raw11,916파일 읽기SHA재검증 불일치0. 신규raw는 `/workspace/artifacts/helix-independent-audit-prep-20261120` 로컬 전용이며 외부 업로드하지 않았다. 외부 검토자가 로컬raw 읽기 접근을 확보하지 못하면 소스/파생자료만 검토 가능하며 전체 시각·재현감사는 보류한다. 기존두Drive백업 중복업로드0/원격SHA미검증유지. 제품·기존QA/기준 변경0, main/staging·공개head/pin·설정·Publish·운영배포 변경0이다.
+
+## 이전22 판정 — 기능 보존형 복구 후보의 지정 격리 계약 통과 / 공개 운영 원복 미실행
 
 **기능 보존형 복구 후보의 지정 계약을 새 동결 소스의 단일 연속v3에서 통과했다.** QA `b6685f0` / 보호 제품 `21acccb`이며 clean clone에서 기존25부터 추가9개 단위까지 끝까지 실행했다. v1·v2·예비 성공은 합산하지 않았다. 실제 운영 원복·공개 반영·외부 독립 감사 완료와는 다르다.
 

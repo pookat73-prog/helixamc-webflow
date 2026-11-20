@@ -1,0 +1,127 @@
+{
+  "atUTC": "2026-11-20T05:30:06.290932+00:00",
+  "readOnly": true,
+  "siteId": "69d090ea69d828e27d16ea29",
+  "siteLastUpdated": "2026-11-19T07:07:52.465Z",
+  "siteMetadataEqualPrevious": true,
+  "lastPublished": {
+    "subdomain": "2026-11-17T01:43:30.228Z",
+    "customDomains": [
+      {
+        "id": "69fe99b7424ba9e393f4f856",
+        "url": "www.helix-amc.com",
+        "lastPublished": "2026-11-17T02:14:47.398Z",
+        "fullSiteCompiledAt": "2026-11-17T02:14:47.398Z"
+      },
+      {
+        "id": "69fe99b6424ba9e393f4f850",
+        "url": "helix-amc.com",
+        "lastPublished": "2026-11-17T02:14:47.398Z",
+        "fullSiteCompiledAt": "2026-11-17T02:14:47.398Z"
+      }
+    ]
+  },
+  "public10HTMLEqualPreviousFullSHAAndPins": true,
+  "public10Status200": true,
+  "savedCode": {
+    "sixReadResultsEqualPrevious": true,
+    "queryCount": 6,
+    "rawHeadFooterBlocks": 7,
+    "fivePageHeadsAndSiteHeadFooterRead": true,
+    "actualAuthor": null,
+    "authorNotInferredFromTimestamp": true
+  },
+  "pages": {
+    "returned": 42,
+    "pagination": {
+      "limit": 100,
+      "offset": 0,
+      "total": 42
+    },
+    "draft": 3,
+    "archived": 0,
+    "shouldPublishTrue": 42,
+    "nonDraftNonArchivedPotentialFullSitePages": 39,
+    "updatedAfterCustomPublish": [
+      {
+        "id": "69d74abc8f22a42b07df1808",
+        "title": "치과",
+        "slug": "dentistry",
+        "draft": true,
+        "lastUpdated": "2026-11-18T01:27:45.836Z"
+      },
+      {
+        "id": "69d74ab359bc6e8610726155",
+        "title": "안과",
+        "slug": "ophthalmology",
+        "draft": true,
+        "lastUpdated": "2026-11-19T00:07:50.666Z"
+      }
+    ],
+    "shouldPublishIsNotPendingChangeOrExactNextPublishScope": true,
+    "canBranchNotUsedAsEntitlement": true
+  },
+  "styles": {
+    "returned": 2737,
+    "fields": [
+      "id",
+      "isComboClass",
+      "isFromLibrary",
+      "name",
+      "selector",
+      "type"
+    ],
+    "isFromLibraryTrue": 0,
+    "beforePublishedSnapshotAvailable": false,
+    "actualAuthorOrChangedPropertiesFromThisRead": false
+  },
+  "components": {
+    "returned": 27,
+    "fields": [
+      "id",
+      "instanceCount",
+      "name"
+    ],
+    "instanceCountIsNotDistinctPageCount": true,
+    "beforePublishedDefinitionSnapshotAvailable": false,
+    "actualAuthorOrDefinitionDiffFromThisRead": false
+  },
+  "cms": {
+    "result": {
+      "collections": []
+    },
+    "collectionCount": 0,
+    "stagedLiveItemComparisonPerformed": false,
+    "reason": "No collection IDs returned by this authorized read; no item targets. This alone does not establish site-wide absence of unpublished changes."
+  },
+  "activityReview": {
+    "currentCallableMCPActivityAuditLogReadAction": false,
+    "actualSiteActivityEndpointEntitlementTested": false,
+    "actualAuthorIdentified": false,
+    "docBotSuggestedRoute": "Enterprise Site Activity Log GET /v2/sites/{site_id}/activity, or authorized Site Activity UI",
+    "officialDocBotURL": "https://developers.webflow.com/data/reference/enterprise/site-activity/list",
+    "directOfficialDocsFetch": "Execution-environment proxy rejected public docs CONNECT with403; not a Webflow site permission403",
+    "roleAndPlanActuallyConfirmed": false,
+    "authorizedReviewerRoute": "Existing account with actual Activity/Designer pending-diff/Publish-preview read rights; site route https://webflow.com/design/helix-amc. No invitation, role change, restore or Publish action in this task.",
+    "designerReadAttempted": true,
+    "designerConnected": false,
+    "designerModeOrPageReturned": false,
+    "designerError": "Unable to connect to Webflow Designer; MCP app session unavailable",
+    "designerReconnectURL": "https://helixanimalmedicalcenter.design.webflow.com?app=dc8209c65e3ec02254d15275ca056539c89f6d15741893a0adf29ad6f381eb99",
+    "reconnectingDesignerDoesNotItselfProveActivityHistoryPermission": true
+  },
+  "requiredBeforePublicApplication": [
+    "Obtain actual Nov19 change actor/actions from authorized activity record, not lastUpdated inference",
+    "Compare current shared styles/components with the last-published backup/reference without restoring it",
+    "Confirm empty CMS inventory in authorized UI or obtain staged/live item comparison if collections exist",
+    "Review exact next Publish page/global style/component/CMS inclusion without pressing Publish",
+    "Re-read all six stored configuration SHA values and confirm matched whole producer/shared cohort; preserve all other worker changes"
+  ],
+  "protectedRefsObserved": {
+    "main": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+    "staging": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+    "work": "81da7525dc66efb8afb863117fcf825cf4ecba3a"
+  },
+  "newRawRemoteUploaded": false,
+  "siteWritesOrPublishOrPermissionsChanged": false
+}

@@ -1,0 +1,1911 @@
+{
+  "basisHEAD": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+  "protectedRuntime": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "sourceMetadataOnlyNotAnExternalAudit": true,
+  "packages": [
+    {
+      "name": "main",
+      "beforeRef": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+      "recoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "changedFiles": 14,
+      "onlyDeclaredFilesChanged": true,
+      "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc...61c465152f26c5820ef30e7c8b166ba37829008a"
+    },
+    {
+      "name": "staging-home",
+      "beforeRef": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+      "recoveryRef": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+      "changedFiles": 13,
+      "onlyDeclaredFilesChanged": true,
+      "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/60e50fe9938055bfb5da5261bbf7f588401aabb0...76f9a10c59ecb696dd349fd1f9344939ddafab4a"
+    },
+    {
+      "name": "services",
+      "beforeRef": "35b12071803646aef2ec93029afea062012711ce",
+      "recoveryRef": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+      "changedFiles": 6,
+      "onlyDeclaredFilesChanged": true,
+      "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/35b12071803646aef2ec93029afea062012711ce...91140bf351dc6afbdfb57bb99e5c17c6bd794c09"
+    }
+  ],
+  "files": [
+    {
+      "package": "main",
+      "path": "about/bootstrap.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
+        "sha256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/about/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "5d6b31428278d108c614caedfc7b935467c09961",
+        "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/about/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/about/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:14.573375+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 17,
+        "deletions": 5,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/about/bootstrap.js.patch",
+      "localPatchSHA256": "be01664a9b9b0335da7f775a58caa88455684ffffdeb84df6f4ff31078a17c4d",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/discover-helix",
+        "staging/discover-helix"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/about/bootstrap.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/about/bootstrap.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "faq/bootstrap.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
+        "sha256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/faq/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "12d8ad0f8bafd91569d397d639bc94b7a9d4abd8",
+        "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/faq/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/faq/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:15.703677+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 20,
+        "deletions": 3,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/faq/bootstrap.js.patch",
+      "localPatchSHA256": "1e9ecf78f1814220d94073b4991db378d6e7b1c5fa6ebbeea20c8f1d586ead32",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/faq",
+        "staging/faq"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/faq/bootstrap.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/faq/bootstrap.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "global/bootstrap.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d",
+        "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/global/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "12b3dac8a4af3b7dffc26317ecb92a2268d939d8",
+        "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:13.466581+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 66,
+        "deletions": 14,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/global/bootstrap.js.patch",
+      "localPatchSHA256": "ab6b8d089c778686790bb797bf6e8a4994cb135b07f556ab1fd088e1856aeb63",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/discover-helix",
+        "production/faq",
+        "production/home",
+        "production/internal-medicine",
+        "staging/discover-helix",
+        "staging/faq",
+        "staging/internal-medicine"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "originalRef": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "originalRef": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "originalRef": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "global/floating-cta.css",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+        "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+        "source": "prior verified Git-blob cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/global/floating-cta.css"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "57bb830f496addac9238a1c58e3165165c79d93e",
+        "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/global/floating-cta.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/floating-cta.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:18.125404+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 45,
+        "deletions": 44,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/global/floating-cta.css.patch",
+      "localPatchSHA256": "8d98437a587dca791856e1e7a21a571a1c41287c9768115623c7ed7489c3d936",
+      "declaredReason": "preserve-D02-D05-contracts",
+      "actualNormalConsumers": [
+        "production/discover-helix",
+        "production/faq",
+        "production/home",
+        "production/internal-medicine",
+        "staging/discover-helix",
+        "staging/faq",
+        "staging/internal-medicine"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/floating-cta.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/floating-cta.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.css",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/floating-cta.css",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/global/floating-cta.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/global/floating-cta.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/floating-cta.css",
+          "originalRef": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "global/global.css",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "7a769acfcbd234d8caa27b69ab409f55c494b2a3",
+        "sha256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/global/global.css"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "fb291a851c4be8d89a321dceb518163d4a76c8c1",
+        "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/global/global.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/global.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:17.637588+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 15,
+        "deletions": 2,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/global/global.css.patch",
+      "localPatchSHA256": "6dfaf35a6bba0a300466c80db359e87edf0e250e8a5d16708f393ac21838589d",
+      "declaredReason": "preserve-D02-D05-contracts",
+      "actualNormalConsumers": [
+        "production/discover-helix",
+        "production/faq",
+        "production/home",
+        "production/internal-medicine",
+        "staging/discover-helix",
+        "staging/faq",
+        "staging/internal-medicine"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/global.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/global.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/global.css",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/global.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/global/global.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/global/global.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/global/global.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "45666b1694e2aaeb161a98866a5258be027dddbc70f850d56033b7f7fc0051ba",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "home/bootstrap.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "de43d8948289b66246ed9a14f7ad6b118db3edb5",
+        "sha256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "209bd3cb8ed482ea75250419d67e25d535325dc9",
+        "sha256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/home/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:14.045856+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 17,
+        "deletions": 5,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/home/bootstrap.js.patch",
+      "localPatchSHA256": "2e5b2760e27f1d51683a3d8063e7f2a50399cdaa97803cc06e848159f3f60bfe",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "home/global/buttons.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "c1590ba90c25d95bf8410e417a6fa1224db36b98",
+        "sha256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/global/buttons.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "465994a111cff396ab660d204ec7a0dd9a1f29ab",
+        "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/home/global/buttons.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/buttons.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:25.598721+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 3,
+        "deletions": 3,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/home/global/buttons.js.patch",
+      "localPatchSHA256": "8271fab4284975002c37fbebfb3b9d8d6a1adb9d3c5bc95515c8b1d6ed8b8262",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "production/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/buttons.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "home/global/coming-soon.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "fe5426ce5b5e102897e393b487514163ed9c4db1",
+        "sha256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/global/coming-soon.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "599f6439844e9871d8ca87b36c28f50912beaf5f",
+        "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/home/global/coming-soon.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/coming-soon.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:19.998645+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 10,
+        "deletions": 6,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/home/global/coming-soon.js.patch",
+      "localPatchSHA256": "585d3a06d266e337617e5acc7c84524ac838f58f97d9948e3470b563b41ab2b7",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "production/discover-helix",
+        "production/faq",
+        "production/home",
+        "production/internal-medicine",
+        "staging/discover-helix",
+        "staging/faq",
+        "staging/internal-medicine"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/coming-soon.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/coming-soon.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/coming-soon.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/coming-soon.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/coming-soon.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/coming-soon.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/coming-soon.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "ab0fcd8423f90029f4792167cfa1e5c5081ffdde06accc612656153ce0ba0fd9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "home/global/hamburger.css",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+        "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/global/hamburger.css"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+        "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:34.707452+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 1,
+        "deletions": 0,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/home/global/hamburger.css.patch",
+      "localPatchSHA256": "d8609e0044a0dec33c924e4ebef57d5e770a52dda0ef2b9627bb39f51779cf4a",
+      "declaredReason": "menu-scroll-owner",
+      "actualNormalConsumers": [
+        "production/discover-helix",
+        "production/faq",
+        "production/home",
+        "production/internal-medicine",
+        "staging/discover-helix",
+        "staging/faq",
+        "staging/internal-medicine"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/hamburger.css",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.css",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/hamburger.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/hamburger.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/hamburger.css",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "home/global/hamburger.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+        "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/global/hamburger.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+        "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:20.533481+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 20,
+        "deletions": 0,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/home/global/hamburger.js.patch",
+      "localPatchSHA256": "9722411383fccc487602f12ab7986b2048c99a2cd49fee9355f90362f1ef73b6",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/discover-helix",
+        "production/faq",
+        "production/home",
+        "production/internal-medicine",
+        "staging/discover-helix",
+        "staging/faq",
+        "staging/internal-medicine"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/hamburger.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "production/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/home/global/hamburger.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/discover-helix",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/hamburger.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/faq",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/hamburger.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        },
+        {
+          "consumer": "staging/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/home/global/hamburger.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "home/global/sections-animations.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "85720a1641f6039c385ca0eda1d51cbc258f1389",
+        "sha256": "8f2dfda1aec1a107f18315f074df469969c2e6a13ae4328c6db9b45dfcbf2d79",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/global/sections-animations.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "67bf86f0ec4199f048746eff8dfeddab24e4a39c",
+        "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/home/global/sections-animations.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/sections-animations.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:26.062799+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 155,
+        "deletions": 115,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/home/global/sections-animations.js.patch",
+      "localPatchSHA256": "2a43775dc16b18f2a83342f6b28229de9c78c6f054bfd8da5c5554401ae67353",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "production/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/global/sections-animations.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "8f2dfda1aec1a107f18315f074df469969c2e6a13ae4328c6db9b45dfcbf2d79",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "home/section1/section1.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "25af1ef173118d02d283de422ed1b1aef9051b27",
+        "sha256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/section1/section1.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "123d30c2c72af52aadedf15aa51b666621764330",
+        "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/home/section1/section1.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/section1/section1.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:23.636577+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 36,
+        "deletions": 8,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/home/section1/section1.js.patch",
+      "localPatchSHA256": "76143c3bc911393bdcc0c799a77e5bc8034652ab0226609ffd8e5bb3002dab53",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "production/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/section1/section1.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "cd54649e559fe939b754c5ea6af2652209be320d7e4078b9edaf0eb780f8d3f1",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "internal-medicine/bootstrap.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
+        "sha256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/internal-medicine/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "7e0b9d27e615b5fd90e13f1d907b572fdf348714",
+        "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/internal-medicine/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/internal-medicine/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:16.562280+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 14,
+        "deletions": 2,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/internal-medicine/bootstrap.js.patch",
+      "localPatchSHA256": "53e8745cc5fafa8711a435461c6a50de37a9cf0df0ddf430f572077736771ab8",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/internal-medicine",
+        "staging/internal-medicine"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/internal-medicine/bootstrap.js",
+          "originalRef": "3c4f78d4e7",
+          "preservedBodySHA256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/internal-medicine",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/internal-medicine/bootstrap.js",
+          "originalRef": "a074f455a4",
+          "preservedBodySHA256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "main",
+      "path": "services/bootstrap.js",
+      "before": {
+        "ref": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+        "gitBlob": "8141fa675f77564360749837863936103a464a5a",
+        "sha256": "dcd2f8e374963cde5796b943b3410dfa9241ecaa89573ebe6fc1dd084826f3d7",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/services/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "gitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
+        "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/61c465152f26c5820ef30e7c8b166ba37829008a/services/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/services/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:43:14.741010+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 36,
+        "deletions": 7,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/main/services/bootstrap.js.patch",
+      "localPatchSHA256": "1078026a16626cda9cbe661adecf5ff489c8d1f1076720e417891b3154e0269c",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [],
+      "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "about/bootstrap.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54",
+        "sha256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/about/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "5d6b31428278d108c614caedfc7b935467c09961",
+        "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/about/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/about/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:05.792214+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 17,
+        "deletions": 5,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/about/bootstrap.js.patch",
+      "localPatchSHA256": "a866d5d6e96bbd37ee397dc73d25125395b3118ed50f5a010704ddc4a1ff9435",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [],
+      "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "faq/bootstrap.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d",
+        "sha256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/faq/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "12d8ad0f8bafd91569d397d639bc94b7a9d4abd8",
+        "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/faq/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/faq/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:06.303564+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 20,
+        "deletions": 3,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/faq/bootstrap.js.patch",
+      "localPatchSHA256": "b281bf8ce2a1f6ba32370b2d8512a165bacb3b3c72b8af98265e01c813660179",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [],
+      "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "global/bootstrap.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d",
+        "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/global/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "12b3dac8a4af3b7dffc26317ecb92a2268d939d8",
+        "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/global/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/global/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:04.301238+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 66,
+        "deletions": 14,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/global/bootstrap.js.patch",
+      "localPatchSHA256": "47aeb110529c66883319dae2687b1c4ebcae5842f7575cde97de18f0738016ff",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "originalRef": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "global/floating-cta.css",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5",
+        "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/global/floating-cta.css"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "57bb830f496addac9238a1c58e3165165c79d93e",
+        "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/global/floating-cta.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/global/floating-cta.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:08.009695+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 45,
+        "deletions": 44,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/global/floating-cta.css.patch",
+      "localPatchSHA256": "63264c1e36a6b4d3f983c2da7aca8df0c492554cc505713887b39a58e33d973e",
+      "declaredReason": "preserve-D02-D05-contracts",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/global/floating-cta.css",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "home/bootstrap.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "ef81e351af65a352690c11664f6069f80ce4f54c",
+        "sha256": "b557102e2dd1d17f20ea959ae25ac577ef121c9626d5c687d136ef3da1ff827b",
+        "source": "prior verified Git-blob cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/home/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "62b389036d42d755c4a161a4bb5a86aa40a14585",
+        "sha256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:05.165832+00:00",
+        "byteEqualProtectedProductFile": false
+      },
+      "diff": {
+        "additions": 17,
+        "deletions": 5,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/home/bootstrap.js.patch",
+      "localPatchSHA256": "e617f0174c2c472265492361f63890a9c5cdbc64dc7a4589c435d8943a9ac527",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/bootstrap.js",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "b557102e2dd1d17f20ea959ae25ac577ef121c9626d5c687d136ef3da1ff827b",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "home/global/buttons.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "c1590ba90c25d95bf8410e417a6fa1224db36b98",
+        "sha256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/home/global/buttons.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "465994a111cff396ab660d204ec7a0dd9a1f29ab",
+        "sha256": "5d866eb2c94a1267ecb69cbedc2e5409e4a740c8936138f1a93fb87ca1bcd113",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/buttons.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/buttons.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:14.778445+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 3,
+        "deletions": 3,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/home/global/buttons.js.patch",
+      "localPatchSHA256": "7fe1fdfed1b4a5948194159bf449ea1f0e9c3cad1434aad8db7cc87cfd3fa0b6",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/buttons.js",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "7031d757aab515841dd59343839a29097144abf276375a09d0fab11945843daa",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "home/global/coming-soon.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "c5683919690f8d310c7f0b85796409a8f510d3a6",
+        "sha256": "728bc9961f2fc29d2e60269634c6d4c752ee5cd54bec4f859fd54955d91c6efb",
+        "source": "prior verified Git-blob cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/home/global/coming-soon.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "599f6439844e9871d8ca87b36c28f50912beaf5f",
+        "sha256": "496acc872eb2c2be3ce3f3c36b2b1d1116ead17ee96433d3501f672449519ad5",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/coming-soon.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/coming-soon.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:09.688583+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 33,
+        "deletions": 16,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/home/global/coming-soon.js.patch",
+      "localPatchSHA256": "d1b4fd488ca3ff5dfcffb8c4dd9d747f8611facb3cf0e336a52e76b13dd4b39e",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/coming-soon.js",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "728bc9961f2fc29d2e60269634c6d4c752ee5cd54bec4f859fd54955d91c6efb",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "home/global/hamburger.css",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+        "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/home/global/hamburger.css"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+        "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/hamburger.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/hamburger.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:24.110267+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 1,
+        "deletions": 0,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/home/global/hamburger.css.patch",
+      "localPatchSHA256": "83bb9baf1f0c20f153a0d9aeebccdfc2e2de543a1fadaa55acfd329ff19fcd25",
+      "declaredReason": "menu-scroll-owner",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/hamburger.css",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "home/global/hamburger.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+        "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/home/global/hamburger.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+        "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/hamburger.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/hamburger.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:10.346817+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 20,
+        "deletions": 0,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/home/global/hamburger.js.patch",
+      "localPatchSHA256": "390804480ab763eddf97671b98850d5d4a9ab28cdff5cd86eceb7a6fdfbd18b5",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/hamburger.js",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "home/global/sections-animations.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "67bf44e9217a9e46aa11b724ae841ae218534098",
+        "sha256": "c6ca5c364581b9cbe117d9cccf58b4784deac1a83487bf6e4c7364d5c028be2e",
+        "source": "prior verified Git-blob cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/home/global/sections-animations.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "67bf86f0ec4199f048746eff8dfeddab24e4a39c",
+        "sha256": "cdab90801164f42024b2c001081fac7bb2f31ac8ee218c311462cf3204f71632",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/sections-animations.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/global/sections-animations.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:15.031332+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 161,
+        "deletions": 117,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/home/global/sections-animations.js.patch",
+      "localPatchSHA256": "a47a639fce1a534881ded150694455bb1962161194c14142c564318b3c26ae8b",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/global/sections-animations.js",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "c6ca5c364581b9cbe117d9cccf58b4784deac1a83487bf6e4c7364d5c028be2e",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "home/section1/section1.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "d026f1f25384a042a4654d6004bca5abed6b5ddd",
+        "sha256": "fa734c16f84c2c9c908979e7c3258f4199cb47b35cd0fcbacc2e5c07bb3932e9",
+        "source": "prior verified Git-blob cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/home/section1/section1.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "123d30c2c72af52aadedf15aa51b666621764330",
+        "sha256": "38d5f0de1daf59054f28bff21779739685371dfbf3fad9db9c9c38e26271bfb9",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/section1/section1.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/section1/section1.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:13.103578+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 44,
+        "deletions": 9,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/home/section1/section1.js.patch",
+      "localPatchSHA256": "f345be540b8b9d1c2311987bf46ce60417aa8f106d36e3bdf6ea1278038951ea",
+      "declaredReason": "preserve-Hero-and-responsive-lifecycles",
+      "actualNormalConsumers": [
+        "staging/home"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "staging/home",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/section1/section1.js",
+          "originalRef": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "preservedBodySHA256": "fa734c16f84c2c9c908979e7c3258f4199cb47b35cd0fcbacc2e5c07bb3932e9",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "internal-medicine/bootstrap.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "7ee6b988019f807ec865f42375a8ad567a8277ea",
+        "sha256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/internal-medicine/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "7e0b9d27e615b5fd90e13f1d907b572fdf348714",
+        "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/internal-medicine/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/internal-medicine/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:06.469189+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 14,
+        "deletions": 2,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/internal-medicine/bootstrap.js.patch",
+      "localPatchSHA256": "7ad6a6bf48f1b2b92ed155c4377a6b866e5f737cc8d609c48d2895eae1b472cd",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [],
+      "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "staging-home",
+      "path": "services/bootstrap.js",
+      "before": {
+        "ref": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+        "gitBlob": "8141fa675f77564360749837863936103a464a5a",
+        "sha256": "dcd2f8e374963cde5796b943b3410dfa9241ecaa89573ebe6fc1dd084826f3d7",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/60e50fe9938055bfb5da5261bbf7f588401aabb0/services/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "gitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
+        "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/76f9a10c59ecb696dd349fd1f9344939ddafab4a/services/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/services/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:47:05.909657+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 36,
+        "deletions": 7,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/staging-home/services/bootstrap.js.patch",
+      "localPatchSHA256": "015936ad16449d9efb334d3c9d014859039bef5c3f8c5e01e7a6fbc9865693f3",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [],
+      "consumerQualification": "Unrequested member of the validated common source cohort in this selected variant; no execution claim",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "services",
+      "path": "global/bootstrap.js",
+      "before": {
+        "ref": "35b12071803646aef2ec93029afea062012711ce",
+        "gitBlob": "75d08e772c83a593889af06748aea0c2bea808f8",
+        "sha256": "f7475ae4e21859f0288bd7177b66462abbfa47194d6e4f1b8d1d0e040e52a98b",
+        "source": "new read-only GitHub exact blob response",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/35b12071803646aef2ec93029afea062012711ce/global/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "gitBlob": "12b3dac8a4af3b7dffc26317ecb92a2268d939d8",
+        "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:44:04.966529+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 289,
+        "deletions": 92,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/services/global/bootstrap.js.patch",
+      "localPatchSHA256": "354f32e47cfe79a7c369cd44f6548fff2ecde894ba8c0dbbc554a39595b7cc2e",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/services",
+        "staging/services"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": true,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "originalRef": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": false,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion",
+          "actualOwnerComparisonSourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "localActualOwnerDiff": "/workspace/artifacts/helix-independent-audit-prep-20261120/effective-original-diffs/production/services/global/bootstrap.js.patch",
+          "localActualOwnerDiffSHA256": "de06fef994e2c9e3f59c2b7a55b63718324a2744bd2605b021f96f8af184647b"
+        },
+        {
+          "consumer": "staging/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "originalRef": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "preservedBodySHA256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "equalsMirrorTreeBaselineBody": false,
+          "provenance": "Exact Git local reproduction",
+          "actualOwnerComparisonSourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "localActualOwnerDiff": "/workspace/artifacts/helix-independent-audit-prep-20261120/effective-original-diffs/staging/services/global/bootstrap.js.patch",
+          "localActualOwnerDiffSHA256": "ae541226f25c73250e798311530da89f867e4b093f06146a563c1b2d00197d8f"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": true
+    },
+    {
+      "package": "services",
+      "path": "global/floating-cta.css",
+      "before": {
+        "ref": "35b12071803646aef2ec93029afea062012711ce",
+        "gitBlob": "6b0d8186e5ec2b5b8e111224127f06e87b5f864e",
+        "sha256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+        "source": "existing local Git object",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/35b12071803646aef2ec93029afea062012711ce/global/floating-cta.css"
+      },
+      "recovery": {
+        "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "gitBlob": "57bb830f496addac9238a1c58e3165165c79d93e",
+        "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/floating-cta.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/floating-cta.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:44:08.207439+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 81,
+        "deletions": 44,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/services/global/floating-cta.css.patch",
+      "localPatchSHA256": "0aa2f9054df8bd507c40578c4e881f54b45c1b512138e96ea05c3b5fc0119cca",
+      "declaredReason": "preserve-D02-D05-contracts",
+      "actualNormalConsumers": [
+        "production/services",
+        "staging/services"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": true,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/floating-cta.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/floating-cta.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "3cdf42163deedc2c6cb6047a6c3ccd98370624d2d472e708734c25f2bc7f247c",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "services",
+      "path": "global/global.css",
+      "before": {
+        "ref": "35b12071803646aef2ec93029afea062012711ce",
+        "gitBlob": "381045cb908cbe82f674778afa7c129aebc115fd",
+        "sha256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+        "source": "prior verified Git-blob cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/35b12071803646aef2ec93029afea062012711ce/global/global.css"
+      },
+      "recovery": {
+        "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "gitBlob": "fb291a851c4be8d89a321dceb518163d4a76c8c1",
+        "sha256": "65c35310ce839f75b621d41a40988a33e3d9f1a81e1438eecd1f07bdbd04d631",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/global.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/global.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:44:07.494586+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 380,
+        "deletions": 51,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/services/global/global.css.patch",
+      "localPatchSHA256": "3f1a7880dbe240794cf2aa464ed1ac0c85ce7a4040cf14fdedf0e4f5e6d3181c",
+      "declaredReason": "preserve-D02-D05-contracts",
+      "actualNormalConsumers": [
+        "production/services",
+        "staging/services"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": true,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/global.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/global/global.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "c01242087d02b5f0a2b0f9895e67b4f64cbac58b4e3b864c6365ce1bd14cf74f",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "services",
+      "path": "home/global/hamburger.css",
+      "before": {
+        "ref": "35b12071803646aef2ec93029afea062012711ce",
+        "gitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd",
+        "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/35b12071803646aef2ec93029afea062012711ce/home/global/hamburger.css"
+      },
+      "recovery": {
+        "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500",
+        "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/91140bf351dc6afbdfb57bb99e5c17c6bd794c09/home/global/hamburger.css",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/home/global/hamburger.css",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:44:10.187649+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 1,
+        "deletions": 0,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/services/home/global/hamburger.css.patch",
+      "localPatchSHA256": "e056912f5a592dcfae0af2e301b41de8456a505f9b51a86518d7ddae669674c8",
+      "declaredReason": "menu-scroll-owner",
+      "actualNormalConsumers": [
+        "production/services",
+        "staging/services"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.css",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "services",
+      "path": "home/global/hamburger.js",
+      "before": {
+        "ref": "35b12071803646aef2ec93029afea062012711ce",
+        "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce",
+        "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+        "source": "new local source cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/35b12071803646aef2ec93029afea062012711ce/home/global/hamburger.js"
+      },
+      "recovery": {
+        "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "gitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476",
+        "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/91140bf351dc6afbdfb57bb99e5c17c6bd794c09/home/global/hamburger.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/home/global/hamburger.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:44:10.698336+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 20,
+        "deletions": 0,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/services/home/global/hamburger.js.patch",
+      "localPatchSHA256": "f3858c758fd4a23b5c8a958067a5e1cef9a5aed4e8cefe36955aad176397bdf8",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/services",
+        "staging/services"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.js",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/home/global/hamburger.js",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    },
+    {
+      "package": "services",
+      "path": "services/bootstrap.js",
+      "before": {
+        "ref": "35b12071803646aef2ec93029afea062012711ce",
+        "gitBlob": "3425a5e30d0a05b0eef7d6fd18d63ce2ea0c6cc1",
+        "sha256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638",
+        "source": "prior verified Git-blob cache",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/35b12071803646aef2ec93029afea062012711ce/services/bootstrap.js"
+      },
+      "recovery": {
+        "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "gitBlob": "0f4ea1763ccfba5695701d295e498cbada87bda8",
+        "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+        "sourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/91140bf351dc6afbdfb57bb99e5c17c6bd794c09/services/bootstrap.js",
+        "declaredCDNURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/services/bootstrap.js",
+        "previousActualHTTP200Receipt": true,
+        "httpReceiptObservedAtUTC": "2026-11-20T00:44:05.725635+00:00",
+        "byteEqualProtectedProductFile": true
+      },
+      "diff": {
+        "additions": 40,
+        "deletions": 21,
+        "status": "modified"
+      },
+      "localReviewPatch": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-diffs/services/services/bootstrap.js.patch",
+      "localPatchSHA256": "56312fb3030e1cd9396317c593fd976787a29a1d4be27612b348986bfb929bd3",
+      "declaredReason": "coherent-menu-owner-protocol",
+      "actualNormalConsumers": [
+        "production/services",
+        "staging/services"
+      ],
+      "consumerQualification": "Actually requested in final normal runtime",
+      "notAllHunksAreNecessarilyMenuOnly": false,
+      "perFileOperationalReversalSupported": false,
+      "effectiveOriginalConsumerSamples": [
+        {
+          "consumer": "production/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/bootstrap.js",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Preserved historical original HTTP replay; no fresh original CDN assertion"
+        },
+        {
+          "consumer": "staging/services",
+          "originalURL": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/bootstrap.js",
+          "originalRef": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "preservedBodySHA256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638",
+          "equalsMirrorTreeBaselineBody": true,
+          "provenance": "Exact Git local reproduction"
+        }
+      ],
+      "treeBaselineAndEffectiveOriginalAreDifferent": false
+    }
+  ],
+  "fileDiffCount": 33,
+  "rawPatchesAndBlobsLocalOnly": true,
+  "partialCohortApplicationSupported": false,
+  "originalComparisonRule": "Mirror Git-tree comparison and effective original runtime owner comparison are distinct. Both are indexed. Preserve historical/Git-replay provenance; do not reinterpret as fresh original CDN reach."
+}

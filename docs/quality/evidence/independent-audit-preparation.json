@@ -1,0 +1,254 @@
+{
+  "atUTC": "2026-11-20T05:40:19.795801+00:00",
+  "basisHEAD": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+  "protectedRuntimeSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "frozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+  "decision": {
+    "code": 3,
+    "label": "Some verification held for authority/environment/raw access; read-only source/contract review materials prepared",
+    "externalIndependentAuditPerformed": false,
+    "externalReviewerAssigned": false,
+    "externalSignoffPresent": false,
+    "structureStabilizationComplete": false,
+    "publicApplicationReady": false
+  },
+  "recoveryRefsPreserved": {
+    "main": "61c465152f26c5820ef30e7c8b166ba37829008a",
+    "stagingHome": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+    "services": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09"
+  },
+  "completed": {
+    "exactSourceDifferences": [
+      {
+        "package": "main",
+        "changedFiles": 14,
+        "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc...61c465152f26c5820ef30e7c8b166ba37829008a"
+      },
+      {
+        "package": "staging-home",
+        "changedFiles": 13,
+        "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/60e50fe9938055bfb5da5261bbf7f588401aabb0...76f9a10c59ecb696dd349fd1f9344939ddafab4a"
+      },
+      {
+        "package": "services",
+        "changedFiles": 6,
+        "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/35b12071803646aef2ec93029afea062012711ce...91140bf351dc6afbdfb57bb99e5c17c6bd794c09"
+      }
+    ],
+    "sourceTreeAndEffectiveOriginalBothIndexed": true,
+    "pinnedQACodeFiles": 34,
+    "producerSharedRoutes": 10,
+    "sixConfigContractsPreserved": true,
+    "originalRawFilesSHAReverified": 11916,
+    "rawIntegrityErrors": 0,
+    "aboutExistingFailureOnly": {
+      "changedPixels": 421,
+      "allInFourCorners": true,
+      "sharedUniqueBodySHAEquals": 103,
+      "intentionalD02CSSDifference": 1,
+      "videoPhaseStronglySupported": true,
+      "historicalCompositorCauseProved": false,
+      "observationPairsExact": 3,
+      "notAddedToQualifiedV3": true,
+      "issueClosed": false
+    },
+    "webflowReadOnly": {
+      "pages": 42,
+      "styleNames": 2737,
+      "components": 27,
+      "cmsCollectionsReturned": 0,
+      "actualChangeAuthorIdentified": false,
+      "savedCodeSevenBlocksUnchanged": true,
+      "public10HTMLUnchanged": true,
+      "exactNextPublishScopeKnown": false,
+      "designerReadConnectionAvailable": false
+    }
+  },
+  "technicalRiskSummary": [
+    {
+      "id": "R-EXEC",
+      "topic": "HTTP200 subsequent JS execution exception",
+      "class": "Reproducible synthetic fault with user-visible menu failure; not observed failure of untouched actual asset",
+      "unresolved": true
+    },
+    {
+      "id": "R-PENDING",
+      "topic": "Permanent no-response",
+      "class": "Outside verified finite-delay contract; permanent pending unverified",
+      "unresolved": true
+    },
+    {
+      "id": "R-MUTABLE",
+      "topic": "Future mutable asset compatibility",
+      "class": "Future input unverified; current main/staging refs unchanged",
+      "unresolved": true
+    },
+    {
+      "id": "R-FIRSTPAINT",
+      "topic": "Other firstpaint/DOM/CSS dependency boundaries",
+      "class": "Specified contracts passed; additional static boundaries not newly reproduced",
+      "unresolved": true
+    },
+    {
+      "id": "R-APPLE",
+      "topic": "Safari/iOS/iPad rotation",
+      "class": "Environment unavailable",
+      "unresolved": true
+    },
+    {
+      "id": "R-V0-U01",
+      "topic": "V0/U01",
+      "class": "V0 investigation cap retained; U01 promotion prerequisites not met",
+      "unresolved": true
+    },
+    {
+      "id": "R-ABOUT820",
+      "topic": "About820 capture mismatch",
+      "class": "Video frame mismatch strongly supported; historical capture scheduling cause unresolved",
+      "unresolved": true
+    },
+    {
+      "id": "R-PUBLISH-SCOPE",
+      "topic": "Actual author and unpublished change scope",
+      "class": "Read-only inventory available; history/authority path incomplete",
+      "unresolved": true
+    },
+    {
+      "id": "R-SERVICES-SCOPE",
+      "topic": "Services inherited shared changes",
+      "class": "Auditor scope review needed; no new functional failure observed",
+      "unresolved": true
+    }
+  ],
+  "mandatoryBeforePublicApplication": [
+    "Restore authorized read-only Designer MCP/session access; it currently returns Unable to connect. Do not infer activity-history permissions from reconnection alone.",
+    "Obtain actual Nov19 change actor/actions from authorized activity record, not lastUpdated inference",
+    "Compare current shared styles/components with the last-published backup/reference without restoring it",
+    "Confirm empty CMS inventory in authorized UI or obtain staged/live item comparison if collections exist",
+    "Review exact next Publish page/global style/component/CMS inclusion without pressing Publish",
+    "Re-read all six stored configuration SHA values and confirm matched whole producer/shared cohort; preserve all other worker changes",
+    "Separate external reviewer records independence/access/scope/findings; no implementer self-check promoted",
+    "Verify physical Apple/rotation and explicitly manage V0/U01 and unsupported error scope",
+    "Separate user approval; no operations permitted now"
+  ],
+  "evidence": [
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/source-review-index.json",
+      "sha256": "0cd67e4145fce1ce8051a49e24a0aa47943a568c8a6f890ade2fd9fedd115ffe",
+      "newRawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/producer-consumer-matrix.json",
+      "sha256": "9b739dfa2593fcc1038ec6d265a9634ca0d0627a50610e0004bed50ec37eb573",
+      "newRawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/review-manifest.json",
+      "sha256": "25f372831e55fcf74636ed159b878b29cec56d036eaec594ba3f19bb146283cc",
+      "newRawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about820-assessment.json",
+      "sha256": "c744ab7c826e175565d64905f31cc645a0ef30172cb5873b159f6a6bf77852fc",
+      "newRawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/webflow-scope-assessment.json",
+      "sha256": "e81bf9d37663a024c50fa58b6ef14ba5ddddd70ed25b0228b3bbf9474754abf9",
+      "newRawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/previous-raw-verification.json",
+      "sha256": "38efe7cfa46424565b088859f4087b827d438946ae688a03e60e1ace62fc8ddf",
+      "newRawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/device-capability.json",
+      "sha256": "915ba7a7c1a8fc2b108edb9cf568838accf9c88e4ab82834065ba4c445da7705",
+      "newRawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-video-refined.json",
+      "sha256": "58439cddd079c47e49860f4019b64a12a9dce8a2d2707f1c0add2621d6d76281",
+      "newRawLocalOnly": true
+    }
+  ],
+  "existingQualifiedV3Unchanged": {
+    "resultSHA256": "7a908305dcfda2fef105580a42a950f69b36922c5e6f3a336a201aeee077b23b",
+    "QA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+    "finishedAtUTC": "2026-11-20T04:56:16.237Z",
+    "rerunPerformed": false,
+    "preservedStatus": "PASS — specified functional recovery contract in isolated Chromium replay with actual CDN bodies"
+  },
+  "runtimeAndExistingQABaselineChanges": 0,
+  "publicWritesMainStagingMergeHeadPinPublishDeploy": false,
+  "newRawExternalUpload": false,
+  "previousDriveArchivesReuploaded": false,
+  "previousDriveRemoteDownloadSHAStillUnverified": true,
+  "designerConnectionEvidence": {
+    "path": "/workspace/artifacts/helix-independent-audit-prep-20261120/designer-read-access.json",
+    "sha256": "ff29787bb0b72091445b0d5719a23ba9ef263e329a3601b3fad00c828c3a2bc3",
+    "readFailureIsNotProductFailure": true
+  },
+  "protectedRefsFinalRead": {
+    "observedAtUTC": "2026-11-20T05:43:48.547Z",
+    "rows": [
+      {
+        "ref": "main",
+        "sha": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+        "expected": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+        "match": true
+      },
+      {
+        "ref": "staging",
+        "sha": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+        "expected": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+        "match": true
+      },
+      {
+        "ref": "fix/helix-residual-structure-20261117",
+        "sha": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+        "expected": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+        "match": true
+      },
+      {
+        "ref": "recovery/helix-functional-main-20261120",
+        "sha": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "expected": "61c465152f26c5820ef30e7c8b166ba37829008a",
+        "match": true
+      },
+      {
+        "ref": "recovery/helix-functional-staging-home-20261120",
+        "sha": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "expected": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+        "match": true
+      },
+      {
+        "ref": "recovery/helix-functional-services-20261120",
+        "sha": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "expected": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+        "match": true
+      }
+    ]
+  },
+  "newDerivedReviewPacketPaths": [
+    "docs/quality/23-independent-audit-preparation.md",
+    "docs/quality/review/independent-20261120/README.md",
+    "docs/quality/review/independent-20261120/checklist.md",
+    "docs/quality/review/independent-20261120/manifest.json",
+    "docs/quality/review/independent-20261120/file-differences.json",
+    "docs/quality/review/independent-20261120/producer-consumers.json"
+  ],
+  "newLocalRawInventory": {
+    "path": "/workspace/artifacts/helix-independent-audit-prep-20261120/raw-inventory.json",
+    "sha256": "d76f4e581210a0712ab54440c5374abe6e17ae5687a8747429d9efb67f73c0f5",
+    "files": 194,
+    "bytes": 9135868,
+    "externalUploaded": false,
+    "seconds": 0.07
+  },
+  "newRawPhysicallyReadOnly": true,
+  "newRawFileMode": "0444",
+  "newRawDirectoryMode": "0555",
+  "existingRawPermissionsChanged": false
+}

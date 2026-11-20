@@ -1,0 +1,860 @@
+{
+  "preparedAtUTC": "2026-11-20T05:33:04.837304+00:00",
+  "preparedBy": "Same implementation executor; preparation/self-check only",
+  "externalIndependentAuditStatus": "NOT PERFORMED — reviewer identity/access/signoff not provided",
+  "reviewerIdentity": null,
+  "overallDecision": "3. Some verification held for environment/authority/raw access; fixed source/contract materials may be reviewed read-only now",
+  "structureStabilizationComplete": false,
+  "operationalApplicationReady": false,
+  "publicApplicationApproved": false,
+  "basisHEAD": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+  "protectedRuntimeSource": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "frozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+  "recoveryPackages": [
+    {
+      "name": "main",
+      "beforeRef": "78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc",
+      "recoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "changedFiles": 14,
+      "onlyDeclaredFilesChanged": true,
+      "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc...61c465152f26c5820ef30e7c8b166ba37829008a"
+    },
+    {
+      "name": "staging-home",
+      "beforeRef": "60e50fe9938055bfb5da5261bbf7f588401aabb0",
+      "recoveryRef": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+      "changedFiles": 13,
+      "onlyDeclaredFilesChanged": true,
+      "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/60e50fe9938055bfb5da5261bbf7f588401aabb0...76f9a10c59ecb696dd349fd1f9344939ddafab4a"
+    },
+    {
+      "name": "services",
+      "beforeRef": "35b12071803646aef2ec93029afea062012711ce",
+      "recoveryRef": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+      "changedFiles": 6,
+      "onlyDeclaredFilesChanged": true,
+      "compareURL": "https://github.com/pookat73-prog/helixamc-webflow/compare/35b12071803646aef2ec93029afea062012711ce...91140bf351dc6afbdfb57bb99e5c17c6bd794c09"
+    }
+  ],
+  "fixedBasisDocuments": [
+    {
+      "path": "docs/quality/HANDOFF.md",
+      "basisCommit": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+      "sha256": "7944fce0bef218c61bc7cce79c5df837b42c5c599ceff8750debbd0092fd3cf2",
+      "readOnlyURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/HANDOFF.md"
+    },
+    {
+      "path": "docs/quality/22-functional-rollback.md",
+      "basisCommit": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+      "sha256": "4794abf8fa412fd530c3bbc45ac2b88c511f7cbff992ac5e69fea483e54f9633",
+      "readOnlyURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/22-functional-rollback.md"
+    },
+    {
+      "path": "docs/quality/evidence/functional-rollback-final.json",
+      "basisCommit": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+      "sha256": "ed0aa8990610eadc029df3c5e9c4234313a5281458b01dfcfa62e9c1c856a2e6",
+      "readOnlyURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/evidence/functional-rollback-final.json"
+    },
+    {
+      "path": "docs/quality/evidence/functional-rollback-package.json",
+      "basisCommit": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+      "sha256": "c1ffe9962513790199cfb6f6cd555814c759cc140673f605ae7e6d9ad1f5dd8a",
+      "readOnlyURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/evidence/functional-rollback-package.json"
+    },
+    {
+      "path": "docs/quality/evidence/functional-rollback-assets.json",
+      "basisCommit": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+      "sha256": "8f356217efda6ec17bf69e46bf93418124c7c1ff8a73efda7e2e7729be4c7660",
+      "readOnlyURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/evidence/functional-rollback-assets.json"
+    },
+    {
+      "path": "docs/quality/evidence/functional-rollback-raw-receipt.json",
+      "basisCommit": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+      "sha256": "262eddae57e673e827dd6c4d5575b944ef50e5dcd80c8fbf290b69be0d1c06d3",
+      "readOnlyURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/evidence/functional-rollback-raw-receipt.json"
+    },
+    {
+      "path": "docs/quality/proposals/functional-rollback-20261120/manifest.json",
+      "basisCommit": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+      "sha256": "e0f2888fe3ffb720ec8f014a31f7f941e9321758259727c776d7dc5cd7adb6c8",
+      "readOnlyURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/proposals/functional-rollback-20261120/manifest.json"
+    }
+  ],
+  "testCode": [
+    {
+      "path": "scripts/check-site-quality.mjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "29381ec7363ea19c88032ac3d784e0aa43084a16",
+      "sha256": "0265947dd97377641933050e52e24b77d334e88ece17abdcf6c1591ed55de076",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/check-site-quality.mjs"
+    },
+    {
+      "path": "scripts/test-home-loading.mjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "6263256a00cd2effa38864da9463753e20dd9936",
+      "sha256": "1b579bed32312b38ebfc216ad1ddc39718ed8db33be263d4e988841d1c171b10",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/test-home-loading.mjs"
+    },
+    {
+      "path": "scripts/visual/adoption-blocker-geometry.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "1b5bd4b8b2045978c58c68d5fa69e5d4e645568e",
+      "sha256": "7e360e594dcf2d5c217b326e6bb45f0be6ba73662b6637b16e6d9194a0957a98",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/adoption-blocker-geometry.cjs"
+    },
+    {
+      "path": "scripts/visual/adoption-blockers.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "4bb8dfd0e96f299ef132bf58650452e11051fe3d",
+      "sha256": "cce986bd0bcc75b889f8ec906f4774acb7154e642ec0f951b67e37e81069692d",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/adoption-blockers.cjs"
+    },
+    {
+      "path": "scripts/visual/consent-body-wrap.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "c7368fb56f6ab284f64b3874bd616febc4655a91",
+      "sha256": "fb48818178dfd34d5d39376422e760be423ed2e073df1e049ef9d0b28b3b8e4d",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/consent-body-wrap.cjs"
+    },
+    {
+      "path": "scripts/visual/corpus.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "fb55eb7b119e35c145ef3625226657c0577ba2a5",
+      "sha256": "5d819236a5fe21bf79f7687b1e85bdf759c629a5c44a2590681b87cef4402717",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/corpus.cjs"
+    },
+    {
+      "path": "scripts/visual/cta-copy-gap.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "8814adbe23e7811c033dcef6b1cb626fd3045539",
+      "sha256": "14bdd2ae5876bed4da32b38ec4121d781604f7a689606347db4c7e41249c6063",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/cta-copy-gap.cjs"
+    },
+    {
+      "path": "scripts/visual/cta-form-border.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "e4157a94e194fea77acdc167c60f1476178d9430",
+      "sha256": "28318adcace8eff0481c1825b52733f5330ba3180dad5a6a33c0bac097eb8960",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/cta-form-border.cjs"
+    },
+    {
+      "path": "scripts/visual/cta-phone-weight.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "2fe538616ea5d0ccb723a57f1a4368faad2ca460",
+      "sha256": "30743186c7de09339fac6bd3a8db41dbf3fafd26357fd972d4ae57d1e8a593e7",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/cta-phone-weight.cjs"
+    },
+    {
+      "path": "scripts/visual/firstpaint-heading-boundary.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "38ea014532031de3c3079399e0a011cfaf7c82b7",
+      "sha256": "259ee55b65b93f3ce363f47a22cedec792c6dad10d86e6afe462cde42682da80",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/firstpaint-heading-boundary.cjs"
+    },
+    {
+      "path": "scripts/visual/form-intro-wrap.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "4518528aa918dc008054477c0048edbe5f18b466",
+      "sha256": "4911d98b1927297e73a4dbd16fbd17001040e3f319c4f8762628dea1b5af9e99",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/form-intro-wrap.cjs"
+    },
+    {
+      "path": "scripts/visual/form-label-wrap.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "60b2dac175ef6c459edceb86163b4ff22ce1ba84",
+      "sha256": "c68daa652e5317d8d2137f7955fa604b0edd6f46a9cb9955d91783037dc04399",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/form-label-wrap.cjs"
+    },
+    {
+      "path": "scripts/visual/functional-rollback-counts.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "ba21439c738628d52e095175045b8135694c82b7",
+      "sha256": "b79d00594536a48d3cd9f77622efa1a7e3a0e81b112d104b3efcf665aafde0f8",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/functional-rollback-counts.cjs"
+    },
+    {
+      "path": "scripts/visual/functional-rollback-hero.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "9d116e05e81c4d6ca83d60a5428bf77b06f6c6f6",
+      "sha256": "7d212566db6a088fc7452044d09c9ca784a8c81ce3cc3f9162674b17b4dd44a7",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/functional-rollback-hero.cjs"
+    },
+    {
+      "path": "scripts/visual/functional-rollback-integration.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "ee95cccf85f6ef391426c15ba32a479a03f80692",
+      "sha256": "b32cdcfc1edb96fad2d8bb189b073632e8fa6e4189cb7e22d67c1bcd2ba97d38",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/functional-rollback-integration.cjs"
+    },
+    {
+      "path": "scripts/visual/functional-rollback-inverse.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "40335697bf9c25b749e8cce6f1cbe3fd644f97a0",
+      "sha256": "2f180e40231d41e85d0e87eb58a2b8bec2b21f165ba3d5013b4fd40e4adde1d3",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/functional-rollback-inverse.cjs"
+    },
+    {
+      "path": "scripts/visual/functional-rollback-locks.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "1b7c47e0e13b0cbb1df984a212720b774f73ad42",
+      "sha256": "5e061f4dc7a02f848a152c316864f1bce75f6c097d4d4d92c28db589440922da",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/functional-rollback-locks.cjs"
+    },
+    {
+      "path": "scripts/visual/heading-lifecycle.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "fc3c1583464cd199483609ba35f18ff6b10fc5cf",
+      "sha256": "3ef79a75a5ce214eebbfcff6132536c16a0c399ca9195c008f3f1abd445509df",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/heading-lifecycle.cjs"
+    },
+    {
+      "path": "scripts/visual/hero-hook-boundary.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "efc8e79c4d01ebab66ad5239ccf1b14d4d431e9c",
+      "sha256": "c1d7c67b05da4002e3d3f3be5df463712c2b100507316b474f1a7011adf0044d",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/hero-hook-boundary.cjs"
+    },
+    {
+      "path": "scripts/visual/interactions.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "8cccb6e9237bc97d2bc77565ebf968ffbc8cfe90",
+      "sha256": "124dbc1f4af7fca17fd1ac8b8a8d64ae1a5911e3d1b2edd63a0d91040c3d60bb",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/interactions.cjs"
+    },
+    {
+      "path": "scripts/visual/loader-consistency.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "8175513f32e1dfdfc4dc9fedd4b9fd545cfbb8e1",
+      "sha256": "61209eea1b26e972cbd2720aef5746ffe790fbf3a3dd41601fc9cc6420f51f46",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/loader-consistency.cjs"
+    },
+    {
+      "path": "scripts/visual/menu-css-ownership.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "e4029214fd42923d888822f4ae99531d98cb91ad",
+      "sha256": "10cf79f305ad35bfe17c5456dd358c19995a4057f0752b672e7af1ffc4aecfd5",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/menu-css-ownership.cjs"
+    },
+    {
+      "path": "scripts/visual/menu-dependency.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "59888240a5beea4c6db697436d7f3da164487c22",
+      "sha256": "da69cb411dc3cd696f6e9a8e7c99669e0a06c86fb4c2e895b14c898563dc51ae",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/menu-dependency.cjs"
+    },
+    {
+      "path": "scripts/visual/menu-execution-state.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "7a249a1a48c017333fa61aa829eee290d8d61991",
+      "sha256": "708d758d7c3cea03a34d7aa8df0f14b9426b37cd52279b69bdbd06531f92d9b5",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/menu-execution-state.cjs"
+    },
+    {
+      "path": "scripts/visual/menu-js-producer.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "c1ec18dc2c368327e9d70b8c36fe21c7d931b0a0",
+      "sha256": "747fbc9f4dfe524b3fd1b0909a88ac25b75abfff6ee8b3dda10a6266aebf382b",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/menu-js-producer.cjs"
+    },
+    {
+      "path": "scripts/visual/network.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "2341aa8693464af75c94f725ef09bcd084f8dedf",
+      "sha256": "58f9bee8b83f0dccc7ccbaee481aa64fa2bf5f2e47ebcb0d098fe9d316d7c862",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/network.cjs"
+    },
+    {
+      "path": "scripts/visual/next-integration.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "8fa556fdc76fc95a5b861df4e4178d80119ef693",
+      "sha256": "cddf1a2b3bef86847c5638d1060b1cb541ea7b68739e729fd99b02cc0d6fd779",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/next-integration.cjs"
+    },
+    {
+      "path": "scripts/visual/producer-adoption.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "d0eb8c40a13d446853b1e07e193fa2a5697884ad",
+      "sha256": "a28319c8d99d834bdd4ae2e17dd3c6deab39b280d3c0376c23b3751bb8997c49",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/producer-adoption.cjs"
+    },
+    {
+      "path": "scripts/visual/producer-pending-boundary.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "7cf3f32e490374d470d93089cdd6aff5d1e326e2",
+      "sha256": "67af4d3281d02fa2c84da63aa4313da8aab2c0490116f7dcb6c49c7ff8fcc632",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/producer-pending-boundary.cjs"
+    },
+    {
+      "path": "scripts/visual/producer-pending.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "a189bb995d57a5222a1a935f514b5d6ad81860a6",
+      "sha256": "752db320e5af7dbe2a49faef464416d58de8c35d8013fbd62d3fe282fe3fcf6b",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/producer-pending.cjs"
+    },
+    {
+      "path": "scripts/visual/runtime.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "df635371d6dbe85ec4d57cae084ae9762b8153be",
+      "sha256": "0fcbe17b7fe14fb73be7e1f84de9972ffa364456155e965754473d7942412831",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/runtime.cjs"
+    },
+    {
+      "path": "scripts/visual/same-url-css-owner.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "317196f026e0d8350eb238890f243494b0cab650",
+      "sha256": "f5b5da7f414be8c3975e17fa8b43a375f2b8b06232503eda489a0bcbcdbed836",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/same-url-css-owner.cjs"
+    },
+    {
+      "path": "scripts/visual/scope.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "e0ab221c43b42e10b8627edaa81490d4ea94e41d",
+      "sha256": "8a379dad13f5fd257fda883ce0c7db21c1c36b2654d8af0aedc256a75e3f921a",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/scope.cjs"
+    },
+    {
+      "path": "scripts/visual/section1-recovery.cjs",
+      "qaCommit": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+      "gitBlob": "9bbf9bbb0bcea956f7c71c6e83ec9f68d7a52c3f",
+      "sha256": "5005a330fcec4492fb7ec548e30758aa0f1148161af4d166cb43fd3982c40376",
+      "readOnlySourceURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/section1-recovery.cjs"
+    }
+  ],
+  "preservedSingleContinuousEvidence": [
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/results.json",
+      "sha256": "7a908305dcfda2fef105580a42a950f69b36922c5e6f3a336a201aeee077b23b",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/previous25/results.json",
+      "sha256": "b8a1c0b13d51ac1eaad14b0a1cc77fb40f9ff03062925f9469a064152080afdb",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-production/results.json",
+      "sha256": "00614e4da859a522388ca70a3f2c9ade428abe7f3a1ddc610ab813964524a06f",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-staging/results.json",
+      "sha256": "9ad5c71679b423b084f65d308c03742c7836d63460b524d3d400d505947a2217",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/exact-recovery-receipts.json",
+      "sha256": "f9fcaf7248528e39d5e5ccd1860930255457a07ed445c712a6da236cd5a0143e",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/root-locks-production/results.json",
+      "sha256": "a3a7ca2d639a4305e8e2e08fd156596aa76f3af7c50b210aec4f72921a086787",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/root-locks-staging/results.json",
+      "sha256": "5f87846c581202d52cd77622c447d0e3b0bc21ac0834e4c2ecace1acd2c71453",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/original12-geometry-1px/results.json",
+      "sha256": "2fe3b5d575d74d3381ddc5e2da664eca4b0aa86c6d480a4511378e493162c5a1",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-Hero-production/results.json",
+      "sha256": "0c1ede376f389d3aea3c24968327be8159d84b8d1ea0d85a5c443f1d07485893",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-Hero-staging/results.json",
+      "sha256": "7a7fc1e0332e386ea40a552978c4124c1f4b4686b3c9a9e07cb105a6d40bb4cc",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/own-inverses-and-restoration/results.json",
+      "sha256": "e712ee32fac63663a9405f228b1dceebbdc6b8dd30913590f7337e269d5d7897",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/observed-runtime-reach/results.json",
+      "sha256": "8a741e0c70a010ff5a75a5b642035a6807f2d8feda2e7e29c96a2a6406f24aa9",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/observed-runtime-reach-assessment.json",
+      "sha256": "cd1e98ec1cb8f7de49de339e1fbef4f780505025e0eda42500bd7c4494ba7758",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/functional-input-index-v1.json",
+      "sha256": "9438661936bbd9432d0ceb20a18fc95e736e7276be1b0f395ee84426f2221559",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/functional-profile-v1.json",
+      "sha256": "2a73817a2fb25e64094eeb38601d9a5524ec35d1b3b05e3ef824512889e2c078",
+      "rawLocalOnly": true
+    },
+    {
+      "localPath": "/workspace/artifacts/helix-functional-rollback-20261120/frozen-state-v3.json",
+      "sha256": "2c981fbf880af8e525a19f0cf21527b672ca1cfd0ab162e31b32745f59e640ff",
+      "rawLocalOnly": true
+    }
+  ],
+  "testInputs": [
+    {
+      "path": "/workspace/artifacts/helix-functional-rollback-20261120",
+      "scope": "Frozen recovery input20,continuous v1/v2 failures/v3 full result,rawresponses/screenshots/receipts; local only",
+      "inventorySHA256": "eae0b5b4e10f91458362501a0b86308eebf93ecdb3615e29a3ae9116908e4e51",
+      "currentlyVerified": true
+    },
+    {
+      "path": "/workspace/helix-s1-portable-inputs-v5-20261118",
+      "scope": "Original25 portable roots13 present (0..12)/pages mappings and production corpus; required in addition to recovery input20",
+      "manifestRecords": [
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/0/manifest.json",
+          "sha256": "e6c6c18e7e4736d53fd5391532ab5351fef95a264096e64e1df144b0230933a5"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/1/manifest.json",
+          "sha256": "e9f42581ed214b9f5796186c9c9fa7a9846d1c6b67aa8bf05153dc4e2469d972"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/10/manifest.json",
+          "sha256": "c5151869fe64607cd9b2097ff43d4481d80de4d1fd4ec5205eeda1288b8a0bf3"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/11/manifest.json",
+          "sha256": "7fdcb23c70e30dabe51f38ce9963070edacb25c42aba47450319339ce9edaba2"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/12/manifest.json",
+          "sha256": "7208c0b9eec30f0aa6fac65d9d928f0d1c47c87967b7959d9c7d26ce10b60e50"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/2/manifest.json",
+          "sha256": "a786d92abb01ca216099ab5ebfeb9b5784960c3e498615ba07626e98f27c44be"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/3/manifest.json",
+          "sha256": "5a72212189867a57fd1d124b30300cf7ed1567e8553ce24e16ec3d14d5269b05"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/4/manifest.json",
+          "sha256": "346e4e238296aa044a59b94fc2fe389bd224d08d29ede9310d6a65b70eb2b9eb"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/5/manifest.json",
+          "sha256": "3630626204a6db40016f1f27bf6d4be78946bda0dba721dc562351367d784fb9"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/6/manifest.json",
+          "sha256": "f517e91ba8fda4d5afa8b2db279cba91da4bb1c48897934f2ddf359d945c6c34"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/7/manifest.json",
+          "sha256": "e6a529839031ffc0b4741192bf6b0c9ccc8e83798755a712cd5d732608976568"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/8/manifest.json",
+          "sha256": "50f6c679f9ff7df579df45ee0a68d60f1762b399ca0fa8d9d9c03d7065ea402b"
+        },
+        {
+          "path": "/workspace/helix-s1-portable-inputs-v5-20261118/roots/9/manifest.json",
+          "sha256": "55f6cab4d49dc619f05f857c2678edb03cb8d201b12d28f3397971db149b8a44"
+        }
+      ],
+      "mappingSHA256": "d1298402a2c9fe9b8d7bde65419fd22632423852d90d22c9bc44e65b257a6d12"
+    },
+    {
+      "path": "/workspace/artifacts/helix-s1-recovery-20261118/env-portable-v5.sh",
+      "sha256": "52a21934bca1441fdafbc7d2602ff8018cacd133a32804212fe9a0784e263b1d",
+      "scope": "Pinned local module/browser/input path declarations; no secret variables copied"
+    },
+    {
+      "path": "/workspace/artifacts/helix-independent-audit-prep-20261120",
+      "scope": "This read-only diagnosis, exact local source patches/blobs,About observation traces,current site inventory; new raw local only"
+    }
+  ],
+  "sixConfigurationContracts": [
+    {
+      "name": "page-home",
+      "entity": {
+        "page_id": "69d0bdd30d54f23591313a96"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "e5cd4a2674eef307fe8b2d4a2f9bf69613590688e7608f6ea98d7913fda9add7",
+      "beforeCurrentCandidateBlockSHA256": "ff8b77f8caf592a37a9816dfadb4e5db81a2a169d10b14e65e575eca11c11778",
+      "afterFunctionalRecoveryBlockSHA256": "26a6d650f3b5b4cd403f2e1135b5acab809944b386957a2da7c391205ac01f02",
+      "patch": "page-home.patch",
+      "patchSHA256": "e7ab813df62c69b74748be5caafba243fadefc8928d1bd24a9dc0a383baacf59",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true,
+      "readOnlyPatchURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/proposals/functional-rollback-20261120/page-home.patch"
+    },
+    {
+      "name": "site-footer",
+      "entity": {
+        "site_id": "69d090ea69d828e27d16ea29"
+      },
+      "location": "footer",
+      "currentStoredOriginalSHA256": "c3907aea230153088890db8b5497592a0c14e01b65613b60b23e1a7d8c8c919d",
+      "beforeCurrentCandidateBlockSHA256": "975783c92fd5463aae2c01a75afe674e0e52abc0f88801c488ef42da820bc7fe",
+      "afterFunctionalRecoveryBlockSHA256": "3df90d98e3f4accd4d3aa0c2e9889fdaf2dfff2f83efed023b1b75c5a814feea",
+      "patch": "site-footer.patch",
+      "patchSHA256": "80e3084f3c98f62cbc96af548fc2d7889f7c998923db6121c16f381b3f9de7dd",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true,
+      "readOnlyPatchURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/proposals/functional-rollback-20261120/site-footer.patch"
+    },
+    {
+      "name": "page-discover-helix",
+      "entity": {
+        "page_id": "69d1c60d1e37375fe0c16bc5"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "36512c6ca6d4da1a5684ae41b3202433d4a40be8756a24362adb4c043748e99a",
+      "beforeCurrentCandidateBlockSHA256": "d86339288ab675187e05a9f22de0fd8c98f418f15f46d6307bb623f154e6f986",
+      "afterFunctionalRecoveryBlockSHA256": "b491004f54d3f29d407b9997618a63196d31b2a8ca7dce5d21f347e7661b60bf",
+      "patch": "page-discover-helix.patch",
+      "patchSHA256": "dc9223ef80f71456944654f2eb58a573013a6dbb1efb58d9be3f22bf0510e655",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true,
+      "readOnlyPatchURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/proposals/functional-rollback-20261120/page-discover-helix.patch"
+    },
+    {
+      "name": "page-services",
+      "entity": {
+        "page_id": "69d74acaacc7897c537190f1"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "fd87cb03cf6dbb1b4499964ccbec0cd0f17e384426d330c240b9cb04f02a1667",
+      "beforeCurrentCandidateBlockSHA256": "d80a42a0c196146f7c63d9fa1d0a56eddf85757074f3b88c1013912c995a136e",
+      "afterFunctionalRecoveryBlockSHA256": "a7e3a80165d0a6655dee8e09c6cdf8dcaf1c7904f5bdedfb4f792f028b62f782",
+      "patch": "page-services.patch",
+      "patchSHA256": "bb77fbeaa960624c53defce42f1c5e9ea4cbf621aa550c9e7533e891774e7d16",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true,
+      "readOnlyPatchURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/proposals/functional-rollback-20261120/page-services.patch"
+    },
+    {
+      "name": "page-faq",
+      "entity": {
+        "page_id": "6a4f46aa5c5fd95c7b128df3"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "5dac0a317bb764b52762d5f5f5e1f883f9043166578309d65a3f95016dcae33f",
+      "beforeCurrentCandidateBlockSHA256": "f1b0fc96bb0b3e262cf9dd614ada5c0652ebe6da55e970e0d3ebcf2caf529daf",
+      "afterFunctionalRecoveryBlockSHA256": "261d54ea6b37b4413962e63c7075f5f713c1402b8b9d7fd7cdba16641218674f",
+      "patch": "page-faq.patch",
+      "patchSHA256": "541b71e3e7e3f8c7db93cd03d19645c89672794a27687532d8c091d469243b9d",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true,
+      "readOnlyPatchURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/proposals/functional-rollback-20261120/page-faq.patch"
+    },
+    {
+      "name": "page-internal-medicine",
+      "entity": {
+        "page_id": "69d74a8ea2cac3ea9cfed34d"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "fa56775776cc82a5c0975e9fdeaff25edcd56859b08728ea588358bfc0d36718",
+      "beforeCurrentCandidateBlockSHA256": "bc3105930be3e2ceeec8d5ca55ade16d3e7b9546af8475d7cef9e32794c2996c",
+      "afterFunctionalRecoveryBlockSHA256": "35f484de2eb6626b6a65d81c68a5230c88f18c62b0c6591739cb28e0ba5e1b04",
+      "patch": "page-internal-medicine.patch",
+      "patchSHA256": "a64d28bd1176b88edce22829937da440a53275bc1e0533b6b254517e764eed06",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true,
+      "readOnlyPatchURL": "https://github.com/pookat73-prog/helixamc-webflow/blob/81da7525dc66efb8afb863117fcf825cf4ecba3a/docs/quality/proposals/functional-rollback-20261120/page-internal-medicine.patch"
+    }
+  ],
+  "configurationFromIsNotCurrentStoredOriginal": true,
+  "partialApplicationSupported": false,
+  "inverseRestoreEvidence": [
+    {
+      "kind": "menu",
+      "inverseReference": "02642863ae83a10b09efa94a14267f658861f99e",
+      "restoredReference": "143ebe6dcde025624d3cd58e489266fe664845c6",
+      "inverseTree": "e40877a335c5a5a2f3e3bd5b84e9e8fee1c39d09",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "home/global/hamburger.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "1c38114bec174ca85e5222917e8716b027645ec9"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "3684f0d20dd51cfed23d70866cd524036e8f77dd"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    },
+    {
+      "kind": "modal",
+      "inverseReference": "26cc50f9b649e1b0776357f5a86322b65f375bc7",
+      "restoredReference": "f39d1219c3ea4373555fd01c136288497a7da2b7",
+      "inverseTree": "42a7bfb395d3ebef13b1b5806209234043aaa50b",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "global/floating-cta.css",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "fe9c224cb901ee6f8da4537ec95e9bbfb71dade5"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    },
+    {
+      "kind": "loader",
+      "inverseReference": "39e075a6b6993ebfed42f361643033b8e5593957",
+      "restoredReference": "9f938b26afdd6474cb458857445bc44566d22077",
+      "inverseTree": "b19aca02c39c3cadbca62b89eef9d2eab395d2af",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "about/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54"
+        },
+        {
+          "path": "faq/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d"
+        },
+        {
+          "path": "global/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d"
+        },
+        {
+          "path": "home/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "de43d8948289b66246ed9a14f7ad6b118db3edb5"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "a0c037ad9347e13c16f45fa266d1ea159811aa2b"
+        },
+        {
+          "path": "internal-medicine/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "7ee6b988019f807ec865f42375a8ad567a8277ea"
+        },
+        {
+          "path": "services/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "8141fa675f77564360749837863936103a464a5a"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    }
+  ],
+  "legacyFailures": [
+    "continuous-v1:caller target mismatch,failed",
+    "continuous-v2:About820exactPNG mismatch,failed",
+    "continuous-v3:whole pass; no split sums"
+  ],
+  "risks": [
+    {
+      "id": "R-EXEC",
+      "topic": "HTTP200 subsequent JS execution exception",
+      "class": "Reproducible synthetic fault with user-visible menu failure; not observed failure of untouched actual asset",
+      "evidence": "continuous-v3/previous25/execution-state/results.json",
+      "finding": "6 early/partial/syntax injections at1440/390: native load+HTTP200,menu0. Partial guardtrue is not success. Two pending-release cases recover with1request. This classification is not recovery success.",
+      "currentActualSupport": "80 actual-cohort scenarios have no observed normal-path execution error; faulted byte SHA differs from verified menu SHA68008f...",
+      "unresolved": true,
+      "requiredBeforeApplying": "Independent reviewer must assess reachability of runtime exception in supported unmodified inputs; an actual reproducible supported core-menu failure blocks adoption."
+    },
+    {
+      "id": "R-PENDING",
+      "topic": "Permanent no-response",
+      "class": "Outside verified finite-delay contract; permanent pending unverified",
+      "finding": "10second delayed native response and500ms test-deadline release recover without duplicate request. Native permanent errors4 are explicitly unavailable. No timeout was added and a test deadline is not resource failure.",
+      "unresolved": true,
+      "requiredBeforeApplying": "Define supported pending behavior separately; never infer permanent failure from finite delay or claim infinite-pending recovery."
+    },
+    {
+      "id": "R-MUTABLE",
+      "topic": "Future mutable asset compatibility",
+      "class": "Future input unverified; current main/staging refs unchanged",
+      "finding": "Verified menu pair retries same immutable ref; other module fallbacks still include mutable branch paths. Future branch contents and foreign module combinations cannot be qualified from current source.",
+      "unresolved": true,
+      "requiredBeforeApplying": "Re-read live assets at application time; invalidate only affected compatibility evidence if a consumed SHA changes."
+    },
+    {
+      "id": "R-FIRSTPAINT",
+      "topic": "Other firstpaint/DOM/CSS dependency boundaries",
+      "class": "Specified contracts passed; additional static boundaries not newly reproduced",
+      "finding": "Public head owns reveal callback/ready class in current supported head. coming-soon has no-head fallback class writer. Section1 phase recovery listens for native script load after40 only when GSAP missing; absent selectors with GSAP present are outside that recovery condition. coming-soon quickbar depends on its own CSS sheet. No newly observed supported-path failure is claimed.",
+      "unresolved": true,
+      "requiredBeforeApplying": "Review actual HTML/head/critical CSS and selector consumers; head ownership move or new recovery policy needs separate scope. Do not call GSAP-only recovery a universal initialization repair."
+    },
+    {
+      "id": "R-APPLE",
+      "topic": "Safari/iOS/iPad rotation",
+      "class": "Environment unavailable",
+      "evidence": {
+        "os": "linux",
+        "arch": "x64",
+        "playwright": "1.57.0",
+        "webkitExecutable": "/home/agent/.cache/ms-playwright/webkit-2227/pw_run.sh",
+        "webkitInstalled": false,
+        "physicalSafariIOSIPadAvailable": false,
+        "scope": "Linux capability check, not a real-device test"
+      },
+      "unresolved": true,
+      "requiredBeforeApplying": "Real WebKit/Safari plus actual iOS/iPad viewport/rotation evidence; Chromium width changes are not substitutes."
+    },
+    {
+      "id": "R-V0-U01",
+      "topic": "V0/U01",
+      "class": "V0 investigation cap retained; U01 promotion prerequisites not met",
+      "finding": "About820 video-corner discrimination is a separate scene and does not establish a new footer discriminator. No footer experiments or U01 transfer performed.",
+      "unresolved": true,
+      "requiredBeforeApplying": "Only restart V0 with genuinely new footer-specific discriminating evidence; keep existing U01 promotion criteria."
+    },
+    {
+      "id": "R-ABOUT820",
+      "topic": "About820 capture mismatch",
+      "class": "Video frame mismatch strongly supported; historical capture scheduling cause unresolved",
+      "evidence": "about820-assessment.json",
+      "finding": "421changed pixels allfour20pxcorners; original and candidate video-frame fits near0 and7.674seconds.3instrumented pairs exact withframe0; original failing pair lacks presentation/time trace.",
+      "unresolved": true,
+      "requiredBeforeApplying": "Preserve failure and standards; no claim that3passing observations fix underlying capture race."
+    },
+    {
+      "id": "R-PUBLISH-SCOPE",
+      "topic": "Actual author and unpublished change scope",
+      "class": "Read-only inventory available; history/authority path incomplete",
+      "evidence": "webflow-scope-assessment.json",
+      "finding": "42pages/2737style names/27components/0collections returned. Author,published-vs-saved common style/component diff, exact nextPublish inclusion remain unknown; shouldPublish42 is not42dirty pages.",
+      "unresolved": true,
+      "requiredBeforeApplying": [
+        "Obtain actual Nov19 change actor/actions from authorized activity record, not lastUpdated inference",
+        "Compare current shared styles/components with the last-published backup/reference without restoring it",
+        "Confirm empty CMS inventory in authorized UI or obtain staged/live item comparison if collections exist",
+        "Review exact next Publish page/global style/component/CMS inclusion without pressing Publish",
+        "Re-read all six stored configuration SHA values and confirm matched whole producer/shared cohort; preserve all other worker changes"
+      ]
+    },
+    {
+      "id": "R-SERVICES-SCOPE",
+      "topic": "Services inherited shared changes",
+      "class": "Auditor scope review needed; no new functional failure observed",
+      "finding": "Services6-file delta includes shared bootstrap289add/92delete and global CSS380add/51delete relative to its own original mirror. These include preserved existing behavior beyond menu. Normal visual/menu/form contracts pass, but full navigation/SEO semantics are not newly qualified.",
+      "unresolved": true,
+      "requiredBeforeApplying": "Inspect per-hunk path guards and consumers, rather than approving the whole file from a menu-only label."
+    }
+  ],
+  "executionClassificationRows": [
+    {
+      "width": 1440,
+      "scenario": "execution-early",
+      "status": "execution error, unresolved",
+      "menuCount": 0,
+      "claim": false,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "e74daacd447aa8a3ed77eb486fec37a75c371025e61c50f712bbbba9a48fb897"
+    },
+    {
+      "width": 1440,
+      "scenario": "execution-partial",
+      "status": "execution error, unresolved",
+      "menuCount": 0,
+      "claim": true,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "7d7137510eb3ee316a81260a9caf5dd880feeb0a2ea156aee93a6418a6ed5518"
+    },
+    {
+      "width": 1440,
+      "scenario": "execution-syntax",
+      "status": "execution error, unresolved",
+      "menuCount": 0,
+      "claim": false,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "def7ab1a533de46269ac463fd84178ffaea45eb6eac1ee422802415545a1939a"
+    },
+    {
+      "width": 1440,
+      "scenario": "pending-release",
+      "status": "pending then success after original response release",
+      "menuCount": 1,
+      "claim": true,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa"
+    },
+    {
+      "width": 390,
+      "scenario": "execution-early",
+      "status": "execution error, unresolved",
+      "menuCount": 0,
+      "claim": false,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "e74daacd447aa8a3ed77eb486fec37a75c371025e61c50f712bbbba9a48fb897"
+    },
+    {
+      "width": 390,
+      "scenario": "execution-partial",
+      "status": "execution error, unresolved",
+      "menuCount": 0,
+      "claim": true,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "7d7137510eb3ee316a81260a9caf5dd880feeb0a2ea156aee93a6418a6ed5518"
+    },
+    {
+      "width": 390,
+      "scenario": "execution-syntax",
+      "status": "execution error, unresolved",
+      "menuCount": 0,
+      "claim": false,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "def7ab1a533de46269ac463fd84178ffaea45eb6eac1ee422802415545a1939a"
+    },
+    {
+      "width": 390,
+      "scenario": "pending-release",
+      "status": "pending then success after original response release",
+      "menuCount": 1,
+      "claim": true,
+      "requests": 1,
+      "moduleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+      "faultedModuleSHA256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa"
+    }
+  ],
+  "readOnlyDelivery": {
+    "github": "Immutable commit URLs and comparison URLs. No repository permission/settings changes. New raw is not uploaded.",
+    "sameWorkspace": "Exact local paths with hashes; no source checkout/reset/restore or existing-raw rewrite required. Review artifacts using read-only file access.",
+    "externalReviewerWithoutWorkspace": "Source/derived metadata available only; full screenshot/raw replay audit is blocked until authorized read-only local access is arranged. Do not label metadata-only review full visual audit."
+  }
+}

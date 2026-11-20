@@ -1,0 +1,453 @@
+{
+  "basis": "Qualified v3 request receipts with explicit controlled duplicate-entry interpretation, not a fresh runtime test",
+  "duplicateInjectionSource": "https://github.com/pookat73-prog/helixamc-webflow/blob/b6685f03b54dde0a6c2472a43d03a0d4bb7429d9/scripts/visual/adoption-blockers.cjs#L217",
+  "rows": [
+    {
+      "environment": "production",
+      "page": "home",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap-v3.js",
+          "sha256": "080e20d7ee64118e2e7ea424e301ff6642fdf6e4567c9099dc781a5a8c2ead59",
+          "repoPath": "home/bootstrap-v3.js",
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/home/bootstrap.js",
+          "sha256": "6a52b250ec20d4b5583425362253a484cf8618df0b005b8886238ec1edf6131d",
+          "repoPath": "home/bootstrap.js",
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/bootstrap.js",
+          "sha256": "a170882e4146841c1383f95e9ccb2822e97abdb6783fa4bff78c0b5446ece434",
+          "repoPath": "home/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "production",
+      "page": "discover-helix",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/about/bootstrap.js",
+          "sha256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+          "repoPath": "about/bootstrap.js",
+          "ref": "3c4f78d4e7",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/about/bootstrap.js",
+          "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+          "repoPath": "about/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "production",
+      "page": "services",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/bootstrap.js",
+          "sha256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638",
+          "repoPath": "services/bootstrap.js",
+          "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/services/bootstrap.js",
+          "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+          "repoPath": "services/bootstrap.js",
+          "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "production",
+      "page": "faq",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/faq/bootstrap.js",
+          "sha256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+          "repoPath": "faq/bootstrap.js",
+          "ref": "3c4f78d4e7",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/faq/bootstrap.js",
+          "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+          "repoPath": "faq/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "production",
+      "page": "internal-medicine",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/internal-medicine/bootstrap.js",
+          "sha256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+          "repoPath": "internal-medicine/bootstrap.js",
+          "ref": "3c4f78d4e7",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e75a06524b16a32e05e3185c48fbe800/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "3c4f78d4e75a06524b16a32e05e3185c48fbe800",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/internal-medicine/bootstrap.js",
+          "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+          "repoPath": "internal-medicine/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "staging",
+      "page": "home",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ccb68a7c4523d83539afc5de20e309ff145547dd/home/bootstrap.js",
+          "sha256": "b557102e2dd1d17f20ea959ae25ac577ef121c9626d5c687d136ef3da1ff827b",
+          "repoPath": "home/bootstrap.js",
+          "ref": "ccb68a7c4523d83539afc5de20e309ff145547dd",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/bootstrap.js",
+          "sha256": "8088a512062d8045930c1812822719eb99d024cf27b7a0aa2e8e380d46c4a9ed",
+          "repoPath": "home/bootstrap.js",
+          "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "staging",
+      "page": "discover-helix",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/about/bootstrap.js",
+          "sha256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+          "repoPath": "about/bootstrap.js",
+          "ref": "a074f455a4",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/about/bootstrap.js",
+          "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+          "repoPath": "about/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "staging",
+      "page": "services",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@ba91d70d93f8a1b54ca499b0ca942c0710d025e7/services/bootstrap.js",
+          "sha256": "198c8bd3bb6a3641be9f69737134db58cd9ff690a09102d2e73aef96b23c1638",
+          "repoPath": "services/bootstrap.js",
+          "ref": "ba91d70d93f8a1b54ca499b0ca942c0710d025e7",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/services/bootstrap.js",
+          "sha256": "ea9813507b2c0a6c7f2dcf437935d42da036ba1c62b3f015386ae3872ae0c593",
+          "repoPath": "services/bootstrap.js",
+          "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@91140bf351dc6afbdfb57bb99e5c17c6bd794c09/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "staging",
+      "page": "faq",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/faq/bootstrap.js",
+          "sha256": "fd5371f1d3eb84be62dfa65455bc76a7f18f7f6c6e92c5abf3c948ff3000b043",
+          "repoPath": "faq/bootstrap.js",
+          "ref": "a074f455a4",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/faq/bootstrap.js",
+          "sha256": "afa41c133b0e7dd8a806d5c9cbb3eb0537d795da41656691f68fbfe290720960",
+          "repoPath": "faq/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    },
+    {
+      "environment": "staging",
+      "page": "internal-medicine",
+      "validatedWidths": [
+        390,
+        820,
+        1440
+      ],
+      "selectedRecoveryRef": "61c465152f26c5820ef30e7c8b166ba37829008a",
+      "originalEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4/internal-medicine/bootstrap.js",
+          "sha256": "4633942e285276e2003501785b6f7807d49236685d50c9dbadd675e0b36db0bc",
+          "repoPath": "internal-medicine/bootstrap.js",
+          "ref": "a074f455a4",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@a074f455a4adc3dd8515255f6d779dea0afeeb10/global/bootstrap.js",
+          "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+          "repoPath": "global/bootstrap.js",
+          "ref": "a074f455a4adc3dd8515255f6d779dea0afeeb10",
+          "recordOccurrences": 1
+        }
+      ],
+      "recoveryEntryAndSharedRequests": [
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/internal-medicine/bootstrap.js",
+          "sha256": "6818b15fd303c4ad0b0a3b80665de1094bb4ab8d47f95be9a8450b2fba810b4c",
+          "repoPath": "internal-medicine/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 1
+        },
+        {
+          "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+          "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+          "repoPath": "global/bootstrap.js",
+          "ref": "61c465152f26c5820ef30e7c8b166ba37829008a",
+          "recordOccurrences": 2
+        }
+      ],
+      "producerAndSharedRecoveryRefMatch": true,
+      "extraSharedRecordInterpretation": "Second common-entry request is deliberately injected after normal interactions by adoption-blockers.cjs:217 to verify idempotence; do not report it as an observed normal production duplicate."
+    }
+  ]
+}

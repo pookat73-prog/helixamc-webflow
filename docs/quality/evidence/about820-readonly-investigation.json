@@ -1,0 +1,426 @@
+{
+  "basisHEAD": "81da7525dc66efb8afb863117fcf825cf4ecba3a",
+  "kind": "Implementer read-only diagnosis; not an external audit or qualification rerun",
+  "scope": "One existing About820 modal PNG mismatch; V0 footer experiment not reopened",
+  "failingInputs": {
+    "qa": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+    "originalQACodeSHA256": "c68daa652e5317d8d2137f7955fa604b0edd6f46a9cb9955d91783037dc04399",
+    "naturalJSONByteEqual": true,
+    "naturalJSONSHA256": "471388c1df54853b4b846e0758140377346c5a42cb96c8aadb3fd7f56998fc0b",
+    "pngOriginalSHA256": "9580d07d1c3c396e82c77ef326becae8acdf9bc3b959fb13817309553256be21",
+    "pngCandidateSHA256": "b1ad031fe265c372ba480c6fc9009e475719b50ed9936af83d28a1e40fc15884",
+    "requestOccurrencesEach": [
+      106,
+      106
+    ],
+    "uniqueURLsEach": 104,
+    "sharedUniqueURLBodyHashesEqual": 103,
+    "intendedDifferentCSS": [
+      {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@3c4f78d4e7/global/floating-cta.css",
+        "originalSHA256": "391a0297ec23cc6778d4e0445b6999b1d50f1c630c5137be7cf1b662afb9f1c8",
+        "candidateSHA256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c"
+      }
+    ],
+    "wholeInputIsByteIdentical": false,
+    "inputInterpretation": "All103 shared unique URL bodies equal. Original/candidate intentionally differ only in D02 label CSS; do not claim all input SHA identical. Request ordering/capture timing is not proved equal."
+  },
+  "pixelDistribution": {
+    "imageSize": [
+      520,
+      446
+    ],
+    "changedPixels": 421,
+    "totalPixels": 231920,
+    "allChangedWithinFour20pxCornerSquares": true,
+    "centralContentChangedPixels": 0,
+    "originalOpaqueWhitePixelsChanged": 0,
+    "maxRGBChannelDifference": 64,
+    "cornerCounts": {
+      "topLeft": 104,
+      "topRight": 106,
+      "bottomLeft": 106,
+      "bottomRight": 105
+    },
+    "rows": [
+      {
+        "y": 0,
+        "count": 40
+      },
+      {
+        "y": 1,
+        "count": 28
+      },
+      {
+        "y": 2,
+        "count": 23
+      },
+      {
+        "y": 3,
+        "count": 20
+      },
+      {
+        "y": 4,
+        "count": 16
+      },
+      {
+        "y": 5,
+        "count": 14
+      },
+      {
+        "y": 6,
+        "count": 12
+      },
+      {
+        "y": 7,
+        "count": 10
+      },
+      {
+        "y": 8,
+        "count": 8
+      },
+      {
+        "y": 9,
+        "count": 8
+      },
+      {
+        "y": 10,
+        "count": 6
+      },
+      {
+        "y": 11,
+        "count": 5
+      },
+      {
+        "y": 12,
+        "count": 4
+      },
+      {
+        "y": 13,
+        "count": 4
+      },
+      {
+        "y": 14,
+        "count": 2
+      },
+      {
+        "y": 15,
+        "count": 2
+      },
+      {
+        "y": 16,
+        "count": 2
+      },
+      {
+        "y": 17,
+        "count": 2
+      },
+      {
+        "y": 18,
+        "count": 2
+      },
+      {
+        "y": 19,
+        "count": 2
+      },
+      {
+        "y": 426,
+        "count": 2
+      },
+      {
+        "y": 427,
+        "count": 2
+      },
+      {
+        "y": 428,
+        "count": 2
+      },
+      {
+        "y": 429,
+        "count": 2
+      },
+      {
+        "y": 430,
+        "count": 2
+      },
+      {
+        "y": 431,
+        "count": 2
+      },
+      {
+        "y": 432,
+        "count": 4
+      },
+      {
+        "y": 433,
+        "count": 4
+      },
+      {
+        "y": 434,
+        "count": 6
+      },
+      {
+        "y": 435,
+        "count": 6
+      },
+      {
+        "y": 436,
+        "count": 8
+      },
+      {
+        "y": 437,
+        "count": 8
+      },
+      {
+        "y": 438,
+        "count": 10
+      },
+      {
+        "y": 439,
+        "count": 12
+      },
+      {
+        "y": 440,
+        "count": 14
+      },
+      {
+        "y": 441,
+        "count": 16
+      },
+      {
+        "y": 442,
+        "count": 19
+      },
+      {
+        "y": 443,
+        "count": 24
+      },
+      {
+        "y": 444,
+        "count": 28
+      },
+      {
+        "y": 445,
+        "count": 40
+      }
+    ]
+  },
+  "offlineFrameDiscriminator": {
+    "inputVideoSHA256": "77e8cd409e04ac389a1a33037966fa384e04c2a5356f2176a8aa6f5b02c115d4",
+    "pureBackgroundSamplePixels": 244,
+    "originalClosestFrame": {
+      "decodedFrameIndex": 0,
+      "sampleTimeSeconds": 0.0,
+      "originalMAE": 1.0648907103825136,
+      "candidateMAE": 35.46106557377049
+    },
+    "candidateClosestFrame": {
+      "decodedFrameIndex": 184,
+      "sampleTimeSeconds": 7.674333333333333,
+      "originalMAE": 35.47540983606557,
+      "candidateMAE": 1.1994535519125684
+    },
+    "candidateAgainstFirstFrameMAE": 35.46106557377049,
+    "candidateAgainstApprox7_7FrameMAE": 1.1994535519125684,
+    "interpretation": "Different underlying video frame content strongly explains the changed corners: original matches frame0; candidate matches frame184 at approx7.674s. This is numerical offline image discrimination with approximate render conversion, not pixel-exact new baseline or recorded historical browser time.",
+    "localDerivedResult": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-video-refined.json",
+    "sha256": "58439cddd079c47e49860f4019b64a12a9dce8a2d2707f1c0add2621d6d76281"
+  },
+  "timingEvidenceLimits": {
+    "historicalFailedPairFontImageCompletionTimesRecorded": false,
+    "historicalFailedPairPresentedFrameTraceRecorded": false,
+    "historicalActualSeekToPresentationCauseProved": false,
+    "frozenQAWaitCode": "Existing font-ready + pause/seek0/seeked +2rAF; does not retrospectively prove historical compositor phase",
+    "radiusSource": "Same unchanged modal20px radius rules; measured20px in six new observations",
+    "fractionalGeometry": "Identical x150/y367.046875/w520/h445.90625 in failed natural JSON; integer screenshot520x446. Fractional geometry exposes blended background at corners but no evidence of a changed box."
+  },
+  "newObservationOnly": {
+    "pairRepeats": 3,
+    "sixCaptureObservations": [
+      {
+        "repeat": 1,
+        "version": "original",
+        "fontSetStatusBeforePNG": "loaded",
+        "lastFontLoadingDoneAtMs": 924.8000000007451,
+        "layoutImageCount": 23,
+        "viewportImageCount": 5,
+        "viewportImagesComplete": true,
+        "mediaClockBeforePNG": 0,
+        "lastPresentedFrameBeforePNG": 0,
+        "lastFrameCallbackAtMs": 8711.800000000745,
+        "beforePNGAtMs": 8891.300000000745,
+        "afterPNGAtMs": 9009,
+        "radius": "20px",
+        "box": {
+          "x": 150,
+          "y": 367.046875,
+          "width": 520,
+          "height": 445.90625,
+          "top": 367.046875,
+          "right": 670,
+          "bottom": 812.953125,
+          "left": 150
+        },
+        "tracePath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-trace-1/discover-helix-820-original-trace.json",
+        "traceSHA256": "04012dd656629dfbe27fd990f72a8b8636d4293126129d0a69329650c6f0f58c",
+        "exactPNGPair": true
+      },
+      {
+        "repeat": 1,
+        "version": "candidate",
+        "fontSetStatusBeforePNG": "loaded",
+        "lastFontLoadingDoneAtMs": 490.69999999925494,
+        "layoutImageCount": 23,
+        "viewportImageCount": 5,
+        "viewportImagesComplete": true,
+        "mediaClockBeforePNG": 0,
+        "lastPresentedFrameBeforePNG": 0,
+        "lastFrameCallbackAtMs": 8340.89999999851,
+        "beforePNGAtMs": 8468.099999997765,
+        "afterPNGAtMs": 8582.699999999255,
+        "radius": "20px",
+        "box": {
+          "x": 150,
+          "y": 367.046875,
+          "width": 520,
+          "height": 445.90625,
+          "top": 367.046875,
+          "right": 670,
+          "bottom": 812.953125,
+          "left": 150
+        },
+        "tracePath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-trace-1/discover-helix-820-candidate-trace.json",
+        "traceSHA256": "17c09882243e6afbaf68c30c56f7702a17c66d85624e05340480c861c1de3da0",
+        "exactPNGPair": true
+      },
+      {
+        "repeat": 2,
+        "version": "original",
+        "fontSetStatusBeforePNG": "loaded",
+        "lastFontLoadingDoneAtMs": 564.8000000007451,
+        "layoutImageCount": 23,
+        "viewportImageCount": 5,
+        "viewportImagesComplete": true,
+        "mediaClockBeforePNG": 0,
+        "lastPresentedFrameBeforePNG": 0,
+        "lastFrameCallbackAtMs": 8443.89999999851,
+        "beforePNGAtMs": 8660.5,
+        "afterPNGAtMs": 8772.39999999851,
+        "radius": "20px",
+        "box": {
+          "x": 150,
+          "y": 367.046875,
+          "width": 520,
+          "height": 445.90625,
+          "top": 367.046875,
+          "right": 670,
+          "bottom": 812.953125,
+          "left": 150
+        },
+        "tracePath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-trace-2/discover-helix-820-original-trace.json",
+        "traceSHA256": "6a445f8d04b3c610161b3f5078dc46025c2eda21e1939f97621d48b27cf100c3",
+        "exactPNGPair": true
+      },
+      {
+        "repeat": 2,
+        "version": "candidate",
+        "fontSetStatusBeforePNG": "loaded",
+        "lastFontLoadingDoneAtMs": 563.5,
+        "layoutImageCount": 23,
+        "viewportImageCount": 5,
+        "viewportImagesComplete": true,
+        "mediaClockBeforePNG": 0,
+        "lastPresentedFrameBeforePNG": 0,
+        "lastFrameCallbackAtMs": 8386,
+        "beforePNGAtMs": 8543.89999999851,
+        "afterPNGAtMs": 8662.199999999255,
+        "radius": "20px",
+        "box": {
+          "x": 150,
+          "y": 367.046875,
+          "width": 520,
+          "height": 445.90625,
+          "top": 367.046875,
+          "right": 670,
+          "bottom": 812.953125,
+          "left": 150
+        },
+        "tracePath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-trace-2/discover-helix-820-candidate-trace.json",
+        "traceSHA256": "4c7e7ae76f48a8ddfea8eecbbdd6570863784d3f46735d1c0ac48c2d87f6c9ad",
+        "exactPNGPair": true
+      },
+      {
+        "repeat": 3,
+        "version": "original",
+        "fontSetStatusBeforePNG": "loaded",
+        "lastFontLoadingDoneAtMs": 528.1000000014901,
+        "layoutImageCount": 23,
+        "viewportImageCount": 5,
+        "viewportImagesComplete": true,
+        "mediaClockBeforePNG": 0,
+        "lastPresentedFrameBeforePNG": 0,
+        "lastFrameCallbackAtMs": 8406.60000000149,
+        "beforePNGAtMs": 8554.400000002235,
+        "afterPNGAtMs": 8664.900000002235,
+        "radius": "20px",
+        "box": {
+          "x": 150,
+          "y": 367.046875,
+          "width": 520,
+          "height": 445.90625,
+          "top": 367.046875,
+          "right": 670,
+          "bottom": 812.953125,
+          "left": 150
+        },
+        "tracePath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-trace-3/discover-helix-820-original-trace.json",
+        "traceSHA256": "08723c5362b0c5629c288c95e78b112ed489c7417068edf886128ccc22c2a40f",
+        "exactPNGPair": true
+      },
+      {
+        "repeat": 3,
+        "version": "candidate",
+        "fontSetStatusBeforePNG": "loaded",
+        "lastFontLoadingDoneAtMs": 528.5,
+        "layoutImageCount": 23,
+        "viewportImageCount": 5,
+        "viewportImagesComplete": true,
+        "mediaClockBeforePNG": 0,
+        "lastPresentedFrameBeforePNG": 0,
+        "lastFrameCallbackAtMs": 8347.39999999851,
+        "beforePNGAtMs": 8535.5,
+        "afterPNGAtMs": 8652.199999999255,
+        "radius": "20px",
+        "box": {
+          "x": 150,
+          "y": 367.046875,
+          "width": 520,
+          "height": 445.90625,
+          "top": 367.046875,
+          "right": 670,
+          "bottom": 812.953125,
+          "left": 150
+        },
+        "tracePath": "/workspace/artifacts/helix-independent-audit-prep-20261120/about-trace-3/discover-helix-820-candidate-trace.json",
+        "traceSHA256": "084df968daafc9f31397b6b4094f10de90b6ab461e5ce29026b1538d69433d09",
+        "exactPNGPair": true
+      }
+    ],
+    "exactPNGPairs": 3,
+    "allZeroForwardedNetwork": true,
+    "newTraceToolSHA256": "6b572e9d7fbddf748665a51b3bb2b0569ef80b896c82b12517a090687a916fa7",
+    "traceAddsOnlyObservationAndCanAffectScheduling": true,
+    "notHistoricalReplacement": true,
+    "notAddedToPriorContinuousPass": true
+  },
+  "assessment": {
+    "supportedFinding": "Mismatch is concentrated in exposed video background and strongly consistent with different video frame phases, not changed modal content or geometry",
+    "captureSchedulingRootCause": "Unresolved: failed historical capture has no frame-presentation/timing trace; instrumented3pairs did not reproduce failure",
+    "old421FailureStillPreserved": true,
+    "issueClosed": false,
+    "productOrFrozenQACodeChanged": false,
+    "baselinePNGMaskThresholdExpectedFailureChanged": false,
+    "nextCondition": "Only resume capture-system correction when a failing trace proves seek/presentation timing or another specific owner. No new product change or baseline relaxation."
+  },
+  "newRawRemoteUploaded": false
+}
