@@ -12,7 +12,11 @@ QA `b6685f0`의 clean clone에서 동일 입력으로 전체 연속v3를 한 번
 
 메뉴는 body 클래스만 잠그던 원본에 `html` 상태 생산과 CSS 잠금을 함께 적용했다. 예약창은 기존 `#hxFctaModal.is-open`의 실제 상태를 CSS `:has()`로 참조해 문서 주체를 잠근다. 새 공통 상태나 timer를 만들지 않았다. 두 창은 각자 상태를 소유하며 하나를 닫아도 다른 상태가 남으면 문서 잠금이 유지된다. 기존 검증 소스를 그대로 재사용했다.
 
+[원본/후보 다섯 파일의 실제 URL·Git blob·SHA와 원인 증거](evidence/functional-rollback-causes.json)를 별도로 기록했다. 원본 About producer는 실패한 script를 남기며, 공통 `present(path)`는 native 결과 확인 없이 태그 존재를 성공 자산으로 오인했다. JS2회 실패에서 producer의2요청이 끝난 뒤 shared 공급이 억제돼 메뉴0이 된 경로다.
+
 로더는 실패한 태그의 소유권을 철회하고 native 결과를 소비자에게 인계한다. 메뉴 CSS/JS의 producer retry와 shared 공급이 같은 immutable ref를 유지하며, 기존 1회 실패2요청·2회 실패3요청 계약을 보존한다. pending 결과는 실제 load/error가 결정하고 태그·빈 sheet·초기화 claim만으로 완료 처리하지 않는다. 기존 원인별 D04 제품을 재사용했고 새 범용 retry·timeout·observer를 추가하지 않았다.
+
+`__helixHamburgerInit`는 중복 실행 방지용 점유이고 완료 보증이 아니다. 실제 성공은 `__helixHamburgerReady`, 메뉴 DOM 및 열기·닫기·Escape/초점·wheel 동작으로 확인한다. GSAP가 준비되지 않은 상태는 기존 E1의 native dependency load 경로가 소유하며, shared가 guard를 해제하거나 다른 메뉴를 중복 생성하지 않는다. 임의 HTTP200 실행 예외나 영구 미응답까지 복구한다고 주장하지 않는다.
 
 원본 mirror 세 개는 보존했다. 복구 후보와 현재 작업 후보는 별도 ref/목적으로 관리한다. [파일·실제 URL·SHA·선별 근거](evidence/functional-rollback-package.json)가 대장이다.
 

@@ -1,0 +1,100 @@
+{
+  "atUTC": "2026-11-20T03:20:35.203223+00:00",
+  "kind": "Source and preserved raw cause proof; not a new whole-run pass",
+  "publicConfigurationChanged": false,
+  "A": {
+    "observedOriginal": "Normal About1440 menu and form wheel each moves600px; no injected fault",
+    "rootCause": "Original menu state/CSS lock body only; original form body lock does not lock document root",
+    "menuResponsibility": "Reused hamburger.js produces own html+body class; hamburger.css consumes both",
+    "formResponsibility": "Reused floating-cta.css consumes actual #hxFctaModal.is-open using html:has; no extra shared state",
+    "release": "Each owner removes only own state, other open owner retains root lock",
+    "controlledEvidence": "preflight-inverse-v1: own menu/modal inverse permits wheel movement; exact restore locks and restores nonzero scrollY"
+  },
+  "B": {
+    "observedOriginal": "JS native twice: requests2 menus0 claims0",
+    "producer": "Failed script retained; first fallback switches mutable branch; second failure ends producer chain",
+    "consumer": "Original present(path) accepts failed/pending matching tag or guard, suppressing shared supplier without native result handoff",
+    "reusedBoundary": "Producer marks/removes own failed menu script and bounds same-ref retry; shared consumes native error/pending result and respects successful foreign owner",
+    "contract": "Once2/twice3 requests at chosen immutable ref. Permanent failures remain unavailable",
+    "controlledEvidence": "preflight-inverse-v1: own About producer/shared inverse reproduces menu0 after2; exact restore produces menu1 after3 same-ref requests"
+  },
+  "sourceProof": [
+    {
+      "path": "home/global/hamburger.js",
+      "original": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/global/hamburger.js",
+        "sha256": "4aa23eeae351559499937e78a2e415f5f16947572100b299411703f0b541d4c5",
+        "status": 200,
+        "gitBlob": "e1e73fc1a53b8a52f51d9754722095c002f832ce"
+      },
+      "functional": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.js",
+        "sha256": "68008f003bba7e6c72c60db52ef20b790bb4f3de101c774976e43afaafaed2aa",
+        "status": 200,
+        "gitBlob": "2773ab20ae0fd373182696e5f863f3e353e9f476"
+      }
+    },
+    {
+      "path": "home/global/hamburger.css",
+      "original": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/home/global/hamburger.css",
+        "sha256": "1c2b23f51a05e9d2f8fada59a22bd4c85f251c1353d89e4095c8d512a74299b0",
+        "status": 200,
+        "gitBlob": "3684f0d20dd51cfed23d70866cd524036e8f77dd"
+      },
+      "functional": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/home/global/hamburger.css",
+        "sha256": "709314a26c8a3ae7f02280eb2e0e30f912a348d8e33d5327d4ee8ce71c8283ee",
+        "status": 200,
+        "gitBlob": "b31294ac8f7f33f2d71a2d0b2b20134283abb500"
+      }
+    },
+    {
+      "path": "global/floating-cta.css",
+      "original": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/global/floating-cta.css",
+        "sha256": "5a98d595f89f6b801cecc25a387beca594840afc786a2f11fcb2d1b57f4c8a76",
+        "status": 200,
+        "gitBlob": "143c269c78874ff69ec6ddabf142631b55c465d5"
+      },
+      "functional": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/floating-cta.css",
+        "sha256": "94740b1a9ace5f61d13c27fd2816be322a28573766a2aa4b947df3c612cc408c",
+        "status": 200,
+        "gitBlob": "57bb830f496addac9238a1c58e3165165c79d93e"
+      }
+    },
+    {
+      "path": "about/bootstrap.js",
+      "original": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/about/bootstrap.js",
+        "sha256": "80f8e3144a33a79b92c3af387d134dafd8a9422d7e80606739d410cdf3ab60a7",
+        "status": 200,
+        "gitBlob": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54"
+      },
+      "functional": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/about/bootstrap.js",
+        "sha256": "558c78947d9bb9f94b3b1d0beab7fdbd142784d20549e1cc800c8c7c3ac4472f",
+        "status": 200,
+        "gitBlob": "5d6b31428278d108c614caedfc7b935467c09961"
+      }
+    },
+    {
+      "path": "global/bootstrap.js",
+      "original": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@78e75c48a4c3a3806bdd24bf3fbffde8599ba5dc/global/bootstrap.js",
+        "sha256": "10dd55b5ecc9a34339a3220cfa9ff5c00e54ee28bb5b4caea7f63e0294c438c6",
+        "status": 200,
+        "gitBlob": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d"
+      },
+      "functional": {
+        "url": "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@61c465152f26c5820ef30e7c8b166ba37829008a/global/bootstrap.js",
+        "sha256": "ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa",
+        "status": 200,
+        "gitBlob": "12b3dac8a4af3b7dffc26317ecb92a2268d939d8"
+      }
+    }
+  ],
+  "nativeFaultIsInjectionNotAnObservedProductionOutage": true,
+  "newRawLocalOnly": true
+}

@@ -1,8 +1,8 @@
 {
-  "status": "Corrected frozen continuous v2 running — no final qualification",
+  "status": "V3 bounded identical-source continuous verification running; V1/V2 incomplete, no final qualification",
   "atUTC": "2026-11-20T01:00:42.558934+00:00",
   "protectedWorkRuntime": "21acccb421aee305aed8941ee5a5da87407f94fa",
-  "frozenQA": "a75d818c66e6c8b09d2063394312ff9bf9af177e",
+  "frozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
   "packages": [
     {
       "name": "main",
@@ -1866,7 +1866,7 @@
   "stagingPrototype216NeverQualified": true,
   "finalActualHTTP200GitMatchedBindings": 175,
   "sourceSelectionPlanSHA256": "2e9246d44b3b2f57491b9691dc42a975cc890ddce706e299bffbb87d8171d42e",
-  "frozenStateSHA256": "ff3f0f761ccedf77bd4ef2aa712ab68bf94cef8e1f6f5141168b502898cec794",
+  "frozenStateSHA256": "2c981fbf880af8e525a19f0cf21527b672ca1cfd0ab162e31b32745f59e640ff",
   "rawRemotePreserved": false,
   "publicWritesPublishMergeDeploy": false,
   "fullIndependentAuditComplete": false,
@@ -2005,5 +2005,8 @@
   "originalMirrorIsNotFallbackTarget": true,
   "sameImplementationDefectsNotCuredByRefSwitch": true,
   "nextFrozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
-  "invocationFailureEvidence": "functional-rollback-invocation.json"
+  "invocationFailureEvidence": "functional-rollback-invocation.json",
+  "causeEvidence": "functional-rollback-causes.json",
+  "v2FailureEvidence": "functional-rollback-v2-diagnosis.json",
+  "continuousOutput": "continuous-v3"
 }
