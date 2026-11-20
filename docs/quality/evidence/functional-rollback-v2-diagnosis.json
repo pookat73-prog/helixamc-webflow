@@ -16,5 +16,7 @@
   "canvasReadbackUnavailable": "Tainted canvas; no decoded frame identity claim",
   "v2ResultSHA256": "2ea589165e60617ebb3b48cebefa8e19c3d218a2e4fada587b4a61e75aa9e9c6",
   "v2FormLabelLogSHA256": "52bc50eff5d883af151e9257f3299919661ec2b76ab7e754fd33e0e27df27986",
-  "boundedNextAction": "One full identical source/input rerun v3. If same PNG symptom recurs, stop and preserve unqualified gate."
+  "boundedNextAction": "One full identical source/input rerun v3. If same PNG symptom recurs, stop and preserve unqualified gate.",
+  "newCauseEstablished": false,
+  "sourceScopedCorrectionAuthorizedByEvidence": false
 }

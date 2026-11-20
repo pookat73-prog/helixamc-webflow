@@ -18,7 +18,7 @@ QA `b6685f0`의 clean clone에서 동일 입력으로 전체 연속v3를 한 번
 
 `__helixHamburgerInit`는 중복 실행 방지용 점유이고 완료 보증이 아니다. 실제 성공은 `__helixHamburgerReady`, 메뉴 DOM 및 열기·닫기·Escape/초점·wheel 동작으로 확인한다. GSAP가 준비되지 않은 상태는 기존 E1의 native dependency load 경로가 소유하며, shared가 guard를 해제하거나 다른 메뉴를 중복 생성하지 않는다. 임의 HTTP200 실행 예외나 영구 미응답까지 복구한다고 주장하지 않는다.
 
-원본 mirror 세 개는 보존했다. 복구 후보와 현재 작업 후보는 별도 ref/목적으로 관리한다. [파일·실제 URL·SHA·선별 근거](evidence/functional-rollback-package.json)가 대장이다.
+원본 mirror 세 개는 보존했다. 복구 후보와 현재 작업 후보는 별도 ref/목적으로 관리한다. [선별 파일·근거](evidence/functional-rollback-package.json)와 [전달 자산175URL·Git blob·SHA 대장](evidence/functional-rollback-assets.json)가 대장이다.
 
 | 역할 | 기능 보존형 복구 ref | 선별 범위 |
 |---|---|---|
