@@ -2,7 +2,54 @@
 
 갱신일: 2026-11-20 (Asia/Seoul)
 
-## 최신 최종 감사 확인 — 2026-11-20 15:11:57 KST / 미게시 범위 확인 보류
+## 최신 스테이징 준비 — 저장본 일치 및 격리 적용안 확보 / 공유 스테이징 적용 보류
+
+### 작업 개요
+
+기준 `633f401`, 보호 제품 `21acccb`, 동결 QA `b6685f0`. 2026-11-20 15:28:47 KST에 Webflow 페이지 Head 5개와 사이트 공통 Footer 1개를 읽고 UTF-8 원문 SHA-256을 확인했다. 6/6 일치했다. 이전 기록의 미게시 변경 범위는 아직 확인되지 않았다.
+
+### 기술적 결정 사항
+
+저장 원본 → 미적용 후보 `669fa762/62ecac1b` → 복구 후보 조합을 격리 데이터에서 재현했다. 두 패치 세트 각 6개의 SHA-256, 6개 중간 블록 SHA-256, 6개 최종 블록 SHA-256, 두 단계 역순 적용 후 원본 바이트를 전부 확인했다. 중간본은 해시 검증용이다. 두 변환을 합친 [6개 설정 통합 패치](proposals/functional-rollback-20261120/stored-to-recovery-isolated.patch)의 정방향·역방향 결과도 원본 및 후보와 6/6 바이트가 일치했다. 통합 패치 SHA-256은 `ffba707464a53d7307cae3b5589281041e5017c05fef222a8d8bd033941bcbff`이다. 이 패치에는 표의 현재 저장본이 입력이다. [이전 복구 패치](proposals/functional-rollback-20261120/manifest.json)의 입력은 표의 중간본이다.
+
+| 설정 파일 | 현재 저장본 SHA-256 | 중간본 SHA-256 | 최종 후보 SHA-256 |
+|---|---|---|---|
+| `page-home.html` | `e5cd4a2674eef307fe8b2d4a2f9bf69613590688e7608f6ea98d7913fda9add7` | `ff8b77f8caf592a37a9816dfadb4e5db81a2a169d10b14e65e575eca11c11778` | `26a6d650f3b5b4cd403f2e1135b5acab809944b386957a2da7c391205ac01f02` |
+| `site-footer.html` | `c3907aea230153088890db8b5497592a0c14e01b65613b60b23e1a7d8c8c919d` | `975783c92fd5463aae2c01a75afe674e0e52abc0f88801c488ef42da820bc7fe` | `3df90d98e3f4accd4d3aa0c2e9889fdaf2dfff2f83efed023b1b75c5a814feea` |
+| `page-discover-helix.html` | `36512c6ca6d4da1a5684ae41b3202433d4a40be8756a24362adb4c043748e99a` | `d86339288ab675187e05a9f22de0fd8c98f418f15f46d6307bb623f154e6f986` | `b491004f54d3f29d407b9997618a63196d31b2a8ca7dce5d21f347e7661b60bf` |
+| `page-services.html` | `fd87cb03cf6dbb1b4499964ccbec0cd0f17e384426d330c240b9cb04f02a1667` | `d80a42a0c196146f7c63d9fa1d0a56eddf85757074f3b88c1013912c995a136e` | `a7e3a80165d0a6655dee8e09c6cdf8dcaf1c7904f5bdedfb4f792f028b62f782` |
+| `page-faq.html` | `5dac0a317bb764b52762d5f5f5e1f883f9043166578309d65a3f95016dcae33f` | `f1b0fc96bb0b3e262cf9dd614ada5c0652ebe6da55e970e0d3ebcf2caf529daf` | `261d54ea6b37b4413962e63c7075f5f713c1402b8b9d7fd7cdba16641218674f` |
+| `page-internal-medicine.html` | `fa56775776cc82a5c0975e9fdeaff25edcd56859b08728ea588358bfc0d36718` | `bc3105930be3e2ceeec8d5ca55ade16d3e7b9546af8475d7cef9e32794c2996c` | `35f484de2eb6626b6a65d81c68a5230c88f18c62b0c6591739cb28e0ba5e1b04` |
+
+최종 블록의 실제 선택 조건을 두 도메인, 각 5경로에서 평가했다. 지정한 10개 조합에 대해 페이지 진입 로더와 공통 로더 SHA가 일치했고, 과거 v3 요청 영수증과도 일치했다. Git에서 고정 커밋의 진입·공통 JS 9건을 다시 읽어 SHA-256을 해당 영수증과 대조했다. 공통 진입 JS 3개는 SHA-256 `ada6957fa19de08d0df4f86ae946efc7f7073ca94d771c7ef516388b194b29fa`로 동일했다. [페이지·공통 로더 영수증](review/independent-20261120/producer-consumers.json)
+
+| 페이지 | 스테이징 페이지·공통 | 운영 분기 페이지·공통 |
+|---|---|---|
+| `/` | `76f9a10` | `61c4651` |
+| `/discover-helix`, `/faq`, `/internal-medicine` | `61c4651` | `61c4651` |
+| `/services` | `91140bf` | `91140bf` |
+
+### 현재 상태
+
+**격리 검증용 변경안 준비 완료. 현재 제한에서 공유 Webflow 스테이징 적용 보류.** 사이트 Footer는 사이트 전체 게시로 반영되는 사이트 공통 설정이다. `webflow.io`만 선택하면 운영 도메인의 게시본은 유지되지만, 공유 스테이징에는 다른 미게시 변경이 함께 포함될 수 있다. 개별 페이지 게시로 Footer를 반영할 수 없다. 후보 본문에는 운영 도메인에서 선택되는 분기도 있으므로 공용 저장 설정에 남기면 향후 운영 게시 범위에 들어갈 수 있다. 이번에는 Webflow 저장·게시를 실행하지 않았다. [Webflow 스테이징 게시](https://help.webflow.com/hc/en-us/articles/33961419650067-Webflow-staging-subdomain) · [Webflow 단일 페이지 게시의 범위](https://help.webflow.com/hc/en-us/articles/50064706725395-Publish-a-single-page)
+
+같은 최종 후보를 사용한 기존 격리 Chromium 연속 v3에서 스테이징 5페이지 × 390/820/1440px의 문구·타이포·배치·예약창 이미지, 메뉴와 예약창의 휠 잠금·해제·스크롤 복원·Escape·초점, 기존 검사 25단계의 계약을 통과했다. Hero는 두 환경 합계 36조건 중 30조건 완료, GSAP 영구 실패 6조건 미완료였다. 스테이징 비홈 12대조는 정확한 Git 원본 재생을 사용했다. 이번에는 코드 및 자산 대조를 수행했다. 새 브라우저 연속 실행·공유 스테이징 반영·실기기 Safari/iOS/iPad·기존 원본 CDN 재도달·전체 화면 픽셀 동일성은 확인되지 않았다. [v3 검증 결과](evidence/functional-rollback-final.json)
+
+### 다음 단계
+
+1. **격리본 준비.** 승인된 작업 환경에서 Webflow 원본 6개를 원문 그대로 표의 파일명으로 따로 보관한다. 줄바꿈이나 인코딩을 정규화하지 않는다. 전부 표의 현재 SHA와 일치해야 시작한다. 원본 6개, 검증용 초기 공개 HTML과 생성 CSS, 미게시 상태를 각각 보존한다. 실제 사이트 저장 설정과 무관한 복사본을 작업 대상으로 잡는다.
+2. **6개를 함께 교체.** 작업 복사본에서 통합 패치의 SHA-256을 확인한다. 복사본 디렉터리를 기준으로 `git apply --check <패치 경로>` 뒤 `git apply <패치 경로>`를 수행한다. 최종 SHA 6개를 모두 확인할 때까지 사이트에 노출하지 않는다. 격리 재생에서는 저장된 HTML에 해당 페이지 Head와 공통 Footer를 같은 실행 조건으로 투입한다. staging hostname/path 분기와 운영 도메인에 영향을 주지 않는 격리 경계를 먼저 확인한다.
+3. **검증.** 디스크·브라우저 캐시 유무를 나눠 5페이지에서 첫 진입, 직접 새로고침, 전환을 검사한다. 네트워크에서 해당 페이지·공통 로더의 고정 SHA와 본문 SHA를 확인하고, 생성 Webflow CSS와 운영 기준 HTML도 대조한다. 390/820/1440px 및 영향을 받는 breakpoint 경계에서 디자인·초기 표시·가로 넘침·PC→태블릿 전환, Hero 준비/전환, 실제 메뉴·예약창의 휠/스크롤/초점/Escape, 폼 입력·검증·모의 제출을 검사한다. 예약·측정·전화 연결은 모의 처리한다. 기존 v3의 로더 실패 조건을 따로 검증하고, 실기기 범위와 미검증 조건을 기록한다.
+4. **실패 시 원복.** 격리 검증을 멈춘다. 여섯 블록이 모두 최종 SHA인 상태에서는 `git apply -R --check <패치 경로>` 뒤 `git apply -R <패치 경로>`로 한 번에 원복한다. 작업 복사본이 섞이거나 SHA가 다르면 해당 복사본을 격리하고, 별도로 보존한 검증된 원본 6개로 새 격리본을 구성한다. 6개 원본 SHA를 모두 확인한다. 원본 SHA 복귀는 저장 설정 복원 검증이며, 이전 공개 스테이징이 같은 코드로 구성됐다는 근거는 아니다. 미래 공개 스테이징 원복은 실제 반영 전의 공개 HTML·자산·게시 범위를 별도로 보존하고 전체 버전 조합과 원복 경로를 사전에 확인해야 한다.
+5. **공유 스테이징 재개 조건.** 공통 Footer까지 6개를 한 단위로 반영하면서 다른 미게시 변경과 운영 도메인을 격리하고 전체 게시 제한을 지킬 수 있는 경로가 확보돼야 한다. 경로가 확인되기 전에는 저장이나 개별 페이지 우선 적용을 진행하지 않는다. 미게시 범위 판정은 아래 인계 기록을 따른다.
+
+### 참고 파일 및 링크
+
+- [격리 재생용 통합 패치](proposals/functional-rollback-20261120/stored-to-recovery-isolated.patch)
+- [현재 저장본 → 중간본](proposals/adoption-20261119/manifest.json) · [중간본 → 최종 기능 보존형 복구](proposals/functional-rollback-20261120/manifest.json)
+- [검증 범위와 제약](22-functional-rollback.md) · [미게시 범위](evidence/unpublished-scope-readonly.json)
+
+## 이전 최종 감사 확인 — 2026-11-20 15:11:57 KST / 미게시 범위 확인 보류
 
 ### 작업 개요
 기준 HEAD `5e2f356f6500a13b4051bfad8f71195505e281eb`. 기존 Designer 읽기 연결 성공 기록을 유지하고 재연결·페이지 이동·코드 작업 없이 MCP 읽기 기능의 범위를 점검했다. 보호 제품 `21acccb`, QA `b6685f0`, 복구 후보와 기존 감사 자료를 보존했다. 최종 목표인 미게시 변경 5항목 전체의 실제 증거 확인은 완료하지 못했다.
