@@ -1,0 +1,12 @@
+--- a/page-services.html
++++ b/page-services.html
+@@ -34,7 +34,7 @@
+ <script>
+ (function(){
+   var s=document.createElement('script');
+-  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+(/\.webflow\.io$/i.test(location.hostname)?'669fa762b87c80a425621906543d86bbbf924f9a':'669fa762b87c80a425621906543d86bbbf924f9a')+'/services/bootstrap.js';
++  s.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@'+(/\.webflow\.io$/i.test(location.hostname)?'91140bf351dc6afbdfb57bb99e5c17c6bd794c09':'91140bf351dc6afbdfb57bb99e5c17c6bd794c09')+'/services/bootstrap.js';
+   s.async=false;document.head.appendChild(s);
+ })();
+ </script>
+\ No newline at end of file

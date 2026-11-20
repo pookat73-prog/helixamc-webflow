@@ -1,0 +1,11 @@
+--- a/page-faq.html
++++ b/page-faq.html
+@@ -17,7 +17,7 @@
+   var O='pookat73-prog',R='helixamc-webflow';
+   var b=/\.webflow\.io$/i.test(location.hostname)?'staging':'main';
+   function load(ref){
+-    ref="669fa762b87c80a425621906543d86bbbf924f9a"; /* PRIVATE selected package. */
++    ref="61c465152f26c5820ef30e7c8b166ba37829008a"; /* PRIVATE selected package. */
+     /* Download hints only; bootstrap retains stylesheet order and recovery. */
+     try{['faq/faq.css','faq/faq-responsive.css'].forEach(function(path){
+       var u='https://cdn.jsdelivr.net/gh/'+O+'/'+R+'@'+ref+'/'+path;

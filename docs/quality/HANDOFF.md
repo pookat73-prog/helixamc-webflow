@@ -10,6 +10,8 @@ About3폭의 실제 메뉴/폼 잠금·nonzero scrollY 복원, 두 owner의 해�
 
 main과 staging Home 복구 runtime은 각각 현재 검증 후보와 같으므로 독립 대체 구현이라고 표현하지 않는다. Services의 다른 고유 파일은 원본을 보존했고 모든 내비게이션/SEO 의미의 동등성을 새로 주장하지 않는다. 초기 staging 구성216은 소스 대조에서 제외하고 기존 staging loader/CSS를 보존한 최종76만 사용한다. 새 raw는 로컬 전용이며 기준/기존 raw/두Drive 백업은 보존한다. 공개 설정·main/staging·Publish·배포 변경 없음. 최종 감사·운영 적용 승격은 새 연속 결과와 남은 게시 범위 게이트 확인 전 보류한다.
 
+추가 준비 완료: [기능 복구 여섯 설정 patch](proposals/functional-rollback-20261120/manifest.json)의 정확 정·역변환과 원인별 별도 inverse/복구 커밋3쌍을 확보했다. 실제 정상 참조 URL300건은 새 HTTP200이며298 rawSHA 동일/2GitHub ref JSON은 전체 parsed object 동일이다. 동결 입력 교체 없음.175 snapshot 관측과 중복되므로 고유475자산으로 합산하지 않는다. 마지막 요청 대조와 새 연속 검사는 진행 중이고, 이 준비 완료를 전체 기능 검증 통과로 승격하지 않는다. 명령 세션 핸들이 만료됐어도 실제 부모PID2684가 이어져 재시작하지 않고 파일/PID로 추적 중이다.
+
 ## 이전21 판정 — 1. 실제 원복 기능 차단 확인 / 공개 적용·전체 독립 감사 승격 보류
 
 최신 결과는 [21 적용 차단 검증](21-application-blockers.md), [판정·증거 SHA](evidence/application-blockers.json), [스테이징 원본 12화면](evidence/staging-original12.json), [실제 원본 URL·SHA·소비자 대장](evidence/source-restoration-assets.json)이다. 아래20과 이전 결과는 당시 이력이다. 시작 HEAD `742fec2` 이후 **제품 runtime은 `21acccb`와 동일**하며 기존 D04 다섯 제품·D02/D05·Hero와 다른 작업자의 코드를 재수정하지 않았다.

@@ -1,0 +1,117 @@
+{
+  "status": "PREPARED — CONTINUOUS VERIFICATION RUNNING; NO PUBLIC APPLICATION",
+  "from": "Existing un-applied current candidate669/62 full six blocks",
+  "to": {
+    "main": "61c465152f26c5820ef30e7c8b166ba37829008a",
+    "stagingHome": "76f9a10c59ecb696dd349fd1f9344939ddafab4a",
+    "servicesProducerAndShared": "91140bf351dc6afbdfb57bb99e5c17c6bd794c09"
+  },
+  "currentStoredCodeChanged": false,
+  "partialApplicationSupported": false,
+  "allSixBlocksRequiredBeforePublish": true,
+  "functionalQualificationPending": true,
+  "fullCodeLocalOnly": "/workspace/artifacts/helix-functional-rollback-20261120/functional-config-full-blocks",
+  "sixBlocks": [
+    {
+      "name": "page-home",
+      "entity": {
+        "page_id": "69d0bdd30d54f23591313a96"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "e5cd4a2674eef307fe8b2d4a2f9bf69613590688e7608f6ea98d7913fda9add7",
+      "beforeCurrentCandidateBlockSHA256": "ff8b77f8caf592a37a9816dfadb4e5db81a2a169d10b14e65e575eca11c11778",
+      "afterFunctionalRecoveryBlockSHA256": "26a6d650f3b5b4cd403f2e1135b5acab809944b386957a2da7c391205ac01f02",
+      "patch": "page-home.patch",
+      "patchSHA256": "e7ab813df62c69b74748be5caafba243fadefc8928d1bd24a9dc0a383baacf59",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true
+    },
+    {
+      "name": "site-footer",
+      "entity": {
+        "site_id": "69d090ea69d828e27d16ea29"
+      },
+      "location": "footer",
+      "currentStoredOriginalSHA256": "c3907aea230153088890db8b5497592a0c14e01b65613b60b23e1a7d8c8c919d",
+      "beforeCurrentCandidateBlockSHA256": "975783c92fd5463aae2c01a75afe674e0e52abc0f88801c488ef42da820bc7fe",
+      "afterFunctionalRecoveryBlockSHA256": "3df90d98e3f4accd4d3aa0c2e9889fdaf2dfff2f83efed023b1b75c5a814feea",
+      "patch": "site-footer.patch",
+      "patchSHA256": "80e3084f3c98f62cbc96af548fc2d7889f7c998923db6121c16f381b3f9de7dd",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true
+    },
+    {
+      "name": "page-discover-helix",
+      "entity": {
+        "page_id": "69d1c60d1e37375fe0c16bc5"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "36512c6ca6d4da1a5684ae41b3202433d4a40be8756a24362adb4c043748e99a",
+      "beforeCurrentCandidateBlockSHA256": "d86339288ab675187e05a9f22de0fd8c98f418f15f46d6307bb623f154e6f986",
+      "afterFunctionalRecoveryBlockSHA256": "b491004f54d3f29d407b9997618a63196d31b2a8ca7dce5d21f347e7661b60bf",
+      "patch": "page-discover-helix.patch",
+      "patchSHA256": "dc9223ef80f71456944654f2eb58a573013a6dbb1efb58d9be3f22bf0510e655",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true
+    },
+    {
+      "name": "page-services",
+      "entity": {
+        "page_id": "69d74acaacc7897c537190f1"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "fd87cb03cf6dbb1b4499964ccbec0cd0f17e384426d330c240b9cb04f02a1667",
+      "beforeCurrentCandidateBlockSHA256": "d80a42a0c196146f7c63d9fa1d0a56eddf85757074f3b88c1013912c995a136e",
+      "afterFunctionalRecoveryBlockSHA256": "a7e3a80165d0a6655dee8e09c6cdf8dcaf1c7904f5bdedfb4f792f028b62f782",
+      "patch": "page-services.patch",
+      "patchSHA256": "bb77fbeaa960624c53defce42f1c5e9ea4cbf621aa550c9e7533e891774e7d16",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true
+    },
+    {
+      "name": "page-faq",
+      "entity": {
+        "page_id": "6a4f46aa5c5fd95c7b128df3"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "5dac0a317bb764b52762d5f5f5e1f883f9043166578309d65a3f95016dcae33f",
+      "beforeCurrentCandidateBlockSHA256": "f1b0fc96bb0b3e262cf9dd614ada5c0652ebe6da55e970e0d3ebcf2caf529daf",
+      "afterFunctionalRecoveryBlockSHA256": "261d54ea6b37b4413962e63c7075f5f713c1402b8b9d7fd7cdba16641218674f",
+      "patch": "page-faq.patch",
+      "patchSHA256": "541b71e3e7e3f8c7db93cd03d19645c89672794a27687532d8c091d469243b9d",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true
+    },
+    {
+      "name": "page-internal-medicine",
+      "entity": {
+        "page_id": "69d74a8ea2cac3ea9cfed34d"
+      },
+      "location": "head",
+      "currentStoredOriginalSHA256": "fa56775776cc82a5c0975e9fdeaff25edcd56859b08728ea588358bfc0d36718",
+      "beforeCurrentCandidateBlockSHA256": "bc3105930be3e2ceeec8d5ca55ade16d3e7b9546af8475d7cef9e32794c2996c",
+      "afterFunctionalRecoveryBlockSHA256": "35f484de2eb6626b6a65d81c68a5230c88f18c62b0c6591739cb28e0ba5e1b04",
+      "patch": "page-internal-medicine.patch",
+      "patchSHA256": "a64d28bd1176b88edce22829937da440a53275bc1e0533b6b254517e764eed06",
+      "forwardAndReverseExact": true,
+      "beforeIsNotCurrentStoredCode": true,
+      "mechanicalInverseDoesNotProveFunctionalOrPublicRollback": true
+    }
+  ],
+  "orderForFutureAuthorizedApplication": [
+    "Re-read exact stored/candidate code and unpublished site scope; stop if source SHA differs",
+    "Hold Publish while selecting all five producers and the one scoped shared consumer",
+    "Verify all six output SHA values and per-page producer/shared ref equality",
+    "Only a separately authorized Publish may make the matched cohort public; no Publish in this task"
+  ],
+  "failureRecovery": [
+    "Before Publish: if any block fails, apply that operation own inverse to return every saved block to the exact pre-operation state; re-read all six SHA values; keep Publish held",
+    "After any future authorized Publish: use the qualified complete functional recovery cohort; never the unqualified original mirror",
+    "A future forward return to a candidate also requires all six matched blocks and its own qualification"
+  ]
+}

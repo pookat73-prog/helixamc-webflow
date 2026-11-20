@@ -1,0 +1,19 @@
+--- a/page-home.html
++++ b/page-home.html
+@@ -253,11 +253,11 @@
+ (function(){
+   if (/\.webflow\.io$/i.test(location.hostname)) {
+     window.__helixHomeBootstrapRedirected=true;
+-    window.__helixCommitSha='62ecac1b6a374ebdf339840093462f1ad5bcd32e';
+-    window.__helixHomeBootstrapRef='62ecac1b6a374ebdf339840093462f1ad5bcd32e';
+-    var candidate=document.createElement('script');candidate.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@62ecac1b6a374ebdf339840093462f1ad5bcd32e/home/bootstrap.js';candidate.async=false;document.head.appendChild(candidate);return;
+-  }
+-  var ref=/\.webflow\.io$/i.test(location.hostname)?'62ecac1b6a374ebdf339840093462f1ad5bcd32e':'669fa762b87c80a425621906543d86bbbf924f9a';
++    window.__helixCommitSha='76f9a10c59ecb696dd349fd1f9344939ddafab4a';
++    window.__helixHomeBootstrapRef='76f9a10c59ecb696dd349fd1f9344939ddafab4a';
++    var candidate=document.createElement('script');candidate.src='https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@76f9a10c59ecb696dd349fd1f9344939ddafab4a/home/bootstrap.js';candidate.async=false;document.head.appendChild(candidate);return;
++  }
++  var ref=/\.webflow\.io$/i.test(location.hostname)?'76f9a10c59ecb696dd349fd1f9344939ddafab4a':'61c465152f26c5820ef30e7c8b166ba37829008a';
+   window.__helixHomeBootstrapRedirected=true;
+   window.__helixCommitSha=ref;
+   window.__helixHomeBootstrapRef=ref;

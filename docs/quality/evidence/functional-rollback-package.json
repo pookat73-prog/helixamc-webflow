@@ -1870,5 +1870,138 @@
   "rawRemotePreserved": false,
   "publicWritesPublishMergeDeploy": false,
   "fullIndependentAuditComplete": false,
-  "operationalRollbackQualified": false
+  "operationalRollbackQualified": false,
+  "freshNormalRuntimeReachAssessment": {
+    "capturedAtUTC": "2026-11-20T01:14:42.428182+00:00",
+    "freshOneGETObservations": 300,
+    "allHTTP200": true,
+    "sameRawBodySHA256": 298,
+    "differentRepresentationSameFullJSON": [
+      {
+        "url": "https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/main",
+        "actualSHA256": "cfa74967d2225b67e23c03bfacc4c356342a12cafe37a2222c238f9307c5344c",
+        "frozenSHA256": [
+          "d062087a53ce835ee42c03fe7e75e4f64f773d9c904afc128f3a3f0521b7f70c"
+        ],
+        "classification": "JSON formatting only — full parsed objects identical, no input replacement",
+        "fullParsedObjectEqual": true,
+        "consumedCommitSHA": "3c4f78d4e75a06524b16a32e05e3185c48fbe800"
+      },
+      {
+        "url": "https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/staging",
+        "actualSHA256": "52a20b6aab60c6ad44f4ac76b07fbe30bae5c3633b87b4e1ebc0d81c16c18151",
+        "frozenSHA256": [
+          "e960ce9b03abe192a732a4b3569eab30eda147c5f07668016a95314113a519fd"
+        ],
+        "classification": "JSON formatting only — full parsed objects identical, no input replacement",
+        "fullParsedObjectEqual": true,
+        "consumedCommitSHA": "a074f455a4adc3dd8515255f6d779dea0afeeb10"
+      }
+    ],
+    "frozenInputBodiesReplaced": false,
+    "knownFailedOriginalURLsReRequested": false,
+    "responseResultSHA256": "8a741e0c70a010ff5a75a5b642035a6807f2d8feda2e7e29c96a2a6406f24aa9",
+    "externalFontsStylesScriptsVideosSVGAndObservedIndirectAssetsIncluded": true,
+    "notAllPossibleFutureOrDeviceAssets": true,
+    "actualFinalRunClosureCoveragePending": true,
+    "remoteRawPreserved": false
+  },
+  "sourceInverseAndExactRestoreCommits": [
+    {
+      "kind": "menu",
+      "inverseReference": "02642863ae83a10b09efa94a14267f658861f99e",
+      "restoredReference": "143ebe6dcde025624d3cd58e489266fe664845c6",
+      "inverseTree": "e40877a335c5a5a2f3e3bd5b84e9e8fee1c39d09",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "home/global/hamburger.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "1c38114bec174ca85e5222917e8716b027645ec9"
+        },
+        {
+          "path": "home/global/hamburger.css",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "3684f0d20dd51cfed23d70866cd524036e8f77dd"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    },
+    {
+      "kind": "modal",
+      "inverseReference": "26cc50f9b649e1b0776357f5a86322b65f375bc7",
+      "restoredReference": "f39d1219c3ea4373555fd01c136288497a7da2b7",
+      "inverseTree": "42a7bfb395d3ebef13b1b5806209234043aaa50b",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "global/floating-cta.css",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "fe9c224cb901ee6f8da4537ec95e9bbfb71dade5"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    },
+    {
+      "kind": "loader",
+      "inverseReference": "39e075a6b6993ebfed42f361643033b8e5593957",
+      "restoredReference": "9f938b26afdd6474cb458857445bc44566d22077",
+      "inverseTree": "b19aca02c39c3cadbca62b89eef9d2eab395d2af",
+      "restoredTree": "9cefb4d47bf9517f01cba11569a2f7c328f89dab",
+      "entries": [
+        {
+          "path": "about/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "a28a25ab88e3520ca2dd844e0747fa6f1754ef54"
+        },
+        {
+          "path": "faq/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "5a9a7484a81f1f79fb7e345820f56d9f9873ca0d"
+        },
+        {
+          "path": "global/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "9faf2ef729cfb911544cf9a9446e5a0a4b597c1d"
+        },
+        {
+          "path": "home/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "de43d8948289b66246ed9a14f7ad6b118db3edb5"
+        },
+        {
+          "path": "home/global/hamburger.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "a0c037ad9347e13c16f45fa266d1ea159811aa2b"
+        },
+        {
+          "path": "internal-medicine/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "7ee6b988019f807ec865f42375a8ad567a8277ea"
+        },
+        {
+          "path": "services/bootstrap.js",
+          "mode": "100644",
+          "type": "blob",
+          "sha": "8141fa675f77564360749837863936103a464a5a"
+        }
+      ],
+      "unrelatedHunksPreserved": true,
+      "diagnosticOnly": true
+    }
+  ],
+  "sixBlockProposal": "docs/quality/proposals/functional-rollback-20261120/manifest.json",
+  "originalMirrorIsNotFallbackTarget": true,
+  "sameImplementationDefectsNotCuredByRefSwitch": true
 }

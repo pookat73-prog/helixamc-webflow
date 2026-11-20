@@ -32,7 +32,19 @@ main과 staging Home의 최종 runtime tree는 각각 기존 `669fa762…`와 `6
 
 ## 적용 및 보존 경계
 
-세 ref는 하나의 지원 cohort이며 부분 적용은 지원하지 않는다. 여섯 설정 블록의 정확한 변경/역변경 자료는 별도 준비하며 이번에는 적용하지 않는다. 원본 mirror의 기계적 역패치와 기능 검증된 복구안을 혼동하지 않는다.
+세 ref는 하나의 지원 cohort이며 부분 적용은 지원하지 않는다. [여섯 설정 블록의 정확한 변경/역변경 자료](proposals/functional-rollback-20261120/manifest.json)를 준비했고 모두 정·역변환 SHA가 일치했다. 출발점은 미적용 현재 후보의 after 코드이며 지금 저장된 원본 코드가 아니다. 이번에는 적용하지 않는다. 원본 mirror의 기계적 역패치와 기능 보존형 복구 후보를 혼동하지 않는다. Webflow 저장은 원자적 트랜잭션이 아니므로 향후 승인된 작업에서도 여섯 결과 SHA와 생산자/shared 조합을 확인하기 전 Publish를 보류해야 한다.
+
+정상 runtime에서 관측된 자산 URL300건을 새로 읽어 모두 HTTP200을 확인했다.298건은 동결 body SHA와 같고 두GitHub ref 응답만 compact/pretty JSON 표현이 달랐다. 파싱한 객체 전체가 같고 main/staging SHA도 그대로임을 확인했다. 동결 입력을 최신 응답으로 교체하지 않았다. 이 관측에는 코드·CSS·폰트·영상·SVG 등 간접 자산이 포함되며 실제 최종 연속 실행의 요청 목록과 대조는 완료 후 판정한다.175 snapshot 응답과300 URL은 겹치므로475개 고유 자산으로 합산하지 않는다.
+
+별도 진단 브랜치의 원인별 inverse/정확한 tree 복구 커밋도 보존했다. 이 inverse들은 적용 대상이 아니다.
+
+| 진단 원인 | inverse | 전체 복구 tree로 복원 |
+|---|---|---|
+| 메뉴 잠금 | `02642863ae83a10b09efa94a14267f658861f99e` | `143ebe6dcde025624d3cd58e489266fe664845c6` |
+| 예약창 잠금 | `26cc50f9b649e1b0776357f5a86322b65f375bc7` | `f39d1219c3ea4373555fd01c136288497a7da2b7` |
+| loader 소유권 cohort | `39e075a6b6993ebfed42f361643033b8e5593957` | `9f938b26afdd6474cb458857445bc44566d22077` |
+
+복원 커밋의 tree는 모두 `9cefb4d47bf9517f01cba11569a2f7c328f89dab`와 같다. 메뉴/폼 inverse는 다른 검증된 hunk를 보존하고, loader inverse는 해당7파일의 프로토콜을 되돌리되 D02/D05와 Hero를 보존한다. 실제 runtime의 About 진단은 그 페이지가 요청하는 producer/shared의 실패 인계를 검사한다.
 
 새 raw는 `/workspace/artifacts/helix-functional-rollback-20261120` 로컬 전용이다. 본문·PNG·로그를 외부 업로드하지 않는다. 기존 두Drive 아카이브도 중복 업로드하지 않고 원격 다운로드 SHA 미검증을 유지한다. 새 제품·검사 결과가 이전 성공으로 대체되지 않도록 입력·소스 SHA를 고정했다. 기존 PNG/mask/100px/threshold0.2/expected failure는 바꾸지 않았다.
 
