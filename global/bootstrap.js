@@ -1,123 +1,320 @@
 /* ================================================================
-   HELIX AMC - GLOBAL BOOTSTRAP
-   Webflow Site Settings → Custom Code → Head에 한 번만 붙여두면
-   모든 페이지에서 자동으로 최신 커밋 기준으로 로드됨.
-
-   ⚠ 스테이징 도메인 게이트 (다른 모든 bootstrap 과 동일 사양):
-      *.webflow.io 이면 @staging, 정식 도메인이면 @main 을 본다.
-      이 게이트가 없으면 — 스테이징 검증 중(staging 이 main 보다 앞선
-      정상 상태) 페이지 로더는 새 메뉴/global 을 @staging 에서 불러오는데,
-      이 global bootstrap 은 옛 것을 @main 에서 불러와 덮어써버려
-      "새 버전 깜빡 → 옛날로 복귀" 회귀가 남. (반드시 hostname 기준 유지)
+   HELIX AMC — 공통 UI 보완 로더
+   페이지별 로더가 연결하지 않은 공통 기능만 같은 커밋에서 불러온다.
+   사이트 footer가 immutable SHA 주소로 연결하며 본문은 변경하지 않는다.
    ================================================================ */
-
 (function () {
   'use strict';
 
-  var OWNER  = 'pookat73-prog';
-  var REPO   = 'helixamc-webflow';
-  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
+  // Doctor URLs intentionally render the existing full-screen history modal.
+  if (window.self !== window.top || /^\/doctors\//.test(location.pathname) || window.__helixSharedUiInit) return;
+  window.__helixSharedUiInit = true;
 
+  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
+  var ROOT = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@';
+  var source = document.currentScript && document.currentScript.src || '';
+  var match = source.match(/@([0-9a-f]{10,40})\/global\/bootstrap\.js(?:[?#]|$)/i);
   var FILES = [
-    /* 기기 오분류 교정 — 화면 폭을 바꾸므로 무엇보다 먼저 */
     'global/viewport-fix.js',
-    /* 뷰포트 판정 — 다른 모듈이 window.HelixVP 를 쓰므로 그 다음 */
     'global/viewport.js',
-    /* 제목 구조·의미 있는 이미지 대체 텍스트 접근성 보완 */
     'global/accessibility.js',
     'global/global.css',
     'global/floating-cta.css',
     'global/floating-cta.js',
+    'global/floating-cta-mobile-fix.css',
+    'global/floating-cta-mobile-fix.js',
+    'global/top-button.css',
     'global/top-button.js',
+    'home/global/coming-soon.css',
+    'home/global/coming-soon.js',
     'home/global/hamburger.css',
-    'home/global/hamburger.js'
+    'home/global/hamburger.js',
+    'home/global/footer.css',
+    'home/global/footer.js'
   ];
+  var guards = {
+    'global/viewport-fix.js': '__helixVPFixInit',
+    'global/viewport.js': '__helixVPInit',
+    'global/accessibility.js': '__helixAccessibilityInit',
+    'global/floating-cta.js': '__helixFloatingCtaInit',
+    'global/floating-cta-mobile-fix.js': '__helixFloatingCtaMobileFixInit',
+    'global/top-button.js': '__helixTopButtonInit',
+    'home/global/coming-soon.js': '__helixComingSoonToastInit',
+    'home/global/hamburger.js': '__helixHamburgerInit',
+    'home/global/footer.js': '__HELIX_FOOTER_INIT__'
+  };
 
-  /* @<SHA> 주소는 그 자체로 "이 커밋의 이 파일" 이라 내용이 절대 안 바뀐다.
-     여기에 분 단위 ?t= 를 붙이면 1분마다 주소가 새것이 돼 브라우저/CDN 캐시가
-     통째로 무효화됨 → 방문자가 페이지를 옮길 때마다 파일 전체를 매번 다시
-     내려받게 되고, jsDelivr 도 매번 원본을 새로 떠오는 게 됨(트래픽 폭증).
-     배포하면 SHA 자체가 바뀌므로 버스터 없이도 새 코드는 항상 즉시 반영된다.
-     내용이 바뀔 수 있는 @branch 폴백일 때만 버스터를 붙인다. */
-  function cdn(ref, path) {
-    var q = /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
-    return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + q;
-  }
-
-  function injectCss(url, onerr) {
-    var link = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.href = url;
-    if (onerr) link.onerror = onerr;
-    document.head.appendChild(link);
-    return link;
-  }
-
-  function injectJs(url, onload, onerr) {
-    var s = document.createElement('script');
-    s.src   = url;
-    s.async = false;
-    if (onload) s.onload = onload;
-    if (onerr)  s.onerror = onerr;
-    document.head.appendChild(s);
-    return s;
-  }
-
-  function loadFile(path, ref) {
-    var url = cdn(ref, path);
-    var ext = path.split('.').pop();
-    var fallback = function () {
-      if (ref === BRANCH) {
-        console.warn('[global-bootstrap] failed even from @' + BRANCH + ':', path);
-        return;
-      }
-      console.warn('[global-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
-      loadFile(path, BRANCH);
-    };
-    if (ext === 'css') {
-      injectCss(url, fallback);
-    } else if (ext === 'js') {
-      injectJs(url, null, fallback);
+  // Page loaders own their tags. Remember only failed menu CSS URLs before
+  // load; a reused link owns its new URL and successful loads clear the failure.
+  var failedMenuUrls = new WeakMap();
+  function rememberMenuResult(event) {
+    var el = event.target;
+    var url = el && (el.src || el.href) || '';
+    if (typeof url === 'string' && url.indexOf('/helixamc-webflow@') !== -1 &&
+        /\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
+      if (event.type === 'load') failedMenuUrls.delete(el);
+      else failedMenuUrls.set(el, url);
     }
   }
+  document.addEventListener('error', rememberMenuResult, true);
+  document.addEventListener('load', rememberMenuResult, true);
 
-  function injectAll(ref) {
-    FILES.forEach(function (path) { loadFile(path, ref); });
+  /* Imaging click coverage lives in the already-loaded shared entry, independent
+     of motion preferences. One page-specific record per action; the existing
+     ui_click and semantic events remain separate and must not be summed. */
+  var imaging = /^\/diagnostic-imaging\/?$/.test(location.pathname);
+  var trackImagingClick = null;
+  if (imaging && !/\.webflow\.io$/i.test(location.hostname)) {
+    var imagingSelector = 'a,button,summary,video,[role="button"],[role="tab"],[tabindex],input[type="checkbox"],input[type="radio"],select,.image-18,.menu-bar_mobile,.footer-logo-clickable,.footer-email-clickable,.footer-sns-icon,[data-cta-target],[data-coming-soon]';
+    window.__helixImagingMeasure = { selector: imagingSelector };
+    if (/[?&](ga-inspect|debug-ga)=1(?:&|$)/.test(location.search)) FILES.unshift('global/ga-inspector.js');
+    trackImagingClick = function (event) {
+      if (window.__helixNoMeasure || !window.HelixMeasure) return;
+      var el = event.target && event.target.closest && event.target.closest(imagingSelector);
+      if (!el || el.closest('#helix-noga-badge,[class*="hx-gai-"]') || el.disabled) return;
+      var raw = el.getAttribute('href') || '', destination = '', targetKey = '', branch = '';
+      try {
+        var url = new URL(raw, location.href);
+        if (raw && /^https?:$/.test(url.protocol)) destination = url.origin + url.pathname;
+        if (url.protocol === 'tel:') destination = 'tel:';
+        if (/^#hx-di-(principles|equipment|workflow|safety)$/.test(raw)) targetKey = raw.slice(1);
+        if (url.origin === location.origin && /^\/(seocho|ilsan)\/?$/.test(url.pathname)) branch = url.pathname.slice(1).replace(/\/$/, '');
+        if (/^(www\.)?svicc\.co\.kr$/i.test(url.hostname)) branch = 'svicc';
+      } catch (_) {}
+      if (!branch && el.closest('.hx-sg-cta-row')) {
+        var branchName = el.querySelector('.branch-name-2');
+        var branchText = branchName && branchName.textContent.trim();
+        if (branchText === '서초') branch = 'seocho';
+        if (branchText === '일산') branch = 'ilsan';
+      }
+      var sectionEl = el.closest('[data-measure-section],section[id]');
+      var section = sectionEl && (sectionEl.getAttribute('data-measure-section') || sectionEl.id) || '';
+      if (el.closest('#hxFctaModal,#hxFctaRoot,.hx-fcta-wrap')) section = 'consultation';
+      else if (el.closest('#hx-menu-overlay,.hx-menu-close,header,#Header')) section = 'menu';
+      else if (el.closest('footer,.footer')) section = 'footer';
+      else if (el.closest('.hx-sg-cta-row')) section = 'imaging_outro';
+      else if (el.matches('.hx-di-nav-link')) section = 'imaging_navigation';
+      else if (el.matches('.helix-top-btn')) section = 'back_to_top';
+      var label = el.getAttribute('data-measure-label') || el.getAttribute('aria-label') || el.getAttribute('alt') || '';
+      if (!label && !el.matches('input,select,textarea') && !el.closest('form')) label = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      var key = el.id ? '#' + el.id : el.tagName.toLowerCase() + '.' + (el.getAttribute('class') || '').trim().split(/\s+/).filter(Boolean).slice(0, 3).join('.');
+      if (!el.id && el.parentElement) key += ':nth-child(' + (Array.prototype.indexOf.call(el.parentElement.children, el) + 1) + ')';
+      window.HelixMeasure.emit('diagnostic_imaging_click', {
+        page: 'diagnostic_imaging', source_page: '/diagnostic-imaging',
+        section_key: section || 'imaging_content', item_type: targetKey ? 'section_navigation' : branch ? 'branch_link' : 'control',
+        control_id: el.id || '', control_key: key.slice(0, 160), control_label: (label || el.id || '클릭 요소').slice(0, 100),
+        target_key: targetKey, branch: branch, link_url: destination, conv: 0
+      });
+    };
+    document.addEventListener('click', trackImagingClick, true);
   }
 
-  /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
-     예전: 페이지를 열 때마다 /commits/<branch> 를 불렀다. 이 응답엔 그 커밋에서
-     바뀐 파일의 diff 가 통째로 실려 있어 한 번에 수 KB~수십 KB 다. 우리가 필요한
-     건 40자짜리 SHA 하나뿐인데 그 값 하나 얻자고 매번 그만큼을 받아왔다.
-     지금: SHA 만 들어 있는 /git/ref/heads/<branch>(수백 바이트) 를 쓰고, 받은
-     SHA 를 이 탭 안에서 60초 동안 재사용한다. 방문자가 여러 페이지를 둘러봐도
-     조회는 사실상 1회. 60초라 배포 직후 새로고침 검증에는 지장이 없다. */
-  var SHA_KEY = 'helix.sha.' + BRANCH;
-  var SHA_TTL = 60000;
-
-  function resolveSha(done, fail) {
-    try {
-      var c = JSON.parse(sessionStorage.getItem(SHA_KEY) || 'null');
-      if (c && c.sha && (Date.now() - c.t) < SHA_TTL) { done(c.sha); return; }
-    } catch (e) {}
-    var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO +
-              '/git/ref/heads/' + BRANCH + '?t=' + Math.floor(Date.now() / 60000);
-    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function (d) {
-        var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 10);
-        if (!sha) throw new Error('no sha in response');
-        try { sessionStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
-        done(sha);
-      })
-      .catch(fail);
+  // ScrollTrigger refresh can cancel a native smooth scroll at its current
+  // offset. Finish the requested navigation, unless the visitor takes control.
+  var cancelTopScroll = null;
+  function scrollToTop() {
+    if (cancelTopScroll) cancelTopScroll();
+    var timer;
+    var inputs = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+    function cancel() {
+      clearTimeout(timer);
+      window.removeEventListener('scrollend', finish);
+      inputs.forEach(function (name) { window.removeEventListener(name, cancel, true); });
+      cancelTopScroll = null;
+    }
+    function finish() {
+      cancel();
+      if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    cancelTopScroll = cancel;
+    inputs.forEach(function (name) { window.addEventListener(name, cancel, { capture: true, passive: true }); });
+    window.addEventListener('scrollend', finish);
+    timer = setTimeout(finish, 1500);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  resolveSha(function (sha) {
-    console.log('[global-bootstrap] loading commit', sha);
-    injectAll(sha);
-  }, function (err) {
-    console.warn('[global-bootstrap] SHA 조회 실패, @' + BRANCH + ' 로 폴백', err);
-    injectAll(BRANCH);
-  });
+  // Some page heads still pin an older top-button module. Capture navigation
+  // here so the same completion and cancellation rules apply to those visitors.
+  window.addEventListener('click', function (event) {
+    var target = event.target && event.target.closest && event.target.closest('.helix-top-btn');
+    if (!target) return;
+    if (imaging && typeof trackImagingClick === 'function') trackImagingClick(event);
+    event.preventDefault();
+    event.stopPropagation();
+    if (window.HelixMeasure) window.HelixMeasure.emit('back_to_top', { item_type: 'navigation' });
+    scrollToTop();
+  }, true);
+
+  function present(path, pendingOwner) {
+    if (guards[path] && window[guards[path]]) return true;
+    // Match the repository path across revisions, including in-flight page loads.
+    return Array.prototype.some.call(document.querySelectorAll('script[src],link[rel="stylesheet"][href]'), function (el) {
+      var url = el.src || el.href;
+      if (failedMenuUrls.get(el) === url) return false;
+      if (path === 'home/global/hamburger.css' &&
+          el.getAttribute('data-helix-menu-css-error') === url) return false;
+      // The services producer records its own native error before this entry
+      // can observe it. Pending/successful tags and other modules still own them.
+      if (path === 'home/global/hamburger.js' &&
+          el.getAttribute('data-helix-menu-js-error') === url) return false;
+      var ownsPath = url.indexOf('/helixamc-webflow@') !== -1 && url.split(/[?#]/)[0].endsWith('/' + path);
+      if (ownsPath && pendingOwner) pendingOwner(el, url);
+      return ownsPath;
+    });
+  }
+
+  // This page has no department bootstrap. Reuse the existing immutable
+  // shared-UI revision to load its SEO without changing Webflow head/footer.
+  function imagingSeo(ref) {
+    if (!/^\/diagnostic-imaging\/?$/.test(location.pathname)) return;
+    var id = 'helix-diagnostic-imaging-schema';
+    if (document.getElementById(id)) return;
+    fetch(ROOT + ref + '/seo-snippets/diagnostic-imaging.html')
+      .then(function (r) { if (!r.ok) throw new Error('Imaging SEO unavailable'); return r.text(); })
+      .then(function (html) {
+        if (document.getElementById(id)) return;
+        var box = document.createElement('div');
+        box.innerHTML = html;
+        var node = box.querySelector('script[type="application/ld+json"]');
+        if (!node) return;
+        JSON.parse(node.textContent);
+        var schema = document.createElement('script');
+        schema.id = id;
+        schema.type = 'application/ld+json';
+        schema.textContent = node.textContent;
+        document.head.appendChild(schema);
+      }).catch(function (error) { console.warn('[imaging-seo]', error); });
+    var images = [
+      ['6aed5edae0c6bdf582d7a91e', '영상 판독용 모니터에 표시된 반려동물 CT 영상'],
+      ['6aec0e58c5701aa99afaa44b', 'CT 촬영실에서 반려동물의 CT 영상과 3D 재구성 영상을 확인하는 모습'],
+      ['6aec0fe85e1dd5f74676c6bb', '영상검사 전 마취 장비를 점검하는 의료진']
+    ];
+    images.forEach(function (entry) {
+      document.querySelectorAll('img[src*="' + entry[0] + '"]').forEach(function (image) {
+        if (!image.getAttribute('alt')) image.alt = entry[1];
+      });
+    });
+  }
+
+  // The services head can pin an older department loader. Complete only the
+  // newly opened imaging card and its structured URL from this shared revision.
+  function imagingEntry(ref) {
+    if (!/^\/services\/?$/.test(location.pathname)) return;
+    document.querySelectorAll('.dept-card_di').forEach(function (card) {
+      if (card.tagName === 'A' && card.getAttribute('href') === '/diagnostic-imaging') return;
+      var link = document.createElement('a');
+      Array.prototype.forEach.call(card.attributes, function (attribute) {
+        link.setAttribute(attribute.name, attribute.value);
+      });
+      link.href = '/diagnostic-imaging';
+      link.setAttribute('aria-label', '영상의학과 자세히 보기');
+      link.style.color = 'inherit';
+      link.style.textDecoration = 'none';
+      while (card.firstChild) link.appendChild(card.firstChild);
+      card.parentNode.replaceChild(link, card);
+    });
+    var id = 'helix-services-schema';
+    if (document.getElementById(id)) return;
+    fetch(ROOT + ref + '/seo-snippets/services.html')
+      .then(function (r) { if (!r.ok) throw new Error('Services SEO unavailable'); return r.text(); })
+      .then(function (html) {
+        if (document.getElementById(id)) return;
+        var box = document.createElement('div');
+        box.innerHTML = html;
+        var node = box.querySelector('script[type="application/ld+json"]');
+        if (!node) return;
+        JSON.parse(node.textContent);
+        var schema = document.createElement('script');
+        schema.id = id;
+        schema.type = 'application/ld+json';
+        schema.textContent = node.textContent;
+        var observer;
+        function removePrevious() {
+          var removed = false;
+          document.querySelectorAll('script[type="application/ld+json"]').forEach(function (previous) {
+            if (previous.id === id) return;
+            try {
+              var data = JSON.parse(previous.textContent);
+              if ((data['@graph'] || []).some(function (entry) { return entry['@id'] === 'https://helix-amc.com/services#page'; })) {
+                previous.remove();
+                removed = true;
+              }
+            } catch (_) {}
+          });
+          if (removed && observer) observer.disconnect();
+          return removed;
+        }
+        // If the pinned loader's fetch is still pending, retire just its old
+        // services graph when it arrives. Other page/site entities are untouched.
+        if (!removePrevious()) {
+          observer = new MutationObserver(removePrevious);
+          observer.observe(document.head, { childList: true });
+          setTimeout(function () { observer.disconnect(); }, 30000);
+        }
+        document.head.appendChild(schema);
+      }).catch(function (error) { console.warn('[services-seo]', error); });
+  }
+
+  function inject(ref) {
+    if (!/^[0-9a-f]{10,40}$/i.test(ref || '')) return;
+    imagingSeo(ref);
+    imagingEntry(ref);
+    document.documentElement.classList.add('hx-fcta-mobile-bar');
+    document.documentElement.classList.remove('hx-fcta-mobile-only');
+    FILES.forEach(function (path) {
+      var failures = 0;
+      var retryMenu = path === 'home/global/hamburger.css' || path === 'home/global/hamburger.js';
+      function pendingOwner(el, url) {
+        // A late page/API response can leave a producer request pending after
+        // window.load. Its native result, not tag presence, decides handoff.
+        if (el.hasAttribute('data-helix-shared-ui')) return;
+        // A reused failed link can retain an empty .sheet while its retry is
+        // pending. Watch its native result; .sheet alone is not success.
+        function finished(event) {
+          el.removeEventListener('load', finished);
+          el.removeEventListener('error', finished);
+          if (event.type === 'load') return;
+          failedMenuUrls.set(el, url);
+          // The producer gets first choice of its bounded retry. Re-discover
+          // that owner before supplying a missing asset from this revision.
+          loadMissing();
+        }
+        el.addEventListener('load', finished);
+        el.addEventListener('error', finished);
+      }
+      function loadMissing() {
+        // A page loader may have supplied this path while our request failed.
+        if (present(path, retryMenu ? pendingOwner : null)) return;
+        var css = /\.css$/.test(path);
+        var el = document.createElement(css ? 'link' : 'script');
+        if (css) { el.rel = 'stylesheet'; el.href = ROOT + ref + '/' + path; }
+        else { el.src = ROOT + ref + '/' + path; el.async = false; }
+        el.setAttribute('data-helix-shared-ui', '');
+        el.onerror = function () {
+          el.remove();
+          console.warn('[shared-ui] load failed:', path);
+          // Only this verified menu pair retries. Other module recovery policies
+          // (especially viewport correction) keep their existing behavior.
+          if (++failures === 1 && retryMenu) setTimeout(loadMissing, 500);
+        };
+        document.head.appendChild(el);
+      }
+      loadMissing();
+    });
+  }
+
+  function boot() {
+    document.removeEventListener('error', rememberMenuResult, true);
+    document.removeEventListener('load', rememberMenuResult, true);
+    if (match) { inject(match[1]); return; }
+    fetch('https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/' + BRANCH,
+      { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('UI revision unavailable'); return r.json(); })
+      .then(function (data) { inject(data.object && data.object.sha); })
+      .catch(function (error) { console.warn('[shared-ui]', error); });
+  }
+
+  // Give page loaders first choice of their modules; complete only missing UI.
+  if (document.readyState === 'complete') boot();
+  else window.addEventListener('load', boot, { once: true });
 })();

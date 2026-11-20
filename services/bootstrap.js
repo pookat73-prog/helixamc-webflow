@@ -30,6 +30,10 @@
     'global/viewport-fix.js',
     /* 뷰포트 판정 (window.HelixVP) — 교정된 폭을 봐야 하므로 그 다음 */
     'global/viewport.js',
+    /* 진료과목 카드의 테두리와 화살표를 측정·공통 스크립트보다 먼저 준비한다.
+       Webflow 카드가 이미 DOM에 있어 초기 화면에서 장식이 늦게 덧그려지는 시간을 줄인다. */
+    'services/dept-border.js',
+    'services/dept-nav.js',
     'global/accessibility.js',
     /* 운영자 제외 스위치 — ?helix-noga=1 로 켠 브라우저는 측정 안 함.
        gtag 가 만들어지기 전에 가로채야 해서 ga4-base 보다 앞에 둔다. */
@@ -66,10 +70,6 @@
        (남아있을 수 있는 Webflow legacy 버튼 .link-block-11 은 services.css 에서 숨김) */
     /* 진료과목 전용 — 페이지 오버라이드(영상의학과 카드 모바일 사진 제거 등) */
     'services/services.css',
-    /* 진료과목 전용 — 카드 U자 테두리(기존 deptUshapeBorder) */
-    'services/dept-border.js',
-    /* 진료과목 전용 — 화살표 상세이동 버튼 + 카드 강조 호버(기존 deptDetailNav) */
-    'services/dept-nav.js',
     /* 진료과목 전용 — SEO 구조화데이터(MedicalWebPage + 진료과 ItemList) 주입.
        Webflow 커스텀코드 쓰기 406 우회 (services/seo-loader.js 참고) */
     'services/seo-loader.js'
@@ -86,6 +86,10 @@
     link.rel  = 'stylesheet';
     link.href = url;
     if (onerr) link.onerror = onerr;
+    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
+      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
+      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
+    }
     document.head.appendChild(link);
   }
 
@@ -93,40 +97,55 @@
     var s = document.createElement('script');
     s.src   = url;
     s.async = false;
-    if (onerr) s.onerror = onerr;
+    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
+      /* Preserve a native failure even when the shared loader starts later. */
+      s.setAttribute('data-helix-menu-js-pending', url);
+      s.onload = function () {
+        s.removeAttribute('data-helix-menu-js-pending');
+        s.removeAttribute('data-helix-menu-js-error');
+      };
+      s.onerror = function () {
+        s.removeAttribute('data-helix-menu-js-pending');
+        s.setAttribute('data-helix-menu-js-error', url);
+        s.remove(); // A native-failed script cannot own the module for older consumers.
+        if (onerr) onerr();
+      };
+    } else if (onerr) s.onerror = onerr;
     document.head.appendChild(s);
   }
 
-  function loadFile(path, ref, immutableRetry) {
-    /* Retry if initial setup did not succeed. */
+  function loadFile(path, ref, menuRetry) {
+    /* Respect module ownership claims; guards alone do not prove completion. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',
       'global/session.js': '__helixSessionInit',
-      'global/sheet-log.js': '__helixSheetLogInit'
+      'global/sheet-log.js': '__helixSheetLogInit',
+      'home/global/hamburger.js': '__helixHamburgerInit'
     };
     if (initialized[path] && window[initialized[path]]) return;
     /* 점검 화면은 ga-inspector.js와 같은 URL 조건에서만 내려받는다. */
     if (path === 'global/ga-inspector.js' &&
         !/[?&](ga-inspect|debug-ga)=1/.test(location.search)) return;
     var url = cdn(ref, path);
+    if (path === 'home/global/hamburger.js') {
+      /* A concurrent producer may still own this exact request. Presence alone
+         cannot identify unknown/failed scripts or a different asset version. */
+      var scripts = document.querySelectorAll('script[data-helix-menu-js-pending]');
+      for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].src === url &&
+            scripts[i].getAttribute('data-helix-menu-js-pending') === url) return;
+      }
+    }
     var ext = path.split('.').pop();
-    var geometryFailureHandled = false;
     var fallback = function () {
-      /* Native card geometry must never recover through an older branch file. */
-      if ((path === 'services/services.css' || path === 'services/dept-nav.js' ||
-           path === 'services/dept-border.js') && /^[0-9a-f]{7,40}$/i.test(ref)) {
-        if (geometryFailureHandled) return;
-        geometryFailureHandled = true;
-        if (!immutableRetry) loadFile(path, ref, true);
-        else console.warn('[services-bootstrap] immutable geometry retry failed:', path);
+      if (ref === BRANCH || menuRetry) {
+        console.warn('[services-bootstrap] failed even from @' + ref + ':', path);
         return;
       }
-      if (ref === BRANCH) {
-        console.warn('[services-bootstrap] failed even from @' + BRANCH + ':', path);
-        return;
-      }
-      loadFile(path, BRANCH);   /* SHA 로드 실패 시 브랜치 ref 로 폴백 */
+      /* The menu pair shares an immutable protocol; other assets retain branch fallback. */
+      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
+      loadFile(path, menuAsset ? ref : BRANCH, menuAsset);
     };
     if (ext === 'css') injectCss(url, fallback);
     else if (ext === 'js') injectJs(url, fallback);

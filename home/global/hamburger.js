@@ -190,6 +190,23 @@
        클릭이 열림→닫힘으로 상쇄돼 "안 열리는" 것처럼 보임. 한 번만 실행. */
     if (window.__helixHamburgerInit) return;
     window.__helixHamburgerInit = true;
+    window.__helixHamburgerReady = false;
+
+    /* Owning initialization is not completion. A failed/pending GSAP resource
+       must not leave partial DOM or permanently poison the existing guard. */
+    if (!window.gsap) {
+      var onDependencyLoad = function () {
+        if (!window.gsap) return;
+        document.removeEventListener('load', onDependencyLoad, true);
+        initializeMenu();
+      };
+      document.addEventListener('load', onDependencyLoad, true);
+      return;
+    }
+    initializeMenu();
+  }
+
+  function initializeMenu() {
 
     /* 백드롭 주입 */
     var backdrop = document.createElement('div');
@@ -250,6 +267,7 @@
       backdrop.classList.add('is-open');
       closeBtn.classList.add('is-visible');
       document.body.classList.add('hx-menu-open');
+      document.documentElement.classList.add('hx-menu-open');
 
       /* 이전에 클릭한 링크 활성 복원 */
       if (activeEl) activeEl.classList.add('is-active');
@@ -272,6 +290,7 @@
       setBurgerExpanded(false);
       ga('menu_close', { method: reason || 'unknown' });
       document.body.classList.remove('hx-menu-open');
+      document.documentElement.classList.remove('hx-menu-open');
       closeBtn.classList.remove('is-visible');
       gsap.to(overlay, {
         x: '100%',
@@ -382,6 +401,7 @@
     window.addEventListener('resize', function () {
       if (isOpen) positionOverlay(overlay);
     });
+    window.__helixHamburgerReady = true;
   }
 
   if (document.readyState === 'loading') {

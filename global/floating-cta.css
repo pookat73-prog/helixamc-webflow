@@ -254,6 +254,12 @@
 }
 
 /* ── 모달 래퍼 ── */
+/* The viewport scrolls through html on home; body-only locking is insufficient.
+   Use the existing modal state; no second JavaScript state owner is needed. */
+html:has(#hxFctaModal.is-open) {
+  overflow: hidden;
+}
+
 .hx-fcta-modal {
   position: fixed;
   inset: 0;
@@ -417,6 +423,13 @@
 
 .hx-fcta-form__intro { min-width: 0; flex: 1; }
 
+/* The form intro owns emergency token wrapping, including nested text.
+   Ordinary Korean words keep the shared keep-all policy; other roots stay out. */
+.hx-fcta-form .hx-fcta-form__intro,
+.hx-fcta-form .hx-fcta-form__intro * {
+  overflow-wrap: anywhere !important;
+}
+
 .hx-fcta-form__mascot {
   display: block;
   width: 78px;
@@ -451,6 +464,13 @@
   font-size: 12.5px;
   font-weight: 600;
   color: var(--hx-ink);
+}
+
+/* Labels own emergency token wrapping without changing ordinary Korean words
+   or the input controls and other form roots. */
+.hx-fcta-form .hx-fcta-form__label,
+.hx-fcta-form .hx-fcta-form__label * {
+  overflow-wrap: anywhere !important;
 }
 
 .hx-fcta-form__req { color: var(--hx-red); margin-left: 2px; }
@@ -612,6 +632,13 @@
   font-size: 11.5px;
   line-height: 1.55;
   color: var(--hx-ink-sub);
+}
+
+/* Consent copy owns emergency token wrapping, including its label/link text.
+   Keep the checkbox, other form roots and global Korean policy outside it. */
+.hx-fcta-form .hx-fcta-consent__body,
+.hx-fcta-form .hx-fcta-consent__body * {
+  overflow-wrap: anywhere !important;
 }
 
 .hx-fcta-consent__text { cursor: pointer; }
@@ -823,7 +850,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
+  /* Copy spacing: base here, compact below; mobile-bar owns its row. */
+  gap: 4px;
 }
 .hx-fcta-shell .hx-fcta-phone-btn__subtext {
   color: rgba(255, 255, 255, 0.82);
@@ -835,7 +863,8 @@
 .hx-fcta-shell .hx-fcta-form-btn {
   color: #11202C;
   background: #fff;
-  border-color: #8FA1B4;
+  /* Form border color has one owner; width/style stay with its geometry. */
+  border-color: #0075D6;
   font-size: 13px;
   font-weight: 600;
 }
@@ -864,7 +893,6 @@
     padding: 0 8px;
     gap: 6px;
   }
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 44px; }
   .hx-fcta-shell .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
   .hx-fcta-shell .hx-fcta-call-btn__icon {
@@ -898,32 +926,20 @@
 }
 
 
-/* Clarify the phone-first hierarchy on compact screens. */
-@media (max-width: 767px) {
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
-  .hx-fcta-shell .hx-fcta-phone-btn__copy { gap: 5px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 34px; }
-}
-
-
 /* HELIX CTA polish: remove decorative overlap effects and align both actions. */
 .hx-fcta-shell .hx-fcta-call-btn__icon { display: none !important; }
 .hx-fcta-shell .hx-fcta-call-btn::after { content: none !important; }
 .hx-fcta-shell .hx-fcta-call-btn { justify-content: center; }
-.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: center; gap: 5px; }
-.hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: center; }
 .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
 .hx-fcta-shell .hx-fcta-form-btn {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0;
 }
-.hx-fcta-shell .hx-fcta-form-btn { min-height: 44px; }
 
 @media (max-width: 767px) {
   .hx-fcta-shell { gap: 8px; }
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 52px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
   .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
 }
@@ -945,7 +961,8 @@
 }
 .hx-fcta-shell::before { content: none !important; }
 .hx-fcta-shell .hx-fcta-phone-btn {
-  min-height: 52px;
+  /* Phone height: base here, compact below; bar/overlap own their variants. */
+  min-height: 56px;
   padding: 0 12px;
   border: 1px solid #0075D6;
   border-radius: 10px;
@@ -954,7 +971,7 @@
 }
 .hx-fcta-shell .hx-fcta-call-btn__icon { display: inline-flex !important; }
 .hx-fcta-shell .hx-fcta-call-btn__icon svg { stroke: currentColor; }
-.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: flex-start; gap: 4px; }
+.hx-fcta-shell .hx-fcta-phone-btn__copy { align-items: flex-start; }
 .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
 .hx-fcta-shell .hx-fcta-form-btn {
   font-size: 13px;
@@ -965,9 +982,11 @@
 .hx-fcta-shell .hx-fcta-form-btn {
   position: relative;
   width: 100%;
+  /* Height ownership: base here; compact floating row below; mobile-bar owns its variant. */
   min-height: 38px;
   padding: 0 10px;
-  border: 1px solid #0075D6;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 7px;
   background: #fff;
   color: #0075D6;
@@ -977,7 +996,9 @@
   text-align: center;
 }
 .hx-fcta-shell .hx-fcta-form-btn::after {
-  content: '↗' !important;
+  /* This decoration is disabled; keep its visibility under one owner. */
+  content: none !important;
+  display: none !important;
   position: absolute;
   top: 50%;
   right: 10px;
@@ -1003,7 +1024,7 @@
     border-radius: 13px;
   }
   .hx-fcta-shell .hx-fcta-phone-btn {
-    min-height: 50px;
+    min-height: 54px;
     padding: 0 8px;
     gap: 7px;
     border-radius: 9px;
@@ -1014,7 +1035,7 @@
   .hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text,
   .hx-fcta-shell .hx-fcta-form-btn { font-size: 12px; }
   .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 9px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; padding: 0 7px; gap: 7px; }
+  .hx-fcta-shell .hx-fcta-form-btn { min-height: 28px; padding: 0 7px; gap: 7px; }
   .hx-fcta-shell .hx-fcta-form-btn::after { right: 7px; font-size: 12px; }
 }
 @media (max-width: 360px) {
@@ -1025,29 +1046,14 @@
 }
 
 
-/* Keep the consultation row clean; the text label already names the action. */
-.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
-
-
-/* Keep both actions aligned in width; show hierarchy through height only. */
+/* Form width belongs to its canonical rule; phone width is independent. */
+.hx-fcta-shell .hx-fcta-phone-btn { width: 100%; }
 .hx-fcta-shell .hx-fcta-phone-btn,
 .hx-fcta-shell .hx-fcta-form-btn {
-  width: 100%;
   box-sizing: border-box;
 }
-.hx-fcta-shell .hx-fcta-phone-btn { min-height: 56px; }
-.hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon { display: inline-flex !important; }
 .hx-fcta-shell .hx-fcta-form-btn .hx-fcta-call-btn__icon svg { stroke: currentColor; }
-.hx-fcta-shell .hx-fcta-form-btn::after { content: none !important; display: none !important; }
-@media (max-width: 767px) {
-  .hx-fcta-shell .hx-fcta-phone-btn { min-height: 54px; }
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 36px; }
-}
-
-
-/* Keep the secondary action distinct while retaining a usable button area. */
-.hx-fcta-shell .hx-fcta-form-btn { min-height: 38px; }
 
 
 /* Match the two CTA labels; keep the phone helper line subordinate. */
@@ -1074,11 +1080,6 @@
   .hx-fcta-shell .hx-fcta-phone-btn__subtext { font-size: 8px; }
 }
 
-
-/* On mobile, reserve a shorter row for the secondary request action. */
-@media (max-width: 767px) {
-  .hx-fcta-shell .hx-fcta-form-btn { min-height: 28px; }
-}
 
 /* Keep the floating CTA compact on wide screens. */
 @media (min-width: 1280px) {
@@ -1167,5 +1168,41 @@
   :root.hx-fcta-mobile-bar .blackframe_image-hero[data-hx-home-viewport] {
     height: calc(100vh - 69px - env(safe-area-inset-bottom));
     height: calc(100dvh - 69px - env(safe-area-inset-bottom));
+  }
+}
+
+
+/* Keep the phone icon and label centered as one balanced action. */
+.hx-fcta-shell .hx-fcta-phone-btn {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+.hx-fcta-shell .hx-fcta-phone-btn > .hx-fcta-call-btn__icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  transform: none;
+}
+.hx-fcta-shell .hx-fcta-phone-btn > .hx-fcta-call-btn__icon svg {
+  display: block;
+  stroke-width: 1.8;
+}
+.hx-fcta-shell .hx-fcta-phone-btn__copy {
+  align-items: center;
+  text-align: center;
+}
+.hx-fcta-shell .hx-fcta-phone-btn .hx-fcta-call-btn__text {
+  line-height: 1.2;
+}
+@media (max-width: 767px) {
+  .hx-fcta-shell .hx-fcta-phone-btn { gap: 6px; }
+  .hx-fcta-shell .hx-fcta-phone-btn > .hx-fcta-call-btn__icon {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
   }
 }
