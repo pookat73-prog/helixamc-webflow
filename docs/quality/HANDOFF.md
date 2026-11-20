@@ -4,6 +4,8 @@
 
 ## 최신 진행 — 기능 보존형 복구 후보 구현 / 전체 검증 미완료
 
+**v3 실제 자산 체크포인트:** 같은 연속 실행에서 정식39/staging41 및 엄격50요청 영수증이 완료됐다. 정상30화면·기능복구46·영구불가분류4이며 전체80을 복구 성공으로 세지 않는다. 선택ref/정확한 요청상한 통과. [이번 실제자산 결과·SHA](evidence/functional-rollback-v3-assets-checkpoint.json). 다음 두환경30잠금·원본12geometry/1px·실제Hero36·자기역패치3은 진행 중이라 전체 승격은 아직 보류한다.
+
 **v3 새 체크포인트:** QA `b6685f0`의 동일 부모PID37923에서 기존25단계가 모두 통과했다. [이번25 결과·SHA](evidence/functional-rollback-v3-checkpoint.json)를 보존했고 실제 recovery cohort의 추가9개 단위로 이어졌다. 전체 통과는 아직 아니며 v1/v2/예비 결과를 합산하지 않는다.
 
 기능 복구 후보는 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`로 격리했다. 실제 CDN175응답/Git blob 일치, 여섯 설정의 정·역변환, 원인별 inverse/restore3쌍을 확보했다. 보호 제품 `21acccb`와 main/staging·공개 설정·운영은 변경하지 않았다. 원본 mirror는 과거 재현용이며 기능 원복 대상으로 사용하면 안 된다.

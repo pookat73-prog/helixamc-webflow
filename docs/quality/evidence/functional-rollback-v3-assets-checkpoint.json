@@ -1,0 +1,54 @@
+{
+  "observedAtUTC": "2026-11-20T04:36:01.819774+00:00",
+  "frozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+  "sameContinuousParentPID": 37923,
+  "run": "continuous-v3",
+  "completedTopFour": [
+    {
+      "name": "previous25",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "actual-production",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "actual-staging",
+      "exit": 0,
+      "error": null
+    },
+    {
+      "name": "exact-recovery-receipts",
+      "exit": 0,
+      "error": null
+    }
+  ],
+  "normalViewportContracts": 30,
+  "functionalRecoveryConditions": 46,
+  "permanentUnavailableClassificationsNotRecovery": 4,
+  "strictRequestReceipts": 50,
+  "allChosenImmutableRefsAndExactBounds": true,
+  "originalStaging12Class": "Exact Git local preservation comparison, not original CDN reach",
+  "wholeRunPass": false,
+  "rawLocalOnly": true,
+  "evidence": [
+    {
+      "path": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/results.json",
+      "sha256": "7a9a7dade0969e1ca1f3b8adbe17acc5017450ca203c30d528a2771d213b7421"
+    },
+    {
+      "path": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-production/results.json",
+      "sha256": "00614e4da859a522388ca70a3f2c9ade428abe7f3a1ddc610ab813964524a06f"
+    },
+    {
+      "path": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/actual-staging/results.json",
+      "sha256": "9ad5c71679b423b084f65d308c03742c7836d63460b524d3d400d505947a2217"
+    },
+    {
+      "path": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/exact-recovery-receipts.json",
+      "sha256": "f9fcaf7248528e39d5e5ccd1860930255457a07ed445c712a6da236cd5a0143e"
+    }
+  ]
+}
