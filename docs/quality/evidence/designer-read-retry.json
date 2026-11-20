@@ -1,0 +1,111 @@
+{
+  "basisHEAD": "385b6401893fe0ba4720c58451343be9708d438d",
+  "protectedProduct": "21acccb421aee305aed8941ee5a5da87407f94fa",
+  "observedAtUTC": "2026-11-20T05:55:02.545Z",
+  "observedAtKST": "2026-11-20T14:55:02.545000+09:00",
+  "scope": "Existing PC Chrome session and Designer read only; preserve session and stop on blocked connection",
+  "browserSkill": "skill://plugin_connector_1p_51c1ba70f47481919149861084681943/control-browser/SKILL.md",
+  "requestedURL": "https://helixanimalmedicalcenter.design.webflow.com?app=dc8209c65e3ec02254d15275ca056539c89f6d15741893a0adf29ad6f381eb99",
+  "observedStage": "Browser tool discovery; BEFORE authorized device/family verification, tab list, navigation, or Designer connection call",
+  "toolAvailability": {
+    "catalogToolCount": 730,
+    "requiredToolNames": [
+      "Browser js (setupBrowserRuntime)",
+      "list_tabs",
+      "get_tab_context",
+      "agentic_handoff.handoff if needed"
+    ],
+    "literalMatchingToolMetadataResult": [],
+    "actualBrowserConnectionCallCount": 0,
+    "matchingChromeDeviceMetadataAvailable": false,
+    "browserFamilyVerified": false,
+    "existingAuthenticationVerified": false
+  },
+  "blocker": {
+    "classification": "Required Browser capability not exposed in this task",
+    "classificationIsToolRuntimeErrorCode": false,
+    "runtimeErrorOriginal": null,
+    "whyNoErrorOriginal": "No connection API could be invoked. Literal discovery result was[]; no server/browser exception or permission-denied response was received.",
+    "priorDesignerErrorReusedAsCurrent": false
+  },
+  "observedScreens": [],
+  "newBrowserScreenshots": 0,
+  "unpublishedResults": [
+    {
+      "id": "nov19_actor_activity",
+      "item": "11월19일 변경자 실제 계정·활동",
+      "status": "미확인",
+      "reason": "Required Browser tools unavailable before existing Chrome/device/session verification; no Designer UI read performed",
+      "permissionDeniedObserved": false
+    },
+    {
+      "id": "shared_style_delta",
+      "item": "마지막 게시 이후 공통 스타일 변경",
+      "status": "미확인",
+      "reason": "Required Browser tools unavailable before existing Chrome/device/session verification; no Designer UI read performed",
+      "permissionDeniedObserved": false
+    },
+    {
+      "id": "shared_component_delta",
+      "item": "공통 컴포넌트 변경·인스턴스 영향",
+      "status": "미확인",
+      "reason": "Required Browser tools unavailable before existing Chrome/device/session verification; no Designer UI read performed",
+      "permissionDeniedObserved": false
+    },
+    {
+      "id": "cms_delta",
+      "item": "CMS 변경 여부",
+      "status": "미확인",
+      "reason": "Required Browser tools unavailable before existing Chrome/device/session verification; no Designer UI read performed",
+      "permissionDeniedObserved": false
+    },
+    {
+      "id": "next_publish_scope",
+      "item": "다음 Publish 정확한 포함 범위",
+      "status": "미확인",
+      "reason": "Required Browser tools unavailable before existing Chrome/device/session verification; no Designer UI read performed",
+      "permissionDeniedObserved": false
+    }
+  ],
+  "permissionInsufficientClassification": "Not established; no authenticated Designer permission response received",
+  "historicalEvidence": {
+    "path": "docs/quality/evidence/unpublished-scope-readonly.json",
+    "sha256": "e81bf9d37663a024c50fa58b6ef14ba5ddddd70ed25b0228b3bbf9474754abf9",
+    "atUTC": "2026-11-20T05:30:06.290932+00:00",
+    "meaning": "Prior385b640 API inventory and Designer error remain historical; not refreshed or promoted to current UI verification"
+  },
+  "stopApplied": true,
+  "browserFallbackOrAuthenticationOrSecurityChanges": false,
+  "alternatePlaywrightCloudBrowserOSBrowserAutomationOrWebflowAPISubstitution": false,
+  "designerCallsThisTask": 0,
+  "webflowCallsThisTask": 0,
+  "logoutReloginCookieProfileChanges": false,
+  "permissionInvitationRoleChanges": false,
+  "siteSaveEditPublishRestoreDeploy": false,
+  "productOrExistingAuditEdits": false,
+  "newRawExternalUploaded": false,
+  "resumeConditions": [
+    "Browser control capability must be callable in this task using the already-authorized existing PC Chrome; no alternate family or new authentication",
+    "Verify authorized device metadata identifies the existing Chrome before tab interaction",
+    "Read the supplied Designer URL in that existing session; if connection/auth/permissions block, preserve exact new error and stop",
+    "Read actual Nov19 account/actions,published-to-current style/component differences,CMS change evidence,and exact Publish inclusion; never press Publish,Save,Restore or role/invite controls"
+  ],
+  "localEvidence": {
+    "localDirectory": "/workspace/artifacts/helix-designer-read-retry-20261120",
+    "newRawExternalUploaded": false,
+    "files": [
+      {
+        "path": "browser-tool-discovery.json",
+        "sha256": "dae2e90d35b6971f655ae51777c187b65ea9c298202c44d3092b9d087eda661d"
+      },
+      {
+        "path": "designer-read-retry-assessment.json",
+        "sha256": "34faea803efa0b95f9af5654b5bf7afdcca721662009f05d51fb6c517a06bd69"
+      },
+      {
+        "path": "start-state.json",
+        "sha256": "0038037821796f68d11b78a5419a74c2a5481465cd7bef3f2341222dd5d0f1ab"
+      }
+    ]
+  }
+}
