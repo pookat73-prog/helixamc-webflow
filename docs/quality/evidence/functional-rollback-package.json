@@ -1,5 +1,5 @@
 {
-  "status": "CANDIDATE IMPLEMENTED; SINGLE CONTINUOUS VERIFICATION RUNNING — NOT OPERATIONALLY QUALIFIED",
+  "status": "UNQUALIFIED OVERALL — v1 stopped on QA geometry target mismatch; corrected v2 frozen, remaining-unit preflights running",
   "atUTC": "2026-11-20T01:00:42.558934+00:00",
   "protectedWorkRuntime": "21acccb421aee305aed8941ee5a5da87407f94fa",
   "frozenQA": "a75d818c66e6c8b09d2063394312ff9bf9af177e",
@@ -2003,5 +2003,7 @@
   ],
   "sixBlockProposal": "docs/quality/proposals/functional-rollback-20261120/manifest.json",
   "originalMirrorIsNotFallbackTarget": true,
-  "sameImplementationDefectsNotCuredByRefSwitch": true
+  "sameImplementationDefectsNotCuredByRefSwitch": true,
+  "nextFrozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+  "invocationFailureEvidence": "functional-rollback-invocation.json"
 }

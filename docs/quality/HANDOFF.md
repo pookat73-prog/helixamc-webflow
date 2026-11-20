@@ -4,6 +4,8 @@
 
 ## 최신 진행 — 기능 보존형 복구 후보 구현 / 새 동결 연속 검사 진행 중
 
+**최신 실행 상태 — v1 전체 통과 아님:** 예약창 geometry 단위에 `HELIX_VISUAL_TARGET=staging`을 넘기지 않은 호출 설정 누락으로 입력 target 검사가 중단됐다. 제품 비교에 진입하기 전 실패이며 기존25·실제80·엄격영수증·30잠금의 부분 성공을 전체 통과로 합산하지 않는다. [실패 분류와 교정](evidence/functional-rollback-invocation.json)을 보존했다. 제품·세 recovery ref·입력20·기준은 그대로이고 QA 한 줄만 `b6685f0`에서 교정했다. 올바른 호출의 geometry12/1px는 별도 예비 통과했다. 남은 Hero 단위를 확인한 뒤 새 clean clone에서 **전체 연속 v2**를 처음부터 실행한다. 아래 PID2684 진행 표기는 v1 당시 이력이다.
+
 **이번 실행의 기존25단계 통과 체크포인트:** QA `a75d818`의 동일 부모PID2684가 기존25단계를 모두 통과한 뒤 실제 recovery cohort 단계로 이어졌다. [체크포인트](evidence/functional-rollback-checkpoint.json)에 새 결과 SHA를 기록했다. 아래 예비 성공이나 이전21 소스의 결과를 합산한 것이 아니다. 실제 자산을 고정한 격리 재생에서 정식·staging와 나머지 복구 계약은 아직 진행 중이며 전체 통과로 승격하지 않는다.
 
 [22 기능 보존형 원복](22-functional-rollback.md), [후보 파일·실제 URL·SHA 대장](evidence/functional-rollback-package.json)이 최신 진행이다. 보호 제품은 `21acccb` 그대로다. 원본 mirror 세 개와 기존 현재 후보는 보존했고, 별도 recovery 브랜치에 원인별 선별 커밋을 구성했다. 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`가 새 복구 후보다. 최종 실제 CDN175응답은 HTTP200/Git 일치이며, 이것만으로 원복 기능 완료로 판정하지 않는다.
