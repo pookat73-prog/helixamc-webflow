@@ -4,6 +4,8 @@
 
 ## 최신 검사 상태
 
+교정 후 QA `b6685f0`의 별도 clean clone에서 전체 연속v2를 시작했다. 부모PID28738이며 기존25부터 모든 단위를 다시 실행한다. geometry12/1px·실제Hero36·역패치3 사전 확인은 완료했지만 v2 결과에 합산하지 않는다. 실제Hero 예비36의30조건만 완료 신호가 돌아왔고 GSAP 영구실패6조건은 미완료로 유지했다.
+
 v1은 기존25·정식39·staging41·엄격50영수증·30잠금까지 개별 통과한 뒤 geometry 단위에서 멈췄다. 기존 단위는 staging 입력을 사용하지만 새 caller가 production target을 상속한 것이 원인이다. 제품 비교 전 `manifest.target` 검사가 실패했으며 기준·계산값·허용 오차 문제로 분류하지 않는다. [실행 설정 진단](evidence/functional-rollback-invocation.json)을 보존하고, QA `b6685f0`에서 child 환경 한 줄만 교정했다. 제품 source21·recovery 세 ref·입력20은 바꾸지 않았다. geometry12/1px는 정확한 호출의 예비 실행에서 통과했다. 남은 단위 사전 확인 후 새 동결 clone의 전체 연속v2를 처음부터 실행하며 v1 부분 성공을 합산하지 않는다.
 
 ## 원인과 선택

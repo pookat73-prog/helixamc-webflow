@@ -1,5 +1,5 @@
 {
-  "status": "UNQUALIFIED OVERALL — v1 stopped on QA geometry target mismatch; corrected v2 frozen, remaining-unit preflights running",
+  "status": "Corrected frozen continuous v2 running — no final qualification",
   "atUTC": "2026-11-20T01:00:42.558934+00:00",
   "protectedWorkRuntime": "21acccb421aee305aed8941ee5a5da87407f94fa",
   "frozenQA": "a75d818c66e6c8b09d2063394312ff9bf9af177e",
