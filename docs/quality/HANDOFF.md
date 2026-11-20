@@ -2,21 +2,19 @@
 
 갱신일: 2026-11-20 (Asia/Seoul)
 
-## 최신 진행 — 기능 보존형 복구 후보 구현 / 새 동결 연속 검사 진행 중
+## 최신 진행 — 기능 보존형 복구 후보 구현 / 전체 검증 미완료
 
-**교정 후 현재 실행:** QA `b6685f0`, clean clone `/workspace/helix-functional-verification-v2-20261120`, 부모PID28738의 전체 연속v2를 시작했다. geometry12/1px, 실제 두환경Hero36(30완료/6영구실패 명시), 역패치3 단위의 호출 사전 확인은 완료했다. 이 예비 성공은 합산하지 않으며 v2가 기존25부터 전 구간을 다시 실행한다. 제품·자산·입력·기준은 바꾸지 않았다.
+기능 복구 후보는 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`로 격리했다. 실제 CDN175응답/Git blob 일치, 여섯 설정의 정·역변환, 원인별 inverse/restore3쌍을 확보했다. 보호 제품 `21acccb`와 main/staging·공개 설정·운영은 변경하지 않았다. 원본 mirror는 과거 재현용이며 기능 원복 대상으로 사용하면 안 된다.
 
-**최신 실행 상태 — v1 전체 통과 아님:** 예약창 geometry 단위에 `HELIX_VISUAL_TARGET=staging`을 넘기지 않은 호출 설정 누락으로 입력 target 검사가 중단됐다. 제품 비교에 진입하기 전 실패이며 기존25·실제80·엄격영수증·30잠금의 부분 성공을 전체 통과로 합산하지 않는다. [실패 분류와 교정](evidence/functional-rollback-invocation.json)을 보존했다. 제품·세 recovery ref·입력20·기준은 그대로이고 QA 한 줄만 `b6685f0`에서 교정했다. 올바른 호출의 geometry12/1px는 별도 예비 통과했다. 남은 Hero 단위를 확인한 뒤 새 clean clone에서 **전체 연속 v2**를 처음부터 실행한다. 아래 PID2684 진행 표기는 v1 당시 이력이다.
+**전체 통과 아님:** v1은 geometry caller target 누락으로 중단됐다. 해당 환경 한 줄만 고친 QA `b6685f0`의 v2도 중단됐다. v2는 기존25 중10단계와 form-label6쌍까지 통과한 뒤 About820의 예약창 PNG exact 비교가 실패했다. 자연 문구·타이포·높이·배치 JSON은 원본/후보 완전히 같고, PNG231,920픽셀 중421픽셀이 둥근 모서리 주변에서 달랐다. 배경 영상은 time0/paused였지만 실제 composited frame 원인은 미확정이다. 제품 실패/환경 실패로 임의 확정하지 않는다. [v2 진단](evidence/functional-rollback-v2-diagnosis.json)을 보존했다.
 
-**이번 실행의 기존25단계 통과 체크포인트:** QA `a75d818`의 동일 부모PID2684가 기존25단계를 모두 통과한 뒤 실제 recovery cohort 단계로 이어졌다. [체크포인트](evidence/functional-rollback-checkpoint.json)에 새 결과 SHA를 기록했다. 아래 예비 성공이나 이전21 소스의 결과를 합산한 것이 아니다. 실제 자산을 고정한 격리 재생에서 정식·staging와 나머지 복구 계약은 아직 진행 중이며 전체 통과로 승격하지 않는다.
+같은 입력의 About820 단독 진단은 exact PNG와 후속 세 번의 동일 캡처를 통과했다. 이는 최종 통과가 아니다. **제품·QA·입력·PNG·mask·허용 오차를 그대로 둔 새 전체 연속v3를 한 번만 실행 중**이다. 같은 증상이 재발하면 반복을 중단하고 검증 차단을 유지한다. v1/v2/예비 성공은 합산하지 않는다. [실행 이력](evidence/functional-rollback-invocation.json), [22 상세](22-functional-rollback.md), [파일·URL·SHA 대장](evidence/functional-rollback-package.json)이 최신이다.
 
-[22 기능 보존형 원복](22-functional-rollback.md), [후보 파일·실제 URL·SHA 대장](evidence/functional-rollback-package.json)이 최신 진행이다. 보호 제품은 `21acccb` 그대로다. 원본 mirror 세 개와 기존 현재 후보는 보존했고, 별도 recovery 브랜치에 원인별 선별 커밋을 구성했다. 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`가 새 복구 후보다. 최종 실제 CDN175응답은 HTTP200/Git 일치이며, 이것만으로 원복 기능 완료로 판정하지 않는다.
+현재 개별 증거에는 정상30화면·기능 복구46/영구불가4·엄격50요청영수증·잠금30, staging 원본12 geometry/1px·실제Hero36(30완료/6영구미완료)·개별 역주입3이 있다. 이 결과는 서로 다른 실행의 단위 증거이며 새 전체 연속 통과로 합산하지 않는다. 실제 정상참조300URL은 모두200이며298본문SHA 일치/2GitHub ref는 parsed object 동일이다. 최종175관측과 중복되므로475고유자산으로 세지 않는다.
 
-About3폭의 실제 메뉴/폼 잠금·nonzero scrollY 복원, 두 owner의 해제 순서, Services3폭의 원본 비교, 실제 Home의40회 소진/공개 후 GSAP 복구, 메뉴/폼/로더 개별 역주입·복구 예비 검사를 통과했다. 예비 성공은 합산하지 않는다. QA `a75d818`의 별도 clean clone에서 기존25단계와 새 실제 cohort·엄격2/3요청·30잠금·원본12 geometry/1px·실제36 Hero·개별 역주입을 **단일 연속 실행 중**이다. 결과는 아직 미완료다.
+[여섯 설정 patch](proposals/functional-rollback-20261120/manifest.json)는 미적용 현재 후보의 after 코드에서 복구 cohort로 가는 안이다. 현재 저장 원본에서 직접 적용하는 patch가 아니다. 부분 적용은 지원하지 않으며 여섯 결과SHA/producer/shared 일치 전 Publish를 금지하는 계획이다. 실제 공개 적용·운영 원복은 하지 않았다. main/Home 복구 tree는 현재 검증 후보와 같아 공유 코드 결함에 대한 독립 대체 구현이 아니다.
 
-main과 staging Home 복구 runtime은 각각 현재 검증 후보와 같으므로 독립 대체 구현이라고 표현하지 않는다. Services의 다른 고유 파일은 원본을 보존했고 모든 내비게이션/SEO 의미의 동등성을 새로 주장하지 않는다. 초기 staging 구성216은 소스 대조에서 제외하고 기존 staging loader/CSS를 보존한 최종76만 사용한다. 새 raw는 로컬 전용이며 기준/기존 raw/두Drive 백업은 보존한다. 공개 설정·main/staging·Publish·배포 변경 없음. 최종 감사·운영 적용 승격은 새 연속 결과와 남은 게시 범위 게이트 확인 전 보류한다.
-
-추가 준비 완료: [기능 복구 여섯 설정 patch](proposals/functional-rollback-20261120/manifest.json)의 정확 정·역변환과 원인별 별도 inverse/복구 커밋3쌍을 확보했다. 실제 정상 참조 URL300건은 새 HTTP200이며298 rawSHA 동일/2GitHub ref JSON은 전체 parsed object 동일이다. 동결 입력 교체 없음.175 snapshot 관측과 중복되므로 고유475자산으로 합산하지 않는다. 마지막 요청 대조와 새 연속 검사는 진행 중이고, 이 준비 완료를 전체 기능 검증 통과로 승격하지 않는다. 명령 세션 핸들이 만료됐어도 실제 부모PID2684가 이어져 재시작하지 않고 파일/PID로 추적 중이다.
+신규 raw는 로컬 전용이며 외부 업로드하지 않는다. 기존 기준/입력/두Drive백업 보존, Drive 원격SHA 미검증 유지. staging 원본12는 정확 Git 로컬 비교로 과거 CDN 도달성 미검증과 구분한다. Safari/iOS/iPad·V0/U01·일반 실행 예외/무한pending·미게시 Designer/CMS 변경 범위는 별도 게이트다. 전체 검사·공개 범위·별도 검토자 조건이 충족되기 전 최종 독립 감사 완료/운영 적용 가능으로 승격하지 않는다.
 
 ## 이전21 판정 — 1. 실제 원복 기능 차단 확인 / 공개 적용·전체 독립 감사 승격 보류
 

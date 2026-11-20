@@ -12,10 +12,13 @@
   "oldRunSHA256": "4dc62dc63cb1b301ab0523d960ea55e23203b212ed8a4d659dd2e10aebdd95bd",
   "next": "Preflight remaining units then new frozen whole continuous run; do not combine v1 partial passes",
   "correctedFrozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
-  "nextOutput": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v2",
-  "status": "Corrected frozen whole continuous v2 RUNNING — no final pass yet",
+  "nextOutput": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3",
+  "status": "V1 stopped for caller target; V2 stopped for exact PNG mismatch. Bounded unchanged-source V3 running; no full pass.",
   "v2ParentPID": 28738,
   "allTailUnitsPreflightPass": true,
   "tailPreflightsNotCombined": true,
-  "v2ObservedRunningAtUTC": "2026-11-20T02:38:26.965395+00:00"
+  "v2ObservedRunningAtUTC": "2026-11-20T02:38:26.965395+00:00",
+  "v2Pass": false,
+  "v2Diagnosis": "functional-rollback-v2-diagnosis.json",
+  "oldPartialSuccessesNotCombined": true
 }

@@ -1,12 +1,12 @@
 # HELIX — 기능 보존형 원복 후보
 
-2026-11-20 KST. 시작 `857356c`, 보호 제품 `21acccb`. 현재 상태는 **후보 구현·개별 재현 완료 / v1 호출 설정 실패 보존·교정 후 전체 연속 재검증 대기**다. 운영 원복 가능·공개 적용·감사 완료로 승격하지 않는다.
+2026-11-20 KST. 시작 `857356c`, 보호 제품 `21acccb`. 현재 상태는 **후보 구현·개별 재현 완료 / v1·v2 실패 보존 후 동일 소스 전체 연속v3 진행 중**이다. 운영 원복 가능·공개 적용·감사 완료로 승격하지 않는다.
 
 ## 최신 검사 상태
 
-교정 후 QA `b6685f0`의 별도 clean clone에서 전체 연속v2를 시작했다. 부모PID28738이며 기존25부터 모든 단위를 다시 실행한다. geometry12/1px·실제Hero36·역패치3 사전 확인은 완료했지만 v2 결과에 합산하지 않는다. 실제Hero 예비36의30조건만 완료 신호가 돌아왔고 GSAP 영구실패6조건은 미완료로 유지했다.
+v1은 geometry caller의 target 누락, v2는 About820 예약창 exact PNG에서 중단됐다. [호출 교정 이력](evidence/functional-rollback-invocation.json)과 [v2 진단](evidence/functional-rollback-v2-diagnosis.json)을 보존했다. v2는 문구·폰트·높이·배치 JSON이 완전히 같았고, 둥근 모서리 주변421픽셀만 달랐다. 원인은 확정하지 않았다. 동일 입력 단독 진단에서는 exact PNG와 추가 캡처 세 번이 일치했다. 기준·mask·허용 오차·제품/검사를 수정하지 않았다.
 
-v1은 기존25·정식39·staging41·엄격50영수증·30잠금까지 개별 통과한 뒤 geometry 단위에서 멈췄다. 기존 단위는 staging 입력을 사용하지만 새 caller가 production target을 상속한 것이 원인이다. 제품 비교 전 `manifest.target` 검사가 실패했으며 기준·계산값·허용 오차 문제로 분류하지 않는다. [실행 설정 진단](evidence/functional-rollback-invocation.json)을 보존하고, QA `b6685f0`에서 child 환경 한 줄만 교정했다. 제품 source21·recovery 세 ref·입력20은 바꾸지 않았다. geometry12/1px는 정확한 호출의 예비 실행에서 통과했다. 남은 단위 사전 확인 후 새 동결 clone의 전체 연속v2를 처음부터 실행하며 v1 부분 성공을 합산하지 않는다.
+QA `b6685f0`의 clean clone에서 동일 입력으로 전체 연속v3를 한 번만 재실행 중이다. 같은 PNG 증상이 다시 발생하면 반복을 중단하고 검증 차단을 기록한다. v1 기존25/실제80/잠금30과 tail 예비 검사는 전체 통과에 합산하지 않는다. 새 동결 소스의 처음부터 끝까지 한 번의 연속 통과만 최종 판정 근거다.
 
 ## 원인과 선택
 
@@ -26,17 +26,15 @@ main과 staging Home의 최종 runtime tree는 각각 기존 `669fa762…`와 `6
 
 선별 작업을 메뉴 잠금·예약창 잠금·메뉴 소유권 프로토콜·D02/D05 보존·Hero/반응형 보존 커밋으로 나눴다. 보호 작업 브랜치의 제품은 바꾸지 않았다. staging Home에 정식 파일을 그대로 복사한 초기 `216fd92` 구성은 loader 순서/CSS 범위 대조에서 제외했고, 기존 검증된 staging 두 파일을 보존한 최종 ref만 사용한다. 초기 구성의 CDN 성공을 최종 기능 검증으로 합산하지 않는다.
 
-## 현재 확보한 증거
+## 현재 확보한 단위 증거 — 전체 통과 아님
 
-새 연속 실행의 [기존25단계 체크포인트](evidence/functional-rollback-checkpoint.json)가 통과했다. 동일 부모PID가 실제 recovery snapshot의 정식·staging 검증으로 이어졌으며 전체 실행은 아직 진행 중이다. 과거 결과를 재인용한 통과가 아니다.
+- 실제 세 ref의 최종 HTTP200/Git blob 일치 응답175건.
+- v1에서 기존25, 실제 정식39/staging41조건, 엄격 요청/ref50영수증, 두환경30잠금 단위 완료. geometry 호출 실패로 전체 실패.
+- v2에서 기존25 중10단계와 form-label6쌍 완료. About820 exact PNG 실패로 전체 실패.
+- 독립 예비 실행의 원본12 geometry/1px, 실제 두환경Hero36(30완료/6영구미완료), 개별 inverse 실패 검출/복구3원인 완료.
+- About820 단독 PNG 재현 진단은 통과했지만 간헐적 차이 원인을 입증하지 못했다.
 
-- 최종 세 ref의 실제 HTTP200/Git blob 일치 응답175건 확보. 과거 원본의 실패 URL을 재요청하거나 최신 응답으로 대체하지 않았다.
-- About3폭 예비 검사: 메뉴·예약창 각각 실제 wheel 잠금, nonzero scrollY의 정확한 복원, Escape/초점·잠금 해제 통과. About1440에서는 두 상태의 해제 순서 두 가지도 확인했다.
-- Services3폭 예비 비교: 기존 원본의 문구·타이포·배치 계약, 예약창 PNG와 후보 기능 통과.
-- 실제 패키지 Hero 예비 검사: 정식1440 정상/40회 소진 뒤 GSAP 복구, staging390 정상/firstpaint 공개 뒤 GSAP 복구의 실제 ready/done·ghost·hold/loop 통과.
-- 메뉴 잠금·예약창 잠금·About producer/shared 소유권 역패치의 실제 실패를 검출했고, 해당 주입만 제거한 새 동일 자산 문맥에서 잠금과3요청 복구가 돌아왔다.
-
-모두 예비 검사이며 최종 연속 성공에 합산하지 않는다. 새 QA `a75d818`의 별도 clean clone `/workspace/helix-functional-verification-20261120`에서 `functional-rollback-integration.cjs`를 한 번 연속 실행 중이다. 기존25단계 → 실제 producer/shared30화면·고장/지연 → 엄격 요청/ref 영수증 → 두 환경30 scroll-lock → 원본12 geometry/1px → 실제 두 Home36 Hero조건 → 개별 역주입/복구 순서다. 검사 실패 시 중단하고 원인·입력부터 재진단한다.
+위 단위 결과를 합산하지 않는다. `functional-rollback-integration.cjs`의 전체 연속v3 결과를 기다린다. 기존25 → 실제 정식/staging → 엄격2/3요청 → 두환경30잠금 → 원본12 geometry/1px → 실제Hero36 → 개별 inverse/복구 순서이며 실패하면 즉시 중단한다.
 
 ## 적용 및 보존 경계
 
