@@ -4,6 +4,8 @@
 
 ## 최신 진행 — 기능 보존형 복구 후보 구현 / 전체 검증 미완료
 
+**v3 두환경 잠금30 완료:** 메뉴·예약창 각각 nonzero scrollY의 실제wheel 잠금, 정확한 닫기 복원, Escape/초점과 해제 뒤wheel 이동이 정식15/staging15에서 통과했다. About1440 두owner 해제 순서도 두환경에서 확인했다. [이번 잠금 결과·SHA](evidence/functional-rollback-v3-locks-checkpoint.json). 나머지 geometry12/1px·실제Hero36·개별inverse3은 같은 연속 실행에서 진행 중이다. 아래 진행 표기는 각 이전 체크포인트 당시 이력이다.
+
 **v3 실제 자산 체크포인트:** 같은 연속 실행에서 정식39/staging41 및 엄격50요청 영수증이 완료됐다. 정상30화면·기능복구46·영구불가분류4이며 전체80을 복구 성공으로 세지 않는다. 선택ref/정확한 요청상한 통과. [이번 실제자산 결과·SHA](evidence/functional-rollback-v3-assets-checkpoint.json). 다음 두환경30잠금·원본12geometry/1px·실제Hero36·자기역패치3은 진행 중이라 전체 승격은 아직 보류한다.
 
 **v3 새 체크포인트:** QA `b6685f0`의 동일 부모PID37923에서 기존25단계가 모두 통과했다. [이번25 결과·SHA](evidence/functional-rollback-v3-checkpoint.json)를 보존했고 실제 recovery cohort의 추가9개 단위로 이어졌다. 전체 통과는 아직 아니며 v1/v2/예비 결과를 합산하지 않는다.

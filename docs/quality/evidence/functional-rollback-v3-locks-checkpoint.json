@@ -1,0 +1,26 @@
+{
+  "observedAtUTC": "2026-11-20T04:42:37.749309+00:00",
+  "sourceQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+  "sameContinuousParentPID": 37923,
+  "run": "continuous-v3",
+  "menuAndFormRealWheelLockAndExactNonzeroScrollYRestoration30": true,
+  "escapeFocusAndPostCloseWheelRelease": true,
+  "about1440BothOwnerReleaseOrdersInBothEnvironments": true,
+  "unsupportedNativeOverlapFocusPolicyNotClaimed": true,
+  "wholeRunPass": false,
+  "evidence": [
+    {
+      "environment": "production",
+      "path": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/root-locks-production/results.json",
+      "sha256": "a3a7ca2d639a4305e8e2e08fd156596aa76f3af7c50b210aec4f72921a086787",
+      "viewportCount": 15
+    },
+    {
+      "environment": "staging",
+      "path": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/root-locks-staging/results.json",
+      "sha256": "5f87846c581202d52cd77622c447d0e3b0bc21ac0834e4c2ecace1acd2c71453",
+      "viewportCount": 15
+    }
+  ],
+  "newRawLocalOnly": true
+}
