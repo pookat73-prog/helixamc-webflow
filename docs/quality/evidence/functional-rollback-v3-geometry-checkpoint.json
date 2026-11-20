@@ -1,0 +1,19 @@
+{
+  "atUTC": "2026-11-20T04:46:19.372161+00:00",
+  "frozenQA": "b6685f03b54dde0a6c2472a43d03a0d4bb7429d9",
+  "sameContinuousParentPID": 37923,
+  "run": "continuous-v3",
+  "stagingOriginal12ExactGitModalGeometryPass": true,
+  "onePixelInjectedDetectedAndOwnPropertyRestored": {
+    "detected": true,
+    "deltaX": 1,
+    "onlyInjectedPropertyRestored": true,
+    "exactGeometryRestored": true
+  },
+  "originalStagingCDNReachClaimed": false,
+  "fullPagePixelIdentityClaimed": false,
+  "wholeRunPass": false,
+  "localResult": "/workspace/artifacts/helix-functional-rollback-20261120/continuous-v3/original12-geometry-1px/results.json",
+  "resultSHA256": "2fe3b5d575d74d3381ddc5e2da664eca4b0aa86c6d480a4511378e493162c5a1",
+  "newRawLocalOnly": true
+}
