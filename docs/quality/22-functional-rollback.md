@@ -4,6 +4,8 @@
 
 ## 최신 검사 상태
 
+동일 부모PID37923의 v3에서 기존25단계가 모두 완료됐다. [새25단계 체크포인트](evidence/functional-rollback-v3-checkpoint.json)는 실제 v3 결과SHA를 기록한다. 추가9개 단위는 같은 연속 실행에서 진행 중이며 전체 통과는 아직 아니다.
+
 v1은 geometry caller의 target 누락, v2는 About820 예약창 exact PNG에서 중단됐다. [호출 교정 이력](evidence/functional-rollback-invocation.json)과 [v2 진단](evidence/functional-rollback-v2-diagnosis.json)을 보존했다. v2는 문구·폰트·높이·배치 JSON이 완전히 같았고, 둥근 모서리 주변421픽셀만 달랐다. 원인은 확정하지 않았다. 동일 입력 단독 진단에서는 exact PNG와 추가 캡처 세 번이 일치했다. 기준·mask·허용 오차·제품/검사를 수정하지 않았다.
 
 QA `b6685f0`의 clean clone에서 동일 입력으로 전체 연속v3를 한 번만 재실행 중이다. 같은 PNG 증상이 다시 발생하면 반복을 중단하고 검증 차단을 기록한다. v1 기존25/실제80/잠금30과 tail 예비 검사는 전체 통과에 합산하지 않는다. 새 동결 소스의 처음부터 끝까지 한 번의 연속 통과만 최종 판정 근거다.

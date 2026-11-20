@@ -4,6 +4,8 @@
 
 ## 최신 진행 — 기능 보존형 복구 후보 구현 / 전체 검증 미완료
 
+**v3 새 체크포인트:** QA `b6685f0`의 동일 부모PID37923에서 기존25단계가 모두 통과했다. [이번25 결과·SHA](evidence/functional-rollback-v3-checkpoint.json)를 보존했고 실제 recovery cohort의 추가9개 단위로 이어졌다. 전체 통과는 아직 아니며 v1/v2/예비 결과를 합산하지 않는다.
+
 기능 복구 후보는 기본 `61c46515…`, staging Home `76f9a10c…`, Services producer+shared `91140bf3…`로 격리했다. 실제 CDN175응답/Git blob 일치, 여섯 설정의 정·역변환, 원인별 inverse/restore3쌍을 확보했다. 보호 제품 `21acccb`와 main/staging·공개 설정·운영은 변경하지 않았다. 원본 mirror는 과거 재현용이며 기능 원복 대상으로 사용하면 안 된다.
 
 **전체 통과 아님:** v1은 geometry caller target 누락으로 중단됐다. 해당 환경 한 줄만 고친 QA `b6685f0`의 v2도 중단됐다. v2는 기존25 중10단계와 form-label6쌍까지 통과한 뒤 About820의 예약창 PNG exact 비교가 실패했다. 자연 문구·타이포·높이·배치 JSON은 원본/후보 완전히 같고, PNG231,920픽셀 중421픽셀이 둥근 모서리 주변에서 달랐다. 배경 영상은 time0/paused였지만 실제 composited frame 원인은 미확정이다. 제품 실패/환경 실패로 임의 확정하지 않는다. [v2 진단](evidence/functional-rollback-v2-diagnosis.json)을 보존했다.
