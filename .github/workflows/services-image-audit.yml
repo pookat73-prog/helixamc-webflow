@@ -1,0 +1,105 @@
+name: Services lossless image audit
+on:
+  pull_request:
+    branches: [staging]
+    paths: ['.github/workflows/services-image-audit.yml']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image verification tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libjpeg-turbo-progs python3-pil nasm cmake
+      - name: Build official pinned MozJPEG for lossless scan optimization
+        run: |
+          git init -q /tmp/moz-src
+          git -C /tmp/moz-src fetch -q --depth 1 https://github.com/mozilla/mozjpeg.git 6c9f0897afa1c2738d7222a0a9ab49e8b536a267
+          git -C /tmp/moz-src checkout -q --detach FETCH_HEAD
+          cmake -S /tmp/moz-src -B /tmp/moz-build -DCMAKE_BUILD_TYPE=Release -DENABLE_SHARED=OFF -DWITH_TURBOJPEG=OFF -DPNG_SUPPORTED=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          cmake --build /tmp/moz-build --target jpegtran-static -j2
+      - name: Verify pixel-identical JPEG copies without changing live assets
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, io, json, pathlib, subprocess, urllib.request
+          from PIL import Image, ImageChops
+          root=pathlib.Path("image-audit-output"); root.mkdir(exist_ok=True)
+          images={
+           "surgery":"https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6a45b58ce8398402b75173bd_11200e6d895e5c6c674bdb253daeedbe_%EC%99%B8%EA%B3%BC%20%ED%85%8D%EC%8A%A4%EC%B3%90%20%EB%B3%80%ED%99%98.jpg",
+           "radiology":"https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6a45fa1652d5c5749adc1a1e_53449212ab0994e79f2d7512f779a08e_%EC%98%81%EC%83%81.jpg",
+           "ophthalmology":"https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6a47494d02795540f3f176ae_%ED%97%AC%EB%A6%AD%EC%8A%A4_%EB%B0%B0%EA%B2%BD%EC%9A%A9_%EB%B8%94%EB%A3%A8%EA%B7%B8%EB%A0%88%EC%9D%B4%EB%B3%B4%EC%A0%95_%EC%95%88%EA%B3%BC%EC%A7%84%EB%A3%8C_v1.jpg",
+           "dentistry":"https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/6a47494d74566979b091ef66_%ED%97%AC%EB%A6%AD%EC%8A%A4_%EB%B0%B0%EA%B2%BD%EC%9A%A9_%EB%B8%94%EB%A3%A8%EA%B7%B8%EB%A0%88%EC%9D%B4%EB%B3%B4%EC%A0%95_%EC%B9%98%EA%B3%BC%EC%A7%84%EB%A3%8C_v1.jpg"
+          }
+          results=[]
+          for name,url in images.items():
+           data=urllib.request.urlopen(url,timeout=30).read()
+           src=root/(name+"-original.jpg"); dst=root/(name+"-lossless.jpg")
+           src.write_bytes(data)
+           subprocess.run(["jpegtran","-copy","all","-optimize","-progressive","-outfile",str(dst),str(src)],check=True)
+           optimized=dst.read_bytes()
+           a=Image.open(io.BytesIO(data)); b=Image.open(io.BytesIO(optimized))
+           a.load(); b.load()
+           equal=a.size==b.size and a.mode==b.mode and a.tobytes()==b.tobytes()
+           metadata=all(a.info.get(k)==b.info.get(k) for k in ["exif","icc_profile","dpi"])
+           result={"name":name,"url":url,"originalBytes":len(data),"optimizedBytes":len(optimized),"dimensions":a.size,"pixelsEqual":equal,"metadataEqual":metadata,"originalSha256":hashlib.sha256(data).hexdigest(),"optimizedSha256":hashlib.sha256(optimized).hexdigest()}
+           results.append(result); print("HELIX_RESULT "+json.dumps(result),flush=True)
+           if not equal or not metadata: raise RuntimeError("Image equivalence failed: "+name)
+           if len(optimized)<len(data)*0.95:
+            encoded=base64.b64encode(optimized).decode()
+            for i in range(0,len(encoded),24000): print("HELIX_ASSET_CHUNK "+name+" "+str(i//24000)+" "+encoded[i:i+24000],flush=True)
+          webp_failures=[]
+          for name in images:
+           src=root/(name+"-original.jpg")
+           a=Image.open(src); a.load()
+           dst=root/(name+"-lossless.webp")
+           a.save(dst,format="WEBP",lossless=True,quality=100,method=6,icc_profile=a.info.get("icc_profile",b""),exif=a.info.get("exif",b""))
+           b=Image.open(dst); b.load()
+           equal=a.size==b.size and a.convert("RGB").tobytes()==b.convert("RGB").tobytes()
+           metadata=(a.info.get("icc_profile") or b"")== (b.info.get("icc_profile") or b"") and dict(a.getexif())==dict(b.getexif())
+           optimized=dst.read_bytes(); data=src.read_bytes()
+           result={"name":name+"-webp-lossless","originalBytes":len(data),"optimizedBytes":len(optimized),"dimensions":a.size,"pixelsEqual":equal,"colorAndOrientationMetadataEqual":metadata,"originalSha256":hashlib.sha256(data).hexdigest(),"optimizedSha256":hashlib.sha256(optimized).hexdigest()}
+           results.append(result); print("HELIX_RESULT "+json.dumps(result),flush=True)
+           if not equal or not metadata: webp_failures.append(name)
+           if equal and metadata and len(optimized)<len(data)*0.95:
+            encoded=base64.b64encode(optimized).decode()
+            for i in range(0,len(encoded),24000): print("HELIX_ASSET_CHUNK "+name+"-webp-lossless "+str(i//24000)+" "+encoded[i:i+24000],flush=True)
+          for name in images:
+           src=root/(name+"-original.jpg")
+           a=Image.open(src); a.load(); data=src.read_bytes()
+           for kind in ["mozjpeg-lossless","webp-q100"]:
+            dst=root/(name+"-"+kind+(".jpg" if kind.startswith("moz") else ".webp"))
+            if kind.startswith("moz"):
+             subprocess.run(["/tmp/moz-build/jpegtran-static","-copy","all","-optimize","-progressive","-outfile",str(dst),str(src)],check=True)
+            else:
+             a.save(dst,format="WEBP",lossless=False,quality=100,method=6,icc_profile=a.info.get("icc_profile",b""),exif=a.info.get("exif",b""))
+            b=Image.open(dst); b.load()
+            ar=a.convert("RGB"); br=b.convert("RGB")
+            equal=a.size==b.size and ar.tobytes()==br.tobytes()
+            metadata=(a.info.get("icc_profile") or b"")==(b.info.get("icc_profile") or b"") and dict(a.getexif())==dict(b.getexif())
+            hist=ImageChops.difference(ar,br).histogram(); n=a.width*a.height*3
+            mae=sum((i%256)*v for i,v in enumerate(hist))/n
+            mse=sum((i%256)**2*v for i,v in enumerate(hist))/n
+            import math
+            optimized=dst.read_bytes()
+            result={"name":name+"-"+kind,"originalBytes":len(data),"optimizedBytes":len(optimized),"dimensions":a.size,"pixelsEqual":equal,"colorAndOrientationMetadataEqual":metadata,"mae":mae,"psnr":None if mse==0 else 10*math.log10(255**2/mse),"optimizedSha256":hashlib.sha256(optimized).hexdigest(),"losslessRequired":kind.startswith("moz")}
+            results.append(result); print("HELIX_RESULT "+json.dumps(result),flush=True)
+            if kind.startswith("moz") and (not equal or not metadata): raise RuntimeError("MozJPEG equivalence failed: "+name)
+            if metadata and len(optimized)<len(data)*0.95 and (equal or kind=="webp-q100"):
+             encoded=base64.b64encode(optimized).decode()
+             for i in range(0,len(encoded),24000): print("HELIX_ASSET_CHUNK "+name+"-"+kind+" "+str(i//24000)+" "+encoded[i:i+24000],flush=True)
+          (root/"results.json").write_text(json.dumps(results,indent=2))
+          print("HELIX_AUDIT_COMPLETE "+str(len(results)),flush=True)
+          if webp_failures: raise RuntimeError("WebP metadata/pixel equivalence failed: "+",".join(webp_failures))
+          
+          PY
+      - name: Preserve audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: services-lossless-image-audit
+          path: image-audit-output/
+          retention-days: 7
