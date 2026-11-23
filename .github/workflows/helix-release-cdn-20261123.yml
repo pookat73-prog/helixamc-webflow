@@ -38,6 +38,7 @@ jobs:
           const library = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/';
           const core = library + 'gsap.min.js';
           const peridot = {"url":"https://use.typekit.net/af/ef62e5/0000000000000000774ee020/31/l?unicode=AAAH1AAAAAcRv6_WaG9-OwvDrhn4RB_9i_4V6F8Uy_fJETfgT7pgIAJxtbuqjFtdyS7i9RxigBzkWW6oStRCdF_nmvf2R5gaw4DD-vtwER4g8tGNAhck331emp0srIDUd8tzWS7Adk20giDxJj9fl0_EvRgH9yln87vj-NzBDxYLIs9oIPh9H8Pqm5k575QnvDn8-BMUadv_1E1a0TbBWZDRj4-E_hYdfPKq4TWHraEcE-ilfTf9pnhPwHA6dWL-SZiCveuOgi5uYuyQoCdsUmV3mXI1wHuKsQLGzHvr942wevot_gparEyocj4upnCOy-2oj-o6ZdvaNDxBgGsmHAAP_8E&features=ALL&v=3","sha256":"5d88380a682afbe35a1ad925b553d11b496d7cd26d6c30826ad6b7c8fdc9f563"};
+          const dsEndendend = [{"url":"https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"3931611dd73541b18d324723a24c8f2ea00c808e8f3f8b576b67a6d978d215f0","weight":"500"},{"url":"https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"9074f030558c4b5054be75eeae0e11e4c8f686aa5d1ed14726ae7789b6848401","weight":"400"},{"url":"https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"30461ad8e4995f49c664aa13a3e7e4f1c4a62231e3dac9ef7cd9f30c7ebdb0c7","weight":"300"}];
           const coreTag = '<script src="' + core + '"></script>';
           const asyncTag = '<script async data-helix-gsap-nonblocking src="' + core + '"></script>';
           const repoPrefix = '/gh/pookat73-prog/helixamc-webflow@';
@@ -107,15 +108,14 @@ jobs:
             const gate = { forwarded:0, blocked:0, firebasePostAttempts:0, otherPostAttempts:0, gsapStarted:false, gsapCompleted:false, fileHashes:new Map() };
             const blockedTypes = new Set(), relevantErrors = new Set();
             const [ref, entry] = targets[route];
-            await ctx.addInitScript(fontURL => {
-              const face = new FontFace('peridot-pe-variable', 'url(' + JSON.stringify(fontURL) + ')', {style:'normal',weight:'400 700'});
-              document.fonts.add(face);
+            await ctx.addInitScript(fonts => {
+              for(const {family,url,weight} of fonts) document.fonts.add(new FontFace(family, 'url(' + JSON.stringify(url) + ')', {style:'normal',weight}));
               window.__helixNoMeasure = true;
               window.__isolatedBeaconCalls = 0;
               navigator.sendBeacon = function(){window.__isolatedBeaconCalls++;return false;};
               window.open = function(){return null;};
               window.addEventListener('helix-s1-done', () => {window.__isolatedHeroAnimated = true;}, {once:true});
-            }, peridot.url);
+            }, [{...peridot,family:'peridot-pe-variable',weight:'400 700'},...dsEndendend.map(x=>({...x,family:'ds-endendend'}))]);
             await ctx.routeWebSocket('**/*', ws=>ws.close());
             await ctx.route('**/*', async outgoing => {
               const req = outgoing.request();
@@ -143,7 +143,8 @@ jobs:
               }
               try{
                 const received = await retrieve(target.href);
-                if(target.href===peridot.url){assert.equal(received.status,200);assert.equal(digest(received.body),peridot.sha256);}
+                const replayFont = [peridot,...dsEndendend].find(f=>f.url===target.href);
+                if(replayFont){assert.equal(received.status,200);assert.equal(digest(received.body),replayFont.sha256);}
                 if(target.href.startsWith(cdn+ref+'/') && received.status===200) gate.fileHashes.set(target.href.slice((cdn+ref+'/').length),digest(received.body));
                 return await outgoing.fulfill({status:received.status,headers:{'content-type':received.type,'access-control-allow-origin':'*'},body:received.body});
               }catch{ await outgoing.abort('failed').catch(()=>{}); }
@@ -240,10 +241,12 @@ jobs:
           }
           
           (async()=>{
-            const font=await retrieve(peridot.url);
-            assert.equal(font.status,200,'Public first-paint font HTTP');
-            assert.equal(digest(font.body),peridot.sha256,'Public first-paint font SHA');
-            console.log('FIXTURE_FONT_PASS '+peridot.sha256);
+            for(const font of [peridot,...dsEndendend]){
+              const got=await retrieve(font.url);
+              assert.equal(got.status,200,'Public first-paint font HTTP');
+              assert.equal(digest(got.body),font.sha256,'Public first-paint font SHA');
+              console.log('FIXTURE_FONT_PASS '+font.sha256);
+            }
             const pins=new Set(Object.values(targets).map(([pin])=>pin));
             for(const pin of pins){
               const menu=await retrieve(cdn+pin+'/home/global/hamburger.js');
