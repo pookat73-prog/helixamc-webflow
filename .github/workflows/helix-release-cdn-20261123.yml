@@ -8,304 +8,71 @@ name: HELIX fixed release CDN verification
 permissions:
   contents: read
 jobs:
-  browser:
-    name: HELIX production host alignment in an isolated Chromium
+  published-scope:
+    name: Read-only comparison of published staging assets
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 6
     steps:
-      - name: Install the existing Playwright release
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd "$RUNNER_TEMP"
-          npm install --no-save --no-fund --no-audit playwright@1.57.0
-          npx playwright install --with-deps chromium
-      - name: Verify parser progress and active UI with outbound blocking
+      - name: Compare public HTML structure and generated CSS
         shell: bash
         run: |
           set -euo pipefail
           [[ "$GITHUB_REPOSITORY" == 'pookat73-prog/helixamc-webflow' && "$GITHUB_REF" == 'refs/heads/release/helix-structure-20261123' ]]
-          cd "$RUNNER_TEMP"
-          cat > helix-browser.cjs <<'HELIX_BROWSER_PROBE'
+          node <<'HELIX_SCOPE'
           'use strict';
-          
-          const assert = require('node:assert/strict');
-          const { createHash } = require('node:crypto');
-          const { chromium } = require('playwright');
-          
-          const stage = 'https://helixanimalmedicalcenter.webflow.io';
-          const cdn = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@';
-          const library = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/';
-          const core = library + 'gsap.min.js';
-          const peridot = {"url":"https://use.typekit.net/af/ef62e5/0000000000000000774ee020/31/l?unicode=AAAH1AAAAAcRv6_WaG9-OwvDrhn4RB_9i_4V6F8Uy_fJETfgT7pgIAJxtbuqjFtdyS7i9RxigBzkWW6oStRCdF_nmvf2R5gaw4DD-vtwER4g8tGNAhck331emp0srIDUd8tzWS7Adk20giDxJj9fl0_EvRgH9yln87vj-NzBDxYLIs9oIPh9H8Pqm5k575QnvDn8-BMUadv_1E1a0TbBWZDRj4-E_hYdfPKq4TWHraEcE-ilfTf9pnhPwHA6dWL-SZiCveuOgi5uYuyQoCdsUmV3mXI1wHuKsQLGzHvr942wevot_gparEyocj4upnCOy-2oj-o6ZdvaNDxBgGsmHAAP_8E&features=ALL&v=3","sha256":"5d88380a682afbe35a1ad925b553d11b496d7cd26d6c30826ad6b7c8fdc9f563"};
-          const dsEndendend = [{"url":"https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"3931611dd73541b18d324723a24c8f2ea00c808e8f3f8b576b67a6d978d215f0","weight":"500"},{"url":"https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"9074f030558c4b5054be75eeae0e11e4c8f686aa5d1ed14726ae7789b6848401","weight":"400"},{"url":"https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"30461ad8e4995f49c664aa13a3e7e4f1c4a62231e3dac9ef7cd9f30c7ebdb0c7","weight":"300"}];
-          const repoPrefix = '/gh/pookat73-prog/helixamc-webflow@';
-          const siteAssets = '69d090ea69d828e27d16ea29';
-          const targets = {
-            '/': ['fc7371af2cc4f2e55c5c1bc9d68a797a42f3be37','home/bootstrap.js'],
-            '/discover-helix': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','about/bootstrap.js'],
-            '/faq': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','faq/bootstrap.js'],
-            '/internal-medicine': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','internal-medicine/bootstrap.js'],
-            '/services': ['cf0f025dd2ad7d4286e9bbad981bc933ab9b17de','services/bootstrap.js'],
-          };
-          const expectedMenu = '668954ee0bf85462c1f176f472e055f268f0b2437f097c12e048eff4e2385e91';
-          const delay = ms => new Promise(done => setTimeout(done, ms));
-          const digest = x => createHash('sha256').update(x).digest('hex');
-          const publicCache = new Map();
-          const approvedHosts = ["helix-amc.com","www.helix-amc.com"];
-          const settingsDiff = [["var releaseRef = location.hostname === \"helixanimalmedicalcenter.webflow.io\" ?","var releaseRef = (location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") ?"],["if (location.hostname === \"helixanimalmedicalcenter.webflow.io\" && /^\\/","if ((location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") && /^\\/"]];
-          const internalMedicineOrder = {"page":["  if (releaseRef) { window.__helixCommitSha = releaseRef; load(releaseRef); return; }","  if (releaseRef) {\n    window.__helixCommitSha = releaseRef;\n    window.__helixStartInternalMedicine = function () { load(releaseRef); };\n    return;\n  }"],"footer":["      document.head.appendChild(fixedScript);","      if (/^\\/internal-medicine\\/?$/.test(location.pathname)) {\n        function startInternalMedicine() {\n          var start = window.__helixStartInternalMedicine;\n          delete window.__helixStartInternalMedicine;\n          if (typeof start === \"function\") start();\n        }\n        function afterSharedBootstrap() {\n          if (document.readyState === \"loading\") {\n            document.addEventListener(\"DOMContentLoaded\", startInternalMedicine, { once:true });\n          } else startInternalMedicine();\n        }\n        fixedScript.addEventListener(\"load\", afterSharedBootstrap, { once:true });\n        fixedScript.addEventListener(\"error\", afterSharedBootstrap, { once:true });\n      }\n      document.head.appendChild(fixedScript);"]};
-          const expectedHashes = {"/":{"home/bootstrap.js":"8b12c9c7a9e17ac0bcbe50809e7c7ca98cdcb1d0eaf95c59333002d45b610761","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/discover-helix":{"about/bootstrap.js":"090ddbe10b6799abb7fca89d7b0cd1d020eb248262ba53c9452b4404d6804143","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/faq":{"faq/bootstrap.js":"e9768a0a39159c8ebaa64661bbb9fec5613db79abbd0808ea33c5a2af0df0455","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/internal-medicine":{"internal-medicine/bootstrap.js":"1c48cd7a9d43ccbc2909319152cf7bc942b8a888dd297e2e16692eed5ca2780a","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/services":{"services/bootstrap.js":"71dd09db5091cb084bdf2625f6fe5987677b5ac9e93d4a8b634173f3137ce5b0","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"}};
-          const expectedEndpoint = "afeb6f36221952f0aa45969d6acfb3c9de2e7d42c723007ed01697678b1a3982";
-          
-          async function retrieve(url) {
-            const hostname = new URL(url).hostname;
-            assert.ok(!approvedHosts.includes(hostname)&&!/firebaseio\.com$|firebasedatabase\.app$/.test(hostname),'Unapproved egress');
-            if (!publicCache.has(url)) publicCache.set(url, (async()=>{
-              const res = await fetch(url, { method:'GET', redirect:'error', signal:AbortSignal.timeout(18_000) });
-              return { status:res.status, type:res.headers.get('content-type') ?? 'application/octet-stream', body:Buffer.from(await res.arrayBuffer()) };
-            })());
-            return publicCache.get(url);
+          const assert=require('node:assert/strict');
+          const {createHash}=require('node:crypto');
+          const digest=x=>createHash('sha256').update(x).digest('hex');
+          const stage='https://helixanimalmedicalcenter.webflow.io';
+          const knownStage="https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.4330666af.css";
+          const knownProduction="https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css";
+          const oldStageDigest="522fa1202eae1608a7df1cf06ac38d52be3284ac13855fcd497b56bf2ca7d5fd";
+          const oldProductionDigest="0912766efecbd87f75df99a8c456744f49678a9d9c7e67c79c82cc64152e6776";
+          const archived=[{"route":"/surgery","body":"775b6f810b110d58572e798339375011d90a7ebb298328ee1e2b77efade2e21b","bodyWithScripts":"01fdb9c72ca8a73badd49e29a7a61845d5b5194df09f1b5ef959a2d7155daedf","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/discover-helix","body":"fc07292148e52e183300ca4beb41e1dc04642168383c99855f745088ca803553","bodyWithScripts":"0c4465c1d47b7ffc4054fd69a07a2f22d6c00cccd493c19f2f945e012c2be08d","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/seocho","body":"6bccd63c15cbdb332f88c21a291e326168332c0d0340b76bc0ca58cb532d01d9","bodyWithScripts":"ab3c5c603d737225e8c833e98eff60586f2b954d9d7456ff5c9f0f77af797bf1","staticScripts":"d917b8a36059408b11c355fdd9b305540127666976e4660010588ee04daf1290","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/services","body":"cf1f1f5eb25a5fc8b5299345cd4d21609d82b6b2f6a4d2883fce1aa831375b84","bodyWithScripts":"fe997afcb84906976710259acecc083c003d65761987b091a5f6fb63fda3dade","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/specialty-care","body":"b3f2e746c73eb38a1f439b715fcdc194947379d59bcd5670b650d8553f2b469d","bodyWithScripts":"7e63f512528c824cee4b4014770adb0f4fc3b1f4dbc035ca54f651e613402ee4","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/symptoms","body":"2d99d936afbbae25728535b65010dd9539ddf2552f538210dda6922660132c57","bodyWithScripts":"a98b12a6c683520bd3ee7b3a13df273dc97267276bb13c70f2cb1ab670b4057c","staticScripts":"8770fd2eba33591a0a5f775a6f9b562e0df483ffe03446a06926ef3181422d3a","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/faq","body":"acbe76f32fd505d416c9f61a5db3181c6f5b960aa1aea54365357541f687b3d8","bodyWithScripts":"068405b65a07c97a91b65317b7527d983e1bbb10ff2188a98528a9580bda38f4","staticScripts":"af7b51608283d8174db54a44fb862f4f60deb001e98f9d3da70b3e030fcd42bd","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/ilsan","body":"5f343a581ec8e06a325c6f9f4b24634f9692b3627d5e95a873192124f3c2ff54","bodyWithScripts":"c558abc13c1f7875136b8bd257bf72de1d23051539cec0bf1bda8beff4e63950","staticScripts":"b20313d8022409cfe1078ced1f82aa7981bf97a24f6827f6e42b03bdd61b5d5d","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimtaeseong","body":"c3fd496fd2a065925cdf7801ae3895eed3ef708a5e0ab35f296d2ec3bb571271","bodyWithScripts":"b14bf7468e0c1c261a8b9d1f7d59710a70b7d15e0c534f20cb42f34ec24d4612","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/diagnostic-imaging","body":"dca90b56201825e8791c1d50671eff96184a4cb807b8742d5057f871620da73b","bodyWithScripts":"873a13505d315ba6e19d6729d8f3f1894a752b4f8e1ad69fac9bf352ec088705","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/internal-medicine","body":"54a54fc52a3d62b5ba537ce9d6b8a2a6af761cb48622859bfa9169c20fe044d8","bodyWithScripts":"555052541672e71e546d4f0da86e5959f9479f74ea7028158046fd49a1ab1fd8","staticScripts":"0187c4c34480231296c1c158d271c7b05d8ad35ad60010647ad12d2e9e8dd479","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/joseongu","body":"3e924449a72e4da97dcf5e5f359d103b15b72b03cde85e7e2a864995849193b3","bodyWithScripts":"283542c045a1eb4c7b83effb060f07ffdccd5311d534de137241993bb5711076","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/jeonjonghyi","body":"44e903dc1e8bb1b9f562778df757de41572eeaadc6fcb9e492baa9314a75d0c6","bodyWithScripts":"a0e97ea61b1467cf80a5687e0f08d3a17429f7b07c06ff34b38d055690025b4f","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/sonyeongmin","body":"7fdb1e7f0caa7894c468016e630fbc9365494a573d77be60f3d24f4efc5434b8","bodyWithScripts":"bce4cde55d965ffd382bdf38103df8fdb1292392d539402778aa436fc30d54b4","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/hongyiju","body":"02cb2aeeeea51da2df04544ab57c014d868ced457bb180b2bea7dc29d3555e94","bodyWithScripts":"ac92e4d72b5217ad9c97e8528e1c7814b7d46682c25031fb37f1876c3a6e85d7","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/seongcanju","body":"3c6790c888050d1bcf81901adbb32827bb3f7e2161951b78107a9e71d7dccfd1","bodyWithScripts":"b6574166b46cafcbf7a200fae021d837728822e3131a5f2d0249cbf6f72c5eae","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/imjihyeon","body":"2b7f177581576bc16b9c0fa7330e7bdc2c92ed6821511d7056636cad2b9f3b8b","bodyWithScripts":"bec866615753dae82721784d08bec88d2f843e3e60649bbcc798fc489275e32b","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/","body":"8ca98f71bc85054e8c4f9d999ed9d3ed2d91b91ac55f0fdb009520a9ce4570c1","bodyWithScripts":"b4cfcaf747ed2310170422eb405c614aee6e235b7823c4f894d97cc2c104f34b","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/jangmunseog","body":"c9cf71ba5a5d130fbbe101bfd1ab5ca9d2d08fab26d930dfde7b37b74f21609d","bodyWithScripts":"f9e2dbb98a51c15540fd4476fc260a7458019785679daabd2b38fa46b423d7bf","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimhyoju","body":"fd5137708ca315b5a954f1c87e4d0082af769a27e567c4ebc25251461f9e92dc","bodyWithScripts":"01ab73d5f5438984afa433b410f31aa7ca4758e5257a80259db795a6187697c2","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/hanjuyeol","body":"7174ec838353358e8e053f3bd5976c6f3ce96fefe1281de52eaf4af410d4b2d1","bodyWithScripts":"ef5eb4856727dd9c71cb988f555317266543d9fcc0b27d94212d0a612f1f1c12","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/coejimin","body":"520e4e5550a1ffee4d9d22da2a866c50f9d2f763e6c69ef607cca8dc97ee9b20","bodyWithScripts":"63ea12affe591f3ed619a41eaf5949db56730ea218334687529e6844ea01bfb2","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/isoyun","body":"f345f443903228adc61bf73863227b9fc4f9977e267b77fd0808c717e789e009","bodyWithScripts":"02106b7952fa48b03fc00b423d522d63e0e09e403d019f76918b1e6587a2e2b4","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/jeongdahong","body":"abfd92f8952b69f182d88d2c232af44a0ef706a6024090b59ce24e0106528e76","bodyWithScripts":"95ca2085b4c5e0a126a4e2eff2a656425ef50e172026eecf24dad29c85149e6c","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/jojuhyi","body":"dbc2cce9b57b8d44f51a8803a50f7f42af3716fc4775f4ed3705816136624a4a","bodyWithScripts":"86bca1ded4c3ad57b63bc66272336830793e36cd747fd80fc2e3d5e490dc18b7","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gangyurim","body":"634f42e2373a4a94dadd9d47fde97fbcfc778a4755c7a64c4cf3870c44888d97","bodyWithScripts":"75834b939332c2b1db6946747e865a5ffdea82f9df1a615505a093bb1135defb","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/iyeongeun","body":"8d95fc68a802760db2e47ef2292bbec4c111c972d1a67c9dbc49af28c0ee6d9a","bodyWithScripts":"989ce523b9e8118ad4b508bab9bfe0cc2b48e51e693f028276fa2ba78049910a","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimyunji","body":"ccd521da13eea6e54123b9945cfd331ad4afae0a4cd53d12893fd3fa0bce2257","bodyWithScripts":"f34d427277960513ea1e94c8f791e2f5af5e25bd4b50377582ddc17d9f4dd763","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimhyejin","body":"a7cae6efbe5b71310686872e36d85d7f8f8a06a60acf9082525c35dd93a264be","bodyWithScripts":"f1f7bf6de72b7e0ed2f6a83ab322b06967f4bc87aef972d319448b91fff56914","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimyujin","body":"5143a31721439428323d3ccf9badeff98c7fb95ffcc53bd05d13d02f5c5c39a8","bodyWithScripts":"08589c660fffadc4a0ea9f55136021a08931b83463939321f06b423b332fac8d","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimyumin","body":"34395d3a174ade7368f14e72fbf58e1fb87f08d35a43c473e91ba01f196a1bbb","bodyWithScripts":"b1fd710fddc8d3c27771e4eaf49fe951af0075de935ca30424d6ab47f4482f0d","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/jeongjeongyun","body":"6e3a691dd8f959301e10ce728c7ebf9d1a04e6398d2f9c7dcac0698a3a4a3415","bodyWithScripts":"91dc6bcc426864eaf1d44384956f7a6158f6ae4348484a1dfe32032100557f6b","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/igyeongsu","body":"3fd34dfcab6c4667312baa92f6a49ca47a38c9bd47a1f15583bfeee8806cf213","bodyWithScripts":"6bdd9398ed01d1df059cfdfa13c32c1e85bf521aef1995b8b3596c3e3fbd2090","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/baggimseohyeon","body":"bca1c892a7c79006ec8223aafe80abe606b6f0fdfdaab16d24bb6a461dd764cb","bodyWithScripts":"6b2e07200ee83da4078be3aa49d90b1c495b0deb4bf742037019a4b2c375f369","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimjaehyeon","body":"ed0f7d26e816a4f3d516efc5d7d53d5edf615a5cd3c41d2d4da8b6afe54bf7f7","bodyWithScripts":"bf48d1d374e58011fd1e03ad223748d70dd0647312470467393f26a0550541e4","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/gimjonggyeong","body":"4245ad319243791cc35494410b632920e7fbad7168543ddb96b7b19f40fef27b","bodyWithScripts":"172adc3bb428c9795b56aed5501543d100cf6cf489ef36e9ea9e24bd7e84a8bf","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/eomharim","body":"c348492a94dbf07b0c987b8631b55689aca0e2f76009907095cc967b9340d1d6","bodyWithScripts":"7b98855efaa182468f6199870168f635ba01f2b5e2e2323a37bbe2d221bbb302","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/doctors/hansangjin","body":"40166e861ad1f8280f7515ab7f3331f75a8f54eebd37a310334b5bc754aa2ed6","bodyWithScripts":"49df3926a14974008449a812f1a6107220d13580c4cf6009ab8b385544f434ee","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]},{"route":"/ad-landing-test","body":"9249e14fdd50c9b3888bcd97ba57b8780c73ad31ed7c5eb681a28dacb50d58f6","bodyWithScripts":"f1bdfc3095d926f99b7565cfad905bf2f5fecec37d1b9b9981c11a72ce5d9447","staticScripts":"02cdc64860c2fcc598721deb01932adee4306a417767d1dbfd8101e3d2de98ba","sharedCSS":["https://cdn.prod.website-files.com/69d090ea69d828e27d16ea29/css/helixanimalmedicalcenter.webflow.shared.46f7fbd5d.css"]}];
+          function signatures(html) {
+           const lower=html.toLowerCase();
+           const start=lower.indexOf('<body');
+           const end=lower.lastIndexOf('</body>');
+           if(start<0||end<=start)throw Error('Missing document body');
+           const footerRx=/<script\b[^>]*>[\s\S]*?<\/script>/gi;
+           const body=html.slice(start,end).replace(footerRx, tag=>/window\.__helixSharedUiEntry|Booking submission is disabled on Webflow staging\./.test(tag)?'':tag).trimEnd();
+           const structural=body.replace(footerRx,'').trimEnd();
+           const staticScripts=[...body.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(x=>x[1]).sort();
+           const sharedCSS=[...new Set([...html.matchAll(/https:\/\/cdn\.prod\.website-files\.com\/[0-9a-f]+\/css\/[^"'\s<>]*\.webflow\.shared\.[^"'\s<>]+\.css/gi)].map(x=>x[0]))].sort();
+           return {body:digest(structural),bodyWithScripts:digest(body),staticScripts:digest(JSON.stringify(staticScripts)),sharedCSS};
           }
-          
-          function staticAllowed(url, kind) {
-            if (url.protocol !== 'https:' || url.port || url.username || url.password) return false;
-            const host = url.hostname, path = url.pathname;
-            if (host === 'cdn.jsdelivr.net') {
-              if (url.search || !path.startsWith(repoPrefix)) return false;
-              const target = path.slice(repoPrefix.length);
-              return /^[a-f0-9]{40}\/[a-zA-Z0-9_/.-]+\.(?:js|css|svg|png|webp|mp4|woff2)$/.test(target) &&
-                !target.includes('..') && !/\/(?:measure-gate|ga4-base|session|sheet-log|scroll-depth|page-time|ga-inspector|section-reach)\.js$/.test(target);
-            }
-            if (host === 'cdnjs.cloudflare.com') return url.href === core || url.href === library + 'ScrollTrigger.min.js';
-            if (host === 'cdn.prod.website-files.com' || host === 'assets.website-files.com') return path.startsWith('/'+siteAssets+'/') &&
-              ['image','font','media','stylesheet','script'].includes(kind);
-            if (host === 'ajax.googleapis.com') return /^\/ajax\/libs\/webfont\/[\d.]+\/webfont\.js$/.test(path);
-            if (host === 'd3e54v103j8qbb.cloudfront.net') return /^\/js\/jquery-[0-9.]+\.min\.[a-f0-9]+\.js$/.test(path) &&
-              (!url.search || url.search === '?site='+siteAssets);
-            if (host === 'use.typekit.net') return (['/yun6zxv.js','/yun6zxv.css'].includes(path)&&!url.search) ||
-              (kind==='font'&&/^\/af\/[a-z0-9/]+$/i.test(path));
-            if (host === 'p.typekit.net') return (kind==='font'||kind==='stylesheet') && !/\/(p|pixel|collect)(?:\/|$)/i.test(path);
-            if (host === 'fonts.googleapis.com') return kind==='stylesheet' && /^\/css2?$/.test(path);
-            return host === 'fonts.gstatic.com' && kind==='font' && /^\/s\//.test(path);
-          }
-          
-          function productionHTML(html, route) {
-            assert.ok(html.includes('data-helix-gsap-nonblocking')&&html.includes(targets[route][0]), 'Wrong published staging input');
-            for(const [before,after] of settingsDiff){
-              const count=html.split(before).length-1;
-              assert.ok(count===(before.startsWith('var releaseRef')?1:2) || (before.startsWith('if (')&&count===1), 'Unexpected saved settings in public HTML: '+route+' '+count);
-              if(before.startsWith('if (')&&count===2){
-                const tags=[...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi)];
-                const footer=tags.filter(t=>t[0].includes('var fixedScript')&&t[0].includes(before));
-                assert.equal(footer.length,1,'Footer scope');
-                html=html.replace(footer[0][0],()=>footer[0][0].replace(before,()=>after));
-              }else html=html.replace(before,()=>after);
-            }
-            const changes=route==='/internal-medicine'?[internalMedicineOrder.page,internalMedicineOrder.footer]:[internalMedicineOrder.footer];
-            for(const [before,after] of changes){assert.equal(html.split(before).length,2,'Saved internal medicine ordering anchor');html=html.replace(before,()=>after);}
-            return html.replace('data-wf-domain="helixanimalmedicalcenter.webflow.io"','data-wf-domain="www.helix-amc.com"');
-          }
-          async function runCase(browser, { route, width, mode, host, html }) {
-            assert.ok(approvedHosts.includes(host));
-            const origin='https://'+host;
-            const mockBooking = route==='/' && mode==='pending';
-            const fixturePhone='00001234';
-            const height = width===390 ? 844 : 960;
-            const ctx = await browser.newContext({ viewport:{width,height}, serviceWorkers:'block', acceptDownloads:false });
-            const gate = { forwarded:0, blocked:0, firebasePostAttempts:0, otherPostAttempts:0, gsapStarted:false, gsapCompleted:false, fileHashes:new Map() };
-            const blockedTypes = new Set(), relevantErrors = new Set();
-            const [ref, entry] = targets[route];
-            await ctx.addInitScript(fonts => {
-              for(const {family,url,weight} of fonts) document.fonts.add(new FontFace(family, 'url(' + JSON.stringify(url) + ')', {style:'normal',weight}));
-              const heldMeasurement = new Promise(()=>{});
-              Object.defineProperty(window, '__helixMeasurementReady', {get:()=>heldMeasurement,set(){},configurable:true});
-              window.__isolatedBeaconCalls = 0;
-              navigator.sendBeacon = function(){window.__isolatedBeaconCalls++;return false;};
-              window.open = function(){return null;};
-              window.addEventListener('helix-s1-done', () => {window.__isolatedHeroAnimated = true;}, {once:true});
-            }, [{...peridot,family:'peridot-pe-variable',weight:'400 700'},...dsEndendend.map(x=>({...x,family:'ds-endendend'}))]);
-            await ctx.routeWebSocket('**/*', ws=>ws.close());
-            await ctx.route('**/*', async outgoing => {
-              const req = outgoing.request();
-              const target = new URL(req.url());
-              if(req.method()!=='GET'){
-                const firebase=/firebaseio\.com$|firebasedatabase\.app$/.test(target.hostname);
-                if(mockBooking&&firebase&&digest(target.origin+target.pathname)===expectedEndpoint&&!target.search){
-                  const headers={'access-control-allow-origin':origin,'access-control-allow-headers':'content-type','access-control-allow-methods':'POST, OPTIONS'};
-                  if(req.method()==='OPTIONS')return outgoing.fulfill({status:204,headers});
-                  if(req.method()==='POST'){
-                    const input=req.postDataJSON();
-                    assert.equal(input.name,'Synthetic QA');
-                    assert.equal(input.phone,'010'+fixturePhone);
-                    gate.firebasePostAttempts++;
-                    return outgoing.fulfill({status:200,headers,contentType:'application/json',body:'{"name":"isolated-fixture-only"}'});
-                  }
-                }
-                gate.blocked++;
-                if(req.method()==='POST' && /firebaseio\.com$|firebasedatabase\.app$/.test(target.hostname)) gate.firebasePostAttempts++;
-                else gate.otherPostAttempts++;
-                return outgoing.abort('blockedbyclient');
-              }
-              if(req.resourceType()==='document' && target.origin===origin && target.pathname===route && !target.search){
-                return outgoing.fulfill({status:200, contentType:'text/html; charset=utf-8',body:html});
-              }
-              if(target.href===core){
-                gate.gsapStarted=true;
-                if(mode==='pending'||mode==='classic') return; // Remain pending until the context closes.
-                if(mode==='503'){gate.gsapCompleted=true;return outgoing.fulfill({status:503,body:'',contentType:'application/javascript'});}
-                if(mode==='delayed') await delay(1800);
-                gate.gsapCompleted=true;
-              }
-              if(!staticAllowed(target,req.resourceType())){
-                gate.blocked++;
-                if (['font','stylesheet','image'].includes(req.resourceType())) blockedTypes.add(req.resourceType()+':'+target.hostname+target.pathname.split('/').slice(0,3).join('/'));
-                return outgoing.abort('blockedbyclient');
-              }
-              try{
-                const received = await retrieve(target.href);
-                const replayFont = [peridot,...dsEndendend].find(f=>f.url===target.href);
-                if(replayFont){assert.equal(received.status,200);assert.equal(digest(received.body),replayFont.sha256);}
-                if(target.href.startsWith(cdn+ref+'/') && received.status===200) gate.fileHashes.set(target.href.slice((cdn+ref+'/').length),digest(received.body));
-                return await outgoing.fulfill({status:received.status,headers:{'content-type':received.type,'access-control-allow-origin':'*'},body:received.body});
-              }catch{ await outgoing.abort('failed').catch(()=>{}); }
-            });
-            const page = await ctx.newPage();
-            page.on('pageerror', error=>{if(/gsap|ScrollTrigger|undefined/i.test(error.message))relevantErrors.add(error.message);});
-            const observe = () => page.evaluate(()=>{
-              const visible = node => {
-                if(!node?.getBoundingClientRect().width) return false;
-                for(let p=node;p;p=p.parentElement){
-                  const s=getComputedStyle(p);
-                  if(s.visibility==='hidden'||s.display==='none'||Number(s.opacity)===0)return false;
-                }
-                return true;
-              };
-              const root=document.documentElement;
-              return {
-                body:!!document.body?.firstElementChild,
-                title:visible(document.querySelector('.blackframe_image-hero h1')),
-                heroCTA:visible(document.querySelector('.blackframe_image-hero a[href="/discover-helix"]')),
-                cover:getComputedStyle(root,'::after').content,
-                fallback:root.classList.contains('hx-home-hero-static'),
-                ready:root.classList.contains('hx-home-ready'),
-                registeredFonts:[...new Set(Array.from(document.fonts,f=>f.family+':'+f.status))].join(','),
-                heroFont:document.querySelector('.home_slogan') && getComputedStyle(document.querySelector('.home_slogan')).fontFamily,
-                homeSections:!!document.getElementById('hx-hero-milestones')&&!!document.getElementById('hx-branch-quickbar'),
-                menu:!!document.getElementById('hx-menu-overlay')&&!!window.__helixHamburgerReady,
-                booking:!!document.getElementById('hxFctaToggle'),
-                gsap:!!window.gsap,
-                host:location.hostname,
-                productionMeasurement:!window.__helixNoMeasure&&typeof window.__helixSiteMeasurementOwns==='function'&&!!window.HelixMeasure,
-                heroAnimated:window.__isolatedHeroAnimated===true,
-              };
-            });
-            try{
-              await page.goto(origin+route,{waitUntil:'commit',timeout:15_000});
-              let seen;
-              const deadline=Date.now()+24_000;
-              do {
-                seen=await observe();
-                if(seen.body&&seen.menu&&seen.booking&&(mode!=='normal'||seen.gsap)&&gate.fileHashes.has(entry)&&(route!=='/'||(seen.title&&seen.heroCTA&&seen.cover==='none'&&
-                  (!['normal','delayed'].includes(mode)||(seen.gsap&&seen.heroAnimated)))))break;
-                await delay(175);
-              }while(Date.now()<deadline);
-              const diagnostic=JSON.stringify({seen,blockedTypes:[...blockedTypes].slice(0,12),relevantErrors:[...relevantErrors].slice(0,8)});
-              assert.ok(seen.body&&seen.menu&&seen.booking&&seen.productionMeasurement,diagnostic);
-              assert.equal(seen.host,host);
-              assert.equal(seen.gsap,mode==='normal',diagnostic);
-              if(route==='/'){
-                assert.ok(seen.title&&seen.heroCTA&&seen.cover==='none',diagnostic);
-                assert.equal(seen.gsap,['normal','delayed'].includes(mode),JSON.stringify(seen));
-                if(mode==='pending'||mode==='503') assert.equal(seen.fallback,true,JSON.stringify(seen));
-                else assert.ok(seen.heroAnimated&&!seen.fallback,diagnostic);
-              }
-              if(mode==='pending') assert.ok(gate.gsapStarted&&!gate.gsapCompleted,'GSAP request did not stay pending');
-              if(mode==='503') assert.ok(gate.gsapStarted&&gate.gsapCompleted,'GSAP 503 was not reached');
-              const ui=await page.evaluate(async ({mockBooking,fixturePhone})=>{
-                const menu=document.getElementById('hx-menu-overlay');
-                const opener=[...document.querySelectorAll('[aria-controls="hx-menu-overlay"]')].find(x=>x.getBoundingClientRect().width);
-                const before=scrollY;
-                const bodyOverflow=document.body.style.overflow;
-                opener?.click();
-                const menuOpen=menu.getAttribute('aria-hidden')==='false';
-                document.querySelector('.hx-menu-close')?.click();
-                for(let i=0;i<25&&menu.getAttribute('aria-hidden')!=='true';i++)await new Promise(done=>setTimeout(done,40));
-                const toggle=document.getElementById('hxFctaToggle');
-                toggle.click();
-                const modal=document.getElementById('hxFctaModal');
-                const bookingOpen=modal?.getAttribute('aria-hidden')==='false';
-                const phone=document.getElementById('hxFcta_phone');
-                const prefix=phone?.parentElement?.textContent?.includes('010');
-                const bookingForm=document.getElementById('hxFctaForm');
-                bookingForm?.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
-                let bookingMockConfirmed = null;
-                if(mockBooking){
-                  document.getElementById('hxFcta_owner').value='Synthetic QA';
-                  phone.value=fixturePhone;
-                  document.getElementById('hxFcta_privacy').checked=true;
-                  bookingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
-                  for(let i=0;i<50&&!document.getElementById('hxFctaDone')?.classList.contains('is-visible');i++)await new Promise(done=>setTimeout(done,50));
-                  bookingMockConfirmed=document.getElementById('hxFctaDone')?.classList.contains('is-visible')===true;
-                }
-                document.getElementById('hxFctaModalClose')?.click();
-                return { menuOpen, menuClosed:menu.getAttribute('aria-hidden')==='true',
-                  bookingOpen, bookingClosed:modal?.getAttribute('aria-hidden')==='true', prefix, bookingMockConfirmed,
-                  scrollRestored:Math.abs(scrollY-before)<3&&document.body.style.overflow===bodyOverflow };
-              },{mockBooking,fixturePhone});
-              assert.ok(ui.menuOpen&&ui.menuClosed&&ui.bookingOpen&&ui.bookingClosed&&ui.prefix&&ui.scrollRestored,JSON.stringify(ui));
-              assert.equal(gate.firebasePostAttempts,mockBooking?1:0);
-              if(mockBooking) assert.equal(ui.bookingMockConfirmed,true,'Synthetic success indicator');
-              const relevant=['global/bootstrap.js',entry,'global/floating-cta.js','global/floating-cta.css','home/global/hamburger.js'];
-              assert.ok(relevant.every(file=>gate.fileHashes.has(file)), 'Missing fixed responses: '+relevant.filter(x=>!gate.fileHashes.has(x)).join(', '));
-              assert.equal(gate.fileHashes.get('home/global/hamburger.js'),expectedMenu,'Menu bytes at browser request do not match the approved change');
-              assert.equal(gate.fileHashes.get('home/global/hamburger.js'),expectedMenu);
-              for(const [path,sha] of Object.entries(expectedHashes[route]))assert.equal(gate.fileHashes.get(path),sha,path);
-              return { route,width,mode,host,isolatedProductionHost:true,seen,ui,gsapPending:mode==='pending',postAttempts:gate.firebasePostAttempts,
-                externalPostsForwarded:gate.forwarded,blockedRequests:gate.blocked,loaderHashes:Object.fromEntries(relevant.map(p=>[p,gate.fileHashes.get(p)])) };
-            }finally{await ctx.close();}
-          }
-          
-          (async()=>{
-            for(const font of [peridot,...dsEndendend]){
-              const got=await retrieve(font.url);
-              assert.equal(got.status,200,'Public first-paint font HTTP');
-              assert.equal(digest(got.body),font.sha256,'Public first-paint font SHA');
-              console.log('FIXTURE_FONT_PASS '+font.sha256);
-            }
-            const pins=new Set(Object.values(targets).map(([pin])=>pin));
-            for(const pin of pins){
-              const menu=await retrieve(cdn+pin+'/home/global/hamburger.js');
-              assert.equal(menu.status,200,'Changed asset failed HTTP at '+pin);
-              assert.equal(digest(menu.body),expectedMenu,'Changed asset hash at '+pin);
-              console.log('MENU_CDN_PASS '+pin+' '+expectedMenu);
-            }
-            const docs={};
-            const home=await retrieve(stage+'/');
-            assert.equal(home.status,200,'Published stage HTML');
-            const homeHtml=home.body.toString('utf8');
-            const actual=homeHtml.includes('data-helix-gsap-nonblocking');
-            assert.equal(actual,true,'The verified staging HTML must still be published');
-            const routes=['/internal-medicine'];
-            for(const route of routes) {
-              const document=route==='/'?home:await retrieve(stage+route);
-              assert.equal(document.status,200,route);
-              docs[route]=productionHTML(document.body.toString('utf8'),route);
-              if(actual) assert.ok(docs[route].includes(targets[route][0])&&docs[route].includes('data-helix-gsap-nonblocking'),'Missing released HTML pins: '+route);
-            }
-            const browser=await chromium.launch({headless:true,args:['--no-proxy-server','--host-resolver-rules=MAP * ~NOTFOUND']});
-            try{
-              const tests=approvedHosts.flatMap((host,i)=>['pending','normal'].map(mode=>({host,route:'/internal-medicine',width:i===0?390:1440,mode})));
-              let failures=0;
-              for(let start=0;start<tests.length;start+=3){
-                await Promise.all(tests.slice(start,start+3).map(async test=>{
-                  try{const found=await runCase(browser,{...test,html:docs[test.route]}); console.log('PLAYWRIGHT_PASS '+JSON.stringify(found));}
-                  catch(error){failures++;console.error('PLAYWRIGHT_FAIL '+JSON.stringify({...test,error:error.message}));}
-                }));
-              }
-              assert.equal(failures,0,'Browser scenario failures');
-              console.log('PLAYWRIGHT_MATRIX '+JSON.stringify({isolatedProductionHost:true,hosts:approvedHosts,routes:routes.length,cases:tests.length,failures}));
-            }finally{await browser.close();}
-          })().catch(e=>{console.error(e.message);process.exitCode=1;});
-          HELIX_BROWSER_PROBE
-          node helix-browser.cjs
+          async function get(url) {
+             const parsed=new URL(url);
+             assert.ok(parsed.origin===stage||parsed.origin==='https://cdn.prod.website-files.com');
+             if(parsed.origin!==stage)assert.match(parsed.pathname,/^\/[0-9a-f]+\/css\/[a-z0-9._-]+\.css$/i);
+             const res=await fetch(url,{method:'GET',redirect:'error',headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(24000)});
+             if(res.status!==200)throw Error('Unexpected '+res.status+' '+parsed.pathname);
+             return Buffer.from(await res.arrayBuffer());
+           }
+           (async()=>{
+             const styles=new Map();
+             const report=[];
+             for(let at=0;at<archived.length;at+=5){
+               await Promise.all(archived.slice(at,at+5).map(async old=>{
+                 const html=(await get(stage+old.route)).toString('utf8');
+                 const mark=html.match(/Last Published:\s*([^<]+?)\s*-->/i)?.[1];
+                 assert.ok(mark&&mark.includes('07:34:48')||mark&&/^Mon Nov 23 2026 07:34:/.test(mark),old.route+' version timestamp '+mark);
+                 const now=signatures(html);
+                 assert.ok(now.sharedCSS.length>0,'No generated shared CSS on '+old.route);
+                 for(const url of now.sharedCSS){
+                   if(!styles.has(url))styles.set(url,new Set());
+                   styles.get(url).add(old.route);
+                 }
+                 report.push({route:old.route,bodyUnchanged:old.body===now.body,bodyScriptsUnchanged:old.bodyWithScripts===now.bodyWithScripts,staticScriptsUnchanged:old.staticScripts===now.staticScripts});
+               }));
+             }
+             const rows=[];
+             for(const [url,routes] of styles){
+               const bytes=await get(url);
+               const sha=digest(bytes);
+               rows.push({url,sha,routes:routes.size,oldStageURL:url===knownStage,oldStageBytes:sha===oldStageDigest,productionURL:url===knownProduction,productionBytes:sha===oldProductionDigest});
+             }
+             const result={routes:report.length,bodyUnchanged:report.filter(x=>x.bodyUnchanged).length,bodyScriptsUnchanged:report.filter(x=>x.bodyScriptsUnchanged).length,staticScriptsUnchanged:report.filter(x=>x.staticScriptsUnchanged).length,mutations:report.filter(x=>!x.bodyUnchanged||!x.staticScriptsUnchanged),css:rows};
+             console.log('DELTA_SCOPE '+JSON.stringify(result));
+           })().catch(e=>{console.error(e.message);process.exitCode=1;});
+          HELIX_SCOPE
