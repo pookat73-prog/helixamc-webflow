@@ -9,7 +9,7 @@ permissions:
   contents: read
 jobs:
   browser:
-    name: GSAP and staging UI in an isolated Chromium
+    name: HELIX production host alignment in an isolated Chromium
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -39,8 +39,6 @@ jobs:
           const core = library + 'gsap.min.js';
           const peridot = {"url":"https://use.typekit.net/af/ef62e5/0000000000000000774ee020/31/l?unicode=AAAH1AAAAAcRv6_WaG9-OwvDrhn4RB_9i_4V6F8Uy_fJETfgT7pgIAJxtbuqjFtdyS7i9RxigBzkWW6oStRCdF_nmvf2R5gaw4DD-vtwER4g8tGNAhck331emp0srIDUd8tzWS7Adk20giDxJj9fl0_EvRgH9yln87vj-NzBDxYLIs9oIPh9H8Pqm5k575QnvDn8-BMUadv_1E1a0TbBWZDRj4-E_hYdfPKq4TWHraEcE-ilfTf9pnhPwHA6dWL-SZiCveuOgi5uYuyQoCdsUmV3mXI1wHuKsQLGzHvr942wevot_gparEyocj4upnCOy-2oj-o6ZdvaNDxBgGsmHAAP_8E&features=ALL&v=3","sha256":"5d88380a682afbe35a1ad925b553d11b496d7cd26d6c30826ad6b7c8fdc9f563"};
           const dsEndendend = [{"url":"https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"3931611dd73541b18d324723a24c8f2ea00c808e8f3f8b576b67a6d978d215f0","weight":"500"},{"url":"https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"9074f030558c4b5054be75eeae0e11e4c8f686aa5d1ed14726ae7789b6848401","weight":"400"},{"url":"https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"30461ad8e4995f49c664aa13a3e7e4f1c4a62231e3dac9ef7cd9f30c7ebdb0c7","weight":"300"}];
-          const coreTag = '<script src="' + core + '"></script>';
-          const asyncTag = '<script async data-helix-gsap-nonblocking src="' + core + '"></script>';
           const repoPrefix = '/gh/pookat73-prog/helixamc-webflow@';
           const siteAssets = '69d090ea69d828e27d16ea29';
           const targets = {
@@ -50,13 +48,18 @@ jobs:
             '/internal-medicine': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','internal-medicine/bootstrap.js'],
             '/services': ['cf0f025dd2ad7d4286e9bbad981bc933ab9b17de','services/bootstrap.js'],
           };
-          const widths = [390, 820, 1440];
           const expectedMenu = '668954ee0bf85462c1f176f472e055f268f0b2437f097c12e048eff4e2385e91';
           const delay = ms => new Promise(done => setTimeout(done, ms));
           const digest = x => createHash('sha256').update(x).digest('hex');
           const publicCache = new Map();
+          const approvedHosts = ["helix-amc.com","www.helix-amc.com"];
+          const settingsDiff = [["var releaseRef = location.hostname === \"helixanimalmedicalcenter.webflow.io\" ?","var releaseRef = (location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") ?"],["if (location.hostname === \"helixanimalmedicalcenter.webflow.io\" && /^\\/","if ((location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") && /^\\/"]];
+          const expectedHashes = {"/":{"home/bootstrap.js":"8b12c9c7a9e17ac0bcbe50809e7c7ca98cdcb1d0eaf95c59333002d45b610761","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/discover-helix":{"about/bootstrap.js":"090ddbe10b6799abb7fca89d7b0cd1d020eb248262ba53c9452b4404d6804143","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/faq":{"faq/bootstrap.js":"e9768a0a39159c8ebaa64661bbb9fec5613db79abbd0808ea33c5a2af0df0455","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/internal-medicine":{"internal-medicine/bootstrap.js":"1c48cd7a9d43ccbc2909319152cf7bc942b8a888dd297e2e16692eed5ca2780a","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/services":{"services/bootstrap.js":"71dd09db5091cb084bdf2625f6fe5987677b5ac9e93d4a8b634173f3137ce5b0","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"}};
+          const expectedEndpoint = "afeb6f36221952f0aa45969d6acfb3c9de2e7d42c723007ed01697678b1a3982";
           
           async function retrieve(url) {
+            const hostname = new URL(url).hostname;
+            assert.ok(!approvedHosts.includes(hostname)&&!/firebaseio\.com$|firebasedatabase\.app$/.test(hostname),'Unapproved egress');
             if (!publicCache.has(url)) publicCache.set(url, (async()=>{
               const res = await fetch(url, { method:'GET', redirect:'error', signal:AbortSignal.timeout(18_000) });
               return { status:res.status, type:res.headers.get('content-type') ?? 'application/octet-stream', body:Buffer.from(await res.arrayBuffer()) };
@@ -86,23 +89,25 @@ jobs:
             return host === 'fonts.gstatic.com' && kind==='font' && /^\/s\//.test(path);
           }
           
-          function preflightHTML(html, route, mode) {
-            const [ref, entry] = targets[route];
-            const tags = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
-            const pageTag = tags.filter(x=>x[2].includes('/'+entry));
-            const sharedTag = tags.filter(x=>x[2].includes('__helixSharedUiEntry') && x[2].includes('/global/bootstrap.js'));
-            assert.equal(pageTag.length, 1, 'Public page entry anchor: '+route);
-            assert.equal(sharedTag.length, 1, 'Public shared entry anchor: '+route);
-            assert.equal(html.split(coreTag).length, 2, 'Public GSAP anchor: '+route);
-            const replacement = '<script>window.__helixCommitSha="'+ref+'";window.__helixSiteMeasurementOwns=function(){return false}</script>' +
-              '<script src="'+cdn+ref+'/'+entry+'" defer></script>';
-            html = html.replace(pageTag[0][0], ()=>replacement)
-              .replace(sharedTag[0][0], ()=>'<script src="'+cdn+ref+'/global/bootstrap.js" defer></script>')
-              .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,s=>s.includes('19bb9719228c17a14f5a320c77e49282ec289c8c/global/floating-cta')?'':s);
-            return mode === 'classic' ? html : html.replace(coreTag,asyncTag);
+          function productionHTML(html, route) {
+            assert.ok(html.includes('data-helix-gsap-nonblocking')&&html.includes(targets[route][0]), 'Wrong published staging input');
+            for(const [before,after] of settingsDiff){
+              const count=html.split(before).length-1;
+              assert.ok(count===(before.startsWith('var releaseRef')?1:2) || (before.startsWith('if (')&&count===1), 'Unexpected saved settings in public HTML: '+route+' '+count);
+              if(before.startsWith('if (')&&count===2){
+                const tags=[...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/gi)];
+                const footer=tags.filter(t=>t[0].includes('var fixedScript')&&t[0].includes(before));
+                assert.equal(footer.length,1,'Footer scope');
+                html=html.replace(footer[0][0],()=>footer[0][0].replace(before,()=>after));
+              }else html=html.replace(before,()=>after);
+            }
+            return html.replace('data-wf-domain="helixanimalmedicalcenter.webflow.io"','data-wf-domain="www.helix-amc.com"');
           }
-          
-          async function runCase(browser, { route, width, mode, actual, html }) {
+          async function runCase(browser, { route, width, mode, host, html }) {
+            assert.ok(approvedHosts.includes(host));
+            const origin='https://'+host;
+            const mockBooking = route==='/' && mode==='pending';
+            const fixturePhone='00001234';
             const height = width===390 ? 844 : 960;
             const ctx = await browser.newContext({ viewport:{width,height}, serviceWorkers:'block', acceptDownloads:false });
             const gate = { forwarded:0, blocked:0, firebasePostAttempts:0, otherPostAttempts:0, gsapStarted:false, gsapCompleted:false, fileHashes:new Map() };
@@ -110,7 +115,8 @@ jobs:
             const [ref, entry] = targets[route];
             await ctx.addInitScript(fonts => {
               for(const {family,url,weight} of fonts) document.fonts.add(new FontFace(family, 'url(' + JSON.stringify(url) + ')', {style:'normal',weight}));
-              window.__helixNoMeasure = true;
+              const heldMeasurement = new Promise(()=>{});
+              Object.defineProperty(window, '__helixMeasurementReady', {get:()=>heldMeasurement,set(){},configurable:true});
               window.__isolatedBeaconCalls = 0;
               navigator.sendBeacon = function(){window.__isolatedBeaconCalls++;return false;};
               window.open = function(){return null;};
@@ -121,13 +127,25 @@ jobs:
               const req = outgoing.request();
               const target = new URL(req.url());
               if(req.method()!=='GET'){
+                const firebase=/firebaseio\.com$|firebasedatabase\.app$/.test(target.hostname);
+                if(mockBooking&&firebase&&digest(target.origin+target.pathname)===expectedEndpoint&&!target.search){
+                  const headers={'access-control-allow-origin':origin,'access-control-allow-headers':'content-type','access-control-allow-methods':'POST, OPTIONS'};
+                  if(req.method()==='OPTIONS')return outgoing.fulfill({status:204,headers});
+                  if(req.method()==='POST'){
+                    const input=req.postDataJSON();
+                    assert.equal(input.name,'Synthetic QA');
+                    assert.equal(input.phone,'010'+fixturePhone);
+                    gate.firebasePostAttempts++;
+                    return outgoing.fulfill({status:200,headers,contentType:'application/json',body:'{"name":"isolated-fixture-only"}'});
+                  }
+                }
                 gate.blocked++;
                 if(req.method()==='POST' && /firebaseio\.com$|firebasedatabase\.app$/.test(target.hostname)) gate.firebasePostAttempts++;
                 else gate.otherPostAttempts++;
                 return outgoing.abort('blockedbyclient');
               }
-              if(req.resourceType()==='document' && target.origin===stage && target.pathname===route && !target.search){
-                return outgoing.fulfill({status:200, contentType:'text/html; charset=utf-8',body:actual?html:preflightHTML(html,route,mode)});
+              if(req.resourceType()==='document' && target.origin===origin && target.pathname===route && !target.search){
+                return outgoing.fulfill({status:200, contentType:'text/html; charset=utf-8',body:html});
               }
               if(target.href===core){
                 gate.gsapStarted=true;
@@ -174,21 +192,13 @@ jobs:
                 menu:!!document.getElementById('hx-menu-overlay')&&!!window.__helixHamburgerReady,
                 booking:!!document.getElementById('hxFctaToggle'),
                 gsap:!!window.gsap,
+                host:location.hostname,
+                productionMeasurement:!window.__helixNoMeasure&&typeof window.__helixSiteMeasurementOwns==='function'&&!!window.HelixMeasure,
                 heroAnimated:window.__isolatedHeroAnimated===true,
               };
             });
             try{
-              await page.goto(stage+route,{waitUntil:'commit',timeout:15_000});
-              if(mode==='classic'){
-                for(let i=0;i<100&&!gate.gsapStarted;i++) await delay(100);
-                assert.equal(gate.gsapStarted,true,'Classic control did not intercept GSAP');
-                await delay(1500);
-                const seen=await observe();
-                assert.equal(gate.gsapCompleted,false);
-                assert.equal(seen.body,false,'Classic script did not block this reference document');
-                assert.equal(seen.title||seen.heroCTA||seen.menu||seen.booking,false);
-                return { route,width,mode,actual,seen,gsapPending:true };
-              }
+              await page.goto(origin+route,{waitUntil:'commit',timeout:15_000});
               let seen;
               const deadline=Date.now()+24_000;
               do {
@@ -198,7 +208,8 @@ jobs:
                 await delay(175);
               }while(Date.now()<deadline);
               const diagnostic=JSON.stringify({seen,blockedTypes:[...blockedTypes].slice(0,12),relevantErrors:[...relevantErrors].slice(0,8)});
-              assert.ok(seen.body&&seen.menu&&seen.booking,diagnostic);
+              assert.ok(seen.body&&seen.menu&&seen.booking&&seen.productionMeasurement,diagnostic);
+              assert.equal(seen.host,host);
               if(route==='/'){
                 assert.ok(seen.title&&seen.heroCTA&&seen.cover==='none',diagnostic);
                 assert.equal(seen.gsap,['normal','delayed'].includes(mode),JSON.stringify(seen));
@@ -207,7 +218,7 @@ jobs:
               }
               if(mode==='pending') assert.ok(gate.gsapStarted&&!gate.gsapCompleted,'GSAP request did not stay pending');
               if(mode==='503') assert.ok(gate.gsapStarted&&gate.gsapCompleted,'GSAP 503 was not reached');
-              const ui=await page.evaluate(async()=>{
+              const ui=await page.evaluate(async ({mockBooking,fixturePhone})=>{
                 const menu=document.getElementById('hx-menu-overlay');
                 const opener=[...document.querySelectorAll('[aria-controls="hx-menu-overlay"]')].find(x=>x.getBoundingClientRect().width);
                 const before=scrollY;
@@ -224,19 +235,30 @@ jobs:
                 const prefix=phone?.parentElement?.textContent?.includes('010');
                 const bookingForm=document.getElementById('hxFctaForm');
                 bookingForm?.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+                let bookingMockConfirmed = null;
+                if(mockBooking){
+                  document.getElementById('hxFcta_owner').value='Synthetic QA';
+                  phone.value=fixturePhone;
+                  document.getElementById('hxFcta_privacy').checked=true;
+                  bookingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+                  for(let i=0;i<50&&!document.getElementById('hxFctaDone')?.classList.contains('is-visible');i++)await new Promise(done=>setTimeout(done,50));
+                  bookingMockConfirmed=document.getElementById('hxFctaDone')?.classList.contains('is-visible')===true;
+                }
                 document.getElementById('hxFctaModalClose')?.click();
                 return { menuOpen, menuClosed:menu.getAttribute('aria-hidden')==='true',
-                  bookingOpen, bookingClosed:modal?.getAttribute('aria-hidden')==='true', prefix,
+                  bookingOpen, bookingClosed:modal?.getAttribute('aria-hidden')==='true', prefix, bookingMockConfirmed,
                   scrollRestored:Math.abs(scrollY-before)<3&&document.body.style.overflow===bodyOverflow };
-              });
+              },{mockBooking,fixturePhone});
               assert.ok(ui.menuOpen&&ui.menuClosed&&ui.bookingOpen&&ui.bookingClosed&&ui.prefix&&ui.scrollRestored,JSON.stringify(ui));
-              assert.equal(gate.firebasePostAttempts,0);
+              assert.equal(gate.firebasePostAttempts,mockBooking?1:0);
+              if(mockBooking) assert.equal(ui.bookingMockConfirmed,true,'Synthetic success indicator');
               const relevant=['global/bootstrap.js',entry,'global/floating-cta.js','global/floating-cta.css','home/global/hamburger.js'];
               assert.ok(relevant.every(file=>gate.fileHashes.has(file)), 'Missing fixed responses: '+relevant.filter(x=>!gate.fileHashes.has(x)).join(', '));
               assert.equal(gate.fileHashes.get('home/global/hamburger.js'),expectedMenu,'Menu bytes at browser request do not match the approved change');
-              const screenshot=route==='/' ? digest(await page.screenshot({ timeout:12_000, animations:'allow' }).catch(()=>Buffer.alloc(0))) : null;
-              return { route,width,mode,actual,seen,ui,gsapPending:mode==='pending',postAttempts:gate.firebasePostAttempts,
-                externalPostsForwarded:gate.forwarded,blockedRequests:gate.blocked,screenshot,loaderHashes:Object.fromEntries(relevant.map(p=>[p,gate.fileHashes.get(p)])) };
+              assert.equal(gate.fileHashes.get('home/global/hamburger.js'),expectedMenu);
+              for(const [path,sha] of Object.entries(expectedHashes[route]))assert.equal(gate.fileHashes.get(path),sha,path);
+              return { route,width,mode,host,isolatedProductionHost:true,seen,ui,gsapPending:mode==='pending',postAttempts:gate.firebasePostAttempts,
+                externalPostsForwarded:gate.forwarded,blockedRequests:gate.blocked,loaderHashes:Object.fromEntries(relevant.map(p=>[p,gate.fileHashes.get(p)])) };
             }finally{await ctx.close();}
           }
           
@@ -259,32 +281,29 @@ jobs:
             assert.equal(home.status,200,'Published stage HTML');
             const homeHtml=home.body.toString('utf8');
             const actual=homeHtml.includes('data-helix-gsap-nonblocking');
-            assert.equal(actual, true, 'The verified settings are required in published staging HTML');
-            const routes=actual?Object.keys(targets):['/'];
+            assert.equal(actual,true,'The verified staging HTML must still be published');
+            const routes=Object.keys(targets);
             for(const route of routes) {
               const document=route==='/'?home:await retrieve(stage+route);
               assert.equal(document.status,200,route);
-              docs[route]=document.body.toString('utf8');
+              docs[route]=productionHTML(document.body.toString('utf8'),route);
               if(actual) assert.ok(docs[route].includes(targets[route][0])&&docs[route].includes('data-helix-gsap-nonblocking'),'Missing released HTML pins: '+route);
             }
             const browser=await chromium.launch({headless:true,args:['--no-proxy-server','--host-resolver-rules=MAP * ~NOTFOUND']});
             try{
-              const tests=[
-                ...(!actual?[{route:'/',width:390,mode:'classic'}]:[]),
-                ...routes.flatMap(route=>widths.map(width=>({route,width,mode:'normal'}))),
-                ...widths.map(width=>({route:'/',width,mode:'pending'})),
-                {route:'/',width:390,mode:'503'},
-                {route:'/',width:390,mode:'delayed'},
-              ];
+              const tests=approvedHosts.flatMap((host,i)=>[
+                ...routes.map(route=>({host,route,width:i===0?390:1440,mode:'pending'})),
+                {host,route:'/',width:i===0?390:1440,mode:'normal'},
+              ]);
               let failures=0;
               for(let start=0;start<tests.length;start+=3){
                 await Promise.all(tests.slice(start,start+3).map(async test=>{
-                  try{const found=await runCase(browser,{...test,actual,html:docs[test.route]}); console.log('PLAYWRIGHT_PASS '+JSON.stringify(found));}
+                  try{const found=await runCase(browser,{...test,html:docs[test.route]}); console.log('PLAYWRIGHT_PASS '+JSON.stringify(found));}
                   catch(error){failures++;console.error('PLAYWRIGHT_FAIL '+JSON.stringify({...test,error:error.message}));}
                 }));
               }
               assert.equal(failures,0,'Browser scenario failures');
-              console.log('PLAYWRIGHT_MATRIX '+JSON.stringify({actual,normalRoutes:routes.length,normalWidths:widths.length,cases:tests.length,failures}));
+              console.log('PLAYWRIGHT_MATRIX '+JSON.stringify({isolatedProductionHost:true,hosts:approvedHosts,routes:routes.length,cases:tests.length,failures}));
             }finally{await browser.close();}
           })().catch(e=>{console.error(e.message);process.exitCode=1;});
           HELIX_BROWSER_PROBE
