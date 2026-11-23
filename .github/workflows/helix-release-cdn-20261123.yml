@@ -10,7 +10,7 @@ permissions:
 jobs:
   browser:
     name: GSAP and staging UI in an isolated Chromium
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Install the existing Playwright release
