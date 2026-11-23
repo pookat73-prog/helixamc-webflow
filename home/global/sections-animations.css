@@ -1,0 +1,275 @@
+/* ================================================================
+   SECTIONS 2-4 ANIMATIONS CSS (실제 Webflow DOM 매핑)
+
+   초기 상태 + 스타일만 여기서 정의
+   모든 트리거·진행은 sections-animations.js가 담당
+   ================================================================ */
+
+/* translateX 초기 오프셋 등이 viewport 밖으로 나가 가로스크롤 생기는 것 방지 */
+html, body {
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   섹션 2, 3 헤딩 — JS fadeIn 대상 (둘 다 .section2-heading)
+   ============================================================ */
+.section2-heading {
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* ============================================================
+   .official-font_title — 극단적 ease-in 페이드 + 스케일 인
+   초기 상태: 작고 투명. JS ScrollTrigger 가 expo.in 으로 등장.
+   transform-origin: center 로 중앙 기준 스케일.
+   ============================================================ */
+.official-font_title {
+  opacity: 0;
+  transform: scale(0.5);
+  transform-origin: center center;
+  will-change: opacity, transform;
+}
+
+/* ============================================================
+   버튼 2, 3 — opacity 페이드인 (sections-animations.js 담당)
+   ============================================================ */
+.bt-box-2,
+.bt-box-3 {
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* 섹션 3 이미지 .div-block-153 — 인터랙션 없음 (Webflow 기본 노출) */
+
+/* ============================================================
+   섹션 4 카드 — 초기 상태: 보이지 않고 아래로, 그림자 없음
+   카드 페이드 시작 0.15s 후 엇박으로 .is-shadowed 클래스 추가 (JS)
+   실제 Webflow DOM: .flex-block-22 > .div-block-151
+   legacy .home_branch-card 도 호환용 유지
+   ============================================================ */
+.home_branch-card,
+.flex-block-22 > .div-block-151 {
+  opacity: 0;
+  transform: translateY(14px);
+  box-shadow: none;
+  transition: box-shadow 0.5s ease;
+  will-change: opacity, transform;
+}
+
+/* 그림자가 카드 위로 새어나오지 않도록 offset-y 와 음수 spread 를 조정.
+   blur 의 절반이 위로 퍼지지 않도록 (offset-y - blur - spread) >= 0 유지.
+   아래 값: 두 레이어 모두 위쪽 경계가 정확히 0 (카드 하단) 에서 시작 */
+.home_branch-card.is-shadowed,
+.flex-block-22 > .div-block-151.is-shadowed {
+  box-shadow:
+    0 12px 20px -8px rgba(107, 125, 153, 0.55),
+    0 22px 36px -14px rgba(107, 125, 153, 0.12);
+}
+
+/* SVICC 배경 (우측) — 초기: 오른쪽에서 슬라이드 인 대기 */
+.home_background_svicc {
+  opacity: 0;
+  transform: translateX(20px);
+  will-change: opacity, transform;
+}
+
+/* ============================================================
+   .home_contents_3_qq — Webflow에서 적용된 기울기(rotate) 제거
+   ============================================================ */
+.home_contents_3_qq {
+  transform: none !important;
+  rotate: 0deg !important;
+}
+
+/* ============================================================
+   복사 버튼 (.copy-text-button)
+   ============================================================ */
+.copy-text-button {
+  cursor: pointer;
+  transition: color 0.25s ease, opacity 0.25s ease;
+  user-select: none;
+}
+
+.copy-text-button:hover {
+  opacity: 0.75;
+}
+
+/* 복사 성공 시 피드백 */
+.copy-text-button.copy-success {
+  color: #0075d6 !important;
+  font-weight: 700;
+}
+
+/* ============================================================
+   전화 링크 (a[href^="tel:"])
+   ============================================================ */
+a[href^="tel:"] {
+  transition: color 0.2s ease;
+}
+
+a[href^="tel:"]:hover .home_branch-card_call-number {
+  color: #0075d6;
+}
+
+/* ============================================================
+   MOBILE (≤767px) — 섹션 4 카드 가시성 강제 보장
+   - sections-animations.js 의 cardSections 픽업이 실패하거나
+     Webflow Designer 모바일 작업으로 카드 클래스가 바뀌어 셀렉터
+     매칭이 실패해도 카드가 영구히 안 보이는 상황 방지.
+   - JS 트리거 없이도 카드 + SVICC 가 즉시 visible.
+   - 그림자는 .is-shadowed 토글 없이 상시 노출.
+   ============================================================ */
+@media (max-width: 767px) {
+  .home_branch-card,
+  .flex-block-22 > .div-block-151 {
+    opacity: 1 !important;
+    transform: none !important;
+    box-shadow:
+      0 12px 20px -8px rgba(107, 125, 153, 0.55),
+      0 22px 36px -14px rgba(107, 125, 153, 0.12);
+  }
+
+  .home_background_svicc {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   MOBILE (≤767px): 카드 1열 세로 스택 + SVICC X축 슬라이드 제거
+   - flex-direction: column 으로 카드 1열 강제
+   - SVICC 초기 translateX(20px) 제거 → GSAP x:0 애니메이션은 무효화되지만
+     opacity 페이드인은 유지. !important 미사용 — GSAP 인라인 transform 우선
+   ============================================================ */
+/* TEMP DISABLED — Webflow Designer 모바일 직접 작업 중. 복구 시 1px → 767px */
+@media (max-width: 1px) {
+  /* ----------------------------------------------------------------
+     A. 각 섹션을 모바일 1화면(100vh) 이상으로 세로로 길게
+        — 콘텐츠가 세로 1열로 펼쳐지면서 자연스레 길어짐
+        — overflow-x: hidden (전역) 이미 있어 가로스크롤 없음
+  ---------------------------------------------------------------- */
+  section.blackframe_image-hero,
+  section.home_background_2,
+  section.home_background_3,
+  section.home_background_4 {
+    min-height: 100vh;
+    padding-top: 8vh;
+    padding-bottom: 8vh;
+    box-sizing: border-box;
+  }
+
+  /* ----------------------------------------------------------------
+     B. 콘텐츠 세로 1열 강제 (핀포인트 클래스)
+        섹션 2: .div-block-149 (텍스트+사진들 outer) + .home_contents_poto (사진 3장)
+        섹션 3: section.home_background_3 (이미지+텍스트)
+        섹션 4: .flex-block-23 (이미 처리됨)
+  ---------------------------------------------------------------- */
+  .div-block-149 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4vh;
+  }
+  .home_contents_poto {
+    flex-direction: column !important;
+  }
+  section.home_background_3 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4vh;
+  }
+  .flex-block-23 {
+    flex-direction: column !important;
+    gap: 1.2rem;
+  }
+
+  /* 카드 1열 (.div-block-151 실제 카드) */
+  .home_branch-card,
+  .flex-block-22 > .div-block-151 {
+    width: 100%;
+  }
+
+  /* ----------------------------------------------------------------
+     C. 섹션 2 사진 3장 → 첫 번째 1장만 노출
+        .home_contents_poto > .div-block-148 (첫번째) 만 보이고
+        그 외 형제 (.div-block-148dfs, .div-block-148hsrgsedg) 숨김
+  ---------------------------------------------------------------- */
+  .home_contents_poto > *:nth-child(n+2) {
+    display: none !important;
+  }
+
+  /* ----------------------------------------------------------------
+     D. SVICC (#) 배경 옆으로 삐져나오는 문제 정리
+  ---------------------------------------------------------------- */
+  .home_background_svicc {
+    transform: none;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+}
+
+
+/* ================================================================
+   좁은 화면 글자 하한 — 홈 지점 카드
+
+   ⚠ 새 CSS 파일을 만들지 않고 여기에 이어 붙인다. 새 파일은 로더
+     (home/bootstrap.js)에도 등록해야 하는데, 그 로더가 CDN 에 옛 버전으로
+     캐시돼 있으면 새 파일이 영영 사용자에게 도달하지 않는다. 이 파일은
+     오래전부터 로더 목록에 있어 그런 사고가 나지 않는다.
+     (2026-08-17 서초에서 실제로 겪은 사고 — CLAUDE.md 예방 규칙 참고)
+
+   ■ 무엇이 문제였나
+   .home_branch-card_info-link (지점 카드의 정보 링크) 는 Webflow 에
+   좁은 화면 예외값이 하나도 없어, 데스크탑용 0.85vw 가 전 구간에
+   그대로 적용된다.
+
+     360px 화면   3.06px   ← 글자로 안 보이는 크기
+     393px 화면   3.34px
+     480px 화면   4.08px
+     767px 화면   6.52px
+     991px 화면   8.42px
+
+   홈은 방문이 가장 많은 페이지고(월 819), 이 링크는 지점 상세로 가는
+   진입점이다. 서초 페이지의 인라인 상담 버튼과 완전히 같은 유형
+   (0.85vw + 예외값 없음)이라 같은 방식으로 바닥을 씌운다.
+
+   글자만 키우고 아이콘 간격·위 여백을 vw 로 두면 줄이 무너지므로 함께
+   바닥을 씌운다(360px 에서 각각 1.1px / 2.5px 였다).
+
+   ■ 범위
+   ≤991 에만 적용 → 데스크탑(≥992)은 지금 그대로.
+   ================================================================ */
+@media (max-width: 991px) {
+  .home_branch-card_info-link {
+    font-size:   max(14px, 0.85vw) !important;
+    /* 원래 줄 높이가 글자 크기와 같았다(비율 1.0). 그 관계를 유지한다 */
+    line-height: max(14px, 0.85vw) !important;
+    margin-top:  max(10px, 0.7vw) !important;
+    column-gap:  max(6px,  0.3vw) !important;
+  }
+}
+
+/* 섹션 본문(.main-colum_bonmoon) — 480~767 구간만 0.7rem(11.2px)로
+   한 단계 내려가 있다. 그 위(0.8rem=12.8px)·아래(0.8rem)보다 오히려
+   작아지는 구멍이라 이 구간만 메운다. */
+@media (min-width: 480px) and (max-width: 767px) {
+  .main-colum_bonmoon {
+    font-size:   max(13px, 0.7rem) !important;
+    line-height: max(21px, 1.2rem) !important;
+  }
+}
+
+/* Responsive typography review 2026-09-07 — home only.
+   Preserve the separate mobile sections and existing <=767px rules. */
+@media (min-width: 768px) and (max-width: 991px) {
+  html[data-wf-page="69d0bdd30d54f23591313a96"] .main-colum_bonmoon {
+    font-size: 0.8125rem !important;
+    line-height: 1.3125rem !important;
+  }
+}
+@media (min-width: 992px) {
+  html[data-wf-page="69d0bdd30d54f23591313a96"] .main-colum_bonmoon {
+    font-size: max(0.8125rem, 0.8vw) !important;
+    line-height: max(1.3125rem, 1.6vw) !important;
+  }
+}

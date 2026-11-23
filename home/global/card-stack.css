@@ -1,0 +1,158 @@
+/* ================================================================
+   STACKED CARD SWIPE — .just-box_qqqqqqq (홈) / .just-box_card (about) 카드덱
+   호스트 .helix-deck-host 안의 모든 직속 자식 카드를 절대위치로 겹침
+   ================================================================ */
+
+.helix-deck-host {
+  position: relative;
+  margin: 0 auto;
+  /* width/height 는 JS가 첫 카드 측정 후 inline 으로 부여 */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  /* 화살표를 host 바깥으로 밀어 배치하므로 잘리지 않도록 보장 */
+  overflow: visible;
+}
+
+/* host 의 직속 자식 카드 = 절대위치 + isolation 으로 뒷카드 내용 차단
+   화살표(.helix-deck-arrow)는 host 자식이지만 카드 규칙에서 제외 */
+.helix-deck-host > .just-box_qqqqqqq,
+.helix-deck-host > .just-box_card,
+.helix-deck-host > *:not(.helix-deck-arrow):not(.helix-deck-swipe-hint) {
+  position: absolute !important;
+  left: 50%;
+  top: 0;
+  margin: 0 !important;
+  /* JS 가 c.style.width = cardW(border-box 측정값) 을 강제하므로,
+     Webflow 가 content-box 일 경우 카드가 paddingX 만큼 추가로 넓어져
+     호스트 밖으로 삐져나감 → 가로 스크롤 + 힌트 가려짐. border-box
+     명시로 측정값과 렌더 폭 일치시킴. */
+  box-sizing: border-box !important;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  cursor: grab;
+  transition: box-shadow 0.25s ease;
+  /* 뒷카드 내용 비치는 것 방지: 카드 자체 isolation context */
+  isolation: isolate;
+  /* 배경 미설정시 fallback (Webflow 에서 따로 색 잡았으면 거기 우선) */
+  background-color: inherit;
+}
+
+.helix-deck-host > .is-top {
+  z-index: 10;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.18),
+    0 18px 48px rgba(0, 0, 0, 0.10);
+}
+
+.helix-deck-host > .is-dragging {
+  cursor: grabbing;
+  transition: none !important;
+}
+
+/* ============================================================
+   좌우 세모 화살표 — host 부모 grid 에 절대위치
+   배경/테두리 없음. 세모만 보이고 클릭 에리어는 투명 원형.
+   ============================================================ */
+.helix-deck-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  box-shadow: none;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0.85;
+}
+
+.helix-deck-arrow:hover {
+  background: transparent;
+  transform: translateY(-50%) scale(1.15);
+  opacity: 1;
+}
+
+.helix-deck-arrow:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+.helix-deck-arrow svg {
+  display: block;
+}
+
+.helix-deck-arrow-left {
+  left: -64px;
+}
+
+.helix-deck-arrow-right {
+  right: -64px;
+}
+
+/* 모바일: 화살표 숨김 — 스와이프로 카드 넘김.
+   `right: -44px` 가 뷰포트 밖으로 삐져나가 가로 스크롤 유발하던 이슈 차단. */
+@media (max-width: 600px) {
+  .helix-deck-arrow {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+   SWIPE HINT — host 우측 상단 ›››
+   모바일에서만 표시. 좌→우로 흐르는 시퀀셜 페이드로 "오른쪽으로
+   스와이프" 의도를 시각화. 첫 사용자 인터랙션 시 페이드아웃 후 제거.
+   ============================================================ */
+.helix-deck-swipe-hint {
+  position: absolute;
+  /* JS 가 top 을 첫 카드 안 '년도' 요소의 세로 중앙으로 설정 →
+     translateY(-50%) 로 hint 자체를 그 지점에 진정 센터 정렬. */
+  top: 28px;  /* JS 가 즉시 override 함; alignHintY 실패 시 fallback */
+  right: 28px;
+  transform: translateY(-50%);
+  display: none;  /* 데스크는 미표시 */
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  z-index: 60;
+  font-size: 22px;
+  line-height: 1;
+  color: #0075d6;
+  font-weight: 700;
+  transition: opacity 0.4s ease;
+}
+
+.helix-deck-swipe-hint.is-dismissed {
+  opacity: 0;
+}
+
+.helix-deck-chev {
+  display: inline-block;
+  opacity: 0.2;
+  animation: helix-deck-chev-flow 1.6s ease-in-out infinite;
+}
+
+.helix-deck-chev-1 { animation-delay: 0s;    }
+.helix-deck-chev-2 { animation-delay: 0.2s;  }
+.helix-deck-chev-3 { animation-delay: 0.4s;  }
+
+@keyframes helix-deck-chev-flow {
+  0%, 60%, 100% { opacity: 0.2; transform: translateX(0); }
+  30%           { opacity: 1.0; transform: translateX(2px); }
+}
+
+@media (max-width: 600px) {
+  .helix-deck-swipe-hint {
+    display: inline-flex;
+  }
+}
