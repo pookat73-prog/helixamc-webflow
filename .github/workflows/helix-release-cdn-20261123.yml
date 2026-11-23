@@ -8,36 +8,273 @@ name: HELIX fixed release CDN verification
 permissions:
   contents: read
 jobs:
-  published-scope:
-    name: Read-only comparison of published staging assets
+  browser:
+    name: Published HELIX production smoke check
     runs-on: ubuntu-24.04
-    timeout-minutes: 6
+    timeout-minutes: 15
     steps:
-      - name: Compare public HTML structure and generated CSS
+      - name: Install the existing Playwright release
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          npm install --no-save --no-fund --no-audit playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Verify parser progress and active UI with outbound blocking
         shell: bash
         run: |
           set -euo pipefail
           [[ "$GITHUB_REPOSITORY" == 'pookat73-prog/helixamc-webflow' && "$GITHUB_REF" == 'refs/heads/release/helix-structure-20261123' ]]
-          node <<'HELIX_SCOPE'
+          cd "$RUNNER_TEMP"
+          cat > helix-browser.cjs <<'HELIX_BROWSER_PROBE'
           'use strict';
-          const hash=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
-          const archived=[{"route":"/surgery","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/discover-helix","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/seocho","sha":"5775426b7211d054a72de1441d935eb374f9560337b15d31c649ac04200c0458"},{"route":"/services","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/specialty-care","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/symptoms","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/faq","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/ilsan","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimtaeseong","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/diagnostic-imaging","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/internal-medicine","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/joseongu","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/jeonjonghyi","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/sonyeongmin","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/hongyiju","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/seongcanju","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/imjihyeon","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/jangmunseog","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimhyoju","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/hanjuyeol","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/coejimin","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/isoyun","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/jeongdahong","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/jojuhyi","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gangyurim","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/iyeongeun","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimyunji","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimhyejin","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimyujin","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimyumin","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/jeongjeongyun","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/igyeongsu","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/baggimseohyeon","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimjaehyeon","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/gimjonggyeong","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/eomharim","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/doctors/hansangjin","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},{"route":"/ad-landing-test","sha":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"}];
-          function inlineHash(html){
-           const scope=html.slice(html.search(/<body\b/i),html.search(/<\/body>/i));
-           const codes=[...scope.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
-             .filter(x=>!/\bsrc\s*=/.test(x[1])&&!/window\.__helixSharedUiEntry|Booking submission is disabled on Webflow staging\./.test(x[2]))
-             .map(x=>[x[1].trim(),x[2].trim()]);
-           return hash(JSON.stringify(codes));
+          
+          const assert = require('node:assert/strict');
+          const { createHash } = require('node:crypto');
+          const { chromium } = require('playwright');
+          
+          const stage = 'https://helixanimalmedicalcenter.webflow.io';
+          const cdn = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@';
+          const library = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/';
+          const core = library + 'gsap.min.js';
+          const peridot = {"url":"https://use.typekit.net/af/ef62e5/0000000000000000774ee020/31/l?unicode=AAAH1AAAAAcRv6_WaG9-OwvDrhn4RB_9i_4V6F8Uy_fJETfgT7pgIAJxtbuqjFtdyS7i9RxigBzkWW6oStRCdF_nmvf2R5gaw4DD-vtwER4g8tGNAhck331emp0srIDUd8tzWS7Adk20giDxJj9fl0_EvRgH9yln87vj-NzBDxYLIs9oIPh9H8Pqm5k575QnvDn8-BMUadv_1E1a0TbBWZDRj4-E_hYdfPKq4TWHraEcE-ilfTf9pnhPwHA6dWL-SZiCveuOgi5uYuyQoCdsUmV3mXI1wHuKsQLGzHvr942wevot_gparEyocj4upnCOy-2oj-o6ZdvaNDxBgGsmHAAP_8E&features=ALL&v=3","sha256":"5d88380a682afbe35a1ad925b553d11b496d7cd26d6c30826ad6b7c8fdc9f563"};
+          const dsEndendend = [{"url":"https://use.typekit.net/af/f53cb0/00000000000000007751a708/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"3931611dd73541b18d324723a24c8f2ea00c808e8f3f8b576b67a6d978d215f0","weight":"500"},{"url":"https://use.typekit.net/af/2dbb8b/00000000000000007751a709/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"9074f030558c4b5054be75eeae0e11e4c8f686aa5d1ed14726ae7789b6848401","weight":"400"},{"url":"https://use.typekit.net/af/66aa01/00000000000000007751a70b/31/m?features=ALL&v=4&chunks=0&order=0","sha256":"30461ad8e4995f49c664aa13a3e7e4f1c4a62231e3dac9ef7cd9f30c7ebdb0c7","weight":"300"}];
+          const repoPrefix = '/gh/pookat73-prog/helixamc-webflow@';
+          const siteAssets = '69d090ea69d828e27d16ea29';
+          const targets = {
+            '/': ['fc7371af2cc4f2e55c5c1bc9d68a797a42f3be37','home/bootstrap.js'],
+            '/discover-helix': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','about/bootstrap.js'],
+            '/faq': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','faq/bootstrap.js'],
+            '/internal-medicine': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','internal-medicine/bootstrap.js'],
+            '/services': ['cf0f025dd2ad7d4286e9bbad981bc933ab9b17de','services/bootstrap.js'],
+          };
+          const expectedMenu = '668954ee0bf85462c1f176f472e055f268f0b2437f097c12e048eff4e2385e91';
+          const delay = ms => new Promise(done => setTimeout(done, ms));
+          const digest = x => createHash('sha256').update(x).digest('hex');
+          const publicCache = new Map();
+          const approvedHosts = ["helix-amc.com","www.helix-amc.com"];
+          const settingsDiff = [["var releaseRef = location.hostname === \"helixanimalmedicalcenter.webflow.io\" ?","var releaseRef = (location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") ?"],["if (location.hostname === \"helixanimalmedicalcenter.webflow.io\" && /^\\/","if ((location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") && /^\\/"]];
+          const expectedHashes = {"/":{"home/bootstrap.js":"8b12c9c7a9e17ac0bcbe50809e7c7ca98cdcb1d0eaf95c59333002d45b610761","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/discover-helix":{"about/bootstrap.js":"090ddbe10b6799abb7fca89d7b0cd1d020eb248262ba53c9452b4404d6804143","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/faq":{"faq/bootstrap.js":"e9768a0a39159c8ebaa64661bbb9fec5613db79abbd0808ea33c5a2af0df0455","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/internal-medicine":{"internal-medicine/bootstrap.js":"1c48cd7a9d43ccbc2909319152cf7bc942b8a888dd297e2e16692eed5ca2780a","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/services":{"services/bootstrap.js":"71dd09db5091cb084bdf2625f6fe5987677b5ac9e93d4a8b634173f3137ce5b0","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"}};
+          const expectedEndpoint = "afeb6f36221952f0aa45969d6acfb3c9de2e7d42c723007ed01697678b1a3982";
+          
+          async function retrieve(url) {
+            const hostname = new URL(url).hostname;
+            assert.ok(!/firebaseio\.com$|firebasedatabase\.app$/.test(hostname),'Unapproved egress');
+            if(approvedHosts.includes(hostname)){const u=new URL(url);assert.ok(Object.hasOwn(targets,u.pathname)&&!u.search&&u.protocol==='https:');}
+            if (!publicCache.has(url)) publicCache.set(url, (async()=>{
+              const res = await fetch(url, { method:'GET', redirect:'error', signal:AbortSignal.timeout(18_000) });
+              return { status:res.status, type:res.headers.get('content-type') ?? 'application/octet-stream', body:Buffer.from(await res.arrayBuffer()) };
+            })());
+            return publicCache.get(url);
           }
+          
+          function staticAllowed(url, kind) {
+            if (url.protocol !== 'https:' || url.port || url.username || url.password) return false;
+            const host = url.hostname, path = url.pathname;
+            if (host === 'cdn.jsdelivr.net') {
+              if (url.search || !path.startsWith(repoPrefix)) return false;
+              const target = path.slice(repoPrefix.length);
+              return /^[a-f0-9]{40}\/[a-zA-Z0-9_/.-]+\.(?:js|css|svg|png|webp|mp4|woff2)$/.test(target) &&
+                !target.includes('..') && !/\/(?:measure-gate|ga4-base|session|sheet-log|scroll-depth|page-time|ga-inspector|section-reach)\.js$/.test(target);
+            }
+            if (host === 'cdnjs.cloudflare.com') return url.href === core || url.href === library + 'ScrollTrigger.min.js';
+            if (host === 'cdn.prod.website-files.com' || host === 'assets.website-files.com') return path.startsWith('/'+siteAssets+'/') &&
+              ['image','font','media','stylesheet','script'].includes(kind);
+            if (host === 'ajax.googleapis.com') return /^\/ajax\/libs\/webfont\/[\d.]+\/webfont\.js$/.test(path);
+            if (host === 'd3e54v103j8qbb.cloudfront.net') return /^\/js\/jquery-[0-9.]+\.min\.[a-f0-9]+\.js$/.test(path) &&
+              (!url.search || url.search === '?site='+siteAssets);
+            if (host === 'use.typekit.net') return (['/yun6zxv.js','/yun6zxv.css'].includes(path)&&!url.search) ||
+              (kind==='font'&&/^\/af\/[a-z0-9/]+$/i.test(path));
+            if (host === 'p.typekit.net') return (kind==='font'||kind==='stylesheet') && !/\/(p|pixel|collect)(?:\/|$)/i.test(path);
+            if (host === 'fonts.googleapis.com') return kind==='stylesheet' && /^\/css2?$/.test(path);
+            return host === 'fonts.gstatic.com' && kind==='font' && /^\/s\//.test(path);
+          }
+          
+          async function runCase(browser, { route, width, mode, host, html }) {
+            assert.ok(approvedHosts.includes(host));
+            const origin='https://'+host;
+            const mockBooking = route==='/' && mode==='pending';
+            const fixturePhone='00001234';
+            const height = width===390 ? 844 : 960;
+            const ctx = await browser.newContext({ viewport:{width,height}, serviceWorkers:'block', acceptDownloads:false });
+            const gate = { forwarded:0, blocked:0, firebasePostAttempts:0, otherPostAttempts:0, gsapStarted:false, gsapCompleted:false, fileHashes:new Map() };
+            const blockedTypes = new Set(), relevantErrors = new Set();
+            const [ref, entry] = targets[route];
+            await ctx.addInitScript(fonts => {
+              for(const {family,url,weight} of fonts) document.fonts.add(new FontFace(family, 'url(' + JSON.stringify(url) + ')', {style:'normal',weight}));
+              const heldMeasurement = new Promise(()=>{});
+              Object.defineProperty(window, '__helixMeasurementReady', {get:()=>heldMeasurement,set(){},configurable:true});
+              window.__isolatedBeaconCalls = 0;
+              navigator.sendBeacon = function(){window.__isolatedBeaconCalls++;return false;};
+              window.open = function(){return null;};
+              window.addEventListener('helix-s1-done', () => {window.__isolatedHeroAnimated = true;}, {once:true});
+            }, [{...peridot,family:'peridot-pe-variable',weight:'400 700'},...dsEndendend.map(x=>({...x,family:'ds-endendend'}))]);
+            await ctx.routeWebSocket('**/*', ws=>ws.close());
+            await ctx.route('**/*', async outgoing => {
+              const req = outgoing.request();
+              const target = new URL(req.url());
+              if(req.method()!=='GET'){
+                const firebase=/firebaseio\.com$|firebasedatabase\.app$/.test(target.hostname);
+                if(mockBooking&&firebase&&digest(target.origin+target.pathname)===expectedEndpoint&&!target.search){
+                  const headers={'access-control-allow-origin':origin,'access-control-allow-headers':'content-type','access-control-allow-methods':'POST, OPTIONS'};
+                  if(req.method()==='OPTIONS')return outgoing.fulfill({status:204,headers});
+                  if(req.method()==='POST'){
+                    const input=req.postDataJSON();
+                    assert.equal(input.name,'Synthetic QA');
+                    assert.equal(input.phone,'010'+fixturePhone);
+                    gate.firebasePostAttempts++;
+                    return outgoing.fulfill({status:200,headers,contentType:'application/json',body:'{"name":"isolated-fixture-only"}'});
+                  }
+                }
+                gate.blocked++;
+                if(req.method()==='POST' && /firebaseio\.com$|firebasedatabase\.app$/.test(target.hostname)) gate.firebasePostAttempts++;
+                else gate.otherPostAttempts++;
+                return outgoing.abort('blockedbyclient');
+              }
+              if(req.resourceType()==='document' && target.origin===origin && target.pathname===route && !target.search){
+                return outgoing.fulfill({status:200, contentType:'text/html; charset=utf-8',body:html});
+              }
+              if(target.href===core){
+                gate.gsapStarted=true;
+                if(mode==='pending'||mode==='classic') return; // Remain pending until the context closes.
+                if(mode==='503'){gate.gsapCompleted=true;return outgoing.fulfill({status:503,body:'',contentType:'application/javascript'});}
+                if(mode==='delayed') await delay(1800);
+                gate.gsapCompleted=true;
+              }
+              if(!staticAllowed(target,req.resourceType())){
+                gate.blocked++;
+                if (['font','stylesheet','image'].includes(req.resourceType())) blockedTypes.add(req.resourceType()+':'+target.hostname+target.pathname.split('/').slice(0,3).join('/'));
+                return outgoing.abort('blockedbyclient');
+              }
+              try{
+                const received = await retrieve(target.href);
+                const replayFont = [peridot,...dsEndendend].find(f=>f.url===target.href);
+                if(replayFont){assert.equal(received.status,200);assert.equal(digest(received.body),replayFont.sha256);}
+                if(target.href.startsWith(cdn+ref+'/') && received.status===200) gate.fileHashes.set(target.href.slice((cdn+ref+'/').length),digest(received.body));
+                return await outgoing.fulfill({status:received.status,headers:{'content-type':received.type,'access-control-allow-origin':'*'},body:received.body});
+              }catch{ await outgoing.abort('failed').catch(()=>{}); }
+            });
+            const page = await ctx.newPage();
+            page.on('pageerror', error=>{if(/gsap|ScrollTrigger|undefined/i.test(error.message))relevantErrors.add(error.message);});
+            const observe = () => page.evaluate(()=>{
+              const visible = node => {
+                if(!node?.getBoundingClientRect().width) return false;
+                for(let p=node;p;p=p.parentElement){
+                  const s=getComputedStyle(p);
+                  if(s.visibility==='hidden'||s.display==='none'||Number(s.opacity)===0)return false;
+                }
+                return true;
+              };
+              const root=document.documentElement;
+              return {
+                body:!!document.body?.firstElementChild,
+                title:visible(document.querySelector('.blackframe_image-hero h1')),
+                heroCTA:visible(document.querySelector('.blackframe_image-hero a[href="/discover-helix"]')),
+                cover:getComputedStyle(root,'::after').content,
+                fallback:root.classList.contains('hx-home-hero-static'),
+                ready:root.classList.contains('hx-home-ready'),
+                registeredFonts:[...new Set(Array.from(document.fonts,f=>f.family+':'+f.status))].join(','),
+                heroFont:document.querySelector('.home_slogan') && getComputedStyle(document.querySelector('.home_slogan')).fontFamily,
+                homeSections:!!document.getElementById('hx-hero-milestones')&&!!document.getElementById('hx-branch-quickbar'),
+                menu:!!document.getElementById('hx-menu-overlay')&&!!window.__helixHamburgerReady,
+                booking:!!document.getElementById('hxFctaToggle'),
+                gsap:!!window.gsap,
+                host:location.hostname,
+                productionMeasurement:!window.__helixNoMeasure&&typeof window.__helixSiteMeasurementOwns==='function'&&!!window.HelixMeasure,
+                heroAnimated:window.__isolatedHeroAnimated===true,
+              };
+            });
+            try{
+              await page.goto(origin+route,{waitUntil:'commit',timeout:15_000});
+              let seen;
+              const deadline=Date.now()+24_000;
+              do {
+                seen=await observe();
+                if(seen.body&&seen.menu&&seen.booking&&(route!=='/'||(seen.title&&seen.heroCTA&&seen.cover==='none'&&
+                  (!['normal','delayed'].includes(mode)||(seen.gsap&&seen.heroAnimated)))))break;
+                await delay(175);
+              }while(Date.now()<deadline);
+              const diagnostic=JSON.stringify({seen,blockedTypes:[...blockedTypes].slice(0,12),relevantErrors:[...relevantErrors].slice(0,8)});
+              assert.ok(seen.body&&seen.menu&&seen.booking&&seen.productionMeasurement,diagnostic);
+              assert.equal(seen.host,host);
+              if(route==='/'){
+                assert.ok(seen.title&&seen.heroCTA&&seen.cover==='none',diagnostic);
+                assert.equal(seen.gsap,['normal','delayed'].includes(mode),JSON.stringify(seen));
+                if(mode==='pending'||mode==='503') assert.equal(seen.fallback,true,JSON.stringify(seen));
+                else assert.ok(seen.heroAnimated&&!seen.fallback,diagnostic);
+              }
+              if(mode==='pending') assert.ok(gate.gsapStarted&&!gate.gsapCompleted,'GSAP request did not stay pending');
+              if(mode==='503') assert.ok(gate.gsapStarted&&gate.gsapCompleted,'GSAP 503 was not reached');
+              const ui=await page.evaluate(async ({mockBooking,fixturePhone})=>{
+                const menu=document.getElementById('hx-menu-overlay');
+                const opener=[...document.querySelectorAll('[aria-controls="hx-menu-overlay"]')].find(x=>x.getBoundingClientRect().width);
+                const before=scrollY;
+                const bodyOverflow=document.body.style.overflow;
+                opener?.click();
+                const menuOpen=menu.getAttribute('aria-hidden')==='false';
+                document.querySelector('.hx-menu-close')?.click();
+                for(let i=0;i<25&&menu.getAttribute('aria-hidden')!=='true';i++)await new Promise(done=>setTimeout(done,40));
+                const toggle=document.getElementById('hxFctaToggle');
+                toggle.click();
+                const modal=document.getElementById('hxFctaModal');
+                const bookingOpen=modal?.getAttribute('aria-hidden')==='false';
+                const phone=document.getElementById('hxFcta_phone');
+                const prefix=phone?.parentElement?.textContent?.includes('010');
+                const bookingForm=document.getElementById('hxFctaForm');
+                bookingForm?.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+                let bookingMockConfirmed = null;
+                if(mockBooking){
+                  document.getElementById('hxFcta_owner').value='Synthetic QA';
+                  phone.value=fixturePhone;
+                  document.getElementById('hxFcta_privacy').checked=true;
+                  bookingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+                  for(let i=0;i<50&&!document.getElementById('hxFctaDone')?.classList.contains('is-visible');i++)await new Promise(done=>setTimeout(done,50));
+                  bookingMockConfirmed=document.getElementById('hxFctaDone')?.classList.contains('is-visible')===true;
+                }
+                document.getElementById('hxFctaModalClose')?.click();
+                return { menuOpen, menuClosed:menu.getAttribute('aria-hidden')==='true',
+                  bookingOpen, bookingClosed:modal?.getAttribute('aria-hidden')==='true', prefix, bookingMockConfirmed,
+                  scrollRestored:Math.abs(scrollY-before)<3&&document.body.style.overflow===bodyOverflow };
+              },{mockBooking,fixturePhone});
+              assert.ok(ui.menuOpen&&ui.menuClosed&&ui.bookingOpen&&ui.bookingClosed&&ui.prefix&&ui.scrollRestored,JSON.stringify(ui));
+              assert.equal(gate.firebasePostAttempts,mockBooking?1:0);
+              if(mockBooking) assert.equal(ui.bookingMockConfirmed,true,'Synthetic success indicator');
+              const relevant=['global/bootstrap.js',entry,'global/floating-cta.js','global/floating-cta.css','home/global/hamburger.js'];
+              assert.ok(relevant.every(file=>gate.fileHashes.has(file)), 'Missing fixed responses: '+relevant.filter(x=>!gate.fileHashes.has(x)).join(', '));
+              assert.equal(gate.fileHashes.get('home/global/hamburger.js'),expectedMenu,'Menu bytes at browser request do not match the approved change');
+              assert.equal(gate.fileHashes.get('home/global/hamburger.js'),expectedMenu);
+              for(const [path,sha] of Object.entries(expectedHashes[route]))assert.equal(gate.fileHashes.get(path),sha,path);
+              return { route,width,mode,host,actualProduction:true,seen,ui,gsapPending:mode==='pending',postAttempts:gate.firebasePostAttempts,
+                externalPostsForwarded:gate.forwarded,blockedRequests:gate.blocked,loaderHashes:Object.fromEntries(relevant.map(p=>[p,gate.fileHashes.get(p)])) };
+            }finally{await ctx.close();}
+          }
+          
           (async()=>{
-           const changed=[];
-           for(let i=0;i<archived.length;i+=5)await Promise.all(archived.slice(i,i+5).map(async({route,sha})=>{
-             const res=await fetch('https://helixanimalmedicalcenter.webflow.io'+route,{method:'GET',redirect:'error',signal:AbortSignal.timeout(20000)});
-             if(!res.ok)throw Error('HTTP '+res.status+' '+route);
-             const body=await res.text();
-             if(!/Last Published:\s*Mon Nov 23 2026 07:34:/.test(body))throw Error('Unexpected staging revision '+route);
-             if(inlineHash(body)!==sha)changed.push(route);
-           }));
-           console.log('INLINE_SCOPE '+JSON.stringify({count:archived.length,unchanged:archived.length-changed.length,changed}));
+            const docs={};
+            const hosts=['www.helix-amc.com','helix-amc.com'];
+            const scenarios=[...Object.keys(targets).map(route=>({host:hosts[0],route,width:390,mode:'normal'})),
+              {host:hosts[1],route:'/',width:1440,mode:'normal'}];
+            for(const {host,route} of scenarios){
+              const received=await retrieve('https://'+host+route);
+              assert.equal(received.status,200,host+route);
+              const html=received.body.toString('utf8');
+              assert.ok(html.includes('data-helix-gsap-nonblocking')&&html.includes(targets[route][0])&&
+                html.includes('helixanimalmedicalcenter.webflow.io')&&html.includes('www.helix-amc.com'),host+route+' lacks published fixed code');
+              assert.ok(!/Last Published:\s*Tue Nov 17 2026/.test(html),host+route+' still on previous release');
+              docs[host+route]=html;
+            }
+            const browser=await chromium.launch({headless:true,args:['--no-proxy-server','--host-resolver-rules=MAP * ~NOTFOUND']});
+            try{
+              let failures=0;
+              for(let start=0;start<scenarios.length;start+=3){
+                await Promise.all(scenarios.slice(start,start+3).map(async test=>{
+                  try{const found=await runCase(browser,{...test,html:docs[test.host+test.route]}); console.log('PLAYWRIGHT_PASS '+JSON.stringify(found));}
+                  catch(error){failures++;console.error('PLAYWRIGHT_FAIL '+JSON.stringify({...test,error:error.message}));}
+                }));
+              }
+              assert.equal(failures,0,'Browser scenario failures');
+              console.log('PLAYWRIGHT_MATRIX '+JSON.stringify({actualProduction:true,hosts,cases:scenarios.length,failures}));
+            }finally{await browser.close();}
           })().catch(e=>{console.error(e.message);process.exitCode=1;});
-          HELIX_SCOPE
+          HELIX_BROWSER_PROBE
+          node helix-browser.cjs
