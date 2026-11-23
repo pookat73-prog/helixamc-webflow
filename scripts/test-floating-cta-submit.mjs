@@ -14,6 +14,7 @@ function between(startMarker, endMarker) {
 }
 
 const errorFns = between('  function setError(', "  ownerInput.addEventListener('input'");
+const phoneFns = between('  function phoneSubscriberDigits()', '  /* ── Enter(');
 const modalFns = between('  function openModal() {', "  backdrop.addEventListener('click', closeModal);");
 const submitFns = between('  async function persistLead(', '  function onSubmitSuccess(');
 const successFn = between('  function onSubmitSuccess(', '  } // end run()');
@@ -39,7 +40,8 @@ function element(id) {
     style: {}, attributes: {}, classList: classList(), focused: false,
     setAttribute(name, value) { this.attributes[name] = value; },
     focus() { this.focused = true; },
-    addEventListener() {}
+    handlers: {},
+    addEventListener(name, handler) { this.handlers[name] = handler; }
   };
 }
 
@@ -68,7 +70,7 @@ function fixture(fetchImpl) {
   };
 
   ids.hxFcta_owner.value = '모의 보호자';
-  ids.hxFcta_phone.value = '01012345678';
+  ids.hxFcta_phone.value = '1234-5678';
   ids.hxFcta_privacy.checked = true;
 
   const modal = ids.hxFctaModal;
@@ -77,6 +79,7 @@ function fixture(fetchImpl) {
     console: { error() {} },
     document: {
       body,
+      activeElement: ids.hxFcta_phone,
       getElementById(id) { return ids[id] || null; }
     },
     form,
@@ -94,7 +97,6 @@ function fixture(fetchImpl) {
     privacyDetail: element('privacyDetail'),
     privacyMore: element('privacyMore'),
     modalReturnFocus: ids.hxFctaToggle,
-    phoneDigits: () => ids.hxFcta_phone.value.replace(/\D/g, ''),
     getAttributionUtm: () => ({ utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '' }),
     fetch: fetchImpl,
     LEADS_URL: 'https://mock.invalid/branches/seocho/leads.json',
@@ -111,6 +113,7 @@ function fixture(fetchImpl) {
     guardDecl,
     source.match(/^[ \t]*var formTracking = .*;$/m)[0],
     errorFns,
+    phoneFns,
     modalFns,
     submitFns,
     successFn
@@ -161,7 +164,7 @@ async function testFailureRetainsFormAndRetryClearsError() {
   assert.notEqual(f.ids.hxFcta_submit_err.textContent, '');
   assert.equal(f.form.style.display, '');
   assert.equal(f.ids.hxFcta_owner.value, '모의 보호자');
-  assert.equal(f.ids.hxFcta_phone.value, '01012345678');
+  assert.equal(f.ids.hxFcta_phone.value, '1234-5678');
   assert.equal(f.ids.hxFctaSubmit.disabled, false);
 
   await f.submit();
@@ -222,6 +225,39 @@ async function testLateFailureAfterCloseReopen() {
   console.log('PASS late network failure after modal close/reopen keeps values');
 }
 
+async function testFixedPrefixInputAndValidation() {
+  let calls = 0;
+  const f = fixture(async (url, options) => {
+    calls++;
+    assert.equal(JSON.parse(options.body).phone, '01001001234');
+    return response(true, { name: '-prefix-key' });
+  });
+  for (const value of ['', '123', '1234-567']) {
+    f.ids.hxFcta_phone.value = value;
+    await f.submit();
+    assert.equal(calls, 0, 'empty or incomplete suffix must not be saved');
+    assert.notEqual(f.ids.hxFcta_phone_err.textContent, '');
+  }
+  for (const value of ['12345678', '01012345678', '010-1234-5678', '1234abcd5678']) {
+    f.ids.hxFcta_phone.value = value;
+    f.ids.hxFcta_phone.handlers.input();
+    assert.equal(f.ids.hxFcta_phone.value, '1234-5678');
+    assert.equal(f.context.phoneDigits(), '01012345678');
+    assert.equal(f.ids.hxFcta_phone_err.textContent, '');
+  }
+  assert.equal(f.ids.hxFcta_memo.focused, true, 'complete suffix advances to memo');
+  f.ids.hxFcta_phone.value = '';
+  f.ids.hxFcta_phone.handlers.input();
+  assert.equal(f.context.phoneDigits(), '', 'fixed prefix alone is not a phone number');
+  assert.equal(f.context.phoneCompletedOnce, false);
+  f.ids.hxFcta_phone.value = '01001234';
+  f.ids.hxFcta_phone.handlers.input();
+  assert.equal(f.ids.hxFcta_phone.value, '0100-1234', 'suffix may itself start with 010');
+  await f.submit();
+  assert.equal(calls, 1);
+  console.log('PASS fixed prefix, suffix validation, paste/autofill, leading zeros and full-number storage');
+}
+
 await testSuccess();
 await testFailureRetainsFormAndRetryClearsError();
 await testDuplicateClickAndLateSuccess();
@@ -263,4 +299,5 @@ async function testOverlongMemoIsNotSubmitted() {
 await testOptionalMemo();
 await testOverlongMemoIsNotSubmitted();
 
-console.log('All floating CTA submit handler tests passed (6 scenarios).');
+await testFixedPrefixInputAndValidation();
+console.log('All floating CTA submit handler tests passed (7 scenarios).');
