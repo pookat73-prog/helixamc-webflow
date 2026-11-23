@@ -118,12 +118,16 @@
                 ' type="text" placeholder="홍길동" autocomplete="name" enterkeyhint="next">',
               '<p class="hx-fcta-form__error" id="hxFcta_owner_err" role="alert"></p>',
             '</div>',
-            '<div class="hx-fcta-form__group">',
+            '<div class="hx-fcta-form__group hx-fcta-form__group--phone">',
               '<label class="hx-fcta-form__label" for="hxFcta_phone">연락처',
                 '<span class="hx-fcta-form__req" aria-hidden="true">*</span></label>',
-              '<input class="hx-fcta-form__input" id="hxFcta_phone" name="연락처"',
-                ' type="tel" inputmode="numeric" maxlength="13" placeholder="010-1234-5678"',
-                ' autocomplete="tel" enterkeyhint="next">',
+              '<div class="hx-fcta-form__phone">',
+                '<span class="hx-fcta-form__phone-prefix" aria-hidden="true">010-</span>',
+                '<input class="hx-fcta-form__input" id="hxFcta_phone" name="연락처"',
+                  ' type="tel" inputmode="numeric" maxlength="13" placeholder="1234-5678"',
+                  ' aria-label="연락처 뒤 8자리 (010 고정)" aria-describedby="hxFcta_phone_err"',
+                  ' autocomplete="tel" enterkeyhint="next">',
+              '</div>',
               '<p class="hx-fcta-form__error" id="hxFcta_phone_err" role="alert"></p>',
             '</div>',
           '</div>',
@@ -270,26 +274,29 @@
     if (privacyEl.checked) setError(null, 'hxFcta_privacy_err', '');
   });
 
-  /* ── 연락처: 입력하는 동안 하이픈을 넣어 보여준다 ──
-     저장·전송은 숫자 11자리만 (dashboard 에서 전화 걸기 링크 만들 때 편함).
-     11자리를 다 채우면 선택 메모 칸으로 커서가 넘어감. */
+  /* ── 연락처: 010 은 고정 표시하고 뒤 8자리만 입력한다 ──
+     전체 번호 붙여넣기·자동완성도 허용하며, 저장·전송은 010 포함 11자리.
+     뒤 8자리를 다 채우면 선택 메모 칸으로 커서가 넘어감. */
+  function phoneSubscriberDigits() {
+    var d = phoneInput.value.replace(/\D/g, '');
+    if (d.length === 11 && d.slice(0, 3) === '010') d = d.slice(3);
+    return d.slice(0, 8);
+  }
+
   function phoneDigits() {
-    return phoneInput.value.replace(/\D/g, '').slice(0, 11);
+    var d = phoneSubscriberDigits();
+    return d ? '010' + d : '';
   }
 
   var phoneCompletedOnce = false;
   phoneInput.addEventListener('input', function () {
-    var d = phoneDigits();
+    var d = phoneSubscriberDigits();
     if (!d.length) phoneCompletedOnce = false;
     var out = d;
-    if (d.length > 3 && d.length <= 7) {
-      out = d.slice(0, 3) + '-' + d.slice(3);
-    } else if (d.length > 7) {
-      out = d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7);
-    }
+    if (d.length > 4) out = d.slice(0, 4) + '-' + d.slice(4);
     if (phoneInput.value !== out) phoneInput.value = out;
     setError(phoneInput, 'hxFcta_phone_err', '');
-    if (d.length === 11 && !phoneCompletedOnce) {
+    if (d.length === 8 && !phoneCompletedOnce) {
       phoneCompletedOnce = true;
       if (document.activeElement === phoneInput) memoInput.focus();
     }
@@ -381,6 +388,7 @@
     /* 직전에 완료 화면이 떠 있었으면(이미 한 번 제출 완료) 폼을 초기 상태로 되돌림 */
     if (done.classList.contains('is-visible')) {
       form.reset();
+      phoneCompletedOnce = false;
       form.style.display = '';
       done.classList.remove('is-visible');
       submitBtn.disabled = false;
@@ -644,8 +652,8 @@
     if (!digits) {
       setError(phoneInput, 'hxFcta_phone_err', '연락처를 입력해 주세요.');
       bad = bad || phoneInput;
-    } else if (digits.length < 10) {
-      setError(phoneInput, 'hxFcta_phone_err', '연락처를 다시 확인해 주세요.');
+    } else if (!/^010\d{8}$/.test(digits)) {
+      setError(phoneInput, 'hxFcta_phone_err', '010 뒤의 번호 8자리를 입력해 주세요.');
       bad = bad || phoneInput;
     }
     if (memoVal.length > 20) {
