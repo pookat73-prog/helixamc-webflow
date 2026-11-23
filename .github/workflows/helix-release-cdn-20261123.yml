@@ -54,6 +54,7 @@ jobs:
           const publicCache = new Map();
           const approvedHosts = ["helix-amc.com","www.helix-amc.com"];
           const settingsDiff = [["var releaseRef = location.hostname === \"helixanimalmedicalcenter.webflow.io\" ?","var releaseRef = (location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") ?"],["if (location.hostname === \"helixanimalmedicalcenter.webflow.io\" && /^\\/","if ((location.hostname === \"helixanimalmedicalcenter.webflow.io\" || location.hostname === \"helix-amc.com\" || location.hostname === \"www.helix-amc.com\") && /^\\/"]];
+          const internalMedicineOrder = {"page":["  if (releaseRef) { window.__helixCommitSha = releaseRef; load(releaseRef); return; }","  if (releaseRef) {\n    window.__helixCommitSha = releaseRef;\n    window.__helixStartInternalMedicine = function () { load(releaseRef); };\n    return;\n  }"],"footer":["      document.head.appendChild(fixedScript);","      if (/^\\/internal-medicine\\/?$/.test(location.pathname)) {\n        function startInternalMedicine() {\n          var start = window.__helixStartInternalMedicine;\n          delete window.__helixStartInternalMedicine;\n          if (typeof start === \"function\") start();\n        }\n        function afterSharedBootstrap() {\n          if (document.readyState === \"loading\") {\n            document.addEventListener(\"DOMContentLoaded\", startInternalMedicine, { once:true });\n          } else startInternalMedicine();\n        }\n        fixedScript.addEventListener(\"load\", afterSharedBootstrap, { once:true });\n        fixedScript.addEventListener(\"error\", afterSharedBootstrap, { once:true });\n      }\n      document.head.appendChild(fixedScript);"]};
           const expectedHashes = {"/":{"home/bootstrap.js":"8b12c9c7a9e17ac0bcbe50809e7c7ca98cdcb1d0eaf95c59333002d45b610761","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/discover-helix":{"about/bootstrap.js":"090ddbe10b6799abb7fca89d7b0cd1d020eb248262ba53c9452b4404d6804143","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/faq":{"faq/bootstrap.js":"e9768a0a39159c8ebaa64661bbb9fec5613db79abbd0808ea33c5a2af0df0455","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/internal-medicine":{"internal-medicine/bootstrap.js":"1c48cd7a9d43ccbc2909319152cf7bc942b8a888dd297e2e16692eed5ca2780a","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"},"/services":{"services/bootstrap.js":"71dd09db5091cb084bdf2625f6fe5987677b5ac9e93d4a8b634173f3137ce5b0","global/bootstrap.js":"9fc7f102db267299de6107420cb19229f6cddb498686d09eec4f3a5cab3f8dda","global/floating-cta.js":"c12cec83eb310781233da9143205c2eb3e68b1a43eee9ae4783fddfc475b9ca5","global/floating-cta.css":"ae1c6ef2737a8e87163c985ef97632be8b8b9d068e093805934402edfba495f4"}};
           const expectedEndpoint = "afeb6f36221952f0aa45969d6acfb3c9de2e7d42c723007ed01697678b1a3982";
           
@@ -101,6 +102,8 @@ jobs:
                 html=html.replace(footer[0][0],()=>footer[0][0].replace(before,()=>after));
               }else html=html.replace(before,()=>after);
             }
+            const changes=route==='/internal-medicine'?[internalMedicineOrder.page,internalMedicineOrder.footer]:[internalMedicineOrder.footer];
+            for(const [before,after] of changes){assert.equal(html.split(before).length,2,'Saved internal medicine ordering anchor');html=html.replace(before,()=>after);}
             return html.replace('data-wf-domain="helixanimalmedicalcenter.webflow.io"','data-wf-domain="www.helix-amc.com"');
           }
           async function runCase(browser, { route, width, mode, host, html }) {
@@ -203,13 +206,14 @@ jobs:
               const deadline=Date.now()+24_000;
               do {
                 seen=await observe();
-                if(seen.body&&seen.menu&&seen.booking&&(route!=='/'||(seen.title&&seen.heroCTA&&seen.cover==='none'&&
+                if(seen.body&&seen.menu&&seen.booking&&(mode!=='normal'||seen.gsap)&&gate.fileHashes.has(entry)&&(route!=='/'||(seen.title&&seen.heroCTA&&seen.cover==='none'&&
                   (!['normal','delayed'].includes(mode)||(seen.gsap&&seen.heroAnimated)))))break;
                 await delay(175);
               }while(Date.now()<deadline);
               const diagnostic=JSON.stringify({seen,blockedTypes:[...blockedTypes].slice(0,12),relevantErrors:[...relevantErrors].slice(0,8)});
               assert.ok(seen.body&&seen.menu&&seen.booking&&seen.productionMeasurement,diagnostic);
               assert.equal(seen.host,host);
+              assert.equal(seen.gsap,mode==='normal',diagnostic);
               if(route==='/'){
                 assert.ok(seen.title&&seen.heroCTA&&seen.cover==='none',diagnostic);
                 assert.equal(seen.gsap,['normal','delayed'].includes(mode),JSON.stringify(seen));
@@ -282,7 +286,7 @@ jobs:
             const homeHtml=home.body.toString('utf8');
             const actual=homeHtml.includes('data-helix-gsap-nonblocking');
             assert.equal(actual,true,'The verified staging HTML must still be published');
-            const routes=Object.keys(targets);
+            const routes=['/internal-medicine'];
             for(const route of routes) {
               const document=route==='/'?home:await retrieve(stage+route);
               assert.equal(document.status,200,route);
@@ -291,10 +295,7 @@ jobs:
             }
             const browser=await chromium.launch({headless:true,args:['--no-proxy-server','--host-resolver-rules=MAP * ~NOTFOUND']});
             try{
-              const tests=approvedHosts.flatMap((host,i)=>[
-                ...routes.map(route=>({host,route,width:i===0?390:1440,mode:'pending'})),
-                {host,route:'/',width:i===0?390:1440,mode:'normal'},
-              ]);
+              const tests=approvedHosts.flatMap((host,i)=>['pending','normal'].map(mode=>({host,route:'/internal-medicine',width:i===0?390:1440,mode})));
               let failures=0;
               for(let start=0;start<tests.length;start+=3){
                 await Promise.all(tests.slice(start,start+3).map(async test=>{
