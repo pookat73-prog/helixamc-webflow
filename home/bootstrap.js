@@ -1,29 +1,15 @@
-/* ================================================================
-   HELIX AMC - AUTO BOOTSTRAP LOADER (v3.4 — home scroll hint)
-   Pasted once in Webflow. Always serves the latest commit.
-
-   Strategy:
-     1) Fetch latest commit SHA from GitHub API
-     2) Load CSS/JS via jsDelivr using that SHA (immutable URL)
-     3) If any file 404s (jsDelivr indexing delay), fall back to @main
-     4) If GitHub API fails entirely, fall back to @main for everything
-   ================================================================ */
+/* HELIX AMC — fixed release loader for home/bootstrap.js. */
 
 (function () {
   'use strict';
 
-  /* STAGING SELF-REDIRECT — Webflow head 는 @main 으로 고정이라
-     새 파일을 FILES 에 추가하는 변경은 main 머지 전엔 staging 에
-     안 들어왔던 문제. 스테이징 도메인이면 @staging bootstrap 을
-     재로드해서 그쪽 FILES 로 실행한다. 2회차는 flag 보고 skip. */
-  if (!window.__helixHomeBootstrapRedirected &&
-      /\.webflow\.io$/i.test(location.hostname)) {
-    window.__helixHomeBootstrapRedirected = true;
-    var __s = document.createElement('script');
-    __s.src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@staging/home/bootstrap.js?t=' +
-              Math.floor(Date.now() / 60000);
-    __s.async = false;
-    document.head.appendChild(__s);
+  var releaseEntry = document.currentScript && document.currentScript.src || '';
+  var releaseRoot = "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@";
+  var releaseRef = releaseEntry.slice(releaseRoot.length, releaseRoot.length + 40);
+  var releasePath = releaseEntry.split(/[?#]/, 1)[0];
+  if (!/^[0-9a-f]{40}$/.test(releaseRef) ||
+      releasePath !== releaseRoot + releaseRef + "/home/bootstrap.js") {
+    console.warn('[helix-bootstrap] expected a fixed release URL:', "home/bootstrap.js");
     return;
   }
 
@@ -113,7 +99,6 @@
      - *.webflow.io (Webflow 스테이징 도메인) → @staging 브랜치 로드
      - 그 외 (정식 도메인) → @main 브랜치 로드
      덕분에 staging 에서 먼저 검증 → 안전하면 main 으로 promote */
-  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
 
   var FILES = [
     /* 기기 오분류 교정 — 화면 폭을 바꾸므로 무엇보다 먼저 */
@@ -151,12 +136,6 @@
     'global/page-time.js',
     /* 전역 GA4 분석 (섹션 도달 — 어느 파트까지 봤나) */
     'global/section-reach.js',
-    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
-    'global/popup.css',
-    'global/popup.js',
-    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
-    'global/top-button.css',
-    'global/top-button.js',
     /* 햄버거 메뉴 (전 페이지 공통) — 다른 페이지 bootstrap 엔 다 있는데 홈만
        빠져 있어 홈에서 메뉴가 안 열렸음. coming-soon.js 보다 먼저 로드해도
        버튼 바인딩은 exempt 방식이라 순서 무관. */
@@ -182,7 +161,13 @@
     'home/global/scroll-hint.css',
     'home/global/scroll-hint.js',
     /* 핵심 장비 섹션 — 캐논 알페닉스 빛반사만 (콘텐츠 페이드는 Webflow IX2) */
-    'home/equipment/equipment.js'
+    'home/equipment/equipment.js',
+    /* 전역 공지 팝업 (중앙 모달, 매 방문 노출) */
+    'global/popup.css',
+    'global/popup.js',
+    /* 전역 위로가기 버튼 — body 주입 + 푸터 위 1.5vw 클램프 */
+    'global/top-button.css',
+    'global/top-button.js'
   ];
 
   /* Pre-paint FOUC/FOUT guard:
@@ -234,28 +219,38 @@
     return 'https://cdn.jsdelivr.net/gh/' + OWNER + '/' + REPO + '@' + ref + '/' + path + q;
   }
 
-  function injectCss(url, onerr, onload) {
+  function injectCss(url, onerr) {
     var link = document.createElement('link');
     link.rel  = 'stylesheet';
     link.href = url;
-    if (onload) link.onload = onload;
     if (onerr) link.onerror = onerr;
+    if (/\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
+      link.addEventListener('load', function () { link.removeAttribute('data-helix-menu-css-error'); }, true);
+      link.addEventListener('error', function () { link.setAttribute('data-helix-menu-css-error', link.href); }, true);
+    }
     document.head.appendChild(link);
     return link;
   }
 
-  function injectJs(url, onload, onerr, independent) {
+  function injectJs(url, onload, onerr) {
     var s = document.createElement('script');
     s.src   = url;
-    s.async = !!independent;
+    s.async = /\/global\/ga-inspector\.js(?:[?#]|$)/.test(url);
     if (onload) s.onload = onload;
     if (onerr)  s.onerror = onerr;
+    if (/\/home\/global\/hamburger\.js(?:[?#]|$)/.test(url)) {
+      s.addEventListener('error', function () {
+        s.setAttribute('data-helix-menu-js-error', s.src);
+        s.remove();
+      }, true);
+    }
     document.head.appendChild(s);
     return s;
   }
 
-  function loadFile(path, ref, done) {
-    /* Match the modules' own guards; retry if initial setup did not succeed. */
+  function loadFile(path, ref, menuRetry) {
+    if (window.__helixSiteMeasurementOwns && window.__helixSiteMeasurementOwns(path)) { return; }
+    /* Retry if initial setup did not succeed. */
     var initialized = {
       'global/measure-gate.js': '__helixGateInit',
       'global/ga4-base.js': '__helixGA4Init',
@@ -269,80 +264,25 @@
     var url = cdn(ref, path);
     var ext = path.split('.').pop();
     var fallback = function () {
-      if (ref === BRANCH) {
-        console.warn('[helix-bootstrap] failed even from @' + BRANCH + ':', path);
-        if (done) done();
+      var menuAsset = /^(home\/global\/hamburger\.(css|js))$/.test(path) && /^[0-9a-f]{7,40}$/i.test(ref);
+      if (menuRetry || !menuAsset) {
+        console.warn('[helix-bootstrap] failed even from @' + ref + ':', path);
         return;
       }
-      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + BRANCH);
-      loadFile(path, BRANCH, done);
+      var nextRef = ref;
+      console.warn('[helix-bootstrap] SHA load failed for ' + path + ', retrying @' + nextRef);
+      loadFile(path, nextRef, menuAsset);
     };
     if (ext === 'css') {
-      injectCss(url, fallback, done);
+      injectCss(url, fallback);
     } else if (ext === 'js') {
-      injectJs(url, done, fallback);
+      injectJs(url, null, fallback);
     }
   }
 
   function injectAll(ref) {
     console.log('[helix-bootstrap] injecting ' + FILES.length + ' files at ref=' + ref + ':\n  - ' + FILES.join('\n  - '));
-    /* 첫 화면은 보조 기능의 응답을 기다리지 않는다. 뷰포트 → 홈 배치 →
-       히어로 순서는 유지하고, 필수 CSS가 파싱된 뒤에만 크기를 측정한다. */
-    var first = ['global/viewport-fix.js', 'global/viewport.js',
-      'home/global/coming-soon.js', 'home/section1/section1.js'];
-    var critical = ['global/global.css', 'home/global/coming-soon.css',
-      'home/section1/section1.css', 'home/global/buttons.css'];
-    var styles = critical.map(function (path) {
-      return new Promise(function (resolve) { loadFile(path, ref, resolve); });
-    });
-    FILES.filter(function (path) { return /\.css$/.test(path) && critical.indexOf(path) === -1; })
-      .forEach(function (path) { loadFile(path, ref); });
-    first.forEach(function (path) {
-      var hint = document.createElement('link');
-      hint.rel = 'preload'; hint.as = 'script'; hint.href = cdn(ref, path);
-      document.head.appendChild(hint);
-    });
-    Promise.all(styles).then(function () {
-      function auxiliary() {
-        /* 기존 순서대로 측정 게이트 → GA4 → 세션 → 이벤트 모듈을 실행한다. */
-        FILES.filter(function (path) { return /\.js$/.test(path) && first.indexOf(path) === -1; })
-          .forEach(function (path) { loadFile(path, ref); });
-      }
-      first.forEach(function (path, index) {
-        loadFile(path, ref, index === first.length - 1 ? function () {
-          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', auxiliary, { once: true });
-          else auxiliary();
-        } : null);
-      });
-    });
-  }
-
-  /* ── 커밋 SHA 조회 (트래픽 절감) ───────────────────────────────
-     예전: 페이지를 열 때마다 /commits/<branch> 를 불렀다. 이 응답엔 그 커밋에서
-     바뀐 파일의 diff 가 통째로 실려 있어 한 번에 수 KB~수십 KB 다. 우리가 필요한
-     건 40자짜리 SHA 하나뿐인데 그 값 하나 얻자고 매번 그만큼을 받아왔다.
-     지금: SHA 만 들어 있는 /git/ref/heads/<branch>(수백 바이트) 를 쓰고, 받은
-     SHA 를 이 탭 안에서 60초 동안 재사용한다. 방문자가 여러 페이지를 둘러봐도
-     조회는 사실상 1회. 60초라 배포 직후 새로고침 검증에는 지장이 없다. */
-  var SHA_KEY = 'helix.sha.' + BRANCH;
-  var SHA_TTL = 60000;
-
-  function resolveSha(done, fail) {
-    try {
-      var c = JSON.parse(sessionStorage.getItem(SHA_KEY) || 'null');
-      if (c && c.sha && (Date.now() - c.t) < SHA_TTL) { done(c.sha); return; }
-    } catch (e) {}
-    var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO +
-              '/git/ref/heads/' + BRANCH + '?t=' + Math.floor(Date.now() / 60000);
-    fetch(api, { headers: { 'Accept': 'application/vnd.github+json' }, cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function (d) {
-        var sha = ((d.object && d.object.sha) || d.sha || '').substring(0, 40);
-        if (!sha) throw new Error('no sha in response');
-        try { sessionStorage.setItem(SHA_KEY, JSON.stringify({ sha: sha, t: Date.now() })); } catch (e) {}
-        done(sha);
-      })
-      .catch(fail);
+    FILES.forEach(function (path) { loadFile(path, ref); });
   }
 
   /* Load ScrollTrigger plugin for GSAP animations */
@@ -351,23 +291,8 @@
     if (window.gsap && window.gsap.registerPlugin) {
       window.gsap.registerPlugin(ScrollTrigger);
     }
-  }, null, true);
+  });
 
-  /* 진입점(bootstrap-v3.js)이 이미 최신 SHA 를 알아내 넘겨줬으면 재사용
-     → GitHub API 중복 호출 제거 (rate limit 보호) */
-  var refFromEntry = window.__helixCommitSha || window.__helixHomeBootstrapRef;
-  if (refFromEntry) {
-    var shaFromEntry = /^[0-9a-f]{7,40}$/i.test(refFromEntry) ? refFromEntry.substring(0, 40) : BRANCH;
-    console.log('[helix-bootstrap] reusing ref from entry:', shaFromEntry);
-    injectAll(shaFromEntry);
-  } else {
-    resolveSha(function (sha) {
-      console.log('[helix-bootstrap] loading commit', sha);
-      injectAll(sha);
-    }, function (err) {
-      console.warn('[helix-bootstrap] SHA 조회 실패, @' + BRANCH + ' 로 폴백', err);
-      injectAll(BRANCH);
-    });
-  }
+  injectAll(releaseRef);
 })();
 

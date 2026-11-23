@@ -79,110 +79,11 @@
     return s.display !== 'none' && s.visibility !== 'hidden';
   }
 
-  /* ============================================================
-     initSectionsOnce: 섹션 2-4 공통 초기화 (1회만 실행)
-
-     데스크/모바일 듀얼 섹션 구조 대응:
-     - 동일 클래스(.section2-heading, .bt-box-3, .home_background_svicc,
-       .home_branch-card)가 데스크용·모바일용 섹션에 각각 존재
-     - 각 헤딩/카드 컨테이너를 순회하며 자기 섹션 안의 짝(버튼/SVICC)을
-       찾아 self-contained 트리거 생성 → 숨겨진 섹션은 스킵
-  ============================================================ */
-  function initSectionsOnce() {
-    if (initialized) return true;
-    if (typeof gsap === 'undefined' || !window.ScrollTrigger) {
-      log('GSAP or ScrollTrigger not ready');
-      return false;
-    }
-
-    try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
-
-    var headings = document.querySelectorAll('.section2-heading');
-    /* Webflow 컴포넌트 재작성 후 전용 클래스가 없어져도
-       현재 섹션의 .home_title을 기준으로 버튼 페이드/글로우 시퀀스 유지. */
-    if (!headings.length) {
-      headings = document.querySelectorAll(
-        '.home_background_2 .home_title, ' +
-        '.home_background_3 .home_title, ' +
-        '.home_background_3-mobile .home_title'
-      );
-      log('headings fallback to .home_title:', headings.length);
-    }
-    log('headings found:', headings.length);
-
-    /* ──────────────────────────────────────────────────────────
-       헤딩 + 짝꿍 버튼 페어링 (엇박 0.15s)
-       - 첫 번째 .section2-heading 은 섹션 2 → .bt-box-2 와 페어
-       - 그 외(.section2-heading × N) 는 섹션 3 변주 → 각자 같은 section
-         조상 안의 .bt-box-3 와 페어
-       - display:none 섹션은 스킵
-    ────────────────────────────────────────────────────────── */
-    headings.forEach(function (heading, idx) {
-      if (!isVisible(heading)) {
-        log('heading[' + idx + '] hidden, skip');
-        return;
-      }
-
-      var section = heading.closest('section') || heading.parentElement;
-      var btnSelector = (idx === 0) ? '.bt-box-2' : '.bt-box-3';
-      var btn = section ? section.querySelector(btnSelector) : null;
-      if (btn && !isVisible(btn)) btn = null;
-
-      ScrollTrigger.create({
-        trigger: heading,
-        start: 'top 65%',
-        once: true,
-        onEnter: function () {
-          gsap.to(heading, { opacity: 1, duration: 0.7, ease: 'power2.out' });
-
-          if (btn && !btn.classList.contains('is-looping')) {
-            btn.style.setProperty('box-shadow', maxGlowBlue(), 'important');
-            gsap.to(btn, {
-              opacity: 1,
-              duration: 0.4,
-              ease: 'power2.out',
-              delay: 0.15,
-              onComplete: function () {
-                setTimeout(function () {
-                  btn.style.removeProperty('box-shadow');
-                  btn.classList.add('is-looping');
-                }, 1500);
-              }
-            });
-          }
-          log('heading[' + idx + '] + ' + btnSelector + ' fade-in (btn=' + !!btn + ')');
-        }
-      });
-    });
-
-    /* ──────────────────────────────────────────────────────────
-       .official-font_title — 극단적 ease-in 페이드 + 스케일 인
-       expo.in: 초반엔 거의 변화 없다가 후반에 폭발적으로 나타남
-    ────────────────────────────────────────────────────────── */
-    document.querySelectorAll('.official-font_title').forEach(function (title) {
-      if (!isVisible(title)) return;
-      ScrollTrigger.create({
-        trigger: title,
-        start: 'top 80%',
-        once: true,
-        onEnter: function () {
-          gsap.to(title, {
-            opacity: 1,
-            scale: 1,
-            duration: 1.1,
-            ease: 'expo.in'
-          });
-          log('official-font_title fade+scale in');
-        }
-      });
-    });
-
-    /* ──────────────────────────────────────────────────────────
-       섹션 4 카드 스태거 + SVICC 슬라이드 인
-       - .home_branch-card 가 들어있는 section 마다 독립 timeline
-       - 각 섹션 내부 카드 + 그 섹션의 .home_background_svicc 페어
-       - 데스크용·모바일용 섹션 각자 자기 트리거로 발동, 숨겨진 쪽 스킵
-    ────────────────────────────────────────────────────────── */
+  /* Cards have a separate lifecycle: a hidden device-specific section is
+     initialized on first exposure, without replaying headings/glow/listeners. */
+  var initializedCardSections = new WeakSet();
+  function initCardSections() {
+    if (!window.gsap || !window.ScrollTrigger) return;
     var cardSections = new Set();
     document.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151').forEach(function (card) {
       var sec = card.closest('section');
@@ -191,14 +92,16 @@
 
     var sec4Count = 0;
     cardSections.forEach(function (section) {
-      if (!isVisible(section)) {
+      if (!section.getClientRects().length || !isVisible(section)) {
         log('card section hidden, skip');
         return;
       }
+      if (initializedCardSections.has(section)) return;
       sec4Count++;
 
       var cards = section.querySelectorAll('.home_branch-card, .flex-block-22 > .div-block-151');
       if (!cards.length) return;
+      initializedCardSections.add(section);
 
       var cardContainer = section.querySelector('.flex-block-22') ||
                           section.querySelector('.flex-block-23') ||
@@ -273,6 +176,136 @@
       log('desktop sec4 timeline: cards=' + cards.length + ' svicc=' + !!svicc);
     });
     log('total visible card sections: ' + sec4Count);
+  }
+
+  /* Heading pairs initialize on first layout exposure. Pending hidden triggers
+     are retired; pairs that actually started keep the original once-only sequence. */
+  var headingStates = new WeakMap();
+  function initHeadingPairs() {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    var headings = document.querySelectorAll('.section2-heading');
+    /* Webflow 컴포넌트 재작성 후 전용 클래스가 없어져도
+       현재 섹션의 .home_title을 기준으로 버튼 페이드/글로우 시퀀스 유지. */
+    if (!headings.length) {
+      headings = document.querySelectorAll(
+        '.home_background_2 .home_title, ' +
+        '.home_background_3 .home_title, ' +
+        '.home_background_3-mobile .home_title'
+      );
+      log('headings fallback to .home_title:', headings.length);
+    }
+    log('headings found:', headings.length);
+
+    /* ──────────────────────────────────────────────────────────
+       헤딩 + 짝꿍 버튼 페어링 (엇박 0.15s)
+       - 각 heading은 자기 section의 .bt-box-2 또는 .bt-box-3 와 페어
+       - 숨은 복제 section의 DOM 순번은 다른 section의 버튼을 결정하지 않음
+       - display:none 섹션은 스킵
+    ────────────────────────────────────────────────────────── */
+    headings.forEach(function (heading, idx) {
+      var state = headingStates.get(heading);
+      if (!heading.getClientRects().length || !isVisible(heading)) {
+        if (state && !state.started) {
+          if (state.trigger) state.trigger.kill();
+          headingStates.delete(heading);
+        }
+        log('heading[' + idx + '] hidden, skip');
+        return;
+      }
+
+      if (state) return;
+
+      var section = heading.closest('section') || heading.parentElement;
+      var btnSelector = section && section.querySelector('.bt-box-2') ? '.bt-box-2' : '.bt-box-3';
+      var btn = section ? section.querySelector(btnSelector) : null;
+      if (btn && !isVisible(btn)) btn = null;
+
+      state = { started: false, trigger: null };
+      headingStates.set(heading, state);
+      state.trigger = ScrollTrigger.create({
+        trigger: heading,
+        start: 'top 65%',
+        once: true,
+        onEnter: function () {
+          if (!heading.getClientRects().length) {
+            if (state.trigger) state.trigger.kill();
+            headingStates.delete(heading);
+            return;
+          }
+          state.started = true;
+          gsap.to(heading, { opacity: 1, duration: 0.7, ease: 'power2.out' });
+
+          if (btn && !btn.classList.contains('is-looping')) {
+            btn.style.setProperty('box-shadow', maxGlowBlue(), 'important');
+            gsap.to(btn, {
+              opacity: 1,
+              duration: 0.4,
+              ease: 'power2.out',
+              delay: 0.15,
+              onComplete: function () {
+                setTimeout(function () {
+                  btn.style.removeProperty('box-shadow');
+                  btn.classList.add('is-looping');
+                }, 1500);
+              }
+            });
+          }
+          log('heading[' + idx + '] + ' + btnSelector + ' fade-in (btn=' + !!btn + ')');
+        }
+      });
+    });
+
+  }
+
+  /* ============================================================
+     initSectionsOnce: 섹션 2-4 공통 초기화 (1회만 실행)
+
+     데스크/모바일 듀얼 섹션 구조 대응:
+     - 동일 클래스(.section2-heading, .bt-box-3, .home_background_svicc,
+       .home_branch-card)가 데스크용·모바일용 섹션에 각각 존재
+     - 각 헤딩/카드 컨테이너를 순회하며 자기 섹션 안의 짝(버튼/SVICC)을
+       찾아 self-contained 트리거 생성 → 숨겨진 섹션은 스킵
+  ============================================================ */
+  function initSectionsOnce() {
+    if (initialized) return true;
+    if (typeof gsap === 'undefined' || !window.ScrollTrigger) {
+      log('GSAP or ScrollTrigger not ready');
+      return false;
+    }
+
+    try { gsap.registerPlugin(ScrollTrigger); } catch (e) {}
+
+    initHeadingPairs();
+
+    /* ──────────────────────────────────────────────────────────
+       .official-font_title — 극단적 ease-in 페이드 + 스케일 인
+       expo.in: 초반엔 거의 변화 없다가 후반에 폭발적으로 나타남
+    ────────────────────────────────────────────────────────── */
+    document.querySelectorAll('.official-font_title').forEach(function (title) {
+      if (!isVisible(title)) return;
+      ScrollTrigger.create({
+        trigger: title,
+        start: 'top 80%',
+        once: true,
+        onEnter: function () {
+          gsap.to(title, {
+            opacity: 1,
+            scale: 1,
+            duration: 1.1,
+            ease: 'expo.in'
+          });
+          log('official-font_title fade+scale in');
+        }
+      });
+    });
+
+    /* ──────────────────────────────────────────────────────────
+       섹션 4 카드 스태거 + SVICC 슬라이드 인
+       - .home_branch-card 가 들어있는 section 마다 독립 timeline
+       - 각 섹션 내부 카드 + 그 섹션의 .home_background_svicc 페어
+       - 데스크용·모바일용 섹션 각자 자기 트리거로 발동, 숨겨진 쪽 스킵
+    ────────────────────────────────────────────────────────── */
+    initCardSections();
 
     /* ──────────────────────────────────────────────────────────
        5. 복사 버튼 (.copy-text-button)
@@ -646,14 +679,18 @@
     if (zigInitialized) return;
     if (!window.gsap || !window.ScrollTrigger) return;
 
-    /* 필요 요소 탐색 — 보이는 sec3 헤딩 중 첫 번째 픽업
-       (데스크/모바일 듀얼 구조에서 인덱스 의존 제거) */
-    var btn1     = document.querySelector('.discover-helix_button');
+    /* The line ends in sec3, independently of other sections' heading order.
+       Layout rects exclude headings inside a hidden device-specific copy. */
+    var btn1     = document.querySelector('.bt-box-1 .discover-helix_button');
     var btn2     = document.querySelector('.bt-box-2');
-    var headings = document.querySelectorAll('.section2-heading');
+    var headings = document.querySelectorAll(
+      '.home_background_3 .section2-heading, .home_background_3-mobile .section2-heading'
+    );
     var sec3Head = null;
-    for (var i = 1; i < headings.length; i++) {
-      if (isVisible(headings[i])) { sec3Head = headings[i]; break; }
+    for (var i = 0; i < headings.length; i++) {
+      if (headings[i].getClientRects().length && isVisible(headings[i])) {
+        sec3Head = headings[i]; break;
+      }
     }
 
     /* 모바일은 btn1(hero) 의존 없이 btn2 + sec3Head 만 있으면 됨 */
@@ -685,17 +722,16 @@
         if (isRenderedMobile(allBtn2[bi])) { mBtn2 = allBtn2[bi]; break; }
       }
 
-      var mSec3 = null, visCount = 0;
+      var mSec3 = null;
       for (var hi = 0; hi < headings.length; hi++) {
         if (isRenderedMobile(headings[hi])) {
-          visCount++;
-          if (visCount === 2) { mSec3 = headings[hi]; break; }
+          mSec3 = headings[hi]; break;
         }
       }
 
       if (!mBtn2 || !mSec3) {
         log('mZig: visible pick failed mBtn2=' + !!mBtn2 +
-            ' mSec3=' + !!mSec3 + ' visCount=' + visCount + ' → skip');
+            ' mSec3=' + !!mSec3 + ' sec3Candidates=' + headings.length + ' → skip');
         return;
       }
       initSimpleVerticalLine(mBtn2, mSec3);
@@ -956,6 +992,7 @@
   /* section1.js DOM 복원 완료 → ScrollTrigger 위치 재측정 + 지그 라인 초기화 */
   window.addEventListener('helix-s1-done', function () {
     setTimeout(function () {
+      initHeadingPairs();
       if (window.ScrollTrigger && ScrollTrigger.refresh) {
         ScrollTrigger.refresh();
         log('ScrollTrigger refreshed after helix-s1-done');
@@ -967,6 +1004,7 @@
   /* 폴백: section1이 없어도 load 후 1.5초 뒤 강제 refresh + 지그 라인 초기화 */
   window.addEventListener('load', function () {
     setTimeout(function () {
+      initHeadingPairs();
       if (window.ScrollTrigger && ScrollTrigger.refresh) {
         ScrollTrigger.refresh();
         log('ScrollTrigger refreshed (fallback)');
@@ -994,6 +1032,8 @@
     if (zigResizeT) clearTimeout(zigResizeT);
     zigResizeT = setTimeout(function () {
       log('resize → zig relayout');
+      initHeadingPairs();
+      initCardSections();
       cleanupZig();
       initZigLine();
       if (window.ScrollTrigger && ScrollTrigger.refresh) ScrollTrigger.refresh();

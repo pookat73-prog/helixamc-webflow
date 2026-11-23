@@ -1,19 +1,23 @@
-/* ================================================================
-   HELIX AMC — 공통 UI 보완 로더
-   페이지별 로더가 연결하지 않은 공통 기능만 같은 커밋에서 불러온다.
-   사이트 footer가 immutable SHA 주소로 연결하며 본문은 변경하지 않는다.
-   ================================================================ */
+/* HELIX AMC — fixed release loader for global/bootstrap.js. */
+
 (function () {
   'use strict';
+
+  var releaseEntry = document.currentScript && document.currentScript.src || '';
+  var releaseRoot = "https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@";
+  var releaseRef = releaseEntry.slice(releaseRoot.length, releaseRoot.length + 40);
+  var releasePath = releaseEntry.split(/[?#]/, 1)[0];
+  if (!/^[0-9a-f]{40}$/.test(releaseRef) ||
+      releasePath !== releaseRoot + releaseRef + "/global/bootstrap.js") {
+    console.warn('[helix-bootstrap] expected a fixed release URL:', "global/bootstrap.js");
+    return;
+  }
 
   // Doctor URLs intentionally render the existing full-screen history modal.
   if (window.self !== window.top || /^\/doctors\//.test(location.pathname) || window.__helixSharedUiInit) return;
   window.__helixSharedUiInit = true;
 
-  var BRANCH = /\.webflow\.io$/i.test(location.hostname) ? 'staging' : 'main';
   var ROOT = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@';
-  var source = document.currentScript && document.currentScript.src || '';
-  var match = source.match(/@([0-9a-f]{10,40})\/global\/bootstrap\.js(?:[?#]|$)/i);
   var FILES = [
     'global/viewport-fix.js',
     'global/viewport.js',
@@ -43,6 +47,21 @@
     'home/global/hamburger.js': '__helixHamburgerInit',
     'home/global/footer.js': '__HELIX_FOOTER_INIT__'
   };
+
+  // Page loaders own their tags. Remember only failed menu CSS URLs before
+  // load; a reused link owns its new URL and successful loads clear the failure.
+  var failedMenuUrls = new WeakMap();
+  function rememberMenuResult(event) {
+    var el = event.target;
+    var url = el && (el.src || el.href) || '';
+    if (typeof url === 'string' && url.indexOf('/helixamc-webflow@') !== -1 &&
+        /\/home\/global\/hamburger\.css(?:[?#]|$)/.test(url)) {
+      if (event.type === 'load') failedMenuUrls.delete(el);
+      else failedMenuUrls.set(el, url);
+    }
+  }
+  document.addEventListener('error', rememberMenuResult, true);
+  document.addEventListener('load', rememberMenuResult, true);
 
   /* Imaging click coverage lives in the already-loaded shared entry, independent
      of motion preferences. One page-specific record per action; the existing
@@ -130,12 +149,21 @@
     scrollToTop();
   }, true);
 
-  function present(path) {
+  function present(path, pendingOwner) {
     if (guards[path] && window[guards[path]]) return true;
     // Match the repository path across revisions, including in-flight page loads.
     return Array.prototype.some.call(document.querySelectorAll('script[src],link[rel="stylesheet"][href]'), function (el) {
       var url = el.src || el.href;
-      return url.indexOf('/helixamc-webflow@') !== -1 && url.split(/[?#]/)[0].endsWith('/' + path);
+      if (failedMenuUrls.get(el) === url) return false;
+      if (path === 'home/global/hamburger.css' &&
+          el.getAttribute('data-helix-menu-css-error') === url) return false;
+      // The services producer records its own native error before this entry
+      // can observe it. Pending/successful tags and other modules still own them.
+      if (path === 'home/global/hamburger.js' &&
+          el.getAttribute('data-helix-menu-js-error') === url) return false;
+      var ownsPath = url.indexOf('/helixamc-webflow@') !== -1 && url.split(/[?#]/)[0].endsWith('/' + path);
+      if (ownsPath && pendingOwner) pendingOwner(el, url);
+      return ownsPath;
     });
   }
 
@@ -238,31 +266,57 @@
     document.documentElement.classList.add('hx-fcta-mobile-bar');
     document.documentElement.classList.remove('hx-fcta-mobile-only');
     FILES.forEach(function (path) {
-      if (present(path)) return;
-      var css = /\.css$/.test(path);
-      var el = document.createElement(css ? 'link' : 'script');
-      if (css) { el.rel = 'stylesheet'; el.href = ROOT + ref + '/' + path; }
-      else { el.src = ROOT + ref + '/' + path; el.async = false; }
-      el.setAttribute('data-helix-shared-ui', '');
-      el.onerror = function () {
-        // A failed request must not block a later retry or replace page modules.
-        el.remove();
-        console.warn('[shared-ui] load failed:', path);
-      };
-      document.head.appendChild(el);
+      var failures = 0;
+      var retryMenu = path === 'home/global/hamburger.css' || path === 'home/global/hamburger.js';
+      function pendingOwner(el, url) {
+        // A late page/API response can leave a producer request pending after
+        // window.load. Its native result, not tag presence, decides handoff.
+        if (el.hasAttribute('data-helix-shared-ui')) return;
+        // A reused failed link can retain an empty .sheet while its retry is
+        // pending. Watch its native result; .sheet alone is not success.
+        function finished(event) {
+          el.removeEventListener('load', finished);
+          el.removeEventListener('error', finished);
+          if (event.type === 'load') return;
+          failedMenuUrls.set(el, url);
+          // The producer gets first choice of its bounded retry. Re-discover
+          // that owner before supplying a missing asset from this revision.
+          loadMissing();
+        }
+        el.addEventListener('load', finished);
+        el.addEventListener('error', finished);
+      }
+      function loadMissing() {
+        // A page loader may have supplied this path while our request failed.
+        if (present(path, retryMenu ? pendingOwner : null)) return;
+        var css = /\.css$/.test(path);
+        var el = document.createElement(css ? 'link' : 'script');
+        if (css) { el.rel = 'stylesheet'; el.href = ROOT + ref + '/' + path; }
+        else { el.src = ROOT + ref + '/' + path; el.async = false; }
+        el.setAttribute('data-helix-shared-ui', '');
+        el.onerror = function () {
+          el.remove();
+          console.warn('[shared-ui] load failed:', path);
+          // Only this verified menu pair retries. Other module recovery policies
+          // (especially viewport correction) keep their existing behavior.
+          if (++failures === 1 && retryMenu) setTimeout(loadMissing, 500);
+        };
+        document.head.appendChild(el);
+      }
+      loadMissing();
     });
   }
 
   function boot() {
-    if (match) { inject(match[1]); return; }
-    fetch('https://api.github.com/repos/pookat73-prog/helixamc-webflow/git/ref/heads/' + BRANCH,
-      { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
-      .then(function (r) { if (!r.ok) throw new Error('UI revision unavailable'); return r.json(); })
-      .then(function (data) { inject(data.object && data.object.sha); })
-      .catch(function (error) { console.warn('[shared-ui]', error); });
+    document.removeEventListener('error', rememberMenuResult, true);
+    document.removeEventListener('load', rememberMenuResult, true);
+    inject(releaseRef);
   }
 
   // Give page loaders first choice of their modules; complete only missing UI.
-  if (document.readyState === 'complete') boot();
+  if (window.__helixSiteMeasurementOwns) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+    else boot();
+  } else if (document.readyState === 'complete') boot();
   else window.addEventListener('load', boot, { once: true });
 })();

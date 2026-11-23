@@ -506,8 +506,16 @@
         (자세한 설명은 global/session.js 머리말) */
   /* 전화 추적과 동일한 세션 UTM 을 상담 측정에서도 사용 */
   function getAttributionUtm() {
-    if (typeof window.__helixReadFloatingCtaUtm === 'function') {
-      return window.__helixReadFloatingCtaUtm();
+    try {
+      if (typeof window.__helixReadFloatingCtaUtm === 'function') {
+        var tracked = window.__helixReadFloatingCtaUtm();
+        if (tracked && typeof tracked === 'object') return {
+          utm_source: tracked.utm_source || '', utm_medium: tracked.utm_medium || '',
+          utm_campaign: tracked.utm_campaign || '', utm_content: tracked.utm_content || ''
+        };
+      }
+    } catch (_) {
+      // Attribution is optional for saving a reservation.
     }
     var result = { utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '' };
     var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];

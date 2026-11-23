@@ -170,17 +170,22 @@
   var MENU_PAGE = menuPage();
 
   function ga(eventName, params) {
-    if (typeof window.gtag === 'function') {
-      var p = params || {};
-      p.page = MENU_PAGE;
-      /* 메뉴 링크(menu_nav_click / vet_chart_click 등)는 누르는 즉시 페이지가
-         넘어간다. 전송 방식을 안 정해두면 브라우저가 기록을 다 보내기 전에
-         페이지를 버려서 클릭이 통째로 사라질 수 있다 — 특히 수의사용 웹차트
-         같은 외부 이동. beacon 은 페이지가 사라져도 발송을 마치도록 보장한다.
-         (menu_open/menu_close 는 이동이 없어 굳이 필요치 않지만, 같은 통로를
-          쓰므로 함께 지정해도 무해하다.) */
-      p.transport_type = 'beacon';
-      window.gtag('event', eventName, p);
+    if (window.__helixNoMeasure || /\.webflow\.io$/i.test(location.hostname) || window.self !== window.top) return;
+    try {
+      if (typeof window.gtag === 'function') {
+        var p = params || {};
+        p.page = MENU_PAGE;
+        /* 메뉴 링크(menu_nav_click / vet_chart_click 등)는 누르는 즉시 페이지가
+           넘어간다. 전송 방식을 안 정해두면 브라우저가 기록을 다 보내기 전에
+           페이지를 버려서 클릭이 통째로 사라질 수 있다 — 특히 수의사용 웹차트
+           같은 외부 이동. beacon 은 페이지가 사라져도 발송을 마치도록 보장한다.
+           (menu_open/menu_close 는 이동이 없어 굳이 필요치 않지만, 같은 통로를
+            쓰므로 함께 지정해도 무해하다.) */
+        p.transport_type = 'beacon';
+        window.gtag('event', eventName, p);
+      }
+    } catch (_) {
+      // Measurement cannot interrupt menu interaction or scroll restoration.
     }
   }
 
@@ -190,6 +195,23 @@
        클릭이 열림→닫힘으로 상쇄돼 "안 열리는" 것처럼 보임. 한 번만 실행. */
     if (window.__helixHamburgerInit) return;
     window.__helixHamburgerInit = true;
+    window.__helixHamburgerReady = false;
+
+    /* Owning initialization is not completion. A failed/pending GSAP resource
+       must not leave partial DOM or permanently poison the existing guard. */
+    if (!window.gsap) {
+      var onDependencyLoad = function () {
+        if (!window.gsap) return;
+        document.removeEventListener('load', onDependencyLoad, true);
+        initializeMenu();
+      };
+      document.addEventListener('load', onDependencyLoad, true);
+      return;
+    }
+    initializeMenu();
+  }
+
+  function initializeMenu() {
 
     /* 백드롭 주입 */
     var backdrop = document.createElement('div');
@@ -250,6 +272,7 @@
       backdrop.classList.add('is-open');
       closeBtn.classList.add('is-visible');
       document.body.classList.add('hx-menu-open');
+      document.documentElement.classList.add('hx-menu-open');
 
       /* 이전에 클릭한 링크 활성 복원 */
       if (activeEl) activeEl.classList.add('is-active');
@@ -272,6 +295,7 @@
       setBurgerExpanded(false);
       ga('menu_close', { method: reason || 'unknown' });
       document.body.classList.remove('hx-menu-open');
+      document.documentElement.classList.remove('hx-menu-open');
       closeBtn.classList.remove('is-visible');
       gsap.to(overlay, {
         x: '100%',
@@ -382,6 +406,7 @@
     window.addEventListener('resize', function () {
       if (isOpen) positionOverlay(overlay);
     });
+    window.__helixHamburgerReady = true;
   }
 
   if (document.readyState === 'loading') {
