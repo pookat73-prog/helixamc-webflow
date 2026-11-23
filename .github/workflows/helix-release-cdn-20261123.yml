@@ -259,6 +259,7 @@ jobs:
             assert.equal(home.status,200,'Published stage HTML');
             const homeHtml=home.body.toString('utf8');
             const actual=homeHtml.includes('data-helix-gsap-nonblocking');
+            assert.equal(actual, true, 'The verified settings are required in published staging HTML');
             const routes=actual?Object.keys(targets):['/'];
             for(const route of routes) {
               const document=route==='/'?home:await retrieve(stage+route);
