@@ -1,0 +1,87 @@
+name: HELIX fixed release CDN verification
+'on':
+  push:
+    branches:
+      - release/helix-structure-20261123
+    paths:
+      - .github/workflows/helix-release-cdn-20261123.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    name: CDN verification (${{ matrix.group }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: home
+            ref: '35344a8f223af8bd8e9854b303b4f0e3d5598bfc'
+            files: 44
+            roster: '82cacc01bae406b320f0113eb1f3aeba2ebe3c2e5aafc20f9d923ba1177229a4'
+          - group: about-faq-medicine
+            ref: '4583bdf79d9c1b2416108a6ba9e2c05b23e5a404'
+            files: 57
+            roster: '3ff9be17b0a88a130118995c4fac8c2832d352da33f5ef7600d456674f8bfaae'
+          - group: services
+            ref: '513ebab7e70339eb5c35f4b6c303e583f0d84875'
+            files: 35
+            roster: 'c83d9845512f5573e2d1e1bb00d46bacec65a69d9594caa87cb11fa3e3906418'
+    env:
+      RELEASE_SHA: ${{ matrix.ref }}
+      FILE_COUNT: ${{ matrix.files }}
+      ROSTER_SHA: ${{ matrix.roster }}
+    steps:
+      - name: Match public CDN bytes to the reviewed release
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REPOSITORY" == 'pookat73-prog/helixamc-webflow' && "$GITHUB_REF" == 'refs/heads/release/helix-structure-20261123' ]]
+          [[ "$GITHUB_SHA" =~ ^[a-f0-9]{40}$ && "$RELEASE_SHA" =~ ^[a-f0-9]{40}$ && "$ROSTER_SHA" =~ ^[a-f0-9]{64}$ ]]
+          work=$(mktemp -d)
+          git -C "$work" init -q
+          git -C "$work" fetch --no-tags --depth=4 'https://github.com/pookat73-prog/helixamc-webflow.git' "$GITHUB_SHA"
+          git -C "$work" merge-base --is-ancestor "$RELEASE_SHA" "$GITHUB_SHA"
+          git -C "$work" ls-tree -r --name-only -z "$RELEASE_SHA" > "$work/paths"
+          : > "$work/roster"
+          while IFS= read -r -d '' path; do
+            if [[ ! "$path" =~ ^(about|faq|global|home|internal-medicine|services|seo-snippets)/[a-zA-Z0-9_./-]+\.(js|css|html|svg|png|webp|mp4)$ ]]; then
+              printf 'RELEASE_FAIL unapproved path\n'
+              exit 1
+            fi
+            git -C "$work" cat-file blob "$RELEASE_SHA:$path" > "$work/original"
+            read -r expected _ < <(sha256sum "$work/original")
+            printf '%s\t%s\n' "$path" "$expected" >> "$work/roster"
+          done < "$work/paths"
+          LC_ALL=C sort -o "$work/roster" "$work/roster"
+          read -r roster _ < <(sha256sum "$work/roster")
+          [[ "$roster" == "$ROSTER_SHA" && "$(wc -l < "$work/roster")" -eq "$FILE_COUNT" ]]
+          files=0
+          while IFS=$'\t' read -r path expected; do
+            url="https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@$RELEASE_SHA/$path"
+            if status=$(curl --proto '=https' --connect-timeout 10 --max-time 90 --silent --show-error --output "$work/cdn" --write-out '%{http_code}' -- "$url"); then
+              case "$status" in
+                200) ;;
+                404) printf 'CDN_FAIL file-missing HTTP 404 %s\n' "$path"; exit 1 ;;
+                *) printf 'CDN_FAIL HTTP %s %s\n' "$status" "$path"; exit 1 ;;
+              esac
+            else
+              code=$?
+              case "$code" in
+                6) printf 'CDN_FAIL DNS curl=6 %s\n' "$path" ;;
+                *) printf 'CDN_FAIL transport curl=%s %s\n' "$code" "$path" ;;
+              esac
+              exit 1
+            fi
+            read -r actual _ < <(sha256sum "$work/cdn")
+            git -C "$work" cat-file blob "$RELEASE_SHA:$path" > "$work/original"
+            if [[ "$actual" != "$expected" ]] || ! cmp -s "$work/cdn" "$work/original"; then
+              printf 'CDN_FAIL SHA-256 expected=%s actual=%s %s\n' "$expected" "$actual" "$path"
+              exit 1
+            fi
+            printf 'CDN_OK %s %s\n' "$actual" "$path"
+            ((files += 1))
+          done < "$work/roster"
+          [[ "$files" -eq "$FILE_COUNT" ]]
+          printf 'CDN_PASS %s %s %s\n' "$RELEASE_SHA" "$files" "$ROSTER_SHA"
