@@ -495,6 +495,21 @@
 
 .hx-fcta-form__input.is-invalid { border-color: var(--hx-red); }
 
+/* 010 은 입력값 밖에 두어 전체 삭제·수정 시에도 고정으로 표시한다. */
+.hx-fcta-form__phone { position: relative; }
+.hx-fcta-form__row .hx-fcta-form__group--phone { flex: 1.5; }
+.hx-fcta-form__phone-prefix {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  color: var(--hx-ink);
+  pointer-events: none;
+}
+.hx-fcta-form__phone .hx-fcta-form__input { padding-left: 52px; }
+
 /* 칸 아래 빨간 안내문 — 평소엔 자리를 차지하지 않는다 */
 .hx-fcta-form__error {
   display: none;
