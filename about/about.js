@@ -1,0 +1,2813 @@
+/* ================================================================
+   HELIX AMC - ABOUT PAGE JS
+   ================================================================
+   시퀀스:
+   - 0ms          초기 (헤드/서브헤드/심볼/배경 비디오 모두 opacity:0)
+   - +200ms       헤드 fade-in (1.0s)
+   - +1200ms      심볼 + 서브헤드 fade-in (1.0s)
+   - +2200ms      배경 비디오 fade-in (1.2s)
+
+   배경 비디오는 Webflow 가 아닌 코드로 .About_Background 안에 주입.
+   ================================================================ */
+
+(function () {
+  'use strict';
+
+  /* ── 헤더/햄버거/coming-soon 공유 모듈 동적 로드 ──
+     about/bootstrap.js 가 jsDelivr @main 에 stale 캐시될 때를 대비해
+     window.HELIX_REF (약식 SHA) 기준으로 약식 inject. 이미 로드된 경우 스킵. */
+  (function injectSharedModules() {
+    var ref = window.HELIX_REF || 'main';
+    /* @<SHA> 는 불변이라 버스터 불필요 — 붙이면 1분마다 주소가 새것이 돼
+       브라우저 캐시가 무효화된다. @branch 폴백일 때만 붙인다. */
+    var t   = /^[0-9a-f]{7,40}$/i.test(ref) ? '' : ('?t=' + Math.floor(Date.now() / 60000));
+    var BASE = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/';
+    var assets = [
+      { type: 'css', path: 'global/global.css' },
+      { type: 'css', path: 'home/global/hamburger.css' },
+      { type: 'css', path: 'home/global/coming-soon.css' },
+      { type: 'js',  path: 'home/global/coming-soon.js' },
+      { type: 'js',  path: 'home/global/hamburger.js' },
+      /* 인증 카드 "+" 상세보기 모달 — about/bootstrap.js@main 이 stale 캐시거나
+         FILES 에 등록 안 됐을 때 폴백 로딩 (main 미적용 환경에서도 staging 테스트
+         가능하게). 이미 로드돼 있으면 querySelector 가드로 스킵. */
+      { type: 'css', path: 'about/cert-modal/modal.css' },
+      { type: 'js',  path: 'about/cert-modal/modal.js' }
+    ];
+    assets.forEach(function (a) {
+      var url = BASE + a.path + t;
+      var sel = a.type === 'css'
+        ? 'link[href*="' + a.path + '"]'
+        : 'script[src*="' + a.path + '"]';
+      if (document.querySelector(sel)) return;
+      var el;
+      if (a.type === 'css') {
+        el = document.createElement('link');
+        el.rel = 'stylesheet';
+        el.href = url;
+      } else {
+        el = document.createElement('script');
+        el.src = url;
+        el.async = false;
+      }
+      document.head.appendChild(el);
+    });
+  })();
+
+  var HERO_FONT = 'ds-endendend';
+  var BG_PARENT_SELECTOR = '.About_Background, .about_background, .about-background';
+  var BG_VIDEO_PATH = 'about/bg-video.mp4';
+  var DEBUG = /[?&]debug-about=1/.test(location.search);
+  var t0 = performance.now();
+
+  function log() {
+    if (!DEBUG) return;
+    var args = ['[About +' + Math.round(performance.now() - t0) + 'ms]'];
+    for (var i = 0; i < arguments.length; i++) args.push(arguments[i]);
+    console.log.apply(console, args);
+  }
+
+  /* width-metric 기반 폰트 로드 감지 (FontFaceObserver 전통 기법).
+     document.fonts API 가 신뢰할 수 없을 때의 ground-truth.
+     같은 글자를 두 span 에 그리고 한쪽은 monospace 만, 다른쪽은 타겟 family + monospace 로
+     렌더 → 두 너비가 달라지는 순간이 타겟 폰트 실제 적용 시점. */
+  function waitFontByMetric(family, weight, style, timeout) {
+    return new Promise(function (resolve) {
+      if (!family || !document.body) { resolve(false); return; }
+      var TEST = 'BESbswy';
+      var common = 'position:absolute;left:-9999px;top:-9999px;visibility:hidden;font-size:200px;line-height:1;white-space:pre;margin:0;padding:0;';
+      var fb = document.createElement('span');
+      var tgt = document.createElement('span');
+      fb.textContent = TEST; tgt.textContent = TEST;
+      fb.style.cssText  = common + 'font-family:monospace;font-weight:' + weight + ';font-style:' + style + ';';
+      tgt.style.cssText = common + 'font-family:"' + family + '",monospace;font-weight:' + weight + ';font-style:' + style + ';';
+      document.body.appendChild(fb);
+      document.body.appendChild(tgt);
+      var t0 = performance.now();
+      var done = false;
+      function cleanup() {
+        try { document.body.removeChild(fb); } catch (e) {}
+        try { document.body.removeChild(tgt); } catch (e) {}
+      }
+      function tick() {
+        if (done) return;
+        if (tgt.offsetWidth !== fb.offsetWidth) {
+          done = true; cleanup();
+          log('font metric: loaded', family, '(' + Math.round(performance.now() - t0) + 'ms)');
+          resolve(true); return;
+        }
+        if (performance.now() - t0 > timeout) {
+          done = true; cleanup();
+          log('font metric: TIMEOUT', family);
+          resolve(false); return;
+        }
+        requestAnimationFrame(tick);
+      }
+      tick();
+    });
+  }
+
+  function whenHeroFontReady() {
+    if (!document.fonts || !document.fonts.load) return Promise.resolve();
+
+    /* 1) Hero 텍스트 엘리먼트의 실제 computed weight/style + 텍스트 내용으로
+          명시 load — Webflow 가 어떤 weight (300/500/800 등) 를 박아뒀는지
+          모르기 때문에 element 단위로 spec 추출. 텍스트 인자까지 넘겨야
+          브라우저가 그 글리프까지 보장하도록 다운로드.
+       2) 안전망: 흔한 weight (400/700) 도 동시 트리거.
+       3) document.fonts.ready 로 페이지 내 모든 in-use 폰트 완료까지 대기.
+       4) check() 폴링으로 실제 사용 가능 여부 확인 — load() 가 일찍 resolve
+          되는 케이스 방어.
+       5) 최종 2x rAF 으로 layout/paint 동기화. */
+    var heroEls = document.querySelectorAll('.about-heading, .about_contents_sub-title');
+    var loaders = [
+      document.fonts.load('1em "' + HERO_FONT + '"').catch(function () {}),
+      document.fonts.load('700 1em "' + HERO_FONT + '"').catch(function () {})
+    ];
+    var specs = ['1em "' + HERO_FONT + '"', '700 1em "' + HERO_FONT + '"'];
+    heroEls.forEach(function (el) {
+      try {
+        var cs = getComputedStyle(el);
+        /* Webflow 가 .about-heading 에 다른 font-family 를 박아뒀을 수 있어
+           computed 의 첫 family 를 직접 추출 (HERO_FONT 가 아닐 수 있음). */
+        var firstFamily = (cs.fontFamily || HERO_FONT).split(',')[0].replace(/['"]/g, '').trim();
+        var families = firstFamily ? [firstFamily] : [HERO_FONT];
+        if (families.indexOf(HERO_FONT) === -1) families.push(HERO_FONT);
+        families.forEach(function (fam) {
+          var spec = (cs.fontStyle || 'normal') + ' ' + (cs.fontWeight || '400') +
+                     ' 1em "' + fam + '"';
+          specs.push(spec);
+          loaders.push(document.fonts.load(spec, el.textContent || '').catch(function () {}));
+        });
+        log('hero font spec:', firstFamily, cs.fontStyle, cs.fontWeight);
+      } catch (e) {}
+    });
+
+    function checkAll() {
+      try {
+        for (var i = 0; i < specs.length; i++) {
+          if (!document.fonts.check(specs[i])) return false;
+        }
+        return true;
+      } catch (e) { return true; }
+    }
+
+    function waitUntilCheckPasses() {
+      return new Promise(function (resolve) {
+        var tries = 0;
+        function tick() {
+          if (checkAll() || tries >= 30) { /* 30 frame ≈ 0.5s 폴링 상한 */
+            resolve();
+            return;
+          }
+          tries++;
+          requestAnimationFrame(tick);
+        }
+        tick();
+      });
+    }
+
+    return Promise.all(loaders)
+      .then(function () {
+        return (document.fonts.ready) ? document.fonts.ready : null;
+      })
+      .then(waitUntilCheckPasses)
+      .then(function () {
+        return new Promise(function (resolve) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { log('font ready'); resolve(); });
+          });
+        });
+      });
+  }
+
+  function preloadSymbol() {
+    var imgs = document.querySelectorAll('img.image-23');
+    if (!imgs.length) { log('no image-23'); return Promise.resolve(); }
+    var promises = [];
+    imgs.forEach(function (img) {
+      try { img.loading = 'eager'; } catch (e) {}
+      try { img.decoding = 'sync'; } catch (e) {}
+      try { img.fetchPriority = 'high'; } catch (e) {}
+      var src = img.currentSrc || img.src;
+      if (src) {
+        try {
+          var l = document.createElement('link');
+          l.rel = 'preload'; l.as = 'image'; l.href = src; l.fetchPriority = 'high';
+          document.head.appendChild(l);
+        } catch (e) {}
+        try { var p = new Image(); p.fetchPriority = 'high'; p.src = src; } catch (e) {}
+      }
+      if (img.complete && img.naturalWidth > 0) return;
+      promises.push(new Promise(function (resolve) {
+        img.addEventListener('load', function () { log('image-23 loaded'); resolve(); }, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      }));
+    });
+    return Promise.all(promises);
+  }
+
+  function injectBgVideo() {
+    var parent = document.querySelector(BG_PARENT_SELECTOR);
+    if (!parent) { log('bg parent not found'); return null; }
+    var existing = parent.querySelector('video.helix-bg-video');
+    if (existing) return existing;
+
+    var ref = window.HELIX_REF || 'main';
+    /* SHA-pinned URL 이 immutable 이지만 브라우저 캐시가 옛 응답 들고있을 수 있어
+       ref 자체를 쿼리로 박아 캐시 키 강제 분리. */
+    var src = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@' + ref + '/' + BG_VIDEO_PATH + '?v=' + ref;
+
+    var v = document.createElement('video');
+    v.className = 'helix-bg-video';
+    v.muted = true;
+    v.defaultMuted = true;
+    v.autoplay = true;
+    v.loop = true;
+    v.playsInline = true;
+    v.preload = 'auto';
+    /* iOS Safari autoplay 보장용 속성 명시 */
+    v.setAttribute('muted', '');
+    v.setAttribute('autoplay', '');
+    v.setAttribute('loop', '');
+    v.setAttribute('playsinline', '');
+    v.setAttribute('webkit-playsinline', '');
+    v.style.cssText = [
+      'position:absolute',
+      'inset:0',
+      'width:100%',
+      'height:100%',
+      'object-fit:cover',
+      'z-index:0',
+      'pointer-events:none',
+      'opacity:0'
+    ].join(';');
+    v.src = src;
+
+    if (getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    parent.insertBefore(v, parent.firstChild);
+
+    /* 비디오의 형제 자식(컨텐츠 래퍼들)을 위로 올려서 비디오 위에 항상 보이게 */
+    Array.prototype.forEach.call(parent.children, function (child) {
+      if (child === v) return;
+      var cs = getComputedStyle(child);
+      if (cs.position === 'static') child.style.position = 'relative';
+      var z = parseInt(child.style.zIndex || cs.zIndex, 10);
+      if (!z || z < 2) child.style.zIndex = '2';
+    });
+
+    log('bg video injected:', src);
+    return v;
+  }
+
+  function whenVideoReady(v) {
+    if (!v) return Promise.resolve();
+    if (v.readyState >= 2) { log('video already ready'); return Promise.resolve(); }
+    return new Promise(function (resolve) {
+      var done = false;
+      function fin(reason) {
+        if (done) return; done = true;
+        log('video ready:', reason);
+        resolve();
+      }
+      v.addEventListener('loadeddata', function () { fin('loadeddata'); }, { once: true });
+      v.addEventListener('error', function () { fin('error'); }, { once: true });
+      setTimeout(function () { fin('timeout'); }, 4000);
+    });
+  }
+
+  function showAllImmediate(video) {
+    var els = document.querySelectorAll('.about-heading, .about_contents_sub-title, img.image-23');
+    els.forEach(function (el) { el.style.opacity = '1'; el.style.visibility = 'visible'; });
+    if (video) { video.style.opacity = '1'; video.style.visibility = 'visible'; }
+  }
+
+  function runTextTimeline() {
+    if (typeof gsap === 'undefined') {
+      log('GSAP missing → fallback show text');
+      var els = document.querySelectorAll('.about-heading, .about_contents_sub-title, img.image-23');
+      els.forEach(function (el) { el.style.opacity = '1'; el.style.visibility = 'visible'; });
+      return Promise.resolve();
+    }
+    var heading = document.querySelectorAll('.about-heading');
+    var subhead = document.querySelectorAll('.about_contents_sub-title');
+    var symbol  = document.querySelectorAll('img.image-23');
+
+    [heading, subhead, symbol].forEach(function (list) {
+      list.forEach(function (el) { el.style.visibility = 'visible'; });
+    });
+    var allText = [].concat(
+      Array.prototype.slice.call(heading),
+      Array.prototype.slice.call(subhead),
+      Array.prototype.slice.call(symbol)
+    );
+    if (allText.length) gsap.set(allText, { opacity: 0 });
+
+    return new Promise(function (resolve) {
+      var tl = gsap.timeline({ delay: 0.2, onComplete: resolve });
+      if (heading.length) {
+        tl.fromTo(heading, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+      }
+      var symAndSub = [].concat(Array.prototype.slice.call(symbol), Array.prototype.slice.call(subhead));
+      if (symAndSub.length) {
+        tl.fromTo(symAndSub, { opacity: 0 }, { opacity: 1, duration: 1.0, ease: 'power2.out' });
+      }
+      if (!tl.duration()) resolve();
+      log('text timeline started');
+    });
+  }
+
+  function fadeInVideo(video) {
+    if (!video) return;
+    video.style.visibility = 'visible';
+    if (typeof gsap === 'undefined') {
+      video.style.opacity = '1';
+      return;
+    }
+    gsap.fromTo(video, { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+    log('video fade started');
+  }
+
+  function renderHexDiagram() {
+    var holder = document.querySelector('.diagram-place-holder');
+    if (!holder) { log('diagram-place-holder not found'); return; }
+    if (holder.querySelector('.helix-hex-diagram')) return;
+
+    /* pointy-top 육각형. 인접 헥사가 공유하는 엣지는 한쪽에서만 그려서
+       선이 두꺼워 보이는 현상 제거. */
+    var s = 100;                 /* 변 길이 */
+    var sqrt3 = Math.sqrt(3);
+    var w = sqrt3 * s;           /* 헥사 가로 폭 */
+
+    /* 정점 인덱스: 0 top, 1 top-right, 2 bottom-right, 3 bottom, 4 bottom-left, 5 top-left
+       엣지 E_i 는 정점 i → (i+1)%6
+       각 hex 는 fullHexPath 로 완결된 개별 개체로 그림 (공유 엣지 중복 OK).
+       outerEdges = 이웃과 공유하지 않는 외부 perimeter 엣지 — 5개 헥사가
+       모두 모인 뒤 전체 silhouette 으로 파동 쏠 때 사용. */
+    var hexes = [
+      { id: 'naekwa',    label: '내과',       cx: w * 0.5, cy: -1.5 * s, outerEdges: [0, 4, 5],       inner: true },
+      { id: 'oikwa',     label: '외과',       cx: w * 1.5, cy: -1.5 * s, outerEdges: [0, 1, 5],       inner: true },
+      { id: 'ankwa',     label: '안과',       cx: 0,       cy: 0,        outerEdges: [2, 3, 4, 5]                },
+      { id: 'yeongsang', label: '영상의학과', cx: w,       cy: 0,        outerEdges: [2, 3],           inner: true },
+      { id: 'chikwa',    label: '치과',       cx: w * 2,   cy: 0,        outerEdges: [0, 1, 2, 3]                }
+    ];
+
+    /* 모션 시퀀서가 hex 메타 (cx/cy/inner 등) 를 다시 측정하지 않고 쓸 수
+       있도록 노출. */
+    window.__helixHexes = hexes;
+
+    var INNER_SCALE = 0.93;
+
+    var minX = -w/2,        maxX = w * 2 + w/2;
+    var minY = -1.5*s - s,  maxY = s;
+    var pad = 8;
+
+    function vertices(cx, cy, scale) {
+      var k = scale || 1;
+      var ss = s * k, ww = w * k;
+      return [
+        [cx,           cy - ss],
+        [cx + ww/2,    cy - ss/2],
+        [cx + ww/2,    cy + ss/2],
+        [cx,           cy + ss],
+        [cx - ww/2,    cy + ss/2],
+        [cx - ww/2,    cy - ss/2]
+      ];
+    }
+
+    function fullHexPath(verts) {
+      return 'M' + verts[0][0].toFixed(3) + ' ' + verts[0][1].toFixed(3) +
+        ' L' + verts[1][0].toFixed(3) + ' ' + verts[1][1].toFixed(3) +
+        ' L' + verts[2][0].toFixed(3) + ' ' + verts[2][1].toFixed(3) +
+        ' L' + verts[3][0].toFixed(3) + ' ' + verts[3][1].toFixed(3) +
+        ' L' + verts[4][0].toFixed(3) + ' ' + verts[4][1].toFixed(3) +
+        ' L' + verts[5][0].toFixed(3) + ' ' + verts[5][1].toFixed(3) + ' Z';
+    }
+
+    function buildPath(verts, edges) {
+      var sorted = edges.slice().sort(function (a, b) { return a - b; });
+      var parts = [];
+      var i = 0;
+      while (i < sorted.length) {
+        var startVi = sorted[i];
+        var p = verts[startVi];
+        parts.push('M' + p[0].toFixed(3) + ' ' + p[1].toFixed(3));
+        var endVi = (startVi + 1) % 6;
+        p = verts[endVi];
+        parts.push('L' + p[0].toFixed(3) + ' ' + p[1].toFixed(3));
+        i++;
+        while (i < sorted.length && sorted[i] === endVi) {
+          endVi = (sorted[i] + 1) % 6;
+          p = verts[endVi];
+          parts.push('L' + p[0].toFixed(3) + ' ' + p[1].toFixed(3));
+          i++;
+        }
+      }
+      return parts.join(' ');
+    }
+
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'helix-hex-diagram');
+    svg.setAttribute('viewBox',
+      (minX - pad) + ' ' + (minY - pad) + ' ' +
+      (maxX - minX + pad * 2) + ' ' + (maxY - minY + pad * 2));
+    svg.setAttribute('preserveAspectRatio', 'xMidYMin meet');
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.display = 'block';
+    svg.style.overflow = 'visible';
+    svg.setAttribute('overflow', 'visible');
+
+
+    hexes.forEach(function (hx) {
+      var verts = vertices(hx.cx, hx.cy);
+      var g = document.createElementNS(svgNS, 'g');
+      g.setAttribute('class', 'hex hex-' + hx.id);
+      g.setAttribute('data-cx', hx.cx);
+      g.setAttribute('data-cy', hx.cy);
+
+      /* 완결된 6엣지 hex (공유 엣지도 양쪽에서 모두 그림 → 닫힌 fill). */
+      var p = document.createElementNS(svgNS, 'path');
+      p.setAttribute('d', fullHexPath(verts));
+      g.appendChild(p);
+
+      var t = document.createElementNS(svgNS, 'text');
+      t.setAttribute('x', hx.cx);
+      t.setAttribute('y', hx.cy);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('dominant-baseline', 'central');
+      t.setAttribute('font-size', 24);   /* SVG user units → 다이어그램과 함께 스케일됨 */
+      t.textContent = hx.label;
+      g.appendChild(t);
+
+      svg.appendChild(g);
+    });
+
+    holder.appendChild(svg);
+    log('hex diagram rendered');
+  }
+
+  /* ================================================================
+     Hex Diagram — Section 1 모션 시퀀스
+     ================================================================
+     Phase A : 내 → 외 → 영 → 안 → 치 순서로 페이드인 + 스케일 인
+     Phase B : 모두 등장 후 시그니처 모션
+       - 내·외·영 (inner 보유): inner 외곽선이 또다른 외곽선 한 장을 쏘고,
+         그 클론이 안으로 작아지며 흐려져 사라짐
+       - 안·치 (inner 없음): 사선 광선이 hex 를 한 번 훑고 지나감 (clipPath
+         로 hex 영역 안에서만 보임)
+     트리거: .diagram-place-holder 가 뷰포트 진입 시 한 번만 재생.
+     ================================================================ */
+  function initHexAnimations() {
+    if (typeof gsap === 'undefined') { log('GSAP missing → skip hex anim'); return; }
+    var holder = document.querySelector('.diagram-place-holder');
+    var svg = holder && holder.querySelector('.helix-hex-diagram');
+    if (!svg) { log('hex svg not found → skip anim'); return; }
+
+    var hexes = window.__helixHexes || [];
+    if (!hexes.length) { log('no hex meta'); return; }
+
+    /* 초기 상태 — CSS 가 .hex { opacity: 0 } 로 가려 두지만 transform 까지
+       명시적으로 세팅해서 첫 페인트와 첫 트윈 사이 점프 방지.
+       transformPerspective 도 같이 박아둠 → Section 2 의 rotateY 가 SVG <g>
+       위에서 진짜 3D 로 보이게 (CSS 의 perspective 가 SVG 내부에서 종종
+       전파 안 되는 케이스 보호). */
+    hexes.forEach(function (hx) {
+      var g = svg.querySelector('.hex-' + hx.id);
+      if (!g) return;
+      gsap.set(g, {
+        opacity: 0,
+        scale: 0.55,
+        svgOrigin: hx.cx + ' ' + hx.cy,
+        transformPerspective: 1200
+      });
+      /* 레이더 펄스용 inner 초기 상태 — 평소 invisible, 자기 hex 중심에서
+         scale·fade. svgOrigin 한 번 박아두면 후속 트윈도 동일 origin. */
+      var inner = g.querySelector('.hex-inner');
+      if (inner) {
+        gsap.set(inner, {
+          opacity: 0,
+          scale: 1,
+          svgOrigin: hx.cx + ' ' + hx.cy
+        });
+      }
+    });
+
+    /* 모든 inner 펄스 제거 — 사용자 요청. */
+    if (window.__hexInnerPulseTween) {
+      window.__hexInnerPulseTween.kill();
+      window.__hexInnerPulseTween = null;
+    }
+
+    var played = false;
+    function play() {
+      if (played) return window.__hexS1Tl;
+      played = true;
+
+      var tl = gsap.timeline();
+
+      /* Phase A — 내 → 외 → 영 → 안 → 치 출렁 엇박 등장 (2단계).
+         각 헥사: scale 0.55 → 1.18 (overshoot up + fade in) → 1 (settle).
+         5개가 비균등 stagger 로 차례로 출렁이며 등장. */
+      var order = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
+      var ENTRANCE_TIMES = [0.00, 0.08, 0.22, 0.30, 0.44];
+      var GROW_DUR = 0.25;
+      var SETTLE_DUR = 0.20;
+      order.forEach(function (id, i) {
+        var g = svg.querySelector('.hex-' + id);
+        if (!g) return;
+        var t = ENTRANCE_TIMES[i];
+        tl.to(g, {
+          opacity: 1,
+          scale: 1.18,
+          duration: GROW_DUR,
+          ease: 'power2.inOut'
+        }, t);
+        tl.to(g, {
+          scale: 1,
+          duration: SETTLE_DUR,
+          ease: 'power2.inOut'
+        }, t + GROW_DUR);
+      });
+
+      /* Phase B — 내·외·영 inner 펄스 "통 통" 빠르게.
+         빠른 등장(0.05s) → 빠른 수축+페이드(0.25s) = 0.3s 이내. */
+      var phaseB = tl.duration() + 0.25;
+
+      /* Phase B 의 inner 펄스/silhouette 스피너 모두 삭제.
+         이너 효과는 initHexAnimations 의 shimmer (gradient yoyo) 가 항상
+         돌고 있어서 별도 트리거 불필요. */
+
+      window.__hexS1Tl = tl;
+      log('hex timeline duration:', tl.duration().toFixed(2) + 's');
+      return tl;
+    }
+
+    /* Section 2 onEnter 가 빠른 스크롤 케이스를 보호할 수 있도록 노출. */
+    window.__hexS1Play = play;
+
+    /* Section 1 트리거 = 좌측 첫 번째 콘텐츠 박스 (.about_three_contents-box[0]).
+       이 박스가 viewport 75% 라인에 닿으면 헥사 등장 시퀀스 재생.
+       이 시점엔 .about_contents-title 가 이미 페이드인 완료된 상태 (title 은
+       박스보다 먼저 80% 라인에서 fade 시작 + 1s transition). */
+    var boxes = document.querySelectorAll('.about_three_contents-box');
+    var box1 = boxes[0] || holder;
+
+    if (!('IntersectionObserver' in window)) { play(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        play();
+      });
+    }, { root: null, rootMargin: '0px 0px -25% 0px', threshold: 0 });
+    io.observe(box1);
+    log('s1 trigger bound to: ' + (box1.className || box1.tagName));
+  }
+
+  /* ================================================================
+     Hex Diagram — Section 2 (스크롤 스크럽)
+     ================================================================
+     Phase 1 : 5 헥사 일렬 평면 펼침 (+ 다운스케일 → viewBox 안에 맞춤)
+     Phase 2 : 제자리에서 세로축 비스듬한 우향우 (rotateY)
+     Phase 3 : 그 자세 그대로 거리 매우 좁게 모임 (압축)
+     Phase 4 : 정면으로 돌면서 가까이 (rotateY 0 + scale up + Z translate)
+     트리거 : .diagram-place-holder top 이 viewport top 도달 시 핀,
+              1 뷰포트 분량 스크롤로 timeline 진행 (scrub 1).
+     ================================================================ */
+  function initHexSection2() {
+    if (typeof gsap === 'undefined') { log('GSAP missing → skip s2'); return; }
+
+    var tries = 0;
+    function tryInit() {
+      if (typeof window.ScrollTrigger !== 'undefined') {
+        doInit();
+        return;
+      }
+      if (++tries > 60) { log('ScrollTrigger never loaded → s2 disabled'); return; }
+      setTimeout(tryInit, 100);
+    }
+
+    function doInit() {
+      var holder = document.querySelector('.diagram-place-holder');
+      var svg = holder && holder.querySelector('.helix-hex-diagram');
+      if (!svg) { log('s2: hex svg not found'); return; }
+
+      var hexes = window.__helixHexes || [];
+      if (!hexes.length) { log('s2: no hex meta'); return; }
+
+      /* viewBox 좌표계 기준 (about.js renderHexDiagram 와 동일):
+         - x 가운데 ≈ 173 (= w), y 가운데 ≈ -75 */
+      var ROW_ORDER     = ['naekwa', 'oikwa', 'yeongsang', 'ankwa', 'chikwa'];
+      var ROW_CENTER_X  = 173;
+      var ROW_Y         = -75;
+      var ROW_STEP      = 110;   /* 펼침 간격 (스케일 후 헥사 사이가 살짝 떨어짐) */
+      var COMP_STEP     = 28;    /* 압축 간격 (서로 거의 겹침) */
+      var ROW_SCALE     = 0.6;   /* 5 hex 가 viewBox 안에 들어가게 다운스케일 */
+      var TILT_Y        = 32;    /* 비스듬한 우향우 각도 (deg) */
+
+      var section2Tl = gsap.timeline({ paused: true });
+
+      ROW_ORDER.forEach(function (id, i) {
+        var hx = null;
+        for (var k = 0; k < hexes.length; k++) {
+          if (hexes[k].id === id) { hx = hexes[k]; break; }
+        }
+        var g = svg.querySelector('.hex-' + id);
+        if (!hx || !g) return;
+
+        var rowX = ROW_CENTER_X + (i - 2) * ROW_STEP;
+        var compX = ROW_CENTER_X + (i - 2) * COMP_STEP;
+        var rowDx = rowX - hx.cx;
+        var rowDy = ROW_Y - hx.cy;
+        var compDx = compX - hx.cx;
+
+        /* svgOrigin 한 번 잡아두면 후속 트윈에도 동일 origin 사용 →
+           rotation·scale 이 항상 hex 자체 중심에서 일어남. */
+        var hexTl = gsap.timeline({
+          defaults: { svgOrigin: hx.cx + ' ' + hx.cy }
+        });
+
+        /* Section 2 = 펼침 → 회전 → 압축. 3단계만.
+           Phase 1 은 fromTo + immediateRender:false → Section 1 종료
+           (scale 1) 와 매끄럽게 이어짐 (이전엔 from 값 미스매치로 "툭"
+           점프). Phase 2·3 은 .to() 가 직전 상태에서 자동으로 이어감. */
+        hexTl.fromTo(g,
+          { x: 0, y: 0, scale: 1 },
+          { x: rowDx, y: rowDy, scale: ROW_SCALE,
+            duration: 1.0, ease: 'power2.inOut',
+            immediateRender: false },
+          0
+        );
+        hexTl.to(g, { rotationY: TILT_Y,
+                      duration: 0.8, ease: 'power2.inOut' }, 1.0);
+        hexTl.to(g, { x: compDx,
+                      duration: 0.8, ease: 'power2.inOut' }, 1.8);
+
+        section2Tl.add(hexTl, 0);
+      });
+
+      /* Box 3 — 모핑 후 심볼에서 펄스 1번 + 궤도 도는 빛점.
+         박스 3 진입 → 펄스 1회 + 궤도 빛점 fade in.
+         박스 3 위로 역스크롤 → effects 통째 fade out (박스 1·2 에 보이지
+         않게). 펄스는 "한 번" 이라 다시 진입해도 재발사 안 함. */
+      var box3Effects = injectBox3Effects(holder);
+      if (box3Effects && box3Ref) {
+        gsap.set(box3Effects, { opacity: 0 });
+        var pulseEl = box3Effects.querySelector('.box3-pulse');
+        var dotEl   = box3Effects.querySelector('.box3-orbit-dot');
+        if (pulseEl) gsap.set(pulseEl, { opacity: 0, attr: { r: 40 } });
+        if (dotEl)   gsap.set(dotEl,   { opacity: 0 });
+
+        var box3PulseFired = false;
+        window.ScrollTrigger.create({
+          trigger: box3Ref,
+          start: 'top 75%',
+          onEnter: function () {
+            /* effects layer fade in (매번 박스3 재진입 시 다시 켬) */
+            gsap.to(box3Effects, { opacity: 1, duration: 0.4, ease: 'power2.out' });
+            /* 펄스 — 최초 진입 시 한 번만 발사 ("파동 한번 퉁") */
+            if (!box3PulseFired && pulseEl) {
+              box3PulseFired = true;
+              gsap.set(pulseEl, { opacity: 1, attr: { r: 20 } });
+              gsap.to(pulseEl, {
+                attr: { r: 220 }, opacity: 0,
+                duration: 1.6, ease: 'power2.out'
+              });
+            }
+            /* 궤도 빛점 fade in (매 진입 시 다시 켬, 영구 순회) */
+            if (dotEl) {
+              gsap.to(dotEl, { opacity: 1, duration: 0.6, ease: 'power2.out', delay: 0.4 });
+            }
+            log('box3 onEnter (pulseFired=' + box3PulseFired + ')');
+          },
+          onLeaveBack: function () {
+            /* 박스 3 위로 역스크롤 → effects 통째 fade out
+               (박스 1·2 영역에 궤도 빛점이 비치지 않게) */
+            gsap.to(box3Effects, { opacity: 0, duration: 0.3, ease: 'power2.in' });
+            log('box3 onLeaveBack → effects hidden');
+          }
+        });
+        log('box3 effects ready');
+      }
+
+      window.__hexS2Tl = section2Tl;
+
+      var boxes2 = document.querySelectorAll('.about_three_contents-box');
+      var box1Ref = boxes2[0] || null;
+      var box2Ref = boxes2[1] || null;
+      var box3Ref = boxes2[2] || null;
+
+      /* Pin 전략 — 다이어그램이 콘텐츠 박스 1·2·3 전체 스크롤 동안 viewport
+         에 고정되도록 명시적 trigger/endTrigger 사용. 공통 조상 탐색 대신
+         박스 1 시작 ~ 박스 3 끝 으로 직접 범위 지정 (Webflow row 가 어떤
+         wrapper 로 싸여있어도 안전). */
+      var pinStart = box1Ref || holder;
+      var pinEnd   = box3Ref || box2Ref || box1Ref || holder;
+
+      /* 디버그: 항상 출력 (debug flag 무관) — pin 안 먹는 케이스 추적용.
+         DOMRect 가 콘솔에서 펼치기 번거롭지 않게 top/height 만 평탄화. */
+      try {
+        function rectInfo(el) {
+          if (!el) return null;
+          var r = el.getBoundingClientRect();
+          return {
+            top: Math.round(r.top + window.scrollY),
+            left: Math.round(r.left),
+            w: Math.round(r.width),
+            h: Math.round(r.height),
+            absBottom: Math.round(r.top + window.scrollY + r.height)
+          };
+        }
+        var pinStartParent = pinStart && pinStart.parentElement;
+        var holderParent = holder.parentElement;
+        var holderGrandparent = holderParent && holderParent.parentElement;
+        var diag = {
+          scrollY: Math.round(window.scrollY),
+          viewportH: window.innerHeight,
+          boxesFound: boxes2.length,
+          holder: rectInfo(holder),
+          holderParent: holderParent && (holderParent.className || holderParent.tagName),
+          holderParentRect: rectInfo(holderParent),
+          holderGrandparent: holderGrandparent && (holderGrandparent.className || holderGrandparent.tagName),
+          holderGrandparentRect: rectInfo(holderGrandparent),
+          pinStart: pinStart === holder ? 'holder(fallback)' : (pinStart.className || pinStart.tagName),
+          pinStartRect: rectInfo(pinStart),
+          pinStartParent: pinStartParent && (pinStartParent.className || pinStartParent.tagName),
+          pinStartParentRect: rectInfo(pinStartParent),
+          pinEnd: pinEnd === holder ? 'holder(fallback)' : (pinEnd.className   || pinEnd.tagName),
+          pinEndRect: rectInfo(pinEnd),
+          pinRangePx: pinEnd && pinStart ?
+            Math.round(pinEnd.getBoundingClientRect().bottom - pinStart.getBoundingClientRect().top) : null
+        };
+        /* JSON 문자열로 출력 — 콘솔에서 한 줄로 다 보이게 (객체 접힘 회피). */
+        console.log('[helix-s2 v3] ' + JSON.stringify(diag));
+      } catch (e) { console.warn('[helix-s2 debug error]', e); }
+
+      /* 핀 시작점·종료점 튜닝.
+         start: 'center center'
+           = 다이어그램의 시각 중심이 viewport 중심에 닿는 순간 pin.
+             이전엔 'top top' 이라 viewport 최상단(서브헤드 영역)에 박혀
+             부자연스러웠음. 중심에서 잡으면 좌측 콘텐츠와 시선 라인이
+             맞고, 서브헤드와 겹치지 않음.
+         end: 'bottom top' on 박스 3
+           = 박스 3 의 bottom 이 viewport top 에 닿을 때 (= 박스 3 이 위로
+             완전히 사라질 때) 까지 핀 유지. 핀 해제 시점에는 다이어그램
+             원래 자리(top=928)가 이미 viewport 위로 한참 지난 상태라
+             unpin 점프 없음.
+         pinSpacing: false — Webflow row layout 이 흩어져 있어 spacer 추가
+           시 박스 2,3 섹션이 밀리는 사고 방지. */
+      window.ScrollTrigger.create({
+        trigger: holder,
+        endTrigger: pinEnd,
+        /* start 'center 40%' — 다이어그램 중심이 viewport 40% 라인에 닿는
+           순간 pin. 'center center' (50%) 보다 위쪽에 자리잡아 좌측 콘텐츠
+           박스 1 의 시각 y 와 더 잘 맞춤 (이전엔 콘텐츠보다 살짝 아래에서
+           시작해서 어색했음). */
+        start: 'center 40%',
+        end: 'bottom top',
+        pin: holder,
+        pinSpacing: false,
+        pinType: 'fixed',
+        anticipatePin: 1
+      });
+      try {
+        var pinStartScroll = Math.round(holder.getBoundingClientRect().top + window.scrollY + holder.getBoundingClientRect().height / 2 - window.innerHeight / 2);
+        var pinEndScroll = Math.round(pinEnd.getBoundingClientRect().bottom + window.scrollY);
+        console.log('[helix-s2 pin] attached, pinStartScroll≈' + pinStartScroll + ' pinEndScroll≈' + pinEndScroll + ' range≈' + (pinEndScroll - pinStartScroll) + 'px');
+      } catch (e) {}
+
+      /* Scrub: Section 2 timeline 진행도를 콘텐츠 2 박스의 스크롤 범위에
+         매핑. 박스 2 가 viewport 75% 진입 시 시작, bottom 25% 통과 시 끝. */
+      var triggerEl = box2Ref || rowEl || holder;
+
+      function forceS1Done() {
+        if (typeof window.__hexS1Play === 'function') window.__hexS1Play();
+        if (window.__hexS1Tl) window.__hexS1Tl.progress(1);
+      }
+
+      window.ScrollTrigger.create({
+        trigger: triggerEl,
+        start: 'top 75%',
+        end: 'bottom 25%',
+        scrub: 1,
+        animation: section2Tl,
+        onEnter: forceS1Done,
+        onUpdate: function (self) {
+          /* 페이지 로드 시 이미 트리거 범위 안이면 onEnter 가 안 불릴 수
+             있으므로, 처음으로 진행도가 0 을 넘는 순간에도 안전망. */
+          if (self.progress > 0 && (!window.__hexS1Tl || window.__hexS1Tl.progress() < 1)) {
+            forceS1Done();
+          }
+        }
+      });
+
+      log('section 2 ready, tl total: ' + section2Tl.duration().toFixed(2) + 's, scrub trigger=' + (triggerEl.className || triggerEl.tagName));
+    }
+
+    tryInit();
+  }
+
+  function findCommonAncestor(a, b) {
+    if (!a || !b) return null;
+    var seen = [];
+    for (var n = a; n; n = n.parentElement) seen.push(n);
+    for (var m = b; m; m = m.parentElement) {
+      if (seen.indexOf(m) !== -1) return m;
+    }
+    return null;
+  }
+
+  /* 헬릭스 심볼 모핑 타겟 stage 주입.
+     - stage 는 GSAP 가 위치/스케일/오파시티를 다루는 wrapper
+     - 그 안의 <img> 는 CSS 다층 drop-shadow + hue-shift 시머 애니메이션으로
+       크리스탈 3D 인상을 근사 표현 (진짜 3D 모델 아님)
+     - src 는 about hero 의 img.image-23 src 를 그대로 재사용 (사용자가
+       올린 심볼.svg 도 같은 PNG 가 wrapping 된 형태라 시각적으로 동일) */
+  function injectMorphSymbol(holder) {
+    if (!holder) return null;
+    var existing = holder.querySelector('.hex-morph-stage');
+    if (existing) return existing;
+
+    var hero = document.querySelector('img.image-23');
+    var src = hero ? (hero.currentSrc || hero.src) : '';
+    if (!src) return null;
+
+    var stage = document.createElement('div');
+    stage.className = 'hex-morph-stage';
+
+    var img = document.createElement('img');
+    img.className = 'hex-morph-symbol';
+    img.src = src;
+    img.alt = '';
+    img.draggable = false;
+    stage.appendChild(img);
+
+    holder.appendChild(stage);
+    return stage;
+  }
+
+  /* Box 3 — 심볼에서 파동 한번 + 궤도 도는 빛점.
+     placeholder 궤도 = 수직 타원 (실제 심볼 path 데이터가 없어 근사).
+     진짜 path 모션 원할 시 path 데이터가 있는 벡터 SVG 가 필요. */
+  function injectBox3Effects(holder) {
+    if (!holder) return null;
+    var existing = holder.querySelector('.box3-effects');
+    if (existing) return existing;
+
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', 'box3-effects');
+    svg.setAttribute('viewBox', '-100 -160 200 320');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+    /* Pulse ring — 펄스 1번 (확장하며 fade out) */
+    var pulse = document.createElementNS(ns, 'circle');
+    pulse.setAttribute('class', 'box3-pulse');
+    pulse.setAttribute('cx', '0'); pulse.setAttribute('cy', '0');
+    pulse.setAttribute('r', '40');
+    pulse.setAttribute('fill', 'none');
+    pulse.setAttribute('stroke', '#7fc4ff');
+    pulse.setAttribute('stroke-width', '2');
+    svg.appendChild(pulse);
+
+    /* 궤도 path (placeholder = 수직 타원) — 보이지 않게, motion 전용 */
+    var orbitD = 'M 0,-130 A 60,130 0 1,1 0,130 A 60,130 0 1,1 0,-130 Z';
+    var orbit = document.createElementNS(ns, 'path');
+    orbit.setAttribute('class', 'box3-orbit-path');
+    orbit.setAttribute('d', orbitD);
+    orbit.setAttribute('fill', 'none');
+    orbit.setAttribute('stroke', 'none');
+    svg.appendChild(orbit);
+
+    /* 궤도 도는 빛점 + halo */
+    var dotG = document.createElementNS(ns, 'g');
+    dotG.setAttribute('class', 'box3-orbit-dot');
+    var halo = document.createElementNS(ns, 'circle');
+    halo.setAttribute('r', '12');
+    halo.setAttribute('fill', 'rgba(127,196,255,0.35)');
+    var core = document.createElementNS(ns, 'circle');
+    core.setAttribute('r', '4');
+    core.setAttribute('fill', '#ffffff');
+    dotG.appendChild(halo);
+    dotG.appendChild(core);
+    /* SVG <animateMotion> — 6s 주기로 path 무한 순회 */
+    var motion = document.createElementNS(ns, 'animateMotion');
+    motion.setAttribute('dur', '6s');
+    motion.setAttribute('repeatCount', 'indefinite');
+    motion.setAttribute('path', orbitD);
+    motion.setAttribute('rotate', 'auto');
+    dotG.appendChild(motion);
+    svg.appendChild(dotG);
+
+    holder.appendChild(svg);
+    return svg;
+  }
+
+  function initViewport60FadeIn() {
+    var sel = '.about_contents-title, .divider_blue_grad_no-spacing-1, .divider_blue_grad_no-spacing, .about_three_contents-box';
+    var els = document.querySelectorAll(sel);
+    if (!els.length) { log('no viewport-60 targets'); return; }
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    /* 폰트(ds-endendend + 페이지 모든 웹폰트) 가 로드되기 전에 .is-visible
+       을 붙이면 폴백 폰트로 먼저 그려졌다가 갈아끼워지는 현상 발생 →
+       폰트 준비 + 뷰포트 진입 둘 다 만족할 때만 활성화.
+       document.fonts.ready 는 페이지 내 모든 @font-face (본문 포함) 가
+       로드 완료된 시점에 resolve 되므로 본문박스 fade-in 중 폰트 swap 방지. */
+    var fontReady = Promise.all([
+      whenHeroFontReady(),
+      (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve()
+    ]);
+    /* 폰트 무한 대기 방지: 1.5s 폴백 */
+    var fontReadyOrTimeout = Promise.race([
+      fontReady,
+      new Promise(function (resolve) { setTimeout(resolve, 1500); })
+    ]);
+    var pending = [];
+    function flush() {
+      pending.splice(0).forEach(function (el) { el.classList.add('is-visible'); });
+    }
+    var fontDone = false;
+    fontReadyOrTimeout.then(function () { fontDone = true; flush(); log('font ready → flush'); });
+
+    /* rootMargin bottom -20% → 뷰포트 상단 80% 라인에 element top 이 닿을 때 트리거 */
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          io.unobserve(e.target);
+          if (fontDone) e.target.classList.add('is-visible');
+          else pending.push(e.target);
+          log('viewport-80 visible:', e.target);
+        }
+      });
+    }, { root: null, rootMargin: '0px 0px -20% 0px', threshold: 0 });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ── "최초" 사선 물들기 ─────────────────────────────────────────
+     런타임에 실제 텍스트 색을 읽어 background-clip:text 그라데이션에
+     명시 색상값으로 박음 → currentColor / transparent 문제 없음.
+     GSAP 으로 backgroundPosition 을 animate → 사선 wash 효과.
+     ─────────────────────────────────────────────────────────────── */
+  function initHistorySpark() {
+    var SEL = '.about_history_title_official-font';
+
+    function applyWash(el) {
+      if (el.dataset.washDone) return false;
+
+      /* 실제 텍스트 색 읽기 (span 적용 전에 읽어야 정확) */
+      var cs = getComputedStyle(el);
+      var fill = cs.getPropertyValue('-webkit-text-fill-color');
+      var base = (fill && fill !== 'rgba(0, 0, 0, 0)' && fill !== 'transparent')
+        ? fill : cs.color;
+      if (!base || base === 'rgba(0, 0, 0, 0)' || base === 'transparent') base = '#ffffff';
+      log('history spark base=' + base);
+
+      /* "최초" 토큰만 span 으로 wrap */
+      var TOKEN = '최초';
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var nodes = []; var n;
+      while ((n = walker.nextNode())) nodes.push(n);
+      var span = null;
+      nodes.forEach(function (t) {
+        var idx = t.nodeValue.indexOf(TOKEN);
+        if (idx < 0 || span) return;
+        span = document.createElement('span');
+        span.style.display = 'inline';
+        var frag = document.createDocumentFragment();
+        if (idx > 0) frag.appendChild(document.createTextNode(t.nodeValue.slice(0, idx)));
+        frag.appendChild(span);
+        var rest = t.nodeValue.slice(idx + TOKEN.length);
+        if (rest) frag.appendChild(document.createTextNode(rest));
+        t.parentNode.replaceChild(frag, t);
+      });
+      if (!span) return false;
+      span.textContent = TOKEN;
+      el.dataset.washDone = '1';
+
+      /* -webkit-text-fill-color 를 currentColor 로 고정해 color 애니메이션이 반영되도록 */
+      span.style.webkitTextFillColor = 'currentColor';
+      span.style.color = base;
+
+      function start() {
+        if (!window.gsap) return;
+        gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 0.5 })
+          .to(span, { color: '#0075d6', duration: 1.4, ease: 'sine.inOut' })
+          .to(span, { color: '#0075d6', duration: 2.0 })          /* 2초 유지 */
+          .to(span, { color: base,     duration: 1.2, ease: 'sine.inOut' });
+      }
+
+      if (!('IntersectionObserver' in window)) { start(); return true; }
+      var io = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect(); start();
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+      io.observe(el);
+      return true;
+    }
+
+    function tryInit() {
+      var els = document.querySelectorAll(SEL);
+      log('history spark: found=' + els.length);
+      var any = false;
+      els.forEach(function (el) { if (applyWash(el)) any = true; });
+      return any;
+    }
+
+    if (tryInit()) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (tryInit() || ++tries > 20) clearInterval(iv);
+    }, 300);
+  }
+
+  /* ── Standard-font 형광펜 sweep ───────────────────────────────
+     CSS 가 background-image (메인 블루 → 투명 그라데이션) 와
+     transition 을 정의. JS 는 IntersectionObserver 로 진입 시
+     .is-highlighted 부착 → background-size 0% → 100% 확장.
+     ─────────────────────────────────────────────────────────── */
+  function initStandardFontHighlight() {
+    /* 1차 시도 — 사용자 지정 정확 셀렉터 */
+    var SEL = 'body > section:nth-child(22) > div > div > div:nth-child(2)';
+    var el = document.querySelector(SEL);
+
+    /* 2차 폴백 — 섹션 구조가 바뀌어 nth-child 가 빗나가도 동작하도록
+       "헬릭스는 ... 진화하고 있습니다" 텍스트를 가진 가장 가까운 컨테이너 탐색.
+       (이전 회귀: 섹션 추가 → nth-child(22) 이탈 → 하이라이트 통째 누락) */
+    if (!el) {
+      /* div/section 은 카드/래퍼일 수 있어 inline-block 변환 시 레이아웃
+         붕괴 위험 → 텍스트성 태그(p/span/h*)로만 한정. */
+      var nodes = document.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6');
+      var best = null, bestLen = Infinity;
+      for (var i = 0; i < nodes.length; i++) {
+        var t = (nodes[i].textContent || '').replace(/\s+/g, '');
+        if (t.indexOf('끊임없이') !== -1 && t.indexOf('진화') !== -1 && t.length < bestLen) {
+          best = nodes[i]; bestLen = t.length;
+        }
+      }
+      el = best;
+    }
+    log('standard-font highlight target=' + !!el + (el ? ' via=' + (el === document.querySelector(SEL) ? 'nth' : 'text') : ''));
+    if (!el) return;
+
+    el.classList.add('is-highlight-target');
+    /* 텍스트 자체도 페이드인 — 진입 전엔 보이지 않다가 트리거 시 페이드 후
+       하이라이터 sweep. 하이라이터 효과는 그대로 유지. */
+    el.classList.add('is-fade-target');
+
+    function trigger() {
+      if (el.dataset.highlightDone) return;
+      el.dataset.highlightDone = '1';
+      el.classList.add('is-faded-in');
+      /* 하이라이터 sweep 임시 비활성화 (사용자 요청) — 추후 재활성화 시
+         아래 한 줄 주석 해제하면 즉시 복구. CSS 규칙은 유지됨. */
+      // el.classList.add('is-highlighted');
+    }
+
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(el);
+  }
+
+  /* ── 쫀득한 h2 등장 ────────────────────────────────────────────
+     CSS 가 초기 숨김 + transition 정의. JS 는 IntersectionObserver
+     로 진입 시 .is-chewy-in 부착 → fade + Y 슬라이드 + scale.
+     ─────────────────────────────────────────────────────────── */
+  function initChewyH2() {
+    var SEL = '#w-node-_12c5d099-8df6-4231-81c4-5ea6bfff211d-e0c16bc5 > h2';
+    var el = document.querySelector(SEL);
+    log('chewy h2 target=' + !!el);
+    if (!el) return;
+
+    function trigger() {
+      if (el.dataset.chewyDone) return;
+      el.dataset.chewyDone = '1';
+      el.classList.add('is-chewy-in');
+    }
+
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(el);
+  }
+
+  /* ── div-block-108 — 휘발유 점화 글로우 ─────────────────────────
+     CSS 가 conic-gradient + @property 로 burn-angle 0→360deg 애니메이션.
+     JS 는 IO 진입 시 .is-burning 부착.
+     ─────────────────────────────────────────────────────────── */
+  function initBurnGlow() {
+    /* 데스크탑/모바일 듀얼 마크업으로 .div-block-108 이 페이지에 2개 존재.
+       특정 w-node id 셀렉터는 Webflow 재생성 시 깨지므로 클래스 기반.
+       보이는 쪽만 어차피 화면에 노출되니 둘 다 .is-burning 부착. */
+    var els = document.querySelectorAll('.div-block-108');
+    console.log('[burn-glow] count=' + els.length);
+    if (!els.length) return;
+
+    Array.prototype.forEach.call(els, function (el) {
+      function trigger() {
+        if (el.dataset.burnDone) return;
+        el.dataset.burnDone = '1';
+        el.classList.add('is-burning');
+        console.log('[burn-glow] is-burning added on', el);
+      }
+
+      if (!('IntersectionObserver' in window)) { trigger(); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+      }, { rootMargin: '0px 0px 25% 0px', threshold: 0 });
+      io.observe(el);
+    });
+  }
+
+  /* ── Section 2-2 컬럼 reveal — 파란 세리프 → 0.1s 갭 → 그림자 박스 ─
+     데스크탑 wrapper: 단일 IO → 내부 모든 .div-block-176 에 동시 .is-col-in
+       (3 세리프 동시 + 3 그림자 동시)
+     모바일 wrapper:   컬럼별 개별 IO → 위→아래 자연 순차 발사
+
+     타이밍/순서는 about.css 의 컬럼 reveal 규칙이 통제 (delay 1.1s 갭).
+     이 함수는 .is-col-in 토글만 담당.
+     ─────────────────────────────────────────────────────────── */
+  function initSection22Reveal() {
+    var DESKTOP_SEL = '.about_contents_grid-3';
+    var MOBILE_SELS = '.about_contents_grid-3m, .about_contents_grid-3-for-m';
+    /* 두 가지 자식 구조 모두 카드로 인식:
+       A) .div-block-176 — Strategy/System/Structure 패턴 (wrapper 직계)
+       B) [class*="row-left"] — 무중단/Seamless 패턴 (.row-left2/3/4...) */
+    var CARD_SEL = '.div-block-176, [class*="row-left"]';
+
+    var desktopWrappers = document.querySelectorAll(DESKTOP_SEL);
+    var mobileWrappers = document.querySelectorAll(MOBILE_SELS);
+    log('section2-2 reveal desktop=' + desktopWrappers.length +
+        ' mobile=' + mobileWrappers.length);
+
+    function findCards(wrapper) {
+      return wrapper.querySelectorAll(CARD_SEL);
+    }
+
+    function fireAllCards(wrapper) {
+      if (wrapper.dataset.s22Done) return;
+      wrapper.dataset.s22Done = '1';
+      Array.prototype.forEach.call(findCards(wrapper), function (card) {
+        card.classList.add('is-col-in');
+      });
+    }
+
+    function fireCard(card) {
+      if (card.dataset.s22ColDone) return;
+      card.dataset.s22ColDone = '1';
+      card.classList.add('is-col-in');
+    }
+
+    /* 데스크탑 — wrapper 단일 IO, 모든 카드 동시 발사 */
+    Array.prototype.forEach.call(desktopWrappers, function (wrapper) {
+      if (!('IntersectionObserver' in window)) { fireAllCards(wrapper); return; }
+      var io = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { fireAllCards(wrapper); io.disconnect(); }
+      }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+      io.observe(wrapper);
+    });
+
+    /* 모바일 — 카드별 IO 발사 + 시리얼 큐 (한 카드 사이클 끝나야 다음 카드).
+       카드 3개가 viewport 에 거의 동시에 들어와도 (세리프→그림자) × 3 으로
+       순차 재생되도록 큐로 직렬화. 동일 callback 안 다중 entry 는 화면
+       위→아래 순서로 정렬해 큐 진입. */
+    var CARD_CYCLE_MS = 2400; /* CSS: 세리프 1.2s + 갭 0.1s + 그림자 1.0s = 2.3s + α */
+    var queue = { items: [], running: false };
+    function drain() {
+      if (queue.running) return;
+      var next = queue.items.shift();
+      if (!next) return;
+      queue.running = true;
+      fireCard(next);
+      setTimeout(function () { queue.running = false; drain(); }, CARD_CYCLE_MS);
+    }
+    function enqueue(card) {
+      if (card.dataset.s22Queued) return;
+      card.dataset.s22Queued = '1';
+      queue.items.push(card);
+      drain();
+    }
+
+    Array.prototype.forEach.call(mobileWrappers, function (wrapper) {
+      var cards = findCards(wrapper);
+      if (!cards.length) return;
+      if (!('IntersectionObserver' in window)) {
+        Array.prototype.forEach.call(cards, function (c) { enqueue(c); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        /* 같은 콜백 안 여러 entry 는 화면 상단부터 정렬해 큐 진입 */
+        var hits = entries.filter(function (e) { return e.isIntersecting; });
+        hits.sort(function (a, b) {
+          return a.target.getBoundingClientRect().top -
+                 b.target.getBoundingClientRect().top;
+        });
+        hits.forEach(function (e) { io.unobserve(e.target); enqueue(e.target); });
+      }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
+      Array.prototype.forEach.call(cards, function (c) { io.observe(c); });
+    });
+  }
+
+  /* ── About History 표제 페이드인 ─────────────────────────────────
+     "헬릭스는 끊임없이, 진화하고 있습니다." 만 IO 페이드인.
+     "포기하지 않는 진료…" 는 같은 클래스지만 페이드 대상 아님 → 즉시 표시.
+     ─────────────────────────────────────────────────────────── */
+  function initAboutHistoryStandardFontFade() {
+    var els = document.querySelectorAll('[class*="about_history_title_standard-font"]');
+    log('history standard-font fade scan=' + els.length);
+    if (!els.length) return;
+    var fadeTargets = [];
+    Array.prototype.forEach.call(els, function (el) {
+      var t = (el.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('헬릭스는끊임없이') !== -1) {
+        fadeTargets.push(el);
+      } else {
+        /* 페이드 대상 아님 — transition 일시 차단 후 즉시 표시 */
+        var prev = el.style.transition;
+        el.style.transition = 'none';
+        el.classList.add('is-visible');
+        requestAnimationFrame(function () {
+          el.style.transition = prev || '';
+        });
+      }
+    });
+    log('history standard-font fade targets=' + fadeTargets.length);
+    if (!fadeTargets.length) return;
+    if (!('IntersectionObserver' in window)) {
+      fadeTargets.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          var t = e.target;
+          io.unobserve(t);
+          /* gate 의존 제거 — 모바일 듀얼 마크업에서 gate 가 안 열리는 케이스 회피 */
+          t.classList.add('is-visible');
+        }
+      });
+    }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
+    fadeTargets.forEach(function (el) { io.observe(el); });
+    /* 안전망: 8초 후에도 노출 안 됐으면 강제 노출 (IO 가 한 번도 안 fire 한 케이스) */
+    setTimeout(function () {
+      fadeTargets.forEach(function (el) {
+        if (!el.classList.contains('is-visible')) el.classList.add('is-visible');
+      });
+    }, 8000);
+  }
+
+  /* ── 사선 빛 반사 sweep (한 번 통과, 루프 X) ─────────────────────
+     원본 텍스트는 손대지 않고, 같은 글자를 복제한 오버레이 span 을
+     위에 올려 거기에만 그라데이션을 적용. 오버레이 양옆은 완전 투명,
+     가운데 피크만 옅은 색 → 빛만 좌→우로 지나가는 효과.
+
+     opts:
+       peakColor: 'r,g,b' (피크 색)
+       peakAlpha: 0.0~1.0 (피크 투명도)
+       bandWidth: 피크 폭 (gradient % 단위 — 작을수록 좁은 빛)
+       duration: ms
+       angle: '115deg' 등
+     ─────────────────────────────────────────────────────────── */
+  function ensureHelixShineKeyframes() {
+    if (document.getElementById('helix-shine-keyframes')) return;
+    var style = document.createElement('style');
+    style.id = 'helix-shine-keyframes';
+    style.textContent =
+      '@keyframes helix-shine-sweep {' +
+      '  from { background-position: 100% 0; }' +
+      '  to   { background-position: 0% 0; }' +
+      '}';
+    document.head.appendChild(style);
+  }
+
+  /* el 의 base 색을 캡처해 bg-clip:text 모드를 영구 적용. 이후 sweep 은
+     bg-image 만 swap 하므로 렌더링 모드 전환이 없어 "툭" 어긋남 없음. */
+  function helixShinePrime(el) {
+    if (!el || el.dataset.helixShinePrimed === '1') return;
+    var base = window.getComputedStyle(el).color || 'rgb(255,255,255)';
+    var bm = base.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/);
+    var br = bm ? +bm[1] : 255, bg = bm ? +bm[2] : 255, bb = bm ? +bm[3] : 255;
+    var ba = bm && bm[4] != null ? +bm[4] : 1;
+    var baseRGB = 'rgba(' + br + ',' + bg + ',' + bb + ',' + ba + ')';
+    el.dataset.helixShineBase = baseRGB;
+    el.style.backgroundImage = 'linear-gradient(' + baseRGB + ', ' + baseRGB + ')';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.backgroundSize = '100% 100%';
+    el.style.setProperty('-webkit-background-clip', 'text');
+    el.style.setProperty('background-clip', 'text');
+    el.style.setProperty('-webkit-text-fill-color', 'transparent');
+    el.style.color = 'transparent';
+    el.dataset.helixShinePrimed = '1';
+  }
+
+  function helixShineSweep(el, opts) {
+    if (!el) return;
+    if (el.dataset.helixShining === '1') return;
+    helixShinePrime(el);
+    opts = opts || {};
+    var peakColor = opts.peakColor || '0,117,214';
+    var peakAlpha = (opts.peakAlpha != null) ? opts.peakAlpha : 0.6;
+    var bandWidth = opts.bandWidth || 12;
+    var duration  = opts.duration  || 2800;
+    var angle     = opts.angle     || '115deg';
+
+    var lo = Math.max(0, 50 - bandWidth);
+    var hi = Math.min(100, 50 + bandWidth);
+
+    var baseRGB = el.dataset.helixShineBase;
+    var bm2 = baseRGB.match(/rgba?\((\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/);
+    var br = +bm2[1], bg = +bm2[2], bb = +bm2[3];
+    var ba = bm2[4] != null ? +bm2[4] : 1;
+    var pm = peakColor.split(',');
+    var pr = +pm[0] || 0, pg = +pm[1] || 0, pb = +pm[2] || 0;
+    var mixR = Math.round(br * (1 - peakAlpha) + pr * peakAlpha);
+    var mixG = Math.round(bg * (1 - peakAlpha) + pg * peakAlpha);
+    var mixB = Math.round(bb * (1 - peakAlpha) + pb * peakAlpha);
+    var peakRGB = 'rgba(' + mixR + ',' + mixG + ',' + mixB + ',' + ba + ')';
+
+    var grad = 'linear-gradient(' + angle + ', '
+      + baseRGB + ' 0%, '
+      + baseRGB + ' ' + lo + '%, '
+      + peakRGB + ' 50%, '
+      + baseRGB + ' ' + hi + '%, '
+      + baseRGB + ' 100%)';
+
+    ensureHelixShineKeyframes();
+    el.dataset.helixShining = '1';
+    el.style.backgroundImage = grad;
+    el.style.backgroundSize = '500% 100%';
+    el.style.backgroundPosition = '100% 0';
+    el.style.animation = 'helix-shine-sweep ' + (duration / 1000) + 's cubic-bezier(0.7, 0, 1, 1) forwards';
+
+    setTimeout(function () {
+      /* sweep 종료 → bg 를 단색 base 로 다시 swap. bg-clip 모드는 유지되므로
+         렌더링 모드 전환이 없어 "툭" 없음. */
+      el.style.removeProperty('animation');
+      el.style.backgroundImage = 'linear-gradient(' + baseRGB + ', ' + baseRGB + ')';
+      el.style.backgroundSize = '100% 100%';
+      el.style.removeProperty('background-position');
+      delete el.dataset.helixShining;
+    }, duration + 60);
+  }
+
+  /* ── About Mini Title — 정적 메인 블루 그라데이션 ─────────────
+     "일년 365일, 하루 24시간", "특화 · 응급 케어"만 적용.
+     분리된 h2 들이 문구별로 같은 좌표계를 써서 그라데이션이 이어진다.
+     기존 shine sweep 은 사용하지 않아 진입/종료 시 렌더링 전환이 없다.
+     ─────────────────────────────────────────────────────────── */
+  function initAboutMiniTitleGradient() {
+    var GROUPS = [
+      ['일년365일', ',', '하루24시간'],
+      ['특화', '·', '응급케어']
+    ];
+    var WANTED = GROUPS[0].concat(GROUPS[1]);
+    var all = document.querySelectorAll('.about_mini_title');
+    var picked = [];
+    var resizeRAF = 0;
+
+    Array.prototype.forEach.call(all, function (el) {
+      var t = (el.textContent || '').replace(/\s+/g, '');
+      if (WANTED.indexOf(t) === -1) return;
+      el.dataset.helixGradientToken = t;
+      picked.push(el);
+    });
+
+    picked.forEach(function (el) {
+      el.style.backgroundImage = 'linear-gradient(90deg, #0075d6 0%, #69bbff 100%)';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.setProperty('-webkit-background-clip', 'text');
+      el.style.setProperty('background-clip', 'text');
+      el.style.setProperty('-webkit-text-fill-color', 'transparent');
+      el.style.color = 'transparent';
+    });
+
+    function syncGradientCoordinates() {
+      GROUPS.forEach(function (tokens) {
+        var visible = picked.filter(function (el) {
+          return tokens.indexOf(el.dataset.helixGradientToken) !== -1 &&
+            !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+        });
+        if (!visible.length) return;
+
+        var rects = visible.map(function (el) { return el.getBoundingClientRect(); });
+        var left = Math.min.apply(null, rects.map(function (rect) { return rect.left; }));
+        var right = Math.max.apply(null, rects.map(function (rect) { return rect.right; }));
+        var width = Math.max(1, right - left);
+
+        visible.forEach(function (el, i) {
+          el.style.backgroundSize = width + 'px 100%';
+          el.style.backgroundPosition = (left - rects[i].left) + 'px 0';
+        });
+      });
+    }
+
+    function scheduleGradientSync() {
+      cancelAnimationFrame(resizeRAF);
+      resizeRAF = requestAnimationFrame(syncGradientCoordinates);
+    }
+
+    syncGradientCoordinates();
+    window.addEventListener('resize', scheduleGradientSync);
+    window.addEventListener('load', scheduleGradientSync, { once: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleGradientSync).catch(function () {});
+    }
+
+    log('about_mini_title gradient targets=' + picked.length + ' (of ' + all.length + ')');
+  }
+
+  /* ── 하이브리드 부제 reveal — .div-block-175 (흰 박스) 3개 동시 페이드인 ─
+     Webflow 실제 클래스: 흰 박스 = Div Block 175, 번호 = Div Block 177.
+     헤드라인 "왜 하이브리드 인가?" h2 = .about_contents-title — Webflow 네이티브
+     IX2 페이드인이 붙어있을 가능성 → data-w-id 제거 + opacity/transform 강제 해제.
+     ─────────────────────────────────────────────────────────── */
+  function initHybridQuestionReveal() {
+    /* "왜 하이브리드 인가?" 헤드는 인터랙션 0 — Webflow 네이티브 그대로.
+       단, 전역 CSS `.about_contents-title { opacity:0 }` + initViewport60FadeIn
+       의 .is-visible 페이드인이 이 h2 에도 걸려 있어서 강제 무력화. */
+    var allH = document.querySelectorAll('h1, h2, h3');
+    Array.prototype.forEach.call(allH, function (h) {
+      var t = (h.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('왜하이브리드') === -1) return;
+      h.classList.add('is-visible');
+      h.style.setProperty('opacity', '1', 'important');
+      h.style.setProperty('transition', 'none', 'important');
+    });
+
+    /* 사용자 확인 정확한 경로 (다른 곳 절대 매칭 안 됨):
+       body > section:nth-child(22) > div.about_contents_grid-3.is-section22-in
+         > div:nth-child(N) > div > div > div.div-block-135 > div
+       그리드 컨테이너로 스코프 한정 → 다른 섹션 .div-block-135 도 안전. */
+    var blocks = document.querySelectorAll('.about_contents_grid-3 .div-block-135 > div');
+    try { console.log('[About:hybrid] white blocks=' + blocks.length); } catch (e) {}
+    log('hybrid white blocks=' + blocks.length);
+    if (!blocks.length) return;
+
+    /* 옛 캐시 JS 가 붙여놓은 helix-fade-pre/is-visible 잔존 클래스 정리.
+       (이전 CSS 룰의 box-shadow:revert !important 가 Webflow 그림자를
+       지워버리는 버그를 남기지 않도록 매번 정화.) */
+    Array.prototype.forEach.call(blocks, function (b) {
+      b.classList.remove('helix-fade-pre');
+      b.classList.remove('is-visible');
+    });
+
+    /* 인라인 hide — 정확히 3개 매칭 요소에만 적용. CSS 룰 변경 0,
+       전역 클래스 사용 0 → 다른 요소에 부작용 불가능.
+       유지시간 짧게: 1.2s → 0.7s. */
+    var TRANSITION = 'background-color 0.7s cubic-bezier(0.42,0,0.58,1), ' +
+                     'background-image 0.7s cubic-bezier(0.42,0,0.58,1), ' +
+                     'box-shadow 0.7s cubic-bezier(0.42,0,0.58,1)';
+    Array.prototype.forEach.call(blocks, function (b) {
+      b.style.transition = TRANSITION;
+      b.style.setProperty('background-color', 'transparent', 'important');
+      b.style.setProperty('background-image', 'none', 'important');
+      b.style.setProperty('box-shadow', 'none', 'important');
+    });
+
+    /* .div-block-178 (파란 인용구) — 유지시간 1.3s → 0.7s. */
+    var subBlocks = document.querySelectorAll('.about_contents_grid-3 .div-block-178');
+    Array.prototype.forEach.call(subBlocks, function (b) {
+      b.style.transition = 'opacity 0.7s cubic-bezier(0.87, 0, 0.13, 1), ' +
+                           'transform 0.7s cubic-bezier(0.87, 0, 0.13, 1)';
+      b.style.setProperty('opacity', '0', 'important');
+      b.style.setProperty('transform', 'scale(0.9)', 'important');
+      b.style.setProperty('transform-origin', 'center center', 'important');
+    });
+
+    var fired = false;
+    function fire() {
+      if (fired) return;
+      fired = true;
+      /* double rAF: hide 상태가 1프레임 페인트 된 후 reveal 해야 transition 발화 */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          /* 흰박스 3개 동시 fire. 인용구 3개 동시 fire — 흰박스보다
+             0.15s 뒤 (흰박스가 아직 등장 중일 때 인용구가 따라옴).
+             세트 간 stagger 없음. */
+          var QUOTE_DELAY = 80;
+          Array.prototype.forEach.call(blocks, function (b) {
+            b.style.removeProperty('background-color');
+            b.style.removeProperty('background-image');
+            b.style.removeProperty('box-shadow');
+          });
+          setTimeout(function () {
+            Array.prototype.forEach.call(subBlocks, function (q) {
+              q.style.removeProperty('opacity');
+              q.style.removeProperty('transform');
+            });
+          }, QUOTE_DELAY);
+        });
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) { fire(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { fire(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(blocks[0]);
+  }
+
+  /* ── 핵심 장비 섹션 — 캐논 알페닉스만 페이드인 + sweep ──────────
+     사용자 사양: "한글 캐논 알페닉스 페이드인 + 빛반사. 이것만
+     남기고 이 섹션 인터랙션 없어야 해"
+
+     - alphenix h1 단독 페이드 (섹션 전체 페이드 X)
+     - 나머지 (헤드/영문/본문/래퍼/배경) : IX2 / 인라인 페이드 모두 제거
+       후 opacity:1 !important 강제 → 처음부터 그대로 노출
+     - alphenix 페이드 완료 후 helixShineSweep 1회
+     ─────────────────────────────────────────────────────────── */
+  function initClearframeAlphenixReveal() {
+    var titles = document.querySelectorAll('h1.official-font_title');
+    var alphenix = null;
+    Array.prototype.forEach.call(titles, function (h) {
+      if (alphenix) return;
+      var t = (h.textContent || '').replace(/\s+/g, '');
+      if (t.indexOf('캐논알페닉스') !== -1) alphenix = h;
+    });
+    log('clearframe alphenix title=' + !!alphenix);
+    if (!alphenix) return;
+
+    /* IX2 무력화 범위: BlackFrame_Image(HE) 부모 섹션 또는 ClearFrame.
+       부모 섹션이 있으면 거기까지(배경 포함), 없으면 ClearFrame 만. */
+    var bgFrame = alphenix.closest('section.blackframe_image-he');
+    var clearSec = alphenix.closest('section.clearframe') || alphenix.closest('section');
+    var scope = bgFrame || clearSec;
+    if (!scope) return;
+
+    function neutralize() {
+      var nodes = [scope];
+      var all = scope.querySelectorAll('*');
+      for (var i = 0; i < all.length; i++) nodes.push(all[i]);
+      nodes.forEach(function (el) {
+        if (el === alphenix) return;
+        if (el.hasAttribute && el.hasAttribute('data-w-id')) {
+          el.removeAttribute('data-w-id');
+        }
+        if (!el.style) return;
+        el.style.removeProperty('opacity');
+        el.style.removeProperty('transform');
+        el.style.removeProperty('visibility');
+        el.style.setProperty('opacity',    '1',       'important');
+        el.style.setProperty('visibility', 'visible', 'important');
+        el.style.setProperty('transform',  'none',    'important');
+      });
+    }
+    /* IX2 가 늦게 바인딩해도 덮도록 다중 시점 */
+    neutralize();
+    setTimeout(neutralize, 300);
+    setTimeout(neutralize, 1200);
+
+    /* alphenix 단독 초기 hide */
+    alphenix.style.opacity = '0';
+    alphenix.style.transition = 'opacity 1.6s cubic-bezier(0.87, 0, 0.13, 1)';
+    alphenix.style.willChange = 'opacity';
+
+    var fired = false;
+    function fire() {
+      if (fired) return;
+      fired = true;
+      requestAnimationFrame(function () {
+        alphenix.style.opacity = '1';
+      });
+      setTimeout(function () {
+        alphenix.style.removeProperty('will-change');
+        helixShineSweep(alphenix, { peakColor: '0,117,214', peakAlpha: 0.85, bandWidth: 14, duration: 1700 });
+      }, 1700);
+    }
+
+    if (!('IntersectionObserver' in window)) { fire(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting) { fire(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -25% 0px', threshold: 0 });
+    io.observe(alphenix);
+  }
+
+  /* ── About Button Glow — LOCKED v4 (CLAUDE.md 사양 그대로) ────
+     홈 buttons.js 패턴 동일:
+     1) IO 진입 → maxGlow 인라인 !important 설정 (피크 α=1.0)
+     2) 1.5s 홀드 → 인라인 제거 + .is-looping 부착 → CSS keyframe 핸드오프
+     ─────────────────────────────────────────────────────────── */
+  function initAboutButtonGlow() {
+    var BLUE_SEL   = '.cta_seocho_button, .cta-style, .cta_seocho_button-call-link, .discover-helix_button';
+    var PURPLE_SEL = '.link-block';
+    var targets = document.querySelectorAll(BLUE_SEL + ', ' + PURPLE_SEL);
+    if (!targets.length) { log('about button glow: no targets'); return; }
+    log('about button glow targets=' + targets.length);
+
+    function isPurple(el) { return el.matches(PURPLE_SEL); }
+
+    function startGlow(el) {
+      var isMobile = window.innerWidth <= 767;
+      var maxGlow;
+      if (isPurple(el)) {
+        maxGlow = isMobile
+          ? '0 0 16px 6px rgba(85,40,170,1)'
+          : '0 0 1.05vw 0.5vw rgba(85,40,170,1)';
+      } else {
+        maxGlow = isMobile
+          ? '0 0 12px 4px rgba(0,117,214,1)'
+          : '0 0 0.85vw 0.3vw rgba(0,117,214,1)';
+      }
+      el.style.setProperty('box-shadow', maxGlow, 'important');
+      setTimeout(function () {
+        el.style.removeProperty('box-shadow');
+        el.classList.add('is-looping');
+      }, 1500);
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(function (el) { startGlow(el); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        io.unobserve(el);
+        startGlow(el);
+      });
+    }, { threshold: 0.3 });
+    targets.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ── Hybrid Operation Room h1 — 좌상단 비대칭 reveal ─────────── */
+  function initHybridRoomTitle() {
+    /* Webflow 클래스 슬러그 변동에 둔감하도록 중간 div 클래스 매칭 제거.
+       구조: #hybrid-operation-room > .just--box_ht (구 9q) > .about_title-a-b > h1.official-font_title */
+    var SEL = '#hybrid-operation-room h1.official-font_title';
+    var el = document.querySelector(SEL);
+    log('hybrid-room title target=' + !!el);
+    if (!el) return;
+
+    function trigger() {
+      if (el.dataset.cornerInDone) return;
+      el.dataset.cornerInDone = '1';
+      el.classList.add('is-corner-in');
+    }
+
+    if (!('IntersectionObserver' in window)) { trigger(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { trigger(); io.disconnect(); }
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(el);
+  }
+
+  /* ── 타임라인 가운데 펼침 ────────────────────────────────────── */
+  function initHistoryTimeline() {
+    var BADGE_SEL = '.about_history_time-line_contents';
+    var TEXT_SEL  = '.about_history_time-line_contents-copy_title';
+
+    function tryInit() {
+      var badges = document.querySelectorAll(BADGE_SEL);
+      var texts  = document.querySelectorAll(TEXT_SEL);
+      log('history timeline: badges=' + badges.length + ' texts=' + texts.length);
+      if (!badges.length) return false;
+
+      var vcx = window.innerWidth / 2;
+
+      badges.forEach(function (el, i) {
+        /* 뱃지: 처음부터 보이되 화면 정중앙에 위치 */
+        var rect = el.getBoundingClientRect();
+        var offset = Math.round(vcx - (rect.left + rect.width / 2));
+        el.style.transform = 'translateX(' + offset + 'px)';
+        el.style.opacity = '1';
+        el.classList.add('js-ready');
+        el.style.transitionDelay = (i * 0.09) + 's';
+      });
+      texts.forEach(function (el, i) {
+        /* 텍스트: 뱃지 뒤에서 출발해 오른쪽으로 슬라이드.
+           opacity 는 transform 보다 늦게 페이드인 → 뱃지가 비켜준 뒤에야 보임. */
+        var rect = el.getBoundingClientRect();
+        var offset = Math.round(vcx - rect.left);
+        el.style.transform = 'translateX(' + offset + 'px)';
+        el.style.opacity = '0';
+        el.classList.add('js-ready');
+        var rowDelay = i * 0.09;
+        var ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
+        /* transform: 즉시 / opacity: 0.35s 늦게 페이드인 */
+        el.style.transition =
+          'transform 0.6s ' + ease + ' ' + rowDelay + 's, ' +
+          'opacity 0.4s ' + ease + ' ' + (rowDelay + 0.35) + 's';
+      });
+
+      function fire() {
+        badges.forEach(function (el) { el.classList.add('is-visible'); });
+        texts.forEach(function (el)  { el.classList.add('is-visible'); });
+        log('history timeline: fired');
+      }
+
+      if (!('IntersectionObserver' in window)) { historyGate.onOpen(fire); return true; }
+      var fired = false;
+      var io = new IntersectionObserver(function (entries) {
+        if (fired || !entries[0].isIntersecting) return;
+        fired = true; io.disconnect();
+        historyGate.onOpen(fire);
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+      io.observe(badges[0]);
+      return true;
+    }
+
+    if (tryInit()) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (tryInit() || ++tries > 20) clearInterval(iv);
+    }, 300);
+  }
+
+  /* ── 스크롤 진입 페이드인 + 스케일 ──────────────────────────────
+     .about_we-are-here     — fade 0.8s + scale 2s (power2.out), 동시 시작
+     .about_history_title_new — fade 1.5s + scale 1.5s (power2.inOut),
+                                we-are-here 와 엇박으로 0.5s 딜레이
+     ─────────────────────────────────────────────────────────────── */
+  function initWeAreHereReveal() {
+    var configs = [
+      {
+        sel: '.about_we-are-here',
+        fadeDur: 0.8, scaleDur: 1.2, ease: 'power2.out', delay: 0,
+        scaleFrom: 0.9
+      },
+      {
+        /* 사용자 요청: We are here 대비 +0.3s 뒤로 (0.2s → 0.5s) */
+        sel: '.about_history_title_new',
+        fadeDur: 0.6, scaleDur: 0.6, ease: 'power2.out', delay: 0.5,
+        scaleFrom: 0.8
+      }
+    ];
+
+    function reveal(el, cfg) {
+      if (window.gsap) {
+        gsap.set(el, { opacity: 0, scale: cfg.scaleFrom, transformOrigin: '50% 50%' });
+        var tl = gsap.timeline({ delay: cfg.delay });
+        tl.to(el, { opacity: 1, duration: cfg.fadeDur,  ease: cfg.ease }, 0);
+        tl.to(el, { scale: 1,   duration: cfg.scaleDur, ease: cfg.ease }, 0);
+      } else {
+        el.style.transition =
+          'opacity ' + cfg.fadeDur + 's ease-in-out ' + cfg.delay + 's, ' +
+          'transform ' + cfg.scaleDur + 's ease-in-out ' + cfg.delay + 's';
+        el.style.opacity = '0';
+        el.style.transform = 'scale(' + cfg.scaleFrom + ')';
+        requestAnimationFrame(function () {
+          el.style.opacity = '1';
+          el.style.transform = 'scale(1)';
+        });
+      }
+    }
+
+    /* 모든 대상 사전 숨김 */
+    var groups = configs.map(function (cfg) {
+      var els = document.querySelectorAll(cfg.sel);
+      els.forEach(function (el) {
+        if (window.gsap) gsap.set(el, { opacity: 0, scale: cfg.scaleFrom, transformOrigin: '50% 50%' });
+        else { el.style.opacity = '0'; el.style.transform = 'scale(' + cfg.scaleFrom + ')'; }
+      });
+      return { cfg: cfg, els: els };
+    });
+
+    /* 트리거는 첫 번째 그룹(we-are-here)의 등장 — 트리거 발사 시 모든 그룹 동시 reveal,
+       각자 자기 cfg.delay 만큼 늦춰 시작. h2가 we-are-here 보다 아래라 자기
+       뷰포트 진입을 기다리면 영어가 끝난 뒤에야 발사되던 문제 해결. */
+    var trigger = groups[0];
+    if (!trigger || !trigger.els.length) { log('no trigger for we-are-here reveal'); return; }
+
+    function fireAll() {
+      console.log('[helix-about] WeAreHere unified trigger fired @', performance.now().toFixed(0), 'ms');
+      groups.forEach(function (g) {
+        console.log('[helix-about]   group', g.cfg.sel, 'delay=' + g.cfg.delay + 's count=' + g.els.length);
+        g.els.forEach(function (el) { reveal(el, g.cfg); });
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) { fireAll(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        io.disconnect();
+        fireAll();
+        return;
+      }
+    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    trigger.els.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ── #helix-history 본문 게이트 (모듈 스코프) ────────────────────
+     타이틀 페이드인 종료 또는 본문 래퍼 깊은 진입 시 open.
+     본문 영역의 IO 트리거(타임라인/standard-font/헬릭스 라인)는
+     onOpen 으로 발동 시점을 미룬다. 이미 open 이면 즉시 실행. */
+  var historyGate = (function () {
+    var open = false, queue = [];
+    return {
+      isOpen: function () { return open; },
+      onOpen: function (cb) { if (open) cb(); else queue.push(cb); },
+      fire: function () {
+        if (open) return;
+        open = true;
+        var q = queue.slice(); queue.length = 0;
+        q.forEach(function (cb) { try { cb(); } catch (e) {} });
+        document.dispatchEvent(new CustomEvent('helix-history-body-gate-open'));
+      }
+    };
+  })();
+
+  /* ── #helix-history 타이틀 박스 3줄 순차 페이드인 ────────────────
+     구조:
+       #helix-history > .about_history_title_box
+         ├ h2                  (line 1)
+         └ div
+           ├ h2                (line 2)
+           └ div               (line 3 — 안쪽 h2:nth-child(2) 등에
+                                  기존 인터랙션 존재. 건드리지 않음)
+     세 wrapper 의 opacity 만 0→1 로 순차 페이드. 내부 인터랙션
+     (예: .about_history_title_official-font wash, .about_history_title_new
+     reveal) 은 자기 트리거대로 독립 동작 — opacity 곱셈이라 충돌 없음.
+     ─────────────────────────────────────────────────────────────── */
+  function initHistoryTitleBoxFadeIn() {
+    var box = document.querySelector('#helix-history > div.about_history_title_box');
+    if (!box) { log('history title box: not found'); return; }
+
+    var line1 = box.querySelector(':scope > h2');
+    var inner = box.querySelector(':scope > div');
+    var line2 = inner ? inner.querySelector(':scope > h2') : null;
+    var line3 = inner ? inner.querySelector(':scope > div') : null;
+
+    var lines = [line1, line2, line3].filter(Boolean);
+    if (!lines.length) { log('history title box: no lines'); return; }
+
+    var DUR = 0.8, STEP = 0.35;
+
+    lines.forEach(function (el) {
+      if (window.gsap) gsap.set(el, { opacity: 0 });
+      else {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity ' + DUR + 's ease-out';
+      }
+    });
+
+    function fire() {
+      var totalMs = (DUR + (lines.length - 1) * STEP) * 1000;
+      lines.forEach(function (el, i) {
+        if (window.gsap) {
+          gsap.to(el, { opacity: 1, duration: DUR, ease: 'power2.out', delay: i * STEP });
+        } else {
+          setTimeout(function () { el.style.opacity = '1'; }, i * STEP * 1000);
+        }
+      });
+      setTimeout(function () {
+        document.dispatchEvent(new CustomEvent('helix-history-title-done'));
+      }, totalMs);
+    }
+
+    if (!('IntersectionObserver' in window)) { fire(); return; }
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        io.disconnect(); fire(); return;
+      }
+    }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+    io.observe(box);
+  }
+
+  /* ── #helix-history 타이틀 아래 본문 게이트 ───────────────────────
+     대상: #helix-history > .w-layout-vflex.flex-block-42 > div
+     초기엔 opacity:0 으로 가려두고, 다음 중 먼저 일어나는 시점에 페이드인:
+       (a) helix-history-title-done — 타이틀 박스 3줄 페이드인 종료
+       (b) 래퍼가 뷰포트 깊이 충분히 진입 (rootMargin -40%)
+     안쪽 인터랙션(timeline / standard-font / helix line 등) 은 자기
+     IO 트리거대로 동작하지만 wrapper opacity 가 풀리기 전엔 가려짐.
+     ─────────────────────────────────────────────────────────────── */
+  function initHistoryBodyGate() {
+    var sel = '#helix-history > div.w-layout-vflex.flex-block-42 > div';
+    /* 데스크탑/모바일 듀얼 마크업: 숨겨진 쪽 wrapper 를 잡으면 IO 가 영영
+       intersect 못 해 gate 가 안 열림 → standard-font 등 게이트 의존 요소가
+       모바일에서 미노출. 가시 wrapper (rect.width > 0) 우선 선택. */
+    var candidates = document.querySelectorAll(sel);
+    var el = null;
+    for (var i = 0; i < candidates.length; i++) {
+      if (candidates[i].getBoundingClientRect().width > 0) { el = candidates[i]; break; }
+    }
+    if (!el) el = candidates[0] || null;
+    if (!el) { log('history body gate: not found'); return; }
+
+    var DUR = 0.9;
+    if (window.gsap) gsap.set(el, { opacity: 0 });
+    else {
+      el.style.opacity = '0';
+      el.style.transition = 'opacity ' + DUR + 's ease-out';
+    }
+
+    var fired = false;
+    function release() {
+      if (fired) return;
+      fired = true;
+      if (window.gsap) gsap.to(el, { opacity: 1, duration: DUR, ease: 'power2.out' });
+      else el.style.opacity = '1';
+      historyGate.fire();
+    }
+
+    document.addEventListener('helix-history-title-done', release, { once: true });
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (!entries[i].isIntersecting) continue;
+          io.disconnect(); release(); return;
+        }
+      }, { root: null, rootMargin: '0px 0px 15% 0px', threshold: 0 });
+      io.observe(el);
+    } else {
+      release();
+    }
+  }
+
+  /* ── .about_hybrid-contents_box 양쪽 펼침 ───────────────────────
+     박스 2개: 둘 다 두 박스의 기하 중심점에서 시작 (1번 visible, 2번 invisible).
+     스크롤 진입 시 각자 자연 위치로 슬라이드, 2번은 동시에 페이드인.
+     박스 ≥3 개일 땐 시각상 가운데 박스를 anchor 로 두고 나머지 사이드가
+     center 에서 펼쳐지는 방식 유지.
+     ─────────────────────────────────────────────────────────────── */
+  function initHybridUnfold() {
+    var SEL = '.about_hybrid-contents_box';
+
+    function build() {
+      var nodes = document.querySelectorAll(SEL);
+      /* 데스크탑/모바일 듀얼 마크업: display:none 인 반대편 박스는 제외.
+         (안 그러면 width=0 박스가 boxes[0] 로 와서 build 가 영영 false 리턴) */
+      var visibleNodes = Array.prototype.filter.call(nodes, function (n) {
+        return n.getBoundingClientRect().width > 0;
+      });
+      if (visibleNodes.length < 2) { log('hybrid: visible nodes=' + visibleNodes.length + '/' + nodes.length); return false; }
+
+      /* 시각 순서로 정렬 — DOM 순서와 무관하게 화면상 좌→우 */
+      var boxes = visibleNodes.sort(function (a, b) {
+        return a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+      });
+
+      var rects = boxes.map(function (b) { return b.getBoundingClientRect(); });
+
+      /* anchorCx 결정.
+         - 2개 → 두 박스 중심의 평균 (둘 다 그 점에서 출발해 양쪽으로 펼침)
+         - 3+개 → 시각상 가운데 박스 중심 (그 박스는 고정 anchor) */
+      var anchorCx;
+      var anchorIdx = -1;          /* 슬라이드만, 페이드 없음. -1 이면 모두 페이드인 */
+      if (boxes.length === 2) {
+        anchorCx = (rects[0].left + rects[0].width / 2 +
+                    rects[1].left + rects[1].width / 2) / 2;
+        /* 1번(좌측 박스, 사용자 설명상 '가운데에서 시작하고 보이는') 은
+           슬라이드만 — opacity 변화 없음. */
+        anchorIdx = 0;
+      } else {
+        anchorIdx = Math.floor(boxes.length / 2);
+        anchorCx  = rects[anchorIdx].left + rects[anchorIdx].width / 2;
+      }
+
+      /* 초기 상태: 모든 박스를 anchorCx 로 translate. anchor 박스는 visible,
+         나머지는 invisible (페이드인 대기). */
+      boxes.forEach(function (b, i) {
+        var cx = rects[i].left + rects[i].width / 2;
+        var dx = anchorCx - cx;
+        var op = (i === anchorIdx) ? 1 : 0;
+        if (window.gsap) gsap.set(b, { x: dx, opacity: op });
+        else {
+          b.style.transform = 'translateX(' + dx + 'px)';
+          b.style.opacity = String(op);
+        }
+      });
+
+      var played = false;
+      /* h2 "국내 최초~도입" 이 거의 다 펼쳐졌을 때(0.5s) 박스 unfold 가
+         이어지도록 진입 감지 후 대기. (h2 = trigger+0.1s 시작, 0.6s 펼침) */
+      var PRE_DELAY = 0.5;
+      function play() {
+        if (played) return; played = true;
+        boxes.forEach(function (b, i) {
+          if (window.gsap) {
+            gsap.to(b, { x: 0, opacity: 1, duration: 1.0, ease: 'power3.out', delay: PRE_DELAY });
+          } else {
+            b.style.transitionDelay = PRE_DELAY + 's';
+            b.style.transition = 'transform 1s cubic-bezier(0.22,1,0.36,1) ' + PRE_DELAY + 's, opacity 0.8s ease-out ' + PRE_DELAY + 's';
+            b.style.transform  = 'translateX(0)';
+            b.style.opacity    = '1';
+          }
+        });
+        log('hybrid unfold play (delay ' + PRE_DELAY + 's)');
+      }
+
+      /* 트리거는 anchor 박스 (또는 첫 박스) — 스크롤 진입 감지 */
+      var triggerEl = boxes[anchorIdx >= 0 ? anchorIdx : 0];
+      if (!('IntersectionObserver' in window)) { play(); return true; }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          play();
+        });
+      }, { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0 });
+      io.observe(triggerEl);
+      log('hybrid unfold ready, count=' + boxes.length + ' anchorIdx=' + anchorIdx);
+      return true;
+    }
+
+    if (build()) return;
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (build() || ++tries > 30) clearInterval(iv);
+    }, 200);
+  }
+
+  function init() {
+    window.__helixAboutInit = true;
+    log('init');
+    /* TEMP HOLD — 헥사 모션그래픽 잠시 비활성화 (사용자 요청)
+    renderHexDiagram();
+    initHexAnimations();
+    */
+    initHexSection2();
+    initViewport60FadeIn();
+    initHistorySpark();
+    initStandardFontHighlight();
+    /* initChewyH2(); — 왜 하이브리드 h2 인터랙션 제거 (사용자 요청) */
+    initHybridRoomTitle();
+    initBurnGlow();
+    initAboutButtonGlow();
+    initSection22Reveal();
+    initAboutHistoryStandardFontFade();
+    initAboutMiniTitleGradient();
+    initHybridQuestionReveal();
+    initClearframeAlphenixReveal();
+    initHistoryTimeline();
+    initWeAreHereReveal();
+    initHistoryTitleBoxFadeIn();
+    initHistoryBodyGate();
+    initHybridUnfold();
+    var video = injectBgVideo();
+    var videoReadyP = whenVideoReady(video);
+
+    /* 텍스트는 비디오를 기다리지 않음 — 폰트+심볼 준비되면 즉시 시작.
+       document.fonts.ready 까지 함께 기다려야 폴백 폰트로 먼저 그려진 뒤
+       지정 폰트로 swap 되는 깜빡임을 차단할 수 있음 (initViewport60FadeIn 과 동일 패턴). */
+    /* width-metric ground-truth: .about-heading 의 실제 computed family/weight/style 로
+       두 span(타겟+monospace, monospace only) 의 너비가 달라질 때까지 대기.
+       document.fonts API 가 일찍 resolve 되거나 실제 family 가 다를 가능성을 모두 우회. */
+    function metricForHeading() {
+      var h = document.querySelector('.about-heading');
+      if (!h) return Promise.resolve();
+      var cs = getComputedStyle(h);
+      var fam = (cs.fontFamily || '').split(',')[0].replace(/['"]/g, '').trim();
+      if (!fam) return Promise.resolve();
+      return waitFontByMetric(fam, cs.fontWeight || '400', cs.fontStyle || 'normal', 4000);
+    }
+    var heroFontReady = Promise.all([
+      whenHeroFontReady(),
+      (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve(),
+      metricForHeading()
+    ]);
+    var textReadyP = Promise.all([heroFontReady, preloadSymbol()]);
+
+    /* 텍스트 시퀀스 끝난 뒤 비디오 페이드. 비디오가 그 시점에 아직 안 왔으면 기다렸다 진행 */
+    var textStarted = false;
+    function startText(reason) {
+      if (textStarted) return; textStarted = true;
+      log('text start:', reason);
+      runTextTimeline().then(function () {
+        videoReadyP.then(function () { fadeInVideo(video); });
+      });
+    }
+
+    textReadyP.then(function () { startText('ready'); });
+    /* 텍스트용 안전 폴백 (비디오 무관) — width-metric 까지 4s 폴링이라
+       그보다 여유를 둔 6s 폴백 */
+    setTimeout(function () { startText('text-timeout'); }, 6000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ================================================================
+   #helix-for-family — 자식 div 엇박 페이드 인 (스크롤 진입 트리거)
+   - div-block-57 / div-block-132 의 직계 div 자식을 DOM 순서로 수집
+   - IntersectionObserver 가 뷰포트 진입 감지 시 stagger delay 로
+     .is-family-in 부착 (CSS 가 페이드/스케일/blur 풀림)
+   - delay: 기본 220ms 간격, 홀수 인덱스에 +90ms 오프셋으로 엇박
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var SELECTOR =
+    '#helix-for-family > div.div-block-57 > div, ' +
+    '#helix-for-family > div.div-block-132 > div';
+
+  function bind() {
+    var els = Array.prototype.slice.call(document.querySelectorAll(SELECTOR));
+    if (!els.length) return false;
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-family-in'); });
+      return true;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var idx = els.indexOf(entry.target);
+        var delay = idx * 220 + (idx % 2 ? 90 : 0); /* 엇박 */
+        setTimeout(function () {
+          entry.target.classList.add('is-family-in');
+        }, delay);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+    els.forEach(function (el) { io.observe(el); });
+    return true;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind()) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
+   의료진 카드 (.div-block-72) — 잔잔한 슬라이드 페이드 인
+   - DOM 순서대로 150ms 일정 stagger
+   - IntersectionObserver 진입 시 .is-doctor-in 부착
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function bind() {
+    /* CSS grid order 와 DOM 순서가 어긋나서, 시각 좌→우 순서를 명시. */
+    var ORDER = ['ts-vet', 'sy-vet', 'hj-vet', 'ys-vet', 'sh-vet', 'si-vet', 'hs-vet', 'hc-vet'];
+    var els = [];
+    /* Webflow 가 데스크탑/모바일 별도 DOM 으로 렌더링하면 같은 vet 클래스가
+       두 군데 박혀 있을 수 있음 (한쪽은 현재 breakpoint 에서 display:none).
+       querySelectorAll 로 전부 수집한 뒤, 실제 화면에 보이는(=레이아웃 박스가
+       있는) 요소만 관찰. 그래야 모바일에서 카드가 안 보이는 회귀를 막음. */
+    ORDER.forEach(function (cls) {
+      var matches = document.querySelectorAll('.' + cls);
+      for (var i = 0; i < matches.length; i++) {
+        var m = matches[i];
+        /* offsetParent === null 이면 display:none (혹은 position:fixed root).
+           getClientRects 가 0 이어도 동일하게 비표시 처리. */
+        if (m.offsetParent === null && m.getClientRects().length === 0) continue;
+        els.push(m);
+      }
+    });
+    if (!els.length) return false;
+
+    /* DOM 순서가 화면 좌→우 와 다른 경우가 있어 (CSS grid order 가
+       DOM 과 어긋남) 화면상 시각 위치로 정렬. 행은 top, 같은 행은 left. */
+    els.sort(function (a, b) {
+      var ra = a.getBoundingClientRect();
+      var rb = b.getBoundingClientRect();
+      var rowGap = 40; /* 같은 행으로 간주할 top 허용 오차 */
+      if (Math.abs(ra.top - rb.top) > rowGap) return ra.top - rb.top;
+      return ra.left - rb.left;
+    });
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-doctor-in'); });
+      return true;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        /* 한 행이 3장 단위라 stagger 도 3 단위로 리셋 — 두번째 행이
+           나중에 진입해도 카드별 누적 지연이 무한정 늘어나지 않음. */
+        var idx = els.indexOf(entry.target);
+        setTimeout(function () {
+          entry.target.classList.add('is-doctor-in');
+        }, (idx % 3) * 150);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+    els.forEach(function (el) { io.observe(el); });
+    return true;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind()) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
+   SUBHEADER — 호버 / 스크롤스파이 / 클릭 밑줄
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function init() {
+    var links = document.querySelectorAll('.subheader_click-area');
+    if (!links.length) return;
+
+    /* 타깃 결정 — 우선순위
+       1. href ID 와 일치하는 요소 중 실제 화면에 보이는 것 (Webflow 듀얼
+          마크업에서 같은 ID 가 데스크탑/모바일 양쪽에 있을 때 visible 쪽)
+       2. 큐레이션 매핑: 링크 문구와 섹션 헤딩 문구가 서로 다른 메뉴
+          (보호자·원장의료진) 를 지정 헤딩의 조상 섹션으로 확실히 연결.
+       3. heuristic: 링크의 .subheader_title 텍스트와 매칭되는 visible 헤딩
+          (h1~h4) 의 가장 가까운 section/main 조상.
+          데스크탑에만 ID 가 박혀 있고 모바일 마크업엔 ID 가 없는 케이스
+          (보호자/의료진 같은 듀얼 섹션) 를 커버.
+       4. null — 클릭 핸들러는 null 이면 native 동작 안 막음. spy 도 무시. */
+
+    /* 링크 텍스트 ↔ 섹션 헤딩 텍스트가 다른 메뉴 전용 연결표.
+       titleHas (공백 제거한 링크 문구에 포함되면) → headingText 를 가진
+       visible 헤딩의 조상 섹션으로 스크롤. Webflow 섹션 링크(pageSection)
+       가 앵커 ID 를 못 만들거나, 링크 문구가 헤딩과 안 맞아도 확실히 이동. */
+    var CURATED_ANCHORS = [
+      { titleHas: '보호자', headingText: '이것이 헬릭스가 생각하는 병원의 역할입니다' },
+      { titleHas: '원장의료진', headingText: '원장 의료진' }
+    ];
+    function findSectionByHeadingText(text) {
+      var norm = (text || '').replace(/\s+/g, '');
+      if (!norm) return null;
+      var hs = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      for (var i = 0; i < hs.length; i++) {
+        var h = hs[i];
+        if (h.offsetParent === null && h.getClientRects().length === 0) continue;
+        var ht = (h.textContent || '').replace(/\s+/g, '');
+        if (!ht) continue;
+        if (ht === norm || ht.indexOf(norm) !== -1 || norm.indexOf(ht) !== -1) {
+          return h.closest('section') || h.closest('[class*="section"]') || h;
+        }
+      }
+      return null;
+    }
+
+    function findVisibleTarget(href, linkEl) {
+      if (href && href.charAt(0) === '#' && href.length >= 2) {
+        var id = href.slice(1);
+        var all = document.querySelectorAll('[id="' + id.replace(/"/g, '\\"') + '"]');
+        for (var i = 0; i < all.length; i++) {
+          var el = all[i];
+          if (el.offsetParent !== null || el.getClientRects().length > 0) return el;
+        }
+      }
+      if (linkEl) {
+        var titleEl = linkEl.querySelector('.subheader_title') || linkEl;
+        var title = (titleEl.textContent || '').replace(/\s+/g, ' ').trim();
+        var ntitle = title.replace(/\s+/g, '');
+        for (var c = 0; c < CURATED_ANCHORS.length; c++) {
+          if (ntitle.indexOf(CURATED_ANCHORS[c].titleHas) !== -1) {
+            var curated = findSectionByHeadingText(CURATED_ANCHORS[c].headingText);
+            if (curated) return curated;
+          }
+        }
+        if (title.length >= 2) {
+          var headings = document.querySelectorAll('h1, h2, h3, h4');
+          for (var j = 0; j < headings.length; j++) {
+            var h = headings[j];
+            if (h.offsetParent === null && h.getClientRects().length === 0) continue;
+            var ht = (h.textContent || '').replace(/\s+/g, ' ').trim();
+            if (!ht) continue;
+            if (ht === title || ht.indexOf(title) !== -1 || title.indexOf(ht) !== -1) {
+              return h.closest('section') || h.closest('[class*="section"]') || h;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    /* 요소가 실제로 화면에 그려지는가 (display:none 이면 false).
+       데스크탑 서브헤더(.subheader) 와 모바일 서브헤더(.m-subheader-copy) 가
+       DOM 에 동시에 존재하고 브레이크포인트로 한쪽만 display:flex 인 구조라,
+       "지금 보이는 쪽" 만 골라내는 판정이 스크롤스파이에 반드시 필요하다. */
+    function isVisible(el) {
+      return !!(el && (el.offsetParent !== null || el.getClientRects().length > 0));
+    }
+
+    /* 지금 화면에 떠 있는 서브헤더 바의 높이. 데스크탑에선 .subheader,
+       tiny 브레이크포인트에선 .m-subheader-copy 가 보인다. 예전엔 무조건
+       .subheader 만 쟀기 때문에 모바일에서 subH=0 이 되어 spy line 과
+       클릭 스크롤 위치가 모두 어긋났다. */
+    function subHeaderH() {
+      var bars = document.querySelectorAll('.subheader, .m-subheader-copy');
+      for (var i = 0; i < bars.length; i++) {
+        if (isVisible(bars[i])) return bars[i].getBoundingClientRect().height;
+      }
+      return 0;
+    }
+
+    var entries = [];
+    function buildEntries() {
+      entries = [];
+      links.forEach(function (a) {
+        var target = findVisibleTarget(a.getAttribute('href') || '', a);
+        if (target) entries.push({ link: a, target: target });
+      });
+    }
+    buildEntries();
+    if (!entries.length) return;
+
+    function setActive(link) {
+      links.forEach(function (l) { l.classList.remove('is-active', 'w--current'); });
+      if (link) link.classList.add('is-active');
+    }
+
+    var clickedAt = 0;
+    links.forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href') || '';
+        if (href.charAt(0) !== '#') return;
+        /* 클릭 시점에 visible 타깃 재계산 (resize 케이스). null 이면
+           native 동작 막지 않음 — 잘못된 좌표로 스크롤하느니 안 움직이는 게
+           나음. */
+        var t = findVisibleTarget(href, a);
+        if (!t) return;
+        e.preventDefault();
+        setActive(a);
+        clickedAt = Date.now();
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var subH = subHeaderH();
+        var y = t.getBoundingClientRect().top + window.pageYOffset - (headerH + subH + 12);
+        if (href === '#cert' && window.innerWidth <= 767) {
+          e.stopImmediatePropagation();
+          y = t.getBoundingClientRect().top + window.pageYOffset - (subH + 54);
+        }
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        if (history.replaceState) history.replaceState(null, '', href);
+      });
+    });
+
+    /* 스크롤스파이 — "서브헤더 바로 밑 기준선을 마지막으로 통과한 섹션" 활성화.
+       spy line: header.bottom + subheader.height + 16px.
+
+       ⚠️ "가장 가까운 섹션" 방식 금지 (미리 활성화되는 원인)
+       탭 6개가 가리키는 앵커 섹션들 사이에는 앵커가 없는 섹션이 잔뜩 끼어
+       있다 (예: Helix History 앵커 다음 인터벤션 앵커까지 사이에 10개).
+       그 구간에서는 기준선을 품는 앵커 섹션이 없는데, 예전 코드는
+       "기준선에 가장 가까운 섹션" 으로 폴백해서 아직 한참 남은 다음 섹션이
+       당첨됐다 → 사용자가 아직 이전 파트를 보고 있는데 다음 탭에 밑줄이
+       미리 켜졌다.
+       → 앵커 사이 구간은 "직전 앵커의 내용" 이므로 직전 탭을 유지한다.
+          다음 탭은 그 섹션 윗변이 실제로 서브헤더 밑까지 올라왔을 때 켠다.
+
+       ⚠️ 숨은 쌍둥이 링크 제외 (데스크탑에서 밑줄이 아예 안 뜨던 원인)
+       서브헤더 메뉴는 데스크탑(.subheader)/모바일(.m-subheader-copy) 두 벌이
+       DOM 에 동시에 있고 둘 다 같은 .subheader_click-area 클래스 + 같은 섹션
+       앵커를 쓴다. 즉 링크가 6개가 아니라 12개고, 같은 섹션을 가리키는 짝이
+       두 개씩이다. 예전 코드는 straddle 을 덮어쓰기(마지막 승)로 골라
+       DOM 뒤쪽에 있는 모바일 링크가 항상 당첨 → 데스크탑에선 display:none 인
+       링크에 밑줄이 붙어 "아무 반응 없음" 으로 보였다.
+       → 지금 화면에 실제로 보이는 링크만 후보로 삼는다. */
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        if (Date.now() - clickedAt < 700) return;
+        var hEl = document.querySelector('header.header, header, nav');
+        var headerH = hEl ? hEl.getBoundingClientRect().height : 0;
+        var line = headerH + subHeaderH() + 16;
+        /* 기준선을 이미 통과한 섹션들 중 윗변이 기준선에 가장 가까운 것
+           = 문서 순서상 마지막으로 진입한 섹션. 배열 순서에 의존하지 않는다. */
+        var current = null;
+        var bestTop = -Infinity;
+        var firstVisible = null;
+        for (var i = 0; i < entries.length; i++) {
+          if (!isVisible(entries[i].link)) continue;
+          var rect = entries[i].target.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) continue;
+          if (!firstVisible) firstVisible = entries[i].link;
+          if (rect.top <= line && rect.top > bestTop) {
+            bestTop = rect.top;
+            current = entries[i].link;
+          }
+        }
+        /* 아직 첫 섹션에도 못 들어간 히어로 구간 → 첫 탭을 기본값으로 */
+        if (!current) current = firstVisible;
+        if (current && !current.classList.contains('is-active')) setActive(current);
+      });
+    }
+
+    /* 브레이크포인트가 바뀌면 보이는 섹션 자체가 바뀐다
+       (#helix-for-family / #cheif-vets 는 데스크탑용·모바일용이 따로 있고
+       ID 가 같다) → 타깃을 다시 잡아준 뒤 스파이 재계산. */
+    function onResize() {
+      buildEntries();
+      onScroll();
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    onScroll();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+/* ================================================================
+   #cert — 인증 카드 3장 스크롤 진입 스태거 (좌→우 슬라이드 + 페이드)
+   - 셀렉터: #cert .About_Contents_Box_QQQQQQ (DOM 순서대로)
+   - IntersectionObserver 진입 시 .is-cert-in 부착 (CSS 가 트랜지션 처리)
+   - stagger: 80ms — 챠쟈쟉, 기민하게
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function bind() {
+    var els = Array.prototype.slice.call(
+      document.querySelectorAll('#cert .about_contents_box_ahha')
+    );
+    if (!els.length) return false;
+
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-cert-in'); });
+      return true;
+    }
+
+    var bursted = false;
+    function fireBurst() {
+      if (bursted) return;
+      bursted = true;
+      var btns = document.querySelectorAll('#cert .cert-plus');
+      Array.prototype.forEach.call(btns, function (b) {
+        b.classList.add('is-cert-burst');
+      });
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var idx = els.indexOf(entry.target);
+        setTimeout(function () {
+          entry.target.classList.add('is-cert-in');
+          /* 마지막 카드의 슬라이드/페이드 트랜지션(0.5s)이 끝나는 시점에 셋다 동시 burst */
+          if (idx === els.length - 1) {
+            setTimeout(fireBurst, 500);
+          }
+        }, idx * 140);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.5, rootMargin: '0px 0px -22% 0px' });
+
+    els.forEach(function (el) { io.observe(el); });
+    return true;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind()) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
+   ABOUT 페이지 — 준비중 토스트 마킹
+   대상: SVIC(.link-block) / 헤더 / 서브헤더 제외한 본문 버튼 전부
+     · .cta_seocho_button, .cta-style — 본문 CTA(블루)
+   coming-soon.js 가 캡처 단계에서 클릭 가로채고 토스트 노출.
+
+   NOTE: #cert .cert-plus 는 의도적으로 제외 — about/cert-modal/modal.js 가
+   클릭을 가로채 인증 상세 모달을 띄움.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var COMING_SELECTORS = [
+    '.cta_seocho_button',
+    '.cta-style'
+  ];
+
+  function isInFooter(el) {
+    /* 푸터 안의 .cta-style 등은 실제 네비게이션 링크일 수 있음 →
+       coming-soon 마킹 제외 (홈 페이지 푸터처럼 링크가 정상 동작하도록). */
+    return !!(el.closest && el.closest(
+      'section.footer, .footer, footer, section[class*="footer" i], [class*="footer" i]:not([class*="-bar" i])'
+    ));
+  }
+
+  function mark() {
+    COMING_SELECTORS.forEach(function (sel) {
+      document.querySelectorAll(sel).forEach(function (el) {
+        if (isInFooter(el)) return;
+        if (!el.hasAttribute('data-coming-soon')) {
+          el.setAttribute('data-coming-soon', '1');
+        }
+      });
+    });
+  }
+
+  function start() {
+    mark();
+    var n = 0;
+    var iv = setInterval(function () {
+      mark();
+      if (++n >= 20) clearInterval(iv);
+    }, 250);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
+   헤더 지점안내 버튼 → 홈 마지막 섹션(#animal-medical-center)로 이동
+   ================================================================ */
+(function () {
+  'use strict';
+
+  var TARGET = '/#animal-medical-center';
+
+  function bind() {
+    var titles = document.querySelectorAll('.header_branch-button_title');
+    if (!titles.length) return false;
+
+    titles.forEach(function (t) {
+      var anchor = t.closest('a') || t;
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = TARGET;
+      }, true);
+      if (anchor.tagName === 'A') anchor.setAttribute('href', TARGET);
+      anchor.style.cursor = 'pointer';
+    });
+    return true;
+  }
+
+  var tries = 0;
+  function start() {
+    if (bind()) return;
+    if (++tries >= 30) return;
+    setTimeout(start, 200);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+  window.addEventListener('load', start);
+})();
+
+/* ================================================================
+   HEADER 높이 → --header-h CSS 변수 동기화
+   section.subheader 가 fixed 로 변경됐으므로 top 값만 맞추면 됨.
+   ================================================================ */
+(function () {
+  'use strict';
+
+  function sync() {
+    var hEl = document.querySelector('header.header, header, .w-nav, nav');
+    if (!hEl) return;
+    var h = hEl.getBoundingClientRect().height;
+    if (h > 0) {
+      document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+  }
+
+  var pollCount = 0;
+  var pollTimer = setInterval(function () {
+    sync();
+    if (++pollCount >= 20) clearInterval(pollTimer);
+  }, 200);
+
+  window.addEventListener('resize', sync);
+  window.addEventListener('load', sync);
+  sync();
+})();
+
+/* ================================================================
+   ABOUT(=/discover-helix) 페이지 — GA 클릭 측정
+   ----------------------------------------------------------------
+   - 섹션3 서초본원 CTA  : .cta_seocho_button   → about_seocho_cta
+   - 스빅(SVIC) 버튼     : .link-block          → about_svic_cta
+   - 본문 CTA(섹션4 응급) : .cta-style           → about_emergency_cta / about_cta
+   - 연혁 카드덱 화살표   : .helix-deck-arrow-*  → history_deck_nav
+   - 의료진 카드 지점버튼 : 카드 내 "서초"/"서울동물영상종양센터" 텍스트
+                                                → doctor_branch_click
+   측정 전용 — preventDefault/stopPropagation 을 절대 하지 않아 원래 동작
+   (coming-soon 토스트 / cert 모달 / 외부 링크 이동) 그대로. window 캡처
+   단계로 들어 다른 가로채기보다 먼저 1회만 기록.
+   ================================================================ */
+(function () {
+  'use strict';
+  if (window.__helixAboutGaClicksInit) return;
+  window.__helixAboutGaClicksInit = true;
+
+  /* 의료진 카드 지점 버튼인지 — 헤더/푸터/CTA 제외, 본문의 짧은 지점명 정확 매칭.
+     "서초 본원" 알약 버튼 등. (고정 클래스가 없어 텍스트로 식별) */
+  function isDoctorBranchEl(el) {
+    if (!el || !el.closest) return false;
+    var s = ((el.innerText || '')).replace(/\s+/g, ' ').trim();
+    /* 일산 분원은 측정 제외 (요청) — 매칭 목록에서 뺌 */
+    if (!/^(서초\s*본원|서울동물영상종양센터)$/.test(s)) return false;
+    if (el.closest('header, .header, nav, .subheader, footer, .footer, [class*="header" i], [class*="footer" i]')) return false;
+    if (el.closest('.cta_seocho_button, .cta-style, .link-block')) return false;
+    return true;
+  }
+
+  function device() { return window.HelixVP ? HelixVP.device() : (window.innerWidth <= 767 ? 'mobile' : 'desktop'); }
+  function txt(el) { return ((el && el.innerText) || '').replace(/\s+/g, ' ').trim().slice(0, 60); }
+  function hrefOf(el) {
+    var a = el && (el.tagName === 'A' ? el : (el.querySelector && el.querySelector('a')));
+    return a ? a.href : '';
+  }
+  function send(base, extra) {
+    try {
+      var d = device();
+      var p = {
+        item_type: base,
+        page: /discover/.test((location.pathname || '').toLowerCase()) ? 'discover' : 'about',
+        device: d
+      };
+      if (extra) { for (var k in extra) { if (extra.hasOwnProperty(k)) p[k] = extra[k]; } }
+      var name = base + '_' + d;
+      if (typeof window.gtag === 'function') {
+        p.transport_type = 'beacon';
+        window.gtag('event', name, p);
+      } else if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+        p.event = name;
+        window.dataLayer.push(p);
+      }
+    } catch (e) {}
+  }
+
+  window.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+
+    /* 0) 서브헤더 섹션 링크 — 각 섹션으로 점프하는 네비 (어느 섹션 눌렀는지 라벨) */
+    var subnav = t.closest('.subheader_click-area');
+    if (subnav) {
+      send('subheader_nav', { label: txt(subnav), value: subnav.getAttribute('href') || hrefOf(subnav) });
+      return;
+    }
+
+    /* 1) 섹션 CTA 패밀리(.cta_seocho_button / .cta-style / .link-block) — 클래스를
+          공유(서초본원·일산·특화·응급) → 텍스트로 구분해 버튼마다 정확히 1개 이벤트. */
+    var cta = t.closest('.cta_seocho_button, .cta-style, .link-block');
+    if (cta) {
+      var L = txt(cta);
+      if (cta.matches('.link-block'))      send('about_svic_cta',      { label: L, value: hrefOf(cta) });
+      else if (/서초/.test(L))             send('about_seocho_cta',    { label: L, value: hrefOf(cta) });
+      else if (/응급|증상/.test(L))        send('about_emergency_cta', { label: L, value: hrefOf(cta) });
+      else if (/일산/.test(L))             send('about_ilsan_cta',     { branch: '일산', label: L, value: hrefOf(cta) });
+      else if (/특화/.test(L))             send('about_specialty_cta', { label: L, value: hrefOf(cta) });
+      else                                 send('about_cta',           { label: L, value: hrefOf(cta) });
+      return;
+    }
+
+    /* 2) 의료진 카드 지점 버튼 — 고정 클래스가 없어 본문(헤더/푸터/CTA 제외)의
+          짧은 지점명 버튼을 텍스트로 식별. CTA 체크 다음에 둬 섹션 CTA 와 분리. */
+    var dEl = t.closest('a, button, [role="button"], [class*="button" i], [class*="btn" i]') || t;
+    if (isDoctorBranchEl(dEl)) {
+      var ds = txt(dEl);
+      var br = /서울동물영상종양/.test(ds) ? '서울동물영상종양센터' : '서초';
+      send('doctor_branch_click', { branch: br, label: ds });
+      return;
+    }
+
+    /* 5) 연혁 카드덱 좌우 화살표 */
+    var arrow = t.closest('.helix-deck-arrow-left, .helix-deck-arrow-right');
+    if (arrow) {
+      send('history_deck_nav', { dir: arrow.classList.contains('helix-deck-arrow-left') ? 'prev' : 'next' });
+      return;
+    }
+  }, true);
+})();
+
+/* ================================================================
+   원장 의료진 카드 — 지점 라벨 두 가지 손질
+   (1) 사진만 잘라내는 층을 만들어, 삐져나온 지점 라벨이 안 잘리게
+   (2) "일산 분원" 라벨은 누르면 "준비중입니다" 안내
+   ----------------------------------------------------------------
+   일산 분원 라벨은 Webflow 컴포넌트(TextBox(Bo/W/Sh))로 만든, 주소가
+   안 걸린 <a>. 그동안 coming-soon.js 가 글자('일산 분원')만 보고 /ilsan
+   으로 열리게 승격시켜 왔다. 사용자 요청으로 이 자리만 눌렀을 때
+   "준비중입니다" 안내가 뜨게 바꿈.
+
+   방법: coming-soon.js 가 이미 data-coming-soon 표식이 달린 요소를
+   가로채 안내를 띄운다. 여기서는 의료진 카드 안의 "일산 분원" 라벨에만
+   그 표식을 달아 준다. (서초 본원 · 서울동물영상종양센터 라벨은 그대로)
+
+   ⚠️ 범위를 의료진 카드 안으로 좁힌 이유 — 같은 컴포넌트가 다른 자리에
+   쓰이더라도 거기까지 막히지 않게 하기 위함.
+   ================================================================ */
+(function () {
+  'use strict';
+  if (window.__helixAboutIlsanComingSoon) return;
+  window.__helixAboutIlsanComingSoon = true;
+
+  var VET_SEL = '.ts-vet, .hj-vet, .sy-vet, .si-vet, .sh-vet, .ys-vet, .hs-vet, .hc-vet';
+  var LABEL_SEL = '.textbox-bo-w-sh';
+
+  /* ── 사진만 잘라내는 층 만들기 ────────────────────────────────
+     카드 자체에 걸린 "밖으로 나간 건 잘라내라" 설정이 라벨까지 잘라서,
+     "서울동물영상종양센터" 라벨이 옆으로 삐져나온 부분이 안 보였다.
+     사진(.vet-photo)과 그 위 그라데이션(.vet-fade)만 별도 층에 담아
+     거기서 잘라내면, 카드는 잘라내기를 풀어도 되고 라벨은 온전히 보인다.
+
+     카드에 안쪽 여백이 없어서 새 층은 카드와 정확히 같은 상자가 된다
+     → 사진의 % 좌표·크기 값이 그대로 유지된다 (사진은 안 건드림).
+     ──────────────────────────────────────────────────────────── */
+  function clipPhotos(card) {
+    /* 삐져나오는 라벨을 가진 카드만 손댄다 — 나머지 카드는 지금 그대로 둔다
+       (건드릴 이유가 없고, 손대는 곳이 적을수록 안전하다). */
+    if (!card.querySelector('.div-block-173')) return;
+    if (card.querySelector('.helix-vet-clip')) return;
+    var photo = card.querySelector('.vet-photo');
+    if (!photo || photo.parentElement !== card) return;
+
+    var clip = document.createElement('div');
+    clip.className = 'helix-vet-clip';
+    clip.setAttribute('aria-hidden', 'true');
+    card.insertBefore(clip, photo);
+
+    /* 그리는 순서(사진 → 그라데이션)를 그대로 옮긴다 */
+    clip.appendChild(photo);
+    var fade = card.querySelector('.vet-fade');
+    if (fade && fade.parentElement === card) clip.appendChild(fade);
+
+    /* 층이 자리잡은 뒤에야 카드의 잘라내기를 푼다 (순서 지킬 것) */
+    card.classList.add('is-vet-clipped');
+  }
+
+  function mark() {
+    document.querySelectorAll(VET_SEL).forEach(function (card) {
+      clipPhotos(card);
+      card.querySelectorAll(LABEL_SEL).forEach(function (el) {
+        var t = ((el.innerText || el.textContent) || '').replace(/\s+/g, ' ').trim();
+        if (!/^일산\s*분원$/.test(t)) return;
+        /* 잠금 표식 — coming-soon.js 는 글자가 '일산 분원' 인 링크를
+           /ilsan 로 열리게 승격시킨다. 이 자리만 승격 대상에서 빼 둔다.
+           (헤더·햄버거의 같은 글자 링크는 그대로 열림) */
+        if (!el.hasAttribute('data-coming-soon-lock')) {
+          el.setAttribute('data-coming-soon-lock', '1');
+        }
+        /* 이미 승격돼 있었다면 되돌림 */
+        if (el.hasAttribute('data-helix-link')) el.removeAttribute('data-helix-link');
+        if (el.getAttribute('data-coming-soon') !== '1') {
+          el.setAttribute('data-coming-soon', '1');
+        }
+      });
+    });
+  }
+
+  /* coming-soon.js 도 5초 동안 계속 훑으며 승격을 시도하므로, 잠금 표식을
+     그보다 조금 더 오래(약 6초) 다시 확인해 늦게 그려지는 경우도 덮는다. */
+  var tries = 0;
+  function run() {
+    mark();
+    if (++tries >= 25) return;
+    setTimeout(run, 250);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+  window.addEventListener('load', mark);
+})();

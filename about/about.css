@@ -1,0 +1,998 @@
+/* ================================================================
+   HELIX AMC - ABOUT PAGE CSS
+   ================================================================ */
+
+/* 인트로 세 번째 텍스트 — Webflow 원본 두께(400) 유지.
+   global.css 의 body 500 상속으로 발행본에서만 굵어지는 현상 차단. */
+.about_contents_sub-title {
+  font-weight: 400;
+}
+
+/* Honeycomb diagram (전문분과 5개 육각형) ----------------------- */
+.diagram-place-holder {
+  /* Section 2 스크롤 시퀀스 — ScrollTrigger pin 이 런타임에 position:fixed
+     로 잡아둠 (CSS sticky 는 Webflow 컬럼 overflow 환경에 따라 미동작
+     사례가 있어 폐기). */
+  position: relative;
+  overflow: hidden;
+}
+
+.helix-hex-diagram {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* Section 2 — 자식 hex 그룹의 rotateY/translateZ 가 3D 로 보이도록
+     SVG 자체에 perspective 부여. */
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+}
+
+/* Section 2 — 각 hex 가 3D 변환을 받을 수 있도록. SVG <g> 에 CSS transform
+   3D 가 적용될 때 preserve-3d 가 있어야 자식들이 평탄화되지 않는다. */
+.helix-hex-diagram .hex {
+  transform-style: preserve-3d;
+}
+
+.helix-hex-diagram .hex path {
+  /* fill: about 두 번째 섹션 배경 화이트 (#f4f7fb). 각 헥사가 완결된
+     6엣지 닫힌 도형이라 fill 이 깨끗하게 채워짐 → 겹쳐도 뒤가 안 비침. */
+  fill: #f4f7fb;
+  stroke: #0075d6;
+  stroke-width: 0.7;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+
+.helix-hex-diagram .hex text {
+  fill: #0075d6;
+  font-family: 'ds-endendend', sans-serif;
+  font-weight: 400;
+  pointer-events: none;
+  user-select: none;
+  /* font-size 는 JS 에서 SVG user unit 으로 설정 (다이어그램과 함께 스케일) */
+}
+
+.helix-hex-diagram .hex-naekwa text,
+.helix-hex-diagram .hex-oikwa text,
+.helix-hex-diagram .hex-yeongsang text {
+  font-weight: 700;
+}
+
+/* Section 1 모션 — 초기 숨김 상태 (about.js 가 GSAP 으로 페이드/스케일 인) */
+.helix-hex-diagram .hex {
+  opacity: 0;
+}
+
+/* 그림자 차단 — Webflow 디자이너에서 컬럼/도형에 박혀있을 수 있는
+   box-shadow / filter 를 명시적으로 무력화. 헥사가 깔끔하게 라인만 보이게. */
+.diagram-place-holder,
+.helix-hex-diagram,
+.helix-hex-diagram .hex,
+.helix-hex-diagram .hex path,
+.helix-hex-diagram .hex text {
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+/* Phase 5 모핑 타겟 — 크리스탈 3D 인상의 헬릭스 심볼.
+   - .hex-morph-stage : GSAP 가 위치/스케일/오파시티 다루는 wrapper
+   - .hex-morph-symbol: <img>, CSS 다층 drop-shadow + hue-shift 시머로
+     크리스탈/유리 재질 인상 (진짜 3D 모델 아님, 시각 근사).
+   - GSAP 와 CSS 가 transform 충돌하지 않도록 stage 만 GSAP, img 는 CSS
+     keyframe 만 담당. */
+.diagram-place-holder .hex-morph-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 70%;
+  width: auto;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  z-index: 5;
+}
+.diagram-place-holder .hex-morph-stage .hex-morph-symbol {
+  display: block;
+  height: 100%;
+  width: auto;
+  filter:
+    drop-shadow( 2px  2px 0 rgba(127, 196, 255, 0.45))
+    drop-shadow(-2px -2px 0 rgba( 80, 120, 255, 0.45))
+    drop-shadow(0 0 32px rgba(0, 117, 214, 0.55));
+  animation: helixCrystalShimmer 4.5s ease-in-out infinite;
+}
+@keyframes helixCrystalShimmer {
+  0%, 100% {
+    filter:
+      drop-shadow( 2px  2px 0 rgba(127, 196, 255, 0.45))
+      drop-shadow(-2px -2px 0 rgba( 80, 120, 255, 0.45))
+      drop-shadow(0 0 32px rgba(0, 117, 214, 0.55));
+  }
+  50% {
+    filter:
+      drop-shadow(-2px  2px 0 rgba(160, 220, 255, 0.55))
+      drop-shadow( 2px -2px 0 rgba( 60,  90, 255, 0.55))
+      drop-shadow(0 0 40px rgba(40, 150, 255, 0.65));
+  }
+}
+
+/* Box 3 효과 — 펄스 ring + 궤도 도는 빛점.
+   심볼과 같은 위치(holder 중앙) 에 SVG overlay.
+   기본 opacity 0 — JS 가 박스3 진입 시 0→1, 역스크롤 시 1→0 으로 토글. */
+.diagram-place-holder .box3-effects {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 6;
+  overflow: visible;
+  opacity: 0;
+}
+.diagram-place-holder .box3-effects .box3-pulse {
+  vector-effect: non-scaling-stroke;
+}
+.diagram-place-holder .box3-effects .box3-orbit-dot {
+  filter: drop-shadow(0 0 6px rgba(127, 196, 255, 0.9));
+}
+
+/* About Contents — title 페이드 인 (뷰포트 80% 진입 시) */
+.about_contents-title {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+.about_contents-title.is-visible {
+  opacity: 1;
+}
+
+/* 혹시 모를 ::after 가짜 밑줄 잔존 (구 캐시 대비) 무력화 */
+.about_contents-title::after,
+.about_contents-title::before {
+  content: none !important;
+}
+
+/* Divider blue grad — 좌→우 draw-in (뷰포트 80% 진입 시) */
+.divider_blue_grad_no-spacing-1,
+.divider_blue_grad_no-spacing {
+  transform: scaleX(0) !important;
+  transform-origin: left center !important;
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1) !important;
+}
+.divider_blue_grad_no-spacing-1.is-visible,
+.divider_blue_grad_no-spacing.is-visible {
+  transform: scaleX(1) !important;
+}
+
+/* About 본문 박스 — 인터랙션 전면 제거 (항상 표시, 이동/페이드 없음)
+   Webflow IX2 가 opacity/transform/filter 인라인을 박을 수 있어 모두 !important 로 무력화. */
+.about_three_contents-box,
+.about_three_contents-box.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
+
+/* ── History Timeline 가운데 펼침 ────────────────────────────────
+   JS 가 js-ready 부착 후에만 숨김. 미적용 시 항상 표시.
+   ─────────────────────────────────────────────────────────────── */
+.about_history_time-line_contents.js-ready {
+  /* transform / opacity 는 JS 가 inline 으로 계산해서 박음 */
+  transition:
+    opacity  0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.about_history_time-line_contents-copy_title.js-ready {
+  /* transform / opacity / transition 모두 JS 가 inline 으로 박음 (다른 타이밍) */
+  will-change: opacity, transform;
+}
+.about_history_time-line_contents.is-visible,
+.about_history_time-line_contents-copy_title.is-visible {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+/* ── Standard-font 형광펜 하이라이트 ─────────────────────────────
+   메인 블루 → 투명 그라데이션을 텍스트 background 로 깔고
+   background-size 를 0% → 100% 로 확장해 왼쪽→오른쪽 sweep.
+   글씨는 inline-painted text 가 위에 그대로 있어 절대 가려지지 않음.
+   ─────────────────────────────────────────────────────────────── */
+.is-highlight-target {
+  position: relative;
+  display: inline-block;
+  /* 형광펜 fill: #329ad6 반투명 단색. 0% → 100% width 로 직사각형 sweep */
+  background-image: linear-gradient(
+    to right,
+    rgba(50, 154, 214, 0.4),
+    rgba(50, 154, 214, 0.4)
+  );
+  background-repeat: no-repeat;
+  background-size: 0% 70%;
+  background-position: 0 95%;
+  transition: background-size 1.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.18s;
+}
+/* 얇은 직사각형 커서 — 페이드인 후 fill 과 함께 좌→우 이동 후 정지 */
+.is-highlight-target::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  height: 70%;
+  background: #329ad6;
+  box-shadow: 0 0 6px rgba(50, 154, 214, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease-out,
+    left    1.2s cubic-bezier(0.45, 0.05, 0.4, 1) 0.18s;
+}
+.is-highlight-target.is-highlighted {
+  background-size: 100% 70%;
+}
+.is-highlight-target.is-highlighted::after {
+  opacity: 1;
+  left: calc(100% - 4px);
+}
+
+/* ── Standard-font 텍스트 페이드인 (하이라이터 효과는 별도 유지) ── */
+.is-fade-target {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+.is-fade-target.is-faded-in {
+  opacity: 1;
+}
+
+/* ── About History 표제 페이드인 (스크롤 진입 시) ──────────────────
+   "헬릭스는 끊임없이, 진화하고 있습니다." 만 페이드 대상.
+   "포기하지 않는 진료…" 는 about.js 가 즉시 .is-visible 부착해 노출.
+   ─────────────────────────────────────────────────────────────── */
+[class*="about_history_title_standard-font"] {
+  opacity: 0;
+  transition: opacity 1.2s ease-out;
+  will-change: opacity;
+}
+[class*="about_history_title_standard-font"].is-visible {
+  opacity: 1;
+}
+
+/* ── 하이브리드 흰박스 페이드인 — JS 인라인 통제로 전환됨 ─────
+   기존 .div-block-175.helix-fade-pre[.is-visible] CSS 룰 제거.
+   `box-shadow: revert !important` 가 Webflow 원본이 아닌 user-agent 기본값
+   (=그림자 없음) 으로 되돌려 Webflow 그림자를 죽이는 버그가 있었음.
+   현재는 about.js 의 initHybridQuestionReveal 이 인라인 transition + 인라인
+   !important hide → 인라인 제거(reveal) 로 처리. CSS 룰 불필요.
+   ─────────────────────────────────────────────────────────────── */
+/* 번호 동그라미는 항상 최상단 */
+.div-block-177 {
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Hybrid Operation Room 타이틀 — TL 부터 비대칭 reveal ─────────
+   clip-path inset 으로 좌상단 → 우하단 방향 펼침.
+   transform-origin 0% 0% → scale 도 좌상단 기준.
+   mask 그라데이션으로 BR 살짝 페더링해 대각선 느낌 강조.
+   ─────────────────────────────────────────────────────────────── */
+#hybrid-operation-room h1.official-font_title {
+  opacity: 0;
+  -webkit-mask-image: linear-gradient(135deg,
+    #000 0%, #000 38%,
+    transparent 62%, transparent 100%);
+          mask-image: linear-gradient(135deg,
+    #000 0%, #000 38%,
+    transparent 62%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: 250% 250%;
+          mask-size: 250% 250%;
+  -webkit-mask-position: 100% 100%;
+          mask-position: 100% 100%;
+  transition:
+    opacity              1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-mask-position 1.7s cubic-bezier(0.22, 1, 0.36, 1),
+            mask-position 1.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, mask-position;
+}
+#hybrid-operation-room h1.official-font_title.is-corner-in {
+  opacity: 1;
+  -webkit-mask-position: 0% 0%;
+          mask-position: 0% 0%;
+}
+
+/* ── div-block-108 — Webflow 후광 자체를 transition 으로 점화 ──────
+   pseudo 추가 ring 시도는 외곽선처럼 보여 폐기.
+   초기엔 box-shadow 자체를 none 으로 덮어쓰고, .is-burning 시점에
+   box-shadow 가 부드럽게 켜지도록 transition.
+   blur/spread/alpha 모두 0 → max 로 동시 보간 → 후광이 자연스럽게 발화.
+   ─────────────────────────────────────────────────────────────── */
+.div-block-108 {
+  /* 초기: 후광 무시 (Webflow 가 박은 box-shadow 가 있어도 강제로 끔) */
+  box-shadow: 0 0 0 0 rgba(0, 117, 214, 0) !important;
+  /* 큰 ease-in (easeInExpo) — 거의 정지하다가 막판에 폭발적으로 켜짐 */
+  transition: box-shadow 1.6s cubic-bezier(0.7, 0, 0.84, 0) !important;
+}
+.div-block-108.is-burning {
+  /* 점화 완료: 원본 Webflow 비율 가깝게, 과장 줄임 */
+  box-shadow: 0 -0.7vw 1.0vw -0.25vw rgba(0, 117, 214, 0.7) !important;
+}
+/* 모바일: vw 단위가 너무 작아져 블러가 좁게 보이므로 확대 */
+@media screen and (max-width: 767px) {
+  .div-block-108.is-burning {
+    box-shadow: 0 -2vw 3.2vw -0.6vw rgba(0, 117, 214, 0.7) !important;
+  }
+}
+@media screen and (max-width: 479px) {
+  .div-block-108.is-burning {
+    box-shadow: 0 -2.5vw 4.5vw -0.8vw rgba(0, 117, 214, 0.7) !important;
+  }
+}
+
+/* ── 표 wrapper 투명도 마스크 ──────────────────────────────────
+   .lkujjghlbkjb 가 깔린 하단 영역에서 표가 비치지 않도록
+   아래쪽은 완전히 투명, 위로 갈수록 슬슬 풀려서 보이게.
+   ─────────────────────────────────────────────────────────────── */
+body > section.blackframe_image-h > section.clearframe_connect > div > div > div:nth-child(1) > div {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 70%,
+    rgba(0, 0, 0, 0) 90%,
+    rgba(0, 0, 0, 0) 100%);
+          mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 70%,
+    rgba(0, 0, 0, 0) 90%,
+    rgba(0, 0, 0, 0) 100%);
+}
+
+/* About Contents 3 — Concept_QQ 좌하향 살짝 기울이기 */
+.about_contents_3-concept_qq {
+  transform: rotate(-6deg) !important;
+  transform-origin: center center !important;
+}
+
+/* ── #helix-for-family — 자식 div 들 스크롤 진입 시 엇박 페이드 인 ──
+   div-block-57 / div-block-132 의 직계 div 자식들을 DOM 순서대로
+   엇박 stagger 로 등장. opacity + Y 슬라이드 + blur/saturate/brightness
+   풀림으로 화사하게. div-block-57 자식은 추가로 강한 스케일 인.
+   트리거는 IntersectionObserver (about.js).
+   ─────────────────────────────────────────────────────────────── */
+#helix-for-family > div.div-block-57 > div,
+#helix-for-family > div.div-block-132 > div {
+  opacity: 0;
+  filter: blur(10px) saturate(1.4) brightness(1.15);
+  transition:
+    opacity    0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    transform  1.20s cubic-bezier(0.22, 1, 0.36, 1),
+    filter     0.95s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+/* div-block-132 자식 — 살짝 스케일 */
+#helix-for-family > div.div-block-132 > div {
+  transform: scale(0.94);
+}
+/* div-block-57 자식 — 더 강한 스케일 인 (히어로 타이틀 톤) */
+#helix-for-family > div.div-block-57 > div {
+  transform: scale(0.82);
+  transform-origin: 50% 50%;
+}
+#helix-for-family > div.div-block-57 > div.is-family-in,
+#helix-for-family > div.div-block-132 > div.is-family-in {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0) saturate(1) brightness(1);
+}
+
+/* ── 의료진 카드 (.ts-vet, .hj-vet, .sy-vet) — 좌→우 슬라이드 페이드 ─
+   각 카드의 w-node wrapper 에 붙은 vet 식별 클래스를 직접 타겟.
+   blur/saturate/scale 등 화려한 효과는 의도적으로 배제 (정중한 인상).
+   카드 간 150ms 일정 stagger. 트리거: about.js IntersectionObserver.
+   ─────────────────────────────────────────────────────────────── */
+.ts-vet,
+.hj-vet,
+.sy-vet,
+.si-vet,
+.sh-vet,
+.ys-vet,
+.hs-vet,
+.hc-vet {
+  opacity: 0;
+  transform: translateX(-12px);
+  will-change: opacity, transform;
+}
+/* CSS animation 은 인라인 style 보다 cascade 우선순위가 높아
+   Webflow IX2 가 박은 inline opacity/transform 를 확실히 덮어씀. */
+.ts-vet.is-doctor-in,
+.hj-vet.is-doctor-in,
+.sy-vet.is-doctor-in,
+.si-vet.is-doctor-in,
+.sh-vet.is-doctor-in,
+.ys-vet.is-doctor-in,
+.hs-vet.is-doctor-in,
+.hc-vet.is-doctor-in {
+  animation: doctorCardSlideIn 1.10s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes doctorCardSlideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── div-block-116 두 자식 — 인너 섀도우 파동 (통..통..통..) ───────
+   웹플로우 원본 inset shadow: 0 0 1.5vw 0.4vw rgba(0,117,214,1).
+   @keyframes 안의 !important 는 스펙상 무시되므로, alpha 를 @property
+   변수로 애니메이션하고 box-shadow 자체는 셀렉터에서 !important 로 고정.
+   두 div 동시에 울림. 확 들어왔다 천천히 꺼지고 길게 쉼.
+   ─────────────────────────────────────────────────────────────── */
+@property --pulse-blue-a {
+  syntax: '<number>';
+  initial-value: 0.32;
+  inherits: false;
+}
+#w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(1),
+#w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(2),
+/* 모바일 — Webflow 가 별도 DOM 으로 렌더링해 w-node ID 가 다른 경우 fallback */
+.div-block-116 > div:nth-child(1),
+.div-block-116 > div:nth-child(2) {
+  --pulse-blue-a: 0.32;
+  box-shadow: inset 0 0 1.5vw 0.4vw rgba(0, 117, 214, var(--pulse-blue-a)) !important;
+  animation: divBlock116InnerPulse 3.6s linear infinite;
+  will-change: --pulse-blue-a;
+}
+/* 모바일: vw 단위가 너무 작아 인너 글로우가 안 보이므로 확대 */
+@media screen and (max-width: 767px) {
+  #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(1),
+  #w-node-_831ddaab-2c4f-e5f5-4039-0f1bcfdd1585-e0c16bc5 > div.div-block-116 > div:nth-child(2),
+  .div-block-116 > div:nth-child(1),
+  .div-block-116 > div:nth-child(2) {
+    box-shadow: inset 0 0 4vw 1.2vw rgba(0, 117, 214, var(--pulse-blue-a)) !important;
+  }
+}
+/* 비대칭 이즈인아웃: 부드럽게 솟아 (ease-in-out) → 길게 천천히 꺼짐 (ease-out)
+   → 길게 쉼. 키프레임 사이에 timing-function 직접 박아서 곡선 분리. */
+@keyframes divBlock116InnerPulse {
+  0%   { --pulse-blue-a: 0.32; animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95); }
+  22%  { --pulse-blue-a: 1;    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+  60%  { --pulse-blue-a: 0.32; animation-timing-function: linear; }
+  100% { --pulse-blue-a: 0.32; }
+}
+
+/* ── Subheader (서브헤더) ──
+   호버: 블루 / 액티브(스크롤스파이/클릭): 블루 + 밑줄 */
+.subheader_click-area {
+  text-decoration: none !important;
+}
+.subheader_click-area .subheader_title {
+  position: relative;
+  display: inline-block;
+  transition: color 0.2s ease;
+}
+.subheader_click-area .subheader_title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 2px;
+  background: #0075d6;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.subheader_click-area:hover .subheader_title::after,
+.subheader_click-area.is-active .subheader_title::after,
+.subheader_click-area.w--current .subheader_title::after {
+  transform: scaleX(1);
+}
+
+/* ================================================================
+   .about_point-title_blue_whrite — 빛반사(shine sweep) 효과
+   - 베이스 fill 은 메인 블루(#0075d6) — 항상 솔리드 (글자 안 사라짐)
+   - 그 위에 좁고 사선인 밝은 띠가 좌→우로 무한 sweep
+   - background-clip: text 로 두 레이어 모두 글자 모양으로만 표시
+   - drop-shadow: 0 0.069vw 0.208vw #3d4f6b
+     (background-clip:text 와 호환 — text-shadow 는 투명 fill 사이로
+      비쳐서 회색 ghost 처럼 보이므로 filter:drop-shadow 사용)
+   ================================================================ */
+/* @property 등록 — CSS custom property 가 numeric 으로 보간되도록 명시.
+   이 등록이 없으면 브라우저는 var() 안 의 숫자를 string 으로만 다뤄서
+   keyframes 사이가 갑자기 jump 함 (= shine 이 툭 꺼지는 원인). */
+@property --about-shine-alpha {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: false;
+}
+
+.about_point-title_blue_whrite {
+  background-image:
+    /* 1) shine 띠 — alpha 는 --about-shine-alpha 로 키프레임 보간 */
+    linear-gradient(
+      115deg,
+      rgba(176, 216, 245, 0)                          42%,
+      rgba(176, 216, 245, var(--about-shine-alpha))   50%,
+      rgba(176, 216, 245, 0)                          58%
+    ),
+    /* 2) 베이스 — 솔리드 메인 블루 */
+    linear-gradient(#0075d6, #0075d6);
+  background-size: 250% 100%, 100% 100%;
+  background-position: 225% 0, 0 0;
+  background-repeat: no-repeat, no-repeat;
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0.208vw 0.104vw rgba(61, 79, 107, 0.55));
+  animation: aboutPointTitleShine 5.5s linear infinite;
+}
+
+/* 우 → 좌 sweep + 진행하면서 alpha 0.95 → 0 페이드.
+   55~100% 구간은 화면 밖에서 invisible 상태 유지 → 다음 사이클로 점프할 때
+   alpha 0 → 0.95 복귀가 화면 밖에서 일어나서 pop 안 보임. */
+@keyframes aboutPointTitleShine {
+  0% {
+    --about-shine-alpha: 0.95;
+    background-position: 225% 0, 0 0;
+  }
+  55% {
+    --about-shine-alpha: 0;
+    background-position: -125% 0, 0 0;
+  }
+  100% {
+    --about-shine-alpha: 0;
+    background-position: -125% 0, 0 0;
+  }
+}
+
+/* .div-block-175 — box-shadow (X/Y/blur/spread, #9aaabb) + 내경 1px 메인 블루 라인 */
+.div-block-175 {
+  box-shadow: 0 0.3vw 0.6vw 0 #9aaabb;
+  position: relative;
+}
+.div-block-175::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 0.7px solid #0075d6;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ================================================================
+   Section 2-2 컬럼 reveal — 파란 세리프 → 0.1s 갭 → 그림자 박스
+   ================================================================
+   대상 wrapper (Webflow 데스크탑/모바일 변형 모두):
+     - .about_contents_grid-3     (데스크탑)
+     - .about_contents_grid-3m    (모바일 1)
+     - .about_contents_grid-3-for-m (모바일 2)
+
+   트리거 단위 (.is-col-in):
+     - 데스크탑 wrapper: 단일 IO → 모든 .div-block-176 컬럼에 동시 부착
+       (세리프 3개 동시 + 그림자 3개 동시)
+     - 모바일 wrapper:   컬럼별 개별 IO → 위→아래 자연 순차 발사
+
+   본문 박스 / 타이틀 / 디바이더는 LOCKED v1 그대로 항상 표시.
+   ================================================================ */
+/* 두 가지 자식 구조를 동시에 지원:
+   A) Strategy/System/Structure 섹션: .div-block-176 컬럼
+      → 파란 세리프 .about_point-title_blue_whrite, 그림자 .div-block-175
+   B) 무중단/Seamless 섹션: .div-block-56 컬럼 (행 = .row-left2/3/4...)
+      → 파란 세리프 .div-block-178, 그림자 .div-block-135
+
+   .is-col-in 은 컬럼/행 컨테이너 어디에 붙어도 ancestor 매칭으로 동작. */
+.about_contents_grid-3 .div-block-175,
+.about_contents_grid-3m .div-block-175,
+.about_contents_grid-3-for-m .div-block-175,
+.about_contents_grid-3 .div-block-135,
+.about_contents_grid-3m .div-block-135,
+.about_contents_grid-3-for-m .div-block-135 {
+  opacity: 0;
+  /* 파란 단어 1.2s 완료 → 0.1s 갭 → 본인 1.0s 페이드인 */
+  transition: opacity 1.0s ease 1.3s;
+}
+.about_contents_grid-3 .about_point-title_blue_whrite,
+.about_contents_grid-3m .about_point-title_blue_whrite,
+.about_contents_grid-3-for-m .about_point-title_blue_whrite,
+.about_contents_grid-3 .div-block-178,
+.about_contents_grid-3m .div-block-178,
+.about_contents_grid-3-for-m .div-block-178 {
+  opacity: 0;
+  /* 가장 먼저 — 지연 없이 1.2s 페이드인 */
+  transition: opacity 1.2s ease;
+}
+.about_contents_grid-3 .is-col-in .div-block-175,
+.about_contents_grid-3m .is-col-in .div-block-175,
+.about_contents_grid-3-for-m .is-col-in .div-block-175,
+.about_contents_grid-3 .is-col-in .div-block-135,
+.about_contents_grid-3m .is-col-in .div-block-135,
+.about_contents_grid-3-for-m .is-col-in .div-block-135,
+.about_contents_grid-3 .is-col-in .about_point-title_blue_whrite,
+.about_contents_grid-3m .is-col-in .about_point-title_blue_whrite,
+.about_contents_grid-3-for-m .is-col-in .about_point-title_blue_whrite,
+.about_contents_grid-3 .is-col-in .div-block-178,
+.about_contents_grid-3m .is-col-in .div-block-178,
+.about_contents_grid-3-for-m .is-col-in .div-block-178 {
+  opacity: 1;
+}
+
+/* 섹션 2-2 한정 — 본문박스/타이틀/디바이더 인터랙션 비활성화
+   (스크롤 reveal 은 파란 세리프 + 그림자 박스만, LOCKED v1 그대로) */
+.about_contents_grid-3 .about_three_contents-box,
+.about_contents_grid-3 .about_contents-title,
+.about_contents_grid-3 .divider_blue_grad_no-spacing-1,
+.about_contents_grid-3 .divider_blue_grad_no-spacing,
+.about_contents_grid-3m .about_three_contents-box,
+.about_contents_grid-3m .about_contents-title,
+.about_contents_grid-3m .divider_blue_grad_no-spacing-1,
+.about_contents_grid-3m .divider_blue_grad_no-spacing,
+.about_contents_grid-3-for-m .about_three_contents-box,
+.about_contents_grid-3-for-m .about_contents-title,
+.about_contents_grid-3-for-m .divider_blue_grad_no-spacing-1,
+.about_contents_grid-3-for-m .divider_blue_grad_no-spacing {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
+/* ================================================================
+   ABOUT BUTTON GLOW — LOCKED v4 (CLAUDE.md 사양 그대로)
+   - 블루: .cta_seocho_button, .cta-style → aboutGlowShimmerBlue
+   - 퍼플: .link-block (SVIC 외부 링크) → aboutGlowShimmerPurple
+   - 시퀀스: about.js 가 IO 진입 시 maxGlow 인라인 → 1.5s 홀드 →
+            .is-looping 핸드오프 (홈 buttons.js 패턴 동일)
+   ================================================================ */
+.cta_seocho_button,
+.cta-style,
+.cta_seocho_button-call-link,
+.discover-helix_button,
+.link-block {
+  position: relative;
+  transition: box-shadow 0.6s ease;
+  will-change: box-shadow;
+}
+
+.cta_seocho_button.is-looping,
+.cta-style.is-looping,
+.cta_seocho_button-call-link.is-looping,
+.discover-helix_button.is-looping {
+  animation: aboutGlowShimmerBlue 5.0s infinite cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+  transition: none !important;
+}
+
+.link-block.is-looping {
+  animation: aboutGlowShimmerPurple 5.0s infinite cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+  transition: none !important;
+}
+
+@keyframes aboutGlowShimmerBlue {
+  0%, 100% { box-shadow: 0 0 0.85vw 0.3vw rgba(0, 117, 214, 1); }
+  50%      { box-shadow: 0 0 0.85vw 0.3vw rgba(0, 117, 214, 0.55); }
+}
+
+@keyframes aboutGlowShimmerPurple {
+  0%, 100% { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 1); }
+  50%      { box-shadow: 0 0 1.05vw 0.5vw rgba(85, 40, 170, 0.55); }
+}
+
+@keyframes aboutGlowShimmerBlueMobile {
+  0%, 100% { box-shadow: 0 0 12px 4px rgba(0, 117, 214, 1); }
+  50%      { box-shadow: 0 0 12px 4px rgba(0, 117, 214, 0.55); }
+}
+
+@keyframes aboutGlowShimmerPurpleMobile {
+  0%, 100% { box-shadow: 0 0 16px 6px rgba(85, 40, 170, 1); }
+  50%      { box-shadow: 0 0 16px 6px rgba(85, 40, 170, 0.55); }
+}
+
+@media (max-width: 767px) {
+  .cta_seocho_button.is-looping,
+  .cta-style.is-looping,
+  .cta_seocho_button-call-link.is-looping,
+  .discover-helix_button.is-looping {
+    animation: aboutGlowShimmerBlueMobile 5.0s infinite cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+  }
+  .link-block.is-looping {
+    animation: aboutGlowShimmerPurpleMobile 5.0s infinite cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
+  }
+}
+
+
+
+
+/* ================================================================
+   #cert — 인증 카드는 처음부터 그대로 붙어 있는다 (등장 효과 없음)
+
+   예전에는 AAHA 카드가 스크롤 진입 시 좌→우로 살짝 밀려들며 나타났다.
+   원래는 세 장 모두 순서대로 나타나게 만든 것인데, 셋 중 이 카드만
+   클래스 이름이 달라 실제로는 한 장만 움직였다 — 그래서 AAHA 카드만
+   유독 인터랙션이 걸린 것처럼 보였다. 사용자 지시로 걷어낸다.
+
+   about.js 가 붙이는 .is-cert-in 은 그대로 두되(그 흐름에 "+" 버튼
+   반짝임이 얹혀 있어 건드리면 같이 죽는다) 가리키는 규칙이 없으므로
+   아무 일도 하지 않는다.
+
+   !important 로 못 박는 이유: 이 카드에 Webflow 쪽 인터랙션이 걸려
+   있으면 페이지 진입 때 인라인으로 투명도·이동값을 박는다. 그것까지
+   무력화해야 "가만히 붙어 있는" 상태가 된다.
+   ================================================================ */
+#cert .about_contents_box_ahha,
+#cert .about_contents_box_ahha.is-cert-in {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* 인증 카드 동그라미 버튼 (.cert-plus) — 스태거 끝나고 셋다 동시에 한번 버언쩍.
+   살짝 크게 빛났다가 기본(0/0/0.6vw/0.1vw)으로 복귀, 그대로 고정 (loop X) */
+#cert .cert-plus {
+  box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1);
+}
+#cert .cert-plus.is-cert-burst {
+  animation: certBurst 1.3s cubic-bezier(0.445, 0.05, 0.55, 0.95) forwards;
+}
+@keyframes certBurst {
+  0%   { box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1); }
+  50%  { box-shadow: 0 0 1.1vw 0.1vw rgba(0, 117, 214, 1); }
+  100% { box-shadow: 0 0 0.6vw 0.1vw rgba(0, 117, 214, 1); }
+}
+@media (max-width: 767px) {
+  #cert .cert-plus {
+    box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1);
+  }
+  @keyframes certBurst {
+    0%   { box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1); }
+    50%  { box-shadow: 0 0 14px 1.5px rgba(0, 117, 214, 1); }
+    100% { box-shadow: 0 0 8px 1.5px rgba(0, 117, 214, 1); }
+  }
+}
+
+/* ================================================================
+   닻 메뉴 바 — 히어로 섹션 지나 스크롤 시 header 바로 밑에 걸려 고정.
+   ================================================================ */
+section.subheader {
+  position: sticky !important;
+  top: var(--header-h, 56px) !important;
+  z-index: 49 !important;
+  margin-top: -1px !important;
+}
+
+/* ================================================================
+   about 페이지 한정 body / html bg — 어떤 1~2px 갭이 나도 검정이 비치지
+   않도록 subheader 와 같은 색으로 통일. about.css 는 about 페이지에서만
+   로드되니 다른 페이지 영향 없음.
+   html 까지 묶은 이유: body bg 만으로는 fixed navbar (#0d1117) 가 z-index
+   적층 하단에 깔린 채 비치는 케이스를 못 막음.
+   ================================================================ */
+html,
+body {
+  background-color: rgb(244, 247, 251);
+}
+
+/* ================================================================
+   about 페이지 — 헤더 항상 고정 (IX2 hide-on-scroll 차단)
+   Webflow IX2 가 스크롤 시 transform: translateY(-100%) 로 헤더를
+   숨기는 동작을 about 페이지에서만 완전히 막음.
+   ================================================================ */
+header.header {
+  position: fixed !important;
+  top: 0 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* ================================================================
+   섹션 1 hero — bg-video sub-pixel 렌더링 갭 차단.
+   - 부모 overflow:hidden 으로 video edge clip 보장
+   - video 자체 GPU 합성 promotion (translateZ + backface-visibility) 으로
+     scroll 시 fractional-pixel 위치에서 body 다크 bg 가 1px 비치는 현상 차단
+   ================================================================ */
+.About_Background,
+.about_background,
+.about-background {
+  overflow: hidden;
+}
+.About_Background video.helix-bg-video,
+.about_background video.helix-bg-video,
+.about-background video.helix-bg-video {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ── 태블릿: 히어로 검정 바 종합 수정 ─────────────────────────
+   [원인 후보 모두 제압]
+   1) 컨테이너 높이 강제 + padding/margin/border 제거 (외곽 새는 영역 차단)
+   2) 비디오를 100vw × 90vh 로 viewport 단위 직접 지정 (% 계산 의존 제거)
+   3) JS 인라인 (width:100% / height:100% / inset:0) 을 !important 로 모두 뚫음
+   4) 부모 overflow:hidden 로 viewport 단위 비디오를 섹션에 클립
+   ─────────────────────────────────────────────────────────────── */
+@media (max-width: 991px) and (min-width: 768px) {
+  .About_Background,
+  .about_background,
+  .about-background {
+    height: 90vh !important;
+    min-height: 90vh !important;
+    max-height: 90vh !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background-color: transparent !important;
+  }
+
+  .About_Background video.helix-bg-video,
+  .about_background video.helix-bg-video,
+  .about-background video.helix-bg-video,
+  video.helix-bg-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100vw !important;
+    height: 90vh !important;
+    min-width: 100vw !important;
+    min-height: 90vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    transform: translateZ(0) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  /* id="1" 인 검정 wrapper 직접 타겟 — DevTools 검사 결과 추적 */
+  #\31 {
+    height: 90vh !important;
+    min-height: 90vh !important;
+    max-height: 90vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background-color: transparent !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+
+  /* 극단 specificity — body + tag + id + class 조합으로 어떤 Webflow CSS도 제압 */
+  body section#\31.about_background {
+    height: 90vh !important;
+    min-height: 90vh !important;
+    max-height: 90vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    overflow: hidden !important;
+    position: relative !important;
+    display: block !important;
+  }
+
+  body section#\31.about_background > video.helix-bg-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    transform: translateZ(0) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+}
+
+/* ── .div-block-112 아래쪽 페이드아웃 — .ht 글씨와 겹치는 선 제거 ──
+   박스 아래쪽 (위에 얹힌 .ht 글씨와 겹치는 영역) 을 선형 그라데이션
+   마스크로 투명화. 위 → 아래 방향으로 자연스럽게 사라져 글씨와
+   겹치는 선이 보이지 않음.
+   ─────────────────────────────────────────────────────────────── */
+.div-block-112 {
+  -webkit-mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 8%,
+    rgba(0, 0, 0, 1) 25%,
+    rgba(0, 0, 0, 1) 100%);
+          mask-image: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 8%,
+    rgba(0, 0, 0, 1) 25%,
+    rgba(0, 0, 0, 1) 100%);
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+}
+
+/* ── 원장 의료진 카드 — 지점 라벨 두 가지 손질 ─────────────────────
+   (1) "서울동물영상종양센터" 라벨은 카드 왼쪽으로 조금 삐져나오는 게
+       원래 디자인인데, 삐져나온 부분이 통째로 잘려 보이지 않았다.
+
+       원인: 카드(.hs-vet 등)에 "밖으로 나간 건 다 잘라내라"(overflow:hidden)
+       가 걸려 있다. 이건 원장 사진 때문에 필요한 설정이다 — 사진이 카드보다
+       훨씬 커서(30~42vw) 가둬두지 않으면 옆 카드까지 덮는다.
+       문제는 그 잘라내기가 사진뿐 아니라 라벨까지 같이 잘랐던 것.
+
+       해법: 잘라내기를 카드가 아니라 "사진만 담는 층"으로 옮긴다.
+       about.js 가 사진(.vet-photo)과 그 위 그라데이션(.vet-fade)을
+       .helix-vet-clip 층 안으로 옮기고 카드에 .is-vet-clipped 를 붙이면,
+       그때부터 카드는 잘라내기를 풀어도 안전하다 → 라벨은 삐져나온 채로
+       다 보이고, 사진은 그대로 카드 안에 갇힌다.
+
+       ⚠️ 잘라내기 해제를 .is-vet-clipped 가 붙은 뒤로 미루는 이유:
+       사진을 옮기기 전에 먼저 풀어버리면 그 찰나에 큰 사진이 화면으로
+       쏟아진다. JS 가 실패하면 지금처럼 잘린 상태로 남을 뿐 사고는 없다.
+
+   (2) "일산 분원" 라벨 — 누르면 "준비중입니다" 안내가 뜨도록
+       about.js 가 표식을 달아 준다. 눌리는 것으로 보이게 손 모양 커서.
+   ─────────────────────────────────────────────────────────────── */
+
+/* 사진 전용 잘라내기 층 — 카드와 정확히 같은 크기·같은 둥근 모서리.
+   카드에 padding 이 없어 inset:0 이면 사진의 % 좌표 기준이 그대로 유지된다
+   (사진 위치·크기 값은 하나도 안 건드림). */
+.helix-vet-clip {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* 사진을 옮겨 담은 뒤에만 카드의 잘라내기를 푼다 */
+.ts-vet.is-vet-clipped,
+.hj-vet.is-vet-clipped,
+.sy-vet.is-vet-clipped,
+.si-vet.is-vet-clipped,
+.sh-vet.is-vet-clipped,
+.ys-vet.is-vet-clipped,
+.hs-vet.is-vet-clipped,
+.hc-vet.is-vet-clipped {
+  overflow: visible;
+}
+
+/* 삐져나온 라벨이 옆 카드나 사진 밑으로 들어가지 않게 위로 올림 */
+.div-block-173 {
+  z-index: 2;
+}
+
+.textbox-bo-w-sh[data-coming-soon] {
+  cursor: pointer;
+}
+
+/* Responsive typography review 2026-09-07 — published About page only.
+   Keep shared Webflow variables, <=991px rules and locked motion unchanged. */
+@media (min-width: 992px) {
+  html[data-wf-page="69d1c60d1e37375fe0c16bc5"] .nomal-parag {
+    font-size: max(0.8125rem, 0.8vw) !important;
+    line-height: max(1.3rem, 1.3vw) !important;
+  }
+  html[data-wf-page="69d1c60d1e37375fe0c16bc5"] .nomal-parag_mid-align {
+    font-size: max(0.8125rem, 0.8vw) !important;
+    line-height: max(1.4rem, 1.4vw) !important;
+  }
+}
