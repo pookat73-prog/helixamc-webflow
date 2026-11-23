@@ -1,0 +1,278 @@
+name: HELIX fixed release CDN verification
+'on':
+  push:
+    branches:
+      - release/helix-structure-20261123
+    paths:
+      - .github/workflows/helix-release-cdn-20261123.yml
+permissions:
+  contents: read
+jobs:
+  browser:
+    name: GSAP and staging UI in an isolated Chromium
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Install the existing Playwright release
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          npm install --no-save --no-fund --no-audit playwright@1.57.0
+          npx playwright install --with-deps chromium
+      - name: Verify parser progress and active UI with outbound blocking
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REPOSITORY" == 'pookat73-prog/helixamc-webflow' && "$GITHUB_REF" == 'refs/heads/release/helix-structure-20261123' ]]
+          cd "$RUNNER_TEMP"
+          cat > helix-browser.cjs <<'HELIX_BROWSER_PROBE'
+          'use strict';
+          
+          const assert = require('node:assert/strict');
+          const { createHash } = require('node:crypto');
+          const { chromium } = require('playwright');
+          
+          const stage = 'https://helixanimalmedicalcenter.webflow.io';
+          const cdn = 'https://cdn.jsdelivr.net/gh/pookat73-prog/helixamc-webflow@';
+          const library = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/';
+          const core = library + 'gsap.min.js';
+          const coreTag = '<script src="' + core + '"></script>';
+          const asyncTag = '<script async data-helix-gsap-nonblocking src="' + core + '"></script>';
+          const repoPrefix = '/gh/pookat73-prog/helixamc-webflow@';
+          const siteAssets = '69d090ea69d828e27d16ea29';
+          const targets = {
+            '/': ['fc7371af2cc4f2e55c5c1bc9d68a797a42f3be37','home/bootstrap.js'],
+            '/discover-helix': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','about/bootstrap.js'],
+            '/faq': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','faq/bootstrap.js'],
+            '/internal-medicine': ['4a8ba38c86fa87083bc9db8db0e25f52faad5579','internal-medicine/bootstrap.js'],
+            '/services': ['cf0f025dd2ad7d4286e9bbad981bc933ab9b17de','services/bootstrap.js'],
+          };
+          const widths = [390, 820, 1440];
+          const expectedMenu = '668954ee0bf85462c1f176f472e055f268f0b2437f097c12e048eff4e2385e91';
+          const delay = ms => new Promise(done => setTimeout(done, ms));
+          const digest = x => createHash('sha256').update(x).digest('hex');
+          const publicCache = new Map();
+          
+          async function retrieve(url) {
+            if (!publicCache.has(url)) publicCache.set(url, (async()=>{
+              const res = await fetch(url, { method:'GET', redirect:'error', signal:AbortSignal.timeout(18_000) });
+              return { status:res.status, type:res.headers.get('content-type') ?? 'application/octet-stream', body:Buffer.from(await res.arrayBuffer()) };
+            })());
+            return publicCache.get(url);
+          }
+          
+          function staticAllowed(url, kind) {
+            if (url.protocol !== 'https:' || url.port || url.username || url.password) return false;
+            const host = url.hostname, path = url.pathname;
+            if (host === 'cdn.jsdelivr.net') {
+              if (url.search || !path.startsWith(repoPrefix)) return false;
+              const target = path.slice(repoPrefix.length);
+              return /^[a-f0-9]{40}\/[a-zA-Z0-9_/.-]+\.(?:js|css|svg|png|webp|mp4|woff2)$/.test(target) &&
+                !target.includes('..') && !/\/(?:measure-gate|ga4-base|session|sheet-log|scroll-depth|page-time|ga-inspector|section-reach)\.js$/.test(target);
+            }
+            if (host === 'cdnjs.cloudflare.com') return url.href === core || url.href === library + 'ScrollTrigger.min.js';
+            if (host === 'cdn.prod.website-files.com' || host === 'assets.website-files.com') return path.startsWith('/'+siteAssets+'/') &&
+              ['image','font','media','stylesheet','script'].includes(kind);
+            if (host === 'ajax.googleapis.com') return /^\/ajax\/libs\/webfont\/[\d.]+\/webfont\.js$/.test(path);
+            if (host === 'd3e54v103j8qbb.cloudfront.net') return /^\/js\/jquery-[0-9.]+\.min\.[a-f0-9]+\.js$/.test(path) &&
+              (!url.search || url.search === '?site='+siteAssets);
+            if (host === 'use.typekit.net') return (['/yun6zxv.js','/yun6zxv.css'].includes(path)&&!url.search) ||
+              (kind==='font'&&/^\/af\/[a-z0-9/]+$/i.test(path));
+            if (host === 'p.typekit.net') return (kind==='font'||kind==='stylesheet') && !/\/(p|pixel|collect)(?:\/|$)/i.test(path);
+            if (host === 'fonts.googleapis.com') return kind==='stylesheet' && /^\/css2?$/.test(path);
+            return host === 'fonts.gstatic.com' && kind==='font' && /^\/s\//.test(path);
+          }
+          
+          function preflightHTML(html, route, mode) {
+            const [ref, entry] = targets[route];
+            const tags = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+            const pageTag = tags.filter(x=>x[2].includes('/'+entry));
+            const sharedTag = tags.filter(x=>x[2].includes('__helixSharedUiEntry') && x[2].includes('/global/bootstrap.js'));
+            assert.equal(pageTag.length, 1, 'Public page entry anchor: '+route);
+            assert.equal(sharedTag.length, 1, 'Public shared entry anchor: '+route);
+            assert.equal(html.split(coreTag).length, 2, 'Public GSAP anchor: '+route);
+            const replacement = '<script>window.__helixCommitSha="'+ref+'";window.__helixSiteMeasurementOwns=function(){return false}</script>' +
+              '<script src="'+cdn+ref+'/'+entry+'" defer></script>';
+            html = html.replace(pageTag[0][0], ()=>replacement)
+              .replace(sharedTag[0][0], ()=>'<script src="'+cdn+ref+'/global/bootstrap.js" defer></script>')
+              .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,s=>s.includes('19bb9719228c17a14f5a320c77e49282ec289c8c/global/floating-cta')?'':s);
+            return mode === 'classic' ? html : html.replace(coreTag,asyncTag);
+          }
+          
+          async function runCase(browser, { route, width, mode, actual, html }) {
+            const height = width===390 ? 844 : 960;
+            const ctx = await browser.newContext({ viewport:{width,height}, serviceWorkers:'block', acceptDownloads:false });
+            const gate = { forwarded:0, blocked:0, firebasePostAttempts:0, otherPostAttempts:0, gsapStarted:false, gsapCompleted:false, fileHashes:new Map() };
+            const blockedTypes = new Set(), relevantErrors = new Set();
+            const [ref, entry] = targets[route];
+            await ctx.addInitScript(() => {
+              window.__helixNoMeasure = true;
+              window.__isolatedBeaconCalls = 0;
+              navigator.sendBeacon = function(){window.__isolatedBeaconCalls++;return false;};
+              window.open = function(){return null;};
+              window.addEventListener('helix-s1-done', () => {window.__isolatedHeroAnimated = true;}, {once:true});
+            });
+            await ctx.routeWebSocket('**/*', ws=>ws.close());
+            await ctx.route('**/*', async outgoing => {
+              const req = outgoing.request();
+              const target = new URL(req.url());
+              if(req.method()!=='GET'){
+                gate.blocked++;
+                if(req.method()==='POST' && /firebaseio\.com$|firebasedatabase\.app$/.test(target.hostname)) gate.firebasePostAttempts++;
+                else gate.otherPostAttempts++;
+                return outgoing.abort('blockedbyclient');
+              }
+              if(req.resourceType()==='document' && target.origin===stage && target.pathname===route && !target.search){
+                return outgoing.fulfill({status:200, contentType:'text/html; charset=utf-8',body:actual?html:preflightHTML(html,route,mode)});
+              }
+              if(target.href===core){
+                gate.gsapStarted=true;
+                if(mode==='pending'||mode==='classic') return; // Remain pending until the context closes.
+                if(mode==='503'){gate.gsapCompleted=true;return outgoing.fulfill({status:503,body:'',contentType:'application/javascript'});}
+                if(mode==='delayed') await delay(1800);
+                gate.gsapCompleted=true;
+              }
+              if(!staticAllowed(target,req.resourceType())){
+                gate.blocked++;
+                if (['font','stylesheet','image'].includes(req.resourceType())) blockedTypes.add(req.resourceType()+':'+target.hostname+target.pathname.split('/').slice(0,3).join('/'));
+                return outgoing.abort('blockedbyclient');
+              }
+              try{
+                const received = await retrieve(target.href);
+                if(target.href.startsWith(cdn+ref+'/') && received.status===200) gate.fileHashes.set(target.href.slice((cdn+ref+'/').length),digest(received.body));
+                return await outgoing.fulfill({status:received.status,headers:{'content-type':received.type,'access-control-allow-origin':'*'},body:received.body});
+              }catch{ await outgoing.abort('failed').catch(()=>{}); }
+            });
+            const page = await ctx.newPage();
+            page.on('pageerror', error=>{if(/gsap|ScrollTrigger|undefined/i.test(error.message))relevantErrors.add(error.message);});
+            const observe = () => page.evaluate(()=>{
+              const visible = node => {
+                if(!node?.getBoundingClientRect().width) return false;
+                for(let p=node;p;p=p.parentElement){
+                  const s=getComputedStyle(p);
+                  if(s.visibility==='hidden'||s.display==='none'||Number(s.opacity)===0)return false;
+                }
+                return true;
+              };
+              const root=document.documentElement;
+              return {
+                body:!!document.body?.firstElementChild,
+                title:visible(document.querySelector('.blackframe_image-hero h1')),
+                heroCTA:visible(document.querySelector('.blackframe_image-hero a[href="/discover-helix"]')),
+                cover:getComputedStyle(root,'::after').content,
+                fallback:root.classList.contains('hx-home-hero-static'),
+                ready:root.classList.contains('hx-home-ready'),
+                registeredFonts:[...new Set(Array.from(document.fonts,f=>f.family))].join(','),
+                homeSections:!!document.getElementById('hx-hero-milestones')&&!!document.getElementById('hx-branch-quickbar'),
+                menu:!!document.getElementById('hx-menu-overlay')&&!!window.__helixHamburgerReady,
+                booking:!!document.getElementById('hxFctaToggle'),
+                gsap:!!window.gsap,
+                heroAnimated:window.__isolatedHeroAnimated===true,
+              };
+            });
+            try{
+              await page.goto(stage+route,{waitUntil:'commit',timeout:15_000});
+              if(mode==='classic'){
+                for(let i=0;i<100&&!gate.gsapStarted;i++) await delay(100);
+                assert.equal(gate.gsapStarted,true,'Classic control did not intercept GSAP');
+                await delay(1500);
+                const seen=await observe();
+                assert.equal(gate.gsapCompleted,false);
+                assert.equal(seen.body,false,'Classic script did not block this reference document');
+                assert.equal(seen.title||seen.heroCTA||seen.menu||seen.booking,false);
+                return { route,width,mode,actual,seen,gsapPending:true };
+              }
+              let seen;
+              const deadline=Date.now()+24_000;
+              do {
+                seen=await observe();
+                if(seen.body&&seen.menu&&seen.booking&&(route!=='/'||(seen.title&&seen.heroCTA&&seen.cover==='none'&&
+                  (!['normal','delayed'].includes(mode)||(seen.gsap&&seen.heroAnimated)))))break;
+                await delay(175);
+              }while(Date.now()<deadline);
+              const diagnostic=JSON.stringify({seen,blockedTypes:[...blockedTypes].slice(0,12),relevantErrors:[...relevantErrors].slice(0,8)});
+              assert.ok(seen.body&&seen.menu&&seen.booking,diagnostic);
+              if(route==='/'){
+                assert.ok(seen.title&&seen.heroCTA&&seen.cover==='none',diagnostic);
+                assert.equal(seen.gsap,['normal','delayed'].includes(mode),JSON.stringify(seen));
+                if(mode==='pending'||mode==='503') assert.equal(seen.fallback,true,JSON.stringify(seen));
+                else assert.ok(seen.heroAnimated&&!seen.fallback,diagnostic);
+              }
+              if(mode==='pending') assert.ok(gate.gsapStarted&&!gate.gsapCompleted,'GSAP request did not stay pending');
+              if(mode==='503') assert.ok(gate.gsapStarted&&gate.gsapCompleted,'GSAP 503 was not reached');
+              const ui=await page.evaluate(async()=>{
+                const menu=document.getElementById('hx-menu-overlay');
+                const opener=[...document.querySelectorAll('[aria-controls="hx-menu-overlay"]')].find(x=>x.getBoundingClientRect().width);
+                const before=scrollY;
+                const bodyOverflow=document.body.style.overflow;
+                opener?.click();
+                const menuOpen=menu.getAttribute('aria-hidden')==='false';
+                document.querySelector('.hx-menu-close')?.click();
+                for(let i=0;i<25&&menu.getAttribute('aria-hidden')!=='true';i++)await new Promise(done=>setTimeout(done,40));
+                const toggle=document.getElementById('hxFctaToggle');
+                toggle.click();
+                const modal=document.getElementById('hxFctaModal');
+                const bookingOpen=modal?.getAttribute('aria-hidden')==='false';
+                const phone=document.getElementById('hxFcta_phone');
+                const prefix=phone?.parentElement?.textContent?.includes('010');
+                const bookingForm=document.getElementById('hxFctaForm');
+                bookingForm?.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+                document.getElementById('hxFctaModalClose')?.click();
+                return { menuOpen, menuClosed:menu.getAttribute('aria-hidden')==='true',
+                  bookingOpen, bookingClosed:modal?.getAttribute('aria-hidden')==='true', prefix,
+                  scrollRestored:Math.abs(scrollY-before)<3&&document.body.style.overflow===bodyOverflow };
+              });
+              assert.ok(ui.menuOpen&&ui.menuClosed&&ui.bookingOpen&&ui.bookingClosed&&ui.prefix&&ui.scrollRestored,JSON.stringify(ui));
+              assert.equal(gate.firebasePostAttempts,0);
+              const relevant=['global/bootstrap.js',entry,'global/floating-cta.js','global/floating-cta.css','home/global/hamburger.js'];
+              assert.ok(relevant.every(file=>gate.fileHashes.has(file)), 'Missing fixed responses: '+relevant.filter(x=>!gate.fileHashes.has(x)).join(', '));
+              assert.equal(gate.fileHashes.get('home/global/hamburger.js'),expectedMenu,'Menu bytes at browser request do not match the approved change');
+              const screenshot=route==='/' ? digest(await page.screenshot({ timeout:12_000, animations:'allow' }).catch(()=>Buffer.alloc(0))) : null;
+              return { route,width,mode,actual,seen,ui,gsapPending:mode==='pending',postAttempts:gate.firebasePostAttempts,
+                externalPostsForwarded:gate.forwarded,blockedRequests:gate.blocked,screenshot,loaderHashes:Object.fromEntries(relevant.map(p=>[p,gate.fileHashes.get(p)])) };
+            }finally{await ctx.close();}
+          }
+          
+          (async()=>{
+            const pins=new Set(Object.values(targets).map(([pin])=>pin));
+            for(const pin of pins){
+              const menu=await retrieve(cdn+pin+'/home/global/hamburger.js');
+              assert.equal(menu.status,200,'Changed asset failed HTTP at '+pin);
+              assert.equal(digest(menu.body),expectedMenu,'Changed asset hash at '+pin);
+              console.log('MENU_CDN_PASS '+pin+' '+expectedMenu);
+            }
+            const docs={};
+            const home=await retrieve(stage+'/');
+            assert.equal(home.status,200,'Published stage HTML');
+            const homeHtml=home.body.toString('utf8');
+            const actual=homeHtml.includes('data-helix-gsap-nonblocking');
+            const routes=actual?Object.keys(targets):['/'];
+            for(const route of routes) {
+              const document=route==='/'?home:await retrieve(stage+route);
+              assert.equal(document.status,200,route);
+              docs[route]=document.body.toString('utf8');
+              if(actual) assert.ok(docs[route].includes(targets[route][0])&&docs[route].includes('data-helix-gsap-nonblocking'),'Missing released HTML pins: '+route);
+            }
+            const browser=await chromium.launch({headless:true,args:['--no-proxy-server','--host-resolver-rules=MAP * ~NOTFOUND']});
+            try{
+              const tests=[
+                ...(!actual?[{route:'/',width:390,mode:'classic'}]:[]),
+                ...routes.flatMap(route=>widths.map(width=>({route,width,mode:'normal'}))),
+                ...widths.map(width=>({route:'/',width,mode:'pending'})),
+                {route:'/',width:390,mode:'503'},
+                {route:'/',width:390,mode:'delayed'},
+              ];
+              let failures=0;
+              for(let start=0;start<tests.length;start+=3){
+                await Promise.all(tests.slice(start,start+3).map(async test=>{
+                  try{const found=await runCase(browser,{...test,actual,html:docs[test.route]}); console.log('PLAYWRIGHT_PASS '+JSON.stringify(found));}
+                  catch(error){failures++;console.error('PLAYWRIGHT_FAIL '+JSON.stringify({...test,error:error.message}));}
+                }));
+              }
+              assert.equal(failures,0,'Browser scenario failures');
+              console.log('PLAYWRIGHT_MATRIX '+JSON.stringify({actual,normalRoutes:routes.length,normalWidths:widths.length,cases:tests.length,failures}));
+            }finally{await browser.close();}
+          })().catch(e=>{console.error(e.message);process.exitCode=1;});
+          HELIX_BROWSER_PROBE
+          node helix-browser.cjs
