@@ -262,7 +262,14 @@
       .catch(function (error) { console.warn('[shared-ui]', error); });
   }
 
-  // Give page loaders first choice of their modules; complete only missing UI.
+  // These routes have no page UI loader. Optional requests must not hold
+  // their menu or reservation UI until window.load.
+  if (/^\/(?:diagnostic-imaging|ad-landing-test)\/?$/.test(location.pathname)) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+    else boot();
+    return;
+  }
+  // Give the other page loaders first choice of their modules.
   if (document.readyState === 'complete') boot();
   else window.addEventListener('load', boot, { once: true });
 })();
