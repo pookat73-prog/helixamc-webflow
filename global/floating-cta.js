@@ -283,7 +283,7 @@
       return value.replace(/\D/g, '').slice(3);
     }
     if (/^\d{0,8}$/.test(value)) return value;
-    if (/^\d{4}\D+\d{0,4}$/.test(value)) return value.replace(/\D/g, '');
+    if (/^\d{4}[ -]+\d{0,4}$/.test(value)) return value.replace(/\D/g, '');
     // Keep the original value visible. In particular, do not trim a full number down to a suffix.
     return null;
   }
