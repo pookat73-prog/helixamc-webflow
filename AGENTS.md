@@ -1,6 +1,6 @@
 # 헬릭스 홈페이지 저장소 작업 지침
 
-안정화 기준은 v2.0 Level 4를 적용한다. Work, Codex 및 다른 도구에서 작업을 시작할 때 대상 저장소와 기준 SHA를 확인하고 이 파일을 직접 읽는다. [CLAUDE.md](CLAUDE.md)의 기술 제약과 [유지보수 가이드](docs/website-maintenance.md)의 검사 표를 작업 범위에 맞춰 확인한다.
+안정화의 목표·범위·최종 종료 조건은 [HELIX Level 4 안정화 기준서 v2.0](docs/HELIX-Level4-stabilization-standard-v2.0.md)을 최상위 기준으로 적용한다. Work, Codex 및 다른 도구는 작업을 시작할 때 대상 저장소와 기준 SHA를 확인하고 이 기준서와 이 파일을 먼저 읽는다. [CLAUDE.md](CLAUDE.md)의 기술 제약과 [유지보수 가이드](docs/website-maintenance.md)의 검사 표를 작업 범위에 맞춰 확인한다. 기준서와 지침이 충돌하면 사용자의 최신 승인 범위와 기준서의 종료·범위 통제 원칙을 우선하며, 기준 수준을 임의로 높이지 않는다.
 
 ## 작업 전
 
