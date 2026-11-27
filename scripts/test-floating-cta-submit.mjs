@@ -238,7 +238,7 @@ async function testFixedPrefixInputAndValidation() {
     assert.equal(calls, 0, 'empty or incomplete suffix must not be saved');
     assert.notEqual(f.ids.hxFcta_phone_err.textContent, '');
   }
-  for (const value of ['12345678', '01012345678', '010-1234-5678', '1234abcd5678']) {
+  for (const value of ['12345678', '01012345678', '010-1234-5678', '1234 5678']) {
     f.ids.hxFcta_phone.value = value;
     f.ids.hxFcta_phone.handlers.input();
     assert.equal(f.ids.hxFcta_phone.value, '1234-5678');
@@ -256,6 +256,89 @@ async function testFixedPrefixInputAndValidation() {
   await f.submit();
   assert.equal(calls, 1);
   console.log('PASS fixed prefix, suffix validation, paste/autofill, leading zeros and full-number storage');
+}
+
+async function testMalformedPhoneIsRejected() {
+  const invalidValues = [
+    '01112345678', '011-1234-5678', '02-1234-5678', '+82 10 1234 5678',
+    '0101234567', '010-123-4567', '010-1234-567', '010-1234-56789',
+    '010123456789', '010-1234', '011-12345', '010-123-45678',
+    '010-1234-5678 ext 9', '010-1234-5678 99',
+    '1234abc5678', '1234abcd5678', '1234/5678', '1234.5678', '1234_5678',
+    '1234+5678', '1234가5678', '1234-/5678',
+  ];
+  for (const value of invalidValues) {
+    let calls = 0;
+    const f = fixture(async () => {
+      calls++;
+      return response(true, { name: '-unexpected' });
+    });
+    const input = f.ids.hxFcta_phone;
+    input.value = value;
+    input.handlers.input();
+    assert.equal(input.value, value, 'malformed input is kept for correction: ' + value);
+    assert.notEqual(f.ids.hxFcta_phone_err.textContent, '', 'show the format error: ' + value);
+    assert.equal(f.ids.hxFcta_memo.focused, false, 'do not advance focus with invalid input');
+    await f.submit();
+    assert.equal(calls, 0, 'malformed input never reaches the mock POST: ' + value);
+    assert.equal(input.focused, true, 'validation returns focus to the phone field');
+  }
+
+  const invalidAutofillValues = ['010-1234-56789', '1234abc5678', '1234/5678'];
+  for (const value of invalidAutofillValues) {
+    const f = fixture(async () => assert.fail('values without an input event must also be validated'));
+    f.ids.hxFcta_phone.value = value;
+    await f.submit();
+    assert.equal(f.ids.hxFcta_phone.value, value, 'invalid autofill is kept for correction');
+    assert.notEqual(f.ids.hxFcta_phone_err.textContent, '', 'reject invalid autofill at submission: ' + value);
+    assert.equal(f.ids.hxFcta_phone.focused, true, 'invalid autofill returns focus to the phone field');
+  }
+  assert.match(source, /hx-fcta-form__phone-prefix[^<]*>010-</, 'the fixed prefix remains visible');
+  const phoneMarkup = between('id="hxFcta_phone"', "'</div>'");
+  assert.doesNotMatch(phoneMarkup, /maxlength=/, 'the browser must not silently truncate oversized paste');
+  console.log('PASS malformed phone inputs retain their original value and never submit (' + (invalidValues.length + invalidAutofillValues.length) + ' cases)');
+}
+
+async function testValidPhoneShapesAndCorrection() {
+  const cases = [
+    ['12345678', '1234-5678', '01012345678'],
+    ['1234-5678', '1234-5678', '01012345678'],
+    ['1234 5678', '1234-5678', '01012345678'],
+    ['1234 - 5678', '1234-5678', '01012345678'],
+    ['01112345', '0111-2345', '01001112345'],
+    ['0111-2345', '0111-2345', '01001112345'],
+    ['01001234', '0100-1234', '01001001234'],
+    ['01012345678', '1234-5678', '01012345678'],
+    ['010-1234-5678', '1234-5678', '01012345678'],
+    [' 010 1234 5678 ', '1234-5678', '01012345678'],
+  ];
+  for (const [value, display, expectedPhone] of cases) {
+    const sent = [];
+    const f = fixture(async (_url, options) => {
+      sent.push(JSON.parse(options.body).phone);
+      return response(true, { name: '-valid-phone-key' });
+    });
+    const input = f.ids.hxFcta_phone;
+    input.value = '011-1234-5678';
+    input.handlers.input();
+    input.value = value;
+    input.handlers.input();
+    assert.equal(input.value, display, 'valid suffix display: ' + value);
+    assert.equal(f.ids.hxFcta_phone_err.textContent, '', 'correction clears the format error');
+    assert.equal(f.ids.hxFcta_memo.focused, true, 'completed suffix advances to memo');
+    await f.submit();
+    assert.deepEqual(sent, [expectedPhone]);
+  }
+
+  const sent = [];
+  const f = fixture(async (_url, options) => {
+    sent.push(JSON.parse(options.body).phone);
+    return response(true, { name: '-autofill-key' });
+  });
+  f.ids.hxFcta_phone.value = '010-1234-5678';
+  await f.submit();
+  assert.deepEqual(sent, ['01012345678'], 'valid autofill does not require an input event');
+  console.log('PASS valid suffixes and complete 010 numbers, including correction and autofill (' + (cases.length + 1) + ' cases)');
 }
 
 await testSuccess();
@@ -300,4 +383,6 @@ await testOptionalMemo();
 await testOverlongMemoIsNotSubmitted();
 
 await testFixedPrefixInputAndValidation();
-console.log('All floating CTA submit handler tests passed (7 scenarios).');
+await testMalformedPhoneIsRejected();
+await testValidPhoneShapesAndCorrection();
+console.log('All floating CTA submit handler tests passed (9 scenarios).');

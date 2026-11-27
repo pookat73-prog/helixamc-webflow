@@ -124,7 +124,7 @@
               '<div class="hx-fcta-form__phone">',
                 '<span class="hx-fcta-form__phone-prefix" aria-hidden="true">010-</span>',
                 '<input class="hx-fcta-form__input" id="hxFcta_phone" name="연락처"',
-                  ' type="tel" inputmode="numeric" maxlength="13" placeholder="1234-5678"',
+                  ' type="tel" inputmode="numeric" placeholder="1234-5678"',
                   ' aria-label="연락처 뒤 8자리 (010 고정)" aria-describedby="hxFcta_phone_err"',
                   ' autocomplete="tel" enterkeyhint="next">',
               '</div>',
@@ -278,19 +278,29 @@
      전체 번호 붙여넣기·자동완성도 허용하며, 저장·전송은 010 포함 11자리.
      뒤 8자리를 다 채우면 선택 메모 칸으로 커서가 넘어감. */
   function phoneSubscriberDigits() {
-    var d = phoneInput.value.replace(/\D/g, '');
-    if (d.length === 11 && d.slice(0, 3) === '010') d = d.slice(3);
-    return d.slice(0, 8);
+    var value = phoneInput.value.trim();
+    if (/^010(?:\d{8}|[ -]\d{4}[ -]\d{4})$/.test(value)) {
+      return value.replace(/\D/g, '').slice(3);
+    }
+    if (/^\d{0,8}$/.test(value)) return value;
+    if (/^\d{4}[ -]+\d{0,4}$/.test(value)) return value.replace(/\D/g, '');
+    // Keep the original value visible. In particular, do not trim a full number down to a suffix.
+    return null;
   }
 
   function phoneDigits() {
     var d = phoneSubscriberDigits();
-    return d ? '010' + d : '';
+    return d && d.length === 8 ? '010' + d : '';
   }
 
+  var phoneFormatError = '010 뒤의 번호 8자리 또는 010으로 시작하는 전체 번호를 입력해 주세요.';
   var phoneCompletedOnce = false;
   phoneInput.addEventListener('input', function () {
     var d = phoneSubscriberDigits();
+    if (d === null) {
+      setError(phoneInput, 'hxFcta_phone_err', phoneFormatError);
+      return;
+    }
     if (!d.length) phoneCompletedOnce = false;
     var out = d;
     if (d.length > 4) out = d.slice(0, 4) + '-' + d.slice(4);
@@ -650,10 +660,7 @@
       bad = bad || ownerInput;
     }
     if (!digits) {
-      setError(phoneInput, 'hxFcta_phone_err', '연락처를 입력해 주세요.');
-      bad = bad || phoneInput;
-    } else if (!/^010\d{8}$/.test(digits)) {
-      setError(phoneInput, 'hxFcta_phone_err', '010 뒤의 번호 8자리를 입력해 주세요.');
+      setError(phoneInput, 'hxFcta_phone_err', phoneInput.value.trim() ? phoneFormatError : '연락처를 입력해 주세요.');
       bad = bad || phoneInput;
     }
     if (memoVal.length > 20) {
