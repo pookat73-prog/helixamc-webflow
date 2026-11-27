@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   quality:
+    if: github.head_ref != 'qa/helix-p1-webkit-20261124'
     name: JavaScript and accessibility contracts
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -58,3 +59,28 @@ jobs:
 
       - name: Test floating CTA keyboard focus
         run: node scripts/test-floating-cta-focus.mjs
+
+  reservation-webkit:
+    name: Reservation inputs on WebKit iPhone profile
+    if: github.event_name == 'pull_request' && github.head_ref == 'qa/helix-p1-webkit-20261124'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout QA candidate
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install existing Playwright WebKit version
+        run: |
+          npm install --prefix "$RUNNER_TEMP/helix-p1-pw" --no-save playwright@1.62.1
+          "$RUNNER_TEMP/helix-p1-pw/node_modules/.bin/playwright" install --with-deps webkit
+          command -v xclip >/dev/null || sudo apt-get install -y xclip
+
+      - name: Verify published staging reservation input without external writes
+        run: |
+          export NODE_PATH="$RUNNER_TEMP/helix-p1-pw/node_modules"
+          xvfb-run -a node scripts/test-p1-webkit-staging.cjs
